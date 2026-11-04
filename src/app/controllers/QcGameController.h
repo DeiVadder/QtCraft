@@ -66,8 +66,10 @@ class QcGameController : public QObject
     Q_OBJECT
     QML_NAMED_ELEMENT(GameController)
     QML_UNCREATABLE("Made by main() and handed to Main.qml")
-    // GameController.Phase in QML: the enumeration lives in the screen state.
+    // GameController.Phase in QML: the enumeration lives in the screen state. Its values go by their
+    // enum; this type's class info decides that, not the one of the extension.
     QML_EXTENDED_NAMESPACE(QcScreenState)
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
 
     Q_PROPERTY(QcWorldView *view READ view WRITE setView NOTIFY viewChanged FINAL)
     Q_PROPERTY(QcScreenState::Phase phase READ phase NOTIFY phaseChanged FINAL)
@@ -147,9 +149,8 @@ public:
     void finishStartup();
     bool inputEnabled() const { return m_screens.inputEnabled(); }
     // In-game screen on top of the world (QcScreenState::overlay).
-    using Overlay = QcScreenState::Overlay;
-    Overlay overlay() const { return m_screens.overlay(); }
-    void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
+    QcScreenState::Overlay overlay() const { return m_screens.overlay(); }
+    void setOverlay(QcScreenState::Overlay overlay) { m_screens.setOverlay(overlay); }
     bool pauseMenuOpen() const { return QcScreenState::isPauseMenu(overlay()); }
     // Closes the advancements, back to where they opened from (QcScreenState::closeAdvancements).
     Q_INVOKABLE void closeAdvancements() { m_screens.closeAdvancements(); }

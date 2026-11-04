@@ -79,6 +79,7 @@ set_tests_properties(test_dedicated_server test_server_log test_headless_cli PRO
 # QtTest's limit per test function follows the test's limit (qc_add_test).
 set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
+set_tests_properties(test_dedicated_server PROPERTIES COST 70)
 set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_generator_versions PROPERTIES COST 170)
 set_tests_properties(test_weather test_fire PROPERTIES COST 140)

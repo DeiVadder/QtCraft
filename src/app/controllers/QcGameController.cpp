@@ -172,7 +172,7 @@ QcGameController::QcGameController(QObject *parent)
     connect(m_hud.get(), &QcHudState::shownChanged, this, &QcGameController::hudShownChanged);
     // The chat lines of the HUD all show while the chat line is open and fade while it is closed
     // (decision E-875).
-    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_hud->chat()->setOpen(m_screens.overlay() == Overlay::Chat); });
+    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_hud->chat()->setOpen(m_screens.overlay() == QcScreenState::Overlay::Chat); });
     // Every screen starts with an empty hand (nothing picked up or carried).
     connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_player->slotCursor()->showScreen(m_screens.overlay()); });
     connect(m_handbook.get(), &QcHandbookController::openChanged, this, &QcGameController::updateHudShown);
@@ -468,7 +468,7 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
     m_worldDirectory = directory;
     // The world plays with its own content; the menu's options load theirs again with the next form.
     m_worldOptions->release();
-    setOverlay(Overlay::None);
+    setOverlay(QcScreenState::Overlay::None);
     loading()->begin(kind);
     m_startup->worldStarting();
     setPhase(Phase::Loading);
@@ -508,7 +508,7 @@ void QcGameController::startRemoteSession(std::unique_ptr<QcClientSession> sessi
     }
     // A network game: the server keeps the world, nothing is saved here.
     m_worldDirectory.clear();
-    setOverlay(Overlay::None);
+    setOverlay(QcScreenState::Overlay::None);
 
     m_parts.session = std::move(session);
     beginSession();

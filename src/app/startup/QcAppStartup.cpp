@@ -76,6 +76,7 @@ void openMenuScreen(const QQuickWindow &window, QcGameController &game, const Qc
 
     QMetaObject::invokeMethod(menu, "openMultiplayer", Q_ARG(QString, options.join.value_or(QString())), Q_ARG(QString, options.playerName),
                               Q_ARG(QString, options.password));
+    game.startup()->holdScreenshotDuringJoin(*game.multiplayer());
 }
 
 // First start of a release bundle: its example mods go, switched off, into the player's mods

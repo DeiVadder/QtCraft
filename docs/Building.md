@@ -45,7 +45,7 @@ Linux is set up as an experimental CI job whose failures will not fail the run (
 
 ## Windows
 
-`qtcraft` and `qtcraft-headless` build natively on Windows 11 ARM64 with MSVC 2022 and Qt 6.12 (`msvc2022_arm64`), with and without gamepads (decision E-861), and as an x64 cross build inside an ARM64 VM (`vcvarsall arm64_amd64`, Qt 6.12 `msvc2022_64`). The x64 build is packaged as a standalone zip (below) and has been played on Windows PCs against a dedicated server on a Mac, including multiplayer over TLS. Not done yet: the tests under MSVC (with `/W4 /WX` many test programs do not build yet), an installer and code signing. A build machine needs the following.
+`qtcraft` and `qtcraft-headless` build natively on Windows 11 ARM64 with MSVC 2022 and Qt 6.12 (`msvc2022_arm64`), with and without gamepads (decision E-861), and as an x64 cross build inside an ARM64 VM (`vcvarsall arm64_amd64`, Qt 6.12 `msvc2022_64`). The x64 build is packaged as a standalone zip (below) and has been played on Windows PCs against a dedicated server on a Mac, including multiplayer over TLS. The tests build and run under MSVC too (x64 PC, Release, 2026-11-04, with TLS; `QC_TLS=OFF` does not build under MSVC yet, warning C4127). Not done yet: an installer and code signing. A build machine needs the following.
 
 **Qt Online Installer, Qt 6.12:**
 

@@ -13,6 +13,8 @@
 #include <QStringList>
 
 #include <array>
+#include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -21,6 +23,7 @@ class QcBenchmarkRun;
 class QcGameInput;
 class QcLoadingProgress;
 class QcHandbookController;
+class QcMultiplayerController;
 class QcScreenState;
 class QcScreenshotHook;
 class QcScriptedPad;
@@ -79,6 +82,9 @@ public:
 
     // Without --play: runs the "@<ms> open:", "click:", "hover:" and "pad:" steps in the main menu.
     void menuShown();
+    // --join from the main menu: the screenshot waits until the running join of `multiplayer` has
+    // ended, however long the system takes to report a refusal (seconds on Windows).
+    void holdScreenshotDuringJoin(QcMultiplayerController &multiplayer);
     // A world start began (the loading screen shows): the screenshot waits until it plays or ends.
     void worldStarting();
     // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.
@@ -121,7 +127,14 @@ private:
     static constexpr int viewAttempts = 300;
     static constexpr int viewRetryMs = 100;
 
+    // The script's steps by their delay in milliseconds, in the script's order.
+    using DelayedSteps = std::map<int, QList<std::function<void()>>>;
+
     void sendStartupChat();
+    // One timer per delay, so the screenshot waits for each group and steps of the same delay keep
+    // their order: separate timers of equal length fire in an order the platform chooses (on
+    // Windows a coarse timer's last one first).
+    void runAfterDelays(const DelayedSteps &steps);
     void openStartupOverlay();
     // Uses the block in view once the startup commands have placed it.
     void openMachineInView();

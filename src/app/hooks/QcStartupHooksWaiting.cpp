@@ -3,10 +3,11 @@
 
 // The steps of QcStartupHooks that wait for a screen instead of the wall clock: controls of a
 // screen still being made (runOnLoadedScreen()) and presses or key actions tied to a screen
-// (press:<key>@<screen>, key:<action>@<screen>).
+// (press:<key>@<screen>, key:<action>@<screen>); the screenshot waiting for a join from the menu.
 
 #include "app/hooks/QcStartupHooks.h"
 
+#include "app/controllers/QcMultiplayerController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcAppLogging.h"
 
@@ -40,6 +41,22 @@ void QcStartupHooks::runUntilOverlay(const QString &step)
         }
     });
     repeatKeyUntilShown(action.mid(4), shown, watch, 0);
+}
+
+void QcStartupHooks::holdScreenshotDuringJoin(QcMultiplayerController &multiplayer)
+{
+    if (!multiplayer.joining()) {
+        return;
+    }
+
+    holdScreenshot();
+    auto *watch = new QObject(this);
+    connect(&multiplayer, &QcMultiplayerController::joiningChanged, watch, [this, &multiplayer, watch] {
+        if (!multiplayer.joining()) {
+            releaseScreenshot();
+            watch->deleteLater();
+        }
+    });
 }
 
 void QcStartupHooks::pressWhenShown(const QString &step, int attempt)

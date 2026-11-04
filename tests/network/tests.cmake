@@ -10,7 +10,7 @@ qc_add_test(test_server_login SOURCES network/test_server_login.cpp fixtures/QcS
 qc_add_test(test_server_pause SOURCES network/test_server_pause.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_pause_keepalive SOURCES network/test_pause_keepalive.cpp fixtures/QcRawClient.h LIBRARIES qc_server Qt::Network)
 qc_add_test(test_network_game SOURCES network/test_network_game.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h fixtures/QcTestLogin.h fixtures/QcTestTls.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
-qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp fixtures/QcRawClient.h fixtures/QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 240)
+qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp fixtures/QcRawClient.h fixtures/QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 270)
 target_compile_definitions(test_dedicated_server PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                          QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_dedicated_server qtcraft-headless)

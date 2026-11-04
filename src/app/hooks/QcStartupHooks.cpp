@@ -224,6 +224,7 @@ void QcStartupHooks::worldPlaying()
 
 void QcStartupHooks::sendStartupChat()
 {
+    DelayedSteps planned;
     for (const QString &line : std::as_const(m_startupChat)) {
         // "@<ms> <text>" waits that long after loading (scenes in motion for screenshots);
         // the screenshot is taken only after the last delayed line.
@@ -234,10 +235,22 @@ void QcStartupHooks::sendStartupChat()
             continue;
         }
 
-        holdScreenshot();
-        QTimer::singleShot(*delayMs, this, [this, text = line.mid(space + 1)] {
+        planned[*delayMs].append([this, text = line.mid(space + 1)] {
             if (m_parts.session) {
                 m_parts.session->sendChat(text);
+            }
+        });
+    }
+    runAfterDelays(planned);
+}
+
+void QcStartupHooks::runAfterDelays(const DelayedSteps &steps)
+{
+    for (const auto &[delayMs, group] : steps) {
+        holdScreenshot();
+        QTimer::singleShot(delayMs, this, [this, inOrder = group] {
+            for (const std::function<void()> &step : inOrder) {
+                step();
             }
             releaseScreenshot();
         });
@@ -281,6 +294,7 @@ void QcStartupHooks::openMachineInView()
 
 void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
 {
+    DelayedSteps planned;
     const QList<OverlayStep> &steps = startupOverlaySteps();
     for (qsizetype index = 0; index < steps.size(); ++index) {
         const QString &step = steps.at(index).line;
@@ -297,8 +311,7 @@ void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
             continue;
         }
 
-        holdScreenshot();
-        QTimer::singleShot(*delayMs, this, [this, index, overlay = step.mid(space + 1)] {
+        planned[*delayMs].append([this, index, overlay = step.mid(space + 1)] {
             // The menu and the world may both have planned it; the first to run it with what it
             // needs wins. The list is fixed once setStartupScript() ran, before any plan.
             Q_ASSERT(index < startupOverlaySteps().size());
@@ -306,9 +319,9 @@ void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
                 markOverlayStepRan(index);
                 runOverlayStep(overlay);
             }
-            releaseScreenshot();
         });
     }
+    runAfterDelays(planned);
 }
 
 void QcStartupHooks::runOverlayStep(const QString &step)
