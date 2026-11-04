@@ -17,7 +17,8 @@
 // "draw:<0..1>").
 // "walk:<metres>" also fixes every creature's walk (decision E-888), "hurt:" the tilt of the view
 // (decision E-971), "pulse:<0..1>" the tentacles of pulsing swimmers (decision E-974), "draw:<0..1>" a
-// launcher drawn with that power, the hand fully at its drawn placement (decision E-984).
+// launcher drawn with that power, the hand fully at its drawn placement (decision E-984), on every
+// creature too (decision E-987).
 class QcForcedPose
 {
 public:

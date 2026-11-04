@@ -63,14 +63,10 @@ float QcEntityFrameBuilder::blockLightAt(QcBlockPos pos) const
     return static_cast<float>(m_parts.meshes->blockLight(pos)) / static_cast<float>(QcLightVolume::maxLevel);
 }
 
-std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item) const
+std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item, double drawProgress) const
 {
     const auto content = m_parts.session->content();
-    std::optional<QcEntityMesher::ItemLook> look = content ? QcFigureLook::held(*content, item) : std::nullopt;
-    if (look && !look->cube) {
-        look->shape = m_spriteShapes.shape(m_atlas, look->sprite);
-    }
-    return look;
+    return content ? QcFigureLook::heldAtDraw(*content, item, drawProgress, m_spriteShapes, m_atlas) : std::nullopt;
 }
 
 QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &appearance) const
@@ -80,7 +76,7 @@ QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &a
 
 QcEntityPose QcEntityFrameBuilder::creaturePose(const QcClientEntity &entity, double alpha) const
 {
-    return m_forcedPose.creature(QcLocalAnimation::poseOf(entity, alpha));
+    return m_forcedPose.creature(QcLocalAnimation::poseOf(entity, alpha, m_parts.session->content().get()));
 }
 
 QcEntityPose QcEntityFrameBuilder::localPose(double alpha) const
@@ -191,7 +187,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         body.capeLift = cape.lift;
         body.capeSway = cape.sway;
     }
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held, pose.drawProgress);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
 }
@@ -398,9 +394,9 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
 {
     const QcClientSession &session = *m_parts.session;
     const QcItemStack &selected = session.inventory().selectedStack();
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
     QcEntityPose pose = localPose(frame.alpha);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item, pose.drawProgress);
+    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
     QcVec3 feet = lerp(session.prediction().previousMotion().position, session.playerMotion().position, frame.alpha);
     double yaw = static_cast<double>(session.intent().yaw);
     if (const std::optional<QcBoatRiders::Drawn> boat = ownBoat(session.prediction().riding().vehicle(), frame.alpha, frame.seconds)) {
@@ -619,7 +615,8 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     mesh->origin = QcRenderOrigin::blockNear(eye);
     const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
     const QcItemStack &selected = session.inventory().selectedStack();
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
+    const QcEntityPose pose = localPose(alpha);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item, pose.drawProgress);
     QcHandTimers timers = session.handTimers(alpha);
     // Screenshot hook: a frozen "swing" is a moment of the mining swing.
     timers.mining = timers.mining || m_forcedPose.swings();
@@ -628,7 +625,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
         timers.aim = 1.0;
     }
     const double seconds = session.worldMirror().animationSeconds(alpha);
-    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers);
+    const QcAnimator::HandPose hand = QcAnimator::animateHand(pose, seconds, timers);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
     const QcBlockPos head{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     const QcEntityLight light(skyExposure(*session.world(), head), blockLightAt(head));

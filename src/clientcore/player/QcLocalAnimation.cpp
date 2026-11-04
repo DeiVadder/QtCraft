@@ -3,6 +3,7 @@
 
 #include "clientcore/player/QcLocalAnimation.h"
 
+#include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/player/QcPrediction.h"
 #include "common/physics/QcPhysics.h"
 
@@ -115,7 +116,7 @@ QcHandTimers QcLocalAnimation::handTimers(double alpha) const
             fading ? std::max(runningDraw(), lastDraw() - lastDrawFade * alpha) : lastDraw()};
 }
 
-QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha)
+QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha, const QcContentRegistry *content)
 {
     QcEntityPose pose;
     pose.speed = entity.speed;
@@ -130,7 +131,12 @@ QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
     pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * static_cast<float>(alpha);
-    // Others only tell that they draw (decision E-425): shown fully drawn.
-    pose.drawProgress = (entity.flags & QcMsg::Drawing) != 0 ? 1.0 : -1.0;
+    // Others only tell that they draw (decision E-425); how far comes from the time since, on the
+    // curve of what they hold (decision E-987).
+    if ((entity.flags & QcMsg::Drawing) != 0) {
+        const QcLauncherDefinition *launcher = content ? QcFigureLook::launcher(*content, entity.held) : nullptr;
+        const double ticks = std::max(0.0, entity.drawTicks) + alpha * entity.drawStep;
+        pose.drawProgress = launcher ? launcher->powerAfter(ticks * QcPhysics::tickDuration) : 1.0;
+    }
     return pose;
 }

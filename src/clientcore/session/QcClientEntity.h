@@ -81,6 +81,11 @@ struct QcClientEntity
         \qcshared */
     int swingTicks = -1;
     int deathTicks = -1;
+    /*! Server ticks since it began to draw, as the client counts them (QcMsg::Drawing, decision
+        E-987), and how many of them the last client tick was; \c {drawTicks} is negative when it
+        does not draw. \qcshared */
+    double drawTicks = -1.0;
+    double drawStep = 1.0;
 
     /*! Returns whether the entity is a dropped item. */
     bool isItem() const { return kind == QcEntityKind::Item; }

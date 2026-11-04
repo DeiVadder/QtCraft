@@ -60,8 +60,10 @@ public:
     /*! Returns the progress of the hand animations \a alpha into the current tick. */
     QcHandTimers handTimers(double alpha) const;
     /*! Returns the pose of the mirrored \a entity from its server state and client timers,
-        \a alpha into the current tick. */
-    static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
+        \a alpha into the current tick. Its draw follows the curve of the launcher it holds in
+        \a content (QcEntityPose::drawProgress, decision E-987); without one it shows fully
+        drawn. */
+    static QcEntityPose poseOf(const QcClientEntity &entity, double alpha, const QcContentRegistry *content = nullptr);
 
 private:
     // Starts a swing of `style`; it keeps that style to its end (decision E-881), so a tick

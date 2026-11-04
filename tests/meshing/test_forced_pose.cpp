@@ -52,9 +52,11 @@ private slots:
         QcForcedPose forced;
         forced.set(u"draw:0.25"_s);
         QCOMPARE(forced.local({}).drawProgress, 0.25);
+        QCOMPARE(forced.creature({}).drawProgress, 0.25);
 
         forced.set(u"sneak"_s);
         QCOMPARE(forced.local({}).drawProgress, -1.0);
+        QCOMPARE(forced.creature({}).drawProgress, -1.0);
     }
 };
 

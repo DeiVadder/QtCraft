@@ -232,6 +232,11 @@ struct QcTextureSpec
             quill secondary) and a bone (primary, its knobs shaded by secondary; decision E-426),
             all icons on the diagonal. */
         Bow,
+        /*! The bow drawn with an arrow on it, in its three stages (decision E-987): limbs and
+            string as Bow, pulled back further from stage to stage. */
+        BowDrawn1,
+        BowDrawn2, // the second stage
+        BowDrawn3, // the third stage, fully drawn
         Arrow, // an arrow
         Feather, // a feather
         Bone, // a bone

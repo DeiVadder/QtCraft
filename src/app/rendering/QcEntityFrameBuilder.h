@@ -149,7 +149,7 @@ private:
     float blockLightAt(QcBlockPos pos) const;
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
     // What a hand holds: a sprite with its shape (decision E-831).
-    [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
+    [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item, double drawProgress = -1.0) const;
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;

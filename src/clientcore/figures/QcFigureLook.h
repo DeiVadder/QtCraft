@@ -8,9 +8,14 @@
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcStandPose.h"
 
+#include <functional>
+#include <memory>
 #include <optional>
 
 class QcContentRegistry;
+class QcSpriteShapes;
+class QcTextureAtlas;
+struct QcLauncherDefinition;
 
 /*! \brief What players and items look like when drawn: shared by the world
     (QcEntityFrameBuilder) and the character preview, so the preview shows exactly what other
@@ -62,6 +67,26 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item);
 /*! Returns the look of \a item of \a content in a figure's hand (world and preview): none for no
     item or one the content does not know. */
 [[nodiscard]] std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item);
+/*! Returns the launcher of \a item of \a content: null for no item, one the content does not know
+    or one that is no launcher. */
+[[nodiscard]] const QcLauncherDefinition *launcher(const QcContentRegistry &content, QcItemId item);
+/*! Returns the draw stage (decision E-987) of a launcher drawn with the power \a drawProgress
+    (QcEntityPose::drawProgress): 0 when it is not drawn, 1 from the start of the draw, 2 from 65 %
+    and 3 from 90 % of the draw time, the reference's borders. */
+[[nodiscard]] int drawStage(double drawProgress);
+/*! Returns the texture name of the draw stage \a stage (1 to 3) of the sprite \a sprite. */
+[[nodiscard]] QString drawSprite(const QString &sprite, int stage);
+/*! Returns \a look with the sprite of the draw stage of \a drawProgress. A stage \a hasTexture
+    does not know keeps the resting sprite, so a launcher without stage textures looks as it
+    always did. */
+[[nodiscard]] QcEntityMesher::ItemLook atDraw(QcEntityMesher::ItemLook look, double drawProgress,
+                                              const std::function<bool(const QString &)> &hasTexture);
+/*! Returns the look of \a item of \a content in a figure's hand at \a drawProgress (negative when
+    not drawn): the sprite of its stage with that sprite's shape from \a shapes, the stages that
+    \a atlas holds, and the grip of the resting sprite. None as held(). */
+[[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldAtDraw(const QcContentRegistry &content, QcItemId item, double drawProgress,
+                                                                 QcSpriteShapes &shapes,
+                                                                 const std::shared_ptr<const QcTextureAtlas> &atlas);
 
 /*! Returns the flames around a burning body (decision E-393): four walls with the texture of the
     default fire of \a content (QcContentRegistry::defaultFire) standing just outside a body \a

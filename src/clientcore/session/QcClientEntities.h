@@ -62,8 +62,11 @@ public:
     /*! Moves every entity to its pose one tick after the shown moment, advances the animation
         timers and drops finished death animations. */
     void tick() { tick(m_localClock.elapsed()); }
-    /*! Like tick(), with \a localMs as the time on the clock of moves(). */
-    void tick(qint64 localMs);
+    /*! Like tick(), with \a serverTicks the server's ticks in this client tick (its tick rate or
+        sprint; 0 while it stands still): the draws of others count those (decision E-987). */
+    void tickBy(double serverTicks) { tick(m_localClock.elapsed(), serverTicks); }
+    /*! Like tickBy(), with \a localMs as the time on the clock of moves(). */
+    void tick(qint64 localMs, double serverTicks = 1.0);
 
     /*! Sets whether snapshots are \a buffered; without the buffer each tick shows the newest
         snapshot (for comparisons in tests). */
@@ -85,6 +88,8 @@ private:
     void advancePose(QcClientEntity &entity, std::optional<double> shown);
     // Starts the flash of a waiting hurt of `entity` once the `shown` moment reached it.
     static void startHurtFlash(QcClientEntity &entity, std::optional<double> shown);
+    // Counts the draw of `entity` on by `serverTicks`, or ends it with its flag.
+    static void advanceDraw(QcClientEntity &entity, double serverTicks);
 
     QHash<quint32, QcClientEntity> m_entities;
     QHash<quint32, QcClientEntity> m_dying;

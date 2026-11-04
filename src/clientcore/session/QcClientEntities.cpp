@@ -162,6 +162,10 @@ void QcClientEntities::applyMove(const QcMsg::EntityMove &move, double serverMs)
 
     m_tracks[move.id].push({serverMs, move.position, move.yaw, move.pitch}, m_clock.intervalMs());
     it->health = move.health;
+    // A draw that ended and began between two client ticks starts its count anew.
+    if (((it->flags ^ move.flags) & QcMsg::Drawing) != 0) {
+        it->drawTicks = -1.0;
+    }
     it->flags = move.flags;
     it->held = move.held;
 
@@ -189,7 +193,17 @@ void QcClientEntities::remove(QcMsg::EntityRemove removed)
     }
 }
 
-void QcClientEntities::tick(qint64 localMs)
+void QcClientEntities::advanceDraw(QcClientEntity &entity, double serverTicks)
+{
+    entity.drawStep = serverTicks;
+    if ((entity.flags & QcMsg::Drawing) == 0) {
+        entity.drawTicks = -1.0;
+    } else {
+        entity.drawTicks = entity.drawTicks < 0.0 ? 0.0 : entity.drawTicks + serverTicks;
+    }
+}
+
+void QcClientEntities::tick(qint64 localMs, double serverTicks)
 {
     const std::optional<double> shown = m_clock.advance(localMs);
     for (QcClientEntity &entity : m_entities) {
@@ -202,6 +216,7 @@ void QcClientEntities::tick(qint64 localMs)
                 entity.swingTicks = -1;
             }
         }
+        advanceDraw(entity, std::max(0.0, serverTicks));
     }
 
     for (QcClientEntity &dying : m_dying) {

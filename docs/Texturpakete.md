@@ -79,6 +79,8 @@ One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully tran
 
 **Animation** (decision E-878): a vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames, the first at the top) animates. The frames are shown at the frame time of the game's own texture when that one is animated (fire, lava, water: `frameTime` and `interpolate` of its definition), otherwise for 2 ticks (100 ms) each without blending; a strip of one frame keeps an animated texture still. `--export-textures` writes animated textures as such strips, a good start for your own frames. A procedural spec animates with the same fields as the content (`frames`, `frameTime`, `interpolate`, see below).
 
+**Draw stages of the bow** (decision E-987): `qtcraft:bow_draw_1` to `qtcraft:bow_draw_3` are ordinary textures: the bow with the string pulled back and an arrow on it, shown in the hand while it is drawn, whereas the icon, item frames and dropped bows keep `qtcraft:bow`. Keep the grip where `qtcraft:bow` has it: the hand holds every stage by the grip of the resting sprite. A pack that only changes `qtcraft:bow` should bring the three stages too, otherwise the game's own stages show while drawing. `--export-textures` writes them with the rest. A mod's launcher has the same textures under its own names (`docs/Modding.md`).
+
 ## Material maps (realistic mode)
 
 The realistic render mode (Settings → Graphics → Quality, quality Medium or High) gives blocks relief, gloss, metal and light of their own from two **material maps** per texture (decision E-908). They follow the **labPBR** conventions of the reference game's shader packs, so maps made for those packs work after renaming the files:

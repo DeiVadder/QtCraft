@@ -197,8 +197,9 @@ void appendExtrudedSprite(QcEntityMesh &mesh, const ExtrudedSprite &sprite, cons
 QcVec3 spriteGrip(const ItemLook &look, double size)
 {
     QPointF unit = defaultGrip(look.grip);
-    if (look.shape && !look.shape->isEmpty()) {
-        const QcSpriteShape &shape = *look.shape;
+    const std::shared_ptr<const QcSpriteShape> &held = look.gripShape ? look.gripShape : look.shape;
+    if (held && !held->isEmpty()) {
+        const QcSpriteShape &shape = *held;
         const QPointF texel = look.grip == QcHoldGrip::Middle ? shape.centroid() : QPointF(shape.handle()) + QPointF(0.5, 0.5);
         unit = {texel.x() / shape.size(), 1.0 - texel.y() / shape.size()};
     }

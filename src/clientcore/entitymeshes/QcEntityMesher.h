@@ -67,6 +67,9 @@ struct ItemLook
     QList<QcAabb> boxes;
     /*! Texture of the sprite; used when not a cube. */
     QString sprite;
+    /*! It is a launcher: drawn, it may show the sprites of its stages (QcFigureLook::atDraw,
+        decision E-987). */
+    bool launcher = false;
     /*! Light the item gives off itself (0..1, a torch): it is never drawn darker than that. */
     float glow = 0.0f;
     /*! Where a hand takes a sprite; a block is taken by the middle of its boxes. */
@@ -87,6 +90,9 @@ struct ItemLook
     /*! The sprite's opaque texels; held sprites with a shape are drawn with thickness, without
         one flat. */
     std::shared_ptr<const QcSpriteShape> shape;
+    /*! The shape the grip is taken from, if not \c {shape}: a draw stage is held where the resting
+        sprite is, so the bow does not shift in the hand from stage to stage. */
+    std::shared_ptr<const QcSpriteShape> gripShape;
 };
 
 /*! \brief What a skeleton model looks like: the model, an outfit, an optional hair style and

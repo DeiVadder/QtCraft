@@ -385,7 +385,7 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
 
     ++m_tickCount;
     m_worldMirror.tick(m_tickCount);
-    m_entities.tick();
+    m_entities.tickBy(serverSpeed());
 
     // A hotbar selection the server dropped is sent again (decision E-582).
     m_inventory.resendLostSelection();

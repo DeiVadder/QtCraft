@@ -3,8 +3,10 @@
 
 #include "clientcore/figures/QcFigureLook.h"
 
+#include "clientcore/entitymeshes/QcSpriteShapes.h"
 #include "clientcore/figures/QcArmourLook.h"
 #include "clientcore/figures/QcCapeSwing.h"
+#include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/world/QcLightVolume.h"
@@ -174,6 +176,7 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
 
     const QcItemDefinition &definition = content.item(item);
     look.sprite = definition.texture;
+    look.launcher = definition.launcher.has_value();
     const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
     if (block) {
         look.glow = static_cast<float>(content.block(*block).lightLevel) / static_cast<float>(QcLightVolume::maxLevel);
@@ -195,6 +198,56 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
         return std::nullopt;
     }
     return QcFigureLook::item(content, item);
+}
+
+const QcLauncherDefinition *launcher(const QcContentRegistry &content, QcItemId item)
+{
+    if (item == qcNoItem || !content.isValidItem(item)) {
+        return nullptr;
+    }
+    const std::optional<QcLauncherDefinition> &launcher = content.item(item).launcher;
+    return launcher ? &*launcher : nullptr;
+}
+
+int drawStage(double drawProgress)
+{
+    if (drawProgress < 0.0) {
+        return 0;
+    }
+    const double share = QcLauncherDefinition::shareOf(drawProgress);
+    if (share >= 0.9) {
+        return 3;
+    }
+    return share >= 0.65 ? 2 : 1;
+}
+
+QString drawSprite(const QString &sprite, int stage)
+{
+    return QStringLiteral("%1_draw_%2").arg(sprite).arg(stage);
+}
+
+QcEntityMesher::ItemLook atDraw(QcEntityMesher::ItemLook look, double drawProgress, const std::function<bool(const QString &)> &hasTexture)
+{
+    const int stage = drawStage(drawProgress);
+    if (look.launcher && stage > 0) {
+        QString sprite = drawSprite(look.sprite, stage);
+        if (hasTexture(sprite)) {
+            look.sprite = std::move(sprite);
+        }
+    }
+    return look;
+}
+
+std::optional<QcEntityMesher::ItemLook> heldAtDraw(const QcContentRegistry &content, QcItemId item, double drawProgress, QcSpriteShapes &shapes,
+                                                   const std::shared_ptr<const QcTextureAtlas> &atlas)
+{
+    std::optional<QcEntityMesher::ItemLook> look = held(content, item);
+    if (look && !look->cube) {
+        look->gripShape = shapes.shape(atlas, look->sprite);
+        look = atDraw(std::move(*look), drawProgress, [&atlas](const QString &texture) { return atlas && atlas->contains(texture); });
+        look->shape = shapes.shape(atlas, look->sprite);
+    }
+    return look;
 }
 
 std::optional<QcEntityMesher::ItemLook> flames(const QcContentRegistry &content, double width, double height)

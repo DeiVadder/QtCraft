@@ -53,6 +53,10 @@ QcEntityPose QcForcedPose::creature(QcEntityPose pose) const
         pose.speed = std::max(QcAnimator::fullSwingSpeed, QcPhysics::walkSpeed);
         pose.onGround = true;
     }
+    // Every creature a fixed moment of its draw, for the stages of a skeleton's bow (decision E-987).
+    if (const std::optional<double> power = draw()) {
+        pose.drawProgress = *power;
+    }
     return pose;
 }
 
