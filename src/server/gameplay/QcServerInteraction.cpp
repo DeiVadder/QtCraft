@@ -5,6 +5,7 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/gameplay/QcSwingSpeed.h"
@@ -82,7 +83,10 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
 
     const QcItemStack heldStack = client.inventory.selectedStack();
     const int efficiency = QcEnchanting::levelOf(m_state.content(), heldStack, QcEnchantmentEffect::Efficiency);
-    const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency));
+    // Haste counts as it was when the mining began or as it is now, whichever is faster: the client
+    // may have mined on with an effect that ended meanwhile (decision E-992).
+    const double haste = std::max(client.mining.startFactor, QcEffectRules::miningFactor(m_state.content(), client.effects.all()));
+    const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency)) / haste;
     // In the players' time, so the mining takes as long at every tick rate.
     constexpr qint64 tickNs = static_cast<qint64>(QcPhysics::tickDuration * 1e9);
     const qint64 requiredNs = static_cast<qint64>(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;

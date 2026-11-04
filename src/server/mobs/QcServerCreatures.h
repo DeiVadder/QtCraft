@@ -58,6 +58,8 @@ public:
 private:
     // What the creatures know about the players this tick.
     QList<QcMobManager::PlayerView> playerViews() const;
+    // The damage of a blow of `damage` by `creature` with its strength or weakness (decision E-992).
+    double blowOf(quint32 creature, double damage) const;
     // A creature's blow at a player, with the effects of its kind's blows.
     void strike(QcServerClient &client, const QcMobManager::PlayerHit &hit);
     void playAmbientSounds(double dt);

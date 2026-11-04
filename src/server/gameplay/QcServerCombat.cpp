@@ -3,6 +3,7 @@
 
 #include "server/gameplay/QcServerCombat.h"
 
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
@@ -54,7 +55,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     const QcItemDefinition *held = m_state.heldItem(client);
     // Sharpness adds to the weapon's damage (decision E-864).
     const int sharpness = QcEnchanting::levelOf(m_state.content(), client.inventory.selectedStack(), QcEnchantmentEffect::Sharpness);
-    const double damage = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
+    const double weapon = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
+    // Strength and weakness change the blow (decision E-992).
+    const double damage = std::max(0.0, weapon + QcEffectRules::attackBonus(m_state.content(), client.effects.all()));
     // A sprint attack pushes harder, as in the reference (decision E-971).
     const double knockback = client.sprinting ? sprintKnockback : 1.0;
     hurtCreature(m_state, m_sounds, {.creature = entityId, .damage = damage, .from = client.motion.position, .attacker = client.id, .knockback = knockback});

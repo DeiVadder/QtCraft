@@ -13,6 +13,8 @@ qc_add_test(test_small_signal_torch SOURCES signal/test_small_signal_torch.cpp f
 qc_add_test(test_signal_indicator SOURCES signal/test_signal_indicator.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_note_block SOURCES signal/test_note_block.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_target_block SOURCES signal/test_target_block.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
+# The daylight sensor of package 84.1b (decision E-982).
+qc_add_test(test_daylight_sensor SOURCES signal/test_daylight_sensor.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 # Function blocks of package 62.3 (decisions E-782 to E-785).
 qc_add_test(test_tripwire SOURCES signal/test_tripwire.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.

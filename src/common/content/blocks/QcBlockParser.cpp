@@ -438,7 +438,9 @@ void BlockReader::readFireFields()
     QcFireDefinition fire;
     fire.isFire = m_reader.boolean(u"fire"_s, false);
     fire.eternal = m_reader.boolean(u"eternalFire"_s, false);
+    fire.fireAbove = m_reader.name(u"fireAbove"_s, m_namespace);
     fire.setsAlightSeconds = m_reader.integer(u"setsAlight"_s, 0, 0, QcFireDefinition::maxAlightSeconds);
+    m_block.contactFire = m_reader.boolean(u"contactFire"_s, fire.setsAlightSeconds > 0);
     fire.sparks = m_reader.integer(u"sparks"_s, 0, 0, QcFireDefinition::maxChance);
     m_reader.nestedObject(u"flammable"_s, [&fire](const QJsonObject &, QcJsonFieldReader &nested) {
         fire.ignite = nested.integer(u"ignite"_s, 0, 0, QcFireDefinition::maxChance);
@@ -448,6 +450,9 @@ void BlockReader::readFireFields()
 
     if (fire.isFire && (m_block.solid || m_block.liquid || fire.isFlammable() || fire.eternal)) {
         m_reader.fail(u"fire must be neither solid nor liquid, flammable or eternal"_s);
+    }
+    if (fire.isFire && !fire.fireAbove.isEmpty()) {
+        m_reader.fail(u"fire cannot have 'fireAbove'"_s);
     }
     if (fire.isFire && m_block.lightOpacity != 0) {
         m_reader.fail(u"fire must have 'lightOpacity' 0"_s);

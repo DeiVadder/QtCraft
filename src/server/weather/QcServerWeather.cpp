@@ -33,15 +33,26 @@ QcServerWeather::QcServerWeather(QcServerState &state)
 {
 }
 
+QcServerWeather::Climates &QcServerWeather::here() const
+{
+    return m_perDimension.of(m_state.current());
+}
+
 const QcWeatherState &QcServerWeather::state() const
 {
-    return m_state.info().weather;
+    // A dimension without weather is always calm; the world's spell goes on for the others.
+    static const QcWeatherState calm;
+    return m_state.current().definition().weather ? m_state.info().weather : calm;
+}
+
+void QcServerWeather::advance()
+{
+    QcWorldInfo &info = m_state.info();
+    info.weather = QcWeatherCycle::next(info.weather, info.seed, info.weatherCycle);
 }
 
 void QcServerWeather::tick()
 {
-    QcWorldInfo &info = m_state.info();
-    info.weather = QcWeatherCycle::next(info.weather, info.seed, info.weatherCycle);
     strikeNearPlayers();
     syncClients();
 }
@@ -55,21 +66,21 @@ void QcServerWeather::set(QcWeatherKind kind, std::optional<qint64> ticks)
 QcWeather::Climate QcServerWeather::climateAt(int x, int z) const
 {
     const quint64 key = columnKey(x, z);
-    if (const auto it = m_climates.constFind(key); it != m_climates.constEnd()) {
+    if (const auto it = here().climates.constFind(key); it != here().climates.constEnd()) {
         return *it;
     }
 
     // The cache only spares the generator's climate noise; it stays small around the players.
-    if (m_climates.size() >= climateGeneration) {
-        m_olderClimates = std::exchange(m_climates, {});
+    if (here().climates.size() >= climateGeneration) {
+        here().olderClimates = std::exchange(here().climates, {});
     }
-    if (const auto it = m_olderClimates.constFind(key); it != m_olderClimates.constEnd()) {
-        m_climates.insert(key, *it);
+    if (const auto it = here().olderClimates.constFind(key); it != here().olderClimates.constEnd()) {
+        here().climates.insert(key, *it);
         return *it;
     }
     const QString biome = m_state.world().generator().biomeAt(x, z);
     const QcWeather::Climate climate = QcWeather::climateOf(biome.isEmpty() ? nullptr : m_state.content().worldgen().biome(biome));
-    m_climates.insert(key, climate);
+    here().climates.insert(key, climate);
     return climate;
 }
 

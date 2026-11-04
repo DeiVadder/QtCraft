@@ -111,7 +111,7 @@ public:
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
     /*! Returns the number of clients, those still logging in included. */
-    int clientCount() const { return static_cast<int>(m_state.clients().size()); }
+    int clientCount() const { return static_cast<int>(m_state.allClients().size()); }
     /*! The health of a player at full health (QcServerClient::maxHealth). */
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
     /*! Returns the ticks counted since the server started. */
@@ -139,6 +139,9 @@ public:
     const QcMachineRules &machineRules() const { return m_state.machineRules(); }
     /*! Returns the flow of liquids. */
     QcLiquidFlow &liquids() { return m_state.liquids(); }
+    /*! Returns the dimension \a name, opened unless it is open, or why it cannot open
+        (QcServerState::openDimension). */
+    [[nodiscard]] QcResult<QcServerDimension *> openDimension(const QString &name) { return m_state.openDimension(name); }
     /*! Returns the table of the falling blocks. */
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
     /*! Returns the queue of the burning fires (decision E-392). */

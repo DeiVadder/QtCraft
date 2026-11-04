@@ -1,0 +1,10 @@
+{
+    "name": "quartz_bricks",
+    "sound": "stone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "quartz_bricks"
+    }
+}

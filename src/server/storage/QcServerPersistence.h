@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <optional>
+#include <vector>
 
 class QLockFile;
 
@@ -21,6 +22,7 @@ class QcBlockUpdateQueue;
 class QcChunkIo;
 class QcChunkLoading;
 class QcServerBlocks;
+class QcServerDimension;
 struct QcServerClient;
 class QcServerState;
 
@@ -93,14 +95,25 @@ private:
     // Opens the chunk storage (a journal of a save that broke off is finished) and hands it to the world.
     [[nodiscard]] QcStatus openChunks(const QString &directory);
     [[nodiscard]] QcStatus readBlockUpdates(const QcWorldStorage &storage);
-    // Reads villages.json; a damaged one is kept aside as villages.json.damaged with a warning and the
-    // villages start empty, refilled from the plans as their chunks load.
-    void restoreVillages(const QcWorldStorage &storage);
+    // Reads villages.json of the current dimension; a damaged one is kept aside as
+    // villages.json.damaged with a warning and the villages start empty, refilled from the plans as
+    // their chunks load. Returns the change count of what was read; none: nothing was (the next save
+    // writes the file).
+    std::optional<quint64> restoreVillages(const QcWorldStorage &storage);
+    // Opens what is stored of `dimension`, the current one, which is not the overworld: its chunks,
+    // block updates, villages and dimension.json; a dimension opened for the first time gets the
+    // one-time setup of its generator (decision E-988).
+    [[nodiscard]] QcStatus openDimension(QcServerDimension &dimension);
+    // The current dimension's whole files of a save: blockupdates.qce, and villages.json when its
+    // change count is not `villagesSaved` any more.
+    [[nodiscard]] QcResult<QList<QcChunkStore::WholeFile>> dimensionFiles(std::optional<quint64> villagesSaved) const;
+    // Hands everything of the dimensions other than the overworld to their storages.
+    [[nodiscard]] QcStatus handDimensions();
     // Hands everything of a save to the storage, the players' files with the world's in one journal
     // (decision E-378); returns the id of the save and an error found while collecting.
     std::pair<quint64, QcStatus> submitSave();
     // The file of a player as a save writes it.
-    QcChunkStore::WholeFile playerFile(const QcWorldStorage &storage, const QcServerClient &client) const;
+    QcChunkStore::WholeFile playerFile(const QcWorldStorage &storage, QcServerClient &client);
     // Notes the result of a finished save (see takeNewFailure).
     void noteResult(quint64 save, const QcStatus &status);
     // Hands the world's maps (maps/<id>.qcmap) to the map store, read when first needed.
@@ -123,6 +136,17 @@ private:
     // The change count of the villages (QcVillages::changes) last handed to a save; none: write
     // villages.json with the next save.
     std::optional<quint64> m_villagesSaved;
+    // The storage of an open dimension other than the overworld (decision E-988).
+    struct DimensionStore
+    {
+        QcServerDimension *dimension = nullptr;
+        std::unique_ptr<QcChunkIo> io;
+        // What m_villagesSaved is for the overworld.
+        std::optional<quint64> villagesSaved;
+    };
+    std::vector<DimensionStore> &dimensionStores() { return m_dimensionStores; }
+    const std::vector<DimensionStore> &dimensionStores() const { return m_dimensionStores; }
+    std::vector<DimensionStore> m_dimensionStores;
     // The maps each running save writes (decision E-799).
     QHash<quint64, QList<quint32>> m_mapsBySave;
     DamagedFile m_damagedFile;

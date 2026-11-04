@@ -21,6 +21,10 @@ struct QcBitesDefinition
     /*! Food points of one bite (\c {"food"} in \c {"bites"}, 1 to QcItemDefinition::maxFood,
         default 2); 0 for a block that is not eaten. */
     int food = 0;
+    /*! Saturation modifier of one bite (\c {"saturation"} in \c {"bites"}, 0 to
+        QcItemDefinition::maxSaturationModifier, default 0.1 like the reference's cake; decision
+        E-1001). Server side only. */
+    double saturation = 0.1;
 
     /*! Returns whether the block is eaten bite by bite (\c {food} above 0). */
     bool isEdible() const { return food > 0; }

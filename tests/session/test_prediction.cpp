@@ -50,7 +50,7 @@ private:
             queue.append(input);
             if (queue.size() > 2) {
                 QcPlayerInput applied = queue.takeFirst();
-                applied.speedFactor = speedFactor;
+                applied.effects.speed = speedFactor;
                 motion.stepPlayer(applied, world, QcPhysics::tickDuration, QcMovement::Walk);
                 acknowledged = applied.sequence;
             }
@@ -294,7 +294,7 @@ private slots:
         server.motion = standingState(0).motion;
 
         server.speedFactor = 0.7f;
-        prediction.setSpeedFactor(0.7f);
+        prediction.setMovementEffects({.speed = 0.7f}, 1);
         QCOMPARE(walk(prediction, server, world, 12), 0.0);
         const double slowStretch = (server.motion.position - QcVec3{0.5, 1.0, 0.5}).length();
         QVERIFY(slowStretch > 0.5);
@@ -302,7 +302,7 @@ private slots:
         // The slowness ends on the server; the client hears of it two ticks later.
         server.speedFactor = 1.0f;
         walk(prediction, server, world, 2);
-        prediction.setSpeedFactor(1.0f);
+        prediction.setMovementEffects({}, 2);
         walk(prediction, server, world, 3);
         const QcVec3 settled = server.motion.position;
         QCOMPARE(walk(prediction, server, world, 8), 0.0);

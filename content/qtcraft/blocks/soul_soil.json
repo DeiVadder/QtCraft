@@ -1,0 +1,14 @@
+{
+    "name": "soul_soil",
+    "sound": "soul_sand",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "tags": [
+        "soul_blocks"
+    ],
+    "eternalFire": true,
+    "fireAbove": "soul_fire",
+    "textures": {
+        "all": "soul_soil"
+    }
+}

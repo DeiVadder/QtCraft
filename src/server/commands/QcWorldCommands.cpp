@@ -145,7 +145,7 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
     }
 
     // The player who asked hears of it if he is still there; the console reads the log.
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (requester != 0 && client->id == requester && client->state == QcServerClient::State::Playing) {
             client->connection->send(line);
         }
@@ -165,7 +165,7 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
                   {m_state.config().worldName, m_state.config().generator, QString::number(m_state.config().seed), QString::number(m_state.clock().tick())});
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Chunks: %1 loaded, %2 stored; players: %3"),
                   {QString::number(m_state.world().loadedChunkCount()), QString::number(m_state.world().saves().storedChunkCount()),
-                   QString::number(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }))});
+                   QString::number(std::ranges::count_if(m_state.allClients(), [](const auto &client) { return client->joined; }))});
     // The rules of the entity register (decision E-364); broken ones go to the log too.
     const QStringList entityProblems = QcEntityChecks::problems(m_state.entities());
     for (const QString &problem : entityProblems) {

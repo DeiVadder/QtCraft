@@ -1,0 +1,8 @@
+{
+    "name": "glowstone",
+    "pattern": "speckle",
+    "primary": "#f8d878",
+    "secondary": "#c08a3a",
+    "variation": 0.14,
+    "seed": 8404
+}

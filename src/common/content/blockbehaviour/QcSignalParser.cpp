@@ -33,6 +33,7 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Constant, "constant"},
     {QcSignalKind::Note, "note"},
     {QcSignalKind::Target, "target"},
+    {QcSignalKind::Daylight, "daylight"},
     {QcSignalKind::Hook, "hook"},
     {QcSignalKind::Tripwire, "tripwire"},
     {QcSignalKind::Viewers, "viewers"},
@@ -124,6 +125,8 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
     case QcSignalKind::Target:
     case QcSignalKind::Viewers:
         return {{u"power"_s, powerValues()}};
+    case QcSignalKind::Daylight:
+        return {{u"power"_s, powerValues()}, {u"inverted"_s, booleans}};
     case QcSignalKind::Hook:
         return {{u"attach"_s, horizontal}, {u"attached"_s, booleans}, {u"powered"_s, booleans}};
     case QcSignalKind::Tripwire:

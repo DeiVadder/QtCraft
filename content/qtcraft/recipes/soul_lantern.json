@@ -1,0 +1,16 @@
+{
+    "name": "soul_lantern",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NtN",
+        "NNN"
+    ],
+    "key": {
+        "N": "iron_nugget",
+        "t": "soul_torch"
+    },
+    "result": {
+        "item": "soul_lantern"
+    }
+}

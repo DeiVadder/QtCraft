@@ -95,7 +95,7 @@ private:
         const QcClientEntities entities;
         QList<QcMessage> sent;
         quint32 predicted = 0;
-        QcHandActions hand({session.prediction(), session.inventoryMirror(), entities}, session.gameMode(),
+        QcHandActions hand({session.prediction(), session.inventoryMirror(), entities, session.vitals()}, session.gameMode(),
                            [&sent](const QcMessage &message) { sent.append(message); }, [](const QcSoundCue &) {},
                            [&predicted](const QList<QcMsg::BlockUpdate> &) { return ++predicted; });
         const QcContentRegistry &content = *session.worldMirror().content();

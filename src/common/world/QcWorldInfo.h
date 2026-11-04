@@ -14,6 +14,7 @@
 #include <QDateTime>
 #include <QJsonObject>
 #include <QList>
+#include <QMap>
 #include <QString>
 
 /*! \brief Metadata of a saved world (world.json).
@@ -24,9 +25,12 @@
 struct QcWorldInfo
 {
     /*! The format version of the files this game writes. */
-    static constexpr int formatVersion = 19;
+    static constexpr int formatVersion = 20;
     /*! The oldest format version this game reads; older worlds are refused. */
     static constexpr int oldestFormatVersion = 16;
+    /*! The most entries of dimensionGeneratorVersions; world.json with more is damaged, so
+        nothing adds an entry beyond it (QcDimensions). */
+    static constexpr qsizetype maxDimensionVersions = 256;
     /*! The generator of a world that names none. */
     static constexpr auto defaultGenerator = "terrain";
 
@@ -84,6 +88,12 @@ struct QcWorldInfo
     /*! The version of the world generator the world is generated with for good (decision E-922,
         QcGeneratorVersion); worlds saved without one have QcGeneratorVersion::unversioned. */
     int generatorVersion = QcGeneratorVersion::current;
+    /*! The generator versions of the other dimensions by name (decision E-979, world.json
+        "generator"/"dimensions"): a dimension gets one when the world is created or when it is
+        first opened in a world that has none for it, and keeps it for good; entries of
+        dimensions this game does not know (a removed mod) stay as they are. The overworld's is
+        generatorVersion. */
+    QMap<QString, int> dimensionGeneratorVersions;
     /*! Whether the generator's one-time setup of the world has run. */
     bool setupDone = true;
     /*! Game mode of players who join the world for the first time (decision E-282), chosen when

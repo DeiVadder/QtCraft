@@ -47,6 +47,7 @@ void QcPointsRow::setFills(const QList<double> &fills)
         beginResetModel();
         storeFills(fills);
         endResetModel();
+        emit countChanged();
         return;
     }
 
@@ -62,7 +63,7 @@ void QcPointsRow::setFills(const QList<double> &fills)
 
 int QcPointsRow::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : static_cast<int>(iconFills().size());
+    return parent.isValid() ? 0 : count();
 }
 
 QVariant QcPointsRow::data(const QModelIndex &index, int role) const

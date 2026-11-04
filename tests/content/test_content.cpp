@@ -209,6 +209,9 @@ private slots:
             << QByteArray(R"({"name":"w","slowsInside":0.5,"textures":{"all":"x"}})") << u"neither solid nor liquid"_s;
         QTest::newRow("surface out of range")
             << QByteArray(R"({"name":"m","surface":{"speed":5},"textures":{"all":"x"}})") << u"'speed'"_s;
+        QTest::newRow("fire with fireAbove")
+            << QByteArray(R"({"name":"f","fire":true,"solid":false,"lightOpacity":0,"fireAbove":"g","textures":{"all":"x"}})")
+            << u"'fireAbove'"_s;
         QTest::newRow("range") << QByteArray(R"({"name":"x","lightOpacity":20,"textures":{"all":"x"}})") << u"lightOpacity"_s;
         QTest::newRow("fraction") << QByteArray(R"({"name":"x","toolLevel":1.5,"textures":{"all":"x"}})") << u"integer"_s;
         QTest::newRow("render") << QByteArray(R"({"name":"x","render":"shiny","textures":{"all":"x"}})") << u"'render'"_s;

@@ -212,6 +212,11 @@ private slots:
         QCOMPARE(categoryOf("qtcraft:torch"), u"light"_s);
         QCOMPARE(categoryOf("qtcraft:poppy"), u"plants"_s);
         QCOMPARE(categoryOf("qtcraft:furnace"), u"functional"_s);
+        for (const char *name : {"qtcraft:netherrack", "qtcraft:glowstone", "qtcraft:soul_torch", "qtcraft:soul_lantern", "qtcraft:soul_fire",
+                                  "qtcraft:nether_wart_crop", "qtcraft:nether_gold_ore"}) {
+            QCOMPARE(categoryOf(name), u"nether"_s);
+        }
+        QCOMPARE(categoryOf("qtcraft:nether_brick_slab"), u"parts"_s);
         QCOMPARE(categoryOf("qtcraft:oak_log"), u"wood"_s);
         QCOMPARE(categoryOf("qtcraft:iron_ore"), u"ores"_s);
         QCOMPARE(categoryOf("qtcraft:red_wool"), u"colours"_s);
@@ -425,6 +430,29 @@ private slots:
             QVERIFY(stop.pitch < 0.0f && stop.pitch > -60.0f);
             QVERIFY(stop.yaw >= 0.0f && stop.yaw < 360.0f);
         }
+    }
+
+    // Soul fire stands on its soul ground, plain fire on ground that leaves it as it is (E-981).
+    void firePodiumsMatchTheirFire()
+    {
+        const QcBlockId soulFire = *m_content->blockId(u"qtcraft:soul_fire"_s);
+        int soulFires = 0;
+        for (const QcShowcaseAreaInfo &area : m_generator->plan().areas) {
+            for (int x = 0; x < area.sizeX; ++x) {
+                for (int y = 1; y < area.sizeY; ++y) {
+                    for (int z = 0; z < area.sizeZ; ++z) {
+                        const QcBlockPos pos = area.origin.offset(x, y, z);
+                        if (m_content->block(blockAt(m_chunks, pos)).fire.isFire) {
+                            const QString ground = m_content->block(blockAt(m_chunks, pos.offset(0, -1, 0))).fire.fireAbove;
+                            const bool soul = blockAt(m_chunks, pos) == soulFire;
+                            QCOMPARE(ground, soul ? u"qtcraft:soul_fire"_s : QString());
+                            soulFires += soul ? 1 : 0;
+                        }
+                    }
+                }
+            }
+        }
+        QVERIFY2(soulFires >= 2, qPrintable(QString::number(soulFires)));
     }
 
     void fireStationBurnsOnMagmaBehindGlass()

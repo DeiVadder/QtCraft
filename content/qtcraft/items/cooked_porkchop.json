@@ -1,4 +1,5 @@
 {
     "name": "cooked_porkchop",
-    "food": 8
+    "food": 8,
+    "saturation": 0.8
 }

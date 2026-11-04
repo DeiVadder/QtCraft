@@ -11,30 +11,53 @@ namespace {
 // Timers add up tick durations that are not exact in binary; this keeps whole intervals whole.
 constexpr double timerSlack = 1e-9;
 
+// Returns `value`, or 0 when it is not finite.
+double finiteOrZero(double value)
+{
+    return std::isfinite(value) ? value : 0.0;
+}
+
 } // namespace
 
-void QcHunger::restore(int food, double exhaustion)
+void QcHunger::restore(int food, double exhaustion, double saturation)
 {
-    m_food = std::clamp(food, 0, maxFood);
-    m_exhaustion = std::isfinite(exhaustion) ? std::clamp(exhaustion, 0.0, exhaustionPerFood) : 0.0;
-    m_regenerationTimer = 0.0;
-    m_starvationTimer = 0.0;
+    setFood(std::clamp(food, 0, maxFood));
+    setSaturation(finiteOrZero(saturation));
+    setExhaustion(std::clamp(finiteOrZero(exhaustion), 0.0, exhaustionPerFood));
+    setRegenerationTimer(0.0);
+    setStarvationTimer(0.0);
 }
 
 void QcHunger::reset()
 {
-    restore(maxFood, 0.0);
+    restore(maxFood, 0.0, spawnSaturation);
+}
+
+void QcHunger::setFood(int food)
+{
+    m_food = food;
+    setSaturation(saturation());
+}
+
+void QcHunger::setSaturation(double saturation)
+{
+    m_saturation = std::clamp(saturation, 0.0, static_cast<double>(food()));
 }
 
 void QcHunger::exhaust(double amount)
 {
-    if (m_frozen || !std::isfinite(amount) || amount <= 0.0) {
+    if (frozen() || !std::isfinite(amount) || amount <= 0.0) {
         return;
     }
-    m_exhaustion += amount;
-    while (m_exhaustion >= exhaustionPerFood) {
-        m_exhaustion -= exhaustionPerFood;
-        m_food = std::max(0, m_food - 1);
+    setExhaustion(exhaustion() + amount);
+    // Saturation goes first, then food (decision E-1001).
+    while (exhaustion() >= exhaustionPerFood) {
+        setExhaustion(exhaustion() - exhaustionPerFood);
+        if (saturation() > 0.0) {
+            setSaturation(saturation() - 1.0);
+        } else {
+            setFood(std::max(0, food() - 1));
+        }
     }
 }
 
@@ -45,41 +68,63 @@ double QcHunger::movementExhaustion(double distance, bool sprinting, bool inWate
     return moved * perMetre + (jumped ? (sprinting ? sprintJump : jump) : 0.0);
 }
 
-bool QcHunger::eat(int points)
+bool QcHunger::eat(int points, double modifier)
 {
-    if (points <= 0 || m_food >= maxFood) {
+    if (points <= 0 || food() >= maxFood) {
         return false;
     }
-    m_food = std::min(maxFood, m_food + points);
+    feed(points, points * std::max(0.0, finiteOrZero(modifier)) * 2.0);
     return true;
+}
+
+void QcHunger::feed(int points, double saturation)
+{
+    if (frozen()) {
+        return;
+    }
+    setFood(std::clamp(food() + std::max(points, 0), 0, maxFood));
+    // The saturation never exceeds the food points, as in the reference.
+    setSaturation(this->saturation() + std::max(0.0, finiteOrZero(saturation)));
+}
+
+double QcHunger::regenerate(double dt, double interval, double missing, double budget, double perHealth)
+{
+    setStarvationTimer(0.0);
+    setRegenerationTimer(regenerationTimer() + dt);
+    if (regenerationTimer() < interval - timerSlack) {
+        return 0.0;
+    }
+    setRegenerationTimer(0.0);
+    const double cost = std::min(perHealth, budget);
+    exhaust(cost);
+    return std::min(cost / perHealth, missing);
 }
 
 double QcHunger::tick(double dt, double health, double maxHealth)
 {
-    if (m_frozen) {
+    if (frozen()) {
         return 0.0;
     }
 
-    if (m_food >= regenerationFood && health < maxHealth) {
-        m_starvationTimer = 0.0;
-        m_regenerationTimer += dt;
-        if (m_regenerationTimer >= regenerationInterval - timerSlack) {
-            m_regenerationTimer = 0.0;
-            exhaust(regenerationExhaustion);
-            return std::min(1.0, maxHealth - health);
-        }
+    // At a full bar the saturation heals quickly, a step costing at most what is left of it
+    // (the reference's min(saturation, 6) for a sixth of a heart per point).
+    const double missing = maxHealth - health;
+    if (missing > 0.0 && food() >= maxFood && saturation() > 0.0) {
+        return regenerate(dt, fastRegenerationInterval, missing, saturation(), fastRegenerationExhaustion);
+    }
+    if (missing > 0.0 && food() >= regenerationFood) {
+        return regenerate(dt, regenerationInterval, missing, regenerationExhaustion, regenerationExhaustion);
+    }
+
+    setRegenerationTimer(0.0);
+    if (food() > 0 || health <= starvationFloor) {
+        setStarvationTimer(0.0);
         return 0.0;
     }
 
-    m_regenerationTimer = 0.0;
-    if (m_food > 0 || health <= starvationFloor) {
-        m_starvationTimer = 0.0;
-        return 0.0;
-    }
-
-    m_starvationTimer += dt;
-    if (m_starvationTimer >= starvationInterval - timerSlack) {
-        m_starvationTimer = 0.0;
+    setStarvationTimer(starvationTimer() + dt);
+    if (starvationTimer() >= starvationInterval - timerSlack) {
+        setStarvationTimer(0.0);
         return -std::min(starvationDamage, health - starvationFloor);
     }
     return 0.0;

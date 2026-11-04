@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "server/mobs/QcDimensionDepartures.h"
 #include "server/mobs/QcMobManager.h"
 
 class QcServerBlocks;
@@ -23,9 +24,6 @@ class QcCreatureTraits
 {
 public:
     QcCreatureTraits(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks);
-    ~QcCreatureTraits();
-    QcCreatureTraits(const QcCreatureTraits &) = delete;
-    QcCreatureTraits &operator=(const QcCreatureTraits &) = delete;
 
     /*! Carries out the block actions of the creatures' tick (taking, placing, dropping) and
         announces the teleports since the last call. */
@@ -56,5 +54,5 @@ private:
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcServerBlocks &m_blocks;
-    QcMobManager::DepartureToken m_departures{};
+    QcDimensionDepartures m_departures;
 };

@@ -18,6 +18,8 @@ class QcPointsRow : public QAbstractListModel
     QML_NAMED_ELEMENT(PointsRow)
     QML_UNCREATABLE("Provided by GameController.player")
     Q_PROPERTY(bool shown READ shown NOTIFY shownChanged FINAL)
+    // The number of icons, for bindings.
+    Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
 
 public:
     enum Role { FillRole = Qt::UserRole + 1 };
@@ -33,6 +35,7 @@ public:
     // The player has `points` out of `maxPoints`.
     void setPoints(double points, double maxPoints);
     QList<double> iconFills() const { return m_fills; }
+    int count() const { return static_cast<int>(iconFills().size()); }
 
     int rowCount(const QModelIndex &parent = {}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -40,6 +43,7 @@ public:
 
 signals:
     void shownChanged();
+    void countChanged();
 
 private:
     void setFills(const QList<double> &fills);

@@ -1,0 +1,8 @@
+{
+    "name": "smooth_basalt",
+    "pattern": "noise",
+    "primary": "#4a4a50",
+    "secondary": "#3e3e44",
+    "variation": 0.06,
+    "seed": 8423
+}

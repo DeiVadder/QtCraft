@@ -320,6 +320,8 @@ void QcServerProjectiles::teleportThrower(const QcProjectile &projectile, const 
     client.motion.velocity = {};
     client.previousPosition.reset();
     client.fallPeak = place->y;
+    // Inputs from before the teleport no longer move with old effects (decision E-992).
+    client.movementEpochs.forgetPast();
     client.mining.pos.reset();
     client.stateDirty = true;
     if (effect.number > 0.0) {

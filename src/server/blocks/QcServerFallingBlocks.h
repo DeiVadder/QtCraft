@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "server/blocks/QcFallingBlockManager.h"
+#include "server/dimensions/QcPerDimension.h"
 
 #include <QSet>
 
@@ -57,5 +58,13 @@ private:
     QcPlayerHealth &m_health;
     // Blocks that should fall while the falling-block table is full and have no resting cell
     // (decision E-288): they stay in place until it has room again.
-    QSet<QcBlockPos> m_waiting;
+    // The blocks of a dimension that wait to fall.
+    struct Waiting
+    {
+        QSet<QcBlockPos> waiting;
+    };
+    // Of the current dimension.
+    Waiting &here() const;
+
+    QcPerDimension<Waiting> m_perDimension;
 };

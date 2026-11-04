@@ -1,0 +1,8 @@
+{
+    "name": "glowstone_dust",
+    "pattern": "nugget",
+    "primary": "#d8a040",
+    "secondary": "#ffe08a",
+    "variation": 0.1,
+    "seed": 8439
+}

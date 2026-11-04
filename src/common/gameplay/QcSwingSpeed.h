@@ -37,8 +37,8 @@ struct QcSwingSpeed
     [[nodiscard]] int ticks() const;
 
     /*! Returns the swing of a body with the status \a effects: haste and mining fatigue by their
-        names, so a pack that defines them changes the swing without any code (none of the base
-        content does). */
+        names, so a pack that defines them changes the swing without any code (the base content
+        has haste). */
     [[nodiscard]] static QcSwingSpeed of(const QList<QcStatusEffect> &effects);
 
     bool operator==(const QcSwingSpeed &) const = default;

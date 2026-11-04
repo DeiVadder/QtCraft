@@ -39,6 +39,8 @@ struct QcRawWorldRecord
             debugMessages.append(*debug);
         } else if (const auto *chunk = std::get_if<QcMsg::ChunkData>(&message)) {
             chunks.append(chunk->chunk->pos());
+        } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
+            unloaded.append(unload->pos);
         } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
             chunkLabels.insert(labels->pos, labels->labels);
         } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
@@ -83,6 +85,8 @@ struct QcRawWorldRecord
     int entityMoveMessages = 0;
     // Positions of the chunks received, in order.
     QList<QcChunkPos> chunks;
+    // The chunks the client was told to forget.
+    QList<QcChunkPos> unloaded;
     // The kind of each entity the client knows.
     QHash<quint32, QcEntityKind> entities;
     // Item entities the client was told about, with their latest stack.

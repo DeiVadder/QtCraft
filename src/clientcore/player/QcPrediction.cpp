@@ -21,7 +21,8 @@ double QcPrediction::eyeHeight() const
 
 void QcPrediction::keepCoreIntent(const QcPlayerInput &core)
 {
-    m_intent.speedFactor = core.speedFactor;
+    m_intent.effects = core.effects;
+    m_intent.movementEpoch = core.movementEpoch;
     m_intent.usingItem = core.usingItem;
 }
 

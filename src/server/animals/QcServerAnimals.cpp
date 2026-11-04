@@ -144,7 +144,7 @@ void QcServerAnimals::creditBreeding(const QcMobBreeding::Birth &birth)
         const double distance = (client->motion.position - birth.position).length();
         if (client->hasBody() && distance <= nearest) {
             nearest = distance;
-            breeder = client.get();
+            breeder = client;
         }
     }
     if (breeder) {

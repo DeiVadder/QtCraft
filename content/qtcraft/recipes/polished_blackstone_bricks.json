@@ -1,0 +1,15 @@
+{
+    "name": "polished_blackstone_bricks",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "polished_blackstone"
+    },
+    "result": {
+        "item": "polished_blackstone_bricks",
+        "count": 4
+    }
+}

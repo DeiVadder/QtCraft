@@ -8,6 +8,7 @@
 #include "common/protocol/QcMessages.h"
 #include "common/world/QcPrecipitationTable.h"
 #include "common/world/QcWeather.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/weather/QcWeatherCycle.h"
 
 #include <QHash>
@@ -50,12 +51,15 @@ public:
 
     explicit QcServerWeather(QcServerState &state);
 
-    /*! One tick of a simulated world: the course, strikes and what the players are sent. */
+    /*! One tick of the world's weather: its course, once for all dimensions. */
+    void advance();
+    /*! One tick of a simulated dimension: strikes and what its players are sent. */
     void tick();
     /*! Sends \a client the weather where its player stands, now (joining). */
     void sendTo(QcServerClient &client);
 
-    /*! Returns the world's weather (spell, ticks left, strengths). */
+    /*! Returns the weather in the current dimension (spell, ticks left, strengths): the world's,
+        or none in a dimension without weather. */
     const QcWeatherState &state() const;
     /*! Begins a spell of \a kind lasting \a ticks or as long as the seed says (/weather). */
     void set(QcWeatherKind kind, std::optional<qint64> ticks);
@@ -109,6 +113,14 @@ private:
     // a column found in the older one moves back to the recent one. So the columns around the
     // players stay cached while they move, and the cache holds at most 2 × climateGeneration.
     static constexpr qsizetype climateGeneration = 32768;
-    mutable QHash<quint64, QcWeather::Climate> m_climates;
-    mutable QHash<quint64, QcWeather::Climate> m_olderClimates;
+    // The climates of the columns of a dimension (the generators differ).
+    struct Climates
+    {
+        QHash<quint64, QcWeather::Climate> climates;
+        QHash<quint64, QcWeather::Climate> olderClimates;
+    };
+    // Of the current dimension.
+    Climates &here() const;
+
+    QcPerDimension<Climates> m_perDimension;
 };

@@ -13,16 +13,16 @@
 
 using namespace Qt::StringLiterals;
 
-QcChunkIo::QcChunkIo(QString directory, std::shared_ptr<const QcContentRegistry> content)
+QcChunkIo::QcChunkIo(QString directory, std::shared_ptr<const QcContentRegistry> content, QcChunkIo *world)
     : m_content(std::move(content))
     , m_store(std::move(directory))
-    , m_pool(1)
+    , m_pool(world != nullptr ? world->m_pool : std::make_shared<QcWorkerPool>(1))
 {
 }
 
 QcChunkIo::~QcChunkIo()
 {
-    m_pool.waitForIdle();
+    m_pool->waitForIdle();
 }
 
 QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> QcChunkIo::open()
@@ -137,9 +137,9 @@ void QcChunkIo::read(QcChunkPos pos, quint64 request)
     // A chunk to read must not wait for the encoding of others (a long flight unloads many); one
     // that is still being handed over is read after it, so it gets what was handed over.
     if (behind) {
-        m_pool.submit(std::move(job));
+        m_pool->submit(std::move(job));
     } else {
-        m_pool.submitFirst(std::move(job));
+        m_pool->submitFirst(std::move(job));
     }
 }
 
@@ -161,9 +161,9 @@ void QcChunkIo::runAndWait(std::function<void()> job, bool first)
         done->signal.notify_all();
     };
     if (first) {
-        m_pool.submitFirst(std::move(wrapped));
+        m_pool->submitFirst(std::move(wrapped));
     } else {
-        m_pool.submit(std::move(wrapped));
+        m_pool->submit(std::move(wrapped));
     }
     std::unique_lock lock(done->mutex);
     done->signal.wait(lock, [&done] { return done->done; });
@@ -207,7 +207,7 @@ void QcChunkIo::keep(Departure departure)
         const std::scoped_lock lock(m_mutex);
         ++m_keeping[pos];
     }
-    m_pool.submit([this, pos, departure = std::move(departure)] {
+    m_pool->submit([this, pos, departure = std::move(departure)] {
         store(departure);
         const std::scoped_lock lock(m_mutex);
         m_pendingChunks = m_store.pendingChunks();
@@ -217,20 +217,35 @@ void QcChunkIo::keep(Departure departure)
     });
 }
 
-quint64 QcChunkIo::save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files)
+void QcChunkIo::hand(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files)
+{
+    m_pool->submit([this, chunks = std::move(chunks), files = std::move(files)] {
+        for (const Departure &departure : chunks) {
+            store(departure);
+        }
+        m_store.keepFiles(files);
+    });
+}
+
+quint64 QcChunkIo::save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files, QList<QcChunkIo *> linked)
 {
     const quint64 id = m_nextSave++;
     for (const QcChunkStore::WholeFile &file : std::as_const(files)) {
         m_handedFiles.insert(file.name, {id, file.content});
     }
-    m_pool.submit([this, id, chunks = std::move(chunks), files = std::move(files)] {
+    m_pool->submit([this, id, chunks = std::move(chunks), files = std::move(files), linked = std::move(linked)]() mutable {
         for (const Departure &departure : chunks) {
             store(departure);
         }
-        const QcStatus status = m_store.commit(files);
-        {
-            const std::scoped_lock lock(m_mutex);
-            m_pendingChunks = m_store.pendingChunks();
+        QList<QcChunkStore *> stores;
+        for (QcChunkIo *io : linked) {
+            stores.append(&io->m_store);
+        }
+        const QcStatus status = m_store.commit(files, stores);
+        linked.append(this);
+        for (QcChunkIo *io : linked) {
+            const std::scoped_lock lock(io->m_mutex);
+            io->m_pendingChunks = io->m_store.pendingChunks();
         }
         m_saves.push({id, status});
     });
@@ -256,7 +271,7 @@ std::vector<QcChunkIo::SaveResult> QcChunkIo::takeSaves()
 
 void QcChunkIo::waitForIdle()
 {
-    m_pool.waitForIdle();
+    m_pool->waitForIdle();
 }
 
 qsizetype QcChunkIo::pendingChunks() const

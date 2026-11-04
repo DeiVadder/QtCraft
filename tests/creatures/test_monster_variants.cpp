@@ -48,7 +48,7 @@ private:
             }
         }
         ticks(1);
-        player().hunger.restore(10, 0.0);
+        player().hunger.restore(10, 0.0, 0.0);
     }
 
     quint32 spawn(const char *name, QcBlockPos at)
@@ -64,6 +64,8 @@ private:
             QcPlayerInput input;
             input.sequence = static_cast<quint32>(1000 + m_walked++);
             input.forward = 1.0f;
+            // The count of the effects the client knows (decision E-992), as a real client sends it.
+            input.movementEpoch = m_client->healths.isEmpty() ? quint16{0} : m_client->healths.constLast().movementEpoch;
             m_client->connection.send(QcMsg::PlayerInput{input});
             QcTestUtil::pump();
             ticks(1);

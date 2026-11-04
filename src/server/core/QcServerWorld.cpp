@@ -28,18 +28,21 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     const auto stateCount = static_cast<std::size_t>(m_content->stateCount());
     std::vector<QcSectionMarks::Traits> traits(stateCount);
     std::vector<bool> hoppers(stateCount);
+    std::vector<bool> daylightSensors(stateCount);
     std::vector<bool> fires(stateCount);
     std::vector<bool> eternalGround(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcBlockDefinition &block = m_content->block(static_cast<QcBlockId>(id));
         traits[id] = QcSectionMarks::traitsOf(block);
         hoppers[id] = block.signal.kind == QcSignalKind::Hopper;
+        daylightSensors[id] = block.signal.kind == QcSignalKind::Daylight;
         fires[id] = block.fire.isFire;
         eternalGround[id] = block.fire.eternal;
     }
 
     m_marks = QcSectionMarks(std::move(traits));
     m_hoppers = QcBlockIndex(std::move(hoppers));
+    m_daylightSensors = QcBlockIndex(std::move(daylightSensors), QcBlockIndex::Touching::Ignored);
     m_fires = QcFireQueue(std::move(fires), std::move(eternalGround));
     m_villages->setLoadedQuery([this](QcChunkPos pos) { return m_chunks.contains(pos); });
 }
@@ -184,6 +187,7 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     noteChange(pos);
     m_marks.noteChunk(pos, chunk);
     m_hoppers.noteChunk(pos, chunk);
+    m_daylightSensors.noteChunk(pos, chunk);
     m_links.noteChunk(chunk);
     m_loaders.noteChunk(chunk);
     m_villages->noteChunk(chunk);
@@ -208,6 +212,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_lastChange.remove(pos);
     m_marks.forgetChunk(pos);
     m_hoppers.forgetChunk(pos);
+    m_daylightSensors.forgetChunk(pos);
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
     m_spawners.forgetChunk(pos);
@@ -334,6 +339,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_light.changeBlock(pos, before, **it);
     m_marks.noteBlock(pos, block);
     m_hoppers.noteBlock(pos, block);
+    m_daylightSensors.noteBlock(pos, block);
     m_links.noteBlock(pos, before, block);
     m_loaders.noteBlock(pos, before, block);
     m_villages->noteBlock(pos, before, block);

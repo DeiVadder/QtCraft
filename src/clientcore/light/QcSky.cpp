@@ -126,6 +126,13 @@ QcSkyState withBlast(QcSkyState sky, double flash)
     return sky;
 }
 
+QcSkyState withNightVision(QcSkyState sky, bool sees)
+{
+    constexpr double nightVisionLight = 0.76;
+    sky.flashLight = sees ? std::max(sky.flashLight, nightVisionLight) : sky.flashLight;
+    return sky;
+}
+
 QcSkyState seenFrom(QcSkyState sky, double eyeY)
 {
     if (eyeY >= 0.0) {

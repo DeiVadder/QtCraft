@@ -83,13 +83,14 @@ private:
     // Whether rain falling on the fire puts it out in this step (by the dice of the step).
     bool rainPutsOut(const QcFireQueue::Fire &fire) const;
     // Burns the flammable blocks next to the fire away: each by its chance becomes fire or air.
-    void burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block, quint64 now);
+    void burnNeighbours(const QcFireQueue::Fire &fire, quint64 now);
     // Lights the air around the fire next to flammable blocks, each cell by its chance.
-    void spreadAround(const QcFireQueue::Fire &fire, QcBlockId block, quint64 now);
+    void spreadAround(const QcFireQueue::Fire &fire, quint64 now);
     // Whether the air at `pos` near the fire catches in this step (next to flammable blocks, within reach).
     bool catches(const QcFireQueue::Fire &fire, QcBlockPos pos) const;
-    // Puts a new fire lit by `parent` at `pos`, if there is room and no rain falls there.
-    bool light(QcBlockPos pos, const QcFireQueue::Fire &parent, QcBlockId block, quint64 now);
+    // Puts a new fire lit by `parent` at `pos`, if there is room and no rain falls there: the default
+    // fire, or the one the ground at `pos` turns it into.
+    bool light(QcBlockPos pos, const QcFireQueue::Fire &parent, quint64 now);
     void burnAway(QcBlockPos pos, QcBlockId burnt);
     void putOut(QcBlockPos pos);
     int reach() const;

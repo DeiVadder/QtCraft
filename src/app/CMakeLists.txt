@@ -293,6 +293,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
         qml/hud/DialDisplay.qml
+        qml/hud/HeartIcon.qml
         qml/hud/HeldItemName.qml
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml

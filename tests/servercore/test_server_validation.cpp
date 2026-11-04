@@ -238,6 +238,8 @@ private slots:
     void fallsHurtAndDeathNeedsARespawn()
     {
         join();
+        // No saturation: these values are about the slow regeneration and the bar (decision E-1001).
+        m_server->entities().clients().front()->hunger.restore(QcHunger::maxFood, 0.0, 0.0);
         QCOMPARE(m_client->health, 20.0);
         // Landing after 10 m deals floor(10 - 3) = 7 damage.
         fallDownShaft();
@@ -334,6 +336,8 @@ private slots:
     void foodGatesRegenerationAndStarvationStopsAtAFloor()
     {
         join();
+        // No saturation: these values are about the slow regeneration and the bar (decision E-1001).
+        m_server->entities().clients().front()->hunger.restore(QcHunger::maxFood, 0.0, 0.0);
         fallDownShaft();
         QCOMPARE(m_client->health, 13.0);
 
@@ -361,6 +365,8 @@ private slots:
     void jumpingCostsFoodButStandingDoesNot()
     {
         join();
+        // No saturation: these values are about the slow regeneration and the bar (decision E-1001).
+        m_server->entities().clients().front()->hunger.restore(QcHunger::maxFood, 0.0, 0.0);
         idle(600);
         QCOMPARE(m_client->food, 20);
         // About 250 jumps at 0.02 exhaustion each: at least one and at most two food points.

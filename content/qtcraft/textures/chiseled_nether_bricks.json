@@ -1,0 +1,8 @@
+{
+    "name": "chiseled_nether_bricks",
+    "pattern": "chiseled_bricks",
+    "primary": "#46222a",
+    "secondary": "#24121a",
+    "variation": 0.1,
+    "seed": 8417
+}

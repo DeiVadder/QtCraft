@@ -1,0 +1,11 @@
+{
+    "name": "gilded_blackstone",
+    "sound": "stone",
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "textures": {
+        "all": "gilded_blackstone"
+    }
+}

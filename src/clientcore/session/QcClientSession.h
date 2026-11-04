@@ -410,7 +410,7 @@ private:
     QcClientStonecutter m_stonecutter;
     QcClientEnchanting m_enchanting;
     QcClientAnvil m_anvil;
-    QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
+    QcHandActions m_hand{{m_prediction, m_inventory, m_entities, m_vitals},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },
                          [this](const QcSoundCue &sound) { cue(sound); },

@@ -87,6 +87,9 @@ public:
     QcBlockIndex &hoppers() { return m_hoppers; }
     /*! Returns the loaded Signal Hoppers, read-only. */
     const QcBlockIndex &hoppers() const { return m_hoppers; }
+    /*! Returns the loaded daylight sensors (decision E-982): every chunk that arrives or leaves and
+        every block set keeps them up to date, so that reading them scans no chunk. */
+    const QcBlockIndex &daylightSensors() const { return m_daylightSensors; }
     /*! Returns the burning fires of the loaded chunks and their next steps (decision E-392),
         kept in step with every block set here and every chunk that arrives, leaves or is
         generated again. */
@@ -242,6 +245,8 @@ private:
     std::unique_ptr<QcWorldGenerator> m_generator;
     QcSectionMarks m_marks;
     QcBlockIndex m_hoppers;
+    // NOLINT(qc-member-access): the sensors' index, built in the constructor, kept by noteSections, forgetSections and setBlock, read only through daylightSensors().
+    QcBlockIndex m_daylightSensors;
     QcChunkLinks m_links;
     QcChunkLoaders m_loaders;
     // Refers to the generator, which lives as long as the world.

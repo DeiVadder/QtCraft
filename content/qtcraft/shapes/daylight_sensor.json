@@ -1,0 +1,49 @@
+{
+    "name": "daylight_sensor",
+    "parts": [
+        {
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.3125,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "inverted": false
+            },
+            "boxes": [
+                [
+                    0,
+                    0.3125,
+                    0,
+                    1,
+                    0.375,
+                    1
+                ]
+            ],
+            "texture": "day"
+        },
+        {
+            "when": {
+                "inverted": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.3125,
+                    0,
+                    1,
+                    0.375,
+                    1
+                ]
+            ],
+            "texture": "night"
+        }
+    ]
+}

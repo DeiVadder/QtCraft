@@ -10,6 +10,7 @@
 #include "server/commands/QcPendingCommands.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcPlayerTravel.h"
 
 
 #include <algorithm>
@@ -61,7 +62,7 @@ void QcPlayerCommands::addTo(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lets a banned player join again."),
                          .run = [this](const QcCommandContext &context) { unban(context); }});
     registry.addBuiltIn({.name = u"tp"_s, .category = QcCommandCategory::Players, .aliases = {u"teleport"_s}, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /tp <x> <y> <z>, /tp <player>, /tp <player> <x> <y> <z> or /tp <player> <target player>"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /tp <x> <y> <z>, /tp <player>, /tp <player> <x> <y> <z> or /tp <player> <target player>, each with in <dimension> at the end"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Moves you or a player to a position or to another player."),
                          .run = [this](const QcCommandContext &context) { teleport(context); }});
     addListCommands(registry);
@@ -91,7 +92,7 @@ void QcPlayerCommands::addListCommands(QcCommandRegistry &registry)
 void QcPlayerCommands::list(const QcCommandContext &context) const
 {
     QStringList names;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->joined && client->state == QcServerClient::State::Playing) {
             names.append(client->name);
         }
@@ -279,54 +280,49 @@ void QcPlayerCommands::reportWrite(const QcCommandContext &context, const QcResu
 
 void QcPlayerCommands::teleport(const QcCommandContext &context)
 {
-    const QStringList &args = context.args;
+    QStringList args = context.args;
     const QcServerClient *self = context.source.player();
     const std::optional<QcVec3> origin = self ? std::optional<QcVec3>(self->motion.position) : std::nullopt;
 
+    // "in <dimension>" at the end names the dimension (decision E-988).
+    QcServerDimension *named = nullptr;
+    if (args.size() >= 3 && args[args.size() - 2] == u"in"_s) {
+        QcResult<QcServerDimension *> opened = m_state.openDimension(args.last());
+        if (!opened) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Cannot go to the dimension %1: %2"), {args.last(), opened.error()});
+            return;
+        }
+        named = *opened;
+        args.resize(args.size() - 2);
+    }
+
     // /tp x y z and /tp target move the player himself; with four or two words the first names who.
-    const bool named = args.size() == 4 || args.size() == 2;
-    QList<QcServerClient *> who = named ? QcCommandArguments::players(m_state, args[0])
-                                        : (self ? QList<QcServerClient *>{context.source.player()} : QList<QcServerClient *>{});
-    const qsizetype targetIndex = named ? 1 : 0;
+    const bool namesWho = args.size() == 4 || args.size() == 2;
+    QList<QcServerClient *> who = namesWho ? QcCommandArguments::players(m_state, args[0])
+                                           : (self ? QList<QcServerClient *>{context.source.player()} : QList<QcServerClient *>{});
+    const qsizetype targetIndex = namesWho ? 1 : 0;
     std::optional<QcVec3> destination;
     if (args.size() - targetIndex == 3) {
         destination = QcCommandArguments::point(args, targetIndex, origin);
     } else if (args.size() - targetIndex == 1) {
         const QList<QcServerClient *> targets = QcCommandArguments::players(m_state, args[targetIndex]);
         destination = targets.isEmpty() ? std::nullopt : std::optional<QcVec3>(targets.first()->motion.position);
+        // To a player means to where he is.
+        if (!targets.isEmpty() && named == nullptr) {
+            named = &m_state.dimensionOf(*targets.first());
+        }
     }
 
     if (who.isEmpty() || !destination) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages",
-                                        "Usage: /tp <x> <y> <z>, /tp <player>, /tp <player> <x> <y> <z> or /tp <player> <target player>"));
+                                        "Usage: /tp <x> <y> <z>, /tp <player>, /tp <player> <x> <y> <z> or /tp <player> <target player>, each with in <dimension> at the end"));
         return;
     }
 
     for (QcServerClient *player : who) {
-        moveTo(*player, *destination);
+        QcPlayerTravel::move(m_state, *player, named != nullptr ? *named : m_state.dimensionOf(*player), *destination);
     }
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Teleported %1 to %2 %3 %4"),
                   {who.first()->name, QString::number(destination->x, 'f', 1), QString::number(destination->y, 'f', 1),
                    QString::number(destination->z, 'f', 1)});
-}
-
-void QcPlayerCommands::moveTo(QcServerClient &player, const QcVec3 &position)
-{
-    // Loaded at once so the player does not fall through a missing chunk; the client takes the new
-    // position from the next PlayerState like after a respawn.
-    m_state.world().loadChunk(QcChunkStreaming::chunkOf(position));
-    // A rider or driver is teleported out of his minecart or boat (decisions E-383, E-920).
-    if (QcMinecart *cart = m_state.entities().minecarts().ridden(player.id)) {
-        cart->rider = 0;
-        cart->rest.reset();
-    }
-    if (QcBoat *boat = m_state.entities().boats().drivenBy(player.id)) {
-        boat->driver = 0;
-    }
-    player.motion.position = position;
-    player.motion.velocity = {};
-    player.previousPosition.reset();
-    player.fallPeak = position.y;
-    player.mining.pos.reset();
-    player.stateDirty = true;
 }

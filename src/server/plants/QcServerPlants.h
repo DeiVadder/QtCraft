@@ -89,7 +89,6 @@ private:
     QcServerSounds &m_sounds;
     QcServerBlocks &m_blocks;
     QcServerInventory &m_inventory;
-    quint64 m_itemTicks = 0;
     // Crop each self-planting seed item places.
     QHash<QcItemId, QcBlockId> m_seedCrops;
     QcVegetationSpread m_vegetation;

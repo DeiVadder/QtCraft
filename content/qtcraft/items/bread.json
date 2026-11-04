@@ -1,4 +1,5 @@
 {
     "name": "bread",
-    "food": 5
+    "food": 5,
+    "saturation": 0.6
 }

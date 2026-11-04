@@ -11,6 +11,7 @@
 #include "clientcore/light/QcWaterLook.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>
@@ -106,6 +107,8 @@ void QcRenderBridge::updateSky(double alpha)
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.
     const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);
     sky = QcSky::withBlast(sky, flash);
+    const auto content = session.content();
+    sky = QcSky::withNightVision(sky, content && QcEffectRules::nightVision(*content, session.vitals().effects()));
     m_parts.view->setSky(QcSky::seenFrom(sky, eye.y));
     // The cave level of the ambience (0 outside, 0.5 to 1 under a thick ceiling, eased) clears the
     // height fog of the realistic mode in caves.

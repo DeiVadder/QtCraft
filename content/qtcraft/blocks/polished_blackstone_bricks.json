@@ -1,0 +1,11 @@
+{
+    "name": "polished_blackstone_bricks",
+    "sound": "stone",
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "textures": {
+        "all": "polished_blackstone_bricks"
+    }
+}

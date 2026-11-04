@@ -45,6 +45,11 @@ public:
     /*! Returns the status effects with their ticks left when the server last told (decision
         E-450). */
     const QList<QcStatusEffect> &effects() const { return m_health.effects; }
+    /*! Returns the count of the effects' moving that the last PlayerHealth told (decision E-992):
+        the client's inputs quote it. */
+    quint16 movementEpoch() const { return m_health.movementEpoch; }
+    /*! Returns the extra health the absorption effect left (decision E-992). */
+    double absorption() const { return m_health.absorption; }
     /*! Returns the player's food points. */
     int food() const { return m_food.food; }
     /*! Returns the most food points. */

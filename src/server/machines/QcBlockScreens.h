@@ -6,6 +6,7 @@
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcMessages.h"
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/machines/QcContainerSounds.h"
 
 #include <functional>
@@ -54,6 +55,9 @@ public:
     [[nodiscard]] std::optional<QList<QcItemStack>> openHeld(QcServerClient &client);
     /*! Forgets the open machine of \a client; \a notify tells the client (the server closed it). */
     void close(QcServerClient &client, bool notify);
+    /*! \a client travels: every screen he has open ends and he is told, the workstations give
+        their slots back, a sign he was writing stays as it is. */
+    void closeAll(QcServerClient &client);
     /*! Returns the open machine of the player \a client while it still exists, else null. */
     QcBlockEntities::Machine *openMachineOf(const QcServerClient &client);
     /*! Returns the open chest, container cart or held backpack of the player \a client while it
@@ -115,10 +119,18 @@ private:
 
     QcServerState &m_state;
     QcServerBlocks &m_blocks;
-    // The containers counting their viewers that had any at the latest update.
-    QHash<QcBlockPos, int> m_viewers;
     QcContainerSounds m_containerSounds;
     std::function<void(QcServerClient &)> m_closeStonecutter;
     std::function<void(QcServerClient &)> m_closeEnchanting;
     std::function<void(QcServerClient &)> m_closeAnvil;
+    // Who looks into the blocks of a dimension.
+    struct Viewers
+    {
+        // The containers counting their viewers that had any at the latest update.
+        QHash<QcBlockPos, int> viewers;
+    };
+    // Of the current dimension.
+    Viewers &here() const;
+
+    QcPerDimension<Viewers> m_perDimension;
 };

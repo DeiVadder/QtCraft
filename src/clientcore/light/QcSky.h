@@ -76,5 +76,8 @@ QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash
 /*! Returns \a sky in an explosion's \a flash (0..1, QcExplosionEffects::flashAt; decision E-879):
     a warm light on the dome and the clouds and on everything around, in caves too. */
 QcSkyState withBlast(QcSkyState sky, double flash);
+/*! Returns \a sky as a player with the night vision effect sees it when he \a sees so (decision
+    E-992): the blocks and bodies around him as bright as by day, the dome as it is. */
+QcSkyState withNightVision(QcSkyState sky, bool sees);
 
 } // namespace QcSky

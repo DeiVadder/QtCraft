@@ -79,6 +79,8 @@ QString signalNote(const QcHandbookContext &context, const QcSignalDefinition &s
         return ruleLabel(context, u"value.signal.note"_s).arg(QcSignalDefinition::noteCount);
     case QcSignalKind::Target:
         return ruleLabel(context, u"value.signal.target"_s).arg(signal.stuckHitTicks).arg(signal.hitTicks);
+    case QcSignalKind::Daylight:
+        return ruleLabel(context, u"value.signal.daylight"_s).arg(QcSignalDefinition::maxPower).arg(QcSignalDefinition::daylightIntervalTicks);
     case QcSignalKind::Hook:
         return ruleLabel(context, u"value.signal.hook"_s).arg(power).arg(signal.wireReach);
     case QcSignalKind::Tripwire:
@@ -103,6 +105,7 @@ int signalRole(QcSignalKind kind)
     case QcSignalKind::Observer:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Daylight:
     case QcSignalKind::Hook:
     case QcSignalKind::Tripwire:
     case QcSignalKind::Viewers:

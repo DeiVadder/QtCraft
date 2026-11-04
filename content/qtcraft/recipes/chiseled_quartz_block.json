@@ -1,0 +1,14 @@
+{
+    "name": "chiseled_quartz_block",
+    "type": "shaped",
+    "pattern": [
+        "#",
+        "#"
+    ],
+    "key": {
+        "#": "quartz_slab"
+    },
+    "result": {
+        "item": "chiseled_quartz_block"
+    }
+}

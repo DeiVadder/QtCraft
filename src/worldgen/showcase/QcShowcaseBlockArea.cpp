@@ -96,14 +96,30 @@ QString stateDetail(const QcContentRegistry &content, QcBlockId state)
     return text;
 }
 
+// The ground a fire burns on for ever (decision E-392): the block that turns fire into this one, else
+// the first block with eternal fire that leaves fire as it is.
+std::optional<QcBlockId> eternalGroundFor(const QcContentRegistry &content, const QcBlockDefinition &fire)
+{
+    std::optional<QcBlockId> plainGround;
+    for (const QcBlockDefinition &candidate : content.blocks()) {
+        if (!candidate.fire.eternal) {
+            continue;
+        }
+        if (candidate.fire.fireAbove == fire.name) {
+            return content.blockId(candidate.name);
+        }
+        if (!plainGround && candidate.fire.fireAbove.isEmpty()) {
+            plainGround = content.blockId(candidate.name);
+        }
+    }
+    return plainGround;
+}
+
 QcBlockId podiumFor(const QcShowcaseContext &context, const QcBlockDefinition &block)
 {
-    // Fire stands on a block with eternal fire, so it burns on its podium for ever (decision E-392).
     if (block.fire.isFire) {
-        for (const QcBlockDefinition &candidate : context.content.blocks()) {
-            if (const std::optional<QcBlockId> id = context.content.blockId(candidate.name); id && candidate.fire.eternal) {
-                return *id;
-            }
+        if (const std::optional<QcBlockId> ground = eternalGroundFor(context.content, block)) {
+            return *ground;
         }
     }
     for (const QString &ground : block.groundBlocks) {

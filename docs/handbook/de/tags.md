@@ -2,9 +2,25 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige glasierte Terrakotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Beliebiger Stamm oder beliebiges Holz](#tag-qtcraft-logs) · [Beliebiges Bett](#tag-qtcraft-beds) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
+**QtCraft:** [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige glasierte Terrakotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Beliebiger Stamm oder beliebiges Holz](#tag-qtcraft-logs) · [Beliebiges Bett](#tag-qtcraft-beds) · [Bruchstein oder Schwarzstein](#tag-qtcraft-stone_crafting_materials) · [Kohle oder Holzkohle](#tag-qtcraft-coals) · [Seelensand oder Seelenerde](#tag-qtcraft-soul_blocks)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-wooden_slabs"></a>#wooden_slabs
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:wooden_slabs` |
+
+**Items dieser Gruppe**
+
+[Birkenstufe](parts.md#block-qtcraft-birch_slab), [Dschungelstufe](parts.md#block-qtcraft-jungle_slab), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab)
+
+**Wird verwendet für**
+
+[Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor)
 
 ### <a id="tag-qtcraft-planks"></a>Beliebige Bretter
 
@@ -130,6 +146,22 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 [Bett](blocks.md#block-qtcraft-bed), [Blaues Bett](blocks.md#block-qtcraft-blue_bed), [Braunes Bett](blocks.md#block-qtcraft-brown_bed), [Gelbes Bett](blocks.md#block-qtcraft-yellow_bed), [Graues Bett](blocks.md#block-qtcraft-gray_bed), [Grünes Bett](blocks.md#block-qtcraft-green_bed), [Hellblaues Bett](blocks.md#block-qtcraft-light_blue_bed), [Hellgraues Bett](blocks.md#block-qtcraft-light_gray_bed), [Hellgrünes Bett](blocks.md#block-qtcraft-lime_bed), [Magentafarbenes Bett](blocks.md#block-qtcraft-magenta_bed), [Orangefarbenes Bett](blocks.md#block-qtcraft-orange_bed), [Rosafarbenes Bett](blocks.md#block-qtcraft-pink_bed), [Schwarzes Bett](blocks.md#block-qtcraft-black_bed), [Türkises Bett](blocks.md#block-qtcraft-cyan_bed), [Violettes Bett](blocks.md#block-qtcraft-purple_bed), [Weißes Bett](blocks.md#block-qtcraft-white_bed)
 
+### <a id="tag-qtcraft-stone_crafting_materials"></a>Bruchstein oder Schwarzstein
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:stone_crafting_materials` |
+
+**Items dieser Gruppe**
+
+[Bruchstein](blocks.md#block-qtcraft-cobblestone), [Schwarzstein](blocks.md#block-qtcraft-blackstone)
+
+**Wird verwendet für**
+
+[Ofen](blocks.md#block-qtcraft-furnace), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+
 ### <a id="tag-qtcraft-coals"></a>Kohle oder Holzkohle
 
 Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
@@ -144,4 +176,20 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk), [Lagerfeuer](blocks.md#block-qtcraft-campfire)
+[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch)
+
+### <a id="tag-qtcraft-soul_blocks"></a>Seelensand oder Seelenerde
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:soul_blocks` |
+
+**Items dieser Gruppe**
+
+[Seelenerde](blocks.md#block-qtcraft-soul_soil), [Seelensand](blocks.md#block-qtcraft-soul_sand)
+
+**Wird verwendet für**
+
+[Seelenfackel](blocks.md#block-qtcraft-soul_torch)

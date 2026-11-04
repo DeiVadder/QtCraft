@@ -6,10 +6,12 @@
 #include "clientcore/player/QcBlockForecast.h"
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientInventory.h"
+#include "clientcore/player/QcClientVitals.h"
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientWorld.h"
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
@@ -226,7 +228,9 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
     const QcBlockDefinition &definition = content.block(*block);
     // Efficiency speeds a matching tool up (decision E-864), as the server counts it.
     const int efficiency = QcEnchanting::levelOf(content, m_view.inventory.inventory().selectedStack(), QcEnchantmentEffect::Efficiency);
-    const double seconds = QcMining::breakSeconds(definition, m_view.inventory.heldDefinition(content), QcEnchanting::speedBonus(efficiency));
+    // Haste shortens it (decision E-992), as the server counts it.
+    const double seconds = QcMining::breakSeconds(definition, m_view.inventory.heldDefinition(content), QcEnchanting::speedBonus(efficiency))
+                           / QcEffectRules::miningFactor(content, m_view.vitals.effects());
     if (seconds <= 0.0) {
         return effect;
     }

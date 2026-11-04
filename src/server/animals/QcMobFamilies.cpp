@@ -15,14 +15,8 @@
 QcMobFamilies::QcMobFamilies(QcServerState &state, QcServerSounds &sounds)
     : m_state(state)
     , m_sounds(sounds)
+    , m_departures(state, [this](const QcCreature &mob, QcMobManager::Departure why) { noteDeparture(mob, why); })
 {
-    m_departures = m_state.entities().creatures().onDeparture(
-        [this](const QcCreature &mob, QcMobManager::Departure why) { noteDeparture(mob, why); });
-}
-
-QcMobFamilies::~QcMobFamilies()
-{
-    m_state.entities().creatures().removeDepartureListener(m_departures);
 }
 
 QList<quint32> QcMobFamilies::childrenOf(const QcMobManager &creatures, quint32 parentId)
@@ -59,7 +53,7 @@ void QcMobFamilies::noteDeparture(const QcCreature &mob, QcMobManager::Departure
     // The others go in the next tick of the creatures, after the step that took the parent.
     Orphans orphans{childrenOf(creatures, mob.id), family->popDrops, family->popSound, why == QcMobManager::Departure::Died};
     if (!orphans.children.isEmpty()) {
-        m_orphans.append(std::move(orphans));
+        m_orphans.of(m_state.current()).append(std::move(orphans));
     }
 }
 
@@ -100,7 +94,7 @@ void QcMobFamilies::tendKept()
 
 void QcMobFamilies::takeOrphans()
 {
-    const QList<Orphans> orphans = std::exchange(m_orphans, {});
+    const QList<Orphans> orphans = std::exchange(m_orphans.of(m_state.current()), {});
     QcMobManager &creatures = m_state.entities().creatures();
     int sounds = 0;
     for (const Orphans &family : orphans) {

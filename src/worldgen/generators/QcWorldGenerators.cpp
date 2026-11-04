@@ -89,10 +89,17 @@ bool isKnown(const QString &type)
     return options;
 }
 
+QcGeneratorVersion::Series versionSeries(const QString &type)
+{
+    // Terrain, flat, void and showcase share the overworld's numbers.
+    Q_UNUSED(type);
+    return QcGeneratorVersion::overworld;
+}
+
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
                                          const QString &options, int version)
 {
-    if (!QcGeneratorVersion::isKnown(version)) {
+    if (!versionSeries(type).isKnown(version)) {
         return nullptr;
     }
     std::unique_ptr<QcWorldGenerator> generator = makeGenerator(type, std::move(content), seed, options);

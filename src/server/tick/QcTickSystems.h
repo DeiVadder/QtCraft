@@ -6,6 +6,7 @@
 #include "common/core/QcTickPhase.h"
 
 #include <functional>
+#include <utility>
 #include <vector>
 
 class QcTickPhaseTimer;
@@ -27,21 +28,38 @@ public:
         Simulating,
     };
 
-    /*! \brief One system: the phase its time goes to, when it runs and what it runs. \qcfields */
+    /*! What a system acts on (decision E-988). */
+    enum class Reach : quint8 {
+        /*! The whole server: it runs once. */
+        Server,
+        /*! What is in a dimension: it runs once per open dimension. */
+        EachDimension,
+    };
+
+    /*! \brief One system: the phase its time goes to, when it runs, what it acts on and what it
+        runs. \qcfields */
     struct System
     {
         QcTickPhase phase = QcTickPhase::Players;
         When when = When::Always;
+        Reach reach = Reach::Server;
         std::function<void()> run;
     };
 
-    /*! Adds the system \a run of \a phase, running \a when, after the others. Messages is no
-        phase of the tick and is refused. */
-    void add(QcTickPhase phase, When when, std::function<void()> run);
-    /*! Runs one tick's systems in order (those of When::Simulating only when \a simulating);
-        after each its phase gets a lap of \a timer. A system that laps another phase inside (the
-        client sync laps the streaming per client) gives the rest to its own. */
-    void run(bool simulating, QcTickPhaseTimer &timer) const;
+    /*! Runs a system once per open dimension, each time with that dimension as the current one. */
+    using InEachDimension = std::function<void(const std::function<void()> &run)>;
+
+    /*! Adds the system \a run of \a phase, running \a when, after the others, once for the whole
+        server. Messages is no phase of the tick and is refused. */
+    void add(QcTickPhase phase, When when, std::function<void()> run) { add(phase, when, Reach::Server, std::move(run)); }
+    /*! Adds the system \a run of \a phase, running \a when and reaching \a reach, after the
+        others. */
+    void add(QcTickPhase phase, When when, Reach reach, std::function<void()> run);
+    /*! Runs one tick's systems in order (those of When::Simulating only when \a simulating), those
+        of Reach::EachDimension through \a inEachDimension (none: once); after each its phase
+        gets a lap of \a timer. A system that laps another phase inside (the client sync laps the
+        streaming per client) gives the rest to its own. */
+    void run(bool simulating, QcTickPhaseTimer &timer, const InEachDimension &inEachDimension = {}) const;
     /*! Returns the systems in the order they run. */
     [[nodiscard]] const std::vector<System> &systems() const { return m_systems; }
 

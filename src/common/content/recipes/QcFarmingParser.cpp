@@ -34,6 +34,8 @@ QcCropDefinition parseCrop(const QcBlockDefinition &block, QcJsonFieldReader &cr
     crop.fruitSeconds = cropReader.number(u"fruitSeconds"_s, 300.0, 1.0, 86400.0);
     crop.fruitGround = QcContentFields::parseNames(u"fruitGround"_s, packNamespace, cropReader);
     crop.plantChance = cropReader.number(u"plantChance"_s, 0.0, 0.0, 1.0);
+    crop.fertilizable = cropReader.boolean(u"fertilizable"_s, true);
+    crop.tendedByFarmers = cropReader.boolean(u"tendedByFarmers"_s, true);
 
     requireStages(block, crop.property, cropReader);
     if (cropReader.ok() && block.support != QcBlockSupport::Below) {

@@ -83,6 +83,12 @@ struct QcItemDefinition
     static constexpr int maxStackLimit = 999;
     /*! Food points of a full player. */
     static constexpr int maxFood = 20;
+    /*! Saturation of a new and of a respawned player (the reference's 5, decision E-1001). */
+    static constexpr double spawnSaturation = 5.0;
+    /*! Saturation modifier of food that names none (the reference's most common one). */
+    static constexpr double defaultSaturationModifier = 0.6;
+    /*! The largest saturation modifier of food. */
+    static constexpr double maxSaturationModifier = 2.0;
 
     /*! Qualified name (\c {"name"}, required). */
     QString name;
@@ -131,6 +137,10 @@ struct QcItemDefinition
     double attackDamage = 1.0;
     /*! Food points restored when eaten (a full player has 20); 0 for items that are not food. */
     int food = 0;
+    /*! Saturation modifier when eaten (decision E-1001, \c {"saturation"}, 0 to
+        maxSaturationModifier, default 0.6): eating gives food × saturation × 2 hidden saturation,
+        like the reference (bread 0.6, cooked beef 0.8, raw cod 0.1). Server side only. */
+    double saturation = defaultSaturationModifier;
     /*! Seconds the item burns as fuel in a machine; 0 for items that are no fuel. */
     double fuelSeconds = 0.0;
     /*! Groups the item belongs to ("qtcraft:planks"); recipes accept any member of "#group". */

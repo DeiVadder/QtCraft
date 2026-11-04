@@ -3,8 +3,11 @@
 
 #pragma once
 
+#include <QString>
+
 #include <functional>
 
+class QcServerDimension;
 class QcChunkStreaming;
 class QcPlayerHealth;
 class QcServerGameModes;
@@ -45,6 +48,11 @@ private:
     // Restores a saved player; false when there is none (or no storage). Closes the connection
     // when the saved data cannot be read.
     [[nodiscard]] bool restore(QcServerClient &client);
+    // Puts a player who rejoined in the dimension of his file, or back where he belongs; while that
+    // cannot open he plays from the world spawn and keeps the place (decision E-989).
+    void placeInDimension(QcServerClient &client);
+    // Returns the dimension `dimension`, opened for `client`; null, with a warning, when it cannot.
+    [[nodiscard]] QcServerDimension *openToPlay(const QcServerClient &client, const QString &dimension);
     void sendWelcome(QcServerClient &client, bool rejoined);
     // The first problems found while opening the world (missing mods, unknown blocks).
     void sendOpenWarnings(QcServerClient &client) const;

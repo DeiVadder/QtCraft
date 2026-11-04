@@ -215,6 +215,10 @@ struct Steering
     QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! On the ground, stops at edges deeper than sneakEdgeDepth instead of dropping off. */
     bool keepsToEdges = false;
+    /*! Factor on the velocity of its jump (jump boost, decision E-992). */
+    double jumpFactor = 1.0;
+    /*! The fastest it falls out of liquids in m/s (slow falling), 0 for terminalVelocity. */
+    double maxFallSpeed = 0.0;
 };
 
 /*! Returns the share of its horizontal velocity a body on ground of \a slipperiness keeps per

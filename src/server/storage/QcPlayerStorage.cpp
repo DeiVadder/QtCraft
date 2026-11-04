@@ -27,9 +27,12 @@ namespace {
 // effects (decision E-450); version 7 adds the enchantment seed (decision E-864), version 8 the rune
 // seed (decision E-884), version 9 the advancements (decision E-923; QcAdvancementProgress::bytes as
 // one byte array, so a later format of it is skipped as a whole), version 10 the air under water
-// (decision E-955). Version 5 is read without effects, 5 and 6 without seeds, 7 without rune
-// seed, 5 to 9 with a full breath; files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 10;
+// (decision E-955), version 11 the dimension and the return location (decisions E-978, E-989),
+// version 12 the extra health of absorption and the saturation (decisions E-992, E-1001). Version 5
+// is read without effects, 5 and 6 without seeds, 7 without rune seed, 5 to 9 with a full breath,
+// 5 to 10 in the overworld, 5 to 11 without extra health and with the saturation of a new player;
+// files of older development versions are refused (decision E-356).
+constexpr quint16 playerVersion = 12;
 constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -98,6 +101,13 @@ public:
             }
             player.effects = std::move(*effects);
         }
+        return readLater(version, std::move(player));
+    }
+
+    // `player` with what files of `version` added after version 6: seeds, advancements, air,
+    // dimension, extra health, saturation.
+    [[nodiscard]] QcPlayerData readLater(quint16 version, QcPlayerData player)
+    {
         if (version >= 7) {
             m_stream >> player.enchantSeed;
         }
@@ -120,12 +130,32 @@ public:
             m_stream >> air;
             player.air = std::clamp(air, 0, QcAirSupply::maxAir);
         }
+        if (version >= 11) {
+            m_stream >> player.dimension;
+            readReturn(player);
+        }
+        if (version >= 12) {
+            m_stream >> player.absorption >> player.saturation;
+        }
         return player;
     }
 
     [[nodiscard]] QStringList takeWarnings() { return m_warnings.takeTexts(); }
 
 private:
+    // Where the player returns to, if the file names a place (decision E-989).
+    void readReturn(QcPlayerData &player)
+    {
+        bool hasReturn = false;
+        m_stream >> hasReturn;
+        if (!hasReturn) {
+            return;
+        }
+        QcPlayerReturn back;
+        m_stream >> back.dimension >> back.position.x >> back.position.y >> back.position.z >> back.yaw >> back.pitch;
+        player.returnTo = std::move(back);
+    }
+
     // The armour slots and the inventory with the pieces that no longer fit their slot.
     struct Worn
     {
@@ -275,6 +305,13 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     stream << static_cast<qint32>(player.experience.level()) << static_cast<qint32>(player.experience.points());
     QcStatusEffects::write(stream, player.effects);
     stream << player.enchantSeed << player.runeSeed << player.advancements.bytes() << static_cast<qint32>(player.air);
+    stream << player.dimension;
+    stream << player.returnTo.has_value();
+    if (player.returnTo) {
+        const QcPlayerReturn &back = *player.returnTo;
+        stream << back.dimension << back.position.x << back.position.y << back.position.z << back.yaw << back.pitch;
+    }
+    stream << player.absorption << player.saturation;
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
@@ -349,8 +386,16 @@ bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
     constexpr double verticalMargin = 64.0;
     // A player saved while falling through the void may be far below it, down to where bodies stop
     // sinking (decision E-288).
-    const bool inWorld = finite(m.position) && std::abs(m.position.x) <= horizontalLimit && std::abs(m.position.z) <= horizontalLimit
-                         && m.position.y >= QcWorld::voidFloorY - verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
-    const bool directionOk = std::isfinite(player.yaw) && std::isfinite(player.pitch) && std::abs(player.pitch) <= 90.0f;
-    return inWorld && finite(m.velocity) && directionOk && std::isfinite(player.health) && std::isfinite(player.exhaustion);
+    const auto inWorld = [&](const QcVec3 &p) {
+        return finite(p) && std::abs(p.x) <= horizontalLimit && std::abs(p.z) <= horizontalLimit && p.y >= QcWorld::voidFloorY - verticalMargin
+               && p.y <= QcWorld::worldHeight + verticalMargin;
+    };
+    const auto directionOk = [](float yaw, float pitch) { return std::isfinite(yaw) && std::isfinite(pitch) && std::abs(pitch) <= 90.0f; };
+    const auto nameOk = [](const QString &name) { return !name.isEmpty() && name.size() <= QcDimensionDefinition::maxNameLength; };
+    const QcPlayerReturn *back = player.returnTo ? &*player.returnTo : nullptr;
+    const bool returnOk = !back || (nameOk(back->dimension) && inWorld(back->position) && directionOk(back->yaw, back->pitch));
+    const bool dimensionOk = nameOk(player.dimension) && returnOk;
+    return inWorld(m.position) && finite(m.velocity) && directionOk(player.yaw, player.pitch) && dimensionOk && std::isfinite(player.health)
+           && std::isfinite(player.exhaustion)
+           && std::isfinite(player.absorption) && player.absorption >= 0.0;
 }

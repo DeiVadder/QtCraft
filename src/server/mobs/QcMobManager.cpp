@@ -4,6 +4,7 @@
 #include "server/mobs/QcMobManager.h"
 
 #include "common/core/QcWorldConstants.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
 #include "server/core/QcServerLogging.h"
@@ -109,7 +110,7 @@ quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint
     }
     // Only creatures that are saved have a persistent id (decision E-420).
     if (mob.persistent) {
-        mob.uid = m_nextUid++;
+        mob.uid = (*m_nextUid)++;
     }
     m_mobs.append(std::move(mob));
     ++m_generation;
@@ -121,10 +122,15 @@ QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength, doub
     return away * (knockbackSpeed * strength) + QcVec3{0.0, knockbackLift * std::min(strength, 1.0) * lift, 0.0};
 }
 
+double QcMobManager::resisted(const QcCreature &mob, double amount) const
+{
+    return mob.effects ? amount * QcEffectRules::damageShare(*m_content, mob.effects->all()) : amount;
+}
+
 std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow &blow)
 {
-    const double amount = blow.damage;
     const auto it = std::ranges::find(m_mobs, blow.creature, &QcCreature::id);
+    const double amount = it == m_mobs.end() ? blow.damage : resisted(*it, blow.damage);
     const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->hurt.wouldTake(amount);
     if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
@@ -219,7 +225,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::wound(quint32 mobId, double amoun
     if (it == m_mobs.end()) {
         return std::nullopt;
     }
-    return woundAt(it - m_mobs.begin(), amount);
+    return woundAt(it - m_mobs.begin(), resisted(*it, amount));
 }
 
 std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double amount)
@@ -366,7 +372,7 @@ void QcMobManager::keep(QcCreature &mob, bool kept)
     }
     if (keeps && !mob.persistent) {
         mob.persistent = true;
-        mob.uid = m_nextUid++;
+        mob.uid = (*m_nextUid)++;
     } else if (!keeps && mob.persistent) {
         mob.persistent = false;
         mob.uid = 0;
@@ -437,7 +443,7 @@ quint64 QcMobManager::uniqueUid(quint64 saved, const QSet<quint64> &taken)
         return saved;
     }
 
-    const quint64 uid = m_nextUid++;
+    const quint64 uid = (*m_nextUid)++;
     qCWarning(lcServer).noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
     return uid;
 }
@@ -597,7 +603,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.keptForBlock = stored.keptForBlock && mob.carried != qcAirBlockId;
         // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this
         // only guards against a world.json put back by hand.
-        m_nextUid = std::max(m_nextUid, stored.uid + 1);
+        *m_nextUid = std::max(*m_nextUid, stored.uid + 1);
         mob.uid = uniqueUid(stored.uid, uids);
         uids.insert(mob.uid);
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {

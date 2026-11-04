@@ -94,6 +94,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
+    core/QcPlayerScreen.h
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcSaveSchedule.h core/QcSaveSchedule.cpp
     core/QcServer.h core/QcServer.cpp
@@ -110,6 +111,12 @@ target_sources(qc_server PRIVATE
     core/QcServerVehicles.h core/QcServerVehicles.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
+)
+target_sources(qc_server PRIVATE
+    dimensions/QcDimensions.h dimensions/QcDimensions.cpp
+    dimensions/QcPerDimension.h
+    dimensions/QcPlayerTravel.h dimensions/QcPlayerTravel.cpp
+    dimensions/QcServerDimension.h dimensions/QcServerDimension.cpp
 )
 target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
@@ -146,6 +153,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
+    gameplay/QcMovementEpochs.h gameplay/QcMovementEpochs.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
     gameplay/QcSafeSpot.h gameplay/QcSafeSpot.cpp
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
@@ -233,6 +241,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     mobs/QcCreatureBodies.h mobs/QcCreatureBodies.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
+    mobs/QcDimensionDepartures.h mobs/QcDimensionDepartures.cpp
     mobs/QcInfestation.h mobs/QcInfestation.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
@@ -286,6 +295,7 @@ target_sources(qc_server PRIVATE
     signal/QcCircuitPlan.h
     signal/QcCircuitState.h signal/QcCircuitState.cpp
     signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
+    signal/QcDaylightSensors.h signal/QcDaylightSensors.cpp
     signal/QcDispenserActions.h signal/QcDispenserActions.cpp
     signal/QcDustNetwork.h signal/QcDustNetwork.cpp
     signal/QcHopperQueue.h signal/QcHopperQueue.cpp
@@ -330,6 +340,7 @@ target_sources(qc_server PRIVATE
     storage/QcItemDataCodec.h storage/QcItemDataCodec.cpp
     storage/QcLoadWarnings.h
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
+    storage/QcPlayerReturn.h
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
     storage/QcRegionFile.h storage/QcRegionFile.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp

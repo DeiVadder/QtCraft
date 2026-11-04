@@ -27,7 +27,7 @@ void QcSaveSchedule::autosave()
     // A failed save in the background is told to everyone once per streak of failures (review of 31.3).
     if (const std::optional<QcStatus> failed = m_persistence.takeNewFailure()) {
         qCWarning(lcServer) << "Autosave failed:" << failed->error();
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"), {failed->error()}));
         }
     }

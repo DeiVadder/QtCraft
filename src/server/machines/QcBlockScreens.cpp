@@ -30,6 +30,11 @@ QcBlockScreens::QcBlockScreens(QcServerState &state, QcServerBlocks &blocks, QcS
 {
 }
 
+QcBlockScreens::Viewers &QcBlockScreens::here() const
+{
+    return m_perDimension.of(m_state.current());
+}
+
 QcBlockEntities::Machine *QcBlockScreens::openMachineOf(const QcServerClient &client)
 {
     if (!client.screen.open) {
@@ -277,6 +282,13 @@ void QcBlockScreens::endTrade(QcServerClient &client)
     client.connection->send(QcMsg::CloseTrade{});
 }
 
+void QcBlockScreens::closeAll(QcServerClient &client)
+{
+    closeOtherScreens(client);
+    close(client, true);
+    client.screen.sign.reset();
+}
+
 void QcBlockScreens::close(QcServerClient &client, bool notify)
 {
     if (!hasScreen(client)) {
@@ -378,7 +390,7 @@ void QcBlockScreens::updateViewers()
     }
 
     // Those looked into now and those nobody looks into any more.
-    QHash<QcBlockPos, int> changed = m_viewers;
+    QHash<QcBlockPos, int> changed = here().viewers;
     changed.insert(viewers);
     for (auto it = changed.cbegin(); it != changed.cend(); ++it) {
         const std::optional<QcBlockId> block = m_state.world().blockAt(it.key());
@@ -387,7 +399,7 @@ void QcBlockScreens::updateViewers()
             m_blocks.setAndBroadcast(it.key(), m_state.content().withProperty(*block, u"power"_s, power));
         }
     }
-    m_viewers = std::move(viewers);
+    here().viewers = std::move(viewers);
 }
 
 void QcBlockScreens::releaseViewers(QcServerState &state, QcChunkPos chunk)

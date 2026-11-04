@@ -24,8 +24,8 @@ struct QcServerClient;
 class QcSpawnPoint
 {
 public:
-    /*! The clients of the server. */
-    using Clients = std::vector<std::unique_ptr<QcServerClient>>;
+    /*! The clients in the dimension of the spawn. */
+    using Clients = std::vector<QcServerClient *>;
 
     QcSpawnPoint(QcServerWorld &world, const QcServerConfig &config, const Clients &clients);
 

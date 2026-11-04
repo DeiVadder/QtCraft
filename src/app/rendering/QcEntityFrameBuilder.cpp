@@ -19,6 +19,7 @@
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/world/QcLightVolume.h"
 
 #include <algorithm>
@@ -190,12 +191,17 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     }
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held, pose.drawProgress);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
-    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
+    const bool invisible = (entity.flags & QcMsg::Invisible) != 0;
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour, 0, invisible}, body, placement, frame.uv);
 }
 
 void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
                                              const EntityFrame &frame, const QcEntityPose &pose)
 {
+    if ((entity.flags & QcMsg::Invisible) != 0) {
+        return;
+    }
+
     // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
     const QcMobDefinition *creature = entity.creature(frame.content);
     const bool ownParts = creature && !creature->parts.isEmpty();
@@ -419,7 +425,8 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeLift = cape.lift;
         body.capeSway = cape.sway;
     }
-    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
+    const bool invisible = QcEffectRules::invisible(frame.content, session.vitals().effects());
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour, 0, invisible}, body,
                                 {feet, yaw, entityLight(frame.world, feet), pose.hurtProgress >= 0.0}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});

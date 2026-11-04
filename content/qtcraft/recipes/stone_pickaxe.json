@@ -7,7 +7,7 @@
         " | "
     ],
     "key": {
-        "X": "cobblestone",
+        "X": "#stone_crafting_materials",
         "|": "stick"
     },
     "result": {

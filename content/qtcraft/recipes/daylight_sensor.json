@@ -1,0 +1,17 @@
+{
+    "name": "daylight_sensor",
+    "type": "shaped",
+    "pattern": [
+        "ggg",
+        "qqq",
+        "sss"
+    ],
+    "key": {
+        "g": "glass",
+        "q": "quartz",
+        "s": "#wooden_slabs"
+    },
+    "result": {
+        "item": "daylight_sensor"
+    }
+}

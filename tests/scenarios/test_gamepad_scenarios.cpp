@@ -635,6 +635,10 @@ private slots:
         QcGamepadControls &controls = m_control->gamepadControls();
         const QcVirtualGamepadSource &pads = m_control->virtualGamepads();
         usePad();
+        // The server runs in real time and a full bar with saturation heals every 0.5 s
+        // (decision E-1001): below 18 food points nothing heals between the fall and the
+        // comparison after the rejoin.
+        chat(u"/feed 17"_s);
         QVERIFY(fall());
         ticks(1);
         const double hurt = m_session->vitals().health();
@@ -667,6 +671,7 @@ private slots:
         QVERIFY(request({{u"cmd"_s, u"waitUntilReady"_s}}).value(u"ok"_s).toBool());
         settle();
         chat(u"/heal"_s);
+        chat(u"/feed"_s);
     }
 };
 

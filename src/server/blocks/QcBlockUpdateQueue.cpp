@@ -39,6 +39,11 @@ struct SourceCheck
 
 } // namespace
 
+QcBlockUpdateQueue::Queues &QcBlockUpdateQueue::here() const
+{
+    return m_queues.of(m_state.current());
+}
+
 struct QcBlockUpdateQueue::BorderScan
 {
     const QcChunk &chunk;
@@ -75,18 +80,18 @@ void QcBlockUpdateQueue::queue(QcBlockPos pos)
 
     if (!m_commandMode) {
         // Also when the command queue holds it: the player's change must not wait behind a backlog.
-        if (!m_queuedPlayerUpdates.contains(pos)) {
-            m_queuedPlayerUpdates.insert(pos);
-            m_playerUpdates.push_back(pos);
+        if (!here().queuedPlayerUpdates.contains(pos)) {
+            here().queuedPlayerUpdates.insert(pos);
+            here().playerUpdates.push_back(pos);
         }
         return;
     }
 
-    if (m_queuedPlayerUpdates.contains(pos) || m_queuedCommandUpdates.contains(pos)) {
+    if (here().queuedPlayerUpdates.contains(pos) || here().queuedCommandUpdates.contains(pos)) {
         return;
     }
 
-    if (std::cmp_greater_equal(m_commandUpdates.size(), m_state.config().limits.commandBlockUpdates)) {
+    if (std::cmp_greater_equal(here().commandUpdates.size(), m_state.config().limits.commandBlockUpdates)) {
         // Bounded memory and save size; a block whose update was dropped is checked again
         // by the next change next to it.
         if (m_dropped++ == 0) {
@@ -95,8 +100,8 @@ void QcBlockUpdateQueue::queue(QcBlockPos pos)
         return;
     }
 
-    m_queuedCommandUpdates.insert(pos);
-    m_commandUpdates.push_back(pos);
+    here().queuedCommandUpdates.insert(pos);
+    here().commandUpdates.push_back(pos);
 }
 
 void QcBlockUpdateQueue::queueNeighbours(QcBlockPos pos, bool self)
@@ -112,15 +117,15 @@ void QcBlockUpdateQueue::queueNeighbours(QcBlockPos pos, bool self)
 
 std::optional<QcBlockUpdateQueue::Update> QcBlockUpdateQueue::takeNext()
 {
-    const bool fromCommand = m_playerUpdates.empty();
-    std::deque<QcBlockPos> &pending = fromCommand ? m_commandUpdates : m_playerUpdates;
+    const bool fromCommand = here().playerUpdates.empty();
+    std::deque<QcBlockPos> &pending = fromCommand ? here().commandUpdates : here().playerUpdates;
     if (pending.empty()) {
         return std::nullopt;
     }
 
     const QcBlockPos pos = pending.front();
     pending.pop_front();
-    (fromCommand ? m_queuedCommandUpdates : m_queuedPlayerUpdates).remove(pos);
+    (fromCommand ? here().queuedCommandUpdates : here().queuedPlayerUpdates).remove(pos);
     ++m_processed;
     return Update{pos, fromCommand};
 }
@@ -128,11 +133,11 @@ std::optional<QcBlockUpdateQueue::Update> QcBlockUpdateQueue::takeNext()
 void QcBlockUpdateQueue::forgetChunk(QcChunkPos chunk)
 {
     const auto inChunk = [chunk](QcBlockPos pos) { return pos.chunk() == chunk; };
-    std::erase_if(m_playerUpdates, inChunk);
-    std::erase_if(m_commandUpdates, inChunk);
-    m_queuedPlayerUpdates.removeIf(inChunk);
-    m_queuedCommandUpdates.removeIf(inChunk);
-    m_waitingCount -= m_waitingUpdates.take(chunk).size();
+    std::erase_if(here().playerUpdates, inChunk);
+    std::erase_if(here().commandUpdates, inChunk);
+    here().queuedPlayerUpdates.removeIf(inChunk);
+    here().queuedCommandUpdates.removeIf(inChunk);
+    here().waitingCount -= here().waitingUpdates.take(chunk).size();
 }
 
 QHash<QcChunkPos, QList<QcBlockPos>> QcBlockUpdateQueue::takeChunks(const QSet<QcChunkPos> &chunks)
@@ -145,14 +150,14 @@ QHash<QcChunkPos, QList<QcBlockPos>> QcBlockUpdateQueue::takeChunks(const QSet<Q
         taken[pos.chunk()].append(pos);
         return true;
     };
-    std::erase_if(m_playerUpdates, take);
-    std::erase_if(m_commandUpdates, take);
+    std::erase_if(here().playerUpdates, take);
+    std::erase_if(here().commandUpdates, take);
     const auto inChunks = [&chunks](QcBlockPos pos) { return chunks.contains(pos.chunk()); };
-    m_queuedPlayerUpdates.removeIf(inChunks);
-    m_queuedCommandUpdates.removeIf(inChunks);
+    here().queuedPlayerUpdates.removeIf(inChunks);
+    here().queuedCommandUpdates.removeIf(inChunks);
     for (const QcChunkPos &chunk : chunks) {
-        const QSet<QcBlockPos> waiting = m_waitingUpdates.take(chunk);
-        m_waitingCount -= waiting.size();
+        const QSet<QcBlockPos> waiting = here().waitingUpdates.take(chunk);
+        here().waitingCount -= waiting.size();
         if (!waiting.isEmpty()) {
             QList<QcBlockPos> &list = taken[chunk];
             for (const QcBlockPos &pos : waiting) {
@@ -166,18 +171,18 @@ QHash<QcChunkPos, QList<QcBlockPos>> QcBlockUpdateQueue::takeChunks(const QSet<Q
 
 void QcBlockUpdateQueue::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
 {
-    if (m_waitingCount < m_state.config().limits.waitingBlockUpdates) {
-        QSet<QcBlockPos> &waiting = m_waitingUpdates[chunk];
+    if (here().waitingCount < m_state.config().limits.waitingBlockUpdates) {
+        QSet<QcBlockPos> &waiting = here().waitingUpdates[chunk];
         const qsizetype before = waiting.size();
         waiting.insert(pos);
-        m_waitingCount += waiting.size() - before;
+        here().waitingCount += waiting.size() - before;
     }
 }
 
 QList<QcBlockPos> QcBlockUpdateQueue::waitingUpdates() const
 {
     QList<QcBlockPos> positions;
-    for (const QSet<QcBlockPos> &waiting : std::as_const(m_waitingUpdates)) {
+    for (const QSet<QcBlockPos> &waiting : std::as_const(here().waitingUpdates)) {
         positions.append(QList<QcBlockPos>(waiting.begin(), waiting.end()));
     }
     return positions;
@@ -197,12 +202,12 @@ void QcBlockUpdateQueue::handleLoadedChunks()
         m_state.circuits().chunkLoaded(m_state.world(), chunk);
 
         m_commandMode = true;
-        if (const auto waiting = m_waitingUpdates.constFind(chunk); waiting != m_waitingUpdates.constEnd()) {
+        if (const auto waiting = here().waitingUpdates.constFind(chunk); waiting != here().waitingUpdates.constEnd()) {
             for (const QcBlockPos &pos : *waiting) {
                 queue(pos);
             }
-            m_waitingCount -= waiting->size();
-            m_waitingUpdates.erase(waiting);
+            here().waitingCount -= waiting->size();
+            here().waitingUpdates.erase(waiting);
         }
 
         constexpr std::array<QcBlockFace, 4> sides = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};

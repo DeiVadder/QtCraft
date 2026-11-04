@@ -1,0 +1,8 @@
+{
+    "name": "polished_basalt_from_basalt",
+    "input": "basalt",
+    "result": {
+        "item": "polished_basalt",
+        "count": 1
+    }
+}

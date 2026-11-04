@@ -208,17 +208,20 @@ QMap<QString, double> weatherValues()
     };
 }
 
-// Food, exhaustion, regeneration and starvation.
+// Food, saturation, exhaustion, regeneration and starvation.
 QMap<QString, double> hungerValues()
 {
     return {
         {u"hunger.maxFood"_s, QcHunger::maxFood},
         {u"hunger.regenerationFood"_s, QcHunger::regenerationFood},
         {u"hunger.regenerationInterval"_s, QcHunger::regenerationInterval},
+        {u"hunger.fastRegenerationInterval"_s, QcHunger::fastRegenerationInterval},
+        {u"hunger.spawnSaturation"_s, QcHunger::spawnSaturation},
         {u"hunger.exhaustionPerFood"_s, QcHunger::exhaustionPerFood},
         {u"hunger.starvationInterval"_s, QcHunger::starvationInterval},
         {u"hunger.starvationFloor"_s, QcHunger::starvationFloor},
         {u"hunger.regenerationFoodPerHealth"_s, QcHunger::regenerationExhaustion / QcHunger::exhaustionPerFood},
+        {u"hunger.fastRegenerationFoodPerHealth"_s, QcHunger::fastRegenerationExhaustion / QcHunger::exhaustionPerFood},
         {u"hunger.walkMinutesForFullBar"_s,
          std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
         {u"hunger.sprintMinutesForFullBar"_s,

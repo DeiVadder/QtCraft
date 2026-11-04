@@ -9,6 +9,21 @@
 
 #include <cmath>
 
+/*! \brief What the status effects of a player do to his steps (QcEffectRules::movement, decision
+    E-992): QcEntityMotion::stepPlayer steps with them, alike on the client and on the server.
+    \qcfields */
+struct QcMovementEffects
+{
+    /*! Factor on his speed (speed, slowness). */
+    float speed = 1.0f;
+    /*! Factor on the velocity of his jump (jump boost). */
+    float jump = 1.0f;
+    /*! The fastest he falls in m/s (slow falling), 0 for no limit. */
+    float maxFallSpeed = 0.0f;
+
+    bool operator==(const QcMovementEffects &) const = default;
+};
+
 /*! \brief Movement intent for one simulation tick, sent from client to server. */
 struct QcPlayerInput
 {
@@ -41,12 +56,17 @@ struct QcPlayerInput
         input with it even when it knows of no draw, so that client and server agree on every
         input; it also slows a player it knows to draw when this is not set. */
     bool usingItem = false;
-    /*! The factor of the status effects on the player's speed (slowness, decision E-838), set by
-        the side that steps the input: the server from the player's effects, the client from
-        those the server told it. Never sent. */
-    float speedFactor = 1.0f;
+    /*! The count of the changes of what status effects do to the player's moving
+        (QcMsg::PlayerHealth::movementEpoch) that this input was predicted with (decision E-992).
+        Sent, and the server steps the input with the effects of that count (QcMovementEpochs), so
+        an effect changes the move of the same input on both sides, however late the client hears
+        of it. */
+    quint16 movementEpoch = 0;
+    /*! What the player's status effects do to this step, set by the side that steps the input:
+        the client from those the server told it, the server by \c {movementEpoch}. Never sent. */
+    QcMovementEffects effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! The push of the creatures the player overlaps (decision E-882), a horizontal velocity in
-        m/s added to his move, set like speedFactor by the side that steps the input: the server
+        m/s added to his move, set like \c {effects} by the side that steps the input: the server
         from its creatures, the client from those it knows (QcPushBodies). Never sent. */
     QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 

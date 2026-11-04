@@ -161,7 +161,7 @@ void QcServerCommands::say(const QcCommandContext &context)
 void QcServerCommands::sendToAll(const QString &sender, const QcMsg::ChatMessage &line)
 {
     m_chatLog.add(sender, line);
-    for (const auto &other : m_state.clients()) {
+    for (const auto &other : m_state.allClients()) {
         if (other->state == QcServerClient::State::Playing) {
             other->connection->send(line);
         }

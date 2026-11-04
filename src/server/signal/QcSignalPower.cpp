@@ -13,7 +13,7 @@ bool isSource(QcSignalKind kind)
 {
     return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Plate || kind == QcSignalKind::Torch
            || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator || kind == QcSignalKind::Observer
-           || kind == QcSignalKind::Constant || kind == QcSignalKind::Target
+           || kind == QcSignalKind::Constant || kind == QcSignalKind::Target || kind == QcSignalKind::Daylight
            || kind == QcSignalKind::Hook || kind == QcSignalKind::Viewers;
 }
 
@@ -51,6 +51,7 @@ int QcSignalPower::directPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Plate:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Daylight:
     case QcSignalKind::Hook:
     case QcSignalKind::Viewers:
         return state.power;

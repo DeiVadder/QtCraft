@@ -255,9 +255,12 @@ public:
     void release(QcCreature &child);
     /*! Returns the persistent id the next saved creature gets (QcCreature::uid); world.json
         keeps it. Setting never lowers it below an id already given. */
-    quint64 nextUid() const { return m_nextUid; }
+    quint64 nextUid() const { return *m_nextUid; }
+    /*! Takes the uids from \a next from now on, which the creatures of every dimension share
+        (decision E-988); it outlives this manager. */
+    void shareUids(quint64 &next) { m_nextUid = &next; }
     /*! Sets nextUid() to \a next, unless that is lower. */
-    void setNextUid(quint64 next) { m_nextUid = std::max(m_nextUid, next); }
+    void setNextUid(quint64 next) { *m_nextUid = std::max(*m_nextUid, next); }
     /*! Returns the number of mobs that are not dormant. */
     qsizetype awakeCount() const;
     /*! Returns the number of mobs that are not dormant and came by /summon. */
@@ -280,6 +283,8 @@ public:
     QcCreature *find(quint32 id);
 
 private:
+    // What is left of a hit of `amount` after the resistance of `mob` (decision E-992).
+    double resisted(const QcCreature &mob, double amount) const;
     // A wild creature of a pack (QcMobDefinition::packRange, decision E-480) struck by `attacker`:
     // the wild ones of its kind within the range turn on that player too.
     void angerPack(const QcCreature &mob, quint32 attacker);
@@ -310,7 +315,8 @@ private:
     // (m_bodies) knows when its grid is out of date between two ticks.
     quint64 m_generation = 0;
     QSet<QcChunkPos> m_populated;
-    quint64 m_nextUid = 1;
+    quint64 m_ownNextUid = 1;
+    quint64 *m_nextUid = &m_ownNextUid;
     bool m_naturalSpawning = true;
     float m_rain = 0.0f;
     float m_thunder = 0.0f;

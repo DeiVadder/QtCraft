@@ -1,0 +1,9 @@
+{
+    "name": "cracked_polished_blackstone_bricks",
+    "input": "polished_blackstone_bricks",
+    "result": {
+        "item": "cracked_polished_blackstone_bricks"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

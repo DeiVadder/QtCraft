@@ -19,6 +19,7 @@
 class QcClientEntities;
 class QcClientGameMode;
 class QcClientInventory;
+class QcClientVitals;
 class QcClientWorld;
 class QcContentRegistry;
 class QcPrediction;
@@ -83,6 +84,8 @@ public:
         const QcClientInventory &inventory;
         /*! The entity mirror. */
         const QcClientEntities &entities;
+        /*! The player's health and status effects. */
+        const QcClientVitals &vitals;
     };
 
     /*! \a view: what the hand reads of the player and the world; \a gameMode: the rules and the

@@ -1,0 +1,8 @@
+{
+    "name": "saturation",
+    "icon": "cooked_beef",
+    "colour": "#f82423",
+    "food": 1,
+    "saturation": 2,
+    "periodTicks": 1
+}

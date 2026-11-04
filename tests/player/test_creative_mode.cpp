@@ -332,7 +332,7 @@ private slots:
     void frozenHungerIgnoresExhaustionAndStarvation()
     {
         QcHunger hunger;
-        hunger.restore(0, 0.0);
+        hunger.restore(0, 0.0, 0.0);
         hunger.setFrozen(true);
         hunger.exhaust(100.0);
         QCOMPARE(hunger.food(), 0);
@@ -585,6 +585,7 @@ private slots:
         QcPlayerData player = *storage.readPlayer(u"Raw"_s)->player;
         player.food = 3;
         player.exhaustion = QcHunger::exhaustionPerFood - 0.01;
+        player.saturation = 0.0;
         QVERIFY(storage.writePlayer(u"Raw"_s, player));
 
         join(savedIn(directory));

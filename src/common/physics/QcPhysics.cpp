@@ -430,9 +430,10 @@ double QcEntityMotion::airVelocityY(const Steering &steering, BodySize size, con
     double velocityY = velocity.y;
     if (steering.jump && onGround) {
         // Mud keeps a jump low (decision E-207).
-        velocityY = jumpVelocity * surfaceUnder(world, position).jump;
+        velocityY = jumpVelocity * surfaceUnder(world, position).jump * steering.jumpFactor;
     }
-    velocityY = std::max(velocityY - gravity * dt, -terminalVelocity);
+    const double fastest = steering.maxFallSpeed > 0.0 ? std::min(steering.maxFallSpeed, terminalVelocity) : terminalVelocity;
+    velocityY = std::max(velocityY - gravity * dt, -fastest);
 
     if (climbing) {
         velocityY = std::max(velocityY, steering.hold ? 0.0 : -climbDownSpeed);
@@ -614,10 +615,18 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
     } else if (input.sprints()) {
         speed = sprintSpeed;
     }
-    speed *= std::clamp(static_cast<double>(input.speedFactor), 0.0, 4.0);
+    speed *= std::clamp(static_cast<double>(input.effects.speed), 0.0, 4.0);
     if (wadesAgainstBank(*this, wish, world)) {
         velocity.y = std::max(velocity.y, liquidExitSpeed);
     }
 
-    step({.wish = wish, .speed = speed, .jump = input.jump, .hold = input.sneak, .push = input.push, .keepsToEdges = input.sneak}, {playerWidth, playerHeight}, world, dt);
+    step({.wish = wish,
+          .speed = speed,
+          .jump = input.jump,
+          .hold = input.sneak,
+          .push = input.push,
+          .keepsToEdges = input.sneak,
+          .jumpFactor = static_cast<double>(input.effects.jump),
+          .maxFallSpeed = static_cast<double>(input.effects.maxFallSpeed)},
+         {playerWidth, playerHeight}, world, dt);
 }

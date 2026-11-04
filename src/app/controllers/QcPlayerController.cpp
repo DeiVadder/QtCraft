@@ -107,7 +107,8 @@ QVariantList QcPlayerController::effects() const
     }
     for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
         const QcEffectDefinition *definition = content->effect(effect.name);
-        if (!definition) {
+        // An instant effect lasts a tick: nothing to show.
+        if (!definition || definition->instant) {
             continue;
         }
         const QString label = content->translations().translate(definition->translationKey, m_settings.contentLanguage());
@@ -134,6 +135,26 @@ QString QcPlayerController::heartColour() const
     for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
         const QcEffectDefinition *definition = content->effect(effect.name);
         if (definition && definition->tintsHearts) {
+            return QColor(static_cast<QRgb>(definition->colour)).name();
+        }
+    }
+    return {};
+}
+
+double QcPlayerController::absorption() const
+{
+    return m_parts.session ? m_parts.session->vitals().absorption() : 0.0;
+}
+
+QString QcPlayerController::absorptionColour() const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    if (!content) {
+        return {};
+    }
+    for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
+        const QcEffectDefinition *definition = content->effect(effect.name);
+        if (definition && definition->absorption > 0.0) {
             return QColor(static_cast<QRgb>(definition->colour)).name();
         }
     }

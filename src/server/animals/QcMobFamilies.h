@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "server/dimensions/QcPerDimension.h"
+#include "server/mobs/QcDimensionDepartures.h"
 #include "server/mobs/QcMobManager.h"
 
 #include <QList>
@@ -36,9 +38,6 @@ public:
     static constexpr double splitLift = 5.0;
 
     QcMobFamilies(QcServerState &state, QcServerSounds &sounds);
-    ~QcMobFamilies();
-    QcMobFamilies(const QcMobFamilies &) = delete;
-    QcMobFamilies &operator=(const QcMobFamilies &) = delete;
 
     /*! Before the creatures move: the children of parents that left since the last call pop or
         vanish, the parents wounded since their last move split, and kept children note where
@@ -77,7 +76,7 @@ private:
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;
-    QcMobManager::DepartureToken m_departures{};
-    QList<Orphans> m_orphans;
+    QcDimensionDepartures m_departures;
+    QcPerDimension<QList<Orphans>> m_orphans;
     qint64 m_popped = 0;
 };

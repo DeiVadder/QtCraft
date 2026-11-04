@@ -55,6 +55,9 @@ inline constexpr quint16 Sitting = 1024;
 inline constexpr quint16 Drawing = 2048;
 /*! A projectile stuck in a block: it no longer turns with its flight. */
 inline constexpr quint16 Stuck = 4096;
+/*! Under an invisibility effect (decision E-992): the body is not drawn, what it wears and holds
+    is. */
+inline constexpr quint16 Invisible = 8192;
 
 /*! Returns the flag bits of \a pose: Lying, Sitting or none for standing. */
 inline quint16 poseFlags(QcPose pose)

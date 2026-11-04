@@ -12,8 +12,10 @@
     "chaseSpeed": 3.0,
     "hostile": true,
     "burnsInDaylight": true,
+    "undead": true,
     "immuneTo": [
-        "poison"
+        "poison",
+        "regeneration"
     ],
     "abilities": {
         "swims": true,

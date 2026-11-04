@@ -6,6 +6,8 @@
 
 #include <QSet>
 
+#include <functional>
+
 using namespace Qt::StringLiterals;
 
 // What lights fire and what fire does to bodies (stage 34.2, decision E-393): flint and steel lights
@@ -43,6 +45,39 @@ private:
     }
 
     void strike(QcBlockPos target, QcBlockFace face) { send(QcMsg::UseItem{target, face}); }
+
+    // A stone floor under `fire` and the cells east and south of it, and air above it.
+    void levelAround(QcBlockPos fire)
+    {
+        for (int x = 0; x <= 1; ++x) {
+            for (int z = 0; z <= 1; ++z) {
+                set(fire.offset(x, -1, z), "qtcraft:stone");
+                for (int y = 0; y <= 2; ++y) {
+                    clear(fire.offset(x, y, z));
+                }
+            }
+        }
+    }
+
+    // Keeps a fire at `fire` burning between two logs east and south of it (both next to the cell
+    // south east of it) until `done` holds; a fire gone out is lit again with `relight`. Returns
+    // whether `done` came true.
+    bool burnNextToLogs(QcBlockPos fire, const std::function<bool()> &done, bool relight = true)
+    {
+        constexpr int rounds = 400;
+        for (int round = 0; round < rounds && !done(); ++round) {
+            for (const QcBlockPos log : {fire.offset(1, 0, 0), fire.offset(0, 0, 1)}) {
+                if (isAir(log)) {
+                    set(log, "qtcraft:oak_log");
+                }
+            }
+            if (relight && isAir(fire)) {
+                m_server->systems().fire.ignite(fire);
+            }
+            ticks(20);
+        }
+        return done();
+    }
 
     // Lava's block updates: every tick the block north of it changes by command (stone and
     // cobblestone in turn), `rounds` times. Every fire that appears near the lava is noted with its
@@ -138,6 +173,90 @@ private slots:
         // Fire is a spark of the queue, never an orphan waiting for adoption.
         QCOMPARE(m_server->fires().unplannedCount(), 0);
         QVERIFY(m_server->fires().contains(m_feet.offset(2, 0, 0)));
+    }
+
+    // Fire lit on soul sand or soul soil becomes soul fire, which burns on there (decision E-981);
+    // on netherrack it stays fire and burns on as well.
+    void soulGroundTurnsFireIntoSoulFire()
+    {
+        join();
+        holdFlintAndSteel();
+        const QcBlockPos sand = m_feet.offset(2, -1, 0);
+        const QcBlockPos soil = m_feet.offset(-2, -1, 0);
+        const QcBlockPos netherrack = m_feet.offset(0, -1, 2);
+        set(sand, "qtcraft:soul_sand");
+        set(soil, "qtcraft:soul_soil");
+        set(netherrack, "qtcraft:netherrack");
+        for (const QcBlockPos ground : {sand, soil, netherrack}) {
+            strike(ground, QcBlockFace::Up);
+        }
+        QCOMPARE(m_server->world().blockAt(sand.offset(0, 1, 0)), id("qtcraft:soul_fire"));
+        QCOMPARE(m_server->world().blockAt(soil.offset(0, 1, 0)), id("qtcraft:soul_fire"));
+        QVERIFY(isFire(netherrack.offset(0, 1, 0)));
+        for (const QcBlockPos ground : {sand, soil, netherrack}) {
+            QVERIFY(m_server->fires().entry(ground.offset(0, 1, 0))->eternal);
+        }
+
+        // A spark on plain ground stays plain fire.
+        QVERIFY(m_server->systems().fire.ignite(m_feet.offset(0, 0, -2)));
+        QVERIFY(isFire(m_feet.offset(0, 0, -2)));
+        ticks(600);
+        QCOMPARE(m_server->world().blockAt(sand.offset(0, 1, 0)), id("qtcraft:soul_fire"));
+        QVERIFY(isFire(netherrack.offset(0, 1, 0)));
+    }
+
+    // Spreading fire (QcServerFire::light) over soul sand is soul fire, over other ground plain fire.
+    void spreadingFireTurnsIntoSoulFireOnSoulSand()
+    {
+        join();
+        const QcBlockPos fire = m_feet.offset(3, 0, 0);
+        const QcBlockPos air = fire.offset(1, 0, 1);
+        levelAround(fire);
+        set(air.offset(0, -1, 0), "qtcraft:soul_sand");
+        QVERIFY(burnNextToLogs(fire, [this, air] { return !isAir(air); }));
+        QCOMPARE(m_content->stateName(*m_server->world().blockAt(air)), u"qtcraft:soul_fire"_s);
+        QVERIFY(m_server->fires().entry(air)->eternal);
+    }
+
+    // Soul fire that lost its ground burns on and passes on plain fire: only the ground makes soul fire.
+    void soulFireWithoutItsGroundLightsPlainFire()
+    {
+        join();
+        const QcBlockPos fire = m_feet.offset(3, 0, 0);
+        const QcBlockPos ground = fire.offset(0, -1, 0);
+        const QcBlockPos air = fire.offset(1, 0, 1);
+        levelAround(fire);
+        set(ground, "qtcraft:soul_sand");
+        QVERIFY(m_server->systems().fire.ignite(fire));
+        QCOMPARE(m_server->world().blockAt(fire), id("qtcraft:soul_fire"));
+        chat(u"/setblock %1 %2 %3 stone"_s.arg(ground.x).arg(ground.y).arg(ground.z));
+        ticks(1);
+        QVERIFY(!m_server->fires().entry(fire)->eternal);
+
+        const auto child = [this, air, fire] { return !isAir(air) || !isAir(fire.offset(1, 1, 0)) || !isAir(fire.offset(0, 1, 1)); };
+        QVERIFY(burnNextToLogs(fire, child, false));
+        for (const QcBlockPos cell : {air, fire.offset(1, 1, 0), fire.offset(0, 1, 1)}) {
+            QVERIFY(m_server->world().blockAt(cell) != id("qtcraft:soul_fire"));
+        }
+    }
+
+    void soulFireGoesOutWhenItsGroundIsMined()
+    {
+        join();
+        holdFlintAndSteel();
+        const QcBlockPos ground = m_feet.offset(2, -1, 0);
+        const QcBlockPos fire = ground.offset(0, 1, 0);
+        set(ground, "qtcraft:soul_sand");
+        strike(ground, QcBlockFace::Up);
+        QCOMPARE(m_server->world().blockAt(fire), id("qtcraft:soul_fire"));
+
+        chat(u"/gamemode creative"_s);
+        send(QcMsg::StartMining{ground});
+        send(QcMsg::FinishMining{ground});
+        QVERIFY(isAir(ground));
+        ticks(2);
+        QVERIFY(isAir(fire));
+        QVERIFY(!m_server->fires().contains(fire));
     }
 
     void flintAndSteelWearsOutAndCreativeKeepsIt()

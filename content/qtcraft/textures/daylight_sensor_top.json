@@ -1,0 +1,8 @@
+{
+    "name": "daylight_sensor_top",
+    "pattern": "daylight_sensor",
+    "primary": "#d8cfae",
+    "secondary": "#6b5233",
+    "variation": 0.05,
+    "seed": 3171
+}

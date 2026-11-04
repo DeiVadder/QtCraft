@@ -107,15 +107,17 @@ private slots:
         constexpr QcTickSystems::When always = QcTickSystems::When::Always;
         constexpr QcTickSystems::When simulating = QcTickSystems::When::Simulating;
         const std::vector<std::pair<QcTickPhase, QcTickSystems::When>> expected{
-            {Players, always},        {Saving, always},       {ChunkLoading, always},  {BlockUpdates, simulating},
-            {Signal, simulating},     {Liquids, simulating},  {Fire, simulating},      {Weather, simulating},
+            {Players, always},        {Saving, always},       {Saving, always},        {ChunkLoading, always},
+            {BlockUpdates, simulating}, {Signal, simulating}, {Liquids, simulating},   {Fire, simulating},
+            // The world's weather, then what it does in each dimension (decision E-988).
+            {Weather, simulating},    {Weather, simulating},
             {Mobs, simulating},       {Projectiles, simulating}, {Items, simulating},  {Plants, simulating},
             {FallingBlocks, simulating}, {Explosions, simulating}, {Minecarts, simulating}, {Machines, simulating},
             // Chunk loading notes the tick, held maps are revealed, the time goes out in a step of a
-            // frozen world, the clients, the adventure guide (decision E-923), the admin channel
-            // (decision E-848).
+            // frozen world, sign texts, the clients, the adventure guide (decision E-923), the admin
+            // channel (decision E-848).
             {ClientSync, always},     {ClientSync, simulating}, {ClientSync, simulating}, {ClientSync, always},
-            {ClientSync, always},     {ClientSync, always},
+            {ClientSync, always},     {ClientSync, always},     {ClientSync, always},
             {Streaming, always},
         };
 

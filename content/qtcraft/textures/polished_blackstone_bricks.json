@@ -1,0 +1,13 @@
+{
+    "name": "polished_blackstone_bricks",
+    "pattern": "bricks",
+    "primary": "#36303a",
+    "secondary": "#1e1a20",
+    "variation": 0.06,
+    "seed": 8427,
+    "material": {
+        "smoothness": 0.3,
+        "bump": 1.4,
+        "porosity": 0.2
+    }
+}

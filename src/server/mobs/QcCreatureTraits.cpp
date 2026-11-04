@@ -14,17 +14,12 @@ QcCreatureTraits::QcCreatureTraits(QcServerState &state, QcServerSounds &sounds,
     : m_state(state)
     , m_sounds(sounds)
     , m_blocks(blocks)
-{
-    m_departures = m_state.entities().creatures().onDeparture([this](const QcCreature &mob, QcMobManager::Departure why) {
+    , m_departures(state, [this](const QcCreature &mob, QcMobManager::Departure why) {
         if (why == QcMobManager::Departure::Died) {
             dropCarried(mob);
         }
-    });
-}
-
-QcCreatureTraits::~QcCreatureTraits()
+    })
 {
-    m_state.entities().creatures().removeDepartureListener(m_departures);
 }
 
 void QcCreatureTraits::apply()

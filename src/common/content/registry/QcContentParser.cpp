@@ -67,6 +67,34 @@ bool isDetail(const QJsonValue &value)
     return base;
 }
 
+// The fields of a texture definition that hold arrays or objects, checked.
+[[nodiscard]] QcResult<QJsonObject> objectFields(const QJsonObject &json)
+{
+    if (json.contains(u"bitmap"_s) && !isBitmap(json.value(u"bitmap"_s))) {
+        return qcError(u"'bitmap' must be at most %1 strings of at most %1 characters"_s.arg(maxBitmapSide));
+    }
+    if (json.contains(u"palette"_s) && !isPalette(json.value(u"palette"_s))) {
+        return qcError(u"'palette' must map at most %1 single characters to colour strings"_s.arg(maxBitmapSide));
+    }
+    if (json.contains(u"detail"_s) && !isDetail(json.value(u"detail"_s))) {
+        return qcError(u"'detail' may only hold 'grain' and 'bevel' (0 to 1) and 'smooth' (true or false)"_s);
+    }
+    if (json.contains(u"tiles"_s) && !isTiles(json.value(u"tiles"_s))) {
+        return qcError(u"'tiles' must be [width, height] of 1 to %1"_s.arg(QcPaintingMotif::maxSide));
+    }
+    if (json.contains(u"material"_s) && !json.value(u"material"_s).isObject()) {
+        return qcError(u"'material' must be an object"_s);
+    }
+
+    QJsonObject fields;
+    for (const QString &key : {u"bitmap"_s, u"palette"_s, u"detail"_s, u"tiles"_s, u"material"_s}) {
+        if (json.contains(key)) {
+            fields.insert(key, json.value(key));
+        }
+    }
+    return fields;
+}
+
 // The animation fields of a texture definition (decision E-878), checked; a texture over several
 // blocks cannot animate.
 [[nodiscard]] QcResult<QJsonObject> animationFields(const QJsonObject &json)
@@ -104,8 +132,8 @@ namespace QcContentParser {
         return qcError(u"texture '%1': 'pattern' string is required"_s.arg(texture.name));
     }
 
-    // Only the fields the synthesizer reads are kept (short strings and numbers), so a texture
-    // definition stays small whatever else the file contains.
+    // Only the fields the synthesizers read are kept (short strings, numbers and checked objects), so
+    // a texture definition stays small whatever else the file contains.
     for (const QString &key : {u"pattern"_s, u"primary"_s, u"secondary"_s}) {
         const QJsonValue value = json.value(key);
         if (value.isString() && value.toString().size() <= 32) {
@@ -124,23 +152,11 @@ namespace QcContentParser {
         }
     }
 
-    if (json.contains(u"bitmap"_s) && !isBitmap(json.value(u"bitmap"_s))) {
-        return qcError(u"texture '%1': 'bitmap' must be at most %2 strings of at most %2 characters"_s.arg(texture.name).arg(maxBitmapSide));
+    const QcResult<QJsonObject> objects = objectFields(json);
+    if (!objects) {
+        return qcError(u"texture '%1': %2"_s.arg(texture.name, objects.error()));
     }
-    if (json.contains(u"palette"_s) && !isPalette(json.value(u"palette"_s))) {
-        return qcError(u"texture '%1': 'palette' must map at most %2 single characters to colour strings"_s.arg(texture.name).arg(maxBitmapSide));
-    }
-    if (json.contains(u"detail"_s) && !isDetail(json.value(u"detail"_s))) {
-        return qcError(u"texture '%1': 'detail' may only hold 'grain' and 'bevel' (0 to 1) and 'smooth' (true or false)"_s.arg(texture.name));
-    }
-    if (json.contains(u"tiles"_s) && !isTiles(json.value(u"tiles"_s))) {
-        return qcError(u"texture '%1': 'tiles' must be [width, height] of 1 to %2"_s.arg(texture.name).arg(QcPaintingMotif::maxSide));
-    }
-    for (const QString &key : {u"bitmap"_s, u"palette"_s, u"detail"_s, u"tiles"_s}) {
-        if (json.contains(key)) {
-            texture.procedural.insert(key, json.value(key));
-        }
-    }
+    texture.procedural = merged(texture.procedural, *objects);
 
     const QcResult<QJsonObject> animation = animationFields(json);
     if (!animation) {

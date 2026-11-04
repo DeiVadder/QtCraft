@@ -23,6 +23,7 @@ bool connectsSideways(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Comparator:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Daylight:
     case QcSignalKind::Hook:
     case QcSignalKind::Viewers:
         return true;

@@ -1,0 +1,10 @@
+{
+    "name": "gold_ingot_from_nether_gold_ore",
+    "input": "nether_gold_ore",
+    "result": {
+        "item": "gold_ingot"
+    },
+    "seconds": 10,
+    "experience": 1.0,
+    "kind": "metal"
+}

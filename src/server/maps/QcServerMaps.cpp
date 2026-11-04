@@ -250,7 +250,7 @@ QList<QcMapMarker> QcServerMaps::markersFor(const QcServerClient &receiver, quin
         if (markers.size() >= QcMapMarker::maxCount) {
             break;
         }
-        const bool own = client.get() == &receiver;
+        const bool own = client == &receiver;
         if (client->state != QcServerClient::State::Playing || client->dead || (!own && !carries(*client, id))) {
             continue;
         }

@@ -167,12 +167,12 @@ bool QcEntities::overlapsLiving(const QList<QcAabb> &boxes) const
         return box && std::ranges::any_of(boxes, [&box](const QcAabb &other) { return box->intersects(other); });
     };
     return std::ranges::any_of(m_creatures.mobs(), overlaps)
-           || std::ranges::any_of(m_clients, [&overlaps](const std::unique_ptr<QcServerClient> &client) { return isPresent(*client) && overlaps(*client); });
+           || std::ranges::any_of(m_clients, [&overlaps](QcServerClient *client) { return isPresent(*client) && overlaps(*client); });
 }
 
 void QcEntities::markStale(quint32 id) const
 {
-    for (const std::unique_ptr<QcServerClient> &client : m_clients) {
+    for (QcServerClient *client : m_clients) {
         if (client->view.known.contains(id)) {
             client->view.stale.insert(id);
         }

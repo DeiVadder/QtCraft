@@ -39,7 +39,8 @@ void QcServerPlants::plantItems(const QList<QcItemEntity> &despawned)
     for (const QcItemEntity &item : despawned) {
         tryPlant(item);
     }
-    if (++m_itemTicks % seedCheckTicks == 0) {
+    // The clock, not a count here: this runs once per dimension and tick.
+    if (m_state.clock().tick() % seedCheckTicks == 0) {
         plantSeeds();
     }
 }
@@ -300,6 +301,10 @@ bool QcServerPlants::growCrop(QcBlockPos pos, int stages)
     }
 
     const QcCropDefinition &crop = content.block(*block).crop;
+    if (!crop.fertilizable) {
+        return false;
+    }
+
     const QcBlockProperty *values = content.block(*block).property(crop.property);
     const qsizetype stage = values ? values->values.indexOf(content.property(*block, crop.property)) : -1;
     const qsizetype last = values ? values->values.size() - 1 : -1;

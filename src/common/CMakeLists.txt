@@ -141,6 +141,8 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     content/worldgen/QcCoastalTowerDefinition.h
     content/worldgen/QcCoastalTowerParser.h content/worldgen/QcCoastalTowerParser.cpp
+    content/worldgen/QcDimensionDefinition.h
+    content/worldgen/QcDimensionParser.h content/worldgen/QcDimensionParser.cpp
     content/worldgen/QcDungeonDefinition.h
     content/worldgen/QcMineshaftDefinition.h
     content/worldgen/QcShowcaseDefinition.h
@@ -218,6 +220,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
+    gameplay/QcEffectRules.h gameplay/QcEffectRules.cpp
     gameplay/QcEnchanting.h gameplay/QcEnchanting.cpp
     gameplay/QcEnchantingTable.h gameplay/QcEnchantingTable.cpp
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp

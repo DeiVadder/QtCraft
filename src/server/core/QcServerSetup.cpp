@@ -332,6 +332,12 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     state.info().explosionBlockDamage = setup.explosionBlockDamage;
     state.info().adventure.merge(setup.adventure);
 
+    applyContents(state, updates, setup);
+    state.info().setupDone = true;
+}
+
+void applyContents(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup &setup)
+{
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         placeMob(state, mob);
     }
@@ -369,7 +375,6 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         state.circuits().wake(state.world(), pos);
     }
     updates.setCommandMode(false);
-    state.info().setupDone = true;
 }
 
 } // namespace QcServerSetup

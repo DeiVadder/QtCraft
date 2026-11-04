@@ -162,10 +162,17 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     for (const auto &[field, name] : {std::pair{u"fruit"_s, block.crop.fruit}, std::pair{u"soil revertsTo"_s, block.soil.revertsTo},
                                       std::pair{u"tillsInto"_s, block.tillsInto}, std::pair{u"flattensInto"_s, block.flattensInto},
                                       std::pair{u"coveredInto"_s, block.coveredInto}, std::pair{u"carving into"_s, block.carvesInto},
-                                      std::pair{u"strippedInto"_s, block.strippedInto}}) {
+                                      std::pair{u"strippedInto"_s, block.strippedInto},
+                                      std::pair{u"fireAbove"_s, block.fire.fireAbove}}) {
         if (!name.isEmpty() && !content.blockId(name)) {
             warnings.append(u"block %1: unknown %2 '%3'"_s.arg(block.name, field, name));
         }
+    }
+
+    // Decision E-981: fire on such a block stays what it was.
+    const std::optional<QcBlockId> fireAbove = block.fire.fireAbove.isEmpty() ? std::nullopt : content.blockId(block.fire.fireAbove);
+    if (fireAbove && !content.block(*fireAbove).fire.isFire) {
+        warnings.append(u"block %1: fireAbove '%2' is no fire"_s.arg(block.name, block.fire.fireAbove));
     }
     return warnings;
 }

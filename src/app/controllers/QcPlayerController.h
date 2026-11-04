@@ -42,6 +42,9 @@ class QcPlayerController : public QObject, public QcSlotActions
     // the usual red).
     Q_PROPERTY(QVariantList effects READ effects NOTIFY healthChanged FINAL)
     Q_PROPERTY(QString heartColour READ heartColour NOTIFY healthChanged FINAL)
+    // The extra health of absorption and the colour of its hearts (decision E-992).
+    Q_PROPERTY(double absorption READ absorption NOTIFY healthChanged FINAL)
+    Q_PROPERTY(QString absorptionColour READ absorptionColour NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
     Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
     // Experience (decision E-398): the level and the share of the way to the next one (0..1).
@@ -102,6 +105,8 @@ public:
     bool burning() const;
     QVariantList effects() const;
     QString heartColour() const;
+    double absorption() const;
+    QString absorptionColour() const;
     int food() const;
     int maxFood() const;
     int experienceLevel() const;

@@ -1,0 +1,8 @@
+{
+    "name": "soul_torch",
+    "pattern": "torch",
+    "primary": "#7a5a32",
+    "secondary": "#6ae8ff",
+    "variation": 0.12,
+    "seed": 8432
+}

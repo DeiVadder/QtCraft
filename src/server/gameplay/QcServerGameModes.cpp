@@ -101,7 +101,7 @@ void QcServerGameModes::send(QcServerClient &client, const QcAdventureRules &adv
 
 void QcServerGameModes::sendAdventureRules() const
 {
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == QcServerClient::State::Playing && QcGameModes::rules(client->gameMode).buildByAllowList) {
             send(*client, m_state.info().adventure);
         }

@@ -1,0 +1,16 @@
+{
+    "name": "glowstone",
+    "sound": "glass",
+    "hardness": 0.3,
+    "light": 15,
+    "drops": [
+        {
+            "item": "glowstone_dust",
+            "count": 2,
+            "maxCount": 4
+        }
+    ],
+    "textures": {
+        "all": "glowstone"
+    }
+}

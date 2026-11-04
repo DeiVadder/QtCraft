@@ -1,0 +1,11 @@
+{
+    "name": "netherrack",
+    "sound": "netherrack",
+    "hardness": 0.4,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "eternalFire": true,
+    "textures": {
+        "all": "netherrack"
+    }
+}

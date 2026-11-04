@@ -48,6 +48,8 @@ struct QcSignalState
     bool locked = false;
     /*! Comparators in subtract mode. */
     bool subtract = false;
+    /*! Daylight sensors: \c {inverted}, strong by night instead of by day. */
+    bool inverted = false;
     /*! Torches: whether a lit one strongly powers a conductor above it
         (QcSignalDefinition::strongPowersAbove). */
     bool strongPowersAbove = true;

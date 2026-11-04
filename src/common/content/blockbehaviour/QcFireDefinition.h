@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <QString>
+
 /*! \brief How a block takes part in fire (decision E-392).
 
     Server side only. */
@@ -24,6 +26,10 @@ struct QcFireDefinition
     /*! "eternalFire": true: fire standing on the block never ages out and never spreads (the
         magma block as a hearth). */
     bool eternal = false;
+    /*! "fireAbove": the qualified name of the fire block that fire lit in the cell right above
+        the block becomes (soul sand and soul soil: soul fire, decision E-981); empty: the fire
+        that was lit. */
+    QString fireAbove;
     /*! "setsAlight": seconds a body touching the block burns for (fire 8, lava 15; decision
         E-393): it takes QcBodyBurning's damage every second until the time is over or water puts
         it out. */

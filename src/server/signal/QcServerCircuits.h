@@ -4,9 +4,11 @@
 #pragma once
 
 #include "common/blockrules/QcRails.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/signal/QcCircuitComponents.h"
 #include "server/signal/QcCircuitPlan.h"
 #include "server/signal/QcCircuitState.h"
+#include "server/signal/QcDaylightSensors.h"
 #include "server/signal/QcDispenserActions.h"
 #include "server/signal/QcNoteBudget.h"
 #include "server/signal/QcPistonMover.h"
@@ -47,8 +49,8 @@ public:
     /*! Runs the signal phase of one server tick. */
     void tick();
     /*! A player uses the block at \a pos: a lever switches, a button is pressed, a repeater
-        takes its next delay, a note block its next note (and plays it). Returns \c false when it
-        is no such block. */
+        takes its next delay, a note block its next note (and plays it), a daylight sensor turns
+        round. Returns \c false when it is no such block. */
     bool use(QcBlockPos pos);
     /*! A projectile hit the target block at \a pos with \a power (1..15, decision E-768);
         \a stuck for projectiles that stick (arrows), which hold it longer. A new hit replaces
@@ -137,13 +139,22 @@ private:
     QcDispenserActions m_dispensers;
     QcDispenserActions::Ignite m_light;
     QcServerHoppers m_hoppers;
+    QcDaylightSensors m_daylight;
     qsizetype m_budget = 0;
     qsizetype m_lastWork = 0;
     // Pistons that extended (bit 1) or retracted (bit 2) in this tick: each does both at most once.
     QHash<QcBlockPos, quint8> m_pistonActs;
     QcCircuitComponents::Plates m_plates;
-    QcNoteBudget m_notes;
+    QcPerDimension<QcNoteBudget> m_notes;
     // The container cart with the lowest id in each plate cell in the latest tick (what a comparator reads).
-    QHash<QcBlockPos, quint32> m_cartReadings;
     QcRails::Table m_rails;
+    // What the carts on the detector rails of a dimension read.
+    struct Readings
+    {
+        QHash<QcBlockPos, quint32> cartReadings;
+    };
+    // Of the current dimension.
+    Readings &here() const;
+
+    QcPerDimension<Readings> m_readings;
 };

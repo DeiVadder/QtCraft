@@ -2,9 +2,25 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
+**QtCraft:** [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals) · [Cobblestone or blackstone](#tag-qtcraft-stone_crafting_materials) · [Soul sand or soul soil](#tag-qtcraft-soul_blocks)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-wooden_slabs"></a>#wooden_slabs
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:wooden_slabs` |
+
+**Items in this group**
+
+[Birch slab](parts.md#block-qtcraft-birch_slab), [Jungle slab](parts.md#block-qtcraft-jungle_slab), [Oak slab](parts.md#block-qtcraft-oak_slab), [Spruce slab](parts.md#block-qtcraft-spruce_slab)
+
+**Used in**
+
+[Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor)
 
 ### <a id="tag-qtcraft-arrows"></a>Any arrow
 
@@ -144,4 +160,36 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Campfire](blocks.md#block-qtcraft-campfire), [Coal chunk](items.md#item-qtcraft-coal_chunk), [Torch](blocks.md#block-qtcraft-torch)
+[Campfire](blocks.md#block-qtcraft-campfire), [Coal chunk](items.md#item-qtcraft-coal_chunk), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Torch](blocks.md#block-qtcraft-torch)
+
+### <a id="tag-qtcraft-stone_crafting_materials"></a>Cobblestone or blackstone
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:stone_crafting_materials` |
+
+**Items in this group**
+
+[Blackstone](blocks.md#block-qtcraft-blackstone), [Cobblestone](blocks.md#block-qtcraft-cobblestone)
+
+**Used in**
+
+[Furnace](blocks.md#block-qtcraft-furnace), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword)
+
+### <a id="tag-qtcraft-soul_blocks"></a>Soul sand or soul soil
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:soul_blocks` |
+
+**Items in this group**
+
+[Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil)
+
+**Used in**
+
+[Soul torch](blocks.md#block-qtcraft-soul_torch)

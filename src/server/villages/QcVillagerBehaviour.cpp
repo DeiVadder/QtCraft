@@ -86,7 +86,7 @@ QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry
     m_ripe.assign(static_cast<std::size_t>(registry.stateCount()), false);
     for (qsizetype id = 0; id < registry.stateCount(); ++id) {
         const QcBlockDefinition &block = registry.block(static_cast<QcBlockId>(id));
-        const QcBlockProperty *stages = block.crop.isCrop() ? block.property(block.crop.property) : nullptr;
+        const QcBlockProperty *stages = block.crop.isCrop() && block.crop.tendedByFarmers ? block.property(block.crop.property) : nullptr;
         m_ripe[static_cast<std::size_t>(id)] = stages && !stages->values.isEmpty()
             && registry.property(static_cast<QcBlockId>(id), block.crop.property) == stages->values.constLast();
     }

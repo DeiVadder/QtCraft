@@ -1,5 +1,6 @@
 {
     "name": "potato",
     "food": 1,
+    "saturation": 0.3,
     "places": "potato_crop"
 }

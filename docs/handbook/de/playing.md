@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -203,7 +203,11 @@ Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barr
 
 **Essen**
 
-Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Nahrungspunkt. Gehen leert eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Nahrungspunkte.
+Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Punkt Sättigung (siehe unten) oder, wenn keine mehr übrig ist, einen Nahrungspunkt. Ohne Sättigung leert Gehen eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Punkte Sättigung oder Nahrung, beim schnellen Heilen mit voller Leiste 1,5 Punkte Sättigung.
+
+**Sättigung**
+
+Neben Nahrungspunkten gibt jede Mahlzeit **Sättigung**, die die Nahrungsleiste nicht zeigt. Erschöpfung verbraucht zuerst sie; erst danach sinkt die Leiste. Herzhaftes Essen gibt mehr davon als ein Happen: Gebratenes Fleisch und gebratener Fisch halten viel länger vor als rohes Fleisch, Äpfel oder Melonenscheiben, und die Sättigung ist nie größer als deine Nahrungspunkte. Du beginnst und erscheinst nach dem Tod mit voller Leiste und 5 Punkten Sättigung. Der Statuseffekt **Sättigung** füllt beides auf einmal.
 
 **Kuchen**
 
@@ -211,7 +215,7 @@ Ein **Kuchen** (drei Milcheimer, zwei Zucker, ein Ei und drei Weizen; die Eimer 
 
 **Heilen und Hungern**
 
-Mit mindestens 18 Nahrungspunkten heilst du alle 4 s einen Lebenspunkt. Mit leerer Nahrungsleiste verlierst du alle 4 s einen Lebenspunkt, doch Hunger allein bringt dich nie unter 1.
+Mit voller Nahrungsleiste und übriger Sättigung heilst du schnell: alle 0,5 s einen Lebenspunkt, bezahlt aus der Sättigung. Sonst heilst du mit mindestens 18 Nahrungspunkten alle 4 s einen Lebenspunkt. Mit leerer Nahrungsleiste verlierst du alle 4 s einen Lebenspunkt, doch Hunger allein bringt dich nie unter 1.
 
 **Siehe auch**
 
@@ -329,7 +333,7 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 
 **Siehe auch**
 
-[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook), [Fallentruhe](blocks.md#block-qtcraft-trapped_chest), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Entkoppelter Signalkolben](blocks.md#block-qtcraft-decoupled_signal_piston), [Entkoppelter klebriger Signalkolben](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper), [Entkoppelter Signalspender](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Entkoppelter Signalwerfer](blocks.md#block-qtcraft-decoupled_signal_dropper)
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook), [Fallentruhe](blocks.md#block-qtcraft-trapped_chest), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Entkoppelter Signalkolben](blocks.md#block-qtcraft-decoupled_signal_piston), [Entkoppelter klebriger Signalkolben](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper), [Entkoppelter Signalspender](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Entkoppelter Signalwerfer](blocks.md#block-qtcraft-decoupled_signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Schienen und Loren
 
@@ -382,6 +386,10 @@ Klicke mit links auf ein Wesen in bis zu 4 m, um es zu treffen, höchstens alle 
 **Status-Effekte**
 
 Manche Angriffe hinterlassen eine Wirkung, die eine Weile anhält. Neben den Herzen zeigt ein Kästchen jeden Effekt mit Bild, Namen und Restzeit. Gift, vom Biss einer Höhlenspinne, nimmt alle 1,25 s einen Gesundheitspunkt (auf höheren Stufen schneller), aber nie den letzten, und färbt die Herzen grün. Rüstung hilft nicht dagegen. Effekte enden mit der Zeit oder mit dem Tod; Zombies, Skelette und Spinnen sind gegen Gift immun.
+
+**Arten von Effekten**
+
+Schnelligkeit lässt dich je Stufe 20 % schneller gehen, Langsamkeit 15 % langsamer. Stärke gibt deinen Schlägen je Stufe 3 Punkte mehr, Schwäche nimmt ihnen 4. Regeneration gibt alle 2,5 s einen Punkt zurück, je Stufe doppelt so oft. Sofortheilung gibt auf einen Schlag 4 Punkte, Sofortschaden nimmt 6, je Stufe das Doppelte; bei Untoten wirken beide umgekehrt. Resistenz nimmt jedem Treffer je Stufe 20 %. Feuerresistenz schützt vor Feuer, Lava und Magma, Wasseratmung hält unter Wasser den Atem, und Nachtsicht zeigt die Welt so hell wie am Tag. Unter Unsichtbarkeit verschwindet dein Körper, und Wesen bemerken dich nur noch aus nächster Nähe; jedes Rüstungsteil verrät dich schon von weiter weg, denn Rüstung und was du hältst bleiben sichtbar. Sprungkraft lässt dich höher springen und je Stufe einen Block weiter unverletzt fallen, Sanfter Fall lässt dich ohne Fallschaden langsam sinken, und Eile lässt dich je Stufe 20 % schneller abbauen. Wither schmerzt wie Gift, färbt die Herzen schwarz und kann töten. Absorption gibt goldene Herzen über deinen eigenen, 4 Punkte je Stufe; Treffer nehmen sie zuerst, und sie wachsen nicht nach.
 
 **Siehe auch**
 
@@ -588,6 +596,40 @@ Wie groß ein Feld aus Sprengstoff auch ist, die Welt bleibt spielbar: Höchsten
 **Siehe auch**
 
 [Sprengstoff](blocks.md#block-qtcraft-explosive), [Schwarzpulver](items.md#item-qtcraft-gunpowder), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate), [Hebel](blocks.md#block-qtcraft-lever)
+
+### <a id="chapter-qtcraft-nether_blocks"></a>Nether-Blöcke
+
+**Netherrack und ewiges Feuer**
+
+Netherrack ist mit jeder Spitzhacke schnell abgebaut. Feuer darauf altert nicht und breitet sich nicht aus: eine Feuerstelle aus Netherrack brennt ewig, wie eine auf Magma. Im Ofen wird Netherrack zum Netherziegelstein.
+
+**Seelensand und Seelenfeuer**
+
+Seelensand bremst jeden, der darüber läuft, auf weniger als die Hälfte; Seelenerde nicht. Feuer auf beiden wird zu blauem **Seelenfeuer**: Licht 10 statt 15, doppelter Schaden, und wie Feuer auf Netherrack geht es nie aus. Kohle auf einem Stock auf Seelensand oder Seelenerde ergibt vier **Seelenfackeln**, Eisennuggets um eine Seelenfackel eine **Seelenlaterne**; beide leuchten mit Licht 10.
+
+**Leuchtstein**
+
+Leuchtstein ist der hellste Block (Licht 15) und zerfällt schon von Hand in zwei bis vier Leuchtsteinstaub. Vier Staub im Quadrat ergeben wieder den Block.
+
+**Quarz und Gold**
+
+Netherquarzerz und Nethergolderz stecken im Netherrack und brauchen nur eine Holzspitzhacke. Aus Quarz entstehen weiße Bausteine: Quarzblock, Säulen, gemeißelte Blöcke, Ziegel, Stufen und Treppen, im Ofen glatter Quarz. Nethergolderz lässt Goldnuggets fallen.
+
+**Netherziegel und Basalt**
+
+Vier Netherziegelsteine ergeben einen Netherziegelblock, mit Netherwarzen in den anderen Ecken rote Netherziegel. Aus beiden entstehen Stufen, Treppen und Mauern; Netherziegel und Netherziegelsteine ergeben einen Zaun, der sich mit seinesgleichen und mit Zauntoren verbindet, aber nicht mit Holzzäunen. Basalt liegt wie ein Stamm entlang der angeklickten Achse; vier ergeben polierten Basalt, im Ofen wird er glatt.
+
+**Schwarzstein**
+
+Schwarzstein zählt für Steinwerkzeuge und den Ofen als Stein, so kommt man im Nether auch ohne Bruchstein zu ihnen. Poliert wird er zu poliertem Schwarzstein, Ziegeln und gemeißeltem Schwarzstein; aus allen entstehen Stufen, Treppen und Mauern, und die Steinsäge schneidet sie in einem Schritt.
+
+**Netherwarze**
+
+Netherwarze wächst nur auf Seelensand, braucht weder Wasser noch Licht und reift in vier Stufen in etwa einer halben Stunde. Reif gibt sie zwei bis vier Warzen, unreif eine. Knochenmehl hilft ihr nicht, und Bauern lassen sie stehen.
+
+**Siehe auch**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch), [Seelenlaterne](blocks.md#block-qtcraft-soul_lantern), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Leuchtsteinstaub](items.md#item-qtcraft-glowstone_dust), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Netherquarz](items.md#item-qtcraft-quartz), [Quarzblock](blocks.md#block-qtcraft-quartz_block), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Netherziegelstein](items.md#item-qtcraft-nether_brick), [Netherziegel](blocks.md#block-qtcraft-nether_bricks), [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks), [Netherziegelzaun](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Golddurchzogener Schwarzstein](blocks.md#block-qtcraft-gilded_blackstone), [Netherwarze](items.md#item-qtcraft-nether_wart)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 

@@ -7780,7 +7780,7 @@ Jetzt: %2</translation>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="513"/>
         <location filename="../src/server/commands/QcEffectCommands.cpp" line="48"/>
         <location filename="../src/server/commands/QcExperienceCommands.cpp" line="57"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="133"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="134"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
     </message>
@@ -8326,42 +8326,42 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="217"/>
+        <location filename="../src/server/core/QcServer.cpp" line="220"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="475"/>
+        <location filename="../src/server/core/QcServer.cpp" line="481"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="506"/>
+        <location filename="../src/server/core/QcServer.cpp" line="512"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="310"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="334"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="60"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="62"/>
         <source>Cannot load player data: %1</source>
         <translation>Die Spielerdaten lassen sich nicht laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="108"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="155"/>
         <source>access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty with the whitelist on, and changes are not saved until the file is repaired</source>
         <translation>access.json ist beschädigt und konnte nicht beiseitegelegt werden: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet, und Änderungen werden nicht gespeichert, bis die Datei repariert ist</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="113"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="160"/>
         <source>access.json was damaged: operators, bans and the whitelist start empty with the whitelist on; the damaged file was kept as %1</source>
         <translation>access.json war beschädigt: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet; die beschädigte Datei liegt als %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="130"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="177"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
@@ -8371,39 +8371,39 @@ Jetzt: %2</translation>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="42"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="43"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="44"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="45"/>
         <source>%1 died of a status effect</source>
         <translation>%1 ist an einem Statuseffekt gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="46"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="47"/>
         <source>%1 drowned</source>
         <translation>%1 ist ertrunken</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="54"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="55"/>
         <location filename="../src/server/gameplay/QcServerCombat.cpp" line="125"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="204"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="205"/>
         <source>%1 was shot by %2</source>
         <translation>%1 wurde von %2 erschossen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="205"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="206"/>
         <source>%1 was slain by %2</source>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="285"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="188"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
@@ -8414,7 +8414,7 @@ Jetzt: %2</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="299"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="208"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
@@ -8529,230 +8529,239 @@ Jetzt: %2</translation>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="32"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="33"/>
         <source>Not a valid player name: %1</source>
         <translation>Kein gültiger Spielername: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="48"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="49"/>
         <source>Usage: /list</source>
         <translation>Verwendung: /list</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="49"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="50"/>
         <source>Lists the players online.</source>
         <translation>Listet die Spieler, die online sind.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="52"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="53"/>
         <source>Usage: /kick &lt;player&gt; [reason]</source>
         <translation>Verwendung: /kick &lt;Spieler&gt; [Grund]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="53"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="54"/>
         <source>Disconnects a player; he may join again.</source>
         <translation>Trennt einen Spieler; er darf wieder beitreten.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="56"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="57"/>
         <source>Usage: /ban &lt;player&gt; [reason]</source>
         <translation>Verwendung: /ban &lt;Spieler&gt; [Grund]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="57"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="58"/>
         <source>Keeps a player name out of this world and disconnects him.</source>
         <translation>Sperrt einen Spielernamen für diese Welt und trennt ihn.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="60"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="61"/>
         <source>Usage: /unban &lt;player&gt;</source>
         <translation>Verwendung: /unban &lt;Spieler&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="61"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="62"/>
         <source>Lets a banned player join again.</source>
         <translation>Lässt einen gesperrten Spieler wieder beitreten.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="64"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="300"/>
         <source>Usage: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;player&gt;, /tp &lt;player&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; or /tp &lt;player&gt; &lt;target player&gt;</source>
-        <translation>Verwendung: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;Spieler&gt;, /tp &lt;Spieler&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; oder /tp &lt;Spieler&gt; &lt;Zielspieler&gt;</translation>
+        <translation type="vanished">Verwendung: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;Spieler&gt;, /tp &lt;Spieler&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; oder /tp &lt;Spieler&gt; &lt;Zielspieler&gt;</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="65"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="317"/>
+        <source>Usage: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;player&gt;, /tp &lt;player&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; or /tp &lt;player&gt; &lt;target player&gt;, each with in &lt;dimension&gt; at the end</source>
+        <translation>Verwendung: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;Spieler&gt;, /tp &lt;Spieler&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; oder /tp &lt;Spieler&gt; &lt;Zielspieler&gt;, jeweils mit in &lt;Dimension&gt; am Ende</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="66"/>
         <source>Moves you or a player to a position or to another player.</source>
         <translation>Bringt dich oder einen Spieler an eine Position oder zu einem anderen Spieler.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="73"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="74"/>
         <source>Usage: /banlist</source>
         <translation>Verwendung: /banlist</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="74"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="75"/>
         <source>Lists the banned names with their reasons.</source>
         <translation>Listet die gesperrten Namen mit ihren Gründen.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="77"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="209"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="78"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="210"/>
         <source>Usage: /whitelist &lt;on|off|list|add &lt;player&gt;|remove &lt;player&gt;&gt;</source>
         <translation>Verwendung: /whitelist &lt;on|off|list|add &lt;Spieler&gt;|remove &lt;Spieler&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="78"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="79"/>
         <source>With the whitelist on, only listed players and operators may join.</source>
         <translation>Mit eingeschalteter Whitelist dürfen nur gelistete Spieler und Operatoren beitreten.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="82"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="83"/>
         <source>Usage: /op [player]</source>
         <translation>Verwendung: /op [Spieler]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="83"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="84"/>
         <source>Makes a player an operator, or lists the operators.</source>
         <translation>Macht einen Spieler zum Operator oder listet die Operatoren.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="86"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="87"/>
         <source>Usage: /deop &lt;player&gt;</source>
         <translation>Verwendung: /deop &lt;Spieler&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="87"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="88"/>
         <source>Takes the operator rights from a player.</source>
         <translation>Nimmt einem Spieler die Operator-Rechte.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="99"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="100"/>
         <source>%1 players online: %2</source>
         <translation>%1 Spieler online: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="128"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="129"/>
         <source>Kicked by %1</source>
         <translation>Von %1 getrennt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="129"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="130"/>
         <source>Kicked by %1: %2</source>
         <translation>Von %1 getrennt: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="131"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="149"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="132"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="150"/>
         <source>The host of the world cannot be kicked or banned</source>
         <translation>Der Gastgeber der Welt kann nicht getrennt oder gesperrt werden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="136"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="137"/>
         <source>Kicked %1</source>
         <translation>%1 getrennt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="156"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="157"/>
         <source>Banned by %1</source>
         <translation>Von %1 gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="157"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="158"/>
         <source>Banned by %1: %2</source>
         <translation>Von %1 gesperrt: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="159"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="160"/>
         <source>Banned %1</source>
         <translation>%1 gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="171"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="172"/>
         <source>%1 is not banned</source>
         <translation>%1 ist nicht gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="174"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="175"/>
         <source>Unbanned %1</source>
         <translation>Sperre von %1 aufgehoben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="181"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="182"/>
         <source>%1 banned names</source>
         <translation>%1 gesperrte Namen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="194"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="195"/>
         <source>The whitelist is on</source>
         <translation>Die Whitelist ist eingeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="194"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="195"/>
         <source>The whitelist is off</source>
         <translation>Die Whitelist ist ausgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="196"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="197"/>
         <source>The whitelist is on: %1</source>
         <translation>Die Whitelist ist eingeschaltet: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="197"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="198"/>
         <source>The whitelist is off: %1</source>
         <translation>Die Whitelist ist ausgeschaltet: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="206"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="207"/>
         <source>%1 is on the whitelist</source>
         <translation>%1 steht auf der Whitelist</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="206"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="207"/>
         <source>%1 is not on the whitelist</source>
         <translation>%1 steht nicht auf der Whitelist</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="218"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="219"/>
         <source>Operators: %1</source>
         <translation>Operatoren: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="230"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="231"/>
         <source>The host of the world is always an operator</source>
         <translation>Der Gastgeber der Welt ist immer Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="238"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="239"/>
         <source>You are now an operator</source>
         <translation>Du bist jetzt Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="239"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="240"/>
         <source>You are no longer an operator</source>
         <translation>Du bist kein Operator mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="247"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="248"/>
         <source>%1 is an operator</source>
         <translation>%1 ist Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="247"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="248"/>
         <source>%1 is no operator</source>
         <translation>%1 ist kein Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="269"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="270"/>
         <source>The list is full (at most %1 names)</source>
         <translation>Die Liste ist voll (höchstens %1 Namen)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="276"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="277"/>
         <source>The change applies but could not be saved: %1</source>
         <translation>Die Änderung gilt, konnte aber nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="308"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="292"/>
+        <source>Cannot go to the dimension %1: %2</source>
+        <translation>Die Dimension %1 ist nicht erreichbar: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="325"/>
         <source>Teleported %1 to %2 %3 %4</source>
         <translation>%1 nach %2 %3 %4 teleportiert</translation>
     </message>
@@ -8856,7 +8865,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="258"/>
+        <location filename="../src/server/core/QcServer.cpp" line="264"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="99"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -9391,7 +9400,7 @@ Jetzt: %2</translation>
         <translation>%1 hat den Fortschritt [%2] erzielt</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="158"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="172"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>

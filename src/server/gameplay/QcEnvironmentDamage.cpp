@@ -3,6 +3,7 @@
 
 #include "server/gameplay/QcEnvironmentDamage.h"
 
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPose.h"
 #include "server/core/QcServerSounds.h"
@@ -22,19 +23,21 @@ namespace {
 
 // Damage of the solid block under the centre of the feet (magma, decision E-209); a liquid next to
 // the block a body stands on does not count.
-double damageFromBelow(const QcServerState &state, const QcVec3 &feet)
+double damageFromBelow(const QcServerState &state, const QcVec3 &feet, bool fireProof)
 {
     const std::optional<QcBlockId> below = state.world().blockAt(QcPhysics::blockContaining(feet - QcVec3{0.0, 0.01, 0.0}));
     if (!below || !state.content().isValidBlock(*below) || !state.content().block(*below).solid) {
         return 0.0;
     }
-    return state.content().block(*below).contactDamage;
+    const QcBlockDefinition &block = state.content().block(*below);
+    return fireProof && block.contactFire ? 0.0 : block.contactDamage;
 }
 
-// Damage from what a body is inside of or stands on.
-double contactDamageOf(const QcServerState &state, const QcVec3 &feet, double width, double height)
+// Damage from what a body is inside of or stands on; a `fireProof` one feels no heat (decision E-992).
+double contactDamageOf(const QcServerState &state, const QcVec3 &feet, QcPhysics::BodySize body, bool fireProof)
 {
-    return std::max(state.contactDamage().in(state.world(), QcPhysics::boxAt(feet, width, height)), damageFromBelow(state, feet));
+    const QcContactDamage::Touch touch = state.contactDamage().touching(state.world(), QcPhysics::boxAt(feet, body.width, body.height));
+    return std::max(fireProof ? touch.coldDamage : touch.damage, damageFromBelow(state, feet, fireProof));
 }
 
 } // namespace
@@ -50,7 +53,8 @@ void QcEnvironmentDamage::applyContactDamage()
             continue;
         }
 
-        const double damage = contactDamageOf(m_state, client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
+        const bool fireProof = QcEffectRules::fireProof(m_state.content(), client->effects.all());
+        const double damage = contactDamageOf(m_state, client->motion.position, {QcPhysics::playerWidth, QcPhysics::playerHeight}, fireProof);
         if (damage > 0.0) {
             m_health.damage(*client, damage, {}, QcPlayerHealth::DamageKind::Armoured);
         }
@@ -64,7 +68,8 @@ void QcEnvironmentDamage::applyContactDamage()
         }
 
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        if (const double damage = contactDamageOf(m_state, mob.motion.position, definition.width, definition.height);
+        const bool fireProof = mob.effects && QcEffectRules::fireProof(m_state.content(), mob.effects->all());
+        if (const double damage = contactDamageOf(m_state, mob.motion.position, {definition.width, definition.height}, fireProof);
             damage > 0.0) {
             touched.append({mob.id, damage});
         }

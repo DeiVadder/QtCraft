@@ -32,6 +32,10 @@ inline constexpr auto showcase = "showcase";
 QStringList types();
 /*! Returns whether \a type names a world type. */
 bool isKnown(const QString &type);
+/*! Returns the generator versions of the world type \a type (decision E-979): every type so
+    far belongs to the overworld's series (QcGeneratorVersion::overworld); a dimension with a
+    generator of its own (the nether) brings its own series. */
+[[nodiscard]] QcGeneratorVersion::Series versionSeries(const QString &type);
 /*! The longest options a world can store (world.json). */
 inline constexpr qsizetype maxOptionsLength = 4096;
 

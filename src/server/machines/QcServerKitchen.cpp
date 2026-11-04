@@ -45,7 +45,7 @@ bool QcServerKitchen::eatBite(QcServerClient &client, QcBlockPos pos, QcBlockId 
     // Full players and players whose hunger stands still (creative mode) leave the cake as it is; the
     // use is still the cake's, so nothing is placed against it.
     const QcBlockDefinition &definition = m_state.content().block(block);
-    if (client.hunger.frozen() || !client.hunger.eat(definition.bites.food)) {
+    if (client.hunger.frozen() || !client.hunger.eat(definition.bites.food, definition.bites.saturation)) {
         return true;
     }
 

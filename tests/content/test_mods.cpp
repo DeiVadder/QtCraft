@@ -787,6 +787,9 @@ private slots:
                    {u"states"_s, QJsonObject{{u"age"_s, QJsonArray{u"0"_s, u"1"_s}}}},
                    {u"crop"_s, QJsonObject{{u"fruit"_s, u"tweak:no_fruit"_s}, {u"fruitGround"_s, QJsonArray{u"qtcraft:dirt"_s}}}},
                    {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:dirt"_s}}}});
+        const QJsonObject dirt{{u"all"_s, u"qtcraft:dirt"_s}};
+        writeJson(tweak + u"/blocks/lost_ember.json"_s, {{u"name"_s, u"tweak:lost_ember"_s}, {u"fireAbove"_s, u"tweak:no_fire"_s}, {u"textures"_s, dirt}});
+        writeJson(tweak + u"/blocks/cold_ember.json"_s, {{u"name"_s, u"tweak:cold_ember"_s}, {u"fireAbove"_s, u"qtcraft:dirt"_s}, {u"textures"_s, dirt}});
         const QJsonObject boarPart{{u"from"_s, QJsonArray{-0.3, 0.0, -0.3}}, {u"to"_s, QJsonArray{0.3, 0.6, 0.3}}, {u"texture"_s, u"qtcraft:pig_skin"_s}};
         writeJson(tweak + u"/mobs/boar.json"_s, {{u"name"_s, u"tweak:boar"_s},
                                                  {u"model"_s, QJsonArray{boarPart}},
@@ -810,6 +813,7 @@ private slots:
         QVERIFY(std::ranges::none_of(warnings, [](const QString &w) { return w.contains(u"glass"_s); }));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"unknown item 'tweak:nothing'"_s); }));
         for (const QString &expected : {u"unknown fruit 'tweak:no_fruit'"_s, u"unknown tillsInto 'tweak:no_soil'"_s,
+                                        u"unknown fireAbove 'tweak:no_fire'"_s, u"fireAbove 'qtcraft:dirt' is no fire"_s,
                                         u"unknown breeding food 'tweak:acorn'"_s, u"unknown ink texture 'tweak:no_ink'"_s}) {
             QVERIFY2(std::ranges::any_of(warnings, [&expected](const QString &w) { return w.contains(expected); }), qPrintable(warnings.join(u'\n')));
         }

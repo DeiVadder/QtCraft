@@ -145,13 +145,15 @@ constexpr quint8 boneBit(QcBoneRole role)
     optional, not owned).
 
     Bones whose role bit is set in \c {hiddenBones} are left out with their attachments (an
-    armour stand without arms or base plate). \qcfields */
+    armour stand without arms or base plate). \c {bodyHidden} leaves out skin, hair and cape and
+    keeps what it wears and holds (an invisible body, decision E-992). \qcfields */
 struct Figure
 {
     ModelLook look;
     const ItemLook *held = nullptr;
     const QList<Attachment> *attachments = nullptr;
     quint8 hiddenBones = 0;
+    bool bodyHidden = false;
 };
 
 /*! Edge length of a dropped cube and of a sprite. \qcshared */

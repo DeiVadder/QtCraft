@@ -32,7 +32,7 @@ const char *announcementKey(QcAdvancementFrame frame)
 // Sends `line` to the playing clients other than `client`.
 void sendToOthers(const QcServerState &state, const QcServerClient &client, const QcMsg::ChatMessage &line)
 {
-    for (const auto &other : state.clients()) {
+    for (const auto &other : state.allClients()) {
         if (other.get() != &client && other->state == QcServerClient::State::Playing) {
             other->connection->send(line);
         }

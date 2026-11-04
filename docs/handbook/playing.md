@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -203,7 +203,11 @@ Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine 
 
 **Eating**
 
-The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one food point. Walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 food points.
+The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one point of saturation (see below) or, when there is none left, one food point. Without saturation walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 points of saturation or food; the quick healing at a full bar costs 1.5 points of saturation.
+
+**Saturation**
+
+Besides food points every meal gives **saturation**, which the food bar does not show. Exhaustion uses it up first; only then does the bar go down. Hearty food gives more of it than snacks: cooked meat and fish keep you going much longer than raw meat, apples or melon slices, and the saturation never exceeds your food points. You start and respawn with a full bar and 5 points of saturation. The status effect **Saturation** fills both at once.
 
 **Cake**
 
@@ -211,7 +215,7 @@ A **cake** (three milk buckets, two sugar, an egg and three wheat; the buckets c
 
 **Healing and starving**
 
-With at least 18 food points you heal one health point every 4 s. With an empty food bar you lose one health point every 4 s, but hunger alone never takes you below 1.
+With a full food bar and saturation left you heal quickly: one health point every 0.5 s, paid from the saturation. Otherwise with at least 18 food points you heal one health point every 4 s. With an empty food bar you lose one health point every 4 s, but hunger alone never takes you below 1.
 
 **See also**
 
@@ -329,7 +333,7 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 
 **See also**
 
-[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [Trapped chest](blocks.md#block-qtcraft-trapped_chest), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Decoupled Signal Piston](blocks.md#block-qtcraft-decoupled_signal_piston), [Decoupled Sticky Signal Piston](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper), [Decoupled Signal Dispenser](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Decoupled Signal Dropper](blocks.md#block-qtcraft-decoupled_signal_dropper)
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [Trapped chest](blocks.md#block-qtcraft-trapped_chest), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Decoupled Signal Piston](blocks.md#block-qtcraft-decoupled_signal_piston), [Decoupled Sticky Signal Piston](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper), [Decoupled Signal Dispenser](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Decoupled Signal Dropper](blocks.md#block-qtcraft-decoupled_signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Rails and Minecarts
 
@@ -382,6 +386,10 @@ Left-click a creature within 4 m to hit it, at most every 0.4 s. Swords and axes
 **Status effects**
 
 Some attacks leave an effect that lasts a while. Next to the hearts a box shows each effect with its picture, name and the time left. Poison, from the bite of a cave spider, takes one health point every 1.25 s (faster at higher levels) but never your last one, and turns the hearts green. Armour does not help against it. Effects end with time or when you die; zombies, skeletons and spiders are immune to poison.
+
+**Kinds of effects**
+
+Speed makes you walk 20 % faster per level, slowness 15 % slower. Strength adds 3 points to your blows per level, weakness takes 4 away. Regeneration gives back a point every 2.5 s, twice as often per level. Instant health gives 4 points at once and instant damage takes 6, twice as much per level; on the undead they work the other way round. Resistance takes 20 % off every hit per level. Fire resistance keeps fire, lava and magma from hurting you, water breathing keeps your breath under water, and night vision shows the world as bright as by day. Under invisibility your body vanishes, and creatures notice you only from very close by; every piece of armour you wear gives you away from further off, because armour and what you hold stay visible. Jump boost makes you jump higher and fall one block further unhurt per level, slow falling lets you sink gently without any fall damage, and haste makes you mine 20 % faster per level. Wither hurts like poison, turns the hearts black and can kill. Absorption adds golden hearts above your own, 4 points per level; hits take them first and they do not grow back.
 
 **See also**
 
@@ -588,6 +596,40 @@ However big a field of explosives, the world stays playable: at most 512 explosi
 **See also**
 
 [Explosive](blocks.md#block-qtcraft-explosive), [Gunpowder](items.md#item-qtcraft-gunpowder), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate), [Lever](blocks.md#block-qtcraft-lever)
+
+### <a id="chapter-qtcraft-nether_blocks"></a>Nether blocks
+
+**Netherrack and eternal fire**
+
+Netherrack is quick to mine with any pickaxe. Fire lit on top of it never ages and never spreads, so a fireplace of netherrack burns forever, like one on a magma block. Smelted, netherrack becomes a nether brick.
+
+**Soul sand and soul fire**
+
+Soul sand slows down whoever walks on it to less than half the speed; soul soil does not. Fire lit on either becomes blue **soul fire**: light 10 instead of 15, twice the burn, and like fire on netherrack it never goes out. Coal on a stick on soul sand or soul soil makes four **soul torches**, and iron nuggets around a soul torch a **soul lantern**; both give light 10.
+
+**Glowstone**
+
+Glowstone is the brightest block (light 15) and breaks by hand into two to four glowstone dust. Four dust in a square make the block again.
+
+**Quartz and gold**
+
+Nether quartz ore and nether gold ore sit in netherrack and need only a wooden pickaxe. Quartz makes white building blocks: the block of quartz, pillars, chiseled blocks, bricks, slabs and stairs, and smelted, smooth quartz. Nether gold ore drops gold nuggets.
+
+**Nether bricks and basalt**
+
+Four nether bricks make a block of nether bricks; with nether wart in the other corners, red nether bricks. Both give slabs, stairs and walls; nether brick blocks and nether brick items together make a fence that joins its own kind and fence gates, but not wooden fences. Basalt lies like a log along the clicked axis; four make polished basalt, smelted it is smooth.
+
+**Blackstone**
+
+Blackstone counts as stone for stone tools and the furnace, so a player in the Nether can make them without cobblestone. Polished it becomes polished blackstone, bricks and chiseled blackstone; all of them give slabs, stairs and walls, and the stonecutter cuts them in one step.
+
+**Nether wart**
+
+Nether wart grows only on soul sand, needs neither water nor light and ripens in four stages within about half an hour. Ripe it gives two to four wart, unripe one. Bone meal does not help it, and farmers leave it alone.
+
+**See also**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Soul lantern](blocks.md#block-qtcraft-soul_lantern), [Glowstone](blocks.md#block-qtcraft-glowstone), [Glowstone dust](items.md#item-qtcraft-glowstone_dust), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether quartz](items.md#item-qtcraft-quartz), [Block of quartz](blocks.md#block-qtcraft-quartz_block), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Nether brick](items.md#item-qtcraft-nether_brick), [Nether bricks](blocks.md#block-qtcraft-nether_bricks), [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks), [Nether brick fence](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Blackstone](blocks.md#block-qtcraft-blackstone), [Gilded blackstone](blocks.md#block-qtcraft-gilded_blackstone), [Nether wart](items.md#item-qtcraft-nether_wart)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 

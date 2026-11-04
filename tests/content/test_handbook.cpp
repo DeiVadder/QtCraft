@@ -177,7 +177,7 @@ private slots:
             QVERIFY2(entry && entry->sections.size() >= chapter.sections.size(), qPrintable(chapter.name));
         }
 
-        QCOMPARE(content.handbookChapters().size(), 33);
+        QCOMPARE(content.handbookChapters().size(), 34);
         QVERIFY(book.entry(u"tag:qtcraft:planks"_s));
         QVERIFY(book.entry(u"world:terrain"_s));
 
@@ -632,7 +632,7 @@ private slots:
         const QcHandbookEntry *hunger = m_english.entry(u"chapter:qtcraft:hunger"_s);
         QVERIFY(hunger);
         QVERIFY(hunger->sections.first().text.contains(u"holds 20 points"_s));
-        QVERIFY(hunger->sections[2].text.contains(u"With at least 18 food points you heal one health point every 4 s"_s));
+        QVERIFY(hunger->sections[3].text.contains(u"with at least 18 food points you heal one health point every 4 s"_s));
 
         for (const QcHandbook *book : {&m_english, &m_german, &m_moddedEnglish}) {
             for (const QcHandbookEntry &entry : book->entries()) {

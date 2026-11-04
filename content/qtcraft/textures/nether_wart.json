@@ -1,0 +1,8 @@
+{
+    "name": "nether_wart",
+    "pattern": "mushroom",
+    "primary": "#8a181c",
+    "secondary": "#c02e34",
+    "variation": 0.1,
+    "seed": 8442
+}

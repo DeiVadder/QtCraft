@@ -1,0 +1,14 @@
+{
+    "name": "quartz_block",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "quartz"
+    },
+    "result": {
+        "item": "quartz_block"
+    }
+}

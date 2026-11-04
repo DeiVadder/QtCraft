@@ -76,10 +76,15 @@ enum class QcSignalKind : quint8 {
         the container (the trapped chest, decision E-783): it powers dust and components on all
         sides and the block below it strongly. */
     Viewers,
+    /*! A source with the strength of its state \c {power}, which the server sets from the sky
+        above it and the sun every QcSignalDefinition::daylightIntervalTicks (decision E-982); the
+        state \c {inverted} turns it round, and using the block switches that. Like \c {target}
+        it powers dust and components on all sides, but no block. */
+    Daylight,
 };
 
 /*! Number of values of QcSignalKind. */
-inline constexpr int qcSignalKindCount = static_cast<int>(QcSignalKind::Viewers) + 1;
+inline constexpr int qcSignalKindCount = static_cast<int>(QcSignalKind::Daylight) + 1;
 
 /*! \brief The instruments of a note block (decision E-767): the sound it plays for the block below
     it, by that block's name, else by its sound material, else \c {fallback}.
@@ -149,6 +154,8 @@ struct QcSignalDefinition
     /*! Note blocks: number of notes, semitones from the lowest note (F#3, 0) to the highest
         (F#5, 24). */
     static constexpr int noteCount = 25;
+    /*! A daylight sensor reads the sky once in this many ticks (decision E-982). */
+    static constexpr int daylightIntervalTicks = 20;
     /*! Note blocks: most entries of each instrument map (QcNoteInstruments). */
     static constexpr int maxInstruments = 64;
 
@@ -213,10 +220,11 @@ struct QcSignalDefinition
         doors and gates first). */
     bool isCircuitPart() const { return isComponent() && kind != QcSignalKind::Opener; }
     /*! Returns whether using the block does something (switching, setting the delay, a note)
-        instead of placing against it. Comparators switch between comparing and subtracting. */
+        instead of placing against it. Comparators switch between comparing and subtracting,
+        daylight sensors between day and night. */
     bool isUsable() const
     {
         return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator
-               || kind == QcSignalKind::Note;
+               || kind == QcSignalKind::Note || kind == QcSignalKind::Daylight;
     }
 };

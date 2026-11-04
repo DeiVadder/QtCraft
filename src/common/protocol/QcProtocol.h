@@ -40,8 +40,10 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     (decision E-971), 86 the pulse, ink and tentacles of creatures that swim in pulses in the
     content (decision E-974), 87 the drawn placement of held launchers in the content
     (QcHoldDisplay::drawn and thirdPersonDrawn, decision E-984), 88 usingItem in PlayerInput and
-    PlayerState (decision E-986). */
-inline constexpr quint32 version = 88;
+    PlayerState (decision E-986), 89 the moving count of status effects in PlayerInput and
+    PlayerHealth, absorption in PlayerHealth, the Invisible flag and more fields of effects in the
+    content (decision E-992). */
+inline constexpr quint32 version = 89;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

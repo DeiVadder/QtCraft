@@ -165,7 +165,7 @@
 <context>
     <name>QcServerMessages</name>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="158"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="172"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 has made %n more advancement</numerusform>

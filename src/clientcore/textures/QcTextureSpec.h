@@ -156,6 +156,7 @@ struct QcTextureSpec
         Crop,
         RootCrop, // leafy tufts with roots or tubers
         Stem, // a thin stem with leaves
+        NetherWart, // knobbly lumps with gaps (rims dark, lit sides secondary)
         /*! ... tilled soil with furrows (primary, furrows secondary) ... */
         Farmland,
         /*! ... fruit blocks: a ribbed pumpkin side and its top with the stalk, a striped melon
@@ -218,6 +219,7 @@ struct QcTextureSpec
         HopperTop, // hopper rim from above
         HopperItem, // hopper icon
         Comparator, // comparator slab
+        DaylightSensor, // panes of a daylight sensor
         ObserverFace, // observer face
         ObserverBack, // observer back
         ObserverSide, // observer side

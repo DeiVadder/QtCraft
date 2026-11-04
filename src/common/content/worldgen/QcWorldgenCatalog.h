@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcNamedList.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/content/worldgen/QcShowcaseDefinition.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/content/worldgen/QcWorldgenDefinitions.h"
@@ -60,6 +61,21 @@ public:
     /*! Returns the void world settings. */
     const QcVoidDefinition &voidWorld() const { return m_voidWorld; }
 
+    /*! Adds the \a dimension, or replaces the one of the same name in its place (decision
+        E-978). */
+    void registerDimension(QcDimensionDefinition dimension) { m_dimensions.set(std::move(dimension)); }
+    /*! Returns the dimensions in registration order. */
+    const QList<QcDimensionDefinition> &dimensions() const { return m_dimensions.items(); }
+    /*! Returns the dimension named \a name; null when there is none. The overworld may be
+        missing (content without dimensions/): overworld() stands in for it. */
+    const QcDimensionDefinition *dimension(const QString &name) const { return m_dimensions.find(name); }
+    /*! Returns the overworld as registered, else QcDimensionDefinition::defaultOverworld(). */
+    const QcDimensionDefinition &overworld() const
+    {
+        const QcDimensionDefinition *registered = dimension(QString::fromLatin1(QcDimensionDefinition::overworldName));
+        return registered != nullptr ? *registered : m_defaultOverworld;
+    }
+
     /*! Adds the groups, options and presets of \a set, one pack's world generation options
         (decision E-917); an entry with the name of an existing one replaces it in its place. Called
         in the order of the packs and their files. */
@@ -92,6 +108,8 @@ private:
     QcNamedList<QcWorldOptionGroup> m_optionGroups;
     QcNamedList<QcWorldOptionDefinition> m_options;
     QcNamedList<QcWorldPreset> m_presets;
+    QcNamedList<QcDimensionDefinition> m_dimensions;
+    QcDimensionDefinition m_defaultOverworld = QcDimensionDefinition::defaultOverworld();
 };
 
 inline void QcWorldgenCatalog::addWorldOptions(const QcWorldOptionSet &set)

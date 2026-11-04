@@ -53,7 +53,6 @@ private:
     bool refusedAsFull(const QcCommandContext &context, QcAccessList::List list, const QString &name) const;
     // Replies when a list change could not be written.
     static void reportWrite(const QcCommandContext &context, const QcResult<bool> &changed);
-    void moveTo(QcServerClient &player, const QcVec3 &position);
 
     QcServerState &m_state;
     QcPendingCommands &m_pending;

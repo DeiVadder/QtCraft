@@ -59,7 +59,7 @@ std::array<quint32, QcEntityKinds::count> QcAdminReports::entitiesByKind() const
 QcMsg::AdminPlayers QcAdminReports::players(const QHash<quint32, qint32> &pings) const
 {
     QcMsg::AdminPlayers report;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (!client->joined || client->state != QcServerClient::State::Playing || std::cmp_greater_equal(report.players.size(), Limits::maxPlayers)) {
             continue;
         }

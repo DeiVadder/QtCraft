@@ -3,6 +3,7 @@
 
 #include "server/gameplay/QcBodyBurning.h"
 
+#include "common/gameplay/QcEffectRules.h"
 #include "common/light/QcLightTable.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
@@ -89,7 +90,7 @@ void QcBodyBurning::tickPlayer(QcServerClient &client)
         client.burnTicks = 0;
     } else {
         client.burnTicks = burnTicksAfter(client, QcPhysics::playerWidth, QcPhysics::playerHeight);
-        if (client.burnTicks > 0 && damageDue(client)) {
+        if (client.burnTicks > 0 && damageDue(client) && !QcEffectRules::fireProof(m_state.content(), client.effects.all())) {
             m_health.damage(client, burnDamage, {}, QcPlayerHealth::DamageKind::Armoured);
         }
     }
@@ -114,7 +115,8 @@ void QcBodyBurning::tickCreatures()
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
         const bool sunburn = definition.burnsInDaylight && inSunlight(mob, definition.height);
         mob.burnTicks = burnTicksAfter(mob, definition.width, definition.height, sunburn ? sunlightTicks : 0);
-        if (mob.burnTicks > 0 && damageDue(mob)) {
+        const bool fireProof = mob.effects && QcEffectRules::fireProof(m_state.content(), mob.effects->all());
+        if (mob.burnTicks > 0 && damageDue(mob) && !fireProof) {
             hurt.append(mob.id);
         }
     }

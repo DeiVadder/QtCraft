@@ -6,7 +6,8 @@
         "health",
         "air",
         "fighting",
-        "effects"
+        "effects",
+        "effect_kinds"
     ],
     "related": [
         "iron_sword",

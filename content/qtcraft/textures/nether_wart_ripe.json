@@ -1,0 +1,8 @@
+{
+    "name": "nether_wart_ripe",
+    "pattern": "nether_wart",
+    "primary": "#8a181c",
+    "secondary": "#c02e34",
+    "variation": 0.1,
+    "seed": 8438
+}

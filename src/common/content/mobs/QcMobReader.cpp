@@ -429,6 +429,7 @@ void QcMobReader::parseAi()
 void QcMobReader::parseHostileTraits()
 {
     m_mob.immuneTo = QcContentFields::parseNames(u"immuneTo"_s, m_namespace, m_reader);
+    m_mob.undead = m_reader.boolean(u"undead"_s, false);
     m_mob.blowEffects = parseBlowEffects(m_json, m_reader, m_namespace);
     m_mob.neutralByDay = m_reader.boolean(u"neutralByDay"_s, false);
     m_mob.leapSpeed = m_reader.number(u"leapSpeed"_s, 0.0, 0.0, 20.0);

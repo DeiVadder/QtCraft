@@ -3,6 +3,7 @@
 
 #include "server/storage/QcWorldStorage.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "common/world/QcGeneratorVersion.h"
 #include "server/core/QcServerLogging.h"
@@ -11,6 +12,7 @@
 #include "worldgen/generators/QcWorldOptions.h"
 
 #include <QDir>
+#include <QRegularExpression>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -72,7 +74,7 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
 
 int QcWorldStorage::storedFormatVersion() const
 {
-    QFile file(QDir(m_directory).filePath(u"world.json"_s));
+    QFile file(QDir(directory()).filePath(u"world.json"_s));
     if (!file.open(QIODevice::ReadOnly)) {
         return 0;
     }
@@ -115,7 +117,55 @@ QJsonObject generatorJson(const QcWorldInfo &info)
     if (!info.worldOptions.isEmpty()) {
         generator.insert(u"worldOptions"_s, info.worldOptions);
     }
+    if (!info.dimensionGeneratorVersions.isEmpty()) {
+        QJsonObject dimensions;
+        for (auto it = info.dimensionGeneratorVersions.begin(); it != info.dimensionGeneratorVersions.end(); ++it) {
+            dimensions.insert(it.key(), QJsonObject{{u"version"_s, it.value()}});
+        }
+        generator.insert(u"dimensions"_s, dimensions);
+    }
     return generator;
+}
+
+// The content packs world.json names ("packs"), at most 1024, those without id left out.
+QList<QcPackReference> packsOf(const QJsonObject &json)
+{
+    QList<QcPackReference> references;
+    const QJsonArray packs = json.value(u"packs"_s).toArray();
+    for (const auto &entry : packs) {
+        const QJsonObject pack = entry.toObject();
+        if (references.size() < 1024 && !pack.value(u"id"_s).toString().isEmpty()) {
+            references.append({pack.value(u"id"_s).toString(), pack.value(u"name"_s).toString(), pack.value(u"version"_s).toString()});
+        }
+    }
+    return references;
+}
+
+// The generator versions of the other dimensions (decision E-979, "generator"/"dimensions":
+// {"<name>": {"version": n}}). Whether this game generates a version is checked when the dimension
+// opens (its series depends on its generator); here only damage is refused.
+QcResult<QMap<QString, int>> dimensionVersionsOf(const QJsonObject &generator, const QString &path)
+{
+    const QJsonValue value = generator.value(u"dimensions"_s);
+    if (value.isUndefined()) {
+        return QMap<QString, int>{};
+    }
+    const QString damaged = u"%1 is damaged: the generator versions of the dimensions"_s.arg(path);
+    if (!value.isObject() || value.toObject().size() > QcWorldInfo::maxDimensionVersions) {
+        return qcError(damaged);
+    }
+    QMap<QString, int> versions;
+    const QJsonObject dimensions = value.toObject();
+    for (auto it = dimensions.begin(); it != dimensions.end(); ++it) {
+        const QJsonValue version = it.value().toObject().value(u"version"_s);
+        const double number = version.toDouble(-1.0);
+        if (it.key().isEmpty() || it.key().size() > QcDimensionDefinition::maxNameLength || !version.isDouble() || number != std::floor(number) || number < 1.0
+            || number > QcGeneratorVersion::maxStored) {
+            return qcError(damaged);
+        }
+        versions.insert(it.key(), static_cast<int>(number));
+    }
+    return versions;
 }
 
 // The generator version of world.json's "generator" (decision E-922): worlds without one are of
@@ -149,11 +199,70 @@ QcResult<int> generatorVersionOf(const QJsonObject &generator, const QString &pa
     return version;
 }
 
+// The chunk loader blocks as world.json and dimension.json keep them.
+QJsonArray chunkLoadersJson(const QList<QcPlacedChunkLoader> &chunkLoaders)
+{
+    QJsonArray loaders;
+    for (const QcPlacedChunkLoader &loader : chunkLoaders) {
+        loaders.append(QJsonObject{{u"x"_s, loader.pos.x}, {u"y"_s, loader.pos.y}, {u"z"_s, loader.pos.z}, {u"owner"_s, loader.owner}});
+    }
+    return loaders;
+}
+
+// A part of a dimension's name as a folder on every system: Windows opens the device instead of a
+// file or folder named like one, in any case (decision E-988).
+QString folderName(const QString &part)
+{
+    static const QRegularExpression reserved(u"^(con|prn|aux|nul|conin\\$|conout\\$|com[0-9]|lpt[0-9])$"_s, QRegularExpression::CaseInsensitiveOption);
+    return reserved.match(part).hasMatch() ? part + u'~' : part;
+}
+
 } // namespace
+
+QString QcWorldStorage::dimensionDirectory(const QString &worldDirectory, const QcDimensionDefinition &dimension)
+{
+    if (dimension.isOverworld()) {
+        return worldDirectory;
+    }
+    // The namespace becomes a folder of its own (QcDimensionParser refuses '/' and '.' in a name).
+    QStringList parts = dimension.name.split(u':');
+    for (QString &part : parts) {
+        part = folderName(part);
+    }
+    return QDir(worldDirectory).filePath(QString::fromLatin1(dimensionsFolder) + u'/' + parts.join(u'/'));
+}
+
+QcResult<QcWorldStorage::DimensionFile> QcWorldStorage::readDimensionFile() const
+{
+    QFile file(QDir(directory()).filePath(QString::fromLatin1(dimensionFileName)));
+    if (!file.exists()) {
+        return DimensionFile{};
+    }
+    if (!file.open(QIODevice::ReadOnly)) {
+        return qcError(u"Cannot open %1: %2"_s.arg(file.fileName(), file.errorString()));
+    }
+
+    QJsonParseError error{};
+    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64{1024} * 1024), &error);
+    if (error.error != QJsonParseError::NoError || !document.isObject()) {
+        return qcError(u"%1 is damaged"_s.arg(file.fileName()));
+    }
+    const QJsonObject json = document.object();
+    return DimensionFile{json.value(u"setupDone"_s).toBool(true), chunkLoadersOf(json)};
+}
+
+QByteArray QcWorldStorage::dimensionFileBytes(const DimensionFile &file)
+{
+    QJsonObject json{{u"setupDone"_s, file.setupDone}};
+    if (!file.chunkLoaders.isEmpty()) {
+        json.insert(u"chunkLoaders"_s, chunkLoadersJson(file.chunkLoaders));
+    }
+    return QJsonDocument(json).toJson();
+}
 
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
 {
-    const QString path = QDir(m_directory).filePath(u"world.json"_s);
+    const QString path = QDir(directory()).filePath(u"world.json"_s);
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         return qcError(u"Cannot open %1: %2"_s.arg(path, file.errorString()));
@@ -191,6 +300,11 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         return qcError(generatorVersion.error());
     }
     info.generatorVersion = *generatorVersion;
+    QcResult<QMap<QString, int>> dimensionVersions = dimensionVersionsOf(generator, path);
+    if (!dimensionVersions) {
+        return qcError(dimensionVersions.error());
+    }
+    info.dimensionGeneratorVersions = std::move(*dimensionVersions);
     // A mode this version does not know (a newer one) plays as survival and keeps its name.
     const QString gameMode = json.value(u"defaultGameMode"_s).toString();
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
@@ -205,13 +319,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.chunkLoaders = chunkLoadersOf(json);
     info.forcedChunks = forcedChunksOf(json);
 
-    const QJsonArray packs = json.value(u"packs"_s).toArray();
-    for (const auto &entry : packs) {
-        const QJsonObject pack = entry.toObject();
-        if (info.packs.size() < 1024 && !pack.value(u"id"_s).toString().isEmpty()) {
-            info.packs.append({pack.value(u"id"_s).toString(), pack.value(u"name"_s).toString(), pack.value(u"version"_s).toString()});
-        }
-    }
+    info.packs = packsOf(json);
 
     if (!seedOk || !idOk || info.nextCreatureId == 0 || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength
         || info.worldOptions.size() > QcWorldOptions::maxValues) {
@@ -263,11 +371,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
         json.insert(u"adventure"_s, info.adventure.toJson());
     }
     if (!info.chunkLoaders.isEmpty()) {
-        QJsonArray loaders;
-        for (const QcChunkLoaders::Loader &loader : info.chunkLoaders) {
-            loaders.append(QJsonObject{{u"x"_s, loader.pos.x}, {u"y"_s, loader.pos.y}, {u"z"_s, loader.pos.z}, {u"owner"_s, loader.owner}});
-        }
-        json.insert(u"chunkLoaders"_s, loaders);
+        json.insert(u"chunkLoaders"_s, chunkLoadersJson(info.chunkLoaders));
     }
     if (!info.forcedChunks.isEmpty()) {
         QJsonArray forced;
@@ -282,11 +386,11 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
 
 QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
 {
-    if (!QDir().mkpath(m_directory)) {
-        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    if (!QDir().mkpath(directory())) {
+        return qcError(u"Cannot create %1"_s.arg(directory()));
     }
 
-    QSaveFile file(QDir(m_directory).filePath(QString::fromLatin1(infoFileName)));
+    QSaveFile file(QDir(directory()).filePath(QString::fromLatin1(infoFileName)));
     if (!file.open(QIODevice::WriteOnly) || file.write(infoBytes(info)) < 0 || !file.commit()) {
         return qcError(u"Cannot write world info: %1"_s.arg(file.errorString()));
     }
@@ -315,7 +419,7 @@ QcResult<std::optional<QByteArray>> QcWorldStorage::blockUpdatesBytes(const QLis
 
 QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
 {
-    const QString path = QDir(m_directory).filePath(u"blockupdates.qce"_s);
+    const QString path = QDir(directory()).filePath(u"blockupdates.qce"_s);
     if (!QFile::exists(path)) {
         return QList<QcBlockPos>();
     }
@@ -357,7 +461,7 @@ QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
 
 QcResult<QList<QcVillage>> QcWorldStorage::readVillages(const QcVillage::ReadLimits &limits) const
 {
-    const QString path = QDir(m_directory).filePath(QString::fromLatin1(villagesFileName));
+    const QString path = QDir(directory()).filePath(QString::fromLatin1(villagesFileName));
     QFile file(path);
     if (!file.exists()) {
         return QList<QcVillage>();

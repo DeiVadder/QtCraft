@@ -116,6 +116,9 @@ struct PlayerView
     /*! Rides a minecart or drives a boat: the vehicle meets the creatures (decisions E-382,
         E-920), the player's body does not push them (decision E-882). */
     bool seated = false;
+    /*! The share of a creature's sight range within which it notices this player
+        (QcEffectRules::sightShare, decision E-992): 1 unless he is invisible. */
+    double sightShare = 1.0;
 };
 
 /*! \brief A block a creature takes or puts down in a tick (a shadewalker, decision E-460), which

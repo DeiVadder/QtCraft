@@ -274,7 +274,7 @@ bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
         if (client->hasBody() && body.intersects(cell)
             && client->equipment.at(armour->slot).isEmpty() && client->id < lowest) {
             lowest = client->id;
-            player = client.get();
+            player = client;
         }
     }
     for (const QcArmourStand &candidate : m_state.entities().stands().stands()) {

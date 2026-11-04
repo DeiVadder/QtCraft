@@ -4,6 +4,7 @@
 #include "server/gameplay/QcDrowning.h"
 
 #include "common/gameplay/QcAirSupply.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -36,8 +37,8 @@ bool QcDrowning::differs(QcMsg::PlayerAir sent, QcMsg::PlayerAir now)
 
 void QcDrowning::tickPlayer(QcServerClient &client)
 {
-    // A spectator, a creative player and the dead breathe freely: their air fills up.
-    const bool breathes = !client.hasBody() || client.rules().invulnerable;
+    // A spectator, a creative player, the dead and water breathing breathe freely: the air fills up.
+    const bool breathes = !client.hasBody() || client.rules().invulnerable || QcEffectRules::breathesUnderWater(m_state.content(), client.effects.all());
     const QcVec3 eyes = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const bool submerged = !breathes && QcAirSupply::submergedAt(m_state.world(), eyes);
 

@@ -162,6 +162,25 @@ private:
     }
 
 private slots:
+    // "tags" of a family: an object of its material kinds, each with a list of tags (decision E-982).
+    void familyTagsNameItsKinds()
+    {
+        const auto family = [](const char *tags) {
+            const QByteArray text = QByteArray(R"({"name":"steps","kinds":["rock"],"tags":)") + tags
+                                    + R"(,"block":{"shape":{"boxes":[[0,0,0,1,0.5,1]]}},"recipe":{"pattern":["##"],"key":{"#":"@"}}})";
+            return QcContentParser::parsePartFamily(json(text.constData()), u"m"_s);
+        };
+        const auto good = family(R"({"rock":["stones"]})");
+        QVERIFY(good.has_value());
+        QCOMPARE(good->tagsByKind.value(u"rock"_s), QStringList{u"stones"_s});
+
+        QVERIFY(!family(R"(["stones"])").has_value());
+        QVERIFY(!family(R"("stones")").has_value());
+        QVERIFY(!family(R"({"wood":["stones"]})").has_value());
+        QVERIFY(!family(R"({"rock":[]})").has_value());
+        QVERIFY(!family(R"({"rock":"stones"})").has_value());
+    }
+
     void cleanup()
     {
         m_client.reset();
@@ -172,7 +191,7 @@ private slots:
     {
         // Woods get stairs, slabs, vertical slabs, fences and gates, buttons and pressure plates (oak
         // has its own); stone kinds stairs, slabs, vertical slabs and walls, except that plain and
-        // polished stone leave walls out and smooth stone and cut sandstone have only slabs.
+        // polished stone and both quartz materials leave walls out and smooth stone and cut sandstone have only slabs.
         QStringList expected;
         for (const QString &wood : {u"oak"_s, u"birch"_s, u"spruce"_s, u"jungle"_s}) {
             for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s, u"fence"_s, u"fence_gate"_s}) {
@@ -183,12 +202,13 @@ private slots:
             expected.append({u"qtcraft:%1_button"_s.arg(wood), u"qtcraft:%1_pressure_plate"_s.arg(wood)});
         }
         for (const QString &stone : {u"cobblestone"_s, u"brick"_s, u"sandstone"_s, u"mud_bricks"_s, u"smooth_sandstone"_s, u"stone_bricks"_s,
-                                     u"mossy_stone_bricks"_s, u"mossy_cobblestone"_s}) {
+                                     u"mossy_stone_bricks"_s, u"mossy_cobblestone"_s, u"nether_brick"_s, u"red_nether_brick"_s,
+                                     u"blackstone"_s, u"polished_blackstone"_s, u"polished_blackstone_brick"_s}) {
             for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s, u"wall"_s}) {
                 expected.append(u"qtcraft:%1_%2"_s.arg(stone, part));
             }
         }
-        for (const QString &stone : {u"stone"_s, u"polished_stone"_s}) {
+        for (const QString &stone : {u"stone"_s, u"polished_stone"_s, u"quartz"_s, u"smooth_quartz"_s}) {
             for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s}) {
                 expected.append(u"qtcraft:%1_%2"_s.arg(stone, part));
             }

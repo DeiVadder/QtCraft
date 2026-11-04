@@ -463,6 +463,24 @@ QcVec3 swum(const QcMobPart &part, const QcVec3 &p, const PartLook &look)
     return {point.x, look.tiltHeight + y * std::cos(tilt) + point.z * std::sin(tilt), -y * std::sin(tilt) + point.z * std::cos(tilt)};
 }
 
+// The body of `figure`: its bones, hair and cape.
+void paintBody(const LayerPainter &paint, const Figure &figure, const QcAnimator::BodyPose &pose, const BodyPlacer &toWorld)
+{
+    const ModelLook &look = figure.look;
+    for (const QcModelBone &bone : look.model->bones) {
+        if (!isHidden(figure, bone.role)) {
+            paint(*look.outfit, bone.boxes, toWorld.bone(bone));
+        }
+    }
+    const QcModelBone *head = boneWithRole(*look.model, QcBoneRole::Head);
+    if (look.hair && head) {
+        paint(*look.hair, look.hair->boxes, toWorld.bone(*head));
+    }
+    if (look.cape) {
+        emitCape(paint, look, pose, toWorld);
+    }
+}
+
 } // namespace
 
 const QList<QcMobPart> &playerParts()
@@ -530,17 +548,9 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
     const BodyPlacer toWorld(pose, placement, look.scale);
     const LayerPainter paint{mesh, uv, look.colors, placement.hurt ? hurtTint : white, placement.light};
 
-    for (const QcModelBone &bone : look.model->bones) {
-        if (!isHidden(figure, bone.role)) {
-            paint(*look.outfit, bone.boxes, toWorld.bone(bone));
-        }
-    }
-    const QcModelBone *head = boneWithRole(*look.model, QcBoneRole::Head);
-    if (look.hair && head) {
-        paint(*look.hair, look.hair->boxes, toWorld.bone(*head));
-    }
-    if (look.cape) {
-        emitCape(paint, look, pose, toWorld);
+    // An invisible body keeps what it wears and holds (decision E-992).
+    if (!figure.bodyHidden) {
+        paintBody(paint, figure, pose, toWorld);
     }
 
     if (figure.attachments) {

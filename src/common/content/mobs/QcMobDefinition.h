@@ -202,6 +202,9 @@ struct QcMobDefinition
     /*! Kinds of status effects that do nothing to it (spiders and the undead: poison; decision
         E-450). Server side only. */
     QStringList immuneTo;
+    /*! Instant health hurts it and instant damage heals it (\c {"undead"}, decision E-992;
+        QcEffectDefinition::reversedOnUndead). Server side only. */
+    bool undead = false;
     /*! Effects its blows give the player struck (a cave spider's poison), with their ticks.
         Server side only. */
     QList<QcStatusEffect> blowEffects;

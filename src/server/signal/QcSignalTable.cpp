@@ -176,9 +176,9 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     const QcBlockState &shape = content.state(id);
     const QcSignalDefinition &signal = block.signal;
     state.kind = signal.kind;
-    // A constant source and a target power only components and dust, never the blocks around them
-    // (decisions E-752, E-768).
-    const bool source = signal.kind == QcSignalKind::Constant || signal.kind == QcSignalKind::Target;
+    // A constant source, a target and a daylight sensor power only components and dust, never the
+    // blocks around them (decisions E-752, E-768, E-982).
+    const bool source = signal.kind == QcSignalKind::Constant || signal.kind == QcSignalKind::Target || signal.kind == QcSignalKind::Daylight;
     state.conductor = signal.conducts && !source && block.solid && shape.opaque && shape.fullCube;
     state.mobility = mobilityOf(block);
 
@@ -191,7 +191,9 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
     state.strongPowersAbove = signal.strongPowersAbove;
 
-    const bool counted = signal.kind == QcSignalKind::Target || signal.kind == QcSignalKind::Viewers;
+    state.inverted = isFlag(content, id, u"inverted"_s);
+
+    const bool counted = signal.kind == QcSignalKind::Target || signal.kind == QcSignalKind::Viewers || signal.kind == QcSignalKind::Daylight;
     if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator || counted) {
         state.power = static_cast<quint8>(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
     }

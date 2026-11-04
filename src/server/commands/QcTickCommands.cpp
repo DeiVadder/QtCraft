@@ -174,7 +174,7 @@ void QcTickCommands::reportSprintEnd()
     const double seconds = std::max(static_cast<double>(sprint->elapsedNs) / 1e9, 1e-9);
     const QStringList arguments{QString::number(ticks), number(seconds * 1000.0), number(static_cast<double>(ticks) / seconds)};
     qCInfo(lcCommands).noquote() << u"Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"_s.arg(arguments[0], arguments[1], arguments[2]);
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == QcServerClient::State::Playing && m_state.permissionOf(*client) != QcPermission::Player) {
             client->connection->send(
                 QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"), arguments));

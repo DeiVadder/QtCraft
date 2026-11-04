@@ -4,6 +4,7 @@
 #include "server/core/QcServer.h"
 
 #include "common/auth/QcProfileValidation.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcConnection.h"
@@ -135,15 +136,23 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     });
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 
+    // Travel ends what a player has open (decision E-988).
+    m_state.setScreenCloser([this](QcServerClient &client) {
+        m_screens.closeAll(client);
+        m_crafting.closeCrafting(client);
+    });
+
     // What the weather does (decision E-396): rain puts out fires and burning bodies and wets soil,
     // lightning hurts and lights fires.
     const auto rainsOn = [this](QcBlockPos pos) { return m_weather.isRainingAt(pos); };
     m_fire.setRainCheck(rainsOn);
     m_burning.setRainCheck(rainsOn);
-    m_state.growth().setRainCheck(rainsOn);
-    // Villagers ask about a column: rain on its top, below the snow line of high air.
-    m_state.entities().creatures().villagers().setRainCheck([this](QcBlockPos pos) {
-        return m_weather.isRainingAt({pos.x, m_weather.columnTop(pos.x, pos.z) + 1, pos.z});
+    m_state.addDimensionWiring([this, rainsOn](QcServerDimension &dimension) {
+        dimension.growth().setRainCheck(rainsOn);
+        // Villagers ask about a column: rain on its top, below the snow line of high air.
+        dimension.entities().creatures().villagers().setRainCheck([this](QcBlockPos pos) {
+            return m_weather.isRainingAt({pos.x, m_weather.columnTop(pos.x, pos.z) + 1, pos.z});
+        });
     });
     // Rain on the cell above the bobber's water, so not under a roof (decision E-503).
     m_projectiles.fishing().setRainCheck([this](QcBlockPos pos) { return m_weather.isRainingAt(pos.offset(0, 1, 0)); });
@@ -198,9 +207,10 @@ QcStatus QcServer::stop()
 
     // Open crafting grids and stonecutters are emptied like on a disconnect, so overflow lands in the
     // saved world.
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         // Also clients that already disconnected: removeClosedClients() will not run any more.
         if (client->joined) {
+            const QcServerState::Scope scope(m_state, m_state.dimensionOf(*client));
             m_crafting.returnCraftingGrid(*client);
             m_inventory.returnScreenInputs(*client);
         }
@@ -213,7 +223,7 @@ QcStatus QcServer::stop()
     // A backup being copied finishes first; it reads only its snapshot, not the world.
     m_commands.waitForBackups();
 
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The server stopped")));
         client->connection->close();
     }
@@ -231,7 +241,7 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
                                                         [this, raw](const QcMessage &message) { handleMessage(*raw, message); });
     connect(client->connection.get(), &QcConnection::closed, this, [raw] { raw->state = Client::State::Closed; });
 
-    m_state.clientList().push_back(std::move(client));
+    m_state.addClient(std::move(client));
     emit clientCountChanged(clientCount());
     // Someone connecting resumes a paused server at once, so the login runs (decision E-877).
     updatePause();
@@ -248,6 +258,9 @@ void QcServer::handleMessage(Client &client, const QcMessage &message)
         handleLoginMessage(client, message);
         return;
     }
+
+    // What a player does happens where he is.
+    const QcServerState::Scope scope(m_state, m_state.dimensionOf(client));
 
     // The blocks a client predicted for this action (decision E-853) are acknowledged with the next
     // world sync (QcServer::updateClient), also when the action is refused, dropped or does nothing.
@@ -354,6 +367,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
         client.mining.pos = start->pos;
         client.mining.startTick = m_state.clock().tick();
         client.mining.startNs = m_state.clock().playerTimeNs();
+        client.mining.startFactor = QcEffectRules::miningFactor(m_state.content(), client.effects.all());
     } else if (std::holds_alternative<QcMsg::CancelMining>(message)) {
         client.mining.pos.reset();
     } else if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
@@ -479,14 +493,14 @@ void QcServer::handleLoginMessage(Client &client, const QcMessage &message)
 void QcServer::sendPlayerList()
 {
     QcMsg::PlayerList list;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == Client::State::Playing) {
             list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator,
                                  client->gameMode == QcGameMode::Spectator, client->listedLatencyUs});
         }
     }
 
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == Client::State::Playing) {
             client->connection->send(list);
         }
@@ -501,7 +515,7 @@ void QcServer::setLoginSettings(const QcLoginSettings &login)
 
 void QcServer::disconnectRemoteClients()
 {
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (!client->local && client->state != Client::State::Closed) {
             client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The host stopped sharing the world")));
             client->connection->close();
@@ -538,8 +552,9 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.strafe = std::clamp(input.strafe, -1.0f, 1.0f);
     input.pitch = std::clamp(input.pitch, -90.0f, 90.0f);
     input.yaw = std::fmod(input.yaw, 360.0f);
-    // The speed follows the player's effects as the server knows them, never the client's word.
-    input.speedFactor = static_cast<float>(client.effects.speedFactor(m_state.content()));
+    // The effects of the count the input was predicted with, within QcMovementEpochs::graceTicks:
+    // an effect starts and ends on the same input on both sides (decision E-992).
+    input.effects = client.movementEpochs.forInput(input.movementEpoch, m_state.clock().tick());
     // A draw slows the player (decision E-986). The client's word counts only as a slowdown, so
     // an input predicted as drawing moves alike here, also when the draw was refused meanwhile.
     input.usingItem = input.usingItem || m_projectiles.launchers().draws(client);
@@ -559,7 +574,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const QcVec3 previous = client.motion.position;
     client.previousPosition = previous;
     client.motion.stepPlayer(input, m_state.world(), QcPhysics::tickDuration, client.rules().movement());
-    m_health.afterMove(client, wasOnGround, wasInWater, previous.y);
+    m_health.afterMove(client, wasOnGround, wasInWater, previous.y, input.effects.maxFallSpeed);
 
     client.yaw = input.yaw;
     client.pitch = input.pitch;
@@ -585,7 +600,7 @@ void QcServer::setWorldTime(double seconds)
 
 void QcServer::sendTimeToAll()
 {
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == Client::State::Playing) {
             sendTime(*client);
         }

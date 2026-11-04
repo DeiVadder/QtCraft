@@ -86,6 +86,9 @@ QJsonObject partBlockJson(const PartSource &source, const QString &name, const Q
         json.insert(u"blastResistance"_s, base.blast.resistance);
     }
     json.insert(u"drops"_s, QJsonArray{QJsonObject{{u"item"_s, name}}});
+    if (const QStringList tags = family.tagsByKind.value(source.material.kind); !tags.isEmpty()) {
+        json.insert(u"tags"_s, QJsonArray::fromStringList(tags));
+    }
     return json;
 }
 

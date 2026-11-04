@@ -3,6 +3,7 @@
 
 #include "server/core/QcEntitySync.h"
 
+#include "common/gameplay/QcEffectRules.h"
 #include "server/core/QcServerState.h"
 #include "server/villages/QcVillagerLooks.h"
 
@@ -131,11 +132,17 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
         now = creatureMove(now, creature, m_state.content().mobs()[creature.type]);
+        if (creature.effects && QcEffectRules::invisible(m_state.content(), creature.effects->all())) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
+        }
         break;
     }
     case QcEntityKind::Player: {
         const auto &player = entity.as<QcServerClient>();
         now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id));
+        if (QcEffectRules::invisible(m_state.content(), player.effects.all())) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
+        }
         break;
     }
     case QcEntityKind::Minecart:

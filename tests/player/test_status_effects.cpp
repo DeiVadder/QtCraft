@@ -33,7 +33,7 @@ private:
         join();
         chat(u"/gamemode survival"_s);
         ticks(1);
-        player().hunger.restore(10, 0.0);
+        player().hunger.restore(10, 0.0, 0.0);
     }
 
     // Health of the player after `count` ticks of poison at `level` given for `seconds`; -1 when

@@ -34,6 +34,12 @@ struct QcCropDefinition
     /*! Chance per check (once a second) that a dropped item placing this crop, lying on free
         soil, plants itself (decision E-294); 0 never. */
     double plantChance = 0.0;
+    /*! Whether an item that fertilizes grows it (\c {"fertilizable"}, default true; nether wart:
+        false, decision E-981). */
+    bool fertilizable = true;
+    /*! Whether farmers harvest it (\c {"tendedByFarmers"}, default true; nether wart: false,
+        decision E-981). */
+    bool tendedByFarmers = true;
 
     /*! Returns whether the block is a crop (\c {property} is set). */
     bool isCrop() const { return !property.isEmpty(); }

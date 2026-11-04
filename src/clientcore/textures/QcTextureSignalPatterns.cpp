@@ -101,6 +101,17 @@ QColor paintComparator(const QcTextureSpec &spec, int x, int y, QColor color)
     return spot(7, 3) || spot(4, 11) || spot(11, 11) || wire ? varied(spec, spec.secondary, x, y, 11) : color;
 }
 
+// Three by three panes of glass (primary, lighter towards a corner) in a frame of bars (secondary).
+QColor paintDaylightSensor(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const int paneX = (x - 1) % 5;
+    const int paneY = (y - 1) % 5;
+    if (x == 0 || y == 0 || paneX == 4 || paneY == 4) {
+        return varied(spec, spec.secondary, x, y, 9);
+    }
+    return paneX + paneY <= 1 ? scaled(color, 1.25) : varied(spec, color, x, y, 7);
+}
+
 // A stone face (primary) with a dark slit of two eyes across the middle (secondary).
 QColor paintObserverFace(const QcTextureSpec &spec, int x, int y, QColor color)
 {
@@ -211,7 +222,7 @@ QColor paintMinecart(const QcTextureSpec &spec, int x, int y, QColor color)
     return rim ? scaled(color, 1.15) : varied(spec, color, x, y, 13);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 18> painters = {{
     {Pattern::Dust, paintDust},
     {Pattern::Lever, paintLever},
     {Pattern::Repeater, paintRepeater},
@@ -220,6 +231,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
     {Pattern::HopperTop, paintHopperTop},
     {Pattern::HopperItem, paintHopperItem},
     {Pattern::Comparator, paintComparator},
+    {Pattern::DaylightSensor, paintDaylightSensor},
     {Pattern::ObserverFace, paintObserverFace},
     {Pattern::ObserverBack, paintObserverBack},
     {Pattern::ObserverSide, paintObserverSide},

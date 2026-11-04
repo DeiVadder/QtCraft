@@ -278,6 +278,10 @@ struct QcBlockDefinition
         \c {burnsItems} is false (a campfire hurts only creatures and players, decision E-772).
         Server side only. */
     double contactDamage = 0.0;
+    /*! Whether its \c {contactDamage} is heat that a fire-proof body does not feel (fire
+        resistance, decision E-992; \c {"contactFire"}, by default with \c {"setsAlight"}).
+        Server side only. */
+    bool contactFire = false;
     /*! Whether items inside the block burn from its \c {contactDamage} (\c {"burnsItems"}). Server
         side only. */
     bool burnsItems = true;

@@ -42,6 +42,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.health = client.health;
     player.food = client.hunger.food();
     player.exhaustion = client.hunger.exhaustion();
+    player.saturation = client.hunger.saturation();
     player.equipment = client.equipment;
     player.gameMode = client.gameMode;
     player.keptInventory = client.keptInventory;
@@ -50,8 +51,11 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.enchantSeed = client.enchantSeed;
     player.runeSeed = client.runeSeed;
     player.effects = client.effects.all();
+    player.absorption = client.absorption;
     player.advancements = client.advancements.progress;
     player.air = client.air.air();
+    player.dimension = client.dimension;
+    player.returnTo = client.returnTo;
     return record;
 }
 
@@ -64,7 +68,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.inventory = player.inventory;
     client.equipment = player.equipment;
     client.health = std::clamp(player.health, 0.0, QcServerClient::maxHealth);
-    client.hunger.restore(player.food, player.exhaustion);
+    client.hunger.restore(player.food, player.exhaustion, player.saturation);
     client.gameMode = player.gameMode;
     client.keptInventory = player.keptInventory;
     client.keptEquipment = player.keptEquipment;
@@ -72,8 +76,11 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.enchantSeed = player.enchantSeed;
     client.runeSeed = player.runeSeed;
     client.effects.restore(player.effects);
+    client.absorption = player.absorption;
     client.advancements.progress = player.advancements;
     client.air.restore(player.air);
+    client.dimension = player.dimension;
+    client.returnTo = player.returnTo;
     QcServerGameModes::applyRules(client);
 }
 

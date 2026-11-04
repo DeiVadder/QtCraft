@@ -1,0 +1,8 @@
+{
+    "name": "quartz_bricks",
+    "pattern": "bricks",
+    "primary": "#ebe5dc",
+    "secondary": "#cdc3b6",
+    "variation": 0.04,
+    "seed": 8414
+}

@@ -293,7 +293,7 @@ QcServerClient *QcServerBoats::driver(const QcBoat &boat) const
     }
     for (const auto &client : m_state.clients()) {
         if (client->id == boat.driver) {
-            return client.get();
+            return client;
         }
     }
     return nullptr;

@@ -1,0 +1,8 @@
+{
+    "name": "blackstone_top",
+    "pattern": "noise",
+    "primary": "#2c2630",
+    "secondary": "#221e24",
+    "variation": 0.12,
+    "seed": 8425
+}

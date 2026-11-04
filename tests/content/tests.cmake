@@ -33,3 +33,4 @@ target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PR
 qc_add_test(test_english_plurals SOURCES content/test_english_plurals.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_english_plurals PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_advancement_content SOURCES content/test_advancement_content.cpp LIBRARIES qc_base_content)
+qc_add_test(test_nether_blocks SOURCES content/test_nether_blocks.cpp LIBRARIES qc_base_content)

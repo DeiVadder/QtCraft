@@ -20,9 +20,18 @@
 class QcBlockIndex
 {
 public:
+    /*! Whether the index notes the cells changed on and next to its blocks. */
+    enum class Touching : quint8 {
+        /*! Notes them; someone calls takeTouched() regularly. */
+        Noted,
+        /*! Keeps the positions only: setting a block costs no look around it. */
+        Ignored,
+    };
+
     QcBlockIndex() = default;
-    /*! \a marked is indexed by block state id. */
-    explicit QcBlockIndex(std::vector<bool> marked);
+    /*! \a marked is indexed by block state id; \a touching says whether the index notes touched
+        cells. */
+    explicit QcBlockIndex(std::vector<bool> marked, Touching touching = Touching::Noted);
 
     /*! Returns whether the state \a block is indexed. */
     bool isMarked(QcBlockId block) const { return static_cast<std::size_t>(block) < m_marked.size() && m_marked[static_cast<std::size_t>(block)]; }
@@ -38,6 +47,8 @@ public:
 
     /*! Returns whether an indexed block is at \a pos. */
     bool contains(QcBlockPos pos) const { return m_all.contains(pos); }
+    /*! Returns the indexed positions, in no particular order. */
+    const QSet<QcBlockPos> &positions() const { return m_all; }
     /*! Returns the number of indexed positions. */
     qsizetype size() const { return m_all.size(); }
     /*! Returns the cells touched since the last call. */
@@ -47,6 +58,7 @@ private:
     bool hasNear(QcBlockPos pos) const;
 
     std::vector<bool> m_marked;
+    Touching m_touching = Touching::Noted;
     QHash<QcChunkPos, QList<QcBlockPos>> m_byChunk;
     QSet<QcBlockPos> m_all;
     QSet<QcBlockPos> m_touched;

@@ -87,6 +87,7 @@ QcBitesDefinition parseBites(const QcBlockDefinition &block, QcJsonFieldReader &
 {
     QcBitesDefinition bites;
     bites.food = reader.integer(u"food"_s, 2, 1, QcItemDefinition::maxFood);
+    bites.saturation = reader.number(u"saturation"_s, bites.saturation, 0.0, QcItemDefinition::maxSaturationModifier);
     const QcBlockProperty *property = block.property(u"bites"_s);
     if (reader.ok() && (!property || property->values.size() < 2)) {
         reader.fail(u"a block with bites needs the state 'bites' with at least two values"_s);

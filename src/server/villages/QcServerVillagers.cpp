@@ -67,8 +67,8 @@ void QcServerVillagers::apply()
         }
     }
 
-    if (++m_foodTick >= foodTicks) {
-        m_foodTick = 0;
+    // The clock, not a count here: this runs once per dimension and tick.
+    if (m_state.clock().tick() % foodTicks == 0) {
         pickUpFood();
     }
 
@@ -105,7 +105,7 @@ void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
     const QcContentRegistry &content = m_state.content();
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     const QcBlockDefinition *crop = block ? &content.block(*block) : nullptr;
-    const QcBlockProperty *stages = crop && crop->crop.isCrop() ? crop->property(crop->crop.property) : nullptr;
+    const QcBlockProperty *stages = crop && crop->crop.isCrop() && crop->crop.tendedByFarmers ? crop->property(crop->crop.property) : nullptr;
     if (!block || !stages || stages->values.isEmpty() || content.property(*block, crop->crop.property) != stages->values.constLast()) {
         return;
     }

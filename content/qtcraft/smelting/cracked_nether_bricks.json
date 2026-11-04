@@ -1,0 +1,9 @@
+{
+    "name": "cracked_nether_bricks",
+    "input": "nether_bricks",
+    "result": {
+        "item": "cracked_nether_bricks"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

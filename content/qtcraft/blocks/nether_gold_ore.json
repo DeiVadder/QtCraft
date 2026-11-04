@@ -1,0 +1,21 @@
+{
+    "name": "nether_gold_ore",
+    "sound": "netherrack",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "gold_nugget",
+            "count": 2,
+            "maxCount": 6
+        }
+    ],
+    "experience": [
+        0,
+        1
+    ],
+    "textures": {
+        "all": "nether_gold_ore"
+    }
+}

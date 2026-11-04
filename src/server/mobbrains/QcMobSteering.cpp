@@ -34,7 +34,7 @@ namespace {
 
 bool isValidTarget(const QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &player)
 {
-    return player.alive && player.targetable && (player.position - mob.motion.position).length() < definition.sightRange;
+    return player.alive && player.targetable && (player.position - mob.motion.position).length() < definition.sightRange * player.sightShare;
 }
 
 // The nearest valid target the creature sees from its eyes; nullptr when it sees none.

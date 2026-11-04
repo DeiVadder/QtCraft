@@ -40,8 +40,8 @@
 class QcEntities
 {
 public:
-    /*! The clients of the server. */
-    using Clients = std::vector<std::unique_ptr<QcServerClient>>;
+    /*! The clients in the dimension of these entities. */
+    using Clients = std::vector<QcServerClient *>;
 
     /*! Returns whether the chunk is loaded. */
     using ChunkLoadedFunction = std::function<bool(QcChunkPos)>;
@@ -54,7 +54,10 @@ public:
 
     /*! Returns a new id for any entity, players included; never given twice while the world is
         open. */
-    quint32 newId() { return m_nextId++; }
+    quint32 newId() { return (*m_nextId)++; }
+    /*! Takes the ids from \a next from now on, which the entities of every dimension share
+        (decision E-988); it outlives these entities. */
+    void shareIds(quint32 &next) { m_nextId = &next; }
 
     /*! Returns the table of the creatures (AI and spawning). */
     QcMobManager &creatures() { return m_creatures; }
@@ -202,7 +205,7 @@ private:
         } else {
             each(self.m_creatures.editableMobs());
         }
-        for (const std::unique_ptr<QcServerClient> &client : self.m_clients) {
+        for (const auto &client : self.m_clients) {
             if (isPresent(*client)) {
                 if constexpr (readOnly) {
                     visit(std::as_const(*client));
@@ -238,7 +241,8 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content;
     const Clients &m_clients;
-    quint32 m_nextId = 1;
+    quint32 m_ownNextId = 1;
+    quint32 *m_nextId = &m_ownNextId;
     QcMobManager m_creatures;
     QcItemEntityManager m_items;
     QcFallingBlockManager m_falling;
