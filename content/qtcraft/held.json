@@ -12,8 +12,10 @@
         },
         "launcher": {
             "grip": "middle",
-            "firstPerson": { "translate": [-0.02, 0.06, -0.03], "rotate": [0, -20, 15], "scale": 0.45 },
-            "thirdPerson": { "translate": [0, 0.06, -0.04], "rotate": [-75, 90, 0], "scale": 0.55 }
+            "firstPerson": { "translate": [-0.02, 0.06, -0.03], "rotate": [-46, 97, 10], "scale": 0.45 },
+            "drawn": { "translate": [0, 0.04, 0], "rotate": [-41, 142, -34] },
+            "thirdPerson": { "translate": [0.03, 0.06, -0.08], "rotate": [-95, 90, 0], "scale": 0.55 },
+            "thirdPersonDrawn": { "translate": [0, 0.06, -0.04], "rotate": [-135, 90, 0] }
         },
         "sprite": {
             "grip": "base",

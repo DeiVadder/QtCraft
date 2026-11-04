@@ -210,17 +210,40 @@ HandPose animateHand(const QcEntityPose &pose, double time, const QcHandTimers &
         hand.swing = middle;
         hand.punch = emptyPunch * middle;
     }
-    if (pose.drawProgress >= 0.0) {
-        // Drawing a bow: the hand comes to the middle and pulls back, trembling at a full draw.
-        const double draw = std::clamp(pose.drawProgress, 0.0, 1.0);
-        const double tremble = draw >= 1.0 ? std::sin(time * 40.0) * 0.004 : 0.0;
-        hand.offset.x -= 0.18;
-        hand.offset.y += 0.06 + tremble;
-        hand.offset.z += 0.12 * draw;
-        hand.yaw += 20.0;
-        hand.pitch += 10.0;
+    if (timers.aim > 0.0) {
+        // From the moment of the shot the hand keeps the draw it had and goes back from there;
+        // a new draw takes over once it is stronger than what the hand still shows.
+        const double drawn = std::max(pose.drawProgress, timers.lastDraw);
+        hand.holdDrawn(drawn, timers.aim, drawn - std::max(0.0, pose.drawProgress), time);
     }
     return hand;
+}
+
+void HandPose::holdDrawn(double draw, double progress, double released, double time)
+{
+    // Towards the middle of the screen and turned inwards about the shoulder, eased in and out.
+    constexpr QcVec3 drawnShift{-0.46, 0.05, -0.1};
+    constexpr double drawnYaw = 25.0;
+    constexpr double drawnPitch = 8.0;
+    // How far a full draw pulls the hand towards the eye, and the dip after a full draw's shot,
+    // in metres.
+    constexpr double pull = 0.06;
+    constexpr double releaseDip = 0.05;
+    // The tremble: from a tenth of the draw on, growing to its amplitude at a full draw.
+    constexpr double trembleFrom = 0.1;
+    constexpr double trembleAmplitude = 0.004;
+    constexpr double trembleRate = 26.0;
+
+    const double eased = smooth(progress);
+    const double drawn = std::clamp(draw, 0.0, 1.0);
+    const double tremble = std::sin(time * trembleRate) * trembleAmplitude * std::max(0.0, drawn - trembleFrom) / (1.0 - trembleFrom);
+    offset = offset + drawnShift * eased;
+    offset.y += tremble * eased;
+    offset.z += pull * drawn * eased;
+    offset.y -= releaseDip * released * std::sin(std::clamp(progress, 0.0, 1.0) * M_PI);
+    yaw += drawnYaw * eased;
+    pitch += drawnPitch * eased;
+    aim = eased;
 }
 
 void BodyPose::rowBoat(double rowPhase)
@@ -288,9 +311,14 @@ void BodyPose::aimBow(const QcEntityPose &pose)
 {
     // Aims along the view, also from a leaning torso (sneaking, armsAimed).
     armsAimed = true;
+    // The arms turn with the head about the vertical (yaw after pitch): the bow arm a little
+    // inwards, the drawing arm across the chest to the string just behind the bow.
+    constexpr double bowArmYaw = -6.0;
+    constexpr double stringArmYaw = 35.0;
     const double aim = 90.0 + pose.headPitch;
-    bone(QcBoneRole::LeftArm) = {aim, 12.0};
-    bone(QcBoneRole::RightArm) = {aim - 8.0 * pose.drawProgress, -25.0 - 15.0 * pose.drawProgress};
+    const double head = std::clamp(static_cast<double>(pose.headYaw), -maxHeadYaw, maxHeadYaw);
+    bone(QcBoneRole::RightArm) = {aim, 0.0, bowArmYaw + head};
+    bone(QcBoneRole::LeftArm) = {aim, 0.0, stringArmYaw + head};
 }
 
 } // namespace QcAnimator

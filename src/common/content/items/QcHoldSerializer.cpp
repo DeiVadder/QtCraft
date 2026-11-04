@@ -85,6 +85,8 @@ void write(QDataStream &stream, const QcHoldDisplay &display)
     writeTransform(stream, display.firstPerson);
     writeTransform(stream, display.thirdPerson);
     writeTransform(stream, display.swing);
+    writeTransform(stream, display.drawn);
+    writeTransform(stream, display.thirdPersonDrawn);
 }
 
 std::optional<QcHoldDisplay> read(QDataStream &stream)
@@ -97,10 +99,12 @@ std::optional<QcHoldDisplay> read(QDataStream &stream)
     const std::optional<QcHoldTransform> firstPerson = readTransform(stream);
     const std::optional<QcHoldTransform> thirdPerson = readTransform(stream);
     const std::optional<QcHoldTransform> swing = readTransform(stream);
-    if (!category || !grip || !firstPerson || !thirdPerson || !swing || stream.status() != QDataStream::Ok) {
+    const std::optional<QcHoldTransform> drawn = readTransform(stream);
+    const std::optional<QcHoldTransform> thirdPersonDrawn = readTransform(stream);
+    if (!category || !grip || !firstPerson || !thirdPerson || !swing || !drawn || !thirdPersonDrawn || stream.status() != QDataStream::Ok) {
         return std::nullopt;
     }
-    return QcHoldDisplay{*category, *grip, *firstPerson, *thirdPerson, *swing};
+    return QcHoldDisplay{*category, *grip, *firstPerson, *thirdPerson, *swing, *drawn, *thirdPersonDrawn};
 }
 
 void writeDefaults(QDataStream &stream, const QcHoldDefaults &defaults)

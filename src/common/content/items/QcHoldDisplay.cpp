@@ -38,7 +38,7 @@ QcHoldTransform QcHoldTransform::over(const QcHoldTransform &base) const
 QcHoldDisplay QcHoldDisplay::over(const QcHoldDisplay &base) const
 {
     return {either(category, base.category), either(grip, base.grip), firstPerson.over(base.firstPerson), thirdPerson.over(base.thirdPerson),
-            swing.over(base.swing)};
+            swing.over(base.swing), drawn.over(base.drawn), thirdPersonDrawn.over(base.thirdPersonDrawn)};
 }
 
 QcHoldDefaults QcHoldDefaults::merged(const QcHoldDefaults &later) const

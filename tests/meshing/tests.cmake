@@ -18,6 +18,8 @@ qc_add_test(test_mesh_scheduler SOURCES meshing/test_mesh_scheduler.cpp LIBRARIE
 qc_add_test(test_water_look SOURCES meshing/test_water_look.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES meshing/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES meshing/test_entity_culling.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_bow_pose SOURCES meshing/test_bow_pose.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_forced_pose SOURCES meshing/test_forced_pose.cpp LIBRARIES qc_app_core)
 qc_add_test(test_hand_swing SOURCES meshing/test_hand_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_held_item SOURCES meshing/test_held_item.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_hold_content SOURCES meshing/test_hold_content.cpp LIBRARIES qc_base_content qc_clientcore)

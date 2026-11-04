@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <cmath>
 
-void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
+void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed, double draw)
 {
     const auto advance = [](int &ticks, int length) {
         if (ticks < 0) {
@@ -27,9 +27,23 @@ void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
     advance(m_landingTicks, QcHandTimers::landingTicks);
     advance(m_hurtTicks, hurtTicks);
 
+    // The hand comes to a drawn launcher and leaves it again over aimTicks (decision E-984).
+    setAimTicks(aimTicks() + (drawing() ? 1 : -1));
+    setDrawing(draw >= 0.0);
+    if (drawing()) {
+        setRunningDraw(std::min(draw, 1.0));
+        setLastDraw(std::max(runningDraw(), lastDraw() - lastDrawFade));
+    } else if (aimTicks() == 0) {
+        setLastDraw(0.0);
+    }
+
     if (held != m_lastHeld) {
         m_lastHeld = held;
         m_switchTicks = 0;
+        // The pose of a launcher does not run on over the new item.
+        setAimTicks(0);
+        setDrawing(false);
+        setLastDraw(0.0);
     }
 
     // Keep swinging while a block is being mined: the next swing starts in the tick the last one
@@ -91,8 +105,14 @@ QcHurtTilt::Tilt QcLocalAnimation::hurtTilt(double alpha) const
 QcHandTimers QcLocalAnimation::handTimers(double alpha) const
 {
     const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
-    return {progress(m_switchTicks, QcHandTimers::switchTicks), progress(m_landingTicks, QcHandTimers::landingTicks),
-            progress(m_useTicks, QcHandTimers::useTicks), m_swingTicks >= 0 && m_swingStyle == QcHandSwing::Style::Mining};
+    const double aimed = aimTicks() + (drawing() ? alpha : -alpha);
+    const bool fading = drawing() && lastDraw() > runningDraw();
+    return {progress(m_switchTicks, QcHandTimers::switchTicks),
+            progress(m_landingTicks, QcHandTimers::landingTicks),
+            progress(m_useTicks, QcHandTimers::useTicks),
+            m_swingTicks >= 0 && m_swingStyle == QcHandSwing::Style::Mining,
+            std::clamp(aimed / QcHandTimers::aimTicks, 0.0, 1.0),
+            fading ? std::max(runningDraw(), lastDraw() - lastDrawFade * alpha) : lastDraw()};
 }
 
 QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha)

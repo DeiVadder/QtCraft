@@ -77,8 +77,9 @@ struct BodyPose
     /*! Driving a boat (decision E-920): the thighs level and forward, the arms reaching to the
         grips of the paddles at the moment \a rowPhase of a stroke (negative: resting paddles). */
     void rowBoat(double rowPhase);
-    /*! Aiming a bow (decision E-425): the left arm holds it out along the view of \a pose, the
-        right one pulls the string back towards the face. */
+    /*! Aiming a bow (decisions E-425, E-984): both arms point along the view of \a pose, turned
+        with the head; the right one holds the bow out in its fist, the left one reaches across
+        the chest to the string. */
     void aimBow(const QcEntityPose &pose);
 };
 
@@ -91,7 +92,9 @@ struct BodyPose
     swing as one rigid body (decision E-881). \c {roll} turns an arm holding an item about the
     fist and \c {reach} (0..1, how far into the strike) moves it as a whole towards the middle of
     the screen (QcEntityMesher::heldStrikeShift); \c {punch} (metres) moves the empty arm, and
-    only it, forward as a whole: a fist strikes ahead, not just down. \qcfields */
+    only it, forward as a whole: a fist strikes ahead, not just down. \c {aim} (0..1) is how far
+    a launcher has come to its drawn placement (QcHoldDisplay::drawn, decision E-984).
+    \qcfields */
 struct HandPose
 {
     QcVec3 offset;
@@ -101,6 +104,14 @@ struct HandPose
     double swing = 0.0;
     double reach = 0.0;
     double punch = 0.0;
+    double aim = 0.0;
+
+    /*! Brings the hand to a drawn launcher (decision E-984): \a progress (QcHandTimers::aim) of the
+        way towards the middle of the screen, pulled back by \a draw (the draw's power, 0..1),
+        trembling from a tenth of the draw on at \a time (seconds), less as the hand comes or
+        goes; \a released is the part of the draw that was let go (0..1), by which the hand
+        dips on its way back. */
+    void holdDrawn(double draw, double progress, double released, double time);
 };
 
 /*! The right shoulder of the humanoid figure (its arm's pivot) above its feet; the left one

@@ -337,7 +337,10 @@ void emitHeldHand(const LayerPainter &paint, const Figure &figure, const QcAnima
         emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return camera(armRest(local)); });
     }
     const HeldItemPainter item(paint.mesh, paint.uv, paint.light);
-    const HeldPlacement placement = figure.held->firstPerson.towards(figure.held->swing, hand.swing);
+    // A swing turns the item from its rest; a drawn launcher stays at its drawn placement
+    // (decision E-984), also through a swing.
+    const HeldPlacement swung = figure.held->firstPerson.towards(figure.held->swing, hand.swing);
+    const HeldPlacement placement = swung.towards(figure.held->drawn, hand.aim);
     item.paint(*figure.held, placement, [&](const QcVec3 &p) { return camera(grip + p); });
 }
 
@@ -559,7 +562,8 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
         const QcVec3 grip = gripOf(*arm);
         const auto armPlace = toWorld.bone(*arm);
         const HeldItemPainter item(mesh, uv, placement.light);
-        item.paint(*figure.held, figure.held->thirdPerson, [&](const QcVec3 &p) { return armPlace(grip + p); });
+        const HeldPlacement &held = pose.armsAimed ? figure.held->thirdPersonDrawn : figure.held->thirdPerson;
+        item.paint(*figure.held, held, [&](const QcVec3 &p) { return armPlace(grip + p); });
     }
 }
 

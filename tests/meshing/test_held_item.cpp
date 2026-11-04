@@ -467,6 +467,60 @@ private slots:
         QVERIFY(screenBounds(sprite, armVertices, sprite.vertices.size()).height() > 0.5);
     }
 
+    // A swing does not turn a drawn launcher back towards its rest (decision E-984): the hand keeps
+    // the drawn placement, and the swing placement still shows while nothing is drawn.
+    void aSwingLeavesADrawnLauncherAtItsPlacement()
+    {
+        QcEntityMesher::ItemLook bow = baseLook(u"qtcraft:bow"_s);
+        bow.sprite = u"t:pickaxe"_s;
+        bow.shape = pickaxe();
+        bow.swing.rotate = bow.firstPerson.rotate + QcVec3{0.0, 40.0, 0.0};
+        const auto mesh = [&](double aim, double swing) {
+            QcAnimator::HandPose hand;
+            hand.aim = aim;
+            hand.swing = swing;
+            QcEntityMesh result;
+            QcEntityMesher::appendHand(result, {m_look, &bow}, hand, {{}, 0.0, 0.0, 1.0f}, anyUv);
+            return result;
+        };
+        const auto sameItem = [&](const QcEntityMesh &a, const QcEntityMesh &b) {
+            return std::ranges::equal(a.vertices, b.vertices, [](const QcEntityVertex &one, const QcEntityVertex &other) {
+                return one.x == other.x && one.y == other.y && one.z == other.z;
+            });
+        };
+        QVERIFY(sameItem(mesh(1.0, 1.0), mesh(1.0, 0.0)));
+        QVERIFY(!sameItem(mesh(0.0, 1.0), mesh(0.0, 0.0)));
+    }
+
+    // A figure holds a launcher at the side and carries it to the aim with its arm: the aiming
+    // placement counts only while the arms aim, and held it stays clear of the leg (the arm hangs
+    // at x 0.25..0.45, the legs reach to x 0.25).
+    void figuresSwitchTheLauncherWhenTheyAim()
+    {
+        QcEntityMesher::ItemLook bow = baseLook(u"qtcraft:bow"_s);
+        bow.sprite = u"t:pickaxe"_s;
+        bow.shape = pickaxe();
+        QcEntityPose aiming;
+        aiming.drawProgress = 1.0;
+        QcAnimator::BodyPose aimed = QcAnimator::animateBody(aiming, 0.0);
+        QVERIFY(aimed.armsAimed);
+        QcAnimator::BodyPose unaimed = aimed;
+        unaimed.armsAimed = false;
+
+        const auto boundsOfItem = [&](const QcAnimator::BodyPose &pose) {
+            QcEntityMesh mesh;
+            QcEntityMesher::appendModel(mesh, {m_look, &bow}, pose, {}, anyUv);
+            return screenBounds(mesh, armVertices, mesh.vertices.size());
+        };
+        QVERIFY(boundsOfItem(aimed) != boundsOfItem(unaimed));
+
+        QcEntityMesh held;
+        QcEntityMesher::appendModel(held, {m_look, &bow}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
+        const auto byX = [](const QcEntityVertex &a, const QcEntityVertex &b) { return a.x < b.x; };
+        const auto inner = std::ranges::min_element(held.vertices.begin() + armVertices, held.vertices.end(), byX);
+        QVERIFY2(inner->x > 0.25, qPrintable(QString::number(inner->x)));
+    }
+
     void figuresHoldToolsByTheHandle()
     {
         const QcEntityMesher::ItemLook pick = tool();

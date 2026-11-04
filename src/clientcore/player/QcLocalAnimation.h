@@ -12,6 +12,8 @@
 #include "common/gameplay/QcSwingSpeed.h"
 #include "common/physics/QcEntityMotion.h"
 
+#include <algorithm>
+
 class QcPrediction;
 
 /*! \brief Animation of the local player between server updates: the timers of the arm swing, using,
@@ -34,8 +36,10 @@ public:
     /*! Advances the timers by one tick. Holding another item \a held (qcNoItem: empty hand)
         starts the switch; \a mining keeps the arm swinging, one swing after the other without a
         gap. \a speed sets the length of the swings that start from now on (decision E-881); a
-        running one keeps its length. */
-    void tick(QcItemId held, bool mining, QcSwingSpeed speed);
+        running one keeps its length. \a draw is the power of the drawn launcher (negative when
+        none): the hand comes to it or leaves it (QcHandTimers::aim, decision E-984); another
+        item ends that at once. */
+    void tick(QcItemId held, bool mining, QcSwingSpeed speed, double draw);
     /*! After a predicted step on foot from \a previous to \a current: the distance walked and a
         landing. */
     void stepped(const QcEntityMotion &previous, const QcEntityMotion &current);
@@ -69,6 +73,15 @@ private:
         m_swingStyle = style;
     }
 
+    int aimTicks() const { return m_aimTicks; }
+    void setAimTicks(int ticks) { m_aimTicks = std::clamp(ticks, 0, QcHandTimers::aimTicks); }
+    bool drawing() const { return m_drawing; }
+    void setDrawing(bool drawing) { m_drawing = drawing; }
+    double runningDraw() const { return m_runningDraw; }
+    void setRunningDraw(double draw) { m_runningDraw = draw; }
+    double lastDraw() const { return m_lastDraw; }
+    void setLastDraw(double draw) { m_lastDraw = draw; }
+
     int m_swingTicks = -1;
     // Length of the running swing and of the next one, in ticks.
     int m_swingLength = swingTicks;
@@ -77,6 +90,15 @@ private:
     int m_useTicks = -1;
     int m_switchTicks = -1;
     int m_landingTicks = -1;
+    // How many ticks the hand has come towards a drawn launcher (0..QcHandTimers::aimTicks) and
+    // whether it is drawn, so the aim rises or falls within the tick; the power of the running
+    // draw and the one the hand shows at least (QcHandTimers::lastDraw), which falls by
+    // lastDrawFade per tick while it lies above a new, weaker draw.
+    static constexpr double lastDrawFade = 1.0 / QcHandTimers::aimTicks;
+    int m_aimTicks = 0;
+    bool m_drawing = false;
+    double m_runningDraw = 0.0;
+    double m_lastDraw = 0.0;
     int m_hurtTicks = -1; // NOLINT(qc-member-access): a tick timer like the others here, advanced by reference in tick()
     // Where the running hurt came from, in degrees relative to the view at the hit.
     std::optional<double> m_hurtFrom; // NOLINT(qc-member-access): set with m_hurtTicks in hurt(), read in hurtTilt()

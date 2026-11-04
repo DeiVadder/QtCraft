@@ -13,9 +13,11 @@
 
 // The test hook `--pose` for screenshots: a fixed moment of an animation of the local player,
 // independent of the real movement ("walk", "walk:<metres>", "sprint", "swing", "swing:<progress>",
-// "fly", "flysprint", "swim", "jump", "fall", "sneak", "death", "hurt:<progress>[:<degrees>]", "pulse:<0..1>").
+// "fly", "flysprint", "swim", "jump", "fall", "sneak", "death", "hurt:<progress>[:<degrees>]", "pulse:<0..1>",
+// "draw:<0..1>").
 // "walk:<metres>" also fixes every creature's walk (decision E-888), "hurt:" the tilt of the view
-// (decision E-971), "pulse:<0..1>" the tentacles of pulsing swimmers (decision E-974).
+// (decision E-971), "pulse:<0..1>" the tentacles of pulsing swimmers (decision E-974), "draw:<0..1>" a
+// launcher drawn with that power, the hand fully at its drawn placement (decision E-984).
 class QcForcedPose
 {
 public:
@@ -36,6 +38,8 @@ public:
     std::optional<double> walk() const;
     // The hurt that "hurt:<progress>[:<degrees>]" fixes; nullopt for other poses.
     std::optional<Hurt> hurt() const;
+    // The power of the draw that "draw:<0..1>" fixes; nullopt for other poses.
+    std::optional<double> draw() const;
     // How far "pulse:<0..1>" holds the tentacles of pulsing swimmers open (decision E-974);
     // nullopt for other poses.
     std::optional<double> pulse() const { return QcSwimmerPose::forcedOpening(m_pose); }

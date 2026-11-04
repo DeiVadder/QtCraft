@@ -7,7 +7,9 @@
     eased over a fraction of a second, like the model's "FOV effects" (decision E-280).
 
     The widening is a factor on the field of view the player chose; the setting scales it from
-    none to full. Flying in creative mode widens it a little as well (decision E-284). */
+    none to full. Flying in creative mode widens it a little as well (decision E-284); drawing a
+    bow narrows it by up to drawNarrowing with the square of the draw's share of its time
+    (decision E-984). */
 class QcFovEffect
 {
 public:
@@ -15,6 +17,8 @@ public:
         \qcshared */
     static constexpr double sprintWidening = 0.15;
     static constexpr double flyWidening = 0.10;
+    /*! Narrowing of the field of view at a full draw: 15 % less. */
+    static constexpr double drawNarrowing = 0.15;
     /*! Time constant of the easing: about 95 % of the way after 0.25 s, whatever the frame rate. */
     static constexpr double easeSeconds = 0.08;
 
@@ -25,7 +29,14 @@ public:
         bool sprinting = false;
         /*! Flying (creative mode). */
         bool flying = false;
+        /*! The share of a launcher's draw time drawn so far (0..1), 0 when nothing is drawn
+            (QcLauncherDefinition::shareOf). */
+        double draw = 0.0;
     };
+
+    /*! Returns Movement::draw for a launcher drawn with the power \a drawProgress (negative when
+        nothing is drawn: QcEntityPose::drawProgress). */
+    static double drawShare(double drawProgress);
 
     /*! \a share of the full widening, 0..1 (the "FOV effects" setting). */
     void setShare(double share);

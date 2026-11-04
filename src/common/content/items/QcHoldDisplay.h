@@ -73,7 +73,11 @@ struct QcHoldTransform
     (\c {translate} and \c {rotate} only, no \c {scale}): the hand blends from \c {firstPerson}
     to it and back over the swing, so a tool can rest with its flat side towards the viewer and
     still strike with its point. Its unset fields keep the first-person values (no change during
-    the swing). */
+    the swing). \c {drawn} is where a launcher sits in the first-person fist while it is drawn
+    (decision E-984; \c {translate} and \c {rotate} only): the hand blends from \c {firstPerson}
+    to it as the draw begins and back after the shot. Its unset fields keep the first-person
+    values. \c {thirdPersonDrawn} is the same for a figure's fist while it aims; its unset fields
+    keep the \c {thirdPerson} values. */
 struct QcHoldDisplay
 {
     /*! Category whose defaults apply (\c {"category"}, definitions only); unset picks it from
@@ -87,11 +91,15 @@ struct QcHoldDisplay
     QcHoldTransform thirdPerson;
     /*! First-person placement in the middle of a swing (\c {"swing"}, no scale). */
     QcHoldTransform swing;
+    /*! First-person placement of a drawn launcher (\c {"drawn"}, no scale). */
+    QcHoldTransform drawn;
+    /*! Placement of a drawn launcher in a figure's fist (\c {"thirdPersonDrawn"}, no scale). */
+    QcHoldTransform thirdPersonDrawn;
 
     /*! Returns this display with every unset field taken from \a base. */
     [[nodiscard]] QcHoldDisplay over(const QcHoldDisplay &base) const;
     /*! Returns whether no field and no transform field is set. */
-    bool isEmpty() const { return !category && !grip && firstPerson.isEmpty() && thirdPerson.isEmpty() && swing.isEmpty(); }
+    bool isEmpty() const { return !category && !grip && firstPerson.isEmpty() && thirdPerson.isEmpty() && swing.isEmpty() && drawn.isEmpty() && thirdPersonDrawn.isEmpty(); }
     bool operator==(const QcHoldDisplay &) const = default;
 };
 

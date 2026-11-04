@@ -623,6 +623,10 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     QcHandTimers timers = session.handTimers(alpha);
     // Screenshot hook: a frozen "swing" is a moment of the mining swing.
     timers.mining = timers.mining || m_forcedPose.swings();
+    // A frozen draw holds the hand at the drawn placement (decision E-984).
+    if (m_forcedPose.draw()) {
+        timers.aim = 1.0;
+    }
     const double seconds = session.worldMirror().animationSeconds(alpha);
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.

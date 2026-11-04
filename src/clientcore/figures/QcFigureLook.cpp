@@ -158,6 +158,8 @@ QcEntityMesher::ItemLook withHold(QcEntityMesher::ItemLook look, const QcContent
     look.firstPerson = placementOf(display.firstPerson);
     look.thirdPerson = placementOf(display.thirdPerson);
     look.swing = placementOf(display.swing.over(display.firstPerson));
+    look.drawn = placementOf(display.drawn.over(display.firstPerson));
+    look.thirdPersonDrawn = placementOf(display.thirdPersonDrawn.over(display.thirdPerson));
     return look;
 }
 

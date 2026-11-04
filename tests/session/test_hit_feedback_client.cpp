@@ -128,7 +128,7 @@ private slots:
         // Looking east (yaw 90), hit from the south (yaw 180): the hit came from the right.
         animation.hurt(180.0f, 90.0f);
         QCOMPARE(animation.localPose(0.0, prediction, -1.0).hurtProgress, 0.0);
-        animation.tick(qcNoItem, false, {});
+        animation.tick(qcNoItem, false, {}, -1.0);
         const QcHurtTilt::Tilt tilt = animation.hurtTilt(0.6);
         QVERIFY2(tilt.roll < -0.8 * QcHurtTilt::maxDegrees, qPrintable(QString::number(tilt.roll)));
         QVERIFY(std::abs(tilt.pitch) < 1e-3);
@@ -136,14 +136,14 @@ private slots:
         // The hurt time is the flash of others; afterwards the view stands straight again.
         for (int tick = 1; tick < QcLocalAnimation::hurtTicks; ++tick) {
             QVERIFY(animation.localPose(0.0, prediction, -1.0).hurtProgress >= 0.0);
-            animation.tick(qcNoItem, false, {});
+            animation.tick(qcNoItem, false, {}, -1.0);
         }
         QCOMPARE(animation.localPose(0.0, prediction, -1.0).hurtProgress, -1.0);
         QCOMPARE(animation.hurtTilt(0.5), QcHurtTilt::Tilt{});
 
         // A fall has no direction: the view rolls.
         animation.hurt(std::nullopt, 0.0f);
-        animation.tick(qcNoItem, false, {});
+        animation.tick(qcNoItem, false, {}, -1.0);
         QVERIFY(animation.hurtTilt(0.6).roll > 0.8 * QcHurtTilt::maxDegrees);
     }
 

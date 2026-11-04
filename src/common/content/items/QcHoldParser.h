@@ -17,9 +17,9 @@ struct QcJsonFieldReader;
     A hold object has "category" (only on a definition), "grip" ("base", "handle", "middle") and
     "firstPerson"/"thirdPerson" objects with "translate" [x, y, z] in metres (each within
     ±maxTranslate), "rotate" [x, y, z] in degrees (±maxRotate) and "scale", a number or [x, y, z]
-    (minScale..maxScale metres per unit); a "swing" object has "translate" and "rotate" like
-    "firstPerson" (no "scale"). Values out of range or of the wrong type refuse the definition;
-    unknown keys are only warned about (lcRegistry). */
+    (minScale..maxScale metres per unit); "swing", "drawn" and "thirdPersonDrawn" objects have
+    "translate" and "rotate" like "firstPerson" (no "scale"). Values out of range or of the wrong
+    type refuse the definition; unknown keys are only warned about (lcRegistry). */
 namespace QcHoldParser {
 
 /*! \brief The bounds one value of a vector must keep, both inclusive. */

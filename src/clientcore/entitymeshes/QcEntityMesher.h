@@ -78,6 +78,12 @@ struct ItemLook
     /*! The first-person placement in the middle of a swing (QcHoldDisplay::swing); the hand
         blends towards it by HandPose::swing. */
     HeldPlacement swing;
+    /*! The first-person placement of a drawn launcher (QcHoldDisplay::drawn, decision E-984);
+        the hand blends towards it by HandPose::aim. */
+    HeldPlacement drawn;
+    /*! The placement of a launcher in the fist of a figure that aims it
+        (QcHoldDisplay::thirdPersonDrawn, BodyPose::armsAimed). */
+    HeldPlacement thirdPersonDrawn;
     /*! The sprite's opaque texels; held sprites with a shape are drawn with thickness, without
         one flat. */
     std::shared_ptr<const QcSpriteShape> shape;

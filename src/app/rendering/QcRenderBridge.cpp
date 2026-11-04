@@ -38,7 +38,7 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     const QcEntityPose pose = m_entities.localPose(1.0);
     const bool sprinting = pose.sprinting && !pose.inWater && pose.speed > QcPhysics::walkSpeed + 0.5;
     m_fov.setShare(m_settings.fovEffects());
-    const double widening = m_fov.advance({.sprinting = sprinting, .flying = pose.flying}, frameSeconds);
+    const double widening = m_fov.advance({.sprinting = sprinting, .flying = pose.flying, .draw = QcFovEffect::drawShare(pose.drawProgress)}, frameSeconds);
 
     const QcClientSession &session = *m_parts.session;
     const QcViewCamera::Placement placed = QcViewCamera::place(eye, session.intent().yaw, session.intent().pitch, mode, *session.world());

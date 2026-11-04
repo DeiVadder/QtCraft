@@ -35,6 +35,16 @@ std::optional<QcForcedPose::Hurt> QcForcedPose::hurt() const
     return Hurt{std::clamp(progress, 0.0, 1.0), directed ? std::optional(from) : std::nullopt};
 }
 
+std::optional<double> QcForcedPose::draw() const
+{
+    if (!m_pose.startsWith(u"draw:"_s)) {
+        return std::nullopt;
+    }
+    bool ok = false;
+    const double power = m_pose.section(u':', 1).toDouble(&ok);
+    return ok ? std::optional(std::clamp(power, 0.0, 1.0)) : std::nullopt;
+}
+
 QcEntityPose QcForcedPose::creature(QcEntityPose pose) const
 {
     // Every creature a fixed moment of its walk at full swing (decision E-888).
@@ -83,6 +93,8 @@ QcEntityPose QcForcedPose::local(QcEntityPose pose) const
         pose.deathProgress = 0.7;
     } else if (const std::optional<Hurt> forced = hurt()) {
         pose.hurtProgress = forced->progress;
+    } else if (const std::optional<double> power = draw()) {
+        pose.drawProgress = *power;
     }
     return pose;
 }
