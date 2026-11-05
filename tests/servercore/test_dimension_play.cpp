@@ -517,9 +517,11 @@ private slots:
         for (int i = 0; i < QcWorldInfo::maxDimensionVersions; ++i) {
             info.dimensionGeneratorVersions.insert(u"mod:gone_%1"_s.arg(i), 1);
         }
+        // The test dimension and the nether of the base game find no room.
         const QStringList warnings = QcDimensions::versionWarnings(*content, info);
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY(warnings.first().contains(QString::fromLatin1(emptyName)));
+        QCOMPARE(warnings.size(), 2);
+        QVERIFY(warnings.join(u' ').contains(QString::fromLatin1(emptyName)));
+        QVERIFY(warnings.join(u' ').contains(u"qtcraft:nether"_s));
     }
 };
 

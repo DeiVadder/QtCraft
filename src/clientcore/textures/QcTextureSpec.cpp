@@ -51,7 +51,7 @@ constexpr std::pair<QStringView, Pattern> patternNames[] = {
     {u"barrel_side", Pattern::BarrelSide}, {u"barrel_top", Pattern::BarrelTop},
     {u"stained_glass", Pattern::StainedGlass},
     {u"raw_chunk", Pattern::RawChunk}, {u"raw_block", Pattern::RawBlock},
-    {u"chain", Pattern::Chain},       {u"chain_across", Pattern::ChainAcross},
+    {u"chain", Pattern::Chain},       {u"chain_across", Pattern::ChainAcross}, {u"portal", Pattern::Portal},
     {u"backpack_side", Pattern::BackpackSide}, {u"backpack_front", Pattern::BackpackFront},
     {u"backpack_top", Pattern::BackpackTop}, {u"backpack_item", Pattern::BackpackItem},
     {u"helmet", Pattern::Helmet},     {u"chestplate", Pattern::Chestplate},

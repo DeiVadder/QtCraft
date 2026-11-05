@@ -16,12 +16,13 @@ class QcServerAdvancements;
 class QcServerBoats;
 class QcServerMinecarts;
 class QcServerProjectiles;
+class QcServerPortals;
 class QcServerWeather;
 class QcSnowfall;
 
 /*! \brief The gameplay systems of a server: each runs its own part of the tick on the world and its
     bodies (fire, weather, health, minecarts, boats, experience, projectiles, circuits, explosions,
-    the players' mining and using).
+    the players' mining and using, portals).
 
     QcServer owns them and hands them out together through QcServer::systems(), for the headless
     game, tools and tests that drive or inspect one of them directly. */
@@ -57,4 +58,6 @@ struct QcServerSystems
     QcServerInteraction &interaction;
     /*! The adventure guide (decision E-923). */
     QcServerAdvancements &advancements;
+    /*! Portals and the journeys through them (decision E-1020). */
+    QcServerPortals &portals;
 };

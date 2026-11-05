@@ -138,7 +138,7 @@ Animated textures (decision E-878) add three fields:
 | `frameTime` (1–255) | Ticks (50 ms) each frame is shown; default 2 |
 | `interpolate` | `true` blends each frame smoothly into the next (slow lava, water); default `false` (flickering fire) |
 
-The pattern is painted once per frame with the same seed and a phase from 0 to just below 1 (frame / frames); the patterns `fire`, `lava` and `water` move with it so the last frame leads into the first without a jump, other patterns look the same in every frame. Each frame takes a tile of the atlas. A texture over several blocks (`tiles`) cannot animate.
+The pattern is painted once per frame with the same seed and a phase from 0 to just below 1 (frame / frames); the patterns `fire`, `lava`, `water` and `portal` move with it so the last frame leads into the first without a jump, other patterns look the same in every frame. Each frame takes a tile of the atlas. A texture over several blocks (`tiles`) cannot animate.
 
 ## Fallback order
 

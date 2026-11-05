@@ -60,7 +60,7 @@ struct QcTextureAnimation
     [[nodiscard]] static QcResult<QcTextureAnimation> read(const QJsonObject &definition);
 
     /*! Returns whether the procedural pattern \a pattern paints its frames differently (fire,
-        lava, water; QcTextureSynthesizer reads the phase only there): other patterns with
+        lava, water, portal; QcTextureSynthesizer reads the phase only there): other patterns with
         "frames" show the same picture in every frame, which the content loader warns about. */
     [[nodiscard]] static bool patternMoves(const QString &pattern);
 

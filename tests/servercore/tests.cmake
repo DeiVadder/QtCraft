@@ -5,6 +5,8 @@
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
+qc_add_test(test_portal_links SOURCES servercore/test_portal_links.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_base_content qc_server TIMEOUT 180)
+qc_add_test(test_portals SOURCES servercore/test_portals.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 180)
 qc_add_test(test_server_commands SOURCES servercore/test_server_commands.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_player_management SOURCES servercore/test_player_management.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_world_maintenance SOURCES servercore/test_world_maintenance.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 240)

@@ -16,6 +16,7 @@
 #include "clientcore/session/QcCampfireSmoke.h"
 #include "clientcore/session/QcEffectPuff.h"
 #include "clientcore/session/QcEnchantingAura.h"
+#include "clientcore/session/QcPortalSparkles.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
 
@@ -107,6 +108,8 @@ private:
     void appendSigns(QcEntityMesh &mesh, const EntityFrame &frame);
     // The items lying on the campfires near the player and the smoke rising from them (decision E-772).
     void appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The specks around the lit portals near the player (decision E-1022).
+    void appendPortalSparkles(QcEntityMesh &mesh, const EntityFrame &frame);
     // The floating books and flying runes of the enchanting tables near the player that may show
     // within `planes` (decision E-884).
     void appendEnchantingTables(QcEntityMesh &mesh, const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes);
@@ -168,6 +171,7 @@ private:
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
     QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;
+    QcPortalSparkles m_sparkles;
     QcEnchantingAura m_aura;
     // Which parent each child of a family is tied to, kept from frame to frame (decision E-839).
     QcTethers m_tethers;

@@ -346,6 +346,27 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
     }
 }
 
+void QcEntityFrameBuilder::appendPortalSparkles(QcEntityMesh &mesh, const EntityFrame &frame)
+{
+    const QcClientSession &session = *m_parts.session;
+    m_sparkles.refresh(frame.world, session.playerMotion().position, session.tickCount());
+    for (const QcBlockPos &pos : m_sparkles.blocks()) {
+        const std::optional<QcBlockId> block = frame.world.blockAt(pos);
+        if (!block || !frame.content.isValidBlock(*block)) {
+            continue;
+        }
+        // The specks glow in the portal's own texture.
+        QcEntityMesher::ItemLook speck;
+        speck.cube = true;
+        speck.faces.fill(frame.content.block(*block).texture(QcBlockFace::Up));
+        constexpr QcEntityLight light{0.0f, 1.0f};
+        const QList<QcEffectPuff> specks = QcPortalSparkles::specksOf(pos, frame.seconds);
+        for (const QcEffectPuff &puff : specks) {
+            appendPuff(mesh, speck, puff, light, frame.uv);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendEnchantingTables(QcEntityMesh &mesh, const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes)
 {
     // Book and runes stay within this distance of the table's middle (the shelves are two blocks away).
@@ -556,6 +577,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendSpawners(*mesh, frame);
     appendSigns(*mesh, frame);
     appendCampfires(*mesh, frame);
+    appendPortalSparkles(*mesh, frame);
     appendEnchantingTables(*mesh, frame, planes);
     appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     appendInk(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);

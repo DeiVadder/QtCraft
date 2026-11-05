@@ -191,6 +191,8 @@ target_sources(qc_clientcore PRIVATE
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcInkClouds.h session/QcInkClouds.cpp
+    session/QcNearbyBlocks.h session/QcNearbyBlocks.cpp
+    session/QcPortalSparkles.h session/QcPortalSparkles.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSessionState.h

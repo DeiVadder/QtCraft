@@ -112,7 +112,9 @@ private slots:
             // The world's weather, then what it does in each dimension (decision E-988).
             {Weather, simulating},    {Weather, simulating},
             {Mobs, simulating},       {Projectiles, simulating}, {Items, simulating},  {Plants, simulating},
-            {FallingBlocks, simulating}, {Explosions, simulating}, {Minecarts, simulating}, {Machines, simulating},
+            {FallingBlocks, simulating}, {Explosions, simulating}, {Minecarts, simulating},
+            // Who stands in a portal, in each dimension, then the journeys (decision E-1024).
+            {Minecarts, simulating},  {Minecarts, simulating}, {Machines, simulating},
             // Chunk loading notes the tick, held maps are revealed, the time goes out in a step of a
             // frozen world, sign texts, the clients, the adventure guide (decision E-923), the admin
             // channel (decision E-848).

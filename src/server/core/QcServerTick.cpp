@@ -258,6 +258,10 @@ void QcServer::addSimulationSystems()
     m_tickSystems.add(Explosions, simulating, eachDimension, [this] { m_explosions.tick(); });
     // Boats move in the phase of the minecarts (decision E-920).
     m_tickSystems.add(Minecarts, simulating, eachDimension, [this] { m_vehicles.tick(); });
+    // Who stands in a portal in each dimension, then the journeys, once no dimension ticks
+    // (decision E-1024).
+    m_tickSystems.add(Minecarts, simulating, eachDimension, [this] { m_portals.tick(); });
+    m_tickSystems.add(Minecarts, simulating, [this] { m_portals.travel(); });
     m_tickSystems.add(Machines, simulating, eachDimension, [this] {
         m_machines.tick();
         m_kitchen.tick();

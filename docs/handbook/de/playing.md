@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -630,6 +630,28 @@ Netherwarze wächst nur auf Seelensand, braucht weder Wasser noch Licht und reif
 **Siehe auch**
 
 [Netherrack](blocks.md#block-qtcraft-netherrack), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch), [Seelenlaterne](blocks.md#block-qtcraft-soul_lantern), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Leuchtsteinstaub](items.md#item-qtcraft-glowstone_dust), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Netherquarz](items.md#item-qtcraft-quartz), [Quarzblock](blocks.md#block-qtcraft-quartz_block), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Netherziegelstein](items.md#item-qtcraft-nether_brick), [Netherziegel](blocks.md#block-qtcraft-nether_bricks), [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks), [Netherziegelzaun](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Golddurchzogener Schwarzstein](blocks.md#block-qtcraft-gilded_blackstone), [Netherwarze](items.md#item-qtcraft-nether_wart)
+
+### <a id="chapter-qtcraft-portals"></a>Portale
+
+**Einen Rahmen bauen**
+
+Ein Netherportal ist ein aufrechter Rahmen aus Obsidian um ein leeres Inneres, mindestens 2 Blöcke breit und 3 hoch und höchstens 21 mal 21. Die Ecken braucht es nicht, für den kleinsten Rahmen reichen also 10 Obsidian. Wo Wasser und Lava sich treffen, entsteht Obsidian; abbauen lässt er sich mit einer Diamantspitzhacke.
+
+**Entzünden**
+
+Zünde im vollständigen Rahmen ein Feuer an, etwa mit dem Feuerzeug auf dem unteren Rahmenblock: statt des Feuers füllt sich das Innere mit dem violetten Portal, das mit Licht 11 leuchtet, summt und funkelt. Jedes Feuer entzündet es, auch Lava oder ein Blitz. Fehlt ein Rahmenblock oder steht etwas anderes darin, entsteht nur ein gewöhnliches Feuer. Die Portal-Ruinen der Oberwelt lassen sich entzünden, sobald ihr Rahmen wieder vollständig ist: Weinender Obsidian zählt nicht, setze also Obsidian, wo er fehlt oder weint.
+
+**Reisen**
+
+Bleib 4 Sekunden im Portal stehen, um zu reisen; im Kreativmodus reist du sofort. Du kommst in einem Portal auf der anderen Seite an und musst es erst verlassen, bevor es dich zurückbringt. Wesen, fallengelassene Items und Loren reisen auch, sofort, und ruhen danach 15 Sekunden, bevor sie wieder reisen können; ein Spieler in einer Lore reist allein und lässt sie zurück. Wird ein Rahmenblock abgebaut, erlischt das ganze Portal.
+
+**Wohin es führt**
+
+Ein Block im Nether steht für 8 in der Oberwelt. Das Portal sucht ein Netherportal nahe dem passenden Punkt auf der anderen Seite, im Umkreis von 128 Oberwelt-Blöcken (16 im Nether), und führt dorthin. Gibt es keines, baut es dort einen neuen Rahmen, auf festem Boden im Umkreis von 16 Blöcken, wenn es einen findet, sonst genau am Punkt auf einem kleinen Boden aus Obsidian mit Platz ringsum, auch über Lava oder dem Nichts. Portale, die du entzündet, benutzt oder bei der Ankunft gefunden hast, merkt sich die Welt, so findet der Rückweg das Portal, durch das du gekommen bist. Bis der richtige Nether kommt, ist er eine flache Ebene aus Netherrack.
+
+**Siehe auch**
+
+[Obsidian](blocks.md#block-qtcraft-obsidian), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Feuer](blocks.md#block-qtcraft-fire), [Netherrack](blocks.md#block-qtcraft-netherrack)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 

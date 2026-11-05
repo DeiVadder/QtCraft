@@ -114,9 +114,14 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     dimensions/QcDimensions.h dimensions/QcDimensions.cpp
+    dimensions/QcEntityTravel.h dimensions/QcEntityTravel.cpp
     dimensions/QcPerDimension.h
     dimensions/QcPlayerTravel.h dimensions/QcPlayerTravel.cpp
+    dimensions/QcPortalIndex.h dimensions/QcPortalIndex.cpp
+    dimensions/QcPortalLinks.h dimensions/QcPortalLinks.cpp
     dimensions/QcServerDimension.h dimensions/QcServerDimension.cpp
+    dimensions/QcServerPortals.h dimensions/QcServerPortals.cpp
+    dimensions/QcTravellers.h dimensions/QcTravellers.cpp
 )
 target_sources(qc_server PRIVATE
     entities/QcArmourStand.h

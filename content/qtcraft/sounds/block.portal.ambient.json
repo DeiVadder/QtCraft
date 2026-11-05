@@ -1,0 +1,32 @@
+{
+    "name": "block.portal.ambient",
+    "volume": 0.45,
+    "variants": 3,
+    "pitchVariation": 0.12,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 3.2,
+            "frequency": 70,
+            "endFrequency": 64,
+            "attack": 0.9,
+            "curve": 1,
+            "lowpass": 600,
+            "tremoloRate": 1.6,
+            "tremoloDepth": 0.5,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 3.2,
+            "attack": 1.0,
+            "curve": 1,
+            "bandpass": 900,
+            "resonance": 6,
+            "tremoloRate": 0.7,
+            "tremoloDepth": 0.6,
+            "gain": 0.35
+        }
+    ]
+}

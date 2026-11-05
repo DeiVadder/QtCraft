@@ -139,6 +139,9 @@ struct QcTextureSpec
             through the middle four rows (decision E-742). */
         Chain,
         ChainAcross, // links running from left to right
+        /*! The inside of a portal (decision E-1022): swirling bands of light (secondary) in a
+            translucent glow (primary) that turn around the middle once per loop. */
+        Portal,
         /*! A leather backpack (decision E-832): sides with a strap and a buckle (secondary), the
             front with a stitched flap and its buckle, the top with a carrying loop; all with a
             darker seam at the edges. BackpackItem is its icon: the body with a loop, a lighter

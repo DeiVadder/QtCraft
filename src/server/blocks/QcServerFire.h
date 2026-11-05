@@ -58,12 +58,16 @@ public:
     void tick();
     /*! Lights \a fire (the content's default fire when unset) at \a pos as a new spark: only in
         air of a loaded chunk where fire may stand and while there is room. For ignition sources.
-        Returns whether it lit. */
+        Air in an empty portal frame lights the portal instead (setPortalLight()). Returns whether
+        it lit. */
     bool ignite(QcBlockPos pos, std::optional<QcBlockId> fire = std::nullopt);
     /*! Sets the \a check of where rain falls. */
     void setRainCheck(RainCheck check) { m_rainsOn = std::move(check); }
     /*! Sets \a light, which lights a flammable explosive that a fire would burn away instead. */
     void setLight(Light light) { m_light = std::move(light); }
+    /*! Sets \a light, which ignite() asks first: true when fire at the position lit a portal
+        instead (QcServerPortals::lightByFire, decision E-1021). */
+    void setPortalLight(Light light) { m_portalLight = std::move(light); }
 
     /*! Returns whether fire spreads now: the game rule fireSpread and a fireSpreadRadius above
         0. */
@@ -102,6 +106,7 @@ private:
     QcFireRules::Table m_table;
     RainCheck m_rainsOn;
     Light m_light;
+    Light m_portalLight;
     Numbers m_numbers;
     // Burning blocks make at most one sound per tick.
     bool m_soundPlayed = false;

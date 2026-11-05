@@ -13,6 +13,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     blockrules/QcBlockRules.h blockrules/QcBlockRules.cpp
+    blockrules/QcPortalShapes.h blockrules/QcPortalShapes.cpp
     blockrules/QcRails.h blockrules/QcRails.cpp
     blockrules/QcSlabRules.h blockrules/QcSlabRules.cpp
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
@@ -145,6 +146,8 @@ target_sources(qc_common PRIVATE
     content/worldgen/QcDimensionParser.h content/worldgen/QcDimensionParser.cpp
     content/worldgen/QcDungeonDefinition.h
     content/worldgen/QcMineshaftDefinition.h
+    content/worldgen/QcPortalDefinition.h
+    content/worldgen/QcPortalParser.h content/worldgen/QcPortalParser.cpp
     content/worldgen/QcShowcaseDefinition.h
     content/worldgen/QcShowcaseParser.h content/worldgen/QcShowcaseParser.cpp
     content/worldgen/QcStructureDefinition.h

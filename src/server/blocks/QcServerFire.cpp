@@ -81,6 +81,10 @@ void QcServerFire::tick()
 bool QcServerFire::ignite(QcBlockPos pos, std::optional<QcBlockId> fire)
 {
     QcServerWorld &world = m_state.world();
+    // Fire in an empty portal frame lights the portal instead (decision E-1021).
+    if (m_portalLight && pos.isInsideWorldHeight() && world.blockAt(pos) == qcAirBlockId && m_portalLight(pos)) {
+        return true;
+    }
     const std::optional<QcBlockId> block = fire ? fire : m_table.defaultFire();
     if (!block || !m_table.of(*block).fire || !pos.isInsideWorldHeight() || world.blockAt(pos) != qcAirBlockId
         || !QcFireRules::canStay(world, m_table, pos)) {

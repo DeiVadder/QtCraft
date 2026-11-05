@@ -75,6 +75,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_inventory(m_state, m_screens, m_sounds)
     , m_crafting(m_state, m_inventory)
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
+    , m_portals(m_state, m_blocks, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
     , m_workstations(m_state, m_sounds, m_inventory, m_screens, m_blocks)
@@ -86,7 +87,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_vehicles.minecarts(), m_vehicles.boats(), m_animals, m_plants, m_health, m_circuits,
-                              m_ignition, m_golems, m_kitchen, m_workstations})
+                              m_ignition, m_portals, m_golems, m_kitchen, m_workstations})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
@@ -117,7 +118,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
     , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_vehicles.minecarts(), m_vehicles.boats(), m_experience, m_projectiles, m_circuits,
-                m_explosions, m_interaction, m_state.advancements()}
+                m_explosions, m_interaction, m_state.advancements(), m_portals}
 {
     static_assert(QcTickScheduler::intervalNs == static_cast<qint64>(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -130,6 +131,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     const auto light = [this](QcBlockPos pos) { return m_explosions.light(pos); };
     m_ignition.setLight([this](QcBlockPos pos) { return m_kitchen.light(pos) || m_explosions.light(pos); });
     m_fire.setLight(light);
+    m_fire.setPortalLight([this](QcBlockPos pos) { return m_portals.lightByFire(pos); });
     m_circuits.setLight(light);
     m_projectiles.setBlockHit([this](const QcProjectileManager::BlockHit &hit) {
         m_circuits.hitTarget(hit.block, QcServerCircuits::targetStrength(hit.block, hit.face, hit.point), hit.stuck);

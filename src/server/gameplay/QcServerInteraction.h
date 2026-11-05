@@ -21,6 +21,7 @@ class QcServerInventory;
 class QcServerKitchen;
 class QcServerMinecarts;
 class QcServerPlants;
+class QcServerPortals;
 class QcServerSounds;
 class QcServerStands;
 struct QcServerWorkstations;
@@ -55,6 +56,7 @@ public:
         QcPlayerHealth &health;
         QcServerCircuits &circuits;
         QcFireIgnition &ignition;
+        QcServerPortals &portals;
         QcServerGolems &golems;
         QcServerKitchen &kitchen;
         QcServerWorkstations &workstations;

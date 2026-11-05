@@ -210,8 +210,10 @@ void BlockReader::readPlacementFields()
         m_block.support = QcBlockSupport::Below;
     } else if (support == u"attached"_s) {
         m_block.support = QcBlockSupport::Attached;
+    } else if (support == u"portal"_s) {
+        m_block.support = QcBlockSupport::Portal;
     } else if (support != u"none"_s) {
-        m_reader.fail(u"'support' must be none, below or attached"_s);
+        m_reader.fail(u"'support' must be none, below, attached or portal"_s);
     }
 }
 

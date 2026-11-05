@@ -147,6 +147,7 @@ QcStatus QcServerPersistence::open()
         return read;
     }
     m_villagesSaved = restoreVillages(storage);
+    restorePortals(storage.directory());
 
     qCInfo(lcServer) << "Opened world" << m_state.info().name << "with" << m_state.world().saves().storedChunkCount() << "stored chunks";
     return {};
@@ -249,6 +250,7 @@ QcStatus QcServerPersistence::openDimension(QcServerDimension &dimension)
             return read;
         }
         villagesSaved = restoreVillages(storage);
+        restorePortals(directory);
     }
     dimensionStores().push_back({&dimension, std::move(io), villagesSaved});
 
@@ -314,6 +316,17 @@ std::optional<quint64> QcServerPersistence::restoreVillages(const QcWorldStorage
     noteWarnings({u"%1; the villages start anew from the world generator, the damaged file was kept as %2"_s.arg(stored.error(),
                                                                                                                QFileInfo(copy).fileName())});
     return std::nullopt;
+}
+
+void QcServerPersistence::restorePortals(const QString &directory)
+{
+    const QcResult<QList<QcPortalIndex::Entry>> stored = QcPortalIndex::read(directory);
+    if (stored) {
+        m_state.current().portals().restore(*stored);
+        return;
+    }
+    // Portals light again and are found again as they are used; the next save writes a new file.
+    noteWarnings({u"%1; the portals of the dimension are found again as they are used"_s.arg(stored.error())});
 }
 
 QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
@@ -483,6 +496,11 @@ QcResult<QList<QcChunkStore::WholeFile>> QcServerPersistence::dimensionFiles(std
         return qcError(updates.error());
     }
     files.append({QString::fromLatin1(QcWorldStorage::blockUpdatesFileName), *updates});
+    // The lit portals (decision E-1023), once the dimension knew one.
+    const QcPortalIndex &portals = m_state.current().portals();
+    if (!portals.entries().isEmpty() || portals.changes() > 0) {
+        files.append({QString::fromLatin1(QcPortalIndex::fileName), portals.bytes()});
+    }
     return files;
 }
 

@@ -21,6 +21,7 @@
 #include "server/boats/QcServerBoats.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcServerPortals.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerCombat.h"
@@ -155,7 +156,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.carve(client, message.target, message.face, held)
                           || m_parts.plants.strip(client, message.target, held)
                           || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
-    if (reshaped || m_parts.ignition.use(client, message)) {
+    if (reshaped || m_parts.portals.use(client, message) || m_parts.ignition.use(client, message)) {
         noteUse(client, held, clicked);
         return;
     }

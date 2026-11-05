@@ -160,7 +160,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "enchantments", "loot", "advancements", "dimensions"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "enchantments", "loot", "advancements", "dimensions", "portals"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -466,6 +466,8 @@ void PackReader::loadLaterDefinitions()
                     [this](QcHandbookChapter chapter) { m_registry.registerHandbookChapter(std::move(chapter)); });
     loadDefinitions(u"dimensions"_s, QcContentParser::parseDimension,
                     [this](QcDimensionDefinition dimension) { m_registry.worldgen().registerDimension(std::move(dimension)); });
+    loadDefinitions(u"portals"_s, QcContentParser::parsePortal,
+                    [this](QcPortalDefinition portal) { m_registry.worldgen().registerPortal(std::move(portal)); });
     loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
                     [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
     loadVillageStyles();

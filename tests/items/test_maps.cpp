@@ -67,7 +67,7 @@ class TestMaps : public QcServerTestFixture
         chat(u"/give paper 8"_s);
         for (int cell = 0; cell < 9; ++cell) {
             const int slot = cell == 4 ? slotOfMap(map) : slotOf(item("qtcraft:paper"));
-            send(QcMsg::MoveInventoryItem{slot, QcServer::craftingGridSlot + cell, 1});
+            send(QcMsg::MoveInventoryItem{slot, QcMsg::MoveInventoryItem::craftingGridSlot + cell, 1});
         }
     }
 
@@ -275,8 +275,8 @@ private slots:
         join();
         const quint32 map = makeMap();
         chat(u"/give map 1"_s);
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:filled_map")), QcServer::craftingGridSlot, 1});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcServer::craftingGridSlot + 1, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:filled_map")), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcMsg::MoveInventoryItem::craftingGridSlot + 1, 1});
         const QcItemStack twoCopies = QcItemStack{item("qtcraft:filled_map"), 2, 0}.withMapId(map);
         QCOMPARE(m_client->craftingResult, twoCopies);
         send(QcMsg::TakeCraftingResult{});
@@ -298,7 +298,7 @@ private slots:
         QCOMPARE(m_client->craftingSize, 3);
         for (int cell = 0; cell < 9; ++cell) {
             const QcItemId wanted = cell == 4 ? item("qtcraft:filled_map") : item("qtcraft:paper");
-            send(QcMsg::MoveInventoryItem{slotOf(wanted), QcServer::craftingGridSlot + cell, 1});
+            send(QcMsg::MoveInventoryItem{slotOf(wanted), QcMsg::MoveInventoryItem::craftingGridSlot + cell, 1});
         }
         send(QcMsg::TakeCraftingResult{});
         QCOMPARE(countOf(item("qtcraft:paper")), 0);
@@ -370,8 +370,8 @@ private slots:
         join();
         const quint32 map = makeMap();
         chat(u"/give map 1"_s);
-        send(QcMsg::MoveInventoryItem{slotOfMap(map), QcServer::craftingGridSlot, 1});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcServer::craftingGridSlot + 1, 1});
+        send(QcMsg::MoveInventoryItem{slotOfMap(map), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcMsg::MoveInventoryItem::craftingGridSlot + 1, 1});
         send(QcMsg::TakeCraftingResult{});
         openTable();
         layOutZoom(map);

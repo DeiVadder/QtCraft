@@ -269,8 +269,12 @@ private slots:
         QCOMPARE(&content->worldgen().overworld(), overworld);
         QCOMPARE(overworld->generatorType, QString::fromLatin1(QcDimensionDefinition::worldGenerator));
         QCOMPARE(overworld->sky, QcDimensionDefinition::Sky::Overworld);
-        // The base game of 1.1.0 brings the nether with stage 83.3; until then the overworld only.
-        QCOMPARE(content->worldgen().dimensions().size(), 1);
+        // The base game of 1.1.0 brings the nether with stage 83.3 (until 84.2 a floor of netherrack).
+        QCOMPARE(content->worldgen().dimensions().size(), 2);
+        const QcDimensionDefinition *nether = content->worldgen().dimension(u"qtcraft:nether"_s);
+        QVERIFY(nether != nullptr);
+        QCOMPARE(nether->coordinateScale, 8.0);
+        QCOMPARE(nether->sky, QcDimensionDefinition::Sky::Nether);
     }
 
     void contentWithoutDimensionsPlaysTheDefaultOverworld()
@@ -448,7 +452,8 @@ private slots:
         QcWorldInfo info;
         info.generator = QString::fromLatin1(QcWorldGenerators::terrain);
         const QMap<QString, int> versions = QcDimensions::versionsForNewWorld(*content, info);
-        QCOMPARE(versions.size(), 2);
+        // The two test dimensions and the nether of the base game.
+        QCOMPARE(versions.size(), 3);
         QCOMPARE(versions.value(u"test:empty"_s), QcGeneratorVersion::current);
         info.generator = QString::fromLatin1(QcWorldGenerators::showcase);
         QVERIFY(QcDimensions::versionsForNewWorld(*content, info).isEmpty());
@@ -646,7 +651,7 @@ private slots:
             QVERIFY2(host.startError().isEmpty(), qPrintable(host.startError()));
             QVERIFY(host.shutdown().has_value());
         }
-        QCOMPARE(storedVersions(entry->directory).keys(), (QStringList{u"test:empty"_s, u"test:end_like"_s}));
+        QCOMPARE(storedVersions(entry->directory).keys(), (QStringList{u"qtcraft:nether"_s, u"test:empty"_s, u"test:end_like"_s}));
         QCOMPARE(storedVersion(entry->directory, u"test:empty"_s), QcGeneratorVersion::current);
     }
 
@@ -662,7 +667,10 @@ private slots:
             QVERIFY(host.shutdown().has_value());
         }
         QJsonObject json = readJson(worldJson);
-        QVERIFY(!json.value(u"generator"_s).toObject().contains(u"dimensions"_s));
+        // 1.0.0 had no nether and wrote no versions of other dimensions.
+        QJsonObject generator = json.value(u"generator"_s).toObject();
+        generator.remove(u"dimensions"_s);
+        json.insert(u"generator"_s, generator);
         json.insert(u"formatVersion"_s, 19);
         writeJson(worldJson, json);
         const int overworldVersion = json.value(u"generator"_s).toObject().value(u"version"_s).toInt();
@@ -690,7 +698,7 @@ private slots:
             QVERIFY(host.shutdown().has_value());
         }
         const QJsonObject versions = readJson(QDir(fresh.path()).filePath(u"world.json"_s)).value(u"generator"_s).toObject().value(u"dimensions"_s).toObject();
-        QCOMPARE(versions.keys(), (QStringList{u"test:empty"_s, u"test:end_like"_s}));
+        QCOMPARE(versions.keys(), (QStringList{u"qtcraft:nether"_s, u"test:empty"_s, u"test:end_like"_s}));
         QCOMPARE(versions.value(u"test:empty"_s).toObject().value(u"version"_s).toInt(), QcGeneratorVersion::current);
     }
 };

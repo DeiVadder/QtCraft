@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <cstdlib>
+#include <numbers>
 #include <utility>
 
 namespace {
@@ -448,7 +449,22 @@ QColor paintBackpackItem(const QcTextureSpec &spec, int x, int y, QColor color)
     return paintBackpackItemFace(spec, x, y, color);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 27> painters = {{
+QColor paintPortal(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    // Bands of light wind around the middle; animated, they turn once per loop.
+    const double dx = x - 7.5;
+    const double dy = y - 7.5;
+    const double turn = spec.phase * 2.0 * std::numbers::pi;
+    const double angle = std::atan2(dy, dx);
+    const double radius = std::sqrt(dx * dx + dy * dy);
+    const double band = std::sin(3.0 * angle + radius * 0.9 - turn + 1.5 * noise(spec.seed, x / 2, y / 2));
+    if (band > 0.55) {
+        return scaled(spec.secondary, 1.0 + spec.variation * band, spec.secondary.alpha());
+    }
+    return scaled(spec.primary, 0.85 + 0.25 * (band + 1.0) / 2.0, spec.primary.alpha());
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 28> painters = {{
     {Pattern::Nugget, paintNugget},
     {Pattern::MetalBlock, paintMetalBlock},
     {Pattern::Bars, paintBars},
@@ -472,6 +488,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 27> painters = {{
     {Pattern::RawBlock, paintRawBlock},
     {Pattern::Chain, paintChain},
     {Pattern::ChainAcross, paintChainAcross},
+    {Pattern::Portal, paintPortal},
     {Pattern::BackpackSide, paintBackpack},
     {Pattern::BackpackFront, paintBackpack},
     {Pattern::BackpackTop, paintBackpack},
@@ -492,5 +509,5 @@ QcTexturePaint::Painter qcCraftPatternPainter(QcTextureSpec::Pattern pattern)
 
 bool qcCraftPatternIsTranslucent(QcTextureSpec::Pattern pattern)
 {
-    return pattern == Pattern::FireflyGlass || pattern == Pattern::StainedGlass;
+    return pattern == Pattern::FireflyGlass || pattern == Pattern::StainedGlass || pattern == Pattern::Portal;
 }

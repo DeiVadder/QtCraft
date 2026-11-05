@@ -25,6 +25,7 @@ bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
 
     const QcBlockDefinition &definition = content.block(id);
     return !definition.connectsTo.isEmpty() || definition.rail || definition.stairs || definition.support == QcBlockSupport::Attached
+           || definition.support == QcBlockSupport::Portal
            || (definition.liquid && definition.flow.flows()) || !definition.hardensWith.isEmpty();
 }
 

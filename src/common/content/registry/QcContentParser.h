@@ -22,6 +22,7 @@
 #include "common/content/villages/QcVillageParser.h"
 #include "common/content/villages/QcVillagerParser.h"
 #include "common/content/worldgen/QcDimensionParser.h"
+#include "common/content/worldgen/QcPortalParser.h"
 #include "common/content/worldgen/QcShowcaseParser.h"
 #include "common/content/worldgen/QcStructureParser.h"
 #include "common/content/worldgen/QcWeatherParser.h"
@@ -42,6 +43,7 @@ namespace QcContentParser {
 using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
 using QcDimensionParser::parseDimension;
+using QcPortalParser::parsePortal;
 using QcEffectParser::parseEffect;
 using QcEnchantmentParser::parseEnchantment;
 using QcAdvancementParser::parseAdvancement;

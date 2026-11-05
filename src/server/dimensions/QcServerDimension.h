@@ -6,6 +6,7 @@
 #include "common/content/worldgen/QcDimensionDefinition.h"
 #include "server/blocks/QcLiquidFlow.h"
 #include "server/core/QcServerWorld.h"
+#include "server/dimensions/QcPortalIndex.h"
 #include "server/entities/QcEntities.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcPlantManager.h"
@@ -77,6 +78,10 @@ public:
     const QcCircuitState &circuits() const { return m_circuits; }
     /*! Returns the hoppers to look at (decision E-344). */
     QcHopperQueue &hoppers() { return m_hoppers; }
+    /*! Returns the lit portals the dimension knows (decision E-1023). */
+    QcPortalIndex &portals() { return m_portals; }
+    /*! Returns the lit portals the dimension knows, read-only. */
+    const QcPortalIndex &portals() const { return m_portals; }
 
 private:
     QcDimensionDefinition m_definition;
@@ -88,4 +93,5 @@ private:
     QcLiquidFlow m_liquids;
     QcCircuitState m_circuits;
     QcHopperQueue m_hoppers;
+    QcPortalIndex m_portals;
 };

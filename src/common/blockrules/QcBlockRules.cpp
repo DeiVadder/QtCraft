@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/blockrules/QcBlockRules.h"
+#include "common/blockrules/QcPortalShapes.h"
 
 #include "common/blockrules/QcRails.h"
 #include "common/blockrules/QcSlabRules.h"
@@ -495,6 +496,8 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         const QcBlockPos holder = qcNeighbour(pos, *towards);
         return !world.blockAt(holder) || holdsAttached(world, holder, opposite(*towards), id);
     }
+    case QcBlockSupport::Portal:
+        return QcPortalShapes::isHeld(world, pos, id);
     }
     return true;
 }

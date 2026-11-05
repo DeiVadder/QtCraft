@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -630,6 +630,28 @@ Nether wart grows only on soul sand, needs neither water nor light and ripens in
 **See also**
 
 [Netherrack](blocks.md#block-qtcraft-netherrack), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Soul lantern](blocks.md#block-qtcraft-soul_lantern), [Glowstone](blocks.md#block-qtcraft-glowstone), [Glowstone dust](items.md#item-qtcraft-glowstone_dust), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether quartz](items.md#item-qtcraft-quartz), [Block of quartz](blocks.md#block-qtcraft-quartz_block), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Nether brick](items.md#item-qtcraft-nether_brick), [Nether bricks](blocks.md#block-qtcraft-nether_bricks), [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks), [Nether brick fence](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Blackstone](blocks.md#block-qtcraft-blackstone), [Gilded blackstone](blocks.md#block-qtcraft-gilded_blackstone), [Nether wart](items.md#item-qtcraft-nether_wart)
+
+### <a id="chapter-qtcraft-portals"></a>Portals
+
+**Building a frame**
+
+A nether portal is an upright frame of obsidian around an empty inside, at least 2 blocks wide and 3 high and at most 21 by 21. The corners are not needed, so 10 obsidian are enough for the smallest frame. Water and lava make obsidian where they meet; mining it needs a diamond pickaxe.
+
+**Lighting it**
+
+Light fire inside the complete frame, for example with flint and steel on the bottom frame block: instead of the fire, the inside fills with the purple portal, which glows with light 11, hums and sparkles. Any fire lights it, also lava or lightning. If a frame block is missing or something else stands inside, only an ordinary fire appears. The ruined portals in the overworld light as soon as their frame is complete again: crying obsidian does not count, so put obsidian where it is missing or crying.
+
+**Travelling**
+
+Stand in the portal for 4 seconds to travel; in creative mode you travel at once. You arrive in a portal on the other side and have to step out of it before it takes you back. Creatures, dropped items and minecarts travel too, at once, and then rest for 15 seconds before they can travel again; a player in a minecart travels on his own and leaves the cart behind. Breaking a frame block puts the whole portal out.
+
+**Where it leads**
+
+One block in the Nether stands for 8 in the overworld. The portal looks for a nether portal near the matching point on the other side, within 128 overworld blocks (16 in the Nether), and leads there. If there is none, it builds a new frame there, on solid ground within 16 blocks if it can, else right at the point on a small floor of obsidian with room around it, also over lava or nothing. Portals you lit, used or arrived at are remembered with the world, so the way back finds the portal you came through. Until the real Nether arrives, it is a flat place of netherrack.
+
+**See also**
+
+[Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Fire](blocks.md#block-qtcraft-fire), [Netherrack](blocks.md#block-qtcraft-netherrack)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 

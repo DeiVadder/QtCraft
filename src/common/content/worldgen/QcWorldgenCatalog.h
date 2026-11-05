@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcNamedList.h"
 #include "common/content/worldgen/QcDimensionDefinition.h"
+#include "common/content/worldgen/QcPortalDefinition.h"
 #include "common/content/worldgen/QcShowcaseDefinition.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/content/worldgen/QcWorldgenDefinitions.h"
@@ -76,6 +77,14 @@ public:
         return registered != nullptr ? *registered : m_defaultOverworld;
     }
 
+    /*! Adds the \a portal, or replaces the one of the same name in its place (decision
+        E-1020). */
+    void registerPortal(QcPortalDefinition portal) { m_portals.set(std::move(portal)); }
+    /*! Returns the portals in registration order. */
+    const QList<QcPortalDefinition> &portals() const { return m_portals.items(); }
+    /*! Returns the portal named \a name; null when there is none. */
+    const QcPortalDefinition *portal(const QString &name) const { return m_portals.find(name); }
+
     /*! Adds the groups, options and presets of \a set, one pack's world generation options
         (decision E-917); an entry with the name of an existing one replaces it in its place. Called
         in the order of the packs and their files. */
@@ -109,6 +118,7 @@ private:
     QcNamedList<QcWorldOptionDefinition> m_options;
     QcNamedList<QcWorldPreset> m_presets;
     QcNamedList<QcDimensionDefinition> m_dimensions;
+    QcNamedList<QcPortalDefinition> m_portals;
     QcDimensionDefinition m_defaultOverworld = QcDimensionDefinition::defaultOverworld();
 };
 

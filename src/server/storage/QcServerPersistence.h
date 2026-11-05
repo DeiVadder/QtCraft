@@ -100,6 +100,9 @@ private:
     // their chunks load. Returns the change count of what was read; none: nothing was (the next save
     // writes the file).
     std::optional<quint64> restoreVillages(const QcWorldStorage &storage);
+    // Restores the known portals of the current dimension from portals.json in `directory`
+    // (decision E-1023); a damaged file is reported and the dimension starts without known portals.
+    void restorePortals(const QString &directory);
     // Opens what is stored of `dimension`, the current one, which is not the overworld: its chunks,
     // block updates, villages and dimension.json; a dimension opened for the first time gets the
     // one-time setup of its generator (decision E-988).

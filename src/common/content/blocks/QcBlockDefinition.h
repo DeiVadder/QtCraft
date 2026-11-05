@@ -51,6 +51,9 @@ enum class QcBlockSupport : quint8 {
     Below,
     /*! A full solid face on the side its \c {attach} property names (torches, ladders). */
     Attached,
+    /*! The frame of a portal it fills, or more of itself, in the plane of the frame
+        (QcPortalShapes::isHeld, decision E-1021). */
+    Portal,
 };
 
 /*! \brief How a placed block's \c {facing} follows the player's horizontal view direction. */

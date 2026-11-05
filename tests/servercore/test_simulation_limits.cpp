@@ -175,7 +175,7 @@ private slots:
             moved += countIn(i % 10, 0, (i / 10) * 2, "qtcraft:diamond");
         }
         QCOMPARE(moved, 50);
-        QCOMPARE(m_server->hopperQueue().cooldownTicks, 20);
+        QCOMPARE((*m_server->openDimension(QString::fromLatin1(QcDimensionDefinition::overworldName)))->hoppers().cooldownTicks, 20);
 
         chat(u"/limits"_s);
         QVERIFY(m_client->chatLines.join(u'\n').contains(u"hopperBudget = 10"_s));
