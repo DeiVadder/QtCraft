@@ -1,7 +1,7 @@
 {
     "name": "texture_packs",
     "order": 135,
-    "icon": "oak_planks",
+    "icon": "painting",
     "sections": [
         "choosing",
         "order",

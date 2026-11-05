@@ -17,39 +17,49 @@
 class QcClientSession;
 class QIODevice;
 
-// Machine-readable control of a client session: newline-delimited JSON requests in, one JSON
-// response line per request out. Acts only through the session (i.e. through the protocol), exactly
-// like a player would. Commands are documented in docs/Steuerschnittstelle.md. The virtual pads
-// steer the player like a real one in the game (QcGamepadControls, applied once per session tick).
+/*! \brief Machine-readable control of a client session: newline-delimited JSON requests in, one
+    JSON response line per request out.
+
+    Acts only through the session (i.e. through the protocol), exactly like a player would.
+    Commands are documented in docs/Steuerschnittstelle.md. The virtual pads steer the player
+    like a real one in the game (QcGamepadControls, applied once per session tick). */
 class QcControlInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    // Internal marker of a queued request that failed to parse.
+    /*! Internal marker of a queued request that failed to parse. */
     static constexpr auto parseErrorKey = "__parseError";
 
-    // Optional hook for commands the session cannot serve itself (screenshots, world management): the
-    // response (with "ok": false and "error" for a failure), none for a command it does not know.
+    /*! Optional hook for commands the session cannot serve itself (screenshots, world
+        management): the response (with "ok": false and "error" for a failure), none for a
+        command it does not know. */
     using ExtensionHandler = std::function<std::optional<QJsonObject>(const QJsonObject &request)>;
 
     QcControlInterface(QcClientSession *session, QIODevice *input, QIODevice *output, QObject *parent = nullptr);
 
+    /*! Sets the hook for commands the session cannot serve to \a handler. */
     void setExtensionHandler(ExtensionHandler handler) { m_extension = std::move(handler); }
-    // Switches to another session, e.g. after the world changed.
+    /*! Switches to \a session, e.g. after the world changed. */
     void setSession(QcClientSession *session);
-    // Executes one request; the response is written to the output device (possibly later).
+    /*! Executes \a request; the response is written to the output device (possibly later). */
     void submit(const QJsonObject &request);
-    // Appends raw bytes of newline-delimited requests, for sources that are not a QIODevice.
+    /*! Appends \a data, raw bytes of newline-delimited requests, for sources that are not a
+        QIODevice. */
     void feed(const QByteArray &data);
+    /*! Returns whether no command runs and no request waits. */
     bool isIdle() const { return !m_context.isActive() && m_queue.isEmpty(); }
+    /*! Returns the number of requests that failed. */
     int failedRequests() const { return m_context.failedRequests(); }
-    // The pads of the gamepad commands (decision E-540); they steer the player (E-541).
+    /*! Returns the pads of the gamepad commands (decision E-540); they steer the player (E-541). */
     QcVirtualGamepadSource &virtualGamepads() { return m_commands.virtualGamepads(); }
+    /*! Returns the pad steering of the virtual pads. */
     QcGamepadControls &gamepadControls() { return m_gamepad; }
 
 signals:
+    /*! The \c {quit} command asked to end the program. */
     void quitRequested();
+    /*! No command runs and no request waits any more. */
     void idle();
 
 private:

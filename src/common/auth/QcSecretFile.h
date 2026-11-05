@@ -18,9 +18,9 @@
     the user, a folder in the root of a drive is not). */
 namespace QcSecretFile {
 
-/*! Writes \a bytes to \a path with owner-only permissions; the error is the reason only (the
-    caller names the file). Fails when the permissions cannot be set: nothing is written then. On
-    Windows a failed owner-only access list (a drive without access lists) only warns. */
+/*! Writes \a bytes to \a path with owner-only permissions; returns an error with the reason only
+    (the caller names the file). Fails when the permissions cannot be set: nothing is written
+    then. On Windows a failed owner-only access list (a drive without access lists) only warns. */
 [[nodiscard]] QcStatus write(const QString &path, const QByteArray &bytes);
 /*! Returns whether the group or others may read the file at \a path (a key copied with the wrong
     permissions); on Windows whether its access list lets Everyone, Users or Authenticated Users

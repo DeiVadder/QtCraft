@@ -44,9 +44,9 @@ Item {
         if (visible)
             Qt.callLater(() => editor.focusLine(0));
     }
-    // Keys the fields leave (function keys, ...) end here; Esc closes as on the fields.
+    // Keys the fields leave (Esc, function keys, ...) end here; Esc closes the editor (KeyControls.screenKey).
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape)
+        if (editor.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             editor.done();
         event.accepted = true;
     }
@@ -106,7 +106,6 @@ Item {
                             text: editor.sign.lines[index] ?? ""
                             maximumLength: editor.sign.lineLength
                             selectByMouse: true
-                            Keys.onEscapePressed: editor.done()
                             // textChanged, not textEdited: the pad's on-screen keyboard types with
                             // insert() and remove(), which do not emit textEdited. sign.lines is the
                             // draft, read afresh here: the field filled from it changes nothing.

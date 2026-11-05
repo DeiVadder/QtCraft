@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "worldgen/generators/QcGuardSite.h"
 
@@ -11,37 +12,44 @@
 
 class QcServerState;
 
-// Guardians that come back to the zones of structures (decision E-591; the sand golem in the cellar
-// of a desert temple, a renewable source of sand). Every checkTicks game ticks it asks the world
-// generator for the zones within `reach` of each living player (QcWorldGenerator::plannedStructureSitesNear,
-// from its plans, never planning on the tick thread: around a player whose regions are not all
-// planned yet they are planned on a generation thread and the zones come with a later check; nothing
-// is saved) and gives a zone a guardian when all of these hold: fewer than the
-// zone's `max` creatures of its kind guard it; its cooldown ran out (it starts when the zone was last
-// full or last got one; a zone seen for the first time in a session waits half its cooldown, so
-// reloading the world at most halves the time between two guardians); no living player is
-// within `minPlayerDistance` of the zone and one is within `maxPlayerDistance`; every chunk of the
-// zone is loaded; the world holds fewer than QcServerLimits::guardians guardians. The guardian comes
-// into the first of `attempts` random cells of the zone that has room for its body, solid ground and
-// block light at most the zone's `maxLight` (QcSpawnerRules::fits), and keeps to the zone
-// (QcCreature::guards). Kinds a spawner may not bring forth (QcSpawnerContent::refusal) never come.
-// The game rule mobSpawning does not matter (like spawners).
+/*! \brief Guardians that come back to the zones of structures (decision E-591; the sand golem in
+    the cellar of a desert temple, a renewable source of sand).
+
+    Every checkTicks game ticks it asks the world generator for the zones within \c {reach} of each
+    living player (QcWorldGenerator::plannedStructureSitesNear, from its plans, never planning on
+    the tick thread: around a player whose regions are not all planned yet they are planned on a
+    generation thread and the zones come with a later check; nothing is saved) and gives a zone a
+    guardian when all of these hold: fewer than the zone's \c {max} creatures of its kind guard it;
+    its cooldown ran out (it starts when the zone was last full or last got one; a zone seen for the
+    first time in a session waits half its cooldown, so reloading the world at most halves the time
+    between two guardians); no living player is within \c {minPlayerDistance} of the zone and one is
+    within \c {maxPlayerDistance}; every chunk of the zone is loaded; the world holds fewer than
+    QcServerLimits::guardians guardians. The guardian comes into the first of \c {attempts} random
+    cells of the zone that has room for its body, solid ground and block light at most the zone's \c
+    {maxLight} (QcSpawnerRules::fits), and keeps to the zone (QcCreature::guards). Kinds a spawner
+    may not bring forth (QcSpawnerContent::refusal) never come. The game rule mobSpawning does not
+    matter (like spawners). */
 class QcGuardians
 {
 public:
+    /*! Ticks between two checks of the zones. */
     static constexpr int checkTicks = 20;
-    // How far from a player zones are looked for (the largest `maxPlayerDistance` a zone may have).
+    /*! How far from a player zones are looked for (the largest \c {maxPlayerDistance} a zone may
+        have). */
     static constexpr int reach = 128;
-    // Random cells of the zone tried per guardian.
+    /*! Random cells of the zone tried per guardian. */
     static constexpr int attempts = 8;
 
     QcGuardians(QcServerState &state, const QcSpawnerRules &cells);
 
+    /*! Checks the zones every checkTicks ticks (one tick). */
     void tick();
-    // Awake and resting guardians in the world, and those of one zone.
+    /*! Returns the awake and resting guardians in the world. */
     int guardianCount() const;
+    /*! Returns the awake and resting guardians of the zone \a site. */
     int guardianCount(quint64 site) const;
-    // The game tick from which the zone may next get a guardian; std::nullopt before it was seen.
+    /*! Returns the game tick from which the zone \a site may next get a guardian; std::nullopt
+        before it was seen. */
     [[nodiscard]] std::optional<quint64> readyAt(quint64 site) const;
 
 private:
@@ -52,7 +60,7 @@ private:
     static bool playersAllow(const QcGuardSite &site, const QList<QcVec3> &players);
     bool zoneLoaded(const QcGuardSite &site) const;
     // A guardian of kind `type` in a random fitting cell of the zone; false when none fit.
-    bool bringForth(const QcGuardSite &site, int type);
+    bool bringForth(const QcGuardSite &site, QcCreatureKindId type);
     QList<QcVec3> livingPlayers() const;
 
     QcServerState &m_state;

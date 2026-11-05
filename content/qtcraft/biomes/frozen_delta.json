@@ -1,5 +1,6 @@
 {
     "name": "frozen_delta",
+    "icon": "packed_ice",
     "mapColour": "#d2c8d4",
     "delta": true,
     "temperature": 0.05,

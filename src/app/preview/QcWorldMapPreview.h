@@ -9,6 +9,7 @@
 
 #include <QImage>
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 #include <QTimer>
 #include <QVariantList>
@@ -36,6 +37,8 @@ class QcWorldMapPreview : public QObject
     QML_UNCREATABLE("Provided by GameController.worldOptions.preview")
     // The seed text of the form ("" is not a seed: the form passes its random one).
     Q_PROPERTY(QString seedText READ seedText WRITE setSeedText NOTIFY seedTextChanged FINAL)
+    // The world generator version of the world shown (decision E-922; the form's choice).
+    Q_PROPERTY(int generatorVersion READ generatorVersion WRITE setGeneratorVersion NOTIFY generatorVersionChanged FINAL)
     // Whether the page with the preview is shown; nothing is computed otherwise.
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged FINAL)
     // Villages and structures on the map: off by default, so the map does not give them away.
@@ -95,6 +98,9 @@ public:
 
     QString seedText() const { return m_seedText; }
     void setSeedText(const QString &text);
+    int generatorVersion() const { return m_generatorVersion; }
+    // A version the game does not have is refused with a warning.
+    void setGeneratorVersion(int version);
     bool active() const { return m_active; }
     void setActive(bool active);
     bool showSites() const { return m_showSites; }
@@ -133,7 +139,7 @@ public:
     void setWorld(std::shared_ptr<const QcContentRegistry> content, const QJsonObject &values);
     // The legend in the current language (after a change of the language).
     void retranslate();
-    void setProvider(QcWorldMapImageProvider *provider) { m_provider = provider; }
+    void setProvider(QcWorldMapImageProvider *provider);
 
     // For tests and the measurements: the shown image, how long the passes of the shown build took
     // (coarse, fine, sites; -1 not yet) and how many builds a change cancelled while they ran.
@@ -147,6 +153,7 @@ public:
 
 signals:
     void seedTextChanged();
+    void generatorVersionChanged();
     void activeChanged();
     void showSitesChanged();
     void imageChanged();
@@ -209,6 +216,7 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content;
     QJsonObject m_values;
     QString m_seedText;
+    int m_generatorVersion = QcGeneratorVersion::current;
     bool m_active = false;
     bool m_showSites = false;
     QcBiomeMap::Area m_view{0, 0, defaultRadius, 1};
@@ -228,7 +236,8 @@ private:
     QList<QcBiomeMap::Site> m_siteList;
     ResultHook m_resultHook; // NOLINT(qc-member-access): a test hook, set by its setter and read only in start()
     std::array<qint64, 3> m_passMs{-1, -1, -1};
-    QcWorldMapImageProvider *m_provider = nullptr;
+    // The engine owns the provider and may delete it first (the game outlives the QML engine).
+    QPointer<QcWorldMapImageProvider> m_provider;
     QTimer m_settle; // NOLINT(qc-member-access): a timer, started and stopped through its own methods
     // The number of the newest build; a running build stops when it is no longer the newest. Read
     // by the worker, hence atomic.

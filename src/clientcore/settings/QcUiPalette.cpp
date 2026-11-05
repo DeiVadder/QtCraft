@@ -52,6 +52,7 @@ constexpr std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> palette =
     {R::Progress, "progress", 0xffffffff},
     {R::Health, "health", 0xffe02828},
     {R::Experience, "experience", 0xff80ff20},
+    {R::Air, "air", 0xff8ad8ff},
     {R::Flame, "flame", 0xffe05010},
     {R::FlameCore, "flameCore", 0xffffe060},
     {R::DurabilityGood, "durabilityGood", 0xff40d040},

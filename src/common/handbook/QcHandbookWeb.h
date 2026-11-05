@@ -5,6 +5,7 @@
 
 #include "common/core/QcResult.h"
 #include "common/handbook/QcHandbook.h"
+#include "common/handbook/QcHandbookMarkdown.h"
 
 #include <QByteArray>
 #include <QList>
@@ -19,26 +20,18 @@
     The same handbook gives the same bytes. */
 namespace QcHandbookWeb {
 
-/*! \brief One file of the data. */
-struct File
-{
-    /*! The file name. */
-    QString name;
-    /*! The file's bytes. */
-    QByteArray content;
-};
-
 /*! Returns the data file of \a handbook: {"language", "packs": [{"id", "name", "version"}],
     "categories": [{"id", "title", "entries": [id]}], "entries": {id: page with "englishTitle"}};
     categories without entries are left out. */
-File data(const QcHandbook &handbook);
+QcHandbookMarkdown::File data(const QcHandbook &handbook);
 /*! Returns languages.json for the languages \a ids: {"languages": [{"id", "name"}]} with each
     language's own name ("Deutsch"). */
-File languages(const QStringList &ids);
-/*! Item names whose icons the pages of \a handbook show (entries, links, recipe cells), sorted. */
+QcHandbookMarkdown::File languages(const QStringList &ids);
+/*! Returns the item names whose icons the pages of \a handbook show (entries, links, recipe
+    cells), sorted. */
 QStringList icons(const QcHandbook &handbook);
 /*! Writes \a files into \a directory (created when missing); existing files of the same names
-    are replaced. */
-[[nodiscard]] QcStatus write(const QList<File> &files, const QString &directory);
+    are replaced. Returns an error when a file cannot be written. */
+[[nodiscard]] QcStatus write(const QList<QcHandbookMarkdown::File> &files, const QString &directory);
 
 } // namespace QcHandbookWeb

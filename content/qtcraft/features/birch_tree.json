@@ -1,5 +1,6 @@
 {
     "name": "birch_tree",
+    "icon": "birch_sapling",
     "type": "tree",
     "trunk": "birch_log",
     "leaves": "birch_leaves",

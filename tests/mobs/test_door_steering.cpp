@@ -209,7 +209,7 @@ private:
         const int direction = scene.alongOf(start) < 0.0 ? 1 : -1;
         QcMobManager mobs(m_content, 1);
         mobs.setNaturalSpawning(false);
-        const int type = *m_content->mobIndex(u"qtcraft:"_s + m_walker);
+        const QcCreatureKindId type = *m_content->mobKind(u"qtcraft:"_s + m_walker);
         mobs.spawn(type, start, 1);
         QcCreature &mob = *mobs.find(1);
         mob.chasing = 7;

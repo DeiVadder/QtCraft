@@ -17,8 +17,9 @@ class QcClientWeather;
 class QcClientWorld;
 class QcContentRegistry;
 
-// One particle as the precipitation renderer draws it, an instance of 16 bytes: the lowest point of
-// the particle, whether it is a snowflake (else a raindrop) and its opacity (decisions E-395, E-397).
+/*! \brief One particle as the precipitation renderer draws it, an instance of 16 bytes: the
+    lowest point of the particle, whether it is a snowflake (else a raindrop) and its opacity
+    (decisions E-395, E-397). \qcfields */
 struct QcPrecipitationDrop
 {
     float x = 0.0f;
@@ -30,61 +31,75 @@ struct QcPrecipitationDrop
 };
 static_assert(sizeof(QcPrecipitationDrop) == 16);
 
-// Rain and snow around the camera (decision E-395): up to a budget of particles in a box around the
-// eye, falling, each only where the sky is open above it. A particle starts above the top of its
-// column (the highest cell that keeps rain out, QcPrecipitationTable, the same rule as the server's)
-// and ends when it reaches that top; columns that are not loaded count as covered. Whether it is a
-// raindrop or a snowflake follows from the climate the server sent and the height it starts at.
-// GUI-free; drawn by the world renderer's QcPrecipitationRenderer, one instance (QcPrecipitationDrop)
-// per particle: a raindrop as a thin streak, a snowflake as a small round dot facing the camera.
+/*! \brief Rain and snow around the camera (decision E-395): up to a budget of particles in a box
+    around the eye, falling, each only where the sky is open above it.
+
+    A particle starts above the top of its column (the highest cell that keeps rain out,
+    QcPrecipitationTable, the same rule as the server's) and ends when it reaches that top;
+    columns that are not loaded count as covered. Whether it is a raindrop or a snowflake follows
+    from the climate the server sent and the height it starts at. GUI-free; drawn by the world
+    renderer's QcPrecipitationRenderer, one instance (QcPrecipitationDrop) per particle: a
+    raindrop as a thin streak, a snowflake as a small round dot facing the camera. */
 class QcPrecipitationField
 {
 public:
+    /*! \brief A falling particle. */
     struct Particle
     {
+        /*! Its lowest point. */
         QcVec3 position;
+        /*! Whether it is a snowflake (else a raindrop). */
         bool snow = false;
-        // Sideways sway of a snowflake (radians), so flakes do not fall in step.
+        /*! Sideways sway of a snowflake (radians), so flakes do not fall in step. */
         float phase = 0.0f;
     };
 
-    // Particles at full strength; the shown number scales with the rain's strength. The test hook
-    // QTCRAFT_WEATHER_PARTICLES=<n> overrides it (measurements).
+    /*! Particles at full strength; the shown number scales with the rain's strength. The test
+        hook QTCRAFT_WEATHER_PARTICLES=<n> overrides it (measurements). */
     static constexpr int defaultBudget = 3000;
+    /*! Largest budget the test hook takes. */
     static constexpr int maxBudget = 50000;
-    // Half the width of the box around the eye and how far it reaches above and below the eye.
+    /*! Half the width of the box around the eye and how far it reaches above and below the eye.
+        \qcshared */
     static constexpr int radius = 16;
     static constexpr double reachUp = 14.0;
     static constexpr double reachDown = 10.0;
-    // Falling speeds in metres per second and the drift of rain in the wind.
+    /*! Falling speeds in metres per second and the drift of rain in the wind. \qcshared */
     static constexpr double rainSpeed = 14.0;
     static constexpr double rainDrift = 1.6;
     static constexpr double snowSpeed = 1.6;
-    // Column tops are read again after this many seconds (blocks placed or broken under the rain).
+    /*! Column tops are read again after this many seconds (blocks placed or broken under the
+        rain). */
     static constexpr double columnRefreshSeconds = 0.5;
-    // Length in seconds of the streak a raindrop draws (motion blur) and the diameter of a flake in
-    // metres (on screen at least two and at most a few pixels, QcPrecipitationRenderer).
+    /*! Length in seconds of the streak a raindrop draws (motion blur) and the diameter of a
+        flake in metres (on screen at least two and at most a few pixels,
+        QcPrecipitationRenderer). \qcshared */
     static constexpr double rainStreakSeconds = 0.04;
     static constexpr double flakeSize = 0.12;
 
     explicit QcPrecipitationField(int budget = defaultBudget);
 
-    // The budget of this run: defaultBudget or the test hook.
+    /*! Returns the budget of this run: defaultBudget or the test hook. */
     static int selectedBudget();
 
-    // Advances the field by `seconds` around `eye`: particles fall, those that landed or left the box
-    // start again above an open column; their number follows the rain's strength.
+    /*! Advances the field by \a seconds around \a eye: particles fall, those that landed or left
+        the box start again above an open column; their number follows the rain's strength in
+        \a weather; \a world tells open columns. */
     void update(const QcClientWorld &world, const QcClientWeather &weather, const QcVec3 &eye, double seconds);
-    // A particle as an instance for the renderer (QcDropPool collects them), its position relative to
-    // `origin` (decision E-883); raindrops and flakes grow more opaque with the strength of the rain.
+    /*! Returns \a particle as an instance for the renderer (QcDropPool collects them), its position
+        relative to \a origin (decision E-883); raindrops and flakes grow more opaque with the \a
+        strength of the rain. */
     [[nodiscard]] static QcPrecipitationDrop dropOf(const Particle &particle, float strength, const QcVec3 &origin);
-    // The streak of a raindrop: from the drop up to where it was rainStreakSeconds ago.
+    /*! Returns the streak of a raindrop: from the drop up to where it was rainStreakSeconds ago. */
     static QcVec3 rainStreak() { return {-rainDrift * rainStreakSeconds, rainSpeed * rainStreakSeconds, 0.0}; }
 
+    /*! Returns the falling particles. */
     const QList<Particle> &particles() const { return m_particles; }
+    /*! Returns the particles at full strength. */
     int budget() const { return m_budget; }
-    // Highest cell of the column (x, z) that keeps rain out (QcPrecipitationTable) as last read;
-    // QcWorld::worldHeight for a column that is not loaded.
+    /*! Returns the highest cell of the column (\a x, \a z) of \a world that keeps rain out
+        (QcPrecipitationTable) as last read; QcWorld::worldHeight for a column that is not
+        loaded. */
     int columnTop(const QcClientWorld &world, int x, int z);
 
 private:

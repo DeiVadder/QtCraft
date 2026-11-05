@@ -19,10 +19,11 @@ struct Name
 };
 
 // The game rules (QcGameRules) and the server limits (QcServerLimits) of this version.
-constexpr std::array<Name, 14> ruleNames{{
+constexpr std::array<Name, 15> ruleNames{{
     {"keepInventory", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Keep inventory")},
     {"announceAdvancements", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Announce advancements")},
     {"playerInvulnerabilityTicks", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Player protection after a hit")},
+    {"drowningDamage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Drowning damage")},
     {"daylightCycle", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Day and night")},
     {"weatherCycle", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Changing weather")},
     {"spawnChunkRadius", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Loaded area around the spawn")},
@@ -36,7 +37,7 @@ constexpr std::array<Name, 14> ruleNames{{
     {"explosionBlockDamage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Explosions damage blocks")},
 }};
 
-constexpr std::array<Name, 72> limitNames{{
+constexpr std::array<Name, 73> limitNames{{
     {"signalBudget", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per tick")},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Reserve for scheduled signal ticks")},
     {"signalWorkPerChange", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per block change")},
@@ -103,6 +104,7 @@ constexpr std::array<Name, 72> limitNames{{
     {"villageBeds", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Beds per village")},
     {"villageWorkstations", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Workstations per village")},
     {"waterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Water creatures per player")},
+    {"largeWaterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Large water creatures per player")},
     {"villagersPerVillage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villagers per village")},
     {"villagers", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villagers")},
     {"villagerThoughtsPerTick", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villager decisions per tick")},

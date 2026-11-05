@@ -17,6 +17,7 @@
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/commands/QcServerCommands.h"
 #include "server/core/QcEntitySync.h"
+#include "server/core/QcSaveSchedule.h"
 #include "server/core/QcServerDebug.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -67,9 +68,11 @@ class QcConnection;
 class QcTransport;
 class QTimer;
 
-// Authoritative game server. Owns the world and all game logic and talks to clients only through
-// protocol messages: it runs the tick and hands messages to its parts. Lives in one thread; all
-// functions must be called from that thread.
+/*! \brief Authoritative game server.
+
+    Owns the world and all game logic and talks to clients only through protocol messages: it
+    runs the tick and hands messages to its parts. Lives in one thread; all functions must be
+    called from that thread, except tickTimes() and resetTickTimes(). */
 class QcServer : public QObject
 {
     Q_OBJECT
@@ -80,120 +83,166 @@ public:
     ~QcServer() override;
     Q_DISABLE_COPY_MOVE(QcServer)
 
-    // Opens or creates the world directory given in the config (no-op without one). Must succeed
-    // before start(); fails with a readable message for damaged or mismatching saves.
+    /*! Opens or creates the world directory given in the config (no-op without one). Must succeed
+        before start(); returns an error with a readable message for damaged or mismatching saves.
+    */
     [[nodiscard]] QcStatus openWorld();
-    // Writes all players, world info, changed chunks, entities, machines, chests and pending
-    // updates. A failing part does not keep the others from being written; the first error is
-    // returned. No-op without a world directory.
+    /*! Writes all players, world info, changed chunks, entities, machines, chests and pending
+        updates. A failing part does not keep the others from being written; returns the first
+        error. No-op without a world directory. */
     [[nodiscard]] QcStatus save();
+    /*! Starts the tick loop: the first tick is due one interval from now. */
     void start();
-    // Saves, then disconnects every client; returns the result of saving.
+    /*! Saves, then disconnects every client; returns the result of saving. */
     [[nodiscard]] QcStatus stop();
-    // Where a client connects from. Local clients are those of the in-process host (single player:
-    // the one who opened the world, who is the operator anyway); they join without a login and their
-    // chat lines and commands are not rate limited (decision E-091, supplement). Everything else is
-    // Remote: it logs in (decision E-252) and is fully limited.
-    enum class ClientOrigin { Remote, Local };
+    /*! \brief Where a client connects from.
+
+        Local clients are those of the in-process host (single player: the one who opened the
+        world, who is the operator anyway); they join without a login and their chat lines and
+        commands are not rate limited (decision E-091, supplement). Everything else is Remote: it
+        logs in (decision E-252) and is fully limited. */
+    enum class ClientOrigin {
+        /*! A network client. */
+        Remote,
+        /*! The player of the in-process host. */
+        Local
+    };
+    /*! Adds a client connected through \a transport from \a origin; a remote one logs in first. */
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
+    /*! Returns the number of clients, those still logging in included. */
     int clientCount() const { return static_cast<int>(m_state.clients().size()); }
+    /*! The health of a player at full health (QcServerClient::maxHealth). */
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
+    /*! Returns the ticks counted since the server started. */
     quint64 tickCount() const { return m_state.clock().tick(); }
+    /*! Returns the world: chunks, blocks and what belongs to them. */
     QcServerWorld &world() { return m_state.world(); }
-    // The maps of the world (decision E-799).
+    /*! Returns the maps of the world (decision E-799). */
     QcMapStore &maps() { return m_state.maps(); }
-    // Every entity of the world (decision E-364) and the tables of the kinds.
+    /*! Returns every entity of the world (decision E-364) and the tables of the kinds. */
     QcEntities &entities() { return m_state.entities(); }
+    /*! Returns every entity of the world and the tables of the kinds, read-only. */
     const QcEntities &entities() const { return m_state.entities(); }
+    /*! Returns the table of the creatures. */
     QcMobManager &mobs() { return m_state.entities().creatures(); }
-    // The creatures in the tick: guardians and crumbling (decisions E-591, E-593) for tests.
+    /*! Returns the creatures in the tick: guardians and crumbling (decisions E-591, E-593) for
+        tests. */
     const QcServerCreatures &creatures() const { return m_creatures; }
+    /*! Returns the table of the dropped items. */
     QcItemEntityManager &items() { return m_state.entities().items(); }
+    /*! Returns the growing plants. */
     QcPlantManager &plants() { return m_state.plants(); }
-    // State that belongs to single blocks (decision E-357) and the rules of machines.
+    /*! Returns the state that belongs to single blocks (decision E-357). */
     QcBlockEntities &blockEntities() { return m_state.blockEntities(); }
+    /*! Returns the rules of machines. */
     const QcMachineRules &machineRules() const { return m_state.machineRules(); }
+    /*! Returns the flow of liquids. */
     QcLiquidFlow &liquids() { return m_state.liquids(); }
+    /*! Returns the table of the falling blocks. */
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
-    // Fire (decision E-392): the queue of the burning fires.
+    /*! Returns the queue of the burning fires (decision E-392). */
     QcFireQueue &fires() { return m_state.world().fires(); }
-    // The gameplay systems: fire, burning, health, weather, minecarts, experience, projectiles and
-    // circuits.
+    /*! Returns the gameplay systems: fire, burning, health, weather, minecarts, experience,
+        projectiles and circuits. */
     QcServerSystems &systems() { return m_systems; }
+    /*! Returns the table of the armour stands. */
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
+    /*! Returns the table of the minecarts. */
     QcMinecartManager &carts() { return m_state.entities().minecarts(); }
-    // Experience orbs (decision E-398).
+    /*! Returns the table of the experience orbs (decision E-398). */
     QcExperienceOrbManager &orbs() { return m_state.entities().orbs(); }
+    /*! Returns the state of the Signal Dust circuits. */
     QcCircuitState &circuitState() { return m_state.circuits(); }
+    /*! Returns the queue of the Signal Hoppers. */
     QcHopperQueue &hopperQueue() { return m_state.hoppers(); }
-    // The contents of the container or machine at `pos` changed (set by a test or tool): comparators
-    // reading it and hoppers next to it look again.
+    /*! The contents of the container or machine at \a pos changed (set by a test or tool):
+        comparators reading it and hoppers next to it look again. */
     void noteContents(QcBlockPos pos) { m_state.noteContents(pos); }
+    /*! Returns the blocks a piston slides. */
     const QcMovingBlocks &movingBlocks() const { return m_state.entities().movingBlocks(); }
+    /*! Returns the game rule keepInventory of the world. */
     bool keepInventory() const { return m_state.info().keepInventory; }
+    /*! Sets the game rule keepInventory of the world to \a keep. */
     void setKeepInventory(bool keep) { m_state.info().keepInventory = keep; }
+    /*! Returns the seconds since the world was created (the day/night cycle). */
     double worldTime() const { return m_state.info().worldTime; }
-    // Problems found while opening the world (missing mods, unknown blocks); it still opened.
+    /*! Returns the problems found while opening the world (missing mods, unknown blocks); it
+        still opened. */
     const QStringList &openWarnings() const { return m_persistence.openWarnings(); }
-    // Whether openWorld() failed because another server has the world open.
+    /*! Returns whether openWorld() failed because another server has the world open. */
     bool worldInUse() const { return m_persistence.worldInUse(); }
-    // Whether openWorld() failed because the world comes from an older development version.
+    /*! Returns whether openWorld() failed because the world comes from an older development
+        version. */
     bool worldTooOld() const { return m_persistence.worldTooOld(); }
-    // Saves in the background like an autosave (tests and measurements).
+    /*! Saves in the background like an autosave (tests and measurements). */
     void saveInBackground() { m_persistence.saveInBackground(); }
-    // Which chunks are loaded and how they come and go (decisions E-374 to E-377).
+    /*! Returns which chunks are loaded and how they come and go (decisions E-374 to E-377). */
     QcChunkLoading &chunkLoading() { return m_chunkLoading; }
-    // Waits until everything handed to the world's storage is written (autosaves run in the
-    // background, decision E-373).
+    /*! Waits until everything handed to the world's storage is written (autosaves run in the
+        background, decision E-373). */
     void waitForStorage() { m_persistence.waitForStorage(); }
-    // Whether openWorld() failed on a damaged per-region file, and which.
+    /*! Returns whether openWorld() failed on a damaged per-region file, and which. */
     const QcServerPersistence::DamagedFile &damagedFile() const { return m_persistence.damagedFile(); }
+    /*! Sets the world time to \a seconds (at least 0) and tells every playing client. */
     void setWorldTime(double seconds);
 
+    /*! The first slot of the crafting grid in inventory moves (QcMsg::MoveInventoryItem). */
     static constexpr int craftingGridSlot = QcServerInventory::craftingGridSlot;
+    /*! Returns the configuration. */
     const QcServerConfig &config() const { return m_state.config(); }
 
-    // Runs one simulation tick immediately (used by tests and by the tick timer).
+    /*! Runs one simulation tick immediately (used by tests and by the tick timer). */
     void tick();
-    // Autosaves since the server started.
-    quint64 autosaveCount() const { return m_autosaves; }
-    // Whether the tick loop pauses (decision E-877): tick() runs only the players' upkeep then.
+    /*! Returns the autosaves since the server started. */
+    quint64 autosaveCount() const { return m_saving.autosaveCount(); }
+    /*! Returns whether the tick loop pauses (decision E-877): tick() runs only the players'
+        upkeep then. */
     const QcServerPause &pause() const { return m_pause; }
-    // Server ticks per tick of a client's clock, sent with WorldTime: the tick rate / 20, the
-    // sprint's speed while one runs, 0 while frozen or paused (decisions E-249, E-877).
+    /*! Returns the server ticks per tick of a client's clock, sent with WorldTime: the tick rate
+        / 20, during a sprint the larger of sprint and tick rate / 20, at most
+        QcMsg::WorldTime::maxSpeed; 0 while frozen or paused (decisions E-249, E-877). */
     double timeSpeed() const;
 
+    /*! Neighbour updates per tick at most by default (QcServerLimits::blockUpdatesPerTick). */
     static constexpr int maxBlockUpdatesPerTick = QcBlockSimulation::maxBlockUpdatesPerTick;
-    // The queues of block updates and their counters (pending, waiting, processed, dropped).
+    /*! Returns the queues of block updates and their counters (pending, waiting, processed,
+        dropped). */
     const QcBlockUpdateQueue &blockUpdates() const { return m_blockUpdates; }
 
-    // Duration and lateness of the timed ticks; safe to read and reset from other threads (benchmark).
+    /*! Returns the duration and lateness of the timed ticks; safe to read and reset from other
+        threads (benchmark). */
     QcTickStats::Summary tickTimes() const { return m_ticks.stats().summary(); }
+    /*! Forgets the tick times recorded so far; safe from other threads (benchmark). */
     void resetTickTimes() { m_ticks.stats().reset(); }
-    // Players, loaded chunks, creatures and items, the network traffic of the clients and the tick
-    // durations since the previous call for the health line (decision E-834); server thread only.
+    /*! Returns the players, loaded chunks, creatures and items, the network traffic of the
+        clients and the tick durations since the previous call for the health line (decision
+        E-834); server thread only. */
     [[nodiscard]] QcHealthSample health();
-    // Time per phase of the latest ticks (decision E-225); server thread only.
+    /*! Returns the time per phase of the latest ticks (decision E-225); server thread only. */
     const QcTickPhaseTimer &tickPhases() const { return m_phases; }
-    // Tick rate, sprints and freezing (/tick, decision E-249); server thread only.
+    /*! Returns the tick schedule: rate and sprints (/tick, decision E-249); server thread only. */
     QcTickScheduler &tickScheduler() { return m_ticks; }
+    /*! Returns whether the world is frozen and the steps left (/tick); server thread only. */
     const QcTickControl &tickControl() const { return m_tickControl; }
-    // The systems of the tick in their order (decision E-700); server thread only.
+    /*! Returns the systems of the tick in their order (decision E-700); server thread only. */
     [[nodiscard]] const QcTickSystems &tickSystems() const { return m_tickSystems; }
 
-    // Changes the login settings for network players (a world opened to the LAN, decision E-252).
+    /*! Changes the login settings for network players to \a login (a world opened to the LAN,
+        decision E-252). */
     void setLoginSettings(const QcLoginSettings &login);
-    // Ends the connections of all network clients with a reason (the host stopped sharing the
-    // world); the local player stays. They are saved with the next tick like any who leave.
+    /*! Ends the connections of all network clients with a reason (the host stopped sharing the
+        world); the local player stays. They are saved with the next tick like any who leave. */
     void disconnectRemoteClients();
-    // Runs a line of the server console (decision E-247); the replies go to `output`.
+    /*! Runs \a line of the server console (decision E-247); the replies go to \a output. */
     void runConsoleCommand(const QString &line, const QcCommandSource::Output &output);
+    /*! Returns the command layer (chat, console, admin channel). */
     QcServerCommands &commands() { return m_commands; }
 
 signals:
+    /*! The number of clients changed to \a count. */
     void clientCountChanged(int count);
-    // /stop from the console: the host should stop the server.
+    /*! /stop from the console: the host should stop the server. */
     void stopRequested();
 
 private:
@@ -225,10 +274,6 @@ private:
     void sendTimeToAll();
     // Tells the operators of chunks found damaged (decision E-373).
     void reportDamagedChunks();
-    void autosave();
-    // Writes identities.json when players registered since the last write (decision E-273).
-    void flushIdentities();
-    void flushIdentitiesWhenDue();
     // Add the systems of the tick in their order (decision E-700), once, from the constructor: the
     // players, saving and chunks, the simulation of the world, the updates of the clients.
     void addUpkeepSystems();
@@ -302,6 +347,8 @@ private:
     QcChunkLoading m_chunkLoading;
     QcChunkStreaming m_chunkStreaming;
     QcServerPersistence m_persistence;
+    // NOLINT(qc-member-access): a subsystem object, never replaced; the subsystem members wait for the class split.
+    QcSaveSchedule m_saving;
     QcServerCommands m_commands;
     QcPlayerJoin m_join;
     QcServerLogin m_login;
@@ -310,12 +357,6 @@ private:
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
-    // Players' time (QcServerClock::playerTimeNs) of the latest autosave.
-    qint64 m_lastAutosaveNs = 0;
-    // Players' time of the latest flush of the identities; none yet: the first registration is
-    // written with the next tick.
-    std::optional<qint64> m_lastIdentityFlushNs;
-    quint64 m_autosaves = 0;
     QcServerDebug m_debug;
     QcServerSystems m_systems;
 };

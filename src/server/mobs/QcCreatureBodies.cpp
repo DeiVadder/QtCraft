@@ -3,7 +3,7 @@
 
 #include "server/mobs/QcCreatureBodies.h"
 
-QcVec3 QcCreatureBodies::pushOnPlayer(const QcVec3 &feet, const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions,
+QcVec3 QcCreatureBodies::pushOnPlayer(const QcVec3 &feet, const QList<QcCreature> &mobs, QcMobKinds definitions,
                                       quint64 tick, quint64 generation)
 {
     if (tick != m_tick || generation != m_generation) {
@@ -14,12 +14,12 @@ QcVec3 QcCreatureBodies::pushOnPlayer(const QcVec3 &feet, const QList<QcCreature
     return QcBodyPush::playerVelocity(m_grid.sum(QcBodyPush::player(feet)));
 }
 
-void QcCreatureBodies::build(const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions)
+void QcCreatureBodies::build(const QList<QcCreature> &mobs, QcMobKinds definitions)
 {
     m_grid.clear();
     for (const QcCreature &mob : mobs) {
         // Resting creatures are far from every player and not shown to them (decision E-372).
-        if (mob.dormant || mob.type < 0 || mob.type >= definitions.size()) {
+        if (mob.dormant || !definitions.contains(mob.type)) {
             continue;
         }
         const QcMobDefinition &definition = definitions[mob.type];

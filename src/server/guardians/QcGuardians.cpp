@@ -78,7 +78,7 @@ bool QcGuardians::serve(const QcGuardSite &site, const QList<QcVec3> &players, i
         return false;
     }
 
-    const std::optional<int> type = m_state.content().mobIndex(site.rule.mob);
+    const std::optional<QcCreatureKindId> type = m_state.content().mobKind(site.rule.mob);
     if (!type || !QcSpawnerContent::refusal(m_state.content().mobs()[*type]).isEmpty() || total >= m_state.config().limits.guardians) {
         return false;
     }
@@ -116,7 +116,7 @@ bool QcGuardians::zoneLoaded(const QcGuardSite &site) const
     return true;
 }
 
-bool QcGuardians::bringForth(const QcGuardSite &site, int type)
+bool QcGuardians::bringForth(const QcGuardSite &site, QcCreatureKindId type)
 {
     QcSpawnerDefinition light;
     light.maxLight = site.rule.maxLight;

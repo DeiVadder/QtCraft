@@ -3,6 +3,7 @@
 
 #include "server/boats/QcBoatManager.h"
 
+#include "common/core/QcBlockBox.h"
 #include "common/physics/QcBoatMotion.h"
 #include "common/physics/QcPhysics.h"
 #include "server/boats/QcBoxGrid.h"
@@ -112,13 +113,7 @@ namespace {
 
 // The cells a resting boat watches: the columns its body covers, from the cell under its feet to the
 // cell of its top.
-struct Watched
-{
-    QcBlockPos low;
-    QcBlockPos high;
-};
-
-Watched watchedBy(const QcBoat &boat)
+QcBlockBox watchedBy(const QcBoat &boat)
 {
     const QcAabb box = QcBoatManager::bodyOf(boat);
     const QcBlockPos low = QcPhysics::blockContaining(box.min);
@@ -132,7 +127,7 @@ QcBoat::Rest QcBoatManager::restOf(const QcBoat &boat, const QcServerWorld &worl
 {
     QcBoat::Rest rest{boat.motion.position, boat.yaw, world.blockChanges(), {}};
     rest.around.fill(static_cast<QcBlockId>(~0u));
-    const Watched cells = watchedBy(boat);
+    const QcBlockBox cells = watchedBy(boat);
     std::size_t next = 0;
     for (int x = cells.low.x; x <= std::min(cells.high.x, cells.low.x + 2); ++x) {
         for (int z = cells.low.z; z <= std::min(cells.high.z, cells.low.z + 2); ++z) {
@@ -155,7 +150,7 @@ std::optional<QcBoat::Rest> QcBoatManager::keptRest(const QcBoat &boat, const Qc
     }
 
     // Its blocks are read again only when one of their chunks changed since they were read.
-    const Watched cells = watchedBy(boat);
+    const QcBlockBox cells = watchedBy(boat);
     const QcChunkPos first = cells.low.chunk();
     const QcChunkPos last = cells.high.chunk();
     bool changed = false;

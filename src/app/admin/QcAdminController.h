@@ -141,19 +141,31 @@ public:
     // The screen closed: follows nothing any more.
     Q_INVOKABLE void close();
 
-    Q_INVOKABLE void kick(const QString &name, const QString &reason);
-    Q_INVOKABLE void ban(const QString &name, const QString &reason);
-    Q_INVOKABLE void unban(const QString &name);
-    Q_INVOKABLE void op(const QString &name);
-    Q_INVOKABLE void deop(const QString &name);
-    Q_INVOKABLE void whitelistAdd(const QString &name);
-    Q_INVOKABLE void whitelistRemove(const QString &name);
+    // Whether `text` is a name the lists and actions take: not empty once trimmed, one word, at
+    // most nameLength() code points (as the server counts them).
+    Q_INVOKABLE static bool isName(const QString &text);
+    // Whether `text` is a chat or command line: not empty once trimmed, at most textLength()
+    // characters.
+    Q_INVOKABLE static bool isLine(const QString &text);
+
+    // The actions on a player take the name trimmed; one that is no name (isName) is refused with
+    // a warning and a notice, and returns false. A reason is trimmed; an empty one is left out.
+    Q_INVOKABLE bool kick(const QString &name, const QString &reason);
+    Q_INVOKABLE bool ban(const QString &name, const QString &reason);
+    Q_INVOKABLE bool unban(const QString &name);
+    Q_INVOKABLE bool op(const QString &name);
+    Q_INVOKABLE bool deop(const QString &name);
+    Q_INVOKABLE bool whitelistAdd(const QString &name);
+    Q_INVOKABLE bool whitelistRemove(const QString &name);
     Q_INVOKABLE void setWhitelist(bool enabled);
     // Puts a game rule (`limit` false) or a server limit at `value` into the draft.
     Q_INVOKABLE void changeSetting(bool limit, const QString &key, qint64 value);
     // As changeSetting with the field's `text` (QcAdminSettingsDraft::parsed); false, and the draft
     // unchanged, when it is no value of the setting.
     Q_INVOKABLE bool changeSettingText(bool limit, const QString &key, const QString &text);
+    // The value a game rule (`limit` false) or server limit shows: the draft's, else the server's;
+    // 0 when the server has no such setting.
+    Q_INVOKABLE qint64 valueOf(bool limit, const QString &key) const;
     // Sends each value of the draft; a value stays in it until the server took it, and one notice
     // sums up all answers.
     Q_INVOKABLE void saveSettings();
@@ -162,14 +174,19 @@ public:
     // A backup named `label` (one word; empty for the date).
     Q_INVOKABLE void backup(const QString &label);
     Q_INVOKABLE void stop();
-    Q_INVOKABLE void sendChat(const QString &text);
-    Q_INVOKABLE void runCommand(const QString &line);
+    // Both take the line trimmed; one that is none (isLine) is refused with a warning and returns
+    // false.
+    Q_INVOKABLE bool sendChat(const QString &text);
+    Q_INVOKABLE bool runCommand(const QString &line);
     Q_INVOKABLE void clearOutput();
     Q_INVOKABLE void clearNotice();
 
     // The lines `line` may become by completing its last word (QcAdminCompletion::complete), at
     // most eight.
     Q_INVOKABLE QStringList complete(const QString &line) const;
+    // What Tab makes of `line`: the first completion when it says more than the line (blanks at
+    // either end do not count); empty when there is none, so Tab moves the focus on.
+    Q_INVOKABLE QString tabCompletion(const QString &line) const;
     // Help for the command of `line`: {command, usage, description, next} (QcAdminViews::help);
     // empty when the first word names no command.
     Q_INVOKABLE QVariantMap help(const QString &line) const;
@@ -212,6 +229,9 @@ private:
     void onSettingSaved(const Pending &pending, const QcMsg::AdminResult &result);
     // Sends a request of an action; its answer becomes the notice.
     void act(QcClientAdmin::Kind kind, const QStringList &arguments);
+    // act() on the player `name` with `extra` arguments after it, unless `name` is no name (a
+    // warning, false).
+    bool actOnName(QcClientAdmin::Kind kind, const QString &name, const QStringList &extra = {});
     void onResult(quint32 id);
     void onRefused(QcClientAdmin::Refusal reason, const QString &text);
     void setNotice(Notice kind, const QString &text);

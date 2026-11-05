@@ -1,7 +1,7 @@
 {
     "name": "controls",
     "order": 20,
-    "icon": "stick",
+    "icon": "lever",
     "sections": [
         "keys",
         "mac",

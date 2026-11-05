@@ -129,33 +129,33 @@ private slots:
         QCOMPARE(progressOf(animation), -1.0);
         const QcSwingSpeed slow{.slower = 1};
 
-        animation.tick(qcNoItem, true, slow);
+        animation.tick(qcNoItem, true, slow, -1.0);
         QCOMPARE(progressOf(animation), 0.0);
         for (int cycle = 0; cycle < 3; ++cycle) {
             for (int tick = 1; tick < slow.ticks(); ++tick) {
-                animation.tick(qcNoItem, true, slow);
+                animation.tick(qcNoItem, true, slow, -1.0);
                 QCOMPARE(progressOf(animation), static_cast<double>(tick) / slow.ticks());
             }
-            animation.tick(qcNoItem, true, slow);
+            animation.tick(qcNoItem, true, slow, -1.0);
             QCOMPARE(progressOf(animation), 0.0);
         }
 
         // Faster from now on: the running swing keeps its length, the next is shorter.
         const QcSwingSpeed fast{.faster = 2};
-        animation.tick(qcNoItem, true, fast);
+        animation.tick(qcNoItem, true, fast, -1.0);
         QCOMPARE(progressOf(animation), 1.0 / slow.ticks());
         for (int tick = 2; tick < slow.ticks(); ++tick) {
-            animation.tick(qcNoItem, true, fast);
+            animation.tick(qcNoItem, true, fast, -1.0);
         }
-        animation.tick(qcNoItem, true, fast);
+        animation.tick(qcNoItem, true, fast, -1.0);
         QCOMPARE(progressOf(animation), 0.0);
-        animation.tick(qcNoItem, true, fast);
+        animation.tick(qcNoItem, true, fast, -1.0);
         QCOMPARE(progressOf(animation), 1.0 / fast.ticks());
         QVERIFY(animation.handTimers(0.0).mining);
 
         // Letting go finishes the swing and stops.
         for (int tick = 0; tick < fast.ticks(); ++tick) {
-            animation.tick(qcNoItem, false, fast);
+            animation.tick(qcNoItem, false, fast, -1.0);
         }
         QCOMPARE(progressOf(animation), -1.0);
         QVERIFY(!animation.handTimers(0.0).mining);
@@ -175,18 +175,18 @@ private slots:
         constexpr double length = QcSwingSpeed::baseTicks;
 
         for (int tick = 0; tick < 3; ++tick) {
-            animation.tick(qcNoItem, true, {});
+            animation.tick(qcNoItem, true, {}, -1.0);
         }
         QCOMPARE(progressOf(animation), 2.0 / length);
         // The last frame of the tick before the block breaks, at progress 0.5.
         const double beforeBreak = handPitch(1.0);
 
         // The block broke: one tick without mining, then the next block.
-        animation.tick(qcNoItem, false, {});
+        animation.tick(qcNoItem, false, {}, -1.0);
         QVERIFY(animation.handTimers(0.0).mining);
         QCOMPARE(handPitch(0.0), beforeBreak);
         QVERIFY(qFuzzyCompare(handPitch(0.5) - handPitch(0.0), mining(3.5 / length) - mining(3.0 / length)));
-        animation.tick(qcNoItem, true, {});
+        animation.tick(qcNoItem, true, {}, -1.0);
         QCOMPARE(progressOf(animation), 4.0 / length);
         QVERIFY(animation.handTimers(0.0).mining);
 
@@ -194,7 +194,7 @@ private slots:
         QcLocalAnimation clicked;
         clicked.swing();
         QVERIFY(!clicked.handTimers(0.0).mining);
-        clicked.tick(qcNoItem, true, {});
+        clicked.tick(qcNoItem, true, {}, -1.0);
         QVERIFY(!clicked.handTimers(0.0).mining);
     }
 };

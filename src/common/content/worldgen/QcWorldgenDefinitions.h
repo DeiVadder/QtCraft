@@ -11,6 +11,7 @@
 #include "common/content/worldgen/QcDungeonDefinition.h"
 #include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "common/content/worldgen/QcVegetationDefinition.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QList>
 #include <QString>
@@ -101,6 +102,9 @@ struct QcBiomeDefinition
     int steepSlope = 3;
     /*! Top block of the land (\c {"surface"}, required). */
     QString surfaceBlock;
+    /*! Item the handbook shows for the biome (\c {"icon"}, default \c {surfaceBlock}; decision
+        E-944). */
+    QString icon;
     /*! Block under the surface (\c {"subsurface"}, default \c {surfaceBlock}). */
     QString subsurfaceBlock;
     /*! Blocks of \c {subsurfaceBlock} under the surface before stone (\c {"subsurfaceDepth"},
@@ -176,6 +180,9 @@ struct QcFeatureDefinition
     /*! Trunk block of trees and columns (\c {"trunk"}), the block of plants and pools
         (\c {"block"}). */
     QString trunkBlock;
+    /*! Item the handbook shows for the feature (\c {"icon"}, default \c {trunkBlock} or a
+        liquid's bucket; decision E-944). */
+    QString icon;
     /*! Leaves of a tree's crown (\c {"leaves"}, required for trees). */
     QString leavesBlock;
     /*! Lowest and highest trunk, drawn evenly between them (\c {"minHeight"},
@@ -276,7 +283,7 @@ struct QcColdEdgeSettings
 struct QcTerrainSettings
 {
     /*! Water fills the columns up to just below this height (\c {"seaLevel"}). */
-    int seaLevel = 62;
+    int seaLevel = QcWorld::seaLevel;
     /*! The ground's block below the soil (\c {"stone"}, required). */
     QString stoneBlock;
     /*! The sea's block (\c {"water"}, required). */

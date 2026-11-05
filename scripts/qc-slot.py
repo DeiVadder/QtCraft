@@ -20,6 +20,13 @@ Usage:
       other; QC_SLOT_ID and QC_SLOT_KIND) it runs the command directly. This is the entry point for
       agents. Example (as a background command; the agent is woken when it returns):
         scripts/qc-slot.py run --kind build --who "t1 build" -- cmake --build --preset debug
+      With --log auto (or --log <file>) the command's output (stdout and stderr together) also goes
+      to a log file whose path is printed first: auto names it <log dir>/<checkout>/<who>-<time>-<pid>.log,
+      the log dir is QC_LOG_DIR, else $TMPDIR/qtcraft-logs, so agents of several worktrees sharing one
+      scratchpad never write into the same file (package 79.75).
+  scripts/qc-slot.py log-path [--who <label>]
+      Prints such a fresh log path (folder created) for a command that redirects its output itself:
+        log=$(scripts/qc-slot.py log-path --who "t1 ctest") && ctest ... >"$log" 2>&1
   scripts/qc-slot.py acquire --kind <kind> --who <label> [--pid p | --hold s] [--jobs n] [--min-jobs n] [--timeout s]
       Waits for the slot and prints it as shell exports (QC_SLOT_ID, QC_SLOT_JOBS, QC_BUILD_JOBS,
       QC_TEST_JOBS, for a bench QC_BENCH_LOCK_PID). The slot stays held until `release --id`, until
@@ -1469,12 +1476,49 @@ def unavailable(args):
     return False
 
 
-def run_child(command, env, started=None):
+def checkout_name():
+    """The name of the checkout (worktree) the caller works in: its top folder, else the current one."""
+    try:
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True,
+                             check=False).stdout.strip()
+    except OSError:
+        top = ""
+    return os.path.basename(top or os.getcwd())
+
+
+def fresh_log_path(who):
+    """A log path no other run uses: <QC_LOG_DIR or $TMPDIR/qtcraft-logs>/<checkout>/<who>-<time>-<pid>.log
+    (folder created). The checkout folder keeps worktrees apart, time and pid keep runs apart. None
+    (with a message) when the folder cannot be created."""
+    root = os.environ.get("QC_LOG_DIR") or os.path.join(os.environ.get("TMPDIR") or "/tmp", "qtcraft-logs")
+    folder = os.path.join(root, checkout_name())
+    try:
+        os.makedirs(folder, exist_ok=True)
+    except OSError as error:
+        print(f"qc-slot: cannot create the log folder {folder}: {error.strerror}", file=sys.stderr)
+        return None
+    label = re.sub(r"[^A-Za-z0-9._-]+", "-", who).strip("-") or "run"
+    return os.path.join(folder, f"{label}-{time.strftime('%Y%m%d-%H%M%S')}-{os.getpid()}.log")
+
+
+def run_logged(command, env, log_path, started=None):
+    """run_child with the command's stdout and stderr copied to our stdout and to log_path."""
+    try:
+        log = open(log_path, "ab")
+    except OSError as error:
+        print(f"qc-slot: cannot write the log {log_path}: {error}", file=sys.stderr)
+        return 2
+    with log:
+        return run_child(command, env, started, log)
+
+
+def run_child(command, env, started=None, log=None):
     """Runs the command, passing INT, TERM and HUP on; returns its exit code in shell form.
 
     The handlers are in place before the command starts; a signal that arrives before it exists is
     passed on right after the start, so no signal leaves the command behind as an orphan. started(pid)
-    is called once the command runs.
+    is called once the command runs. With a log (binary file) the command's stdout and stderr go
+    through a pipe to our stdout and to the log.
     """
     child = None
     pending = []
@@ -1487,8 +1531,9 @@ def run_child(command, env, started=None):
 
     for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
         signal.signal(signum, forward)
+    output = {"stdout": subprocess.PIPE, "stderr": subprocess.STDOUT} if log else {}
     try:
-        child = subprocess.Popen(command, env=env)
+        child = subprocess.Popen(command, env=env, **output)
     except OSError as error:
         print(f"qc-slot: cannot run {command[0]}: {error}", file=sys.stderr)
         return 127
@@ -1496,8 +1541,30 @@ def run_child(command, env, started=None):
         child.send_signal(signum)
     if started:
         started(child.pid)
+    if log:
+        copy_output(child.stdout, log)
     code = child.wait()
     return code if code >= 0 else 128 - code
+
+
+def copy_output(pipe, log):
+    """Copies the pipe to our stdout and the log until it closes; interrupted reads (a forwarded
+    signal) go on."""
+    while True:
+        try:
+            chunk = os.read(pipe.fileno(), 65536)
+        except InterruptedError:
+            continue
+        if not chunk:
+            break
+        log.write(chunk)
+        log.flush()
+        try:
+            sys.stdout.buffer.write(chunk)
+            sys.stdout.buffer.flush()
+        except (BrokenPipeError, ValueError):
+            pass
+    pipe.close()
 
 
 class RunLease:
@@ -1607,8 +1674,13 @@ def command_run(args):
     if not command:
         print("qc-slot run: no command after --", file=sys.stderr)
         return 2
+    if args.log:
+        args.log_path = fresh_log_path(args.who) if args.log == "auto" else os.path.abspath(args.log)
+        if not args.log_path:
+            return 2
+        print(f"qc-slot: log {args.log_path}", file=sys.stderr)
     if covered(os.environ.get("QC_SLOT_ID"), os.environ.get("QC_SLOT_KIND"), args.kind):
-        return run_child(command, dict(os.environ))
+        return start_command(args, command, dict(os.environ))
     refusal = nesting_refusal(args.kind)
     if refusal:
         print(refusal, file=sys.stderr)
@@ -1625,9 +1697,16 @@ def command_run(args):
           file=sys.stderr)
 
     lease = RunLease(sock, args, grant)
-    code = run_child(command, {**os.environ, **job_env(grant)}, lease.started)
+    code = start_command(args, command, {**os.environ, **job_env(grant)}, lease.started)
     lease.release(code)
     return code
+
+
+def start_command(args, command, env, started=None):
+    """Runs the command of `run`, into the log of --log when one is asked for."""
+    if args.log:
+        return run_logged(command, env, args.log_path, started)
+    return run_child(command, env, started)
 
 
 def run_fallback(args, command):
@@ -1637,7 +1716,7 @@ def run_fallback(args, command):
     grant = {"id": "fallback", "kind": args.kind, "jobs": jobs, "holder_pid": os.getpid()}
     lock = take_fallback_bench_lock(args.who) if args.kind == "bench" else None
     try:
-        return run_child(command, {**os.environ, **job_env(grant)})
+        return start_command(args, command, {**os.environ, **job_env(grant)})
     finally:
         if lock:
             drop_fallback_bench_lock(*lock)
@@ -1832,7 +1911,11 @@ def parse(argv):
             command.add_argument("--pid", type=int, help="the slot ends with this process")
             command.add_argument("--hold", type=float, default=7200, help="seconds the slot stays without --pid")
         if name == "run":
+            command.add_argument("--log", metavar="auto|FILE", help="also write the command's output (stdout "
+                                 "and stderr) to FILE, or with auto to a fresh file per checkout and run")
             command.add_argument("command", nargs=argparse.REMAINDER)
+    log_path = sub.add_parser("log-path")
+    log_path.add_argument("--who", default=f"run {os.path.basename(os.getcwd())}")
     return parser.parse_args(argv)
 
 
@@ -1840,6 +1923,12 @@ def main(argv):
     args = parse(argv)
     if args.op == "serve":
         return Server(slot_dir()).run()
+    if args.op == "log-path":
+        path = fresh_log_path(args.who)
+        if not path:
+            return 2
+        print(path)
+        return 0
     handlers = {"run": command_run, "acquire": command_acquire, "wait": command_wait, "release": command_release,
                 "status": command_status, "stop": command_stop}
     return handlers[args.op](args)

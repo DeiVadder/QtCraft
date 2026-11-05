@@ -119,7 +119,7 @@ void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentReg
     const double yaw = qDegreesToRadians(static_cast<double>(intent.yaw));
     const double pitch = qDegreesToRadians(static_cast<double>(intent.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
-    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, m_view.prediction.eyeHeight(), 0.0};
 
     const QcItemDefinition *held = m_view.inventory.heldDefinition(content);
     m_target = QcRaycast::cast(world, eye, direction, QcRaycast::playerReach,
@@ -248,7 +248,18 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
 
 void QcHandActions::tickLauncher(const QcContentRegistry &content, double serverTicks)
 {
+    const bool wasDrawing = m_launcher.drawing();
     m_launcher.tick(m_view.inventory.heldDefinition(content), m_view.inventory.inventory().selectedHotbarSlot(), serverTicks);
+    if (wasDrawing && !m_launcher.drawing()) {
+        m_send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
+    }
+}
+
+void QcHandActions::dropDraw()
+{
+    if (m_launcher.release()) {
+        m_send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
+    }
 }
 
 bool QcHandActions::permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const
@@ -300,7 +311,7 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
     const std::optional<QcBlockId> targetBlock = m_target ? world.blockAt(m_target->block) : std::nullopt;
     const QcBlockDefinition *targetDefinition = targetBlock ? &content.block(*targetBlock) : nullptr;
     // Out of the server's reach (QcRaycast::isWithinReach) a block does not react, as on the server.
-    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, m_view.prediction.eyeHeight(), 0.0};
     const bool opensScreen = m_target && reactsToUse(targetDefinition, m_view.prediction.intent().sneak) && QcRaycast::isWithinReach(eye, m_target->block);
     if (const HandEffect onEntity = useOnEntity(content, item); onEntity != HandEffect::None) {
         return onEntity;
@@ -378,7 +389,7 @@ QList<QcMsg::BlockUpdate> QcHandActions::placementForecast(const QcClientWorld &
     }
 
     const QcBlockRules::Aim aim{target.block, target.face, hit, intent.yaw, intent.pitch};
-    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, m_view.prediction.eyeHeight(), 0.0};
     return QcBlockForecast::placing(world, *item, aim, eye, livingBodies(content));
 }
 

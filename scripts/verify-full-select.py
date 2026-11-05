@@ -103,7 +103,8 @@ def dependants(root, changed):
 
 def tidy_sources(root, files):
     """The .cpp files clang-tidy and clazy get: each .cpp, and the .cpp of the same name of a header
-    (scripts/static-analysis.sh analyses a header through it)."""
+    (scripts/static-analysis.sh analyses a header through it; a header without one through a built
+    .cpp that includes it, which the selection holds anyway as a dependant)."""
     sources = set()
     for path in files:
         if path.endswith(".cpp"):

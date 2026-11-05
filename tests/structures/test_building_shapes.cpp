@@ -265,10 +265,10 @@ private slots:
         // On the top or bottom of a block: on the far side of the cell as the player looks.
         for (const auto &[yaw, facing] : {std::pair{0.0F, u"north"_s}, std::pair{90.0F, u"east"_s}, std::pair{180.0F, u"south"_s},
                                           std::pair{270.0F, u"west"_s}}) {
-            const std::optional<QcBlockRules::Placement> placed = QcBlockRules::placement(m_server->world(), slab, {base, QcBlockFace::Up, {0.5, 1, 0.5}, yaw, -30.0F});
+            const std::optional<QcPlacedBlock> placed = QcBlockRules::placement(m_server->world(), slab, {base, QcBlockFace::Up, {0.5, 1, 0.5}, yaw, -30.0F});
             QVERIFY(placed);
             QCOMPARE(placed->pos, top);
-            QCOMPARE(m_content->property(placed->state, u"facing"_s), facing);
+            QCOMPARE(m_content->property(placed->block, u"facing"_s), facing);
         }
 
         // Placed into a cell whose vertical slab faces the other way, both fill it; the same way or
@@ -276,10 +276,10 @@ private slots:
         m_server->world().setBlock(top, m_content->withProperty(slab, u"facing"_s, u"north"_s));
         const QcBlockPos south = top.offset(0, 0, 1);
         m_server->world().setBlock(south, id("qtcraft:stone"));
-        const std::optional<QcBlockRules::Placement> filled = QcBlockRules::placement(m_server->world(), slab, {south, QcBlockFace::North, {0.5, 0.5, 0}, 0.0F, 0.0F});
+        const std::optional<QcPlacedBlock> filled = QcBlockRules::placement(m_server->world(), slab, {south, QcBlockFace::North, {0.5, 0.5, 0}, 0.0F, 0.0F});
         QVERIFY(filled);
         QCOMPARE(filled->pos, top);
-        QCOMPARE(m_content->stateName(filled->state), u"qtcraft:stone_vertical_slab[double=true,facing=north]"_s);
+        QCOMPARE(m_content->stateName(filled->block), u"qtcraft:stone_vertical_slab[double=true,facing=north]"_s);
 
         m_server->world().setBlock(top, m_content->withProperty(slab, u"facing"_s, u"south"_s));
         QVERIFY(!QcBlockRules::placement(m_server->world(), slab, {south, QcBlockFace::North, {0.5, 0.5, 0}, 0.0F, 0.0F}));

@@ -48,7 +48,7 @@ ModalDialog {
         const next = proceed;
         proceed = null;
         if (next)
-            next(reasonField.text.trim());
+            next(reasonField.text);
     }
     onRejected: proceed = null
 

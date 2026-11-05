@@ -24,7 +24,8 @@ struct QcHandbookChapter
     QString titleKey;
     /*! Chapters are listed by this number, then by name. */
     int order = 100;
-    /*! Item whose icon stands for the chapter; empty for none. */
+    /*! Item, or else creature (decision E-944), whose icon stands for the chapter; empty for
+        none. */
     QString iconItem;
     /*! The section names, in order (see the struct). */
     QStringList sections;

@@ -355,6 +355,22 @@ private slots:
             QcContentRegistry registry;
             QVERIFY2(!QcAdvancementSerializer::read(in, registry), inGroup ? "requirement group" : "criteria");
         }
+
+        // A requirement group must name criteria of the advancement, as the parser makes them.
+        const auto readsGroup = [](const QStringList &group) {
+            QByteArray content;
+            QDataStream sync(&content, QIODevice::WriteOnly);
+            sync.setVersion(QDataStream::Qt_6_8);
+            sync << quint32{1} << u"qtcraft:iron"_s << QString() << u"qtcraft:iron_ingot"_s << u"t"_s << u"d"_s << QString() << quint8{0} << false;
+            sync << QStringList{u"iron"_s} << quint32{1} << group;
+            QDataStream in(content);
+            in.setVersion(QDataStream::Qt_6_8);
+            QcContentRegistry registry;
+            return QcAdvancementSerializer::read(in, registry).has_value();
+        };
+        QVERIFY(readsGroup({u"iron"_s}));
+        QVERIFY(!readsGroup({u"gold"_s}));
+        QVERIFY(!readsGroup({}));
     }
 
     void minYAboveMaxYIsRefused()

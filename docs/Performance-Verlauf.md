@@ -2882,3 +2882,35 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Tick p99:** crowd 0,293 → 0,351 ms (+20 %, Streuung 12 %), Signal-Stationen +4 … +12 % bei 2–32 % Streuung, übrige ±3 %.
 - **Speicher:** −3 … +0,7 %.
 - **Bewertung:** Im Wesen-lastigen crowd kostet die breitere Pfadsuche im p99 rund 0,06 ms je Tick – absolut winzig (Budget 50 ms), im Mittel +4 %. Hingenommen; die Debug-Messung des Pakets (geschlossen +2 %) passt dazu.
+
+## Windows-Desktop 2026-11-04 (Zeile 79.89)
+
+Stand `0ea6db0`, Release, D3D11, RTX 5060 Ti, i7-14700K, 2560 × 1440 mit 143 Hz, Sichtweite 8, Median aus 3 Läufen zu 10 s, temporäre Kopie von `bench.sh`, ohne Sperre, Overlay und Steam liefen mit. Ohne VSync (`QSG_NO_VSYNC=1`) liegt die Bildzeit in allen Serien bei rund 2,4 ms (p99 rund 3,5 ms), Ursache offen; verglichen wird deshalb nur die GPU-Zeit.
+
+| Serie | Fenster | stand | sprint | showcase | crowd |
+|---|---|---|---|---|---|
+| klassisch, GPU ms | 1280 × 720 | 0,230 | 0,240 | 0,105 | 0,304 |
+| realistisch, GPU ms | 1280 × 720 | 0,949 | 1,006 | 0,351 | 1,100 |
+| klassisch, GPU ms | 2560 × 1392 | 0,423 | 0,465 | 0,335 | 0,609 |
+| realistisch, GPU ms | 2560 × 1392 | 1,556 | 1,774 | 0,898 | 1,829 |
+| klassisch, GPU ms | Borderless 2560 × 1440 | 0,413 | 0,462 | 0,335 | 0,609 |
+| klassisch, GPU ms | Vollbild 2560 × 1440 | 0,426 | 0,465 | 0,337 | 0,644 |
+
+Server-Tick im Mittel 0,55–0,96 ms. Mit VSync zeigt die Bildzeit nur die Monitorfrequenz (6,94 ms).
+
+## Release 1.0.0: `release/1.0` gegen `v1.0.0-rc.4`, Fenster-A/B und Headless-A/B (2026-11-04)
+
+- **Stände:** `rc4` = `v1.0.0-rc.4` (`89042db`), `rel10` = `release/1.0` beim Schnitt (`33bdebb`; 82 Commits, darunter 79.47/79.49 Main.qml-Aufteilung, 79.81 Tintenfisch, 79.80 Fisch-Wege, 79.86 Bogen, 79.88 feste Item-Drops, 79.90 HD-Werkzeuge), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv (alle Szenarien 6 Runden, Grund: Streuung von Tick und Render-CPU), Sicht 8. Zweite Reihe gleich mit `TEXTURE_PACKS=builtin:qtcraft_hd_64` für beide; dort 31 von 48 Läufen `loaded=1` (Parallels-VM und `ApplicationsStorageExtension` liefen mit, Last 4–5), die erste Reihe ruhig (2 von 48).
+- **Bildzeit:** Mittel 8,33 ms in allen Szenarien und beiden Reihen (120 Hz gehalten), p99 9,7–10,6 ms; Unterschied rc4 → rel10 −1,8 … +2,4 %.
+- **Fenster, Basisspiel (Mittel aus 6 Runden, rc4 → rel10):**
+
+| Szenario | p99 ms | GPU ms | Render-CPU ms | GUI-CPU ms | Spitze MiB | Draw-Calls |
+|---|---|---|---|---|---|---|
+| stand | 9,96 → 9,99 | 1,56 → 1,52 (−3 %) | 1,25 → 1,14 (−9 %) | 0,52 → 0,49 (−5 %) | 465 → 465 | 557 → 557 |
+| sprint | 10,32 → 10,57 | 2,28 → 2,49 (+9 %, Streuung 41 %) | 1,27 → 1,22 (−4 %) | 0,45 → 0,44 | 488 → 487 | 604 → 604 |
+| showcase | 10,18 → 10,23 | 0,75 → 0,77 (+3 %) | 0,95 → 0,93 | 0,39 → 0,38 (−4 %) | 363 → 362 | 300 → 348 (+16 %) |
+| crowd | 10,09 → 10,09 | 2,69 → 2,59 (−4 %) | 1,17 → 1,20 (+2 %) | 1,03 → 1,11 (+8 %) | 473 → 478 (+1 %) | 561 → 563 |
+
+- **Fenster, HD 64 (rc4 → rel10):** GPU stand +3 %, sprint −15 %, showcase −2 %, crowd −18 % (Streuung 38–74 %); Render-CPU −10 … +11 % (crowd +11 % bei 12–47 % Streuung); GUI-CPU crowd 0,96 → 1,09 ms (+13 %), sonst −6 … +1 %; Spitzenspeicher −0,2 … +2,0 %. Die Änderungen an der Item-Darstellung (79.88, 79.90) zeigen keine Kosten in GPU oder Speicher.
+- **Headless `@server` (60 Spielsekunden, adaptiv; rc4 → rel10, Tick Ø / p99):** crowd 0,229 → 0,225 / 0,388 → 0,383 ms; gravel-collapse 0,544 → 0,547 / 1,58 → 1,56; farm 0,009 → 0,009; farm-seeds 0,021 → 0,021; explore 0,308 → 0,309 / 1,49 → 1,46; Signal-Stationen components 0,094 → 0,110 (+17 %), machines 0,092 → 0,107 (+17 %), farm 0,098 → 0,120 (+22 %) bei 2–12 % Streuung. Speicher −1,5 … +1,9 %.
+- **Bewertung:** kein Rückschritt über der 10-%-Schwelle in Bildzeit, GPU oder Speicher. Über der Schwelle: (1) Signal-Stationen headless +0,015 … +0,022 ms je Tick, ganz in der Phase Wesen (0,053–0,058 → 0,068–0,076 ms) bei zwei Wesen mehr in der Szene (47–52 → 49–54; Tintenfisch/Fische der Showcase, 79.80/79.81), absolut winzig (Budget 50 ms); (2) GUI-CPU crowd +8 % (ruhig) bzw. +13 % (HD, unter Last), +0,08 … +0,12 ms je Bild, dieselbe bekannte Reserve wie seit 79.14a (Entity-Meshing auf dem GUI-Thread), Bildzeit unberührt; (3) showcase +48 Draw-Calls ohne messbare GPU- oder CPU-Kosten. Alles hingenommen; keine Fixes nötig.

@@ -128,7 +128,7 @@ private slots:
             QcNetworkClient::Request threaded = request(server->listeningPort(), u"Ivy"_s);
             QCOMPARE(threaded.tickMode, QcSessionTickMode::Threaded);
             client.join(threaded);
-            QVERIFY2(joined.wait(timeoutMs), qPrintable(u"join %1: %2"_s.arg(i).arg(failed.isEmpty() ? u"no answer"_s : failed.first().first().toString())));
+            QVERIFY2(joined.wait(timeoutMs), qPrintable(u"join %1: %2"_s.arg(i).arg(failed.isEmpty() ? u"no answer"_s : failed.first().first().value<QcJoinFailure>().reason)));
 
             std::unique_ptr<QcClientSession> session = client.takeSession();
             QVERIFY(session);
@@ -153,7 +153,8 @@ private slots:
         client.join(request(server->listeningPort(), u"Bob"_s, u"wrong"_s));
         QVERIFY(failed.wait(timeoutMs));
         QCOMPARE(joined.count(), 0);
-        QCOMPARE(failed.first().at(0).toString(), u"Wrong server password"_s);
+        QCOMPARE(failed.first().at(0).value<QcJoinFailure>().reason, u"Wrong server password"_s);
+        QCOMPARE(failed.first().at(0).value<QcJoinFailure>().kind, QcJoinFailure::Kind::LoginRefused);
         QCOMPARE(failed.first().at(1).value<QcMsg::Disconnect>().key, u"Wrong server password"_s);
         QVERIFY(!client.takeSession());
 
@@ -175,7 +176,7 @@ private slots:
         QSignalSpy failed(&client, &QcNetworkClient::failed);
         client.join(request(port, u"Cid"_s));
         QVERIFY(failed.wait(timeoutMs));
-        QVERIFY(!failed.first().at(0).toString().isEmpty());
+        QVERIFY(!failed.first().at(0).value<QcJoinFailure>().reason.isEmpty());
         QVERIFY(failed.first().at(1).value<QcMsg::Disconnect>().key.isEmpty());
         QCOMPARE(client.stage(), QcNetworkClient::Stage::Idle);
     }
@@ -193,6 +194,29 @@ private slots:
         QCOMPARE(joined.count() + failed.count(), 0);
         QCOMPARE(client.stage(), QcNetworkClient::Stage::Idle);
         QVERIFY(server->shutdown().has_value());
+    }
+
+    // A server that hangs up after the Hello without a Disconnect: the step is "server closed",
+    // with its own translated reason (decision E-964).
+    void aServerClosingWithoutAWordIsReported()
+    {
+        QcTlsListener listener(QcTestTls::credentials());
+        QVERIFY(listener.listen(QHostAddress::LocalHost, 0));
+        QcNetworkClient client;
+        QSignalSpy failed(&client, &QcNetworkClient::failed);
+        client.join(request(listener.serverPort(), u"Eve"_s));
+        QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+        QTcpSocket *peer = listener.nextPendingConnection();
+        QVERIFY(peer);
+        QcTlsListener::startEncryption(peer);
+        QTRY_VERIFY_WITH_TIMEOUT(peer->bytesAvailable() > 0, timeoutMs);
+        peer->disconnectFromHost();
+
+        QVERIFY(failed.wait(timeoutMs));
+        const QcJoinFailure failure = failed.first().at(0).value<QcJoinFailure>();
+        QCOMPARE(failure.kind, QcJoinFailure::Kind::ServerClosed);
+        QCOMPARE(failure.reason, QcJoinFailure::reasonFor(QcJoinFailure::Kind::ServerClosed, u"127.0.0.1"_s));
+        QVERIFY(!failure.hint().isEmpty());
     }
 
     void cancellingWhileLoggingInClosesTheSession()
@@ -278,7 +302,7 @@ private slots:
         QCOMPARE(changed.count(), 1);
         QCOMPARE(changed.first().first().toString(), u"127.0.0.1:%1"_s.arg(address.port));
         QCOMPARE(client.serverFingerprint(), otherFingerprint);
-        const QString reason = failed.first().first().toString();
+        const QString reason = failed.first().first().value<QcJoinFailure>().reason;
         QVERIFY2(reason.contains(u"another certificate"_s) && reason.contains(QcTlsFingerprint::display(fingerprint)) &&
                      reason.contains(QcTlsFingerprint::display(otherFingerprint)),
                  qPrintable(reason));
@@ -315,7 +339,7 @@ private slots:
         client.join(unpinned);
         QVERIFY(failed.wait(timeoutMs));
         QCOMPARE(joined.count(), 0);
-        const QString reason = failed.first().first().toString();
+        const QString reason = failed.first().first().value<QcJoinFailure>().reason;
         QVERIFY2(reason.contains(u"cannot check the server's certificate"_s), qPrintable(reason));
         QVERIFY(!client.takeSession());
         QVERIFY(server->shutdown().has_value());

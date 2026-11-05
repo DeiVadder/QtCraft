@@ -52,7 +52,7 @@ void QcVillagePopulation::spawnVillagers(QcServerWorld &world, QcChunkPos pos, c
 {
     const std::shared_ptr<const QcVillagePlan> plan = world.generator().villageFor(pos);
     QcVillage *village = plan && (plan->alwaysLivedIn || !onlyAlwaysLivedIn) ? world.villages().find(plan->id) : nullptr;
-    const std::optional<int> type = village ? m_content->villagerOfStyle(village->style) : std::nullopt;
+    const std::optional<QcCreatureKindId> type = village ? m_content->villagerOfStyle(village->style) : std::nullopt;
     if (!type) {
         return;
     }

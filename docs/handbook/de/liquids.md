@@ -50,4 +50,4 @@ Fließt bis zu 7 Blöcke von einer Quelle; zwei Quellen bilden eine neue. Mit ei
 
 **Wesen, die darauf erscheinen**
 
-[Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon)
+[Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Tintenfisch](creatures.md#mob-qtcraft-squid)

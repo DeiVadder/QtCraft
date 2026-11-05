@@ -41,8 +41,8 @@ struct QcRoundTripSummary
     so the list does not go out again for noise. */
 struct QcListedLatency
 {
-    /*! \a ms rounded to what the displays show (QcRoundTripSummary::text): 0.1 ms below 10 ms,
-        whole milliseconds above, at most QcMsg::LatencyProbe::maxReportedUs. */
+    /*! Returns \a ms rounded to what the displays show (QcRoundTripSummary::text): 0.1 ms below
+        10 ms, whole milliseconds above, at most QcMsg::LatencyProbe::maxReportedUs. */
     static qint32 quantizedUs(double ms);
     /*! Returns the signal bars of \a latencyUs as in the reference: 5 below 150 ms, 4 below 300,
         3 below 600, 2 below 1000, else 1; 0 while unknown. */

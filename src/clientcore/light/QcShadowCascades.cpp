@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <numbers>
 
 namespace {
 
@@ -61,6 +62,21 @@ std::optional<Basis> basis(QVector3D toLight)
     return Basis{right, QVector3D::crossProduct(light, right), light};
 }
 
+QVector3D stepped(QVector3D toLight)
+{
+    if (!isFinite(toLight) || toLight.lengthSquared() < 1e-12f) {
+        return toLight;
+    }
+    const QVector3D unit = toLight.normalized();
+    const double z = std::clamp(snapped(static_cast<double>(unit.z()), 1.0 / tiltSteps), -1.0, 1.0);
+    const double across = std::sqrt(1.0 - z * z);
+    if (across < 1e-9) {
+        return {0.0f, 0.0f, static_cast<float>(z)};
+    }
+    const double angle = snapped(std::atan2(static_cast<double>(unit.y()), static_cast<double>(unit.x())), 2.0 * std::numbers::pi / lightSteps);
+    return {static_cast<float>(across * std::cos(angle)), static_cast<float>(across * std::sin(angle)), static_cast<float>(z)};
+}
+
 double snapped(double value, double step)
 {
     return std::floor(value / step + 0.5) * step;
@@ -77,11 +93,14 @@ QcShadowCascade fit(const Basis &axes, const QcVec3 &camera, QVector3D forward, 
     const QcVec3 world = camera + QcVec3{middle.x(), middle.y(), middle.z()};
     const QcVec3 right{axes.right.x(), axes.right.y(), axes.right.z()};
     const QcVec3 up{axes.up.x(), axes.up.y(), axes.up.z()};
+    const QcVec3 towards{axes.toLight.x(), axes.toLight.y(), axes.toLight.z()};
     const double x = world.dot(right);
     const double y = world.dot(up);
+    const double z = world.dot(towards);
     const auto dx = static_cast<float>(snapped(x, texel) - x);
     const auto dy = static_cast<float>(snapped(y, texel) - y);
-    const QVector3D centre = middle + axes.right * dx + axes.up * dy;
+    const auto dz = static_cast<float>(snapped(z, texel) - z);
+    const QVector3D centre = middle + axes.right * dx + axes.up * dy + axes.toLight * dz;
 
     QMatrix4x4 view;
     view.lookAt(centre + axes.toLight * (radius + casterReach), centre, axes.up);
@@ -110,8 +129,10 @@ QcShadowLight light(const QcSkyState &sky)
         return result;
     }
 
-    result.toLight = direction.normalized();
-    const float height = result.toLight.y();
+    const QVector3D continuous = direction.normalized();
+    result.toLight = stepped(continuous);
+    result.sun = continuous;
+    const float height = continuous.y();
     const double overcast = std::isfinite(sky.overcast) ? std::clamp(sky.overcast, 0.0, 1.0) : 1.0;
     const float clear = 1.0f - static_cast<float>(overcast);
     result.strength = smoothStep(lowestHeight, fullHeight, height) * clear * (day ? 1.0f : moonShare);

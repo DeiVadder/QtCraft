@@ -65,19 +65,34 @@ check() {
 }
 
 world="--play --world-type flat --view-distance 2"
+# item_shown <run> <name>: whether a logged item is shown ("yes"/"no", empty when not logged).
+item_shown() {
+    grep "Item $2: x" "$DATA/$1.log" | tail -1 | sed -n 's/.* visible \([a-z]*\).*/\1/p'
+}
+# expect_shown <run> <name> <yes|no>: fails the test when the item's visibility differs.
+expect_shown() {
+    if [ "$(item_shown "$1" "$2")" != "$3" ]; then
+        echo "$1: $2 is not shown as expected ($3): $(grep "Item $2:" "$DATA/$1.log" | tail -1)"
+        failed=1
+    fi
+}
+# The first start (no world yet) offers its links: handbook, multiplayer, character (HM-4).
+LOG_ITEMS=firstStartLinks
 check menu
+LOG_ITEMS=
+expect_shown menu firstStartLinks yes
 check newworld --overlay "@300 open:newWorldPage"
 check worldoptions --overlay "@300 open:worldOptionsPage"
 # "New world" of a normal world (draft D.3 A, decision E-930): the game mode stands in the page's
 # view without scrolling (its bottom above the form's), the map stands in its own column right of
 # it, and the pad walks the form in reading order: name, type, seed, the die, game mode, keeping the
-# inventory, the world options, then down to "Create and play"; the world options page with its
+# inventory, the generator version, the world options, then down to "Create and play"; the world options page with its
 # full map and sliders fits as well.
 MENU_WORLD_TYPE=terrain
 LOG_ITEMS=newWorldForm,gameModeChoice,newWorldMap
 check newworld-terrain --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
     --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
-    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
 LOG_ITEMS=
 # item_bottom <run> <name>: the bottom edge of a logged item in the window.
 item_bottom() {
@@ -96,7 +111,7 @@ if ! awk -v mode="$mode_bottom" -v form="$form_bottom" 'BEGIN { exit !(mode > 0 
     failed=1
 fi
 order=$(grep 'padFocus' "$DATA/newworld-terrain.log" | sed 's/^padFocus: //' | tr '\n' ' ')
-if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: moreWorldOptions createWorldButton " ]; then
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
     echo "newworld-terrain: the pad's focus does not walk the form in reading order: $order"
     failed=1
 fi
@@ -117,6 +132,21 @@ check creative $world --game-mode creative --overlay creative
 check furnace $world --look 0,-89 --chat "/give raw_iron 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
 # shellcheck disable=SC2086
 check chest $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ chest" --overlay chest
+# The machines in the common frame (stage 76.2-e): the key hints are shown and end inside it.
+LOG_ITEMS=slotFrame,slotKeyHints
+# shellcheck disable=SC2086
+check anvil $world --look 0,-89 --chat "/give iron_sword" --chat "/setblock ~ ~-1 ~ anvil" --overlay anvil
+LOG_ITEMS=
+expect_shown anvil slotKeyHints yes
+if [ "$(item_bottom anvil slotKeyHints)" -gt "$(item_bottom anvil slotFrame)" ] 2>/dev/null; then
+    echo "anvil: the key hints end below the frame"
+    failed=1
+fi
+# shellcheck disable=SC2086
+check enchanting $world --look 0,-89 --chat "/give lapis_lazuli 5" --chat "/xp add Player 30 levels" \
+    --chat "/setblock ~ ~-1 ~ enchanting_table" --overlay enchanting
+# shellcheck disable=SC2086
+check stonecutter $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ stonecutter" --overlay "@2500 key:use"
 # shellcheck disable=SC2086
 check trade $world --look 0,-20 --chat "/summon villager 1 noai" --chat "/profession smith" --overlay trade
 # shellcheck disable=SC2086
@@ -143,8 +173,17 @@ check lan $world --overlay lan
 check players $world --overlay players
 # shellcheck disable=SC2086
 check chat $world --overlay chat
+# The handbook's facts with the technical ones folded away until "Technical" opens them, and its
+# key hints instead of a help sentence (stage 76.2-f).
+LOG_ITEMS=handbookFacts,handbookTechnicalFacts,handbookKeyHints
 # shellcheck disable=SC2086
 check handbook $world --handbook block:qtcraft:furnace
+check handbook-technical --handbook block:qtcraft:furnace --overlay "@600 click:handbookTechnical"
+LOG_ITEMS=
+expect_shown handbook handbookFacts yes
+expect_shown handbook handbookKeyHints yes
+expect_shown handbook handbookTechnicalFacts no
+expect_shown handbook-technical handbookTechnicalFacts yes
 # shellcheck disable=SC2086
 check death $world --chat "/kill"
 # The sign's editor on ScreenFrame with its head (stage 76.2-d) and the message screen of the

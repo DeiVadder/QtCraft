@@ -18,6 +18,8 @@ AbstractButton {
 
     // One map of QcEnchantingController::offers.
     required property var offerData
+    // The item the price is paid in besides levels (EnchantingController.lapisItem).
+    required property string lapisItem
     readonly property bool exists: offerData.levelCost > 0
     readonly property string inkRole: enabled ? "ink" : "inkDisabled"
 
@@ -74,7 +76,7 @@ AbstractButton {
                 anchors.centerIn: parent
                 width: Ui.size.icon
                 height: Ui.size.icon
-                source: ItemIcons.source("qtcraft:lapis_lazuli", ItemIcons.generation)
+                source: ItemIcons.source(offer.lapisItem, ItemIcons.generation)
                 smooth: false
                 opacity: offer.enabled ? 1.0 : Ui.disabledOpacity
             }
@@ -86,7 +88,6 @@ AbstractButton {
                 color: Theme.text
                 style: Text.Outline
                 styleColor: Theme.textOutline
-                font.family: Ui.pixelFont.name
                 font.pixelSize: Ui.type.body
             }
         }
@@ -142,7 +143,7 @@ AbstractButton {
             text: offer.offerData.levelCost
             available: offer.enabled
             missing: !offer.enabled
-            onParchment: true
+            parchment: true
         }
     }
 }

@@ -6,12 +6,14 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// A message over the whole window while a world loads or after it could not start (Main.qml,
+// A message over the whole window after a world could not start or save (Main.qml,
 // GameController.statusText), on ScreenFrame like every screen; "Back to menu" or "Cancel" below it
 // when there is a way back. --overlay message:<text> shows one for screenshots.
 Rectangle {
     id: screen
 
+    // The key table (GameController.settings.keys): Esc goes back through it.
+    required property KeyControls keys
     property alias text: message.text
     property bool showBackButton
     property string backText: qsTr("Back to menu")
@@ -22,7 +24,7 @@ Rectangle {
     focus: visible
     onVisibleChanged: if (visible) forceActiveFocus()
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && screen.showBackButton)
+        if (screen.showBackButton && screen.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.backRequested();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -42,7 +44,6 @@ Rectangle {
             Label {
                 id: message
 
-                objectName: "messageText"
                 Layout.fillWidth: true
                 // The text may hold a server's reason.
                 textFormat: Text.PlainText

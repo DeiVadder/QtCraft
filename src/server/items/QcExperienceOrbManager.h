@@ -5,6 +5,7 @@
 
 #include "server/core/QcServerLimits.h"
 #include "server/entities/QcExperienceOrb.h"
+#include "server/items/QcPickupPlayer.h"
 
 #include <QHash>
 #include <QList>
@@ -14,82 +15,91 @@
 
 class QcBlockAccess;
 
-// The experience orbs of a world (decision E-398), the table of their kind in the entity register.
-// Orbs fall and float like dropped items, fly towards the nearest living player within
-// attractRange, are collected one every collectIntervalTicks per player after a short pickup
-// delay, and go after despawnSeconds in loaded chunks. Only orbs in loaded chunks move and age.
-//
-// The number of orbs is bounded (QcServerLimits::experienceOrbs): orbs close together merge into one
-// worth their sum every mergeIntervalTicks, and experience dropped while the world is full joins the
-// nearest orb instead of making a new one, so no experience is lost to the bound.
+/*! \brief The experience orbs of a world (decision E-398), the table of their kind in the entity
+    register.
+
+    Orbs fall and float like dropped items, fly towards the nearest living player within
+    attractRange, are collected one every collectIntervalTicks per player after a short pickup
+    delay, and go after despawnSeconds in loaded chunks. Only orbs in loaded chunks move and age.
+
+    The number of orbs is bounded (QcServerLimits::experienceOrbs): orbs close together merge
+    into one worth their sum every mergeIntervalTicks, and experience dropped while the world is
+    full joins the nearest orb instead of making a new one, so no experience is lost to the
+    bound. */
 class QcExperienceOrbManager
 {
 public:
+    /*! Width and height of an orb's box in blocks. */
     static constexpr double size = 0.5;
+    /*! Seconds an orb in a loaded chunk lasts. */
     static constexpr double despawnSeconds = 300.0;
+    /*! Seconds before a fresh orb can be collected. */
     static constexpr double pickupDelay = 0.5;
-    // Orbs fly towards a living player closer than this, faster the closer he is.
+    /*! Orbs fly towards a living player closer than this, faster the closer he is. */
     static constexpr double attractRange = 8.0;
-    // Acceleration in m/s² towards a player right next to the orb; it falls off with the square of
-    // the distance's share of attractRange (the reference's pull, scaled to this game's gravity).
+    /*! Acceleration in m/s² towards a player right next to the orb; it falls off with the square
+        of the distance's share of attractRange (the reference's pull, scaled to this game's
+        gravity). */
     static constexpr double attractAcceleration = 90.0;
-    // Orbs touch a player when they are within the player's box grown by this much.
+    /*! Orbs touch a player when they are within the player's box grown by this much. */
     static constexpr double pickupReach = 0.5;
-    // A player collects at most one orb every this many ticks (the reference's two).
+    /*! A player collects at most one orb every this many ticks (the reference's two). */
     static constexpr int collectIntervalTicks = 2;
+    /*! Orbs closer than this many blocks merge, every mergeIntervalTicks ticks. \qcshared */
     static constexpr double mergeRadius = 1.0;
     static constexpr int mergeIntervalTicks = 10;
-    // At most this many orbs from one drop; the last one takes the rest.
+    /*! At most this many orbs from one drop; the last one takes the rest. */
     static constexpr int maxOrbsPerDrop = 16;
-    // Biggest value of one orb, so a merged orb still fits the protocol and the save comfortably;
-    // orbs merge and take overflow only while their sum stays within it.
+    /*! Biggest value of one orb, so a merged orb still fits the protocol and the save
+        comfortably; orbs merge and take overflow only while their sum stays within it. */
     static constexpr int maxValue = 1 << 24;
-    // The bound by default (QcServerLimits::experienceOrbs).
+    /*! The bound by default (QcServerLimits::experienceOrbs). */
     static constexpr qsizetype defaultLimit = static_cast<qsizetype>(QcServerLimits{}.experienceOrbs);
 
-    struct PlayerView
-    {
-        quint32 entityId = 0;
-        QcVec3 position;
-        bool alive = true;
-    };
-
-    // Called when a player collects an orb, with its value.
+    /*! Called when the player \c {playerEntityId} collects an orb, with its value \c {points}. */
     using GiveFunction = std::function<void(quint32 playerEntityId, int points)>;
+    /*! Returns a new entity id for an orb. */
     using IdFunction = std::function<quint32()>;
 
     explicit QcExperienceOrbManager(quint64 seed);
 
-    // Drops `points` at `position` as orbs of the reference's sizes with a small random velocity
-    // (a mined ore, a killed creature, a furnace's output, a death). Beyond the limit the points
-    // join the nearest orb with room. Returns how many orbs appeared.
+    /*! Drops \a points at \a position as orbs of the reference's sizes with a small random
+        velocity (a mined ore, a killed creature, a furnace's output, a death). Beyond the limit
+        the points join the nearest orb with room. \a newId gives the ids of the new orbs. Returns
+        how many orbs appeared. */
     int drop(int points, const QcVec3 &position, const IdFunction &newId);
-    // Adds one orb as it is (tests, a chunk coming back); false and nothing added beyond the limit
-    // or in the void.
+    /*! Adds \a orb as it is (tests, a chunk coming back). Returns \c false and adds nothing
+        beyond the limit, for an orb without value or in the void. */
     bool add(QcExperienceOrb orb);
 
-    // One tick: physics and attraction, collecting, merging, ageing and despawning.
-    void tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const GiveFunction &give);
+    /*! One tick of \a dt seconds in \a world: physics and attraction towards \a players,
+        collecting (\a give), merging, ageing and despawning. */
+    void tick(const QcBlockAccess &world, const QList<QcPickupPlayer> &players, double dt, const GiveFunction &give);
 
+    /*! Returns the orbs. */
     const QList<QcExperienceOrb> &orbs() const { return m_orbs; }
-    // For moving and removing orbs from outside (pistons push them, chunks unload).
+    /*! Returns the orbs for moving and removing them from outside (pistons push them, chunks
+        unload). */
     QList<QcExperienceOrb> &editableOrbs() { return m_orbs; }
+    /*! Returns the bound of the number of orbs. */
     qsizetype limit() const { return m_limit; }
+    /*! Sets the bound of the number of orbs to \a limit (orbs beyond it stay). */
     void setLimit(qsizetype limit) { m_limit = limit; }
-    // The points in all orbs (tests and measurements: merging and the bound keep them).
+    /*! Returns the points in all orbs (tests and measurements: merging and the bound keep them). */
     qint64 totalPoints() const;
-    // Orbs that merged into others since the start.
+    /*! Returns the orbs that merged into others since the start. */
     qint64 mergedCount() const { return m_merged; }
-    // Adds the orbs of a chunk that came back (decision E-374), with new ids; returns how many were
-    // left out beyond the limit (their points join the nearest orb with room).
+    /*! Adds \a orbs of a chunk that came back (decision E-374), with new ids from \a newId. Returns
+        how many were left out beyond the limit (their points join the nearest orb with room). */
     qsizetype adopt(const QList<QcExperienceOrb> &orbs, const IdFunction &newId);
+    /*! Removes every orb. */
     void clear();
 
 private:
-    void step(QcExperienceOrb &orb, const QList<PlayerView> &players, const QcBlockAccess &world, double dt) const;
+    void step(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const QcBlockAccess &world, double dt) const;
     // The living player nearest to `orb` within attractRange; null when none.
-    static const PlayerView *nearestPlayer(const QcExperienceOrb &orb, const QList<PlayerView> &players);
-    bool collect(QcExperienceOrb &orb, const QList<PlayerView> &players, const GiveFunction &give);
+    static const QcPickupPlayer *nearestPlayer(const QcExperienceOrb &orb, const QList<QcPickupPlayer> &players);
+    bool collect(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const GiveFunction &give);
     // Orbs of the merge grid by cell (cellKey in the .cpp), as indices into m_orbs.
     using MergeGrid = QHash<quint64, QList<qsizetype>>;
     void merge();

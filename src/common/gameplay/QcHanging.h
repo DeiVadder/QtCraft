@@ -43,7 +43,7 @@ struct QcHanging
     QList<QcBlockPos> cells() const;
     /*! Returns the block behind \a covered (one of its cells) that holds it there. */
     QcBlockPos supportOf(QcBlockPos covered) const;
-    /*! Its thin box on the wall (targeting, hits). */
+    /*! Returns its thin box on the wall (targeting, hits). */
     QcAabb box() const;
     /*! Returns the middle of its front, the entity's position. */
     QcVec3 centre() const;

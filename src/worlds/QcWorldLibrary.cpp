@@ -95,7 +95,15 @@ QList<QcWorldLibrary::Entry> QcWorldLibrary::list() const
         entries.append(entry);
     }
 
-    std::ranges::sort(entries, [](const Entry &a, const Entry &b) { return a.info.lastPlayed > b.info.lastPlayed; });
+    // The last played first; worlds played at the same moment by name, then by folder, so the list
+    // keeps its order from one look to the next (HM-7 of docs/Menue-Pruefung.md).
+    std::ranges::sort(entries, [](const Entry &a, const Entry &b) {
+        if (a.info.lastPlayed != b.info.lastPlayed) {
+            return a.info.lastPlayed > b.info.lastPlayed;
+        }
+        const int byName = QString::localeAwareCompare(a.info.name, b.info.name);
+        return byName != 0 ? byName < 0 : a.folder < b.folder;
+    });
     return entries;
 }
 
@@ -128,7 +136,7 @@ QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint
     return entry;
 }
 
-QcStatus QcWorldLibrary::remove(const QString &folder) const
+QcResult<QString> QcWorldLibrary::worldDirectory(const QString &folder) const
 {
     if (!isPlainFolderName(folder)) {
         return qcError(u"Invalid world folder '%1'"_s.arg(folder));
@@ -136,10 +144,19 @@ QcStatus QcWorldLibrary::remove(const QString &folder) const
     if (QFileInfo(directoryOf(folder)).isSymLink()) {
         return qcError(u"'%1' is a link, not a world folder"_s.arg(folder));
     }
-    QDir directory(directoryOf(folder));
-    if (!directory.exists(u"world.json"_s)) {
+    if (!QDir(directoryOf(folder)).exists(u"world.json"_s)) {
         return qcError(u"'%1' is not a QtCraft world"_s.arg(folder));
     }
+    return directoryOf(folder);
+}
+
+QcStatus QcWorldLibrary::remove(const QString &folder) const
+{
+    const QcResult<QString> path = worldDirectory(folder);
+    if (!path) {
+        return qcError(path.error());
+    }
+    QDir directory(*path);
     if (!directory.removeRecursively()) {
         return qcError(u"Cannot delete %1"_s.arg(directory.path()));
     }

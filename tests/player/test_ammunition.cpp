@@ -43,7 +43,7 @@ private:
     // A pig 3.5 blocks east of the player and a projectile of `kind` flying at it from the west.
     quint32 pigUnderFire(const QString &kind, double speed)
     {
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         const quint32 mob = m_server->entities().creatures().spawn(pig, {m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5},
                                                                    m_server->entities().newId());
         m_server->systems().projectiles.launch({0, kind, {m_feet.x - 1.5, m_feet.y + 0.5, m_feet.z - 2.5}, {speed, 0.0, 0.0}});
@@ -144,7 +144,7 @@ private slots:
 
         // Applied to bodies: a pig hit from the west and the player.
         join();
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         QcMobManager &creatures = m_server->entities().creatures();
         for (const double strength : {0.5, 4.0}) {
             const QcVec3 at{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};

@@ -5,8 +5,9 @@
 
 #include <QHash>
 #include <QImage>
-#include <QMutex>
 #include <QQuickImageProvider>
+
+#include <mutex>
 
 // Serves the preview images of texture packs to QML as image://texturepacks/<pack id>. Set from the
 // GUI thread; Qt Quick may request them from loader threads, hence the mutex.
@@ -23,6 +24,7 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    QMutex m_mutex;
+    // The GUI thread hands the previews to Qt Quick's image loader threads under this mutex.
+    std::mutex m_mutex;
     QHash<QString, QImage> m_previews;
 };

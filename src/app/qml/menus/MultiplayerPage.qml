@@ -9,13 +9,18 @@ import QtQuick.Layouts
 import QtCraft
 
 // The main menu's multiplayer page (decisions E-258, E-852): the recently joined servers beside the
-// form with address, player name and password, how to play in the local network, the progress of
-// the join with a cancel button and the reason of a refusal.
+// form with address, player name and password (the form alone while there are none: MP-1 of
+// docs/Menue-Pruefung.md), the reason of a refusal right below "Join" (MP-2), how to play in the
+// local network, and the progress of the join with a cancel button.
 ColumnLayout {
     id: screen
 
     required property GameController game
-    property string failure
+    // Why the last join failed (empty: it did not, or the page opened again).
+    readonly property string failure: game.multiplayer.joinFailure
+    // What forgetting a changed certificate did; shown instead of the failure until the next join.
+    property string notice
+    readonly property bool hasRecent: game.multiplayer.settings.recentServers.length > 0
 
     // The page should be shown (open(), also --overlay multiplayer).
     signal openRequested
@@ -24,9 +29,10 @@ ColumnLayout {
 
     // Shows the page with the address field focused and the player name filled in.
     function open() {
-        screen.failure = "";
+        screen.game.multiplayer.clearFailures();
+        screen.notice = "";
         if (nameField.text.length === 0)
-            nameField.text = screen.game.multiplayer.settings.playerName.length > 0 ? screen.game.multiplayer.settings.playerName : qsTr("Player");
+            nameField.text = screen.game.multiplayer.settings.formName;
         openRequested();
         addressField.forceActiveFocus(Qt.TabFocusReason);
     }
@@ -40,7 +46,7 @@ ColumnLayout {
     }
 
     function join() {
-        screen.failure = "";
+        screen.notice = "";
         screen.game.multiplayer.join(addressField.text, nameField.text, passwordField.text);
     }
 
@@ -49,9 +55,6 @@ ColumnLayout {
     Connections {
         target: screen.game.multiplayer
 
-        function onJoinFailed(reason: string) {
-            screen.failure = reason;
-        }
         function onJoined() {
             passwordField.text = "";
             screen.joined();
@@ -98,6 +101,7 @@ ColumnLayout {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                visible: screen.hasRecent
                 spacing: Ui.space.s
 
                 Label {
@@ -120,17 +124,6 @@ ColumnLayout {
                     model: screen.game.multiplayer.settings.recentServers
                     ScrollBar.vertical: ThemedScrollBar {}
 
-                    Label {
-                        anchors.centerIn: parent
-                        width: parent.width
-                        visible: recentList.count === 0
-                        text: qsTr("Servers you join appear here.")
-                        horizontalAlignment: Text.AlignHCenter
-                        wrapMode: Text.Wrap
-                        font.pixelSize: Ui.type.body
-                        color: Theme.textSecondary
-                    }
-
                     delegate: RecentServerRow {
                         // A gutter on the right for the scroll bar.
                         width: ListView.view.width - Ui.space.l
@@ -146,8 +139,8 @@ ColumnLayout {
             }
 
             ColumnLayout {
-                Layout.preferredWidth: Ui.size.formColumn
-                Layout.maximumWidth: Ui.size.formColumn
+                Layout.preferredWidth: screen.hasRecent ? Ui.size.formColumn : Ui.screen.m
+                Layout.maximumWidth: Layout.preferredWidth
                 Layout.alignment: Qt.AlignTop
                 enabled: !screen.game.multiplayer.joining
                 spacing: Ui.space.xs
@@ -204,8 +197,37 @@ ColumnLayout {
                     kind: GameButton.Primary
                     large: true
                     text: qsTr("Join")
-                    enabled: addressField.text.trim().length > 0 && nameField.text.trim().length > 0
+                    enabled: screen.game.multiplayer.canJoin(addressField.text, nameField.text)
                     onClicked: screen.join()
+                }
+
+                // Why the last join failed, right below the button, with its symbol (MP-2): the
+                // step, the addresses tried and what to check (decision E-964).
+                Hint {
+                    objectName: "joinFailure"
+                    Layout.fillWidth: true
+                    Layout.topMargin: Ui.space.s
+                    visible: screen.failure.length > 0 && screen.notice.length === 0 && !screen.game.multiplayer.joining
+                    kind: Hint.Error
+                    text: [qsTr("Could not join: %1").arg(screen.failure), screen.game.multiplayer.joinFailureTried, screen.game.multiplayer.joinFailureHint].filter(line => line.length > 0).join("\n")
+                }
+                Hint {
+                    Layout.fillWidth: true
+                    Layout.topMargin: Ui.space.s
+                    visible: screen.notice.length > 0
+                    text: screen.notice
+                }
+
+                // The server showed another certificate than the pinned one (decision E-872).
+                GameButton {
+                    objectName: "forgetCertificateButton"
+                    Layout.fillWidth: true
+                    visible: !screen.game.multiplayer.joining && screen.failure.length > 0 && screen.game.multiplayer.certificateChangedAddress.length > 0
+                    text: qsTr("Forget the old certificate")
+                    onClicked: {
+                        if (screen.game.multiplayer.forgetCertificate(screen.game.multiplayer.certificateChangedAddress))
+                            screen.notice = qsTr("The old certificate is forgotten. Join again only if you are sure the server's owner made a new one.");
+                    }
                 }
 
                 // Games in the local network: a player opens a running world from the pause menu.
@@ -221,13 +243,14 @@ ColumnLayout {
                 }
                 Hint {
                     Layout.fillWidth: true
-                    text: qsTr("Whoever plays a world opens it with “Open to LAN” in the pause menu and tells you one of the addresses it shows. To open your own world, start it and do the same.")
+                    text: qsTr("A running world is opened with “Open to LAN” in the pause menu; join it with one of the addresses shown there.")
                 }
             }
         }
 
         RowLayout {
             Layout.fillWidth: true
+            visible: screen.game.multiplayer.joining
             spacing: Ui.space.m
 
             BusyIndicator {
@@ -241,24 +264,11 @@ ColumnLayout {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
                 font.pixelSize: Ui.type.body
-                color: screen.failure.length > 0 && !screen.game.multiplayer.joining ? Theme.error : Theme.text
+                color: Theme.text
                 textFormat: Text.PlainText
                 text: screen.game.multiplayer.joinStage === NetworkClient.Stage.Connecting ? qsTr("Connecting to %1 …").arg(screen.game.multiplayer.lastAddress)
                       : screen.game.multiplayer.joinStage === NetworkClient.Stage.LoggingIn ? qsTr("Logging in …")
-                      : screen.failure.length > 0 ? qsTr("Could not join: %1").arg(screen.failure)
                       : ""
-            }
-
-            // The server showed another certificate than the pinned one (decision E-872).
-            GameButton {
-                objectName: "forgetCertificateButton"
-                visible: !screen.game.multiplayer.joining && screen.failure.length > 0 && screen.game.multiplayer.certificateChangedAddress.length > 0
-                large: true
-                text: qsTr("Forget the old certificate")
-                onClicked: {
-                    if (screen.game.multiplayer.forgetCertificate(screen.game.multiplayer.certificateChangedAddress))
-                        screen.failure = qsTr("The old certificate is forgotten. Join again only if you are sure the server's owner made a new one.");
-                }
             }
 
             GameButton {

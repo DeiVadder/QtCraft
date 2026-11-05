@@ -21,6 +21,11 @@ SettingRow {
     readonly property alias currentValue: box.currentValue
     // The text shown for the choice (by default the chosen entry's).
     property alias displayText: box.displayText
+    // The list of choices (the test hook "open:<objectName>" opens it).
+    readonly property alias popup: box.popup
+    // The value shown as chosen (of valueRole), when set: also after a reset of what it follows
+    // and once the list is filled (the player's choice would break a plain binding of currentIndex).
+    property var shownValue
 
     signal activated(int index)
 
@@ -34,5 +39,11 @@ SettingRow {
         Layout.fillWidth: true
         Accessible.name: setting.label
         onActivated: index => setting.activated(index)
+    }
+    Binding {
+        when: setting.shownValue !== undefined
+        target: box
+        property: "currentIndex"
+        value: box.count > 0 ? box.indexOfValue(setting.shownValue) : -1
     }
 }

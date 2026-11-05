@@ -69,6 +69,9 @@ layout(std140, binding = 3) uniform Shadow {
     // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
     // highlights, z the strength of the relief, w of the highlights and reflections.
     vec4 material;
+    // xyz: towards the light without steps (decision E-960), for how a face turns to it (facing,
+    // relief, highlights); toLight, in steps, is the direction of the map and its lookups.
+    vec4 sun;
 } shadow;
 
 layout(binding = 4) uniform sampler2DShadow shadowMap;
@@ -129,7 +132,7 @@ vec3 skyColour(vec3 p, vec3 n, float distance)
     float strength = shadow.toLight.w;
     if (strength <= 0.0)
         return vec3(1.0);
-    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.toLight.xyz)) : 1.0;
+    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.sun.xyz)) : 1.0;
     float lit = facing > 0.0 ? facing * sunVisibility(p, n, distance) : 0.0;
     vec3 shaded = mix(shadow.shadowTint.rgb * shadow.litTint.w, shadow.litTint.rgb, lit);
     return mix(vec3(1.0), shaded, strength);
@@ -146,10 +149,13 @@ vec3 shadowedLight(vec4 parts, vec3 colour)
 
 void main()
 {
-    vec4 texel = texture(atlas, vTexCoord) * vTint;
+    vec4 texel = texture(atlas, vTexCoord);
     // QcSpriteShape::minOpaqueAlpha follows this threshold: held sprites get sides on every drawn texel.
     if (texel.a < 0.1)
         discard;
+    // A tint alpha below 1 is the red overlay of a hurt (QcEntityMesher, decision E-971): it mixes
+    // the colour towards red by 1 - alpha, as the reference's overlay does, also on dark textures.
+    texel.rgb = mix(texel.rgb * vTint.rgb, vec3(1.0, 0.0, 0.0), 1.0 - vTint.a);
 #ifdef QC_SHADOWS
     float fog = fogAt(vDistance);
     vec3 light = vLight;

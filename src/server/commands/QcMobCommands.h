@@ -9,21 +9,24 @@ struct QcCreature;
 struct QcServerClient;
 class QcServerState;
 
-// /mob (decision E-510), for operators: changes a creature the player names by `nearest` (the
-// nearest within targetRange), `looking` (the one in the player's view) or its entity id. `noai
-// <on|off>` takes its mind away or gives it back (QcCreature::noAi); a creature without a mind is
-// kept with the world (QcMobManager::keep) so it stays as it was left, and stays kept when its mind
-// comes back.
+/*! \brief /mob (decision E-510), for operators: changes a creature the player names by \c {nearest}
+    (the nearest within targetRange), \c {looking} (the one in the player's view) or its entity id.
+
+    `noai <on|off>` takes its mind away or gives it back (QcCreature::noAi); a creature without a
+    mind is kept with the world (QcMobManager::keep) so it stays as it was left, and stays kept
+    when its mind comes back. */
 class QcMobCommands
 {
 public:
-    // How far `nearest` and `looking` reach (metres).
+    /*! How far \c {nearest} and \c {looking} reach (metres). */
     static constexpr double targetRange = 16.0;
 
     explicit QcMobCommands(QcServerState &state);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
-    // Takes the mind of `mob` away or gives it back; one without a mind is kept with the world.
+    /*! Takes the mind of \a mob in \a state away (\a noAi true) or gives it back; one without a
+        mind is kept with the world. */
     static void setNoAi(QcServerState &state, QcCreature &mob, bool noAi);
 
 private:

@@ -151,7 +151,7 @@ QList<File> files(const QcHandbook &handbook)
     QList<File> result;
     QString index = u"# %1\n\n%2\n\n**%3:** "_s.arg(handbook.label(u"title"_s), handbook.label(u"intro"_s), handbook.label(u"packs"_s));
     QStringList packs;
-    for (const QcHandbook::Pack &pack : handbook.packs()) {
+    for (const QcPackReference &pack : handbook.packs()) {
         packs.append(pack.version.isEmpty() ? pack.name : u"%1 %2"_s.arg(pack.name, pack.version));
     }
     index += packs.join(u", "_s) + u"\n\n## "_s + handbook.label(u"contents"_s) + u"\n\n"_s;

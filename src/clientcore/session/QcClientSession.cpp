@@ -6,6 +6,7 @@
 #include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionLink.h"
 #include "clientcore/tick/QcSessionThread.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/diagnostics/QcBuildInfo.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
@@ -126,16 +127,18 @@ void QcClientSession::onEvent(const QcSessionEvent &event)
     } else if (const auto *reconciled = std::get_if<QcSessionEvent::Reconciled>(&event.what)) {
         onReconciled(*reconciled);
     } else if (const auto *closed = std::get_if<QcSessionEvent::Closed>(&event.what)) {
-        onClosed(closed->error);
+        onClosed(*closed);
     }
 }
 
-void QcClientSession::onClosed(const QString &error)
+void QcClientSession::onClosed(const QcSessionEvent::Closed &closed)
 {
+    const QString &error = closed.error;
     m_debug.closed();
     m_admin.closed();
     if (m_disconnectReason.isEmpty()) {
         m_disconnectReason = error.isEmpty() ? u"Connection closed"_s : error;
+        setEnding(closed.byPeer || error.isEmpty() ? QcSessionEnding::PeerClosed : QcSessionEnding::Lost);
     }
 
     setState(State::Disconnected);
@@ -156,9 +159,15 @@ void QcClientSession::handleMessage(const QcMessage &message)
     }
 }
 
-void QcClientSession::closeWithError(const QString &reason)
+void QcClientSession::setEnding(QcSessionEnding ending)
+{
+    m_ending = ending;
+}
+
+void QcClientSession::closeWithError(const QString &reason, QcSessionEnding ending)
 {
     m_disconnectReason = reason;
+    setEnding(ending);
     m_link->command({QcSessionCommand::Close{}});
 }
 
@@ -168,7 +177,7 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
         onWelcome(*welcome);
     } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
         m_disconnectMessage = *disconnect;
-        closeWithError(QcChatText::display(*disconnect));
+        closeWithError(QcChatText::display(*disconnect), QcSessionEnding::Refused);
     } else if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
         sendToServer(m_login.answer(*challenge));
     } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
@@ -206,7 +215,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     }
 
     if (!change->error.isEmpty()) {
-        closeWithError(change->error);
+        closeWithError(change->error, QcSessionEnding::LocalError);
     } else if (change->contentReady) {
         emit contentReady();
     } else if (change->loaded) {
@@ -227,9 +236,14 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
 {
     switch (change) {
     case QcClientVitals::Change::Health:
+        // A fresh hit tilts the view and flashes the own figure (decision E-971).
+        if (m_vitals.hurt()) {
+            m_animation.hurt(m_vitals.hurtFrom(), intent().yaw);
+        }
         if (m_vitals.isDead()) {
             // A player comes back from death on the ground.
             m_hand.setMining(false);
+            m_hand.dropDraw();
             m_gameMode.mirrorFlight(false);
         }
         emit healthChanged();
@@ -240,6 +254,14 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
     case QcClientVitals::Change::Experience:
         emit experienceChanged();
         break;
+    case QcClientVitals::Change::Air:
+        // A bubble that goes under water pops at the player's eyes (decision E-955).
+        if (m_vitals.bubblePopped()) {
+            cue({QString::fromLatin1(QcSoundKeys::playerBubblePop), playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, 1.0f, 1.0f,
+                 QcSoundCue::Origin::Local, m_tickCount});
+        }
+        emit airChanged();
+        break;
     case QcClientVitals::Change::None:
         break;
     }
@@ -249,7 +271,7 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 {
     if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
         if (!m_inventory.apply(*inventory, m_worldMirror.content().get())) {
-            closeWithError(u"Server sent an invalid inventory"_s);
+            closeWithError(u"Server sent an invalid inventory"_s, QcSessionEnding::LocalError);
             return true;
         }
         emit inventoryChanged();
@@ -284,10 +306,11 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
 {
     if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
         if (!m_entities.spawn(*spawn, m_worldMirror.content().get())) {
-            closeWithError(u"Server sent an unknown entity type"_s);
+            closeWithError(u"Server sent an unknown entity type"_s, QcSessionEnding::LocalError);
         }
     } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
         m_entities.moves(*moves);
+        m_worldMirror.addInk(*moves, m_entities.all(), m_tickCount);
     } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
         m_entities.remove(*removed);
     } else {
@@ -299,7 +322,8 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
 void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
 {
     if (welcome.protocolVersion != QcProtocol::version) {
-        closeWithError(u"Server uses protocol version %1, this client %2"_s.arg(welcome.protocolVersion).arg(QcProtocol::version));
+        closeWithError(u"Server uses protocol version %1, this client %2"_s.arg(welcome.protocolVersion).arg(QcProtocol::version),
+                       QcSessionEnding::ProtocolMismatch);
         return;
     }
 
@@ -328,6 +352,9 @@ void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)
     }
 
     adopt(reconciled.after);
+    if (reconciled.usingItemRefused) {
+        m_hand.dropDraw();
+    }
     if (m_state == State::Loading && m_worldMirror.world()) {
         setState(State::Playing);
     }
@@ -358,16 +385,18 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
 
     ++m_tickCount;
     m_worldMirror.tick(m_tickCount);
-    m_entities.tick();
+    m_entities.tickBy(serverSpeed());
 
     // A hotbar selection the server dropped is sent again (decision E-582).
     m_inventory.resendLostSelection();
-    m_animation.tick(m_inventory.heldItem(), m_hand.isMining(), QcSwingSpeed::of(m_vitals.effects()));
+    m_animation.tick(m_inventory.heldItem(), m_hand.isMining(), QcSwingSpeed::of(m_vitals.effects()), m_hand.drawProgress(1.0));
     m_hand.tickLauncher(*m_worldMirror.content(), m_worldMirror.timeSpeed());
     updateSounds();
     adopt(event.after);
     if (!event.predicted) {
-        // Nothing to simulate until the server respawns the player.
+        // Nothing to simulate while the server pauses or until it respawns the player; a rider
+        // keeps the own motion (QcPrediction::mirror), so it rests here too (decision E-960).
+        m_prediction.rest();
         emit ticked();
         return;
     }
@@ -467,28 +496,23 @@ void QcClientSession::sendToServer(const QcMessage &message)
     m_link->command({QcSessionCommand::Send{message}});
 }
 
-bool QcClientSession::blockPredictionWanted()
-{
-    return qEnvironmentVariable("QTCRAFT_BLOCK_PREDICTION") != u"0"_s;
-}
-
 void QcClientSession::setMining(bool mining)
 {
     const bool pressed = mining && !m_hand.miningRequested();
     m_hand.setMining(mining);
-    if (pressed && m_blockPrediction && m_state == State::Playing && !m_vitals.isDead()) {
+    if (pressed && m_blockPrediction.isOn() && m_state == State::Playing && !m_vitals.isDead()) {
         apply(m_hand.strike(*m_worldMirror.world(), *m_worldMirror.content()));
     }
 }
 
 quint32 QcClientSession::predictBlocks(const QList<QcMsg::BlockUpdate> &blocks)
 {
-    if (!m_blockPrediction || blocks.isEmpty()) {
+    const quint32 sequence = m_blockPrediction.next(blocks);
+    if (sequence == 0) {
         return 0;
     }
 
     // The core shows them too (its player walks against a placed block) before the request leaves.
-    const quint32 sequence = ++m_blockSequence;
     m_link->command({QcSessionCommand::PredictBlocks{sequence, blocks}});
     const QList<QcBlockMirror::Changed> changed = m_worldMirror.predict(sequence, blocks);
     for (const auto &[pos, previous] : changed) {
@@ -523,8 +547,7 @@ bool QcClientSession::apply(QcHandActions::HandEffect effect)
         m_animation.use();
         break;
     case HandEffect::Refused:
-        if (m_tickCount >= m_nextRefusalReport) {
-            m_nextRefusalReport = m_tickCount + refusalReportTicks;
+        if (m_refusals.report(m_tickCount)) {
             emit actionRefused();
         }
         return false;

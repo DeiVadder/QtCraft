@@ -3,6 +3,7 @@
 
 #include "worldgen/mineshafts/QcMineshaftAccess.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/mineshafts/QcMineshaftSite.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -41,7 +42,6 @@ QcMineshaftAccess::QcMineshaftAccess(const QcTerrainGenerator &terrain, const Qc
         }
         if (QcStructure::Loaded structure = QcStructure::fromDefinition(definition, content)) {
             m_rooms.append({std::make_shared<const QcStructure>(std::move(*structure)), definition.mineshaftWeight});
-            m_totalWeight += definition.mineshaftWeight;
         }
     }
 }
@@ -65,7 +65,7 @@ QList<QcMineshaftPlan::Room> QcMineshaftAccess::roomsOf(const QcMineshaftPlan &p
         if (crossedByPillars(network, end)) {
             continue;
         }
-        const int turns = QcMineshaftBlocks::sideOf(neighbour.x - end.x, neighbour.z - end.z);
+        const int turns = static_cast<int>(QcMineshaftBlocks::slotOf(QcMineshaftBlocks::sideOf(neighbour.x - end.x, neighbour.z - end.z)));
         if (std::optional<QcStructurePlacement> room = roomAt(end, turns, site, random(RoomPick, node))) {
             rooms.append({node, std::move(*room)});
         }
@@ -85,12 +85,7 @@ bool QcMineshaftAccess::crossedByPillars(const QcMineshaftNetwork &network, cons
 
 std::optional<QcStructurePlacement> QcMineshaftAccess::roomAt(const QcMineshaftPlan::Node &at, int turns, QcMineshaftSite &site, double pick) const
 {
-    int left = static_cast<int>(pick * m_totalWeight);
-    const auto chosen = std::ranges::find_if(roomList(), [&left](const RoomKind &kind) {
-        left -= kind.weight;
-        return left < 0;
-    });
-    const RoomKind &kind = chosen != roomList().end() ? *chosen : roomList().constLast();
+    const QcWeightedStructure &kind = qcWeightedPick(roomList(), pick, &QcWeightedStructure::weight);
     const QcStructure &structure = *kind.structure;
 
     // The door (the middle of the structure's north side) faces the corridor.
@@ -172,7 +167,7 @@ std::optional<QcMineshaftPlan::Entrance> QcMineshaftAccess::inclineOf(const QcMi
     const int places = std::min(maxInclineTries, 4 * (1 + static_cast<int>(ends.size())));
     for (int place = 0; place < places; ++place) {
         const int node = place < 4 ? 0 : ends.at((firstEnd + (place - 4) / 4) % ends.size());
-        const QcMineshaftIncline::Exit exit{node, (first + place) % 4};
+        const QcMineshaftIncline::Exit exit{node, static_cast<QcMineshaftBlocks::Side>((first + place) % 4)};
         if (std::optional<QcMineshaftPlan::Entrance> entrance = m_incline.through(plan, site, exit, rails)) {
             return entrance;
         }
@@ -223,9 +218,9 @@ std::optional<QcMineshaftPlan::Entrance> QcMineshaftAccess::ladderOf(const QcMin
     return entrance;
 }
 
-QList<QcMineshaftPlan::Placed> QcMineshaftAccess::headframe(QcBlockPos top) const
+QList<QcPlacedBlock> QcMineshaftAccess::headframe(QcBlockPos top) const
 {
-    QList<QcMineshaftPlan::Placed> blocks;
+    QList<QcPlacedBlock> blocks;
     // A plank ring around the shaft's top, posts at its corners and a roof above; the ladder goes on
     // two cells above the ground against the lining behind it.
     for (int dz = -1; dz <= 1; ++dz) {

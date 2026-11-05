@@ -49,8 +49,10 @@ QcItemStack readStack(QDataStream &stream);
 QcItemStack readFlatStack(QDataStream &stream);
 /*! Writes the number of \a stacks and then each stack to \a stream. */
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
-/*! Returns the stacks read from \a stream: at most 1024; std::nullopt for a larger count. */
-[[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream);
+/*! Returns the stacks read from \a stream: at most \a maxCount, the size of the list the
+    message carries (so that a message of stacks at their limits fits into a frame,
+    QcItemData::maxStacksInside); std::nullopt for a larger count. */
+[[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream, quint32 maxCount);
 /*! Writes the armour slots of \a equipment to \a stream: always QcEquipment::slotCount stacks,
     without a count. */
 void writeEquipment(QDataStream &stream, const QcEquipment &equipment);
@@ -64,7 +66,7 @@ QcEquipment readEquipment(QDataStream &stream);
 /*! Returns whether all three coordinates of \a value are finite. */
 bool isFinite(const QcVec3 &value);
 
-/*! The tag type that selects the decode() overload for the message type \c T. */
+/*! The tag type that selects the decode() overload for the message type \a T. */
 template<typename T>
 using Tag = std::type_identity<T>;
 
@@ -239,6 +241,8 @@ void encode(QDataStream &stream, const QcMsg::SetAppearance &m);
 void encode(QDataStream &stream, QcMsg::DropItem m);
 /*! Writes the payload of \a m (QcMsg::PlayerFood) to \a stream. */
 void encode(QDataStream &stream, QcMsg::PlayerFood m);
+/*! Writes the payload of \a m (QcMsg::PlayerAir) to \a stream. */
+void encode(QDataStream &stream, QcMsg::PlayerAir m);
 /*! Writes the payload of \a m (QcMsg::PlayerExperience) to \a stream. */
 void encode(QDataStream &stream, QcMsg::PlayerExperience m);
 /*! Writes the payload of \a m (QcMsg::GameMode) to \a stream. */
@@ -283,6 +287,8 @@ void encode(QDataStream &stream, QcMsg::ThrowItem m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream);
 /*! Returns the QcMsg::PlayerFood read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream);
+/*! Returns the QcMsg::PlayerAir read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerAir>, QDataStream &stream);
 /*! Returns the QcMsg::PlayerExperience read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerExperience>, QDataStream &stream);
 /*! Returns the QcMsg::GameMode read from \a stream, or why it is invalid. */

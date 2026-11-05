@@ -35,9 +35,9 @@ QcHandbookEntry tagPage(const QcHandbookContext &context, const QString &tag, co
     entry.category = u"tags"_s;
     entry.pack = QcHandbookLinks::packOf(tag);
     entry.title = links.tagTitle(tag, text.language());
-    entry.icon = links.itemIcon(members.first());
+    entry.icon = links.tagLink(tag).icon;
     entry.text = text.label(u"tag.text"_s);
-    entry.facts.append({text.label(u"fact.id"_s), u"#"_s + tag, {}});
+    entry.facts.append({text.label(u"fact.id"_s), u"#"_s + tag, {}, true});
 
     Section memberSection{text.label(u"section.members"_s), {}, {}, {}};
     for (const QString &member : members) {

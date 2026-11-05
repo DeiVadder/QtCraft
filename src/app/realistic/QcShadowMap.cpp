@@ -20,7 +20,7 @@ namespace {
 
 constexpr int maxCascades = QcRenderOptions::maxShadowCascades;
 
-// std140 layout of the Shadow block of block.frag and entity.frag (QC_SHADOWS).
+// std140 layout of the Shadow block of block.frag, entity.frag and water.frag (QC_SHADOWS).
 struct ReceiverUniforms
 {
     float cascades[maxCascades][16];
@@ -39,8 +39,10 @@ struct ReceiverUniforms
     // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
     // highlights, z the strength of the relief, w of the highlights and reflections.
     float material[4];
+    // xyz: towards the light without steps (decision E-960): facing, relief, highlights.
+    float sun[4];
 };
-static_assert(sizeof(ReceiverUniforms) == 336);
+static_assert(sizeof(ReceiverUniforms) == 352);
 
 // std140 layout of the Caster block of shadow.vert and shadow_entity.vert.
 struct CasterUniforms
@@ -218,6 +220,7 @@ void QcShadowMap::upload(QRhiResourceUpdateBatch *updates, const Frame &frame)
     // NaN in the light or the camera: no shadows rather than a broken picture.
     const float strength = casts && std::isfinite(frame.light.strength) ? std::clamp(frame.light.strength, 0.0f, 1.0f) : 0.0f;
     std::ranges::copy(packed(frame.light.toLight, strength), receivers.toLight);
+    std::ranges::copy(packed(frame.light.sun, 0.0f), receivers.sun);
     std::ranges::copy(packed(frame.light.litTint, shadowFloor), receivers.litTint);
     std::ranges::copy(packed(frame.light.shadowTint, static_cast<float>(count)), receivers.shadowTint);
     const auto resolution = static_cast<float>(m_gpu.shadows.resolution);

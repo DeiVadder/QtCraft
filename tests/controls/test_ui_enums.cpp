@@ -3,10 +3,10 @@
 
 #include "app/controllers/QcPhotoMode.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/preview/QcCharacterPreview.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
@@ -21,11 +21,14 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <array>
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 // The enumerations QML sees instead of strings (GameController.Overlay, GameSettings.CameraMode,
-// CharacterPreview.Animation), the warnings of rejected values, and the photo mode's state and
-// file names (decisions E-692, E-693).
+// CharacterPreview.Animation), the way back from the advancements, the warnings of rejected
+// values, and the photo mode's state and file names (decisions E-692, E-693).
 class TestUiEnums : public QObject
 {
     Q_OBJECT
@@ -65,6 +68,108 @@ private slots:
         for (const O overlay : {O::None, O::Inventory, O::Creative, O::Furnace, O::Chest, O::Trade, O::Chat, O::Sign, O::Stonecutter}) {
             QVERIFY2(!QcScreenState::isMenu(overlay), qPrintable(QcScreenState::overlayName(overlay)));
         }
+        // One PauseMenu shows them all but the advancements (GameController.pauseMenuOpen).
+        const QList<O> pauseMenu{O::Pause, O::Settings, O::Display,   O::Audio,     O::Interface, O::Controls,
+                                 O::Gamepad, O::Debug, O::TexturePacks, O::Character, O::Lan,     O::Admin};
+        const QMetaEnum overlays = QMetaEnum::fromType<O>();
+        for (int index = 0; index < overlays.keyCount(); ++index) {
+            const auto overlay = static_cast<O>(overlays.value(index));
+            QCOMPARE(QcScreenState::isPauseMenu(overlay), pauseMenu.contains(overlay));
+        }
+    }
+
+    // Closing the advancements leads back to the pause menu when they opened from it, else to the
+    // world (from the world's key, the inventory or a settings page).
+    void advancementsCloseToWhereTheyOpened()
+    {
+        using O = QcScreenState::Overlay;
+        QcSessionParts parts;
+        QcScreenState screens(parts);
+
+        screens.setOverlay(O::Pause);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::Pause);
+
+        screens.setOverlay(O::None);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::None);
+
+        screens.setOverlay(O::Settings);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::None);
+
+        // With another screen open the call is refused and changes nothing.
+        screens.setOverlay(O::Pause);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeAdvancements: the overlay is \"pause\""_s));
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::Pause);
+    }
+
+    // The overlay names the pause menu's sub-screen and the settings page it shows (PauseMenu and
+    // SettingsScreen bind to them).
+    void subScreensAndSettingsPages()
+    {
+        using O = QcScreenState::Overlay;
+        using S = QcScreenState::SubScreen;
+        using P = QcScreenState::SettingsPage;
+        const QMetaEnum overlays = QMetaEnum::fromType<O>();
+        for (int index = 0; index < overlays.keyCount(); ++index) {
+            const auto overlay = static_cast<O>(overlays.value(index));
+            QCOMPARE(QcScreenState::subScreen(overlay) == S::Settings, QcScreenState::isSettingsPage(overlay));
+            // Every sub-screen is one of the pause menu.
+            QVERIFY(QcScreenState::subScreen(overlay) == S::None || QcScreenState::isPauseMenu(overlay));
+        }
+        QCOMPARE(QcScreenState::subScreen(O::Character), S::Character);
+        QCOMPARE(QcScreenState::subScreen(O::Lan), S::Lan);
+        QCOMPARE(QcScreenState::subScreen(O::Admin), S::Admin);
+        QCOMPARE(QcScreenState::subScreen(O::Pause), S::None);
+        QCOMPARE(QcScreenState::subScreen(O::Advancements), S::None);
+
+        const QList<std::pair<O, P>> pages{{O::Settings, P::Graphics},   {O::Display, P::Graphics},   {O::Audio, P::Audio},
+                                           {O::Controls, P::Controls},   {O::Gamepad, P::Controller}, {O::Interface, P::Interface},
+                                           {O::TexturePacks, P::TexturePacks}, {O::Debug, P::Advanced}, {O::Pause, P::Graphics}};
+        for (const auto &[overlay, page] : pages) {
+            QCOMPARE(QcScreenState::settingsPage(overlay), page);
+        }
+    }
+
+    // Closing a sub-screen leads back to the pause menu, from the debug options to the world; one
+    // that closed because the overlay moved on changes nothing, and None is refused.
+    void subScreensCloseToWhereTheyBelong()
+    {
+        using O = QcScreenState::Overlay;
+        using S = QcScreenState::SubScreen;
+        QcSessionParts parts;
+        QcScreenState screens(parts);
+        QSignalSpy changed(&screens, &QcScreenState::overlayChanged);
+
+        static constexpr std::array<std::pair<O, S>, 4> subScreens{{{O::Audio, S::Settings}, {O::Character, S::Character}, {O::Lan, S::Lan}, {O::Admin, S::Admin}}};
+        for (const auto &[overlay, sub] : subScreens) {
+            screens.setOverlay(overlay);
+            QCOMPARE(screens.subScreenReturn(), O::Pause);
+            screens.closeSubScreen(sub);
+            QCOMPARE(screens.overlay(), O::Pause);
+        }
+
+        screens.setOverlay(O::Debug);
+        QCOMPARE(screens.subScreenReturn(), O::None);
+        screens.closeSubScreen(S::Settings);
+        QCOMPARE(screens.overlay(), O::None);
+        QCOMPARE(screens.subScreenReturn(), O::None);
+
+        screens.setOverlay(O::Lan);
+        changed.clear();
+        screens.closeSubScreen(S::Character);
+        QCOMPARE(screens.overlay(), O::Lan);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeSubScreen 0 : not a sub-screen"_s));
+        screens.closeSubScreen(S::None);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeSubScreen 9 : not a sub-screen"_s));
+        screens.closeSubScreen(static_cast<S>(9));
+        QCOMPARE(screens.overlay(), O::Lan);
+        QCOMPARE(changed.count(), 0);
     }
 
     // How much of the HUD shows behind the screens (decision E-927): all of it in the world, all but
@@ -80,6 +185,11 @@ private slots:
                                  O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil};
         const QList<O> fullScreen{O::Settings, O::Display, O::Audio,        O::Interface, O::Controls,
                                   O::Gamepad,  O::Debug,   O::TexturePacks, O::Admin,     O::Advancements};
+        // The pages of SettingsScreen and the screens with item slots (GameController.screens.subScreen, slotScreenOpen).
+        const QList<O> settingsPages{O::Settings, O::Display, O::Audio,        O::Interface,
+                                     O::Controls, O::Gamepad, O::Debug, O::TexturePacks};
+        const QList<O> slotScreens{O::Inventory, O::Creative,    O::Furnace,    O::Chest,
+                                   O::Trade,     O::Stonecutter, O::Enchanting, O::Anvil};
         // Every overlay is in exactly one list: a new one needs a decision here and in isFullScreen.
         const QMetaEnum overlays = QMetaEnum::fromType<O>();
         for (int index = 0; index < overlays.keyCount(); ++index) {
@@ -87,6 +197,8 @@ private slots:
             const int lists = world.count(overlay) + chat.count(overlay) + overWorld.count(overlay) + fullScreen.count(overlay);
             QVERIFY2(lists == 1, overlays.key(index));
             QCOMPARE(QcScreenState::isFullScreen(overlay), fullScreen.contains(overlay));
+            QCOMPARE(QcScreenState::isSettingsPage(overlay), settingsPages.contains(overlay));
+            QCOMPARE(QcScreenState::isSlotScreen(overlay), slotScreens.contains(overlay));
             const H expected = world.contains(overlay) ? H::All : chat.contains(overlay) ? H::AllButHint : overWorld.contains(overlay) ? H::StatusRows : H::Nothing;
             QCOMPARE(QcScreenState::hudShown(overlay, false, false), expected);
             // The handbook covers everything, from the world and from any screen, dead or alive.

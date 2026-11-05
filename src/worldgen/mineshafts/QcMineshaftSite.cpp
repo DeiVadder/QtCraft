@@ -39,7 +39,7 @@ QcMineshaftSite::QcMineshaftSite(const QcTerrainGenerator &terrain, const QcMine
         for (int rx = floorDiv(x0 - reach, size); rx <= floorDiv(x1 + reach, size); ++rx) {
             const std::shared_ptr<const QcDungeonPlan> plan = dungeons.planOf(rx, rz);
             if (plan && plan->touches(x0, z0, x1, z1)) {
-                m_dungeons.append(Box{{plan->minX, plan->origin.y - 1, plan->minZ}, {plan->maxX, plan->origin.y + plan->sizeY, plan->maxZ}});
+                m_dungeons.append(QcBlockBox{{plan->minX, plan->origin.y - 1, plan->minZ}, {plan->maxX, plan->origin.y + plan->sizeY, plan->maxZ}});
             }
         }
     }
@@ -82,10 +82,8 @@ bool QcMineshaftSite::pillarReachesGround(QcBlockPos floor)
 bool QcMineshaftSite::clearOfDungeons(QcBlockPos low, QcBlockPos high) const
 {
     // One cell more around: liquid beside the corridors is sealed there.
-    return std::ranges::none_of(m_dungeons, [&](const Box &box) {
-        return high.x + 1 >= box.low.x && low.x - 1 <= box.high.x && high.y + 1 >= box.low.y && low.y - 1 <= box.high.y
-               && high.z + 1 >= box.low.z && low.z - 1 <= box.high.z;
-    });
+    const QcBlockBox around{low.offset(-1, -1, -1), high.offset(1, 1, 1)};
+    return std::ranges::none_of(m_dungeons, [&around](const QcBlockBox &box) { return box.intersects(around); });
 }
 
 bool QcMineshaftSite::awayFromSettlements(int x, int z, int margin) const
@@ -95,8 +93,8 @@ bool QcMineshaftSite::awayFromSettlements(int x, int z, int margin) const
     if (village && village->covers(x, z, margin)) {
         return false;
     }
-    const QList<QcSurfacePlanner::Rect> structures = m_terrain.surfaceStructures().footprintsNear(chunk, margin);
-    return std::ranges::none_of(structures, [x, z, margin](QcSurfacePlanner::Rect footprint) { return footprint.intersects({x, z, x, z}, margin); });
+    const QList<QcXzRect> structures = m_terrain.surfaceStructures().footprintsNear(chunk, margin);
+    return std::ranges::none_of(structures, [x, z, margin](QcXzRect footprint) { return footprint.intersects({x, z, x, z}, margin); });
 }
 
 QcMineshaftSite::Verdict QcMineshaftSite::node(const QcMineshaftPlan::Node &node)

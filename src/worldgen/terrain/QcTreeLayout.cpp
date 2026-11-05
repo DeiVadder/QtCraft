@@ -110,13 +110,13 @@ void QcTreeLayout::buildGiantCone(const QcTreeShape::Params &params, QcBlockPos 
     }
 }
 
-void QcTreeLayout::branch(const QcTreeShape::Params &params, QcBlockPos start, int side, quint64 seed)
+void QcTreeLayout::branch(const QcTreeShape::Params &params, QcBlockPos start, std::pair<int, int> step, quint64 seed)
 {
-    const auto [stepX, stepZ] = sides[static_cast<std::size_t>(side)];
+    const auto [stepX, stepZ] = step;
     const QcBlockId lying = stepX != 0 ? params.trunkX : params.trunkZ;
     QcBlockPos end = start;
-    for (int step = 1; step <= branchLength; ++step) {
-        end = start.offset(stepX * step, step / 2, stepZ * step);
+    for (int length = 1; length <= branchLength; ++length) {
+        end = start.offset(stepX * length, length / 2, stepZ * length);
         log(end, lying, false);
     }
 
@@ -154,7 +154,7 @@ void QcTreeLayout::buildGiantRound(const QcTreeShape::Params &params, QcBlockPos
         // The trunk column on that side: x or z fixed by the side, the other one `along`.
         const auto [fixedX, fixedZ] = edges[static_cast<std::size_t>(side)];
         const QcBlockPos start{base.x + (fixedX < 0 ? along : fixedX), y, base.z + (fixedZ < 0 ? along : fixedZ)};
-        branch(params, start, side, seed);
+        branch(params, start, sides[static_cast<std::size_t>(side)], seed);
         y += 2 + static_cast<int>(random(2) * 3.0);
     }
 

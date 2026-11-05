@@ -15,38 +15,44 @@
 class QcServerCommands;
 struct QcServerClient;
 
-// The server's side of the admin channel (decision E-848): operators who play on the server follow
-// its status, players, chat and log and act on it over their game connection. The rights are
-// checked on every message and every tick: a player who is no operator (or no longer one) is
-// refused with a warning in the log, and his subscription ends at once. Every action runs as the
-// operator's command line through QcServerCommands, the same code as the chat and the console, so
-// the admin channel adds no rules of its own; stopping the server runs the console's /stop and
-// needs the argument "confirm". The status history is recorded all the time; pings to measure the
-// players' round trips go out only while an operator follows the status. Every playing client is
-// told when he becomes an operator (a result with number 0 and ok) and when he stops being one (a
-// refusal with number 0), so the game shows "Manage server" only to operators (decision E-863).
+/*! \brief The server's side of the admin channel (decision E-848): operators who play on the server
+    follow its status, players, chat and log and act on it over their game connection.
+
+    The rights are checked on every message and every tick: a player who is no operator (or no
+    longer one) is refused with a warning in the log, and his subscription ends at once. Every
+    action runs as the operator's command line through QcServerCommands, the same code as the
+    chat and the console, so the admin channel adds no rules of its own; stopping the server runs
+    the console's /stop and needs the argument "confirm". The status history is recorded all the
+    time; pings to measure the players' round trips go out only while an operator follows the
+    status. Every playing client is told when he becomes an operator (a result with number 0 and
+    ok) and when he stops being one (a refusal with number 0), so the game shows "Manage server"
+    only to operators (decision E-863). */
 class QcServerAdmin
 {
 public:
-    // Status and log lines go out once a second of the players' time, pings every five seconds.
+    /*! Status and log lines go out once a second of the players' time, pings every five seconds.
+        \qcshared */
     static constexpr qint64 statusIntervalNs = 1'000'000'000;
     static constexpr qint64 pingIntervalNs = 5'000'000'000;
-    // Log lines in a tail at most.
+    /*! Log lines in a tail at most. */
     static constexpr qsizetype tailLines = 500;
 
     QcServerAdmin(QcServerState &state, QcServerCommands &commands, const QcTickPhaseTimer &phases, const QcTickScheduler &ticks);
 
-    // An admin message or a Pong of a playing client; false for every other message.
+    /*! Handles \a message of \a client if it is an admin message or a Pong of a playing client.
+        Returns \c false for every other message. */
     bool handle(QcServerClient &client, const QcMessage &message);
-    // A tick ended after `ms` (the phases inside the tick).
+    /*! A tick ended after \a ms (the phases inside the tick). */
     void noteTick(double ms) { m_recorder.noteTick(ms); }
-    // Every tick: rights of the subscribers and of the players, new chat lines, and once a second the status sample,
-    // the status, the players and new log lines for those who follow them.
+    /*! Every tick: rights of the subscribers and of the players, new chat lines, and once a
+        second the status sample, the status, the players and new log lines for those who follow
+        them. */
     void update();
-    // A client left: his network bytes count on (traffic()), his subscription ends.
+    /*! \a client left: his network bytes count on (traffic()), his subscription ends. */
     void noteLeft(const QcServerClient &client);
-    // Bytes of all network clients so far, those who left included.
+    /*! Returns the bytes of all network clients so far, those who left included. */
     QcTraffic traffic() const;
+    /*! Returns the status history. */
     const QcAdminStatusRecorder &recorder() const { return m_recorder; }
 
 private:

@@ -18,5 +18,12 @@ QcClientVitals::Change QcClientVitals::apply(const QcMessage &message)
         m_experience = *experience;
         return Change::Experience;
     }
+    if (const auto *air = std::get_if<QcMsg::PlayerAir>(&message)) {
+        // The first air after joining only tells the state: nothing went under water just now.
+        m_bubblePopped = m_airKnown && air->submerged && QcAirSupply::bubblesOf(air->air, air->maxAir) < airBubbles();
+        m_air = *air;
+        m_airKnown = true;
+        return Change::Air;
+    }
     return Change::None;
 }

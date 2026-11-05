@@ -42,7 +42,7 @@ namespace QcCommandCategories {
 /*! The number of groups. */
 inline constexpr qsizetype count = 9;
 
-/*! Every group in the order /help lists them. */
+/*! Returns every group in the order /help lists them. */
 const std::array<QcCommandCategory, count> &all();
 /*! Returns the word /help takes for the group \a category ("building"). */
 QLatin1StringView id(QcCommandCategory category);

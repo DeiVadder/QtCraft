@@ -21,9 +21,10 @@ ColumnLayout {
     readonly property var draft: admin.draft
     readonly property bool dirty: admin.dirty
 
+    // The value a row shows (AdminController.valueOf); follows the draft.
     function valueOf(setting: var): real {
-        const id = (setting.limit ? "limit:" : "rule:") + setting.key;
-        return draft[id] !== undefined ? draft[id] : setting.value;
+        void page.draft;
+        return admin.valueOf(setting.limit, setting.key);
     }
 
     function change(setting: var, value: real) {

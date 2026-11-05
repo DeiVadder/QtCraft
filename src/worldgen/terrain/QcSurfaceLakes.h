@@ -9,11 +9,11 @@
 #include "worldgen/terrain/QcTerrainDefinitions.h"
 
 #include <QHash>
-#include <QMutex>
 #include <QSet>
 #include <QVarLengthArray>
 
 #include <array>
+#include <mutex>
 #include <optional>
 
 class QcTerrainColumnGrid;
@@ -35,7 +35,6 @@ public:
     /*! A pool definition of the terrain. */
     using Pool = QcTerrainDefinitions::Pool;
     /*! A rectangle of world columns. */
-    using Rect = QcSurfacePlanner::Rect;
 
     /*! \brief One ellipse of a basin: its centre (world), half axes and the liquid's depth at
         the centre. \qcfields */
@@ -59,7 +58,7 @@ public:
         /*! The overlapping ellipses of the basin. */
         QVarLengthArray<Blob, 6> blobs;
         /*! The basin's columns and two more around them (world): no trees grow near it. */
-        Rect footprint;
+        QcXzRect footprint;
     };
 
     /*! Reads the pools from \a definitions; \a content tells which blocks are solid or liquid.
@@ -121,6 +120,8 @@ private:
     QSet<QcBlockId> m_soil;
     QcBlockId m_stone = qcAirBlockId;
     int m_seaLevel = 62;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools) hands the plans to the others under this mutex.
+    mutable std::mutex m_mutex;
     mutable QHash<QPair<int, qint64>, std::optional<Site>> m_plans;
 };

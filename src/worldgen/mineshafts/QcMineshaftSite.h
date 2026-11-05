@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/worldgen/QcMineshaftDefinition.h"
+#include "common/core/QcBlockBox.h"
 #include "worldgen/mineshafts/QcMineshaftNetwork.h"
 #include "worldgen/mineshafts/QcMineshaftPlan.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
@@ -59,15 +60,9 @@ private:
     // A pillar down from below the floor cell `floor` reaches solid ground in time.
     bool pillarReachesGround(QcBlockPos floor);
 
-    struct Box
-    {
-        QcBlockPos low;
-        QcBlockPos high;
-    };
-
     const QcTerrainGenerator &m_terrain;
     const QcMineshaftSettings &m_settings;
     // NOLINT(qc-member-access): the cache of column(), which is its only user (lookup and fill).
     QHash<qint64, QcTerrainColumn> m_columns;
-    QList<Box> m_dungeons;
+    QList<QcBlockBox> m_dungeons;
 };

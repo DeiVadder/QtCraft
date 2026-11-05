@@ -9,7 +9,9 @@ import QtQuick.Layouts
 import QtCraft
 
 // The character preview with the controls to check a look (decision E-231): front and back view,
-// standing, walking and mining. Dragging turns the figure, the wheel zooms.
+// standing, walking and mining, "Reset view" below them as a quiet button (CH-4 of
+// docs/Menue-Pruefung.md), and the camera key of the game as a plate (CH-3). Dragging turns the
+// figure, the wheel zooms.
 ColumnLayout {
     id: panel
 
@@ -38,24 +40,15 @@ ColumnLayout {
         }
     }
 
-    RowLayout {
+    Segments {
         Layout.fillWidth: true
-        spacing: Ui.space.xs
-
-        Segments {
-            Layout.fillWidth: true
-            label: qsTr("Side")
-            model: [
-                { value: CharacterPreview.Side.Front, text: qsTr("Front") },
-                { value: CharacterPreview.Side.Back, text: qsTr("Back") }
-            ]
-            currentValue: panel.preview?.side ?? CharacterPreview.Side.Front
-            onActivated: value => panel.preview?.showSide(value)
-        }
-        GameButton {
-            text: qsTr("Reset view")
-            onClicked: panel.preview?.resetView()
-        }
+        label: qsTr("Side")
+        model: [
+            { value: CharacterPreview.Side.Front, text: qsTr("Front") },
+            { value: CharacterPreview.Side.Back, text: qsTr("Back") }
+        ]
+        currentValue: panel.preview?.side ?? CharacterPreview.Side.Front
+        onActivated: value => panel.preview?.showSide(value)
     }
 
     Segments {
@@ -73,11 +66,26 @@ ColumnLayout {
         }
     }
 
-    Label {
+    RowLayout {
         Layout.fillWidth: true
-        text: qsTr("Drag to turn the figure, scroll to zoom.")
-        wrapMode: Text.Wrap
-        font.pixelSize: Ui.type.help
-        color: Theme.textMuted
+        spacing: Ui.space.s
+
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Drag to turn the figure, scroll to zoom.")
+            wrapMode: Text.Wrap
+            font.pixelSize: Ui.type.help
+            color: Theme.textMuted
+        }
+        GameButton {
+            kind: GameButton.Quiet
+            text: qsTr("Reset view")
+            onClicked: panel.preview?.resetView()
+        }
+    }
+
+    KeyHintRow {
+        Layout.fillWidth: true
+        entries: [{ keys: [panel.game.settings.keys.labels.cameraView], text: qsTr("in the game: your character from behind or the front") }]
     }
 }

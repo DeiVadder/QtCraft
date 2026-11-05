@@ -138,8 +138,8 @@ void QcServerExplosions::tick()
     if (!breaksBlocks()) {
         m_blocks.drop();
     }
-    const QList<QcBlastBlocks::Chained> chain = m_blocks.take(limits.explosionBlocksPerTick);
-    for (const QcBlastBlocks::Chained &chained : chain) {
+    const QList<QcPlacedBlock> chain = m_blocks.take(limits.explosionBlocksPerTick);
+    for (const QcPlacedBlock &chained : chain) {
         if (lightBlock(chained.pos, chained.block, chainFuse(chained.pos, chained.block))) {
             ++m_numbers.chained;
         }

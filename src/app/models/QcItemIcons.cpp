@@ -15,3 +15,8 @@ void QcItemIcons::draw(const QcContentRegistry &content, const QcTextureAtlas &a
 
     m_provider->setIcons(QcItemIconSet::draw(content, atlas, renderTable));
 }
+
+void QcItemIcons::setProvider(QcItemIconProvider *provider)
+{
+    m_provider = provider;
+}

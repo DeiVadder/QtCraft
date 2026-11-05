@@ -138,7 +138,7 @@ template<QcLightEngine::Channel C>
 void QcLightEngine::propagateAdd()
 {
     for (std::size_t head = 0; head < m_add.size(); ++head) {
-        const Cell cell = m_add[head];
+        const QcBlockPos cell = m_add[head];
         const Column *own = column(cell.x, cell.z);
         if (!own) {
             continue;
@@ -153,7 +153,7 @@ void QcLightEngine::propagateAdd()
         const quint8 blocked = entryAt(*own, cell.x, cell.y, cell.z).blockedFaces;
         for (const QcBlockFace face : qcAllBlockFaces) {
             const QcFaceOffset offset = qcFaceOffset(face);
-            const Cell next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
+            const QcBlockPos next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
             if (next.y < 0 || next.y >= QcWorld::worldHeight) {
                 continue;
             }
@@ -184,7 +184,7 @@ void QcLightEngine::propagateRemove()
         ++m_visited;
         for (const QcBlockFace face : qcAllBlockFaces) {
             const QcFaceOffset offset = qcFaceOffset(face);
-            const Cell next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
+            const QcBlockPos next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
             if (next.y < 0 || next.y >= QcWorld::worldHeight) {
                 continue;
             }
@@ -195,7 +195,7 @@ void QcLightEngine::propagateRemove()
     }
     m_remove.clear();
 
-    for (const Cell &cell : m_sources) {
+    for (const QcBlockPos &cell : m_sources) {
         Column *own = column(cell.x, cell.z);
         const int emitted = emission<C>(*own, cell.x, cell.y, cell.z);
         if (emitted > levelIn<C>(*own, cell.x, cell.y, cell.z)) {
@@ -208,7 +208,7 @@ void QcLightEngine::propagateRemove()
 
 // Forced inline: runs for every neighbour of every cleared cell.
 template<QcLightEngine::Channel C>
-Q_ALWAYS_INLINE void QcLightEngine::removeFrom(Column &target, Cell next, int old)
+Q_ALWAYS_INLINE void QcLightEngine::removeFrom(Column &target, QcBlockPos next, int old)
 {
     const int light = levelIn<C>(target, next.x, next.y, next.z);
     if (light == 0) {
@@ -230,10 +230,10 @@ Q_ALWAYS_INLINE void QcLightEngine::removeFrom(Column &target, Cell next, int ol
 }
 
 template<QcLightEngine::Channel C>
-void QcLightEngine::relight(Cell cell, int lostFrom, int lostTo, int gainFrom, int gainTo)
+void QcLightEngine::relight(QcBlockPos cell, int lostFrom, int lostTo, int gainFrom, int gainTo)
 {
     Column *own = column(cell.x, cell.z);
-    const auto clear = [this, own](Cell cleared) {
+    const auto clear = [this, own](QcBlockPos cleared) {
         if (const int old = levelIn<C>(*own, cleared.x, cleared.y, cleared.z); old > 0) {
             setLevel<C>(*own, cleared.x, cleared.y, cleared.z, 0);
             m_remove.emplace_back(cleared, old);
@@ -259,7 +259,7 @@ void QcLightEngine::relight(Cell cell, int lostFrom, int lostTo, int gainFrom, i
     // Light of the neighbours may now pass into the cell.
     for (const QcBlockFace face : qcAllBlockFaces) {
         const QcFaceOffset offset = qcFaceOffset(face);
-        const Cell next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
+        const QcBlockPos next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
         if (next.y >= 0 && next.y < QcWorld::worldHeight) {
             if (const Column *target = column(next.x, next.z); target && levelIn<C>(*target, next.x, next.y, next.z) > 0) {
                 m_add.push_back(next);
@@ -286,7 +286,7 @@ void QcLightEngine::visitLitBorder(const Column &column, QcChunkPos pos, QcBlock
         for (int row = 0; row < QcWorld::sectionHeight * QcWorld::chunkSize; ++row) {
             const int y = index * QcWorld::sectionHeight + row / QcWorld::chunkSize;
             const int along = row % QcWorld::chunkSize;
-            const Cell cell{pos.x * QcWorld::chunkSize + (offset.dx != 0 ? lx : along), y,
+            const QcBlockPos cell{pos.x * QcWorld::chunkSize + (offset.dx != 0 ? lx : along), y,
                             pos.z * QcWorld::chunkSize + (offset.dz != 0 ? lz : along)};
             if (const int light = levelIn<C>(column, cell.x, y, cell.z); light > 0) {
                 visit(cell, light);
@@ -305,7 +305,7 @@ void QcLightEngine::queueBorder(QcChunkPos from, QcBlockFace towards)
         return;
     }
     // Only cells brighter than their neighbour across by more than one step can light it.
-    visitLitBorder<C>(*source, from, towards, *across, [this, across, offset](Cell cell, int light) {
+    visitLitBorder<C>(*source, from, towards, *across, [this, across, offset](QcBlockPos cell, int light) {
         if (light - 1 > levelIn<C>(*across, cell.x + offset.dx, cell.y, cell.z + offset.dz)) {
             m_add.push_back(cell);
         }
@@ -317,8 +317,8 @@ void QcLightEngine::queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcB
 {
     // A neighbour cell at least as bright as the border cell beside it got nothing from it.
     const QcFaceOffset offset = qcFaceOffset(towards);
-    std::vector<std::pair<Cell, int>> &seeds = m_seeds[channelIndex(C)];
-    visitLitBorder<C>(leaving, pos, towards, across, [&seeds, &across, offset](Cell cell, int light) {
+    std::vector<std::pair<QcBlockPos, int>> &seeds = m_seeds[channelIndex(C)];
+    visitLitBorder<C>(leaving, pos, towards, across, [&seeds, &across, offset](QcBlockPos cell, int light) {
         if (levelIn<C>(across, cell.x + offset.dx, cell.y, cell.z + offset.dz) < light) {
             seeds.emplace_back(cell, light);
         }
@@ -340,7 +340,7 @@ void QcLightEngine::seedBlockSources(Column &column, QcChunkPos pos)
             const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
             const int emitted = m_table->entry(section.block(lx, ly, lz)).emission;
             if (emitted > 0) {
-                const Cell cell{pos.x * QcWorld::chunkSize + lx, sectionIndex * QcWorld::sectionHeight + ly,
+                const QcBlockPos cell{pos.x * QcWorld::chunkSize + lx, sectionIndex * QcWorld::sectionHeight + ly,
                                 pos.z * QcWorld::chunkSize + lz};
                 setLevel<Channel::Block>(column, cell.x, cell.y, cell.z, emitted);
                 m_add.push_back(cell);
@@ -422,7 +422,7 @@ void QcLightEngine::compactWritten()
 {
     for (const auto &[key, channel] : std::as_const(m_compactable)) {
         const QcSectionAddress address = qcSectionFromKey(key);
-        compact(static_cast<Channel>(channel), address.chunk, address.sectionIndex);
+        compact(static_cast<Channel>(channel), address.chunk, address.section);
     }
     m_compactable.clear();
     m_lastCompactable.reset();
@@ -564,7 +564,7 @@ void QcLightEngine::change(QcBlockPos pos, QcBlockId previous, const QcChunk &bl
 
     const QcLightTable::Entry &after = entryAt(*own, pos.x, pos.y, pos.z);
     const bool passage = before.passageDiffers(after);
-    const Cell cell{pos.x, pos.y, pos.z};
+    const QcBlockPos cell = pos;
     if (passage || before.emission != after.emission) {
         relight<Channel::Block>(cell, 0, -1, 0, -1);
     }
@@ -645,7 +645,7 @@ void QcLightEngine::compact(Channel channel, QcChunkPos pos, int index)
     }
 }
 
-QList<QcLightEngine::SectionRef> QcLightEngine::takeTouched(Channel channel)
+QList<QcSectionAddress> QcLightEngine::takeTouched(Channel channel)
 {
     Touched &touched = m_touched[channelIndex(channel)];
     touched.keys.clear();

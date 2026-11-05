@@ -10,6 +10,9 @@
 
 #include <QTest>
 
+#include <QHash>
+#include <QSet>
+
 #include <algorithm>
 #include <memory>
 
@@ -94,6 +97,65 @@ private slots:
                                       u"table:transparent"_s, u"table:light"_s, u"table:blast"_s}));
     }
 
+    // Icons tell the entries of a list apart (decision E-944): chapters and biomes each have their
+    // own, every world-generation feature has one, creatures show their picture (their images are
+    // compared in test_block_icons) and a group its plainest member.
+    void iconsTellTheEntriesOfAListApart()
+    {
+        QHash<QString, QStringList> icons;
+        QHash<QString, QString> byId;
+        for (const QcHandbookEntry &entry : m_english.entries()) {
+            icons[entry.category].append(entry.icon);
+            byId.insert(entry.id, entry.icon);
+        }
+        for (const QString &category : {u"playing"_s, u"biomes"_s}) {
+            const QStringList list = icons.value(category);
+            QVERIFY2(!list.contains(QString()), qPrintable(category));
+            QCOMPARE(QSet<QString>(list.begin(), list.end()).size(), list.size());
+        }
+        QVERIFY(!icons.value(u"worldgen"_s).contains(QString()));
+        QVERIFY(!icons.value(u"creatures"_s).contains(QString()));
+        QCOMPARE(byId.value(u"mob:qtcraft:cat"_s), u"mob:qtcraft:cat"_s);
+        QCOMPARE(byId.value(u"chapter:qtcraft:creatures"_s), u"mob:qtcraft:zombie"_s);
+        QCOMPARE(byId.value(u"biome:qtcraft:desert"_s), u"qtcraft:cactus"_s);
+        QCOMPARE(byId.value(u"biome:qtcraft:tundra"_s), u"qtcraft:snow_block"_s);
+        QCOMPARE(byId.value(u"feature:qtcraft:lava_lake"_s), u"qtcraft:lava_bucket"_s);
+        QCOMPARE(byId.value(u"tag:qtcraft:wool"_s), u"qtcraft:red_wool"_s);
+    }
+
+    // An icon that names nothing is a handbook problem and falls back to the default; a chapter's
+    // icon names an item before a creature of the same name (decision E-944).
+    void unknownIconsAreReported()
+    {
+        QcContentRegistry content = *m_base;
+        QcBiomeDefinition desert = *content.worldgen().biome(u"qtcraft:desert"_s);
+        desert.icon = u"qtcraft:nothing"_s;
+        content.worldgen().registerBiome(desert);
+        const auto oakTree = std::ranges::find(content.worldgen().features(), u"qtcraft:oak_tree"_s, &QcFeatureDefinition::name);
+        QVERIFY(oakTree != content.worldgen().features().end());
+        QcFeatureDefinition tree = *oakTree;
+        tree.icon = u"qtcraft:nothing"_s;
+        content.worldgen().registerFeature(tree);
+        QcHandbookChapter controls = *std::ranges::find(content.handbookChapters(), u"qtcraft:controls"_s, &QcHandbookChapter::name);
+        controls.iconItem = u"qtcraft:nothing"_s;
+        content.registerHandbookChapter(controls);
+        QcHandbookChapter basics = *std::ranges::find(content.handbookChapters(), u"qtcraft:basics"_s, &QcHandbookChapter::name);
+        basics.iconItem = u"qtcraft:bone"_s;
+        content.registerHandbookChapter(basics);
+        QcMobDefinition bone = content.mobs().list().first();
+        bone.name = u"qtcraft:bone"_s;
+        content.registerMob(bone);
+
+        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content),
+                                                         QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        const QStringList problems = book.problems().filter(u"unknown icon qtcraft:nothing"_s);
+        QCOMPARE(problems.size(), 3);
+        QCOMPARE(book.entry(u"biome:qtcraft:desert"_s)->icon, u"qtcraft:sand"_s);
+        QCOMPARE(book.entry(u"feature:qtcraft:oak_tree"_s)->icon, u"qtcraft:oak_log"_s);
+        QVERIFY(book.entry(u"chapter:qtcraft:controls"_s)->icon.isEmpty());
+        QCOMPARE(book.entry(u"chapter:qtcraft:basics"_s)->icon, u"qtcraft:bone"_s);
+    }
+
     void signalTableListsEveryComponentWithItsValues()
     {
         const QcHandbookEntry *table = m_english.entry(u"table:signal"_s);
@@ -152,7 +214,9 @@ private slots:
         // Only blocks that are no opaque full cubes, without building parts.
         const QList<Link> links = allLinks(*table);
         for (const Link &link : links) {
-            const QcBlockDefinition &listed = block(*m_base, link.target.mid(6));
+            // A named id, not a temporary: GCC's -Wdangling-reference would flag the call.
+            const QString id = link.target.mid(6);
+            const QcBlockDefinition &listed = block(*m_base, id);
             QVERIFY2(!listed.opaque && listed.partOf.isEmpty(), qPrintable(link.target));
         }
         QVERIFY(!blockLink(*solid, u"qtcraft:stone"_s));
@@ -198,7 +262,9 @@ private slots:
 
         double previous = QcBlastDefinition::unbreakable;
         for (const Link &link : resisting->links) {
-            const QcBlockDefinition &listed = block(*m_base, link.target.mid(6));
+            // A named id, not a temporary: GCC's -Wdangling-reference would flag the call.
+            const QString id = link.target.mid(6);
+            const QcBlockDefinition &listed = block(*m_base, id);
             const double resistance = listed.blast.effectiveResistance(listed.hardness, listed.liquid);
             QVERIFY2(resistance <= previous, qPrintable(link.target));
             previous = resistance;

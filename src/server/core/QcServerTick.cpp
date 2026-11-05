@@ -8,6 +8,7 @@
 #include "common/protocol/QcConnection.h"
 #include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
+#include "server/gameplay/QcDrowning.h"
 #include "server/hanging/QcServerHanging.h"
 #include "server/maps/QcServerMaps.h"
 
@@ -148,10 +149,8 @@ void QcServer::updatePause()
     }
 
     // An empty server saves before it rests, like an autosave; one save runs at a time.
-    if (*changed == QcServerPause::Reason::Empty && m_persistence.hasStorage() && !m_persistence.saveRunning()) {
-        m_lastAutosaveNs = m_state.clock().playerTimeNs();
-        ++m_autosaves;
-        m_persistence.saveInBackground();
+    if (*changed == QcServerPause::Reason::Empty) {
+        m_saving.saveBeforePause();
     }
     if (m_pause.paused()) {
         qCInfo(lcServer).noquote() << u"Server paused (%1): no ticks until it resumes"_s.arg(QString::fromLatin1(QcServerPause::name(*changed)));
@@ -174,7 +173,7 @@ void QcServer::addUpkeepSystems()
     using When = QcTickSystems::When;
     m_tickSystems.add(Players, When::Always, [this] {
         m_login.expire();
-        flushIdentitiesWhenDue();
+        m_saving.flushIdentitiesWhenDue();
         removeClosedClients();
         m_commands.pollBackups();
         if (m_state.takePlayerListChanged()) {
@@ -182,7 +181,7 @@ void QcServer::addUpkeepSystems()
         }
     });
     m_tickSystems.add(Saving, When::Always, [this] {
-        autosave();
+        m_saving.autosave();
         reportDamagedChunks();
     });
 
@@ -223,6 +222,7 @@ void QcServer::addSimulationSystems()
         m_burning.tick();
         m_effects.tick();
         m_environment.applySuffocation();
+        QcDrowning(m_state, m_sounds, m_health).tick();
     });
     m_tickSystems.add(Projectiles, simulating, [this] {
         m_projectiles.tick();
@@ -274,7 +274,13 @@ void QcServer::addClientSystems()
 
         for (const auto &client : m_state.clients()) {
             client->swung = false;
-            client->hurtThisTick = false;
+        }
+        // A hurt waits for the next world sync (sprinting skips some, decision E-971).
+        if (sync.world) {
+            for (const auto &client : m_state.clients()) {
+                client->hurtThisTick = false;
+            }
+            m_state.entities().creatures().clearSentHurts();
         }
         m_state.entities().forgetDeaths();
     });
@@ -310,31 +316,6 @@ void QcServer::reportDamagedChunks()
     }
 }
 
-void QcServer::autosave()
-{
-    // A failed save in the background is told to everyone once per streak of failures (review of 31.3).
-    if (const std::optional<QcStatus> failed = m_persistence.takeNewFailure()) {
-        qCWarning(lcServer) << "Autosave failed:" << failed->error();
-        for (const auto &client : m_state.clients()) {
-            client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"), {failed->error()}));
-        }
-    }
-
-    // In the players' time: neither a high tick rate nor a sprint saves more often (decision E-249).
-    // Unloaded chunks waiting in memory beyond their limit are written early (decision E-374), unless
-    // saving fails: then only the normal interval tries again. One save runs at a time.
-    const qint64 intervalNs = static_cast<qint64>(m_state.config().autosaveSeconds) * 1'000'000'000;
-    const bool due = intervalNs > 0 && m_state.clock().playerTimeNs() - m_lastAutosaveNs >= intervalNs;
-    const bool early = m_persistence.manyUnsavedChunks() && !m_persistence.savesFailing();
-    if (!m_persistence.hasStorage() || m_persistence.saveRunning() || (!due && !early)) {
-        return;
-    }
-
-    m_lastAutosaveNs = m_state.clock().playerTimeNs();
-    ++m_autosaves;
-    m_persistence.saveInBackground();
-}
-
 void QcServer::refillInputBudget(Client &client) const
 {
     // One input per 50 ms of the real time the tick stands for, whatever the tick rate; the cap
@@ -365,7 +346,8 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
     }
 
     if (client.stateDirty) {
-        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion, m_vehicles.vehicleOf(client), m_vehicles.boatOf(client)});
+        client.connection->send(
+            QcMsg::PlayerState{client.input.lastSequence, client.motion, m_vehicles.vehicleOf(client), m_vehicles.boatOf(client), client.drawing});
         client.stateDirty = false;
     }
 }

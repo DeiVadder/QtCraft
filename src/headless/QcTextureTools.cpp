@@ -7,6 +7,7 @@
 #include "clientcore/texturepacks/QcTextureSources.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcConsole.h"
 #include "headless/QcHeadlessOptions.h"
 
 #include <QDir>
@@ -20,7 +21,6 @@
 #include <algorithm>
 #include <limits>
 #include <optional>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -120,7 +120,7 @@ int exportPack(const QcContentRegistry &content, const ExportRequest &request)
         QcHeadlessOptions::printError(u"Cannot write into "_s + request.directory);
         return 1;
     }
-    std::println("Exported {} textures at {}x to {}", written.size(), request.resolution, request.directory.toStdString());
+    QcConsole::printLine(u"Exported %1 textures at %2x to %3"_s.arg(written.size()).arg(request.resolution).arg(request.directory));
     return 0;
 }
 
@@ -134,7 +134,7 @@ int printAtlasStats(const QcContentRegistry &content, const QString &modsDirecto
         }
     }
 
-    std::println("ATLAS pack requested tile extent levels MiB load_ms build_ms tiles_from_pack");
+    QcConsole::printLine(u"ATLAS pack requested tile extent levels MiB load_ms build_ms tiles_from_pack"_s);
     for (const QString &id : std::as_const(ids)) {
         QElapsedTimer loading;
         loading.start();
@@ -149,9 +149,14 @@ int printAtlasStats(const QcContentRegistry &content, const QString &modsDirecto
             atlas = QcTextureAtlas::build(content, packs);
             best = std::min(best, timer.elapsed());
         }
-        std::println("ATLAS {} {} {} {}x{} {} {:.1f} {} {} {}", id.isEmpty() ? "base" : id.toStdString(), atlas.requestedTileSize(), atlas.tileSize(),
-                     atlas.image().width(), atlas.image().height(), atlas.levels().size(), static_cast<double>(atlas.bytes()) / (1024.0 * 1024.0), loadMs,
-                     best, id.isEmpty() ? 0 : atlas.sources().value(id));
+        const double mebibytes = static_cast<double>(atlas.bytes()) / (1024.0 * 1024.0);
+        const int fromPack = id.isEmpty() ? 0 : atlas.sources().value(id);
+        // One arg() call: a pack id with "%2" in it stays as it is.
+        QcConsole::printLine(u"ATLAS %1 %2 %3 %4x%5 %6 %7 %8 %9 %10"_s.arg(id.isEmpty() ? u"base"_s : id, QString::number(atlas.requestedTileSize()),
+                                                                             QString::number(atlas.tileSize()), QString::number(atlas.image().width()),
+                                                                             QString::number(atlas.image().height()), QString::number(atlas.levels().size()),
+                                                                             QString::number(mebibytes, 'f', 1), QString::number(loadMs), QString::number(best),
+                                                                             QString::number(fromPack)));
     }
     return 0;
 }

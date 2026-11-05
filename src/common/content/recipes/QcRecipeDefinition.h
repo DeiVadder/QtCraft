@@ -34,6 +34,6 @@ struct QcRecipeDefinition
     /*! Returns the number of pattern rows. */
     int height() const { return static_cast<int>(pattern.size()); }
     /*! Returns the item name at the pattern cell in \a column and \a row, empty for a blank
-        cell. Both must lie inside the pattern. */
+        cell and for a cell outside the pattern. */
     QString itemAt(int column, int row) const;
 };

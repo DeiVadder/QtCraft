@@ -10,8 +10,10 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     camera/QcCamera.h camera/QcCamera.cpp
+    camera/QcEyeHeight.h camera/QcEyeHeight.cpp
     camera/QcFovEffect.h camera/QcFovEffect.cpp
     camera/QcFrustum.h camera/QcFrustum.cpp
+    camera/QcHurtTilt.h camera/QcHurtTilt.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
     camera/QcMouseCapture.h camera/QcMouseCapture.cpp
     camera/QcMouseLook.h camera/QcMouseLook.cpp
@@ -73,11 +75,13 @@ target_sources(qc_clientcore PRIVATE
     figures/QcEntityPose.h
     figures/QcFigureLook.h figures/QcFigureLook.cpp
     figures/QcHandSwing.h figures/QcHandSwing.cpp
+    figures/QcSwimmerPose.h figures/QcSwimmerPose.cpp
 )
 target_sources(qc_clientcore PRIVATE
     icons/QcAppIcon.h icons/QcAppIcon.cpp
     icons/QcBlockIcon.h icons/QcBlockIcon.cpp
     icons/QcItemIconSet.h icons/QcItemIconSet.cpp
+    icons/QcMobIcon.h icons/QcMobIcon.cpp
     icons/QcWebHandbookAssets.h icons/QcWebHandbookAssets.cpp
 )
 target_sources(qc_clientcore PRIVATE
@@ -124,7 +128,9 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     meshing/QcIndexPacking.h
     meshing/QcLiquidSurface.h meshing/QcLiquidSurface.cpp
+    meshing/QcMeshLighting.h meshing/QcMeshLighting.cpp
     meshing/QcMeshNeighbourhood.h
+    meshing/QcMeshOutput.h meshing/QcMeshOutput.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
 )
@@ -135,6 +141,7 @@ target_sources(qc_clientcore PRIVATE
 target_sources(qc_clientcore PRIVATE
     player/QcAdvancementTree.h player/QcAdvancementTree.cpp
     player/QcBlockForecast.h player/QcBlockForecast.cpp
+    player/QcBlockPrediction.h player/QcBlockPrediction.cpp
     player/QcClientAdvancements.h player/QcClientAdvancements.cpp
     player/QcClientGameMode.h player/QcClientGameMode.cpp
     player/QcClientInventory.h player/QcClientInventory.cpp
@@ -147,6 +154,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcLocalAnimation.h player/QcLocalAnimation.cpp
     player/QcPrediction.h player/QcPrediction.cpp
     player/QcPushBodies.h player/QcPushBodies.cpp
+    player/QcRefusalThrottle.h player/QcRefusalThrottle.cpp
     player/QcSprintLatch.h player/QcSprintLatch.cpp
     player/QcTidyTreeLayout.h player/QcTidyTreeLayout.cpp
 )
@@ -164,6 +172,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientAnvil.h session/QcClientAnvil.cpp
+    session/QcClientBlockScreen.h session/QcClientBlockScreen.cpp
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEnchanting.h session/QcClientEnchanting.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
@@ -177,10 +186,14 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientStonecutter.h session/QcClientStonecutter.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcEffectClock.h session/QcEffectClock.cpp
+    session/QcEffectPuff.h
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
+    session/QcInkClouds.h session/QcInkClouds.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
+    session/QcSessionState.h
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
     session/QcWorldMirror.h session/QcWorldMirror.cpp
@@ -189,6 +202,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
+    settings/QcDeviceLossPolicy.h settings/QcDeviceLossPolicy.cpp
     settings/QcDisplayOptions.h settings/QcDisplayOptions.cpp
     settings/QcGamepadProfile.h settings/QcGamepadProfile.cpp
     settings/QcGamepadSettings.h settings/QcGamepadSettings.cpp
@@ -238,12 +252,14 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
+    textures/QcTextureOutline.h textures/QcTextureOutline.cpp
     textures/QcTexturePaint.h
     textures/QcTexturePaintingPatterns.h textures/QcTexturePaintingPatterns.cpp
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
+    textures/QcTextureToolPatterns.h textures/QcTextureToolPatterns.cpp
 )
 target_sources(qc_clientcore PRIVATE
     tick/QcLatencyProbe.h tick/QcLatencyProbe.cpp
@@ -272,11 +288,12 @@ target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs
 # multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).
 set_source_files_properties(
     textures/QcTextureSynthesizer.cpp textures/QcTextureCraftPatterns.cpp textures/QcTextureFarmPatterns.cpp
-    textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
+    textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp textures/QcTextureOutline.cpp
+    textures/QcTextureToolPatterns.cpp
     textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
     # Block icons as well: the projection and the depth of their faces, from the render table's
     # quads (decision E-901).
-    icons/QcBlockIcon.cpp meshing/QcBlockRenderTable.cpp
+    icons/QcBlockIcon.cpp icons/QcMobIcon.cpp meshing/QcBlockRenderTable.cpp
     # The material maps as well (decision E-908).
     materials/QcMaterialSynthesizer.cpp materials/QcMaterialMips.cpp
     PROPERTIES COMPILE_OPTIONS "${QC_NO_FP_CONTRACT}")

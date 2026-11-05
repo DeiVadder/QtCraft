@@ -2,11 +2,17 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Runs the size limits checks (file and function length), the warning-only checks of output parameters and
-# member access, the API documentation check of the documented folders (comments, qdoc), clang-tidy,
-# clazy and qmllint over the project (or over the given files).
+# Runs the size limits checks (file and function length), the warning-only checks of output parameters,
+# member access, repeated code, the QML heuristics (E-942) and the code style rules of E-379 (E-948), the
+# API documentation check of the documented folders (comments, qdoc), clang-tidy, clazy and qmllint over
+# the project (or over the given files).
 # Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]
-# Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
+# Given files may be .cpp, .h, .mm and .qml, absolute or relative (to the project when the file is
+# there, else to the current directory; the same for the build directory, which may be left out). clang-tidy and clazy analyse a header through its .cpp, else
+# through the first built .cpp that includes it (directly or through up to two headers); a header no
+# built .cpp includes and a .mm file skip those two tools with a note (every other check still runs,
+# the last line names the skipped files). QML files are linted one by one. Exit 0 clean, 1 findings or a tool that failed,
+# 2 a usage or setup error (missing build tree, file or analysis tool, a .cpp that is not built).
 # --cheap-all (the full verify, decision E-929): the size limits and the warning-only checks run over the
 # whole tree, clang-tidy, clazy and qmllint only over the given files (none given: none of them run).
 # Every tool run is time-limited; the script exits non-zero when any tool reports findings.
@@ -19,13 +25,44 @@ if [ "${1:-}" = --cheap-all ]; then
     CHEAP_ALL=1
     shift
 fi
-BUILD_DIR=${1:-"$PROJECT_DIR/build/debug"}
-[ $# -gt 0 ] && shift
+# The first argument is the build directory unless it names a source file (or nothing): then the
+# default build directory is used and every argument is a file.
+BUILD_DIR="$PROJECT_DIR/build/debug"
+if [ $# -gt 0 ]; then
+    case "$1" in
+    (*.cpp | *.h | *.qml | *.mm)
+        if [ -d "$1" ]; then
+            BUILD_DIR=$1
+            shift
+        fi
+        ;;
+    (*)
+        BUILD_DIR=$1
+        shift
+        ;;
+    esac
+fi
+# A relative build directory counts from the project (the checkout of this script) when it exists
+# there, else from the current directory.
+case "$BUILD_DIR" in
+(/*) ;;
+(*)
+    if [ -d "$PROJECT_DIR/$BUILD_DIR" ] || [ ! -d "$BUILD_DIR" ]; then
+        BUILD_DIR="$PROJECT_DIR/$BUILD_DIR"
+    else
+        BUILD_DIR=$(cd "$BUILD_DIR" && pwd)
+    fi
+    ;;
+esac
 
 CREATOR_CLANG="$HOME/Qt/Qt Creator.app/Contents/Resources/libexec/clang/bin"
 CLANG_TIDY=${CLANG_TIDY:-"$CREATOR_CLANG/clang-tidy"}
 CLAZY=${CLAZY:-"$CREATOR_CLANG/clazy-standalone"}
-QMLLINT=${QMLLINT:-"$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)/bin/qmllint"}
+# The Qt the build tree was configured with (its qmllint reads that Qt's qmltypes), else the newest
+# installed Qt 6.
+QT_PREFIX=$(sed -n 's#^Qt6_DIR:PATH=\(.*\)/lib/cmake/Qt6$#\1#p' "$BUILD_DIR/CMakeCache.txt" 2>/dev/null)
+[ -n "$QT_PREFIX" ] || QT_PREFIX=$(ls -d "$HOME"/Qt/6.*/macos 2>/dev/null | sort -V | tail -n 1)
+QMLLINT=${QMLLINT:-"$QT_PREFIX/bin/qmllint"}
 SDK_PATH=$(xcrun --show-sdk-path)
 JOBS=${JOBS:-16}
 TIME_LIMIT=${TIME_LIMIT:-900}
@@ -43,19 +80,120 @@ if [ ! -f "$BUILD_DIR/compile_commands.json" ]; then
     exit 2
 fi
 
+# A given file as an absolute path: relative to the project when it is there (the checkout of this
+# script, also when it is called from another checkout), else to the current directory.
+absolute_path() {
+    case "$1" in
+    (/*) echo "$1" ;;
+    (*)
+        if [ -e "$PROJECT_DIR/$1" ]; then
+            echo "$PROJECT_DIR/$1"
+        elif [ -e "$1" ]; then
+            echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+        else
+            echo "$PROJECT_DIR/$1"
+        fi
+        ;;
+    esac
+}
+
+# Whether a source is one for another platform (decision E-834): *_other.cpp is the counterpart of a
+# *_mac.mm, *_win.cpp and *_posix.cpp are built only there.
+platform_source() {
+    case "$1" in
+    (*_other.cpp | *_win.cpp | *_posix.cpp) return 0 ;;
+    esac
+    return 1
+}
+
+# Whether the build tree compiles the given source (it has a compile command).
+is_built() {
+    grep -qF "\"file\": \"$1\"" "$BUILD_DIR/compile_commands.json"
+}
+
+# The include spelling of a project file: its path below src/ or tests/ (E-418).
+include_name() {
+    name=${1#"$PROJECT_DIR"/}
+    name=${name#src/}
+    echo "${name#tests/}"
+}
+
+# The files of the given suffix (cpp or h) that include one of the given files directly.
+includers() {
+    suffix=$1
+    shift
+    patterns=$(for file in "$@"; do echo "#include \"$(include_name "$file")\""; done)
+    printf '%s\n' "$patterns" | grep -rlF --include="*.$suffix" -f /dev/stdin "$PROJECT_DIR/src" \
+        "$PROJECT_DIR/tests" 2>/dev/null | LC_ALL=C sort
+}
+
+# The translation unit clang-tidy and clazy analyse a header through: the built .cpp of the same name,
+# else the first built .cpp that includes it, directly or through at most two other headers; nothing
+# when there is none.
+header_unit() {
+    if is_built "${1%.h}.cpp"; then
+        echo "${1%.h}.cpp"
+        return
+    fi
+    headers=$1
+    for _depth in 1 2 3; do
+        # shellcheck disable=SC2086
+        for unit in $(includers cpp $headers); do
+            if is_built "$unit"; then
+                echo "$unit"
+                return
+            fi
+        done
+        # shellcheck disable=SC2086
+        headers=$(includers h $headers)
+        [ -n "$headers" ] || return
+    done
+}
+
+# The given files become absolute paths (the tools and the compile commands know only those); a file
+# that does not exist is a usage error.
+for file do
+    shift
+    absolute=$(absolute_path "$file")
+    if [ ! -f "$absolute" ]; then
+        echo "no such file: $file" >&2
+        exit 2
+    fi
+    case "$absolute" in
+    ("$PROJECT_DIR"/*) ;;
+    (*) echo "warning: $file is outside this checkout ($PROJECT_DIR); the build tree may not know it" >&2 ;;
+    esac
+    set -- "$@" "$absolute"
+done
+
 SELECTED=0
+# Files of the selection clang-tidy and clazy cannot analyse, with the reason; named in their section
+# and in the last line.
+TOOL_SKIPPED=""
 if [ $# -gt 0 ] || [ "$CHEAP_ALL" -eq 1 ]; then
     SELECTED=1
     LENGTH_FILES=$(printf '%s\n' "$@" | grep -E '\.(cpp|h|qml|mm)$')
     QML_FILES=$(printf '%s\n' "$@" | grep -E '\.qml$')
-    # A header is analysed through the .cpp of the same name, when there is one.
-    FILES=$(for file in "$@"; do
-        if [ "${file%.cpp}" != "$file" ]; then
-            echo "$file"
-        elif [ "${file%.h}" != "$file" ] && [ -f "${file%.h}.cpp" ]; then
-            echo "${file%.h}.cpp"
-        fi
-    done | sort -u)
+    UNITS=$(for file in "$@"; do
+        case "$file" in
+        (*.cpp) echo "unit $file" ;;
+        (*.h)
+            if [ -f "${file%.h}.cpp" ] && platform_source "${file%.h}.cpp" && ! is_built "${file%.h}.cpp"; then
+                echo "skip $file (its source is not built on this platform)"
+                continue
+            fi
+            unit=$(header_unit "$file")
+            if [ -n "$unit" ]; then
+                echo "unit $unit"
+            else
+                echo "skip $file (header that no built .cpp includes, also not through two other headers)"
+            fi
+            ;;
+        (*.mm) echo "skip $file (Objective-C++, not analysed by clang-tidy and clazy)" ;;
+        esac
+    done)
+    FILES=$(printf '%s\n' "$UNITS" | sed -n 's/^unit //p' | sort -u)
+    TOOL_SKIPPED=$(printf '%s\n' "$UNITS" | sed -n 's/^skip //p')
 else
     LENGTH_FILES=$(cd "$PROJECT_DIR" && { git ls-files 'src/*' 'tests/*'; git ls-files --others --exclude-standard 'src/*' 'tests/*'; } | grep -E '\.(cpp|h|qml|mm)$' | sort -u | sed "s|^|$PROJECT_DIR/|")
     QML_FILES=""
@@ -102,6 +240,84 @@ if [ "$CHEAP_SELECTED" -eq 0 ]; then
 elif [ -n "$FUNCTION_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-member-access.py" $FUNCTION_FILES
+fi
+
+# Repeated code (clones and blocks repeated back to back in C++ and QML) and the QML heuristics (long
+# functions, Connections writing the root's state, enum lists, ids named like properties, unread object
+# names, raw sizes), decision E-942: a NOLINT marker without a reason, a finding of a gating rule
+# (GATING in check-qml.py) and a count above scripts/check-baseline.json (ratchet) fail. The whole tree
+# prints the counts, a selection lists the findings that touch the given files.
+echo "== duplicates (ratchet)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicates.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason|^ratchet:'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$LENGTH_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-duplicates.py" $LENGTH_FILES || status=1
+fi
+# Structs whose members repeat those of another struct (name and type), decision E-975: a marker without a
+# reason and a count above scripts/check-baseline.json (ratchet) fail; a selection lists the groups that
+# touch the given files.
+echo "== duplicate structs (ratchet)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicate-structs.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E 'without a reason|^ratchet:|share one type'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$LENGTH_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-duplicate-structs.py" $LENGTH_FILES || status=1
+fi
+echo "== QML heuristics (gating rules and ratchet)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-qml.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason|\[raw-size\]|^ratchet:'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$QML_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-qml.py" $QML_FILES || status=1
+fi
+
+# Code style rules of E-379 (std::string, hand-written delete, lock types, mutexes without a named
+# hand-over), decision E-948: clang-query over the translation units (cached per unit in the build
+# directory). Every finding fails since package 50b (limit 0 per rule), so does a NOLINT marker without
+# a reason or a unit clang-query cannot process. The step has its own time limit (an uncached whole tree takes minutes), and a
+# timeout only warns. Jobs follow the slot broker's grant (QC_TEST_JOBS). Without Homebrew LLVM it is
+# skipped. The whole tree prints the counts, a selection lists the findings in the given files.
+echo "== AST checks"
+CLANG_QUERY=${CLANG_QUERY:-/opt/homebrew/opt/llvm/bin/clang-query}
+export CLANG_QUERY
+AST_SOURCES=$(printf '%s\n' $LENGTH_FILES | grep -E '\.(cpp|h|mm)$')
+AST_JOBS=${QC_TEST_JOBS:-$JOBS}
+if [ ! -x "$CLANG_QUERY" ]; then
+    echo "AST checks skipped (no clang-query at $CLANG_QUERY)"
+elif [ "$CHEAP_SELECTED" -eq 0 ] || [ -n "$AST_SOURCES" ]; then
+    SAVED_TIME_LIMIT=$TIME_LIMIT
+    TIME_LIMIT=${AST_TIME_LIMIT:-1800}
+    if [ "$CHEAP_SELECTED" -eq 0 ]; then
+        CHECK_OUTPUT=$(run_limited python3 "$PROJECT_DIR/scripts/check-ast.py" --list \
+            --jobs "$AST_JOBS" --build-dir "$BUILD_DIR")
+        ast_status=$?
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
+        printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+    else
+        # shellcheck disable=SC2086
+        run_limited python3 "$PROJECT_DIR/scripts/check-ast.py" --jobs "$AST_JOBS" \
+            --build-dir "$BUILD_DIR" $AST_SOURCES
+        ast_status=$?
+    fi
+    TIME_LIMIT=$SAVED_TIME_LIMIT
+    if [ "$ast_status" -eq 142 ]; then
+        echo "AST checks timed out after ${AST_TIME_LIMIT:-1800} s (the timeout only warns)"
+    elif [ "$ast_status" -ne 0 ]; then
+        status=1
+    fi
 fi
 
 # QDoc comments of the fully documented folders (scripts/doc-folders.txt, decision E-939). The comment
@@ -151,12 +367,10 @@ fi
 ANALYSED=""
 for file in $FILES; do
     if ! grep -qF "\"file\": \"$file\"" "$BUILD_DIR/compile_commands.json"; then
-        case "$file" in
-        *_other.cpp | *_win.cpp | *_posix.cpp)
+        if platform_source "$file"; then
             echo "skipped, not built on this platform: $file"
             continue
-            ;;
-        esac
+        fi
         echo "not in compile_commands.json (not built?): $file" >&2
         exit 2
     fi
@@ -183,6 +397,10 @@ check_tool_run() {
     fi
 }
 
+if [ -n "$TOOL_SKIPPED" ]; then
+    echo "== clang-tidy and clazy skip $(printf '%s\n' "$TOOL_SKIPPED" | grep -c .) given files"
+    printf '%s\n' "$TOOL_SKIPPED" | sed 's/^/skipped: /'
+fi
 if [ "$FILE_COUNT" -gt 0 ]; then
     echo "== clang-tidy ($FILE_COUNT files)"
     printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLANG_TIDY" -p "$BUILD_DIR" --quiet \
@@ -224,8 +442,16 @@ elif [ -n "$QML_FILES" ]; then
     else
         echo "== qmllint ($(printf '%s\n' $QML_FILES | grep -c .) files)"
         grep -v '\.qml$' "$RSP" > "$LOG_DIR/qmllint.rsp"
+        # One call per file: qmllint shares one importer across the files of a call and loses the base
+        # types of a file that is linted and imported by another one (bogus warnings such as "Could not
+        # find property" on ItemSlot). The subshell fails when any call fails.
         # shellcheck disable=SC2086
-        if ! (cd "$PROJECT_DIR/src/app" && run_limited "$QMLLINT" "@$LOG_DIR/qmllint.rsp" $QML_FILES) > "$LOG_DIR/qmllint.log" 2>&1 \
+        if ! (cd "$PROJECT_DIR/src/app" || exit 1
+              failed=0
+              for file in $QML_FILES; do
+                  run_limited "$QMLLINT" "@$LOG_DIR/qmllint.rsp" "$file" || failed=1
+              done
+              exit $failed) > "$LOG_DIR/qmllint.log" 2>&1 \
             || grep -qE '^(Warning|Error|Critical):' "$LOG_DIR/qmllint.log"; then
             cat "$LOG_DIR/qmllint.log"
             status=1
@@ -234,5 +460,11 @@ elif [ -n "$QML_FILES" ]; then
 fi
 
 rm -rf "$LOG_DIR"
-[ $status -eq 0 ] && echo "static analysis clean"
+if [ $status -eq 0 ]; then
+    if [ -n "$TOOL_SKIPPED" ]; then
+        echo "static analysis clean (clang-tidy and clazy skipped $(printf '%s\n' "$TOOL_SKIPPED" | grep -c .) given files, see above)"
+    else
+        echo "static analysis clean"
+    fi
+fi
 exit $status

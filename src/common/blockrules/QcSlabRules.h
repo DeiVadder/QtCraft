@@ -16,12 +16,12 @@ namespace QcSlabRules {
 
 /*! Returns the double slab that placing the slab \a state against \a face of \a clicked in \a world
     makes, std::nullopt when it makes none; \a upper is the half the click aimed at. */
-[[nodiscard]] std::optional<QcBlockRules::Placement> doubled(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
+[[nodiscard]] std::optional<QcPlacedBlock> doubled(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
                                                              bool upper);
 
 /*! Returns the same for the vertical slab \a state that would face \a facing where it is placed,
     placed against \a face of \a clicked in \a world. */
-[[nodiscard]] std::optional<QcBlockRules::Placement> doubledVertical(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked,
+[[nodiscard]] std::optional<QcPlacedBlock> doubledVertical(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked,
                                                                      QcBlockFace face, const QString &facing);
 
 /*! Returns whether the block of \a definition is a vertical slab. */

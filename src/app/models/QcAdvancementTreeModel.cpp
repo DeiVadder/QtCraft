@@ -3,11 +3,13 @@
 
 #include "app/models/QcAdvancementTreeModel.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
+
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -33,6 +35,49 @@ void QcAdvancementTreeModel::setTab(int tab)
     setTabRoot(tabs()[tab].toMap().value(u"name"_s).toString());
     emit changed();
     emit selectedChanged();
+}
+
+int QcAdvancementTreeModel::neighbour(int index, int dx, int dy) const
+{
+    const QVariantList &nodes = current().nodes;
+    if (index < 0 || index >= nodes.size()) {
+        qCWarning(lcGame) << "No advancement neighbour of node" << index << ": the tab has" << nodes.size() << "nodes";
+        return -1;
+    }
+
+    const QVariantMap from = nodes[index].toMap();
+    if (dx < 0) {
+        return from.value(u"parent"_s).toInt();
+    }
+
+    const int column = from.value(u"column"_s).toInt();
+    const double row = from.value(u"row"_s).toDouble();
+    int best = -1;
+    double bestDistance = 0.0;
+    for (qsizetype other = 0; other < nodes.size(); ++other) {
+        const QVariantMap node = nodes[other].toMap();
+        const double otherRow = node.value(u"row"_s).toDouble();
+        const bool beyond = dy < 0 ? otherRow < row : otherRow > row;
+        const bool inDirection = dx > 0 ? node.value(u"parent"_s).toInt() == index : node.value(u"column"_s).toInt() == column && beyond;
+        const double distance = std::abs(otherRow - row);
+        if (inDirection && (best < 0 || distance < bestDistance)) {
+            best = static_cast<int>(other);
+            bestDistance = distance;
+        }
+    }
+    return best;
+}
+
+bool QcAdvancementTreeModel::stepTab(int direction)
+{
+    // Past the first or the last tab nothing happens: the pad's shoulders ask at both ends.
+    const int next = tab() + direction;
+    if (next < 0 || next >= tabs().size()) {
+        return false;
+    }
+
+    setTab(next);
+    return true;
 }
 
 void QcAdvancementTreeModel::setSelected(const QString &name)
@@ -140,6 +185,8 @@ QVariantMap QcAdvancementTreeModel::nodeMap(const QcContentRegistry &content, co
                                             qsizetype index) const
 {
     const QcAdvancementTree::Node &node = tree.nodes[index];
+    Q_ASSERT_X(node.advancement >= 0 && node.advancement < content.advancements().items().size(), "QcAdvancementTreeModel::nodeMap",
+               "advancement index out of range");
     const QcAdvancementDefinition &advancement = content.advancements().items()[node.advancement];
     const bool partial = node.state == QcAdvancementTree::State::Partial;
     // The parent's place travels with the child: a line reads it without looking the parent up.
@@ -182,7 +229,7 @@ QString QcAdvancementTreeModel::criterionText(const QcContentRegistry &content, 
     if (const std::optional<QcItemId> item = content.itemId(name)) {
         return text(content, content.item(*item).translationKey);
     }
-    if (const std::optional<int> mob = content.mobIndex(name)) {
+    if (const std::optional<QcCreatureKindId> mob = content.mobKind(name)) {
         return text(content, content.mobs()[*mob].translationKey);
     }
     QString words = criterion;

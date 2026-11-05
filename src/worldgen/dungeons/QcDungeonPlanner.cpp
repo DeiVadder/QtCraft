@@ -3,6 +3,7 @@
 
 #include "worldgen/dungeons/QcDungeonPlanner.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -208,22 +209,13 @@ bool QcDungeonPlanner::fewCaves(Probe &probe, QcBlockPos origin, int sizeX, int 
 
 QString QcDungeonPlanner::mobOf(const QcDungeonPlan &plan) const
 {
-    int total = 0;
-    for (const QcDungeonSettings::Mob &mob : m_settings.mobs) {
-        total += mob.weight;
-    }
-    int pick = static_cast<int>(random(plan, 20) * total);
-    const auto chosen = std::ranges::find_if(m_settings.mobs, [&pick](const QcDungeonSettings::Mob &mob) {
-        pick -= mob.weight;
-        return pick < 0;
-    });
-    return chosen != m_settings.mobs.end() ? chosen->mob : m_settings.mobs.constLast().mob;
+    return qcWeightedPick(m_settings.mobs, random(plan, 20), &QcDungeonSettings::Mob::weight).mob;
 }
 
-QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestsOf(const QcDungeonPlan &plan) const
+QList<QcPlacedBlock> QcDungeonPlanner::chestsOf(const QcDungeonPlan &plan) const
 {
-    QList<QcDungeonPlan::Placed> chests;
-    QList<QcDungeonPlan::Placed> places = chestPlaces(plan);
+    QList<QcPlacedBlock> chests;
+    QList<QcPlacedBlock> places = chestPlaces(plan);
     const int count = m_settings.minChests + static_cast<int>(random(plan, 21) * (m_settings.maxChests - m_settings.minChests + 1));
     for (int i = 0; i < count && !places.isEmpty(); ++i) {
         chests.append(places.takeAt(static_cast<qsizetype>(random(plan, 22, i) * static_cast<double>(places.size()))));
@@ -231,11 +223,11 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestsOf(const QcDungeonPlan &pla
     return chests;
 }
 
-QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestPlaces(const QcDungeonPlan &plan) const
+QList<QcPlacedBlock> QcDungeonPlanner::chestPlaces(const QcDungeonPlan &plan) const
 {
     // Floor cells along the walls, facing into the room, not in front of a door (the middle of each
     // wall) and not the spawner.
-    QList<QcDungeonPlan::Placed> places;
+    QList<QcPlacedBlock> places;
     const int x0 = plan.origin.x + 1;
     const int x1 = plan.origin.x + plan.sizeX - 2;
     const int z0 = plan.origin.z + 1;
@@ -359,9 +351,9 @@ QList<QcBlockPos> QcDungeonPlanner::around(const QcDungeonPlan::Corridor &corrid
     return cells;
 }
 
-QList<QcDungeonPlan::Placed> QcDungeonPlanner::lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const
+QList<QcPlacedBlock> QcDungeonPlanner::lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const
 {
-    QList<QcDungeonPlan::Placed> lights;
+    QList<QcPlacedBlock> lights;
     // From the cave end inwards every `lightSpacing` cells, never near the spawn area.
     for (const QcDungeonPlan::Corridor &corridor : std::as_const(plan.corridors)) {
         const qsizetype last = corridor.path.size() - 1;
@@ -370,7 +362,7 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::lightsOf(const QcDungeonPlan &pla
             if (plan.distanceToArea(head) < m_settings.lightDistance) {
                 continue;
             }
-            if (const std::optional<QcDungeonPlan::Placed> light = lightAt(plan, head, corridor.steps[i - 1], inside)) {
+            if (const std::optional<QcPlacedBlock> light = lightAt(plan, head, corridor.steps[i - 1], inside)) {
                 lights.append(*light);
             }
         }
@@ -378,7 +370,7 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::lightsOf(const QcDungeonPlan &pla
     return lights;
 }
 
-std::optional<QcDungeonPlan::Placed> QcDungeonPlanner::lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,
+std::optional<QcPlacedBlock> QcDungeonPlanner::lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,
                                                                const QSet<QcBlockPos> &inside) const
 {
     // On the wall to the left of the way out, else on the right.
@@ -387,7 +379,7 @@ std::optional<QcDungeonPlan::Placed> QcDungeonPlanner::lightAt(const QcDungeonPl
         const int wz = step.first * turn;
         const QcBlockPos wall = head.offset(wx, 0, wz);
         if (!inside.contains(wall) && !plan.inRoom(wall)) {
-            return QcDungeonPlan::Placed{head, m_blocks.lights[static_cast<std::size_t>(sideOf(wx, wz))]};
+            return QcPlacedBlock{head, m_blocks.lights[static_cast<std::size_t>(sideOf(wx, wz))]};
         }
     }
     return std::nullopt;

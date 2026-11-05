@@ -50,4 +50,4 @@ Flows up to 7 blocks from a source; two sources make a new one. Take it with a b
 
 **Creatures appearing on it**
 
-[Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon)
+[Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Squid](creatures.md#mob-qtcraft-squid)

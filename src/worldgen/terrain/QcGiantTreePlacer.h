@@ -46,7 +46,7 @@ public:
 
 private:
     // Whether `giant` would reach into `village` (may be null) or one of the `structures` footprints.
-    [[nodiscard]] static bool blocked(Giant giant, const QcVillagePlan *village, const QList<QcSurfacePlanner::Rect> &structures);
+    [[nodiscard]] static bool blocked(Giant giant, const QcVillagePlan *village, const QList<QcXzRect> &structures);
     // The giant of the cell (cellX, cellZ), if it has one.
     [[nodiscard]] std::optional<Giant> giantIn(int cellX, int cellZ) const;
     // The feature of the giant chosen by `roll` among the giants of `biome`, if any.

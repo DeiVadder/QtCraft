@@ -10,10 +10,10 @@
 
 namespace {
 
-// The creature type of a spawn; 0 for the other kinds.
-int creatureTypeOf(const QcMsg::EntitySpawn &spawn)
+// The creature kind of a spawn; the first kind for the other entity kinds.
+QcCreatureKindId creatureTypeOf(const QcMsg::EntitySpawn &spawn)
 {
-    return spawn.kind == QcEntityKind::Creature ? spawn.creatureType : 0;
+    return spawn.kind == QcEntityKind::Creature ? spawn.creatureType : QcCreatureKindId{};
 }
 
 bool isBlockKind(QcEntityKind kind)
@@ -27,7 +27,7 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
 {
     switch (spawn.kind) {
     case QcEntityKind::Creature:
-        return content && spawn.creatureType >= 0 && spawn.creatureType < content->mobs().size();
+        return content && content->mobs().contains(spawn.creatureType);
     case QcEntityKind::Item:
         return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
     case QcEntityKind::FallingBlock:
@@ -162,6 +162,10 @@ void QcClientEntities::applyMove(const QcMsg::EntityMove &move, double serverMs)
 
     m_tracks[move.id].push({serverMs, move.position, move.yaw, move.pitch}, m_clock.intervalMs());
     it->health = move.health;
+    // A draw that ended and began between two client ticks starts its count anew.
+    if (((it->flags ^ move.flags) & QcMsg::Drawing) != 0) {
+        it->drawTicks = -1.0;
+    }
     it->flags = move.flags;
     it->held = move.held;
 
@@ -169,7 +173,12 @@ void QcClientEntities::applyMove(const QcMsg::EntityMove &move, double serverMs)
         it->swingTicks = 0;
     }
     if (move.hurt) {
-        it->hurtTicks = hurtFlashTicks;
+        // Buffered, the flash waits for the motion of the hit (startHurtFlash).
+        it->hurtAtMs = serverMs;
+        if (!m_buffered) {
+            it->hurtTicks = hurtFlashTicks;
+            it->hurtAtMs.reset();
+        }
     }
 }
 
@@ -184,18 +193,30 @@ void QcClientEntities::remove(QcMsg::EntityRemove removed)
     }
 }
 
-void QcClientEntities::tick(qint64 localMs)
+void QcClientEntities::advanceDraw(QcClientEntity &entity, double serverTicks)
+{
+    entity.drawStep = serverTicks;
+    if ((entity.flags & QcMsg::Drawing) == 0) {
+        entity.drawTicks = -1.0;
+    } else {
+        entity.drawTicks = entity.drawTicks < 0.0 ? 0.0 : entity.drawTicks + serverTicks;
+    }
+}
+
+void QcClientEntities::tick(qint64 localMs, double serverTicks)
 {
     const std::optional<double> shown = m_clock.advance(localMs);
     for (QcClientEntity &entity : m_entities) {
         advancePose(entity, shown);
         entity.hurtTicks = std::max(0, entity.hurtTicks - 1);
+        startHurtFlash(entity, shown);
         if (entity.swingTicks >= 0) {
             ++entity.swingTicks;
             if (entity.swingTicks >= swingTicks) {
                 entity.swingTicks = -1;
             }
         }
+        advanceDraw(entity, std::max(0.0, serverTicks));
     }
 
     for (QcClientEntity &dying : m_dying) {
@@ -234,4 +255,15 @@ void QcClientEntities::advancePose(QcClientEntity &entity, std::optional<double>
     entity.lastStep = std::hypot(entity.position.x - entity.previousPosition.x, entity.position.z - entity.previousPosition.z);
     entity.walkDistance += entity.lastStep;
     entity.speed += (entity.lastStep * QcPhysics::tickRate - entity.speed) * speedSmoothing;
+}
+
+void QcClientEntities::startHurtFlash(QcClientEntity &entity, std::optional<double> shown)
+{
+    // The tick's end shows the pose one tick after the shown moment (advancePose); the flash starts
+    // when that pose is the one of the hurt. Before the clock knows a moment it starts at once.
+    const double shownEnd = shown ? *shown + QcPhysics::tickDuration * 1000.0 : 0.0;
+    if (entity.hurtAtMs && (!shown || shownEnd >= *entity.hurtAtMs)) {
+        entity.hurtTicks = hurtFlashTicks;
+        entity.hurtAtMs.reset();
+    }
 }

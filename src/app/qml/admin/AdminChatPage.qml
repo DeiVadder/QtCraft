@@ -14,8 +14,8 @@ ColumnLayout {
     required property AdminController admin
 
     function send() {
-        page.admin.sendChat(chatField.text);
-        chatField.text = "";
+        if (page.admin.sendChat(chatField.text))
+            chatField.text = "";
     }
 
     spacing: Ui.space.m
@@ -53,7 +53,7 @@ ColumnLayout {
             objectName: "adminChatSend"
             kind: GameButton.Primary
             text: qsTr("Send")
-            enabled: chatField.text.trim().length > 0
+            enabled: page.admin.isLine(chatField.text)
             onClicked: page.send()
         }
     }

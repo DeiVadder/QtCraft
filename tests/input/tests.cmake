@@ -6,6 +6,7 @@
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
 qc_add_test(test_camera SOURCES input/test_camera.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_eye_height SOURCES input/test_eye_height.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES input/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_camera_relative SOURCES input/test_camera_relative.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_key_bindings SOURCES input/test_key_bindings.cpp LIBRARIES qc_clientcore)
@@ -26,6 +27,8 @@ qc_add_test(test_gamepad_controls SOURCES input/test_gamepad_controls.cpp LIBRAR
 # The pad on the screens of a window: focus moves, clicks, back, tabs, lists, popups, keyboard
 # requests and the device in use (decisions E-583, E-584).
 qc_add_test(test_gamepad_screens SOURCES input/test_gamepad_screens.cpp LIBRARIES qc_app_core)
+# The pad glyphs painted offscreen: a trigger's tab and the d-pad's lit arm as pixels (E-612).
+qc_add_test(test_pad_glyph_painter SOURCES input/test_pad_glyph_painter.cpp LIBRARIES qc_app_core)
 # The pad's clicks land on the focused item at a scale factor (positions in device pixels, E-583).
 add_test(NAME test_gamepad_screens_scaled COMMAND test_gamepad_screens slotsTakeClicksFromThePad slidersAndSpinBoxesTakeLeftAndRight)
 set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120

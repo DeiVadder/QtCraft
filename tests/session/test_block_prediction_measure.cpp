@@ -18,7 +18,7 @@ using namespace Qt::StringLiterals;
 // player's action (pressing the mining button in creative mode, using a block on a face) until the
 // client has the new mesh of the changed section. A local server and a session that ticks on its own
 // thread (as in the game); the meshes are pumped every 16 ms like frames. Interleaved with the
-// prediction on and off (QcClientSession::setBlockPrediction, the state before stage 78), each idle
+// prediction on and off (QcBlockPrediction::setOn, the state before stage 78), each idle
 // and with a backlog of meshes (every loaded section dirty, as while chunks stream in).
 // QTCRAFT_PREDICTION_MEASURE=full measures 20 actions per case, else 3. Prints "MEASURE key=value ..."
 // lines. The latency itself is real time; nothing else waits for it.
@@ -109,7 +109,7 @@ private:
     void step(const Bench &bench, Case &measured)
     {
         QcClientSession &session = bench.session;
-        session.setBlockPrediction(measured.prediction);
+        session.blockPrediction().setOn(measured.prediction);
         const bool breaking = measured.action == u"break"_s;
         QVERIFY(bench.fixture.waitFor([&] { return QcPredictionFixture::settled(session) && bench.meshes.idle(); }));
         QVERIFY(session.world()->blockAt(bench.target) == (breaking ? m_content->blockId(u"qtcraft:stone"_s) : qcAirBlockId));

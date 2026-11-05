@@ -9,6 +9,7 @@
 
 #include <QJsonArray>
 
+#include <algorithm>
 #include <array>
 #include <utility>
 
@@ -16,13 +17,13 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// The item kinds of `items`: at most 16 known kind names; else the reader fails.
+// The item kinds of `items`: at most maxItemKinds known kind names; else the reader fails.
 QStringList parseItemKinds(QcJsonFieldReader &reader)
 {
     const QJsonValue value = reader.json.value(u"items"_s);
     const QJsonArray list = value.toArray();
-    if (!value.isArray() || list.isEmpty() || list.size() > 16) {
-        reader.fail(u"'items' must be an array of 1 to 16 item kinds"_s);
+    if (!value.isArray() || list.isEmpty() || list.size() > QcEnchantmentDefinition::maxItemKinds) {
+        reader.fail(u"'items' must be an array of 1 to %1 item kinds"_s.arg(QcEnchantmentDefinition::maxItemKinds));
         return {};
     }
 
@@ -96,6 +97,12 @@ QcResult<QcEnchantmentDefinition> parseEnchantment(const QJsonObject &json, cons
     enchantment.weight = reader.integer(u"weight"_s, enchantment.weight, 1, 1000);
     enchantment.items = parseItemKinds(reader);
     enchantment.conflicts = QcContentFields::parseNames(u"conflicts"_s, packNamespace, reader);
+    // parseNames allows as many names as an enchantment may conflict with; only their length is
+    // checked here.
+    static_assert(QcContentFields::maxNames <= QcEnchantmentDefinition::maxConflicts);
+    if (std::ranges::any_of(enchantment.conflicts, [](const QString &name) { return name.size() > QcItemData::maxEnchantmentName; })) {
+        reader.fail(u"'conflicts' names enchantments of at most %1 characters"_s.arg(QcItemData::maxEnchantmentName));
+    }
     enchantment.minPower = reader.integer(u"minPower"_s, enchantment.minPower, 1, 100);
     enchantment.powerPerLevel = reader.integer(u"powerPerLevel"_s, enchantment.powerPerLevel, 0, 100);
     enchantment.powerSpread = reader.integer(u"powerSpread"_s, enchantment.powerSpread, 0, 100);

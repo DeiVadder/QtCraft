@@ -35,10 +35,10 @@ namespace {
 
 namespace QcHandbookWeb {
 
-File data(const QcHandbook &handbook)
+QcHandbookMarkdown::File data(const QcHandbook &handbook)
 {
     QJsonArray packs;
-    for (const QcHandbook::Pack &pack : handbook.packs()) {
+    for (const QcPackReference &pack : handbook.packs()) {
         packs.append(QJsonObject{{u"id"_s, pack.id}, {u"name"_s, pack.name}, {u"version"_s, pack.version}});
     }
 
@@ -65,7 +65,7 @@ File data(const QcHandbook &handbook)
     return {handbook.language() + u".json"_s, QJsonDocument(root).toJson(QJsonDocument::Indented)};
 }
 
-File languages(const QStringList &ids)
+QcHandbookMarkdown::File languages(const QStringList &ids)
 {
     QJsonArray list;
     for (const QString &id : ids) {
@@ -104,13 +104,13 @@ QStringList icons(const QcHandbook &handbook)
     return sorted;
 }
 
-[[nodiscard]] QcStatus write(const QList<File> &files, const QString &directory)
+[[nodiscard]] QcStatus write(const QList<QcHandbookMarkdown::File> &files, const QString &directory)
 {
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));
     }
 
-    for (const File &file : files) {
+    for (const QcHandbookMarkdown::File &file : files) {
         QSaveFile out(QDir(directory).filePath(file.name));
         if (!out.open(QIODevice::WriteOnly) || out.write(file.content) != file.content.size() || !out.commit()) {
             return qcError(u"Cannot write %1: %2"_s.arg(out.fileName(), out.errorString()));

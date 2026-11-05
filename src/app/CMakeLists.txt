@@ -16,27 +16,20 @@ target_sources(qc_app_core PRIVATE
     admin/QcAdminViews.h admin/QcAdminViews.cpp
 )
 target_sources(qc_app_core PRIVATE
-    controllers/QcAnvilController.h controllers/QcAnvilController.cpp
-    controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
-    controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcAdvancementQueue.h controllers/QcAdvancementQueue.cpp
     controllers/QcChatFeed.h controllers/QcChatFeed.cpp
-    controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
-    controllers/QcEnchantingController.h controllers/QcEnchantingController.cpp
+    controllers/QcChatInputHistory.h controllers/QcChatInputHistory.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
-    controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
+    controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
+    controllers/QcNewWorldDraft.h controllers/QcNewWorldDraft.cpp
     controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
-    controllers/QcRenderSettings.h controllers/QcRenderSettings.cpp
     controllers/QcScreenState.h controllers/QcScreenState.cpp
-    controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcSignController.h controllers/QcSignController.cpp
-    controllers/QcStonecutterController.h controllers/QcStonecutterController.cpp
-    controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
-    controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcWorldOptionsController.h controllers/QcWorldOptionsController.cpp
     controllers/QcWorldPause.h controllers/QcWorldPause.cpp
@@ -47,10 +40,12 @@ target_sources(qc_app_core PRIVATE
     debug/QcDebugSettings.h debug/QcDebugSettings.cpp
     debug/QcDebugVisuals.h debug/QcDebugVisuals.cpp
     debug/QcGraphItem.h debug/QcGraphItem.cpp
+    debug/QcStartCheck.h debug/QcStartCheck.cpp
 )
 target_sources(qc_app_core PRIVATE
     display/QcDisplaySettings.h display/QcDisplaySettings.cpp
     display/QcFrameLimiter.h display/QcFrameLimiter.cpp
+    display/QcGraphicsGuard.h display/QcGraphicsGuard.cpp
     display/QcWindowPlacement.h display/QcWindowPlacement.cpp
 )
 target_sources(qc_app_core PRIVATE
@@ -59,36 +54,53 @@ target_sources(qc_app_core PRIVATE
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
     hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
+    hooks/QcMenuPreselect.h hooks/QcMenuPreselect.cpp
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
     hooks/QcPendingScreens.h hooks/QcPendingScreens.cpp
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
     hooks/QcScriptedPad.h hooks/QcScriptedPad.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
+    hooks/QcStartupHooksWaiting.cpp
 )
 target_sources(qc_app_core PRIVATE
     input/QcFocusCandidates.h input/QcFocusCandidates.cpp
     input/QcGameInput.h input/QcGameInput.cpp
     input/QcGamepadBackend.h input/QcGamepadBackend.cpp
+    input/QcGamepadMenuInputForeign.h
     input/QcGamepadRoster.h input/QcGamepadRoster.cpp
     input/QcGamepadUi.h input/QcGamepadUi.cpp
     input/QcKeyControlsForeign.h
     input/QcMenuNavigator.h input/QcMenuNavigator.cpp
+    input/QcPadGlyphPainter.h input/QcPadGlyphPainter.cpp
     input/QcRelativeMouse.h
+)
+target_sources(qc_app_core PRIVATE
+    inventory/QcAnvilController.h inventory/QcAnvilController.cpp
+    inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
+    inventory/QcSlotActions.h
+    inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
+    inventory/QcStonecutterController.h inventory/QcStonecutterController.cpp
+    inventory/QcTradeController.h inventory/QcTradeController.cpp
 )
 target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
+    models/QcDurationText.h models/QcDurationText.cpp
     models/QcEnchantmentTexts.h models/QcEnchantmentTexts.cpp
+    models/QcGameModeForeign.h
     models/QcHandbookModel.h models/QcHandbookModel.cpp
     models/QcInventoryModel.h models/QcInventoryModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcItemIconUrls.h models/QcItemIconUrls.cpp
     models/QcMapImageProvider.h models/QcMapImageProvider.cpp
+    models/QcModStatusForeign.h
     models/QcPixelArtProvider.h models/QcPixelArtProvider.cpp
+    models/QcPointsRow.h models/QcPointsRow.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
+    models/QcTexturePackForeign.h
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     models/QcUiScaling.h models/QcUiScaling.cpp
     models/QcUiTheme.h
@@ -126,6 +138,8 @@ target_sources(qc_app_core PRIVATE
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
+    rendering/QcEntityFramePuffs.cpp
+    rendering/QcForcedPose.h rendering/QcForcedPose.cpp
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
@@ -145,12 +159,24 @@ target_sources(qc_app_core PRIVATE
     rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
 target_sources(qc_app_core PRIVATE
+    session/QcAfterFrame.h session/QcAfterFrame.cpp
     session/QcFrameDriver.h session/QcFrameDriver.cpp
+    session/QcLoadingProgress.h session/QcLoadingProgress.cpp
     session/QcSessionAudio.h session/QcSessionAudio.cpp
     session/QcSessionParts.h
     session/QcSessionWiring.h session/QcSessionWiring.cpp
     session/QcWorldAtlas.h session/QcWorldAtlas.cpp
     session/QcWorldStarter.h session/QcWorldStarter.cpp
+)
+target_sources(qc_app_core PRIVATE
+    settings/QcAudioSettings.h settings/QcAudioSettings.cpp
+    settings/QcCharacterSettings.h settings/QcCharacterSettings.cpp
+    settings/QcDiagnosticsSettings.h settings/QcDiagnosticsSettings.cpp
+    settings/QcGamepadOptions.h settings/QcGamepadOptions.cpp
+    settings/QcRenderSettings.h settings/QcRenderSettings.cpp
+    settings/QcSceneOverrides.h settings/QcSceneOverrides.cpp
+    settings/QcSettingsController.h settings/QcSettingsController.cpp
+    settings/QcTexturePackController.h settings/QcTexturePackController.cpp
 )
 # The mouse capture talks to the platform (AppKit on macOS).
 if(APPLE)
@@ -195,6 +221,10 @@ qt_add_qml_module(qc_app_core
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
     QML_FILES
         qml/Main.qml
+        qml/Notices.qml
+        qml/OverlayScreen.qml
+        qml/PadLayer.qml
+        qml/Screens.qml
         qml/admin/AdminActionDialog.qml
         qml/admin/AdminChatPage.qml
         qml/admin/AdminCommandIndex.qml
@@ -226,6 +256,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/Hint.qml
         qml/controls/ItemSlot.qml
         qml/controls/KeyBadge.qml
+        qml/controls/KeyHintRow.qml
         qml/controls/LineChart.qml
         qml/controls/ListRow.qml
         qml/controls/Segments.qml
@@ -234,6 +265,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/ThemedToolTip.qml
         qml/controls/Ui.qml
         qml/controls/WindowFont.qml
+        qml/frames/KeepAlive.qml
         qml/frames/LazyScreen.qml
         qml/frames/ModalDialog.qml
         qml/frames/NavButton.qml
@@ -251,11 +283,13 @@ qt_add_qml_module(qc_app_core
         qml/gamepad/PadHints.qml
         qml/gamepad/PadNotice.qml
         qml/handbook/HandbookEntryRow.qml
+        qml/handbook/HandbookFacts.qml
         qml/handbook/HandbookLink.qml
         qml/handbook/HandbookPage.qml
         qml/handbook/HandbookRecipe.qml
         qml/handbook/HandbookScreen.qml
         qml/hud/AdvancementToast.qml
+        qml/hud/AirBar.qml
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
         qml/hud/DialDisplay.qml
@@ -263,8 +297,9 @@ qt_add_qml_module(qc_app_core
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
         qml/hud/MapInHand.qml
-        qml/hud/PhotoNotice.qml
+        qml/hud/Notice.qml
         qml/hud/PlayerListOverlay.qml
+        qml/hud/PointsIconRow.qml
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/AnvilScreen.qml
@@ -283,7 +318,6 @@ qt_add_qml_module(qc_app_core
         qml/inventory/SlotScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
-        qml/inventory/WorkbenchTitle.qml
         qml/menus/CharacterPage.qml
         qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml
@@ -292,6 +326,10 @@ qt_add_qml_module(qc_app_core
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/LeaveGameButton.qml
+        qml/menus/LoadingBackdrop.qml
+        qml/menus/LoadingBar.qml
+        qml/menus/LoadingScreen.qml
+        qml/menus/LoadingStep.qml
         qml/menus/MainMenu.qml
         qml/menus/MapPreviewGroup.qml
         qml/menus/MapProgress.qml
@@ -303,6 +341,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/menus/StartScreen.qml
         qml/menus/WorldCard.qml
         qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml
@@ -370,6 +409,7 @@ qt_add_executable(qtcraft
     startup/QcAppOptions.h startup/QcAppOptions.cpp
     startup/QcAppStartup.h startup/QcAppStartup.cpp
     startup/QcAppWindow.h startup/QcAppWindow.cpp
+    startup/QcStartFailure.h startup/QcStartFailure.cpp
 )
 if(APPLE)
     target_sources(qtcraft PRIVATE hooks/QcScriptedRun_mac.mm)

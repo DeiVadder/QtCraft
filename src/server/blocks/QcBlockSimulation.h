@@ -16,25 +16,28 @@ class QcServerFallingBlocks;
 class QcServerSounds;
 class QcServerState;
 
-// The per-tick block simulation of the server: queued neighbour updates (connections, lost support,
-// starting falls through QcServerFallingBlocks, fire that lost its place going out) and liquid flow.
+/*! \brief The per-tick block simulation of the server: queued neighbour updates (connections,
+    lost support, starting falls through QcServerFallingBlocks, fire that lost its place going
+    out) and liquid flow. */
 class QcBlockSimulation
 {
 public:
-    // Neighbour updates (connections, lost support) processed per tick at most by default
-    // (QcServerLimits::blockUpdatesPerTick); the rest waits for the next tick, so a long chain of falling torches never stalls the server. Updates caused by
-    // players go first; those of commands (/fill) and their cascades use what is left.
+    /*! Neighbour updates (connections, lost support) processed per tick at most by default
+        (QcServerLimits::blockUpdatesPerTick); the rest waits for the next tick, so a long chain
+        of falling torches never stalls the server. Updates caused by players go first; those of
+        commands (/fill) and their cascades use what is left. */
     static constexpr int maxBlockUpdatesPerTick = static_cast<int>(QcServerLimits{}.blockUpdatesPerTick);
 
     QcBlockSimulation(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates, QcServerBlocks &blocks,
                       QcServerFallingBlocks &falling);
 
-    // Re-derives connections and breaks blocks that lost their support, within the tick budget.
-    // Positions in unloaded chunks wait until the chunk loads again.
+    /*! Re-derives connections and breaks blocks that lost their support, within the tick budget.
+        Positions in unloaded chunks wait until the chunk loads again. */
     void processBlockUpdates();
-    // Runs the due flow steps of liquids within their budget (decision E-054).
+    /*! Runs the due flow steps of liquids within their budget (decision E-054). */
     void processLiquids();
-    // Lava that gets a block update may light fire next to it (decision E-393).
+    /*! Sets \a ignition, with which lava that gets a block update may light fire next to it
+        (decision E-393). */
     void setIgnition(QcFireIgnition *ignition) { m_ignition = ignition; }
 
 private:

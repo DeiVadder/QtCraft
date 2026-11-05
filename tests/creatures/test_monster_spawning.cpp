@@ -60,7 +60,7 @@ private:
         return *id;
     }
 
-    int type(const QString &name) const { return m_content->mobIndex(u"qtcraft:"_s + name).value_or(0); }
+    QcCreatureKindId type(const QString &name) const { return m_content->mobKind(u"qtcraft:"_s + name).value_or(QcCreatureKindId{}); }
 
     std::unique_ptr<QcServerWorld> makeWorld(const std::shared_ptr<const QcContentRegistry> &content, int radius) const
     {

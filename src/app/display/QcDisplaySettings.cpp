@@ -3,8 +3,8 @@
 
 #include "app/display/QcDisplaySettings.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/settings/QcKeyControls.h"
 #include "common/core/QcDowncast.h"
 

@@ -13,38 +13,46 @@ class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
 
-// What players do to armour stands (decision E-238): placing one from its item, putting armour and
-// the held item on or taking them off, and breaking it (two quick hits) with its drops.
+/*! \brief What players do to armour stands (decision E-238): placing one from its item, putting
+    armour and the held item on or taking them off, and breaking it (two quick hits) with its
+    drops. */
 class QcServerStands
 {
 public:
-    // Stands are turned to face the player in steps of this many degrees.
+    /*! Stands are turned to face the player in steps of this many degrees. */
     static constexpr float yawStep = 45.0f;
 
     QcServerStands(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
-    // Places a stand from the held item on top of the clicked block; false when the item places no
-    // stand. A refused placement (no room, too far, limit) still returns true.
+    /*! Places a stand from the held item of \a client on top of the block \a message clicked.
+        Returns \c false when the item places no stand. A refused placement (no room, too far,
+        limit) still returns true. */
     bool place(QcServerClient &client, const QcMsg::UseItem &message);
-    // Right click on a stand; false when `id` is no stand.
+    /*! Handles a right click of \a client on the stand \a id. Returns \c false when \a id is no
+        stand. */
     bool use(QcServerClient &client, quint32 id);
-    // A hit on a stand (none in adventure mode); false when `id` is no stand.
+    /*! Handles a hit of \a client on the stand \a id (none in adventure mode). Returns
+        \c false when \a id is no stand. */
     bool hit(QcServerClient &client, quint32 id);
-    // The stands' hit timers in a simulated tick (and stands in the void go).
+    /*! The stands' hit timers in a simulated tick (and stands in the void go). */
     void tick();
-    // Removes the stand; with `drops` its item, armour and held item fall where it stood.
+    /*! Removes the stand \a id; with \a drops its item, armour and held item fall where it
+        stood. */
     void breakStand(quint32 id, bool drops);
-    // Adds a stand (commands, world setup); its id is assigned here. Null when the limit is reached.
+    /*! Adds \a stand (commands, world setup); its id is assigned here. Returns it, or null when
+        the limit is reached. */
     QcArmourStand *spawn(QcArmourStand stand);
-    // Drops the armour and held item `before` had and `after` no longer has (a command replaced or
-    // cleared them) where the stand stands.
+    /*! Drops the armour and held item \a before had and \a after no longer has (a command
+        replaced or cleared them) where the stand stands. */
     void dropReplaced(const QcArmourStand &before, const QcArmourStand &after);
-    // Everyone who sees the stand gets it again.
+    /*! Everyone who sees \a stand gets it again. */
     void changed(const QcArmourStand &stand);
 
-    // The equipment slot of the body part at `height` metres above the feet of a full-size stand.
+    /*! Returns the equipment slot of the body part at \a height metres above the feet of a
+        full-size stand. */
     static QcEquipmentSlot slotAtHeight(double height);
-    // The yaw a stand placed by a player looking along `playerYaw` gets: facing the player, in yawStep steps.
+    /*! Returns the yaw a stand placed by a player looking along \a playerYaw gets: facing the
+        player, in yawStep steps. */
     static float facingYaw(float playerYaw);
 
 private:

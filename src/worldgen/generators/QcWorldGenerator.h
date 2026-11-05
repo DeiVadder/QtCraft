@@ -141,8 +141,9 @@ public:
         set by QcWorldGenerators::create, the current one for generators made directly. The
         server opens a world only with a generator of the world's version. */
     [[nodiscard]] int version() const { return m_version; }
-    /*! Sets the world generator version it generates as to \a version. */
-    void setVersion(int version) { m_version = version; }
+    /*! Sets the world generator version it generates as to \a version; a generator whose parts
+        keep a version of their own passes it on (before anything is generated). */
+    virtual void setVersion(int version) { m_version = version; }
 
 protected:
     /*! Filled by the constructors of the generators. */

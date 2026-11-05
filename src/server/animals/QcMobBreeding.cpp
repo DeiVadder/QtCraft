@@ -17,7 +17,7 @@ QcMobBreeding::QcMobBreeding(std::shared_ptr<const QcContentRegistry> content)
 
 bool QcMobBreeding::wouldEat(const QcCreature &mob, const QString &item) const
 {
-    if (mob.type < 0 || mob.type >= m_content->mobs().size()) {
+    if (!m_content->mobs().contains(mob.type)) {
         return false;
     }
 
@@ -135,7 +135,7 @@ qsizetype QcMobBreeding::partnerOf(const QcBlockAccess &world, const QList<QcCre
     return -1;
 }
 
-bool QcMobBreeding::roomFor(const QList<QcCreature> &mobs, int type, const QcVec3 &position) const
+bool QcMobBreeding::roomFor(const QList<QcCreature> &mobs, QcCreatureKindId type, const QcVec3 &position) const
 {
     const QcChunkPos centre = QcPhysics::blockContaining(position).chunk();
     const auto near = [&](const QcCreature &mob) {

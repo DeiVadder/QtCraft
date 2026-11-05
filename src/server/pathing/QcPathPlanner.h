@@ -19,43 +19,52 @@ class QcBlockAccess;
 class QcContentRegistry;
 struct QcCreature;
 
-// Path searches of all creatures within a budget per tick (decision E-400). Creatures ask for a
-// path (QcMobNavigator); at the start of the next tick the waiting searches run in the order they
-// were asked for until the next would overrun the tick's node budget (QcServerLimits
-// pathNodesPerTick); the rest wait for the next tick at the front of the queue, so every creature
-// gets its turn. While other creatures wait, villagers' searches use at most all but a quarter of
-// the budget (otherCreaturesShare, decision E-490), except the first villager search of a tick,
-// which always runs. A search expands at most pathNodesPerSearch nodes (a wanderer a quarter of
-// that) and a path keeps at most pathLength waypoints. A budget of 0 switches path finding off:
-// creatures then walk straight at their goals.
+/*! \brief Path searches of all creatures within a budget per tick (decision E-400).
+
+    Creatures ask for a path (QcMobNavigator); at the start of the next tick the waiting searches
+    run in the order they were asked for until the next would overrun the tick's node budget
+    (QcServerLimits pathNodesPerTick); the rest wait for the next tick at the front of the queue,
+    so every creature gets its turn. While other creatures wait, villagers' searches use at most
+    all but a quarter of the budget (otherCreaturesShare, decision E-490), except the first
+    villager search of a tick, which always runs. A search expands at most pathNodesPerSearch
+    nodes (a wanderer a quarter of that) and a path keeps at most pathLength waypoints. A budget
+    of 0 switches path finding off: creatures then walk straight at their goals. */
 class QcPathPlanner
 {
 public:
-    // One in this many nodes of the budget is kept for creatures other than villagers while any of
-    // them waits.
+    /*! One in this many nodes of the budget is kept for creatures other than villagers while any
+        of them waits. */
     static constexpr int otherCreaturesShare = 4;
-    // A search that failed this many times in a row has 2^maxWidening times the nodes of one search
-    // (at most a tick's budget); wanderers never widen.
+    /*! A search that failed this many times in a row has 2^maxWidening times the nodes of one
+        search (at most a tick's budget); wanderers never widen. */
     static constexpr int maxWidening = 3;
 
     explicit QcPathPlanner(const QcContentRegistry &content);
 
+    /*! Sets the budgets: \a nodesPerTick nodes per tick, \a nodesPerSearch per search, paths of
+        at most \a pathLength cells (QcServerLimits). */
     void setLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength);
+    /*! Returns whether searches run at all (a budget per tick above 0). */
     bool enabled() const { return m_nodesPerTick > 0; }
+    /*! Returns the path cells of the blocks. */
     const QcPathCellTable &cells() const { return m_cells; }
 
-    // Queues a search for the creature's goal (QcMobPath) unless one is waiting.
+    /*! Queues a search for the goal of \a mob (QcMobPath) unless one is waiting. */
     void request(QcCreature &mob);
-    // Runs the waiting searches within this tick's budget. `rulesOf` gives the rules of a creature's kind.
+    /*! Runs the waiting searches of \a mobs in \a world within this tick's budget. \a rulesOf
+        gives the rules of a creature's kind. */
     void serve(const QcBlockAccess &world, std::span<QcCreature> mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf);
 
-    // Nodes expanded in the last tick, searches run in it and waiting after it (tests, debug).
+    /*! Returns the nodes expanded in the last tick (tests, debug). */
     int nodesLastTick() const { return m_nodesLastTick; }
-    // Of them, the nodes of villagers' searches (measurements of the shared budget, decision E-424).
+    /*! Returns the nodes of villagers' searches among them (measurements of the shared budget,
+        decision E-424). */
     int villagerNodesLastTick() const { return m_villagerNodesLastTick; }
+    /*! Returns the searches run in the last tick. */
     int searchesLastTick() const { return m_searchesLastTick; }
+    /*! Returns the searches waiting after the last tick. */
     qsizetype waiting() const { return static_cast<qsizetype>(m_queue.size()); }
-    // Searches run since the start (tests).
+    /*! Returns the searches run since the start (tests). */
     qint64 searches() const { return m_searches; }
 
 private:

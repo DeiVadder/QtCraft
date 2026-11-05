@@ -9,51 +9,57 @@
 #include <optional>
 #include <vector>
 
-// What one search looks for (decision E-400).
+/*! \brief What one search looks for (decision E-400). */
 struct QcPathRequest
 {
-    // Feet cell of the creature and of its goal.
+    /*! Feet cell of the creature and of its goal. \qcshared */
     QcBlockPos start;
     QcBlockPos goal;
-    // Cells around the goal (horizontally, and one up or down) that count as there: a hunter only
-    // needs to come next to its prey.
+    /*! Cells around the goal (horizontally, and one up or down) that count as there: a hunter
+        only needs to come next to its prey. */
     int closeEnough = 0;
-    // Nodes the search may expand at most, and waypoints the path keeps at most.
+    /*! Nodes the search may expand at most, and waypoints the path keeps at most. \qcshared */
     int maxNodes = 512;
     int maxLength = 64;
-    // Columns of the body along each axis (QcPathRules::footprint): a feet cell counts as at the
-    // goal when the body's columns (from it up to this many cells on) hold the goal's cell.
+    /*! Columns of the body along each axis (QcPathRules::footprint): a feet cell counts as at
+        the goal when the body's columns (from it up to this many cells on) hold the goal's cell. */
     int bodyCells = 1;
 };
 
-// A path as feet cells after the start, in order.
+/*! \brief A path as feet cells after the start, in order. */
 struct QcPathResult
 {
+    /*! The cells. */
     std::vector<QcBlockPos> cells;
-    // The creature stood somewhere a search can start from.
+    /*! The creature stood somewhere a search can start from. */
     bool started = false;
-    // The last cell is at the goal; otherwise the path leads to the reached cell closest to it
-    // (a partial path: the goal is out of reach, behind the node budget or beyond `maxLength`).
+    /*! The last cell is at the goal; otherwise the path leads to the reached cell closest to it (a
+        partial path: the goal is out of reach, behind the node budget or beyond \c {maxLength}). */
     bool reachesGoal = false;
-    // Nodes expanded (counted against the budgets).
+    /*! Nodes expanded (counted against the budgets). */
     int nodes = 0;
 };
 
-// A* over the cells a creature can stand in (QcPathTerrain), bounded by a node budget and by the
-// window around the start (QcPathWindow). Moves: the four sides (a step up of at most
-// QcPathRules::climbHeight with room to jump, level, or a drop of at most QcPathRules::maxDrop,
-// deeper only into deep water), up and down along a ladder (a creature that climbs), and the diagonals between two free sides
-// on the same level. Costs:
-// distance, a little for climbing and dropping, much for water (a walker), magma floors and cobwebs,
-// a little beside walls, so paths keep to open cells, and more beside fire and lava. The
-// heuristic is weighted (1.25): paths are at most a quarter longer than the shortest, for far fewer
-// nodes. The body's width counts (decision E-909): no step through the side of a cell a panel
-// covers, no diagonal beside a panel, and a body wider than a block moves its four columns.
+/*! \brief A* over the cells a creature can stand in (QcPathTerrain), bounded by a node budget and
+    by the window around the start (QcPathWindow).
+
+    Moves: the four sides (a step up of at most QcPathRules::climbHeight with room to jump,
+    level, or a drop of at most QcPathRules::maxDrop, deeper only into deep water), up and down
+    along a ladder (a creature that climbs), and the diagonals between two free sides on the same
+    level. Costs: distance, a little for climbing and dropping, much for water (a walker), magma
+    floors and cobwebs, a little beside walls, so paths keep to open cells, and more beside fire
+    and lava. The heuristic is weighted (1.25): paths are at most a quarter longer than the
+    shortest, for far fewer nodes. The body's width counts (decision E-909): no step through the
+    side of a cell a panel covers, no diagonal beside a panel, and a body wider than a block
+    moves its four columns. */
 class QcPathFinder
 {
 public:
+    /*! The weight of the heuristic. */
     static constexpr float heuristicWeight = 1.25f;
 
+    /*! Returns the path in \a world (path cells from \a table) for a creature under \a rules
+        that \a request asks for. */
     QcPathResult find(const QcBlockAccess &world, const QcPathCellTable &table, QcPathRules rules,
                       const QcPathRequest &request);
 

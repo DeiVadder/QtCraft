@@ -18,9 +18,11 @@
 
 #include <QDataStream>
 #include <QIODevice>
+#include <QRegularExpression>
 #include <QTest>
 
 #include <cmath>
+#include <limits>
 
 using namespace Qt::StringLiterals;
 
@@ -137,8 +139,13 @@ private slots:
         camera.setZoom(7.0);
         QCOMPARE(camera.zoom(), 1.0);
         QVERIFY((camera.camera().position - QcVec3{0.0, 1.55, 1.5}).length() < 1e-9);
+        // A value that is not finite is refused with a warning and changes nothing.
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"zoom .* refused: not finite"_s));
         camera.setZoom(std::nan(""));
         QCOMPARE(camera.zoom(), 1.0);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"yaw .* refused: not finite"_s));
+        camera.setModelYaw(std::numeric_limits<double>::infinity());
+        QCOMPARE(camera.modelYaw(), 0.0);
 
         camera.reset();
         QCOMPARE(camera.zoom(), 0.0);
@@ -327,7 +334,7 @@ private slots:
         // (78618f4), renewed when the held item became one flat sprite in the fist (decision E-831).
         // The held look is made here without a shape and without the content's placement, so the
         // fingerprints also cover the flat-sprite fallback at the default HeldPlacement; held.json
-        // does not change them.
+        // does not change them. The sneaking swing (pose 2) renewed with the bent sneak (E-965).
         QcEntityMesher::ModelLook look;
         look.model = content.assets().model(u"qtcraft:humanoid"_s);
         look.outfit = content.assets().appearance(u"qtcraft:miner"_s);
@@ -336,7 +343,7 @@ private slots:
         look.colors.skinColor = 0xb97b56;
         QcEntityMesher::ItemLook held;
         held.sprite = content.item(*content.itemId(u"qtcraft:iron_pickaxe"_s)).texture;
-        const QList<quint32> before{0x22946b29, 0xf9ce603a, 0x6e3111c1, 0x4bd06cfd, 0x9fd8326b};
+        const QList<quint32> before{0x22946b29, 0xf9ce603a, 0xfcea51f0, 0x4bd06cfd, 0x9fd8326b};
 
         const QList<QcEntityPose> poses = worldPoses();
         QCOMPARE(poses.size(), before.size());
@@ -376,7 +383,7 @@ private slots:
         QcMsg::EntitySpawn zombie;
         zombie.id = 8;
         zombie.kind = QcEntityKind::Creature;
-        zombie.creatureType = 0;
+        zombie.creatureType = QcCreatureKindId{0};
         zombie.equipment.at(QcEquipmentSlot::Chest) = {helmet, 1, 0};
         QVERIFY(entities.spawn(zombie, &content));
         QVERIFY(entities.all().value(8).equipment.isEmpty());

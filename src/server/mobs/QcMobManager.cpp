@@ -82,7 +82,7 @@ QcCreature *QcMobManager::find(quint32 id)
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
-quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
+quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
 {
     QcCreature mob;
     mob.underground = underground;
@@ -150,8 +150,13 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     }
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
+        mob.hurtUnsent = true;
+        // A push or a player's blow strikes it; a status effect's damage does not (decision E-974).
+        mob.struckUnsent = mob.struckUnsent || blow.knockback > 0.0 || blow.attacker != 0;
         if (blow.knockback > 0.0 && resisted > 0.0) {
             mob.motion.velocity = knockbackVelocity(away, blow.knockback * resisted, blow.lift);
+            // Off the ground at once: the next step must not stop the push like a walk (decision E-971).
+            mob.motion.onGround = false;
         }
     }
 
@@ -195,6 +200,14 @@ void QcMobManager::setHurtTicks(int ticks)
     m_hurtTicks = ticks;
 }
 
+void QcMobManager::clearSentHurts()
+{
+    for (QcCreature &mob : m_mobs) {
+        mob.hurtUnsent = false;
+        mob.struckUnsent = false;
+    }
+}
+
 bool QcMobManager::hurt(quint32 mobId, double amount)
 {
     return wound(mobId, amount).has_value();
@@ -219,6 +232,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
     const double taken = it->hurt.take(amount, m_hurtTicks);
     it->health -= taken;
     it->hurtThisTick = it->hurtThisTick || take == QcHurtWindow::Take::Fresh;
+    it->hurtUnsent = it->hurtUnsent || take == QcHurtWindow::Take::Fresh;
     it->woundedThisTick = it->woundedThisTick || (take == QcHurtWindow::Take::Fresh && taken > 0.0);
     if (it->health > 0.0) {
         return std::nullopt;
@@ -439,6 +453,8 @@ void QcMobManager::carryBlock(QcCreature &mob, QcBlockId block) const
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
+    // The reactions to the hurts (infestation, families) ran before; the clients' copy of a hurt is
+    // hurtUnsent (clearSentHurts).
     for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
         mob.woundedThisTick = false;
@@ -548,7 +564,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
     m_populated.unite(populated);
     QSet<quint64> uids = loadedUids(m_mobs);
     for (const Stored &stored : mobs) {
-        if (stored.type < 0 || stored.type >= m_content->mobs().size()) {
+        if (!m_content->mobs().contains(stored.type)) {
             continue;
         }
 

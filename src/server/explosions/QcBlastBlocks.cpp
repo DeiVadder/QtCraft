@@ -46,9 +46,9 @@ quint32 QcBlastBlocks::roll(const Work &work, quint32 salt, quint32 bound) const
     return dice.roll(work.pos, salt, bound);
 }
 
-QList<QcBlastBlocks::Chained> QcBlastBlocks::take(qint64 budget)
+QList<QcPlacedBlock> QcBlastBlocks::take(qint64 budget)
 {
-    QList<Chained> chained;
+    QList<QcPlacedBlock> chained;
     for (; budget > 0 && !m_waiting.empty(); --budget) {
         const Work work = m_waiting.front();
         m_waiting.pop_front();

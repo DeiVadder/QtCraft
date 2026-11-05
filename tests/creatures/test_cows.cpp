@@ -17,7 +17,7 @@ class TestCows : public QcServerTestFixture
 private:
     static inline const QString poison = u"qtcraft:poison"_s;
 
-    int cowType() const { return *m_content->mobIndex(u"qtcraft:cow"_s); }
+    QcCreatureKindId cowType() const { return *m_content->mobKind(u"qtcraft:cow"_s); }
     const QcMobDefinition &cow() const { return m_content->mobs()[cowType()]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
     QcServerClient &player() { return *m_server->entities().clients().front(); }
@@ -158,7 +158,7 @@ private slots:
         const QcResult<QcContentRegistry> client = QcContentSerializer::read(in);
         QVERIFY(client.has_value());
         const auto itemOf = [&client](const QString &name) -> const QcItemDefinition & { return client->item(*client->itemId(name)); };
-        const QcMobDefinition &cow = client->mobs()[*client->mobIndex(u"qtcraft:cow"_s)];
+        const QcMobDefinition &cow = client->mobs()[*client->mobKind(u"qtcraft:cow"_s)];
         QCOMPARE(cow.milkWith, u"qtcraft:bucket"_s);
         const QcItemDefinition &milk = itemOf(u"qtcraft:milk_bucket"_s);
         QVERIFY(milk.drink.has_value());

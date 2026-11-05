@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/worldgen/QcCoastalTowerDefinition.h"
+#include "worldgen/structures/QcStructure.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/towers/QcCoastalTowerPlan.h"
 
@@ -28,8 +29,6 @@ class QcTerrainGenerator;
 class QcCoastalTowerPlanner
 {
 public:
-    /*! Columns covered by a tower. */
-    using Footprint = QcCoastalTowerPlan::Footprint;
 
     /*! Plans with the settings of \a content (\c {coastalTowers}) over the noise of \a terrain,
         seeded from \a seed. Unresolvable structures or blocks are left out with a warning
@@ -62,14 +61,8 @@ public:
     [[nodiscard]] std::optional<int> coastTop(int x, int z) const;
 
 private:
-    struct Kind
-    {
-        std::shared_ptr<const QcStructure> structure;
-        int weight = 1;
-    };
-
     void resolve(const QcContentRegistry &content);
-    const Kind &pick(double random) const;
+    const QcWeightedStructure &pick(double random) const;
     // The grid of candidate sites: whether each point is land at a tower's height or open sea.
     struct Grid
     {
@@ -96,22 +89,22 @@ private:
     // height with a grid column of the sea near, in a random order.
     QList<std::pair<int, int>> candidates(int regionX, int regionZ, int margin) const;
     // A tower of `kind` centred on the column, if the site fits.
-    [[nodiscard]] std::optional<QcCoastalTowerPlan> siteAt(const Kind &kind, int x, int z, double turn) const;
+    [[nodiscard]] std::optional<QcCoastalTowerPlan> siteAt(const QcWeightedStructure &kind, int x, int z, double turn) const;
     // The ground's top at a column at a tower's height with no cave in its top layers.
     [[nodiscard]] std::optional<int> groundUnder(int x, int z) const;
     // The floor's height over a footprint: its highest ground top, when every column lies at a
     // tower's height and the columns differ by at most `maxSlope`.
-    [[nodiscard]] std::optional<int> floorOver(Footprint footprint) const;
+    [[nodiscard]] std::optional<int> floorOver(QcXzRect footprint) const;
     // The ground's top in front of the door, when one steps from it onto the floor.
     [[nodiscard]] std::optional<QcBlockPos> doorstepOf(const QcStructurePlacement &placement) const;
     // The nearest column of the sea within `coastDistance` of the footprint (rings outwards).
-    [[nodiscard]] std::optional<QcBlockPos> oceanNear(Footprint footprint) const;
-    [[nodiscard]] std::optional<QcBlockPos> oceanOnRing(Footprint ring) const;
+    [[nodiscard]] std::optional<QcBlockPos> oceanNear(QcXzRect footprint) const;
+    [[nodiscard]] std::optional<QcBlockPos> oceanOnRing(QcXzRect ring) const;
     // No village, no mine shaft entrance and no surface structure within `clearance` of the footprint.
-    bool clearOfOthers(Footprint footprint) const;
-    bool nearVillage(Footprint around) const;
-    bool nearEntrance(Footprint around) const;
-    bool nearSurfaceStructure(Footprint around) const;
+    bool clearOfOthers(QcXzRect footprint) const;
+    bool nearVillage(QcXzRect around) const;
+    bool nearEntrance(QcXzRect around) const;
+    bool nearSurfaceStructure(QcXzRect around) const;
     double random(int regionX, int regionZ, int purpose, int index = 0) const;
 
     const QcTerrainGenerator &m_terrain;
@@ -121,6 +114,5 @@ private:
     quint64 m_seed = 0;
     bool m_enabled = false;
     QcBlockId m_foundation = qcAirBlockId;
-    QList<Kind> m_kinds;
-    int m_totalWeight = 0;
+    QList<QcWeightedStructure> m_kinds;
 };

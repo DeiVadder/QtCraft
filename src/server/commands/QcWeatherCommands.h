@@ -8,14 +8,16 @@
 class QcServerState;
 class QcServerWeather;
 
-// /weather (decision E-395): everyone may ask for the weather, operators set it, for a number of
-// seconds or as long as the world's course says (QcWeatherCycle). With the game rule weatherCycle
-// off the set weather stays until /weather changes it again.
+/*! \brief /weather (decision E-395): everyone may ask for the weather, operators set it, for a
+    number of seconds or as long as the world's course says (QcWeatherCycle).
+
+    With the game rule weatherCycle off the set weather stays until /weather changes it again. */
 class QcWeatherCommands
 {
 public:
     QcWeatherCommands(QcServerState &state, QcServerWeather &weather);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

@@ -16,9 +16,45 @@
 #include <QQuickWindow>
 #include <QTimer>
 
+#include <algorithm>
 #include <utility>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The first item named `name` in the item tree below `item`: delegates of a Repeater hang in it by
+// their parent item only, so QObject::findChild() misses them.
+const QQuickItem *firstNamedItem(const QQuickItem *item, const QString &name)
+{
+    const QList<QQuickItem *> children = item->childItems();
+    for (const QQuickItem *child : children) {
+        if (child->objectName() == name) {
+            return child;
+        }
+        if (const QQuickItem *found = firstNamedItem(child, name)) {
+            return found;
+        }
+    }
+    return nullptr;
+}
+
+// The item of that name to log: the first shown one, else the first at all. Screens that share a
+// frame (the machines' SlotScreen) carry the same names, and only the open one is shown.
+const QQuickItem *namedItem(const QQuickWindow &window, const QString &name)
+{
+    const QList<QQuickItem *> items = window.findChildren<QQuickItem *>(name);
+    const auto shown = std::ranges::find_if(items, [](const QQuickItem *item) { return item->isVisible(); });
+    if (shown != items.end()) {
+        return *shown;
+    }
+    if (!items.isEmpty()) {
+        return items.constFirst();
+    }
+    return firstNamedItem(window.contentItem(), name);
+}
+
+} // namespace
 
 QcScreenshotHook::QcScreenshotHook(QQuickWindow *window, QString filePath, int frameCount, Checks checks, QObject *parent)
     : QObject(parent)
@@ -167,7 +203,7 @@ void QcScreenshotHook::logItems() const
     const QQuickItem *content = m_window->contentItem();
     for (const QString &name : m_loggedItems) {
         // The items keep their QObject parents when offscreen runs move them into another window.
-        const auto *item = m_window->findChild<QQuickItem *>(name);
+        const QQuickItem *item = namedItem(*m_window, name);
         if (!item) {
             qCInfo(lcScreenshot).noquote() << u"Item %1: not found"_s.arg(name);
             continue;

@@ -27,7 +27,7 @@ private:
     // A creature of `type` at `pos`.
     quint32 spawnAt(const QString &type, QcBlockPos pos)
     {
-        return m_server->mobs().spawn(*m_content->mobIndex(type), {pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5}, m_server->entities().newId());
+        return m_server->mobs().spawn(*m_content->mobKind(type), {pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5}, m_server->entities().newId());
     }
 
     // A survival player with one health point at night, in the open; the creatures come later.
@@ -78,7 +78,7 @@ private slots:
         QVERIFY(waitForDeath(400));
         const QcMsg::ChatMessage line = deathLine();
         QCOMPARE(line.key, u"%1 was slain by %2"_s);
-        const QString zombie = m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)].translationKey;
+        const QString zombie = m_content->mobs()[*m_content->mobKind(u"qtcraft:zombie"_s)].translationKey;
         QCOMPARE(line.arguments, (QStringList{u"Raw"_s, m_content->translations().translate(zombie, u"en"_s)}));
         QCOMPARE(line.contentKeys, (QStringList{QString(), zombie}));
         // The client shows the kind in its language; without a text for the key, the English argument.
@@ -111,7 +111,7 @@ private slots:
         QVERIFY(waitForDeath(1200));
         const QcMsg::ChatMessage line = deathLine();
         QCOMPARE(line.key, u"%1 was shot by %2"_s);
-        QCOMPARE(line.contentKeys.value(1), m_content->mobs()[*m_content->mobIndex(u"qtcraft:skeleton"_s)].translationKey);
+        QCOMPARE(line.contentKeys.value(1), m_content->mobs()[*m_content->mobKind(u"qtcraft:skeleton"_s)].translationKey);
     }
 
     void otherDeathsKeepTheirLines()
@@ -194,7 +194,7 @@ private slots:
         loadAround(m_feet);
         const auto named = std::ranges::find(m_server->mobs().mobs(), u"Agatha"_s, &QcCreature::name);
         QVERIFY(named != m_server->mobs().mobs().end());
-        QCOMPARE(named->type, *m_content->mobIndex(u"qtcraft:witch"_s));
+        QCOMPARE(named->type, *m_content->mobKind(u"qtcraft:witch"_s));
         QVERIFY(named->persistent);
     }
 };

@@ -91,7 +91,7 @@ private:
         m_server->world().setBlock(m_feet.offset(2, 0, 2), id("qtcraft:composter"));
 
         const quint32 entity = m_server->entities().newId();
-        const int type = *m_content->mobIndex(kind);
+        const QcCreatureKindId type = *m_content->mobKind(kind);
         m_server->mobs().spawn(type, QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 1.5}, entity);
         *villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettingsOf(type), 7);
         ticks(30);
@@ -100,7 +100,7 @@ private:
 
     QcCreature *villager(quint32 entity) { return m_server->mobs().find(entity); }
 
-    const QcVillagerTrades &trades() const { return m_server->mobs().villagers().trades(*m_content->mobIndex(u"qtcraft:villager"_s)); }
+    const QcVillagerTrades &trades() const { return m_server->mobs().villagers().trades(*m_content->mobKind(u"qtcraft:villager"_s)); }
 
     // Holds the villager next to the player (the routine would walk it away between ticks), or
     // `dx` blocks east of the player.
@@ -294,7 +294,7 @@ private slots:
     {
         const quint32 farmer = startWithWheatFarmer(meetPhase);
         QVERIFY(openWithWheat(farmer, 0) >= 0);
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), villager(farmer)->motion.position + QcVec3{4.0, 0.0, 0.0},
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), villager(farmer)->motion.position + QcVec3{4.0, 0.0, 0.0},
                                m_server->entities().newId());
         for (int tick = 0; tick < 40 && !m_client->tradeClosed; ++tick) {
             ticks(1);
@@ -549,7 +549,7 @@ private slots:
         gnomes.name = u"test:gnome"_s;
         gnomes.trading.offersPerLevel = 1;
         content->villageCatalog().registerVillagerSettings(gnomes);
-        QcMobDefinition gnome = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
+        QcMobDefinition gnome = content->mobs()[*content->mobKind(u"qtcraft:villager"_s)];
         gnome.name = u"test:gnome"_s;
         gnome.villagerSettings = gnomes.name;
         gnome.villagerSettingsIndex = -1;

@@ -9,18 +9,21 @@
 
 #include <utility>
 
-// The warnings of reading a world's saved chunks (blocks, entity and block entity records): the
-// readers add to it as they go, so what they found before a damaged part stays. A subject (an
-// unknown block, item or creature, keyed with its kind: "block:", "item:", ...) is reported once for
-// as long as the object lives: once per world, as QcChunkIo holds one.
+/*! \brief The warnings of reading a world's saved chunks (blocks, entity and block entity records):
+    the readers add to it as they go, so what they found before a damaged part stays.
+
+    A subject (an unknown block, item or creature, keyed with its kind: "block:", "item:", ...)
+    is reported once for as long as the object lives: once per world, as QcChunkIo holds one. */
 class QcLoadWarnings
 {
 public:
+    /*! Adds \a text. */
     void add(const QString &text) { m_texts.append(text); }
+    /*! Adds \a texts. */
     void add(const QStringList &texts) { m_texts.append(texts); }
 
-    // Adds `text` unless `subject` was reported before; subjects name their kind ("item:stone"),
-    // so a block and an item of the same name are two subjects.
+    /*! Adds \a text unless \a subject was reported before; subjects name their kind
+        ("item:stone"), so a block and an item of the same name are two subjects. */
     void addOnce(const QString &subject, const QString &text)
     {
         if (!m_reported.contains(subject)) {
@@ -29,9 +32,10 @@ public:
         }
     }
 
+    /*! Returns the warnings added since the last takeTexts(). */
     [[nodiscard]] const QStringList &texts() const { return m_texts; }
 
-    // The warnings added since the last call; the subjects stay reported.
+    /*! Returns the warnings added since the last call; the subjects stay reported. */
     [[nodiscard]] QStringList takeTexts() { return std::exchange(m_texts, {}); }
 
 private:

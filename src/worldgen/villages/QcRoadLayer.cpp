@@ -11,7 +11,6 @@
 
 namespace {
 
-using Rect = QcVillageDraft::Rect;
 constexpr auto &directions = QcVillageDraft::directions;
 
 // A winding road looks this far ahead for the flatter direction, and turns at most every few cells.
@@ -182,15 +181,15 @@ std::optional<QcRoadLayer::Ground> QcRoadLayer::roadGround(const QcVillageDraft 
     const bool ends = draft.style->overWater ? !QcBoardwalkPlanner::carries(m_terrain, draft.style->stilts, column)
                                              : std::abs(ground.height - from.height) > step;
     const auto [dx, dz] = directions[direction];
-    const Rect rect = QcVillageDraft::brush(cell, dx, dz, dx != 0 && dz != 0);
-    const bool blocked = checkPieces && std::ranges::any_of(draft.pieces, [&](Rect piece) { return piece.intersects(rect, 0); });
+    const QcXzRect rect = QcVillageDraft::brush(cell, dx, dz, dx != 0 && dz != 0);
+    const bool blocked = checkPieces && std::ranges::any_of(draft.pieces, [&](QcXzRect piece) { return piece.intersects(rect, 0); });
     if (ends || blocked || !draft.insideRadius(rect)) {
         return std::nullopt;
     }
     // Roads and bridges keep off river deltas (decision E-850): no column of the cell's widest
     // brush (the square one of a bend) in a delta. Last, after the cheaper tests.
-    const Rect square = QcVillageDraft::brush(cell, dx, dz, true);
-    if (m_terrain.touchesDelta({square.x0, square.z0, square.x1, square.z1})) {
+    const QcXzRect square = QcVillageDraft::brush(cell, dx, dz, true);
+    if (m_terrain.touchesDelta({square.minX, square.minZ, square.maxX, square.maxZ})) {
         return std::nullopt;
     }
     return ground;
@@ -303,11 +302,11 @@ void QcRoadLayer::paintRun(QcVillageDraft &draft, const Road &run, std::pair<boo
     for (int d = 0; d < run.length; ++d) {
         const bool joint = (d == 0 && joins.first) || (d == run.length - 1 && joins.second);
         const std::pair<int, int> middle{run.x + run.dx * d, run.z + run.dz * d};
-        const Rect rect = QcVillageDraft::brush(middle, run.dx, run.dz, run.diagonal() || joint);
+        const QcXzRect rect = QcVillageDraft::brush(middle, run.dx, run.dz, run.diagonal() || joint);
         // The cells across the road lie at the height of its middle line where the ground allows.
         const QcVillageDraft::RoadLevel level = roadLevel(draft, middle.first, middle.second);
-        for (int z = rect.z0; z <= rect.z1; ++z) {
-            for (int x = rect.x0; x <= rect.x1; ++x) {
+        for (int z = rect.minZ; z <= rect.maxZ; ++z) {
+            for (int x = rect.minX; x <= rect.maxX; ++x) {
                 draft.addRoadCell(m_terrain, {x, z}, run.branch, level);
             }
         }

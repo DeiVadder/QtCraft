@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-/*! \brief Thread-safe hand-over of values from producer threads to one consumer.
+/*! \brief Thread-safe hand-over of values of the type \a T from producer threads to one consumer.
 
     Uses std::mutex on purpose: ThreadSanitizer sees its happens-before edges, unlike Qt's event
     queue inside the uninstrumented QtCore. push() reports whether the box was empty, so the
@@ -33,6 +33,7 @@ public:
     }
 
 private:
+    // Producer threads hand values to the consumer's thread under this mutex.
     std::mutex m_mutex;
     std::vector<T> m_items;
 };

@@ -9,13 +9,14 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands that query blocks and act on them: block queries, mining, using the held item on a
-// block and lighting fire.
+/*! \brief Control commands that query blocks and act on them: block queries, mining, using the
+    held item on a block and lighting fire. */
 class QcControlWorldCommands
 {
 public:
     explicit QcControlWorldCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

@@ -89,20 +89,20 @@ private slots:
         buildArea();
         const QcBlockPos floor = at(4, -1, 4);
         for (const float yaw : {0.0f, 90.0f, 180.0f, 270.0f}) {
-            const std::optional<QcBlockRules::Placement> placed =
+            const std::optional<QcPlacedBlock> placed =
                 QcBlockRules::placement(m_server->world(), railState(), {floor, QcBlockFace::Up, {0.5, 1.0, 0.5}, yaw, 0.0f});
             QVERIFY(placed);
-            const std::optional<QcRails::Track> track = QcRails::trackOf(*m_content, placed->state);
+            const std::optional<QcRails::Track> track = QcRails::trackOf(*m_content, placed->block);
             const bool alongZ = track->ends[0].side == QcBlockFace::North || track->ends[0].side == QcBlockFace::South;
             QCOMPARE(alongZ, yaw == 0.0f || yaw == 180.0f);
         }
 
         // Next to a rail it joins the rail, wherever the player looks.
         lay({{4, 0, 4}});
-        const std::optional<QcBlockRules::Placement> beside =
+        const std::optional<QcPlacedBlock> beside =
             QcBlockRules::placement(m_server->world(), railState(), {at(5, -1, 4), QcBlockFace::Up, {0.5, 1.0, 0.5}, 0.0f, 0.0f});
-        QCOMPARE(QcRails::trackOf(*m_content, beside->state)->ends[0].side == QcBlockFace::East
-                     || QcRails::trackOf(*m_content, beside->state)->ends[0].side == QcBlockFace::West,
+        QCOMPARE(QcRails::trackOf(*m_content, beside->block)->ends[0].side == QcBlockFace::East
+                     || QcRails::trackOf(*m_content, beside->block)->ends[0].side == QcBlockFace::West,
                  true);
 
         // A pane has no solid top: no rail on it.

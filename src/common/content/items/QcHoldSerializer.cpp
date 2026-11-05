@@ -12,13 +12,6 @@ namespace {
 // Marks an unset category or grip.
 constexpr quint8 unset = 0xff;
 
-// The bounds one value of a vector must keep.
-struct Range
-{
-    double low;
-    double high;
-};
-
 void writeVector(QDataStream &stream, const std::optional<QcVec3> &vector)
 {
     stream << vector.has_value();
@@ -29,7 +22,7 @@ void writeVector(QDataStream &stream, const std::optional<QcVec3> &vector)
 
 // An engaged optional holding the vector (or std::nullopt when it is unset); std::nullopt when
 // the data is corrupt or out of `range`.
-[[nodiscard]] std::optional<std::optional<QcVec3>> readVector(QDataStream &stream, Range range)
+[[nodiscard]] std::optional<std::optional<QcVec3>> readVector(QDataStream &stream, QcHoldParser::Range range)
 {
     bool present = false;
     stream >> present;
@@ -92,6 +85,8 @@ void write(QDataStream &stream, const QcHoldDisplay &display)
     writeTransform(stream, display.firstPerson);
     writeTransform(stream, display.thirdPerson);
     writeTransform(stream, display.swing);
+    writeTransform(stream, display.drawn);
+    writeTransform(stream, display.thirdPersonDrawn);
 }
 
 std::optional<QcHoldDisplay> read(QDataStream &stream)
@@ -104,10 +99,12 @@ std::optional<QcHoldDisplay> read(QDataStream &stream)
     const std::optional<QcHoldTransform> firstPerson = readTransform(stream);
     const std::optional<QcHoldTransform> thirdPerson = readTransform(stream);
     const std::optional<QcHoldTransform> swing = readTransform(stream);
-    if (!category || !grip || !firstPerson || !thirdPerson || !swing || stream.status() != QDataStream::Ok) {
+    const std::optional<QcHoldTransform> drawn = readTransform(stream);
+    const std::optional<QcHoldTransform> thirdPersonDrawn = readTransform(stream);
+    if (!category || !grip || !firstPerson || !thirdPerson || !swing || !drawn || !thirdPersonDrawn || stream.status() != QDataStream::Ok) {
         return std::nullopt;
     }
-    return QcHoldDisplay{*category, *grip, *firstPerson, *thirdPerson, *swing};
+    return QcHoldDisplay{*category, *grip, *firstPerson, *thirdPerson, *swing, *drawn, *thirdPersonDrawn};
 }
 
 void writeDefaults(QDataStream &stream, const QcHoldDefaults &defaults)

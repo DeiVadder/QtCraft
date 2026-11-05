@@ -16,16 +16,21 @@ struct QcMinecart;
 struct QcServerClient;
 class QcServerState;
 
-// The screens of containers and machines the players have open (chests, hoppers, dispensers,
-// furnaces, container minecarts): opening, closing, sending their state. A container whose signal
-// counts its viewers (the trapped chest, decision E-783) shows in its state `power` how many players
-// look into it, at most 15. Storage blocks sound as they open and close (QcContainerSounds).
+/*! \brief The screens of containers and machines the players have open (chests, hoppers,
+    dispensers, furnaces, container minecarts): opening, closing, sending their state.
+
+    A container whose signal counts its viewers (the trapped chest, decision E-783) shows in its
+    state \c {power} how many players look into it, at most 15. Storage blocks sound as they open
+    and close (QcContainerSounds). */
 class QcBlockScreens
 {
 public:
-    // The slots of an open chest (a block at `pos`), container minecart (`cart`, decision E-386) or
-    // backpack opened from the hand (`heldSlot`, decision E-833). A portable container (a backpack,
-    // placed or held) holds nothing with contents (QcPortableContainers).
+    /*! \brief The slots of an open chest (a block at \c {pos}), container minecart (\c {cart},
+        decision E-386) or backpack opened from the hand (\c {heldSlot}, decision E-833).
+
+        A portable container (a backpack, placed or held) holds nothing with contents
+        (QcPortableContainers). \c {stacks} points to its slots, \c {portable} marks a portable
+        container. \qcfields */
     struct OpenContainer
     {
         QList<QcItemStack> *stacks = nullptr;
@@ -37,56 +42,61 @@ public:
 
     QcBlockScreens(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds);
 
-    // Opens the machine or chest screen of the block at `pos` for the player.
+    /*! Opens the machine or chest screen of the block at \a pos for the player \a client. */
     void open(QcServerClient &client, QcBlockPos pos);
-    // Opens the screen of a container minecart for the player.
+    /*! Opens the screen of the container minecart \a cart for the player \a client. */
     void openCart(QcServerClient &client, const QcMinecart &cart);
-    // Opens the held backpack (a portable container in the selected hotbar slot, decision E-833):
-    // its slots and the hotbar, its own slot locked. Contents its slots cannot show (beyond the slot
-    // count, or refused there) leave the item and are returned for the caller to give to the
-    // player, so the first click into the screen cannot delete them. Nothing when the player holds
-    // no backpack.
+    /*! Opens the backpack \a client holds (a portable container in the selected hotbar slot,
+        decision E-833): its slots and the hotbar, its own slot locked. Contents its slots cannot
+        show (beyond the slot count, or refused there) leave the item and are returned for the
+        caller to give to the player, so the first click into the screen cannot delete them.
+        Returns those contents, or nothing when the player holds no backpack. */
     [[nodiscard]] std::optional<QList<QcItemStack>> openHeld(QcServerClient &client);
-    // Forgets the open machine; `notify` tells the client (the server closed it).
+    /*! Forgets the open machine of \a client; \a notify tells the client (the server closed it). */
     void close(QcServerClient &client, bool notify);
-    // The open machine of the player while it still exists, else null.
+    /*! Returns the open machine of the player \a client while it still exists, else null. */
     QcBlockEntities::Machine *openMachineOf(const QcServerClient &client);
-    // The open chest, container cart or held backpack of the player while it still exists, else nothing.
+    /*! Returns the open chest, container cart or held backpack of the player \a client while it
+        still exists, else nothing. */
     [[nodiscard]] std::optional<OpenContainer> openContainerOf(QcServerClient &client);
-    // The slots of the container `client` has open changed: everyone looking into it sees them,
-    // comparators and hoppers around hear of it when `changed`. A held backpack has no place in the
-    // world: only its holder sees it.
+    /*! The slots of the \a container \a client has open changed: everyone looking into it sees
+        them, comparators and hoppers around hear of it when \a changed. A held backpack has no
+        place in the world: only its holder sees it. */
     void containerChanged(QcServerClient &client, const OpenContainer &container, bool changed);
-    // Sends the slots of the cart to every player looking into it.
+    /*! Sends the slots of the minecart \a cart to every player looking into it. */
     void sendToCartViewers(quint32 cart);
-    // Sends the open machine's state if it changed since the last message (or always with `force`).
+    /*! Sends the state of the machine \a client has open if it changed since the last message
+        (or always with \a force). */
     void send(QcServerClient &client, bool force = false);
-    // Sends the state to every player looking into the machine or chest at `pos`.
+    /*! Sends the state to every player looking into the machine or chest at \a pos. */
     void sendToViewers(QcBlockPos pos);
-    // Closes the player's open stonecutter (with notice; its input goes back), if any.
+    /*! Closes the open stonecutter of \a client (with notice; its input goes back), if any. */
     void closeStonecutter(QcServerClient &client);
-    // Closes the player's open enchanting table (with notice; its slots go back), if any.
+    /*! Closes the open enchanting table of \a client (with notice; its slots go back), if any. */
     void closeEnchanting(QcServerClient &client);
-    // Closes the player's open anvil (with notice; its slots go back), if any.
+    /*! Closes the open anvil of \a client (with notice; its slots go back), if any. */
     void closeAnvil(QcServerClient &client);
-    // Ends the player's trading screen (with notice), if any; QcServerTrading::update releases the
-    // villager.
+    /*! Ends the trading screen of \a client (with notice), if any; QcServerTrading::update releases
+        the villager. */
     void endTrade(QcServerClient &client);
 
-    // How an open stonecutter is closed (QcServerStonecutter::close with notice, which gives its
-    // input back) when a block's, cart's or villager's screen opens; set by QcServerStonecutter.
+    /*! Sets the \a closer, how an open stonecutter is closed (QcServerStonecutter::close with
+        notice, which gives its input back) when a block's, cart's or villager's screen opens;
+        set by QcServerStonecutter. */
     void setStonecutterCloser(std::function<void(QcServerClient &)> closer);
-    // The same for an open enchanting table; set by QcServerEnchanting (decision E-864).
+    /*! Sets the \a closer of an open enchanting table, as setStonecutterCloser(); set by
+        QcServerEnchanting (decision E-864). */
     void setEnchantingCloser(std::function<void(QcServerClient &)> closer);
-    // The same for an open anvil; set by QcServerAnvil (decision E-866).
+    /*! Sets the \a closer of an open anvil, as setStonecutterCloser(); set by QcServerAnvil
+        (decision E-866). */
     void setAnvilCloser(std::function<void(QcServerClient &)> closer);
 
-    // Once per tick: sends what changed, closes screens whose block is gone, whose chunk unloaded or
-    // whose player died or walked away; containers that count their viewers take the new count, and
-    // containers opened or closed since the last tick sound.
+    /*! Once per tick: sends what changed, closes screens whose block is gone, whose chunk
+        unloaded or whose player died or walked away; containers that count their viewers take
+        the new count, and containers opened or closed since the last tick sound. */
     void update();
-    // Nobody looks into the containers of a chunk that just arrived: those that count their viewers
-    // start at 0 whatever was saved.
+    /*! Nobody looks into the containers of \a chunk of \a state, which just arrived: those that
+        count their viewers start at 0 whatever was saved. */
     static void releaseViewers(QcServerState &state, QcChunkPos chunk);
 
 private:

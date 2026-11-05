@@ -45,10 +45,15 @@ QString QcMultiplayerSettings::cleanName(const QString &name) const
     return QcNameText::clean(name, maxNameLength);
 }
 
+QString QcMultiplayerSettings::formName() const
+{
+    return playerName().isEmpty() ? tr("Player") : playerName();
+}
+
 void QcMultiplayerSettings::setPlayerName(const QString &name)
 {
     const QString cleaned = cleanName(name);
-    if (cleaned == m_playerName) {
+    if (cleaned == playerName()) {
         return;
     }
 
@@ -98,7 +103,7 @@ void QcMultiplayerSettings::save() const
     }
 
     QSettings file(m_path, QSettings::IniFormat);
-    file.setValue(u"multiplayer/playerName"_s, m_playerName);
+    file.setValue(u"multiplayer/playerName"_s, playerName());
     file.setValue(u"multiplayer/hostPort"_s, m_hostPort);
     file.setValue(u"multiplayer/hostMaxPlayers"_s, m_hostMaxPlayers);
     m_history.save(file);

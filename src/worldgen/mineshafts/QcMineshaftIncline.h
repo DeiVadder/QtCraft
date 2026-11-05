@@ -33,8 +33,8 @@ public:
     {
         /*! Index of the node in the plan's nodes. */
         int node = 0;
-        /*! The side it leaves through: 0 north, 1 east, 2 south, 3 west. */
-        int side = 0;
+        /*! The side it leaves through. */
+        QcMineshaftBlocks::Side side = QcMineshaftBlocks::Side::North;
     };
 
     QcMineshaftIncline(const QcTerrainGenerator &terrain, const QcMineshaftSettings &settings, const QcMineshaftBlocks &blocks);

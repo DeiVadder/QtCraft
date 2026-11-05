@@ -84,7 +84,7 @@ private:
     // the test still holds open when the test function returns.
     std::optional<QTemporaryDir> m_directory;
 
-    int villagerType() const { return *m_content->mobIndex(u"qtcraft:villager"_s); }
+    QcCreatureKindId villagerType() const { return *m_content->mobKind(u"qtcraft:villager"_s); }
 
     QcBlockId state(const QString &name) const
     {
@@ -322,7 +322,7 @@ private slots:
         QVERIFY(villager(entity)->villager->sleptAt >= 0.0);
         QCOMPARE(villager(entity)->villager->panickedAt, -1.0);
 
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{0.0, 0.0, 3.0},
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{0.0, 0.0, 3.0},
                                m_server->entities().newId());
         QVERIFY(tickUntil([&] { return villager(entity)->pose != QcPose::Lying; }, 2 * QcVillagerBehaviour::decideTicks + 1));
         QVERIFY(villager(entity)->villager->panickedAt >= 0.0);
@@ -540,7 +540,7 @@ private slots:
         QVERIFY(before > 12.0);
 
         // Underground creatures stay in daylight.
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{3.0, 0.0, 0.0},
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{3.0, 0.0, 0.0},
                                m_server->entities().newId(), true);
         ticks(60);
         QVERIFY(villager(entity)->villager->threat.has_value());

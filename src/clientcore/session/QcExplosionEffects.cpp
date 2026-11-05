@@ -137,8 +137,8 @@ std::optional<QcExplosionEffects::Look> QcExplosionEffects::lookAt(const Puff &p
     const double rise = puff.flash ? 0.0 : seconds * 0.8;
     const double left = 1.0 - age / puff.lifeTicks;
     Look look;
-    look.position = puff.centre + puff.velocity * (travelled / 4.0) + QcVec3{0.0, rise, 0.0};
-    look.size = puff.size * (puff.flash ? 0.5 + left : 0.4 + 0.6 * left);
+    look.cube.position = puff.centre + puff.velocity * (travelled / 4.0) + QcVec3{0.0, rise, 0.0};
+    look.cube.size = puff.size * (puff.flash ? 0.5 + left : 0.4 + 0.6 * left);
     look.flash = puff.flash;
     return look;
 }

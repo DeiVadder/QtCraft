@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcTexturePackController.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/materials/QcMaterialAtlas.h"
+#include "clientcore/texturepacks/QcTexturePack.h"
 #include "clientcore/texturepacks/QcTexturePackLibrary.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -86,6 +87,39 @@ private slots:
         QCOMPARE(centre(*second), QColor(Qt::cyan));
         QVERIFY(second->sameLayout(*first));
         QCOMPARE(controller.storedSelection(), (QStringList{u"user:cold"_s, u"user:warm"_s}));
+    }
+
+    // Each pack says where it comes from as a TexturePack.Origin (decision E-688): the built-in
+    // packs and the user's own, as their ids say.
+    void packsSayWhereTheyComeFrom()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        QHash<QString, int> origins;
+        const QVariantList packs = controller.packs();
+        for (const QVariant &pack : packs) {
+            origins.insert(pack.toMap().value(u"id"_s).toString(), pack.toMap().value(u"origin"_s).toInt());
+        }
+        QCOMPARE(origins.value(u"user:warm"_s, -1), static_cast<int>(QcTexturePack::Origin::User));
+        int builtIn = 0;
+        for (const auto &[id, origin] : origins.asKeyValueRange()) {
+            if (id.startsWith(u"builtin:"_s)) {
+                QCOMPARE(origin, static_cast<int>(QcTexturePack::Origin::BuiltIn));
+                ++builtIn;
+            }
+        }
+        QVERIFY(builtIn > 0);
+
+        // The two lists of the page split the packs by their state, keeping the order.
+        const QVariantList active = controller.activePacks();
+        QVERIFY(!active.isEmpty());
+        QCOMPARE(active.first().toMap().value(u"id"_s).toString(), u"user:warm"_s);
+        QCOMPARE(active.size() + controller.inactivePacks().size(), packs.size());
+        const QVariantList inactive = controller.inactivePacks();
+        for (const QVariant &pack : inactive) {
+            QVERIFY(!pack.toMap().value(u"active"_s).toBool());
+        }
     }
 
     // The benchmark's pack switch (decision E-332): a whole selection at once is one build (one

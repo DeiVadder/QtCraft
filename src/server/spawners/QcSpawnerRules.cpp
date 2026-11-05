@@ -41,7 +41,7 @@ void QcSpawnerRules::tick()
         if (!playerNear({pos.x + 0.5, pos.y + 0.5, pos.z + 0.5}, rules.range, players)) {
             continue;
         }
-        const std::optional<int> type = m_state.content().mobIndex(spawner->mob);
+        const std::optional<QcCreatureKindId> type = m_state.content().mobKind(spawner->mob);
         if (!type || !QcSpawnerContent::refusal(m_state.content().mobs()[*type]).isEmpty()) {
             continue;
         }
@@ -58,7 +58,7 @@ void QcSpawnerRules::tick()
     }
 }
 
-int QcSpawnerRules::cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int total)
+int QcSpawnerRules::cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, QcCreatureKindId type, int total)
 {
     const qint64 limit = m_state.config().limits.spawnerCreatures;
     int nearby = nearbyOf(spawner.pos, rules, type);
@@ -101,7 +101,7 @@ void QcSpawnerRules::resetDelay(QcSpawners::Entry &spawner, const QcSpawnerDefin
     spawner.delay = static_cast<quint32>(std::lround(seconds * QcPhysics::tickRate));
 }
 
-bool QcSpawnerRules::fits(QcBlockPos feet, const QcSpawnerDefinition &rules, int type) const
+bool QcSpawnerRules::fits(QcBlockPos feet, const QcSpawnerDefinition &rules, QcCreatureKindId type) const
 {
     const QcServerWorld &world = m_state.world();
     const QcContentRegistry &content = m_state.content();
@@ -141,7 +141,7 @@ bool QcSpawnerRules::hasRoom(QcBlockPos feet, const QcMobDefinition &definition)
     return true;
 }
 
-int QcSpawnerRules::nearbyOf(QcBlockPos pos, const QcSpawnerDefinition &rules, int type) const
+int QcSpawnerRules::nearbyOf(QcBlockPos pos, const QcSpawnerDefinition &rules, QcCreatureKindId type) const
 {
     // The spawner's block grown by `nearbyRange` on every side, independent of the spawn area.
     const double reach = rules.nearbyRange + 0.5;
@@ -168,8 +168,8 @@ void QcSpawnerRules::announceChanges()
 QcMsg::SpawnerDisplay QcSpawnerRules::displayOf(const QcServerWorld &world, QcBlockPos pos)
 {
     const QcSpawners::Entry *spawner = world.spawners().at(pos);
-    const std::optional<int> type = spawner && !spawner->mob.isEmpty() ? world.content().mobIndex(spawner->mob) : std::nullopt;
-    return {pos, type ? static_cast<qint32>(*type) : -1};
+    const std::optional<QcCreatureKindId> type = spawner && !spawner->mob.isEmpty() ? world.content().mobKind(spawner->mob) : std::nullopt;
+    return {pos, type ? static_cast<qint32>(type->index()) : -1};
 }
 
 int QcSpawnerRules::spawnedCount() const

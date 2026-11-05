@@ -48,7 +48,7 @@ QcVec3 QcPushBodies::pushOnPlayer(const QcVec3 &feet, const QcContentRegistry &c
     const QcBodyPush::Body self = QcBodyPush::player(feet);
     QcVec3 sum;
     for (const Creature &creature : m_creatures) {
-        if (creature.type < 0 || creature.type >= content.mobs().size()) {
+        if (!content.mobs().contains(creature.type)) {
             continue;
         }
         const QcMobDefinition &definition = content.mobs()[creature.type];

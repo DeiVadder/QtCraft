@@ -35,8 +35,8 @@ struct Config
     QStringList header;
 };
 
-/*! Installs the handler with the file of \a config (once; a second call replaces the file). The
-    error says why the file cannot be written; then nothing is installed. */
+/*! Installs the handler with the file of \a config (once; a second call replaces the file).
+    Returns an error that says why the file cannot be written; then nothing is installed. */
 [[nodiscard]] QcStatus install(const Config &config);
 /*! Installs only the handler, without a file: a fatal message still becomes the reason of the
     crash report. install() later adds the file. */

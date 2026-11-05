@@ -11,12 +11,14 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands on machine and chest screens: opening, filling, emptying, closing and their state.
+/*! \brief Control commands on machine and chest screens: opening, filling, emptying, closing and
+    their state. */
 class QcControlMachineCommands
 {
 public:
     explicit QcControlMachineCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

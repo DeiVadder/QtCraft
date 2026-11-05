@@ -59,8 +59,23 @@ else()
     target_compile_options(qc_project_options INTERFACE
         -Wall -Wextra -Wpedantic -Wold-style-cast
         -fno-exceptions)
+    # A designated initializer that leaves out a field without default (decision E-977): LLVM
+    # counts it to -Wextra, Apple clang does not, so the Mac build names it explicitly.
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        include(CheckCXXCompilerFlag)
+        check_cxx_compiler_flag(-Wmissing-designated-field-initializers QC_HAS_WMISSING_DESIGNATED)
+        if(QC_HAS_WMISSING_DESIGNATED)
+            target_compile_options(qc_project_options INTERFACE -Wmissing-designated-field-initializers)
+        endif()
+    endif()
     if(QC_WARNINGS_AS_ERRORS)
         target_compile_options(qc_project_options INTERFACE -Werror)
+        # GCC's -Wmaybe-uninitialized depends on the optimizer and reports false positives in
+        # optimized builds (an std::optional read after its check, QcMobCommands::mob in the Linux
+        # release build); it stays a warning in every GCC build instead of failing it.
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            target_compile_options(qc_project_options INTERFACE -Wno-error=maybe-uninitialized)
+        endif()
     endif()
 endif()
 
@@ -82,6 +97,16 @@ target_compile_definitions(qc_project_options INTERFACE
     QT_NO_URL_CAST_FROM_STRING
     QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
     QT_USE_QSTRINGBUILDER)
+
+# Checked standard library in Debug (E-949): a call that the standard leaves undefined, such as
+# error() on a std::expected holding a value or an index past the end, stops the program with a
+# message on every platform. libc++ (macOS) reads _LIBCPP_HARDENING_MODE, libstdc++ (Linux)
+# _GLIBCXX_ASSERTIONS; each ignores the other's macro, and neither changes the ABI.
+if(NOT MSVC)
+    target_compile_definitions(qc_project_options INTERFACE
+        $<$<CONFIG:Debug>:_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE>
+        $<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
+endif()
 
 if(QC_SANITIZERS AND MSVC)
     message(FATAL_ERROR "QC_SANITIZERS supports Clang/GCC only")
@@ -105,13 +130,26 @@ endif()
 
 # ccache for every preset when it is installed (E-890; `brew install ccache`); QC_CCACHE=OFF or a
 # launcher of one's own (CMAKE_CXX_COMPILER_LAUNCHER) turns it off.
+# `sloppiness=` (ccache 4.8+ reads KEY=VALUE before the compiler) restores ccache's default checks for
+# this project whatever the user's ccache.conf relaxes: the project has no precompiled headers, and
+# include_file_mtime/include_file_ctime let a header that changes while it is compiled (an agent's
+# edit, a checkout, a regenerated moc/rcc file) store an object of the old content under the new
+# content's hash, a wrong hit for every later build with that content (package 79.75). Sloppiness is
+# not part of the hash, so existing entries still hit.
 option(QC_CCACHE "Compile through ccache when it is installed" ON)
 if(QC_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
     find_program(QC_CCACHE_PROGRAM ccache)
     if(QC_CCACHE_PROGRAM)
-        message(STATUS "Compiling through ${QC_CCACHE_PROGRAM}")
-        set(CMAKE_CXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
-        set(CMAKE_OBJCXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
+        execute_process(COMMAND "${QC_CCACHE_PROGRAM}" --version OUTPUT_VARIABLE qc_ccache_version_text
+            ERROR_QUIET)
+        string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" qc_ccache_version "${qc_ccache_version_text}")
+        set(qc_ccache_launcher "${QC_CCACHE_PROGRAM}")
+        if(qc_ccache_version VERSION_GREATER_EQUAL 4.8)
+            list(APPEND qc_ccache_launcher "sloppiness=")
+        endif()
+        message(STATUS "Compiling through ${QC_CCACHE_PROGRAM} ${qc_ccache_version}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${qc_ccache_launcher})
+        set(CMAKE_OBJCXX_COMPILER_LAUNCHER ${qc_ccache_launcher})
     endif()
 endif()
 

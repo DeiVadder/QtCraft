@@ -21,6 +21,7 @@ using QcEntityCodec::Component;
 // The fields of the component, as written; checked against the content after reading.
 struct Fields
 {
+    // NOLINT(qc-int-kind): the byte as read, checked against qcHangingTypeCount before the cast
     quint8 type = 0;
     quint8 face = 0;
     qint32 x = 0;

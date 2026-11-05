@@ -10,7 +10,9 @@
 #include <QTest>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <ranges>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -119,6 +121,7 @@ private slots:
         QcEntityPose sneaking;
         sneaking.sneaking = true;
         QVERIFY(QcAnimator::animateBody(sneaking, 0.0).bodyLift < 0.0);
+        QCOMPARE(QcAnimator::animateBody(sneaking, 0.0).bodyPitch, 0.0);
 
         QcEntityPose zombie;
         zombie.armsForward = true;
@@ -239,6 +242,126 @@ private slots:
             top = std::max(top, static_cast<double>(vertex.y));
         }
         QVERIFY(std::abs(top - (64.0 + 3.6)) < 1e-4);
+    }
+
+    // Decision E-965: the upper body leans around the hips, legs and head stay upright.
+    void sneakingBendsAtTheHips()
+    {
+        QcEntityPose sneaking;
+        sneaking.sneaking = true;
+        const QcAnimator::BodyPose pose = QcAnimator::animateBody(sneaking, 0.0);
+        QCOMPARE(pose.torsoPitch, QcAnimator::sneakLean);
+        QCOMPARE(pose.torsoPivot, (QcVec3{0.0, 0.7, 0.0}));
+        QCOMPARE(pose.bodyBack, QcAnimator::sneakBack);
+        QCOMPARE(pose.bodyLift, -QcAnimator::sneakDrop);
+        QCOMPARE(QcAnimator::animateBody({}, 0.0).torsoPitch, 0.0);
+
+        // The hips stay, the neck moves forward and a little down; legs do not lean.
+        const double radians = qDegreesToRadians(QcAnimator::sneakLean);
+        QCOMPARE(pose.leaned(QcBoneRole::Body, pose.torsoPivot, pose.torsoPivot), pose.torsoPivot);
+        const QcVec3 neck = pose.leaned(QcBoneRole::Body, pose.torsoPivot, {0.0, 1.35, 0.0});
+        QVERIFY(std::abs(neck.z + 0.65 * std::sin(radians)) < 1e-9);
+        QVERIFY(std::abs(neck.y - (0.7 + 0.65 * std::cos(radians))) < 1e-9);
+        QCOMPARE(pose.leaned(QcBoneRole::RightLeg, {0.125, 0.7, 0.0}, {0.0, 0.0, 0.0}), (QcVec3{0.0, 0.0, 0.0}));
+        // The head moves with the neck but keeps its shape level.
+        const QcVec3 top = pose.leaned(QcBoneRole::Head, {0.0, 1.35, 0.0}, {0.0, 1.8, 0.0});
+        QVERIFY(std::abs(top.z - neck.z) < 1e-9);
+        QVERIFY(std::abs(top.y - neck.y - 0.45) < 1e-9);
+
+        // Meshed: bones in model order, 24 vertices per box; the arm without its slight outward roll.
+        const QcModelDefinition model = humanoid();
+        const QcAppearanceDefinition look = outfit();
+        QcAnimator::BodyPose hanging = pose;
+        hanging.bone(QcBoneRole::RightArm) = {};
+        QcEntityMesh mesh;
+        QcEntityMesher::appendModel(mesh, {{&model, &look, nullptr, {}, 1.0}, nullptr}, hanging, {}, anyUv);
+        const auto box = [&](qsizetype index) { return mesh.vertices.mid(index * 24, 24); };
+        const auto extent = [](const QList<QcEntityVertex> &vertices, auto coordinate) {
+            const auto [low, high] = std::ranges::minmax(vertices | std::views::transform(coordinate));
+            return std::pair{static_cast<double>(low), static_cast<double>(high)};
+        };
+        const auto y = [](const QcEntityVertex &v) { return v.y; };
+        const auto z = [](const QcEntityVertex &v) { return v.z; };
+
+        // Legs upright, behind the entity's position, sunk by the drop.
+        for (const int leg : {4, 5}) {
+            const auto [front, back] = extent(box(leg), z);
+            QVERIFY(std::abs(front - (-0.125 + QcAnimator::sneakBack)) < 1e-5);
+            QVERIFY(std::abs(back - (0.125 + QcAnimator::sneakBack)) < 1e-5);
+            QVERIFY(std::abs(extent(box(leg), y).first + QcAnimator::sneakDrop) < 1e-5);
+        }
+        // The torso leans about the hips: its front corners in the turned frame. The arm hangs
+        // along it, the head keeps its size upright and moves forward with the neck.
+        const auto hasVertex = [](const QList<QcEntityVertex> &vertices, const QcVec3 &p) {
+            return std::ranges::any_of(vertices, [&](const QcEntityVertex &v) {
+                return std::abs(v.x - p.x) < 1e-5 && std::abs(v.y - p.y) < 1e-5 && std::abs(v.z - p.z) < 1e-5;
+            });
+        };
+        const auto turned = [&](double x, double up, double back) {
+            return QcVec3{x, 0.7 + up * std::cos(radians) + back * std::sin(radians) - QcAnimator::sneakDrop,
+                          back * std::cos(radians) - up * std::sin(radians) + QcAnimator::sneakBack};
+        };
+        QVERIFY(hasVertex(box(0), turned(0.25, 0.65, -0.125)));
+        QVERIFY(hasVertex(box(0), turned(0.25, 0.0, -0.125)));
+        QVERIFY(hasVertex(box(2), turned(0.45, 0.0, -0.1)));
+        QVERIFY(hasVertex(box(2), turned(0.45, 0.65, -0.1)));
+        const auto [headFront, headBack] = extent(box(1), z);
+        QVERIFY(std::abs(headBack - headFront - 0.45) < 1e-5);
+        QVERIFY(std::abs(extent(box(1), y).second - extent(box(1), y).first - 0.45) < 1e-5);
+        const QcVec3 neckPlaced = turned(0.0, 0.65, 0.0);
+        QVERIFY(std::abs(headFront - (neckPlaced.z - 0.225)) < 1e-5);
+        QVERIFY(std::abs(extent(box(1), y).first - neckPlaced.y) < 1e-5);
+    }
+
+    // A dying entity keeps its flags (QcClientEntities::remove): a player who dies while sneaking
+    // falls over upright, not bent and shifted.
+    void sneakingPlayerDiesUpright()
+    {
+        QcEntityPose sneaking;
+        sneaking.sneaking = true;
+        sneaking.deathProgress = 0.5;
+        const QcAnimator::BodyPose dying = QcAnimator::animateBody(sneaking, 0.0);
+        QCOMPARE(dying.torsoPitch, 0.0);
+        QCOMPARE(dying.bodyBack, 0.0);
+        QCOMPARE(dying.bodyLift, 0.0);
+        QVERIFY(dying.bodyRoll > 0.0);
+    }
+
+    // A drawn bow points along the view also from a leaning torso (decision E-965): the meshed arms
+    // only move with the shoulders, their shape and direction stay those of a standing archer.
+    void sneakingArcherAimsAlongTheView()
+    {
+        const QcModelDefinition model = humanoid();
+        const QcAppearanceDefinition look = outfit();
+        const auto arms = [&](bool sneaking) {
+            QcEntityPose pose;
+            pose.drawProgress = 0.5;
+            pose.sneaking = sneaking;
+            QcEntityMesh mesh;
+            QcEntityMesher::appendModel(mesh, {{&model, &look, nullptr, {}, 1.0}, nullptr}, QcAnimator::animateBody(pose, 0.0), {},
+                                        anyUv);
+            constexpr qsizetype boxVertices = 24;
+            return std::array{mesh.vertices.mid(2 * boxVertices, boxVertices), mesh.vertices.mid(3 * boxVertices, boxVertices)};
+        };
+        const auto standing = arms(false);
+        const auto sneaking = arms(true);
+        for (std::size_t arm = 0; arm < standing.size(); ++arm) {
+            const QcEntityVertex &shiftStanding = standing[arm].first();
+            const QcEntityVertex &shiftSneaking = sneaking[arm].first();
+            for (qsizetype i = 0; i < standing[arm].size(); ++i) {
+                const QcEntityVertex &a = standing[arm][i];
+                const QcEntityVertex &b = sneaking[arm][i];
+                QVERIFY(std::abs((a.x - shiftStanding.x) - (b.x - shiftSneaking.x)) < 1e-5);
+                QVERIFY(std::abs((a.y - shiftStanding.y) - (b.y - shiftSneaking.y)) < 1e-5);
+                QVERIFY(std::abs((a.z - shiftStanding.z) - (b.z - shiftSneaking.z)) < 1e-5);
+            }
+        }
+        // At head pitch 0 the bow arm (left) lies level in both poses: its height spans about the
+        // arm's thickness (0.2), not its length (0.65).
+        for (const auto &pose : {standing, sneaking}) {
+            const auto [lowest, highest] = std::ranges::minmax(pose[1] | std::views::transform([](const QcEntityVertex &v) { return v.y; }));
+            QVERIFY(highest - lowest < 0.25);
+        }
     }
 
     void hairFollowsTheHeadAndHeldItemsAreDrawn()

@@ -5,23 +5,28 @@
 
 #include "common/core/QcVec3.h"
 
-// What the dials of held items show (decision E-769), as pure functions of the session's state.
+/*! \brief What the dials of held items show (decision E-769), as pure functions of the session's
+    state. */
 namespace QcDials {
 
-// The compass needle: degrees clockwise from straight ahead (the top of the dial) towards the
-// world spawn column (x, z) for a player at `position` looking along `yaw` (degrees, 0 north, 90
-// east), in [-180, 180); 0 when the player stands on the spawn column.
+/*! Returns the compass needle: degrees clockwise from straight ahead (the top of the dial)
+    towards the world spawn column (\a spawnX, \a spawnZ) for a player at \a position looking
+    along \a yaw (degrees, 0 north, 90 east), in [-180, 180); 0 when the player stands on the
+    spawn column. */
 double compassAngle(const QcVec3 &position, double yaw, int spawnX, int spawnZ);
 
-// The clock: the hand in degrees clockwise from the top, noon at the top and midnight at the
-// bottom (one turn per day), in [0, 360).
+/*! Returns the clock at \a worldTime: the hand in degrees clockwise from the top, noon at the
+    top and midnight at the bottom (one turn per day), in [0, 360). */
 double clockAngle(double worldTime);
-// The time of day the clock shows as hours and minutes, sunrise at 6:00.
+/*! \brief The time of day the clock shows as hours and minutes, sunrise at 6:00. */
 struct ClockTime
 {
+    /*! Hours, 0..23. */
     int hours = 0;
+    /*! Minutes, 0..59. */
     int minutes = 0;
 };
+/*! Returns the time of day the clock shows at \a worldTime. */
 ClockTime clockTime(double worldTime);
 
 } // namespace QcDials

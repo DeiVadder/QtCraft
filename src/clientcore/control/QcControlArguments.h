@@ -11,21 +11,27 @@
 
 #include <optional>
 
-// Typed access to the parameters of a control request.
+/*! \brief Typed access to the parameters of a control request. */
 class QcControlArguments
 {
 public:
-    // Longest wait a tick-based command accepts.
+    /*! Longest wait a tick-based command accepts. */
     static constexpr int maxCommandTicks = 20 * 600;
 
-    // Error message for the first parameter of the wrong JSON type, if any.
+    /*! Returns the error message for the first parameter of the wrong JSON type of \a request, if
+        any. */
     [[nodiscard]] static std::optional<QString> typeError(const QJsonObject &request);
+    /*! Returns the integer \a key of \a request; \a fallback when it is missing or not a whole
+        number. */
     static int intField(const QJsonObject &request, const QString &key, int fallback);
-    // `ticks`, clamped to 0..maxCommandTicks.
+    /*! Returns the parameter \c {ticks} of \a request clamped to 0..maxCommandTicks; \a fallback
+        when it is missing. */
     static int ticks(const QJsonObject &request, int fallback);
-    // `x`, `y`, `z`.
+    /*! Returns the cell the parameters \c {x}, \c {y}, \c {z} of \a request name. */
     static QcBlockPos block(const QJsonObject &request);
-    // `face`, `up` when omitted; nullopt for an unknown name.
+    /*! Returns the parameter \c {face} of \a request, \c {up} when omitted; nullopt for an
+        unknown name. */
     [[nodiscard]] static std::optional<QcBlockFace> face(const QJsonObject &request);
+    /*! Returns the name of \a face in requests ("up", "north", ...). */
     static QString faceName(QcBlockFace face);
 };

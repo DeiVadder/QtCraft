@@ -10,7 +10,9 @@
 #include <QStringList>
 
 #include <array>
+#include <cstddef>
 #include <optional>
+#include <utility>
 #include <vector>
 
 /*! \brief The blocks a mine shaft places (decision E-570), resolved once from QcMineshaftSettings,
@@ -54,16 +56,38 @@ struct QcMineshaftBlocks
     /*! Returns the blocks of \a settings resolved in \a content; none when one is unknown, with
         a warning each. */
     [[nodiscard]] static Resolved resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content);
-    /*! Returns the side index of the unit step \a dx, \a dz (north, east, south, west). */
-    static int sideOf(int dx, int dz);
+    /*! \brief A side of a cell; the value is its index in the arrays by side (lights, ladders,
+        railsUp) and the number of quarter turns from north. */
+    enum class Side : quint8
+    {
+        /*! Towards -z. */
+        North = 0,
+        /*! Towards +x. */
+        East = 1,
+        /*! Towards +z. */
+        South = 2,
+        /*! Towards -x. */
+        West = 3,
+    };
+    /*! Returns the side of the unit step \a dx, \a dz. */
+    static Side sideOf(int dx, int dz);
+    /*! Returns the index of \a side in the arrays by side and its quarter turns from north. */
+    static constexpr std::size_t slotOf(Side side) { return std::to_underlying(side); }
     /*! Returns whether \a block offers nothing to stand on (not solid, or liquid). */
-    bool isOpen(QcBlockId block) const { return open[static_cast<std::size_t>(block)]; }
+    bool isOpen(QcBlockId block) const { return flagOf(open, block); }
     /*! Returns whether \a block is a liquid. */
-    bool isLiquid(QcBlockId block) const { return liquid[static_cast<std::size_t>(block)]; }
+    bool isLiquid(QcBlockId block) const { return flagOf(liquid, block); }
     /*! Returns whether \a block falls (sand, gravel). */
-    bool falls(QcBlockId block) const { return falling[static_cast<std::size_t>(block)]; }
+    bool falls(QcBlockId block) const { return flagOf(falling, block); }
     /*! Returns whether \a block is foliage (solid but not opaque). */
-    bool isFoliage(QcBlockId block) const { return foliage[static_cast<std::size_t>(block)]; }
+    bool isFoliage(QcBlockId block) const { return flagOf(foliage, block); }
+
+    /*! Returns the entry of \a block in \a table (one per runtime id of the content). */
+    static bool flagOf(const std::vector<bool> &table, QcBlockId block)
+    {
+        Q_ASSERT_X(std::cmp_less(block, table.size()), "QcMineshaftBlocks::flagOf", "runtime id out of range");
+        return table[static_cast<std::size_t>(block)];
+    }
 };
 
 /*! \brief The result of QcMineshaftBlocks::resolve(): the blocks, or none when a block is

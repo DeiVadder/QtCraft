@@ -3,15 +3,15 @@
 
 #include "app/session/QcSessionWiring.h"
 
-#include "app/controllers/QcAnvilController.h"
-#include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcStonecutterController.h"
-#include "app/controllers/QcTradeController.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/hooks/QcStartupHooks.h"
+#include "app/inventory/QcAnvilController.h"
+#include "app/inventory/QcEnchantingController.h"
+#include "app/inventory/QcStonecutterController.h"
+#include "app/inventory/QcTradeController.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldAtlas.h"
@@ -72,8 +72,9 @@ void QcSessionWiring::connectPlayer()
     connect(session, &QcClientSession::craftingOpened, &m_targets.screens, &QcScreenState::craftingOpened);
     connect(session, &QcClientSession::foodChanged, player, &QcPlayerController::foodChanged);
     connect(session, &QcClientSession::experienceChanged, player, &QcPlayerController::experienceChanged);
+    connect(session, &QcClientSession::airChanged, player, &QcPlayerController::airChanged);
     connect(session, &QcClientSession::gameModeChanged, player, &QcPlayerController::gameModeChanged);
-    connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::actionRefused);
+    connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::reportRefusal);
     connect(session, &QcClientSession::advancementReached, &m_targets.player, &QcPlayerController::announceAdvancement);
     connect(session, &QcClientSession::advancementsChanged, &m_targets.advancements, &QcAdvancementTreeModel::update);
     connect(session, &QcClientSession::gameModeChanged, this, [this, session] { m_targets.screens.gameModeChanged(session->gameMode().rules()); });
@@ -153,7 +154,6 @@ void QcSessionWiring::onSessionState(QcClientSession::State state)
 {
     if (state == QcClientSession::State::Playing) {
         emit playing();
-        m_targets.startup.worldPlaying();
     } else if (state == QcClientSession::State::Disconnected) {
         emit disconnected(m_parts.session->disconnectReason());
     }

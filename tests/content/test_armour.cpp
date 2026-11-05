@@ -216,6 +216,26 @@ private slots:
         }
         QDataStream bad(bytes);
         QVERIFY(!QcArmourSerializer::read(bad));
+
+        // Layer heights beyond 8 m and parts whose corners are not ordered fail as in the parser.
+        const auto reads = [](const QcArmourDefinition &definition) {
+            QByteArray data;
+            {
+                QDataStream out(&data, QIODevice::WriteOnly);
+                QcArmourSerializer::write(out, definition);
+            }
+            QDataStream in(data);
+            return QcArmourSerializer::read(in).has_value();
+        };
+        armour.points = 6;
+        QVERIFY(reads(armour));
+        armour.layers.first().toY = 9.0;
+        QVERIFY(!reads(armour));
+        armour.layers.first().toY = 2.0;
+        armour.parts.append({QcBoneRole::Head, {-0.3, 0.0, -0.3}, {0.3, 0.2, 0.3}, u"t"_s, {}});
+        QVERIFY(reads(armour));
+        armour.parts.first().to.y = -0.1;
+        QVERIFY(!reads(armour));
     }
 
     void hugeCoverCountIsRefusedBeforeReserving()

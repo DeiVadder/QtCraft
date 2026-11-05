@@ -133,6 +133,17 @@ double handleToArm(const QcEntityMesh &mesh)
     return nearest;
 }
 
+// The direction from the lower right corner of a held sprite to its upper left one (found from
+// the corners of the front by their texture coordinates), of unit length: across the handle of a
+// tool drawn from the lower left, towards the side its head's edge is drawn on.
+QcVec3 upperLeftSide(const QcEntityMesh &mesh)
+{
+    const auto front = mesh.vertices.mid(armVertices, quadVertices);
+    const auto corner = [&](float u, float v) { return at(*std::ranges::find_if(front, [&](const QcEntityVertex &w) { return w.u == u && w.v == v; })); };
+    const QcVec3 across = corner(0.0f, 0.0f) - corner(1.0f, 1.0f);
+    return across * (1.0 / across.length());
+}
+
 // The first point along the edges of a hand's quads that lies on the crosshair or on the hotbar's
 // slots (the middle 76 % of the width, below -0.77 in y), as the default view shows them; empty
 // when there is none. A held sprite's front and back (the two quads after the arm) span its whole
@@ -227,6 +238,21 @@ private slots:
         // A stick standing upright is held two texels above its end.
         QCOMPARE(QcSpriteShape::fromRows({u".#."_s, u".#."_s, u".#."_s}).handle(), QPoint(1, 0));
 
+        // A pommel (two texels wide here) counts as the last base texel of the handle: the fist sits
+        // where it sits on the same handle without one, ending in the pommel's upper right texel.
+        QStringList pommel(16, QString(16, u'.'));
+        QStringList plain = pommel;
+        for (int step = 1; step < 12; ++step) {
+            pommel[14 - step][1 + step] = u'#';
+            plain[14 - step][1 + step] = u'#';
+        }
+        plain[14][1] = u'#';
+        for (const QPoint texel : {QPoint(0, 14), QPoint(1, 14), QPoint(0, 15), QPoint(1, 15)}) {
+            pommel[texel.y()][texel.x()] = u'#';
+        }
+        QCOMPARE(QcSpriteShape::fromRows(plain).handle(), QPoint(3, 12));
+        QCOMPARE(QcSpriteShape::fromRows(pommel).handle(), QPoint(3, 12));
+
         QImage tile(4, 4, QImage::Format_ARGB32);
         tile.fill(Qt::transparent);
         // Opaque from the alpha the entity shader still draws (0.1), clear below it.
@@ -262,15 +288,18 @@ private slots:
         // One texel thick: the faces lie half a texel in front of and behind the middle.
         QCOMPARE(std::abs(quadCentre(cube, 0).z), 0.5);
 
-        // Three texels in an L: two faces and eight edges to clear texels or the outside.
+        // Three texels in an L: two faces and eight edges to clear texels or the outside, six
+        // straight runs of them.
         const QcSpriteShape corner = QcSpriteShape::fromRows({u"#."_s, u"##"_s});
         QcEntityMesh ell;
         QcEntityMesher::appendExtrudedSprite(ell, {corner, anyUv({}), 1.0, 1.0f}, identity);
-        QCOMPARE(ell.vertices.size(), (2 + 8) * 4);
+        QCOMPARE(corner.sides().size(), 8);
+        QCOMPARE(ell.vertices.size(), (2 + 6) * 4);
 
-        // A side takes the colour of its texel: all four corners at the texel's centre.
+        // A side keeps the colours of its texels: the left edge, two texels long, stays in the
+        // middle of their column of the picture.
         const QcEntityVertex &side = ell.vertices[2 * quadVertices];
-        QVERIFY(std::ranges::all_of(ell.vertices.mid(2 * quadVertices, 4), [&](const QcEntityVertex &v) { return v.u == side.u && v.v == side.v; }));
+        QVERIFY(std::ranges::all_of(ell.vertices.mid(2 * quadVertices, 4), [&](const QcEntityVertex &v) { return v.u == side.u; }));
 
         QcEntityMesh none;
         QcEntityMesher::appendExtrudedSprite(none, {QcSpriteShape(), anyUv({}), 1.0, 1.0f}, identity);
@@ -284,13 +313,15 @@ private slots:
         QcEntityMesher::appendHand(mesh, {m_look, &pick}, {}, {{}, 0.0, 0.0, 1.0f}, anyUv);
         QVERIFY(mesh.vertices.size() > armVertices + 2 * quadVertices);
 
-        // In the lower right corner like the reference (decision E-881): the head a little above
-        // the crosshair's height but well right of it, the handle running down out of the screen
-        // (handKeepsClearOfCrosshairAndHotbar checks the crosshair itself).
+        // In the lower right corner like the reference (decision E-881): the sprite's square
+        // reaches above the crosshair's height but stays well right of it, the handle running down
+        // into the fist at the bottom of the screen (handKeepsClearOfCrosshairAndHotbar checks the
+        // crosshair itself). The fist holds the handle's grip, so the head rises above it (decision
+        // E-1000).
         const QRectF item = screenBounds(mesh, armVertices, mesh.vertices.size());
         QVERIFY2(item.left() > 0.15 && item.right() > 0.8, qPrintable(u"%1 %2"_s.arg(item.left()).arg(item.right())));
         // The rectangle has y up: top() is its lowest point, bottom() its highest.
-        QVERIFY2(item.bottom() < 0.45 && item.bottom() > -0.3 && item.top() < -0.6, qPrintable(u"%1 %2"_s.arg(item.bottom()).arg(item.top())));
+        QVERIFY2(item.bottom() < 0.75 && item.bottom() > -0.3 && item.top() < -0.6, qPrintable(u"%1 %2"_s.arg(item.bottom()).arg(item.top())));
         QVERIFY2(item.height() > 0.5, qPrintable(QString::number(item.height())));
 
         // The arm comes up from below the screen to the fist.
@@ -467,6 +498,60 @@ private slots:
         QVERIFY(screenBounds(sprite, armVertices, sprite.vertices.size()).height() > 0.5);
     }
 
+    // A swing does not turn a drawn launcher back towards its rest (decision E-984): the hand keeps
+    // the drawn placement, and the swing placement still shows while nothing is drawn.
+    void aSwingLeavesADrawnLauncherAtItsPlacement()
+    {
+        QcEntityMesher::ItemLook bow = baseLook(u"qtcraft:bow"_s);
+        bow.sprite = u"t:pickaxe"_s;
+        bow.shape = pickaxe();
+        bow.swing.rotate = bow.firstPerson.rotate + QcVec3{0.0, 40.0, 0.0};
+        const auto mesh = [&](double aim, double swing) {
+            QcAnimator::HandPose hand;
+            hand.aim = aim;
+            hand.swing = swing;
+            QcEntityMesh result;
+            QcEntityMesher::appendHand(result, {m_look, &bow}, hand, {{}, 0.0, 0.0, 1.0f}, anyUv);
+            return result;
+        };
+        const auto sameItem = [&](const QcEntityMesh &a, const QcEntityMesh &b) {
+            return std::ranges::equal(a.vertices, b.vertices, [](const QcEntityVertex &one, const QcEntityVertex &other) {
+                return one.x == other.x && one.y == other.y && one.z == other.z;
+            });
+        };
+        QVERIFY(sameItem(mesh(1.0, 1.0), mesh(1.0, 0.0)));
+        QVERIFY(!sameItem(mesh(0.0, 1.0), mesh(0.0, 0.0)));
+    }
+
+    // A figure holds a launcher at the side and carries it to the aim with its arm: the aiming
+    // placement counts only while the arms aim, and held it stays clear of the leg (the arm hangs
+    // at x 0.25..0.45, the legs reach to x 0.25).
+    void figuresSwitchTheLauncherWhenTheyAim()
+    {
+        QcEntityMesher::ItemLook bow = baseLook(u"qtcraft:bow"_s);
+        bow.sprite = u"t:pickaxe"_s;
+        bow.shape = pickaxe();
+        QcEntityPose aiming;
+        aiming.drawProgress = 1.0;
+        QcAnimator::BodyPose aimed = QcAnimator::animateBody(aiming, 0.0);
+        QVERIFY(aimed.armsAimed);
+        QcAnimator::BodyPose unaimed = aimed;
+        unaimed.armsAimed = false;
+
+        const auto boundsOfItem = [&](const QcAnimator::BodyPose &pose) {
+            QcEntityMesh mesh;
+            QcEntityMesher::appendModel(mesh, {m_look, &bow}, pose, {}, anyUv);
+            return screenBounds(mesh, armVertices, mesh.vertices.size());
+        };
+        QVERIFY(boundsOfItem(aimed) != boundsOfItem(unaimed));
+
+        QcEntityMesh held;
+        QcEntityMesher::appendModel(held, {m_look, &bow}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
+        const auto byX = [](const QcEntityVertex &a, const QcEntityVertex &b) { return a.x < b.x; };
+        const auto inner = std::ranges::min_element(held.vertices.begin() + armVertices, held.vertices.end(), byX);
+        QVERIFY2(inner->x > 0.25, qPrintable(QString::number(inner->x)));
+    }
+
     void figuresHoldToolsByTheHandle()
     {
         const QcEntityMesher::ItemLook pick = tool();
@@ -485,6 +570,25 @@ private slots:
         const auto front = std::ranges::min_element(mesh.vertices.begin() + armVertices, mesh.vertices.end(), byZ);
         QVERIFY2(front->z < -0.5, qPrintable(QString::number(front->z)));
         QVERIFY2(front->y > 0.6 && front->y < 1.0, qPrintable(QString::number(front->y)));
+    }
+    // A tool's edge is drawn on the upper left side of its handle (decision E-991). The first
+    // person shows that side turned away from the player; a figure shows the tool turned over
+    // about its handle, with that side down and forward, so the edge of an axe points down at what
+    // it strikes. The fist holds the handle in both (figuresHoldToolsByTheHandle).
+    void figuresHoldToolsTurnedOverAboutTheHandle()
+    {
+        const QcVec3 firstPerson = upperLeftSide(handMesh(tool(), -1.0, true));
+        QVERIFY2(firstPerson.z < -0.4, qPrintable(u"%1 %2 %3"_s.arg(firstPerson.x).arg(firstPerson.y).arg(firstPerson.z)));
+
+        for (const QString &item : {u"qtcraft:iron_axe"_s, u"qtcraft:iron_sword"_s}) {
+            QcEntityMesher::ItemLook look = baseLook(item);
+            look.sprite = u"t:pickaxe"_s;
+            look.shape = pickaxe();
+            QcEntityMesh mesh;
+            QcEntityMesher::appendModel(mesh, {m_look, &look}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
+            const QcVec3 side = upperLeftSide(mesh);
+            QVERIFY2(side.y < -0.7 && side.z < 0.0, qPrintable(u"%1: %2 %3 %4"_s.arg(item).arg(side.x).arg(side.y).arg(side.z)));
+        }
     }
 };
 

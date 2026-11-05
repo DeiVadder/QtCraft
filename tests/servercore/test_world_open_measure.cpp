@@ -45,7 +45,7 @@ private:
         QVERIFY(container);
         container->stacks[0] = {item("qtcraft:diamond"), 3, 0};
 
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(pig, {x + 4.5, static_cast<double>(ground), z + 4.5}, m_nextId++, false, true);
         m_server->mobs().spawn(pig, {x + 10.5, static_cast<double>(ground), z + 10.5}, m_nextId++, false, true);
     }

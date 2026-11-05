@@ -22,7 +22,9 @@ namespace {
 constexpr double strideFrequency = 1.6;
 constexpr double walkAmplitude = 38.0;
 constexpr double sprintAmplitude = 55.0;
-// Pivot of the whole body for leaning: the hips of a 1.8 m humanoid.
+// Pivot of the whole body for leaning and of the sneaking torso: the hips of a 1.8 m humanoid. It
+// must stay the pivot of the body bone in content/qtcraft/models/humanoid.json, or the sneaking
+// torso turns away from the top of the legs (decision E-965).
 constexpr double hipHeight = 0.7;
 // How far the head turns aside against the body.
 constexpr double maxHeadYaw = 80.0;
@@ -136,12 +138,12 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         result.bone(QcBoneRole::RightArm) = {90.0 + stride * amplitude * 0.15, 0.0};
         result.bone(QcBoneRole::LeftArm) = {90.0 - stride * amplitude * 0.15, 0.0};
     }
+    // A dying entity keeps its flags (QcClientEntities::remove): it falls over upright.
+    if (pose.sneaking && pose.onGround && !pose.inWater && pose.deathProgress < 0.0) {
+        result.sneak();
+    }
     if (pose.drawProgress >= 0.0) {
         result.aimBow(pose);
-    }
-    if (pose.sneaking && pose.onGround && !pose.inWater) {
-        result.bodyPitch = 12.0;
-        result.bodyLift = -0.12;
     }
     if (pose.swingProgress >= 0.0) {
         result.bone(QcBoneRole::RightArm) = swingingArm(pose.swingProgress, result.bone(QcBoneRole::RightArm).pitch);
@@ -208,17 +210,40 @@ HandPose animateHand(const QcEntityPose &pose, double time, const QcHandTimers &
         hand.swing = middle;
         hand.punch = emptyPunch * middle;
     }
-    if (pose.drawProgress >= 0.0) {
-        // Drawing a bow: the hand comes to the middle and pulls back, trembling at a full draw.
-        const double draw = std::clamp(pose.drawProgress, 0.0, 1.0);
-        const double tremble = draw >= 1.0 ? std::sin(time * 40.0) * 0.004 : 0.0;
-        hand.offset.x -= 0.18;
-        hand.offset.y += 0.06 + tremble;
-        hand.offset.z += 0.12 * draw;
-        hand.yaw += 20.0;
-        hand.pitch += 10.0;
+    if (timers.aim > 0.0) {
+        // From the moment of the shot the hand keeps the draw it had and goes back from there;
+        // a new draw takes over once it is stronger than what the hand still shows.
+        const double drawn = std::max(pose.drawProgress, timers.lastDraw);
+        hand.holdDrawn(drawn, timers.aim, drawn - std::max(0.0, pose.drawProgress), time);
     }
     return hand;
+}
+
+void HandPose::holdDrawn(double draw, double progress, double released, double time)
+{
+    // Towards the middle of the screen and turned inwards about the shoulder, eased in and out.
+    constexpr QcVec3 drawnShift{-0.46, 0.05, -0.1};
+    constexpr double drawnYaw = 25.0;
+    constexpr double drawnPitch = 8.0;
+    // How far a full draw pulls the hand towards the eye, and the dip after a full draw's shot,
+    // in metres.
+    constexpr double pull = 0.06;
+    constexpr double releaseDip = 0.05;
+    // The tremble: from a tenth of the draw on, growing to its amplitude at a full draw.
+    constexpr double trembleFrom = 0.1;
+    constexpr double trembleAmplitude = 0.004;
+    constexpr double trembleRate = 26.0;
+
+    const double eased = smooth(progress);
+    const double drawn = std::clamp(draw, 0.0, 1.0);
+    const double tremble = std::sin(time * trembleRate) * trembleAmplitude * std::max(0.0, drawn - trembleFrom) / (1.0 - trembleFrom);
+    offset = offset + drawnShift * eased;
+    offset.y += tremble * eased;
+    offset.z += pull * drawn * eased;
+    offset.y -= releaseDip * released * std::sin(std::clamp(progress, 0.0, 1.0) * M_PI);
+    yaw += drawnYaw * eased;
+    pitch += drawnPitch * eased;
+    aim = eased;
 }
 
 void BodyPose::rowBoat(double rowPhase)
@@ -231,13 +256,45 @@ void BodyPose::rowBoat(double rowPhase)
     // faces the boat's way, its feet on the driver's seat).
     const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(rowPhase);
     const QcVec3 figure{0.0, QcBoatBody::floor + QcBoatBody::seatHeight - QcBoatBody::hipHeight, -QcBoatBody::driverAlong};
-    for (const int side : {1, -1}) {
-        const QcVec3 shoulder = figure + QcVec3{side * driverShoulder.x, driverShoulder.y, 0.0};
+    for (const QcBoatModel::Side side : QcBoatModel::sides) {
+        const QcVec3 shoulder = figure + QcVec3{QcBoatModel::signOf(side) * driverShoulder.x, driverShoulder.y, 0.0};
         const QcVec3 reach = QcBoatModel::gripOf(side, paddle) - shoulder;
         const double pitch = qRadiansToDegrees(std::atan2(-reach.z, -reach.y));
         const double roll = qRadiansToDegrees(std::atan2(reach.x, std::hypot(reach.y, reach.z)));
-        bone(side > 0 ? QcBoneRole::RightArm : QcBoneRole::LeftArm) = {pitch, roll};
+        bone(side == QcBoatModel::Side::Right ? QcBoneRole::RightArm : QcBoneRole::LeftArm) = {pitch, roll};
     }
+}
+
+QcVec3 BodyPose::leaned(QcBoneRole role, const QcVec3 &bonePivot, const QcVec3 &point) const
+{
+    const bool arm = role == QcBoneRole::RightArm || role == QcBoneRole::LeftArm;
+    const bool riding = role == QcBoneRole::Head || (arm && armsAimed);
+    const bool withTorso = role == QcBoneRole::Body || (arm && !armsAimed);
+    if (torsoPitch == 0.0 || (!withTorso && !riding)) {
+        return point;
+    }
+
+    // Turns about the hips' x axis so that what is above them moves forward (-Z).
+    const double radians = qDegreesToRadians(torsoPitch);
+    const double cosine = std::cos(radians);
+    const double sine = std::sin(radians);
+    const auto lean = [&](const QcVec3 &p) {
+        const QcVec3 d = p - torsoPivot;
+        return torsoPivot + QcVec3{d.x, d.y * cosine + d.z * sine, d.z * cosine - d.y * sine};
+    };
+    if (withTorso) {
+        return lean(point);
+    }
+    // The head rides on the neck, aiming arms on the shoulders, without turning.
+    return lean(bonePivot) + (point - bonePivot);
+}
+
+void BodyPose::sneak()
+{
+    torsoPitch = sneakLean;
+    torsoPivot = {0.0, hipHeight, 0.0};
+    bodyBack = sneakBack;
+    bodyLift = -sneakDrop;
 }
 
 void BodyPose::lieOnBack(double idle)
@@ -252,9 +309,16 @@ void BodyPose::lieOnBack(double idle)
 
 void BodyPose::aimBow(const QcEntityPose &pose)
 {
+    // Aims along the view, also from a leaning torso (sneaking, armsAimed).
+    armsAimed = true;
+    // The arms turn with the head about the vertical (yaw after pitch): the bow arm a little
+    // inwards, the drawing arm across the chest to the string just behind the bow.
+    constexpr double bowArmYaw = -6.0;
+    constexpr double stringArmYaw = 35.0;
     const double aim = 90.0 + pose.headPitch;
-    bone(QcBoneRole::LeftArm) = {aim, 12.0};
-    bone(QcBoneRole::RightArm) = {aim - 8.0 * pose.drawProgress, -25.0 - 15.0 * pose.drawProgress};
+    const double head = std::clamp(static_cast<double>(pose.headYaw), -maxHeadYaw, maxHeadYaw);
+    bone(QcBoneRole::RightArm) = {aim, 0.0, bowArmYaw + head};
+    bone(QcBoneRole::LeftArm) = {aim, 0.0, stringArmYaw + head};
 }
 
 } // namespace QcAnimator

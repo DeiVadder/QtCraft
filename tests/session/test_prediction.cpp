@@ -10,7 +10,9 @@
 #include <QTest>
 
 #include <algorithm>
+#include <cmath>
 #include <limits>
+#include <tuple>
 
 // QcPrediction on its own: the reconciliation results, the cap of pending inputs, riding a cart and
 // the wrapped yaw the client sends with UseItem.
@@ -125,6 +127,33 @@ private slots:
         QCOMPARE(prediction.motion().position, (QcVec3{0.5, 1.0, 0.5}));
     }
 
+    // A tick without a step (server paused, decision E-960) while the walk key is held: the state
+    // before becomes the current one, so the frames between ticks draw the player at one place
+    // instead of swinging back over the last step with every tick; a pending input stays pending.
+    void restingTicksStandStill()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcPlayerInput intent;
+        intent.forward = 1.0f;
+        prediction.setIntent(intent);
+        for (int tick = 0; tick < 3; ++tick) {
+            std::ignore = prediction.predict(world, false, QcMovement::Walk);
+        }
+        const QcVec3 walked = prediction.motion().position;
+        QVERIFY(prediction.previousMotion().position != walked);
+
+        for (int tick = 0; tick < 20; ++tick) {
+            prediction.rest();
+            QCOMPARE(prediction.previousMotion().position, walked);
+            QCOMPARE(prediction.motion().position, walked);
+        }
+        QCOMPARE(prediction.intent().forward, 1.0f);
+        QCOMPARE(prediction.pendingInputCount(), 3);
+    }
+
     void acknowledgedInputsLeaveAndTheRestIsReplayed()
     {
         QcTestWorld world(m_content);
@@ -205,6 +234,49 @@ private slots:
         QCOMPARE(prediction.motion().position, (QcVec3{6.5, 1.0, 6.5}));
     }
 
+    // A cart rider while the server pauses (decision E-960): the session keeps its own motion on
+    // the seat when it takes over the core's prediction (mirror), so the core's rest does not reach
+    // it; resting the session's prediction as well makes the drawn rider stand still.
+    void aPausedRiderRestsOnTheSeat()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcClientEntities entities;
+        entities.setBuffered(false);
+        QcMsg::EntitySpawn cart;
+        cart.id = 7;
+        cart.name = QStringLiteral("Cart");
+        cart.position = {4.5, 1.0, 4.5};
+        QVERIFY(entities.spawn(cart, &m_content));
+        QcPrediction session;
+        session.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcMsg::PlayerState riding = standingState(0);
+        riding.vehicle = cart.id;
+        session.reconcile(riding, &world, QcMovement::Walk);
+        QVERIFY(session.riding().ridesCart());
+
+        // The cart rolls two ticks; the session follows it onto the seat.
+        for (qint64 tick = 1; tick <= 2; ++tick) {
+            QcMsg::EntityMoves moves;
+            moves.timeMs = tick * 50;
+            moves.moves = {{cart.id, QcVec3{4.5 + static_cast<double>(tick), 1.0, 4.5}, 0.0f, 20.0, false, false, 0.0f, QcMsg::OnGround, qcNoItem}};
+            entities.moves(moves, tick * 50);
+            entities.tick(tick * 50);
+            session.followCart(entities);
+        }
+        const QcVec3 seat = session.motion().position;
+        QVERIFY(session.previousMotion().position != seat);
+
+        // Paused: the core rests, the session takes its prediction but keeps its own motion.
+        QcPrediction core = session;
+        core.rest();
+        session.mirror(core, true);
+        QVERIFY(session.previousMotion().position != seat);
+        session.rest();
+        QCOMPARE(session.previousMotion().position, seat);
+        QCOMPARE(session.motion().position, seat);
+    }
+
     // Slowness II (speed factor 0.7, decision E-838): the server moves each input with its own
     // factor. While the client knows the same factor its inputs carry it, so replaying them on the
     // server's states corrects nothing; when the slowness ends the client learns it a few ticks
@@ -237,6 +309,172 @@ private slots:
 
         // Without slowness the same walk covers more ground: the factor was applied at all.
         QVERIFY((server.motion.position - settled).length() > slowStretch * 8.0 / 12.0 * 1.2);
+    }
+
+    // The mark of a draw (decision E-986) rides with each input: the replay moves as predicted, and
+    // both sides slow on the same input whatever the delay.
+    void aDrawKeepsTheCorrectionAtZero()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        prediction.setIntent(QcPlayerInput{.forward = 1.0f, .sprint = true});
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+
+        QCOMPARE(walk(prediction, server, world, 6), 0.0);
+        prediction.setUsingItem(true);
+        // The session sets its intent every frame; the draw stays.
+        prediction.setIntent(QcPlayerInput{.forward = 1.0f, .sprint = true});
+        QVERIFY(prediction.intent().usingItem);
+        const QcVec3 before = server.motion.position;
+        QCOMPARE(walk(prediction, server, world, 10), 0.0);
+        prediction.setUsingItem(false);
+        QCOMPARE(walk(prediction, server, world, 5), 0.0);
+        QVERIFY(server.motion.position.length() > before.length());
+    }
+
+    void theDrawSlowsEveryKindOfMove()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        const auto speedOf = [&world](QcPlayerInput input, QcMovement movement) {
+            QcEntityMotion motion = standingState(0).motion;
+            motion.position.y = input.flying ? 3.0 : 1.0;
+            input.forward = 1.0f;
+            for (int tick = 0; tick < 16; ++tick) {
+                motion.position.x = 0.5;
+                motion.position.z = 0.5;
+                motion.stepPlayer(input, world, QcPhysics::tickDuration, movement);
+            }
+            return std::hypot(motion.velocity.x, motion.velocity.z);
+        };
+        const double factor = QcPhysics::usingItemFactor;
+        QCOMPARE(factor, 0.2);
+        for (const QcPlayerInput &input : {QcPlayerInput{}, QcPlayerInput{.sneak = true}}) {
+            QcPlayerInput drawn = input;
+            drawn.usingItem = true;
+            QVERIFY(std::abs(speedOf(drawn, QcMovement::Walk) - speedOf(input, QcMovement::Walk) * factor) < 0.01);
+        }
+        // Drawn, the wish to sprint is plain walking; flying likewise.
+        QVERIFY(std::abs(speedOf({.sprint = true, .usingItem = true}, QcMovement::Walk) - QcPhysics::walkSpeed * factor) < 0.05);
+        const QcPlayerInput flight{.flying = true};
+        QVERIFY(std::abs(speedOf({.sprint = true, .flying = true, .usingItem = true}, QcMovement::MayFly) - speedOf(flight, QcMovement::MayFly) * factor) < 0.05);
+
+        QVERIFY(QcPlayerInput({.forward = 1.0f, .sprint = true}).sprints());
+        QVERIFY(!QcPlayerInput({.forward = 1.0f, .sprint = true, .usingItem = true}).sprints());
+    }
+
+    // A state counts against a draw only when it answers an input of that draw: the answers to the
+    // inputs before it, or to the end of an earlier draw, say nothing about this one.
+    void onlyAnAnswerToTheDrawRefusesIt()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        const auto refused = [&prediction](quint32 acknowledged, bool serverDraws) {
+            QcMsg::PlayerState state = standingState(acknowledged);
+            state.usingItem = serverDraws;
+            return prediction.usingItemRefused(state);
+        };
+
+        const QcPlayerInput first = prediction.predict(world, false, QcMovement::Walk);
+        QVERIFY(!refused(first.sequence, false));
+        prediction.setUsingItem(true);
+        QVERIFY(!refused(first.sequence, false));
+        const QcPlayerInput drawn = prediction.predict(world, false, QcMovement::Walk);
+        QVERIFY(drawn.usingItem);
+        QVERIFY(refused(drawn.sequence, false));
+        QVERIFY(!refused(drawn.sequence, true));
+
+        // A new draw after a release: the old answer does not reach it.
+        prediction.setUsingItem(false);
+        std::ignore = prediction.predict(world, false, QcMovement::Walk);
+        prediction.setUsingItem(true);
+        QVERIFY(!refused(drawn.sequence, false));
+        QVERIFY(refused(prediction.predict(world, false, QcMovement::Walk).sequence, false));
+    }
+
+    // A knockback (decision E-971) is a velocity the server gives the player between two inputs: the
+    // state that brings it corrects the prediction once by what the push did over the inputs still
+    // pending, then the replayed inputs carry the push on, so nothing pulls the player back.
+    void aKnockbackCorrectsOnceAndCarriesOn()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+        QCOMPARE(walk(prediction, server, world, 6), 0.0);
+
+        // A blow from the west: 6 m/s east and 5 m/s up, as QcMobManager::knockbackVelocity gives.
+        server.motion.velocity = {6.0, 5.0, 0.0};
+        server.motion.onGround = false;
+        const QcMsg::PlayerState knocked = server.receive(prediction.predict(world, false, QcMovement::Walk), world);
+        prediction.reconcile(knocked, &world, QcMovement::Walk);
+        QVERIFY(prediction.lastCorrection() > 0.0);
+        QVERIFY(prediction.motion().velocity.x > 0.0);
+
+        // From then on the prediction is where the server is and flies on east, without a correction.
+        double x = prediction.motion().position.x;
+        double largest = 0.0;
+        for (int tick = 0; tick < 12; ++tick) {
+            largest = std::max(largest, walk(prediction, server, world, 1));
+            QVERIFY2(prediction.motion().position.x >= x, qPrintable(QString::number(prediction.motion().position.x)));
+            x = prediction.motion().position.x;
+        }
+        QVERIFY2(largest < 1e-9, qPrintable(QString::number(largest)));
+        QVERIFY2(x > 1.0, qPrintable(QString::number(x)));
+        QVERIFY(prediction.motion().onGround);
+    }
+
+    // The edge guard of sneaking (decision E-961) runs in the shared physics: the server stops the
+    // player at the floor's edge on the same tick as the prediction, so nothing is corrected, and
+    // the player stays on the floor.
+    void sneakingStopsAtTheEdgeWithoutCorrection()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcPlayerInput intent;
+        intent.forward = 1.0f;
+        intent.sneak = true;
+        prediction.setIntent(intent);
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+
+        // North (-z) towards the edge at z = -8, 8.5 m away: 1.3 m/s reach it in 7 s.
+        QCOMPARE(walk(prediction, server, world, 180), 0.0);
+        QVERIFY2(server.motion.position.z < -8.0 && server.motion.position.z >= -8.0 - QcPhysics::playerWidth * 0.5,
+                 qPrintable(QString::number(server.motion.position.z)));
+        QCOMPARE(server.motion.position.y, 1.0);
+        QCOMPARE(prediction.motion().position, server.motion.position);
+    }
+
+    // The eyes drop while the player crouches (decision E-961): sneaking on foot, not in flight
+    // (where sneak descends).
+    void theEyesDropWhileCrouching()
+    {
+        QcPrediction prediction;
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::playerEyeHeight);
+        QcPlayerInput intent;
+        intent.sneak = true;
+        prediction.setIntent(intent);
+        QVERIFY(prediction.crouches());
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::sneakEyeHeight);
+
+        QcTestWorld world(m_content);
+        QcMsg::PlayerState flying = standingState(0);
+        flying.motion.flying = true;
+        flying.motion.onGround = false;
+        flying.motion.position.y = 5.0;
+        prediction.reconcile(flying, &world, QcMovement::MayFly);
+        QVERIFY(!prediction.crouches());
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::playerEyeHeight);
     }
 };
 

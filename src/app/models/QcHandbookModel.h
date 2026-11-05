@@ -18,11 +18,20 @@
 class QcHandbookModel : public QObject
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    // HandbookModel in QML, for its enumeration (HandbookModel.RecipeKind.Machine).
+    QML_NAMED_ELEMENT(HandbookModel)
+    QML_UNCREATABLE("Provided by GameController.handbook.model")
     // [{id, title, count}] of the non-empty categories.
     Q_PROPERTY(QVariantList categories READ categories NOTIFY handbookChanged FINAL)
 
 public:
+    // The kind of a recipe on a page (QcHandbookEntry::Recipe::Kind, with the same values).
+    enum class RecipeKind {
+        Crafting,
+        Machine
+    };
+    Q_ENUM(RecipeKind)
+
     explicit QcHandbookModel(QObject *parent = nullptr);
 
     void setHandbook(std::shared_ptr<const QcHandbook> handbook);
@@ -34,7 +43,8 @@ public:
     Q_INVOKABLE QVariantList entries(const QString &category) const;
     // The same for the best matches of `text`, with "categoryTitle".
     Q_INVOKABLE QVariantList search(const QString &text) const;
-    // A whole page (see QcHandbookJson::entry); empty for unknown ids.
+    // A whole page (see QcHandbookJson::entry), each recipe's "kind" a RecipeKind, the technical
+    // facts apart in "technicalFacts" ("facts" the others); empty for unknown ids.
     Q_INVOKABLE QVariantMap page(const QString &id) const;
     // Entry id for an entry id or a content name (block, item, creature, biome, chapter; unqualified
     // names in any pack); empty when none.

@@ -36,7 +36,7 @@ void QcMineshaftBuilder::build(QcChunk &chunk, const QcMineshaftPlan &plan) cons
 {
     const int x0 = chunk.pos().x * QcWorld::chunkSize;
     const int z0 = chunk.pos().z * QcWorld::chunkSize;
-    const Area area{x0 - 1, z0 - 1, x0 + QcWorld::chunkSize, z0 + QcWorld::chunkSize};
+    const QcXzRect area{x0 - 1, z0 - 1, x0 + QcWorld::chunkSize, z0 + QcWorld::chunkSize};
 
     placePillars(chunk, plan);
     placeNodeFloors(chunk, plan, area);
@@ -47,9 +47,9 @@ void QcMineshaftBuilder::build(QcChunk &chunk, const QcMineshaftPlan &plan) cons
             room.placement.writeInto(chunk);
         }
     }
-    for (const QcMineshaftPlan::Placed &placed : plan.blocks) {
-        if (inChunk(chunk, placed.at)) {
-            setAt(chunk, placed.at, placed.block);
+    for (const QcPlacedBlock &placed : plan.blocks) {
+        if (inChunk(chunk, placed.pos)) {
+            setAt(chunk, placed.pos, placed.block);
         }
     }
 }
@@ -81,9 +81,9 @@ void QcMineshaftBuilder::buildEntrance(QcChunk &chunk, const QcMineshaftPlan::En
     for (const QcBlockPos &cell : entrance.lining) {
         plankIfOpen(chunk, cell);
     }
-    for (const QcMineshaftPlan::Placed &placed : entrance.blocks) {
-        if (inChunk(chunk, placed.at)) {
-            setAt(chunk, placed.at, placed.block);
+    for (const QcPlacedBlock &placed : entrance.blocks) {
+        if (inChunk(chunk, placed.pos)) {
+            setAt(chunk, placed.pos, placed.block);
         }
     }
 }
@@ -112,11 +112,11 @@ void QcMineshaftBuilder::placePillars(QcChunk &chunk, const QcMineshaftPlan &pla
     }
 }
 
-void QcMineshaftBuilder::placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const
+void QcMineshaftBuilder::placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const
 {
     for (const QcMineshaftPlan::Node &node : plan.nodes) {
         const QcBlockPos c = node.centre;
-        if (!area.overlaps(c.x - node.half, c.z - node.half, c.x + node.half, c.z + node.half)) {
+        if (!area.intersects({c.x - node.half, c.z - node.half, c.x + node.half, c.z + node.half})) {
             continue;
         }
         const int side = 2 * node.half + 1;
@@ -126,14 +126,14 @@ void QcMineshaftBuilder::placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &
     }
 }
 
-bool QcMineshaftBuilder::near(const QcMineshaftPlan::Corridor &corridor, Area area)
+bool QcMineshaftBuilder::near(const QcMineshaftPlan::Corridor &corridor, QcXzRect area)
 {
     const QcBlockPos first = corridor.cell(0);
     const QcBlockPos last = corridor.cell(corridor.length - 1);
-    return area.overlaps(std::min(first.x, last.x) - 1, std::min(first.z, last.z) - 1, std::max(first.x, last.x) + 1, std::max(first.z, last.z) + 1);
+    return area.intersects({std::min(first.x, last.x) - 1, std::min(first.z, last.z) - 1, std::max(first.x, last.x) + 1, std::max(first.z, last.z) + 1});
 }
 
-void QcMineshaftBuilder::placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const
+void QcMineshaftBuilder::placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const
 {
     // Corridors far from the chunk are skipped whole (a large mine shaft has hundreds).
     for (const QcMineshaftPlan::Corridor &corridor : plan.corridors) {
@@ -146,12 +146,12 @@ void QcMineshaftBuilder::placeCorridorFloors(QcChunk &chunk, const QcMineshaftPl
     }
 }
 
-void QcMineshaftBuilder::open(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const
+void QcMineshaftBuilder::open(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const
 {
     // Nodes and corridors far from the chunk are skipped whole.
     QcMineshaftPlan near;
     for (const QcMineshaftPlan::Node &node : plan.nodes) {
-        if (area.overlaps(node.centre.x - node.half, node.centre.z - node.half, node.centre.x + node.half, node.centre.z + node.half)) {
+        if (area.intersects({node.centre.x - node.half, node.centre.z - node.half, node.centre.x + node.half, node.centre.z + node.half})) {
             near.nodes.append(node);
         }
     }
@@ -163,7 +163,7 @@ void QcMineshaftBuilder::open(QcChunk &chunk, const QcMineshaftPlan &plan, Area 
 
     // A liquid sealed beside one cell may be opened as another cell later: it ends open.
     near.forEachOpenCell([&](QcBlockPos cell) {
-        if (cell.x < area.x0 || cell.x > area.x1 || cell.z < area.z0 || cell.z > area.z1) {
+        if (cell.x < area.minX || cell.x > area.maxX || cell.z < area.minZ || cell.z > area.maxZ) {
             return;
         }
         if (inChunk(chunk, cell)) {

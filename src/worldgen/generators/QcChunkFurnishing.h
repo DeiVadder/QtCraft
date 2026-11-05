@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/core/QcBlockPos.h"
 
 #include <QList>
@@ -27,18 +28,6 @@ struct QcChunkFurnishing
         quint64 seed = 0;
     };
 
-    /*! \brief A spawner block and the creature kind it spawns. */
-    struct Spawner
-    {
-        /*! The position of the spawner block. */
-        QcBlockPos at;
-        /*! Content name of the creature kind. */
-        QString mob;
-        /*! Its creatures are confined (QcCreature::confined; the showcase's spawner behind
-            glass): they walk, but neither teleport nor change the world. */
-        bool confined = false;
-    };
-
     /*! \brief A minecart standing on the rail at \c {at} (mine shafts, decision E-570), placed
         from \c {item}; a container cart is filled from the loot table, if any. */
     struct Cart
@@ -56,7 +45,7 @@ struct QcChunkFurnishing
     /*! The chests to fill. */
     QList<Chest> chests;
     /*! The spawners to set up. */
-    QList<Spawner> spawners;
+    QList<QcStructureDefinition::Spawner> spawners;
     /*! The minecarts to place. */
     QList<Cart> carts;
 

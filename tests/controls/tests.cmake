@@ -13,6 +13,8 @@ qc_add_test(test_screen_choice SOURCES controls/test_screen_choice.cpp LIBRARIES
 qc_add_test(test_settings SOURCES controls/test_settings.cpp LIBRARIES qc_clientcore)
 # The display options and the frame pacer on a fake clock (decision E-835).
 qc_add_test(test_display_options SOURCES controls/test_display_options.cpp LIBRARIES qc_clientcore)
+# What the game does after a lost graphics device (decision E-963).
+qc_add_test(test_device_loss_policy SOURCES controls/test_device_loss_policy.cpp LIBRARIES qc_clientcore)
 # The display settings with window modes, the fullscreen key and the frame limit on an offscreen
 # window (decision E-835).
 qc_add_test(test_display_settings SOURCES controls/test_display_settings.cpp LIBRARIES qc_app_core)
@@ -29,6 +31,8 @@ qc_add_test(test_control_palette SOURCES controls/test_control_palette.cpp LIBRA
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
 qc_add_test(test_ui_enums SOURCES controls/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
+# Modes, kinds and states of the menus as enumerations, in C++ and QML (E-688, package 79.62).
+qc_add_test(test_menu_enums SOURCES controls/test_menu_enums.cpp LIBRARIES qc_app_qml qc_worlds qc_base_content)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES controls/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES controls/test_lazy_screen.cpp LIBRARIES Qt::Quick)

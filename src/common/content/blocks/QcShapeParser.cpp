@@ -140,7 +140,7 @@ QcShapeDefinition parseShapeBody(const QJsonObject &json, QcJsonFieldReader &rea
         reader.fail(u"a shape needs at least one box or cross"_s);
     }
     if (reader.ok() && shape.boxCount() > QcShapeDefinition::maxBoxes) {
-        reader.fail(u"a shape has at most %1 boxes, crosses and collision boxes in all parts together"_s.arg(QcShapeDefinition::maxBoxes));
+        reader.fail(u"a shape has at most %1 boxes, crosses, collision and target boxes in all parts together"_s.arg(QcShapeDefinition::maxBoxes));
     }
     return shape;
 }

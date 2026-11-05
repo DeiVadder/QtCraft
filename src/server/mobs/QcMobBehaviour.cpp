@@ -83,7 +83,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
                                                     const QList<QcMobManager::PlayerView> &players, Clock clock)
 {
     QList<QcMobManager::PlayerHit> hits;
-    m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[static_cast<std::size_t>(mob.type)]; });
+    m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[static_cast<std::size_t>(mob.type.index())]; });
     m_crowd.build(mobs, m_content->mobs());
     m_hoverers.build(mobs, m_content->mobs());
     m_pushers.clear();
@@ -105,7 +105,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
                                               .mobs = mobs,
                                               .worldTime = clock.worldTime,
                                               .dt = clock.dt,
-                                              .rules = m_rules[static_cast<std::size_t>(mobs[i].type)],
+                                              .rules = m_rules[static_cast<std::size_t>(mobs[i].type.index())],
                                               .players = &players,
                                               .hits = &hits,
                                               .tick = m_tick,
@@ -269,12 +269,12 @@ QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature 
         for (const QcBodyPush::Body &player : m_pushers) {
             players += QcBodyPush::between(body, player, QcBodyPush::creatureParting);
         }
-        // A walker goes around a player in its way rather than stalling in front of him; one that
+        // A walker goes around a player in its way rather than stalling in front of them; one that
         // chases a player or follows its owner presses in.
         const bool pressesIn = mob.chasing != 0 || (mob.tame && !mob.tame->sitting);
         push += pressesIn ? players : QcBodyPush::passing(players, steering.wish);
     }
-    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[static_cast<std::size_t>(mob.type)]})) {
+    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[static_cast<std::size_t>(mob.type.index())]})) {
         return steering;
     }
 

@@ -3,6 +3,7 @@
 
 #include "headless/QcServerConsole.h"
 
+#include "common/core/QcConsole.h"
 #include "headless/QcStdinReader.h"
 
 #include <cstdio>
@@ -45,7 +46,7 @@ void QcServerConsole::handle(const QByteArray &line)
 
     const QStringList replies = m_runner(text);
     for (const QString &reply : replies) {
-        std::println("{}", reply.toStdString());
+        QcConsole::printLine(reply);
     }
     std::fflush(stdout);
 }

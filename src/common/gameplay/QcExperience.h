@@ -26,11 +26,11 @@ public:
     /*! A level and points within it, clamped into range. */
     QcExperience(int level, int points);
 
-    /*! Points needed from \a level to the next level. */
+    /*! Returns the points needed from \a level to the next level. */
     static int pointsForNext(int level);
     /*! Returns the most points a player can hold within \a level (none at maxLevel). */
     static int mostPoints(int level);
-    /*! Points from level 0 up to the start of \a level. */
+    /*! Returns the points from level 0 up to the start of \a level. */
     static qint64 totalForLevel(int level);
     /*! Returns the level and points of \a total points. */
     static QcExperience fromTotal(qint64 total);
@@ -45,7 +45,7 @@ public:
     int points() const { return m_points; }
     /*! Returns all points from level 0 on. */
     qint64 total() const { return totalForLevel(m_level) + m_points; }
-    /*! Share of the way to the next level, 0..1 (the bar in the HUD). */
+    /*! Returns the share of the way to the next level, 0..1 (the bar in the HUD). */
     double progress() const { return static_cast<double>(m_points) / static_cast<double>(pointsForNext(m_level)); }
 
     /*! Adds \a points (negative ones take away, down to nothing); returns the levels gained
@@ -63,7 +63,7 @@ public:
     /*! Sets the \a points within the current level. Returns false, with no change, when they are
         negative or reach the next level. */
     [[nodiscard]] bool setPoints(int points);
-    /*! Points dropped as orbs on death: 7 per level, at most 100. */
+    /*! Returns the points dropped as orbs on death: 7 per level, at most 100. */
     int deathDrop() const;
 
     bool operator==(const QcExperience &) const = default;

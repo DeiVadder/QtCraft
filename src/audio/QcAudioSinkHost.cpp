@@ -16,7 +16,7 @@ QcAudioSinkHost::~QcAudioSinkHost()
     close();
 }
 
-QcAudioSinkHost::Opened QcAudioSinkHost::open(const QAudioDevice &device, const QAudioFormat &format, QcMixerDevice::Format sampleFormat,
+QcAudioPlatform::Opened QcAudioSinkHost::open(const QAudioDevice &device, const QAudioFormat &format, QcMixerDevice::Format sampleFormat,
                                               const QcMixerDevice::Render &render, int bufferMilliseconds)
 {
     close();

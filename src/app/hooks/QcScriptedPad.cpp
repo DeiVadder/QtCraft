@@ -6,6 +6,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcPendingScreens.h"
 #include "app/input/QcGamepadUi.h"
+#include "common/core/QcConsole.h"
 
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -151,8 +152,8 @@ void QcScriptedPad::onFrameSwapped()
 
 void QcScriptedPad::report()
 {
-    std::println(stderr, "padFocus: {}", m_ui.focusDescription().toStdString());
-    std::println(stderr, "padFamily: {}", m_ui.pads()->family().toStdString());
+    QcConsole::printErrorLine(u"padFocus: "_s + m_ui.focusDescription());
+    QcConsole::printErrorLine(u"padFamily: "_s + m_ui.pads()->family());
     if (m_ui.radialOpen()) {
         std::println(stderr, "padRadial: {}", m_ui.radialSlot());
     }
@@ -160,7 +161,7 @@ void QcScriptedPad::report()
     const QQuickWindow *window = m_ui.navigator().window();
     const auto *preview = window ? window->findChild<QQuickItem *>(u"keyboardPreview"_s) : nullptr;
     if (preview && preview->isVisible()) {
-        std::println(stderr, "padKeyboard: {}", preview->property("text").toString().toStdString());
+        QcConsole::printErrorLine(u"padKeyboard: "_s + preview->property("text").toString());
     }
     std::fflush(stderr);
 

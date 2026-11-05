@@ -102,8 +102,8 @@ private:
             }
             // The shaped ground ends inside the region, not in a straight line at its edge.
             const int reach = plan->wetland.settings.reach();
-            for (const QcVillagePlan::Area &area : plan->wetland.wet) {
-                if (plan->wetland.settings.bottom != qcAirBlockId && !Box{area.x0 - reach, area.z0 - reach, area.x1 + reach, area.z1 + reach}.inside(region)) {
+            for (const QcXzRect &area : plan->wetland.wet) {
+                if (plan->wetland.settings.bottom != qcAirBlockId && !Box{area.minX - reach, area.minZ - reach, area.maxX + reach, area.maxZ + reach}.inside(region)) {
                     qWarning("%s", qPrintable(where("wetland")));
                     return -1;
                 }

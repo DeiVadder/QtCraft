@@ -3,6 +3,7 @@
 
 #include "clientcore/meshing/QcLiquidSurface.h"
 
+#include <algorithm>
 #include <cstddef>
 
 namespace QcLiquidSurface {
@@ -67,6 +68,29 @@ std::array<float, 4> cornerHeights(const std::array<float, 9> &cells)
         }
     }
     return corners;
+}
+
+std::optional<std::array<float, 4>> shoreBase(QcBlockFace face, std::array<float, 4> liquidTop)
+{
+    const QcFaceOffset offset = qcFaceOffset(face);
+    std::array<float, 4> base{};
+    float lowestOnEdge = 1.0f;
+    for (int z = 0; z < 2; ++z) {
+        for (int x = 0; x < 2; ++x) {
+            // The same corner seen from the liquid's cell, one cell further along the face.
+            const int liquidX = x - offset.dx;
+            const int liquidZ = z - offset.dz;
+            if (liquidX >= 0 && liquidX < 2 && liquidZ >= 0 && liquidZ < 2) {
+                const float height = liquidTop[static_cast<std::size_t>(liquidX) + 2 * static_cast<std::size_t>(liquidZ)];
+                base[static_cast<std::size_t>(x) + 2 * static_cast<std::size_t>(z)] = height;
+                lowestOnEdge = std::min(lowestOnEdge, height);
+            }
+        }
+    }
+    if (lowestOnEdge >= 1.0f) {
+        return std::nullopt;
+    }
+    return base;
 }
 
 } // namespace QcLiquidSurface

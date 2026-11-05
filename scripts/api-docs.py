@@ -73,7 +73,8 @@ TOPIC_COMMANDS = {"class": "class", "struct": "struct", "union": "union", "names
                   "typedef": "typedef"}
 SIGNATURE_DROPS = re.compile(r"\[\[[^\]]*\]\]|\b(?:Q_INVOKABLE|Q_SIGNAL|Q_SLOT|Q_REQUIRED_RESULT|virtual|static|"
                              r"explicit|inline|friend)\b\s*")
-WARNING = re.compile(r"^(.*?):(\d+): \(qdoc\) (warning|error): (.*)$")
+# qdoc of Qt 6.12 puts the project before the tool: `file:1: [QtCraft] (qdoc) warning: ...`.
+WARNING = re.compile(r"^(.*?):(\d+): (?:\[[^\]]*\] )?\(qdoc\) (warning|error): (.*)$")
 
 
 class Staged:
@@ -132,7 +133,8 @@ def signature(item, scopes):
     head = SIGNATURE_DROPS.sub("", item.text).strip()
     head = re.sub(r"\s*(?:=\s*0|=\s*default|=\s*delete)\s*$", "", head)
     head = re.sub(r"\s+\b(?:override|final)\b", "", head)
-    head = re.sub(r"\s*->\s*", " -> ", head)
+    # A trailing return type (`auto f() -> int`), not the name `operator->`.
+    head = re.sub(r"(?<!operator)\s*->\s*", " -> ", head)
     if not item.scope:
         return head
     scope, clauses = scopes.qualified(item.scope)
@@ -612,6 +614,8 @@ def self_test():
         "{",
         "    /*! Adds \\a other. */",
         "    QcRect &operator+=(const QcRect &other);",
+        "    /*! Returns this. */",
+        "    QcRect *operator->();",
         "};",
         ""])
     staged = stage_header(header, "src/audio/QcSample.h")
@@ -622,7 +626,7 @@ def self_test():
               "\\fn QcSample::Limits QcSample::start(bool enabled, Kind kind = Kind::Small)",
               "\\fn bool QcSample::isSequential() const", "\\reimp", "\\fn void QcSample::ready()",
               "\\fn void free() \\n Explicit.", "Bounds in bytes.", "\\variable QcSample::Limits::first",
-              "\\fn QcRect &QcRect::operator+=(const QcRect &other)"]
+              "\\fn QcRect &QcRect::operator+=(const QcRect &other)", "\\fn QcRect *QcRect::operator->()"]
     failures = [w for w in wanted if w not in text.split("\n") and w not in text]
     for unwanted in ("Hidden.", "QcSample::Limits::other", "QcSample::Limits::second", "\\qcshared",
                      "\\headerfile"):
@@ -698,6 +702,9 @@ def self_test():
     for wanted_line in ("    \\qmltype Plate", "    \\inqmlmodule QtCraft", "    /*! Its text. */"):
         if wanted_line not in qml_text.split("\n"):
             failures.append("qml: missing " + wanted_line)
+    for raw in ("/s/a.qdoc:3: (qdoc) warning: Old form", "/s/a.qdoc:3: [QtCraft] (qdoc) warning: New form"):
+        if map_warnings(raw, {}) != [["/s/a.qdoc", 3, "warning: " + raw.rsplit(": ", 1)[1]]]:
+            failures.append("warning line not read: " + raw)
     for failure in failures:
         print("self-test: " + failure)
     if failures:

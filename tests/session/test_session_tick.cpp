@@ -85,6 +85,35 @@ struct Result
     double appliedRatio = 0.0;
 };
 
+// Whether the session heard the server say it paused (`paused`) or resumed.
+bool heardServerPause(const std::vector<QcSessionEvent> &events, bool paused)
+{
+    return std::ranges::any_of(events, [paused](const QcSessionEvent &event) {
+        const auto *received = std::get_if<QcSessionEvent::Received>(&event.what);
+        const auto *pause = received ? std::get_if<QcMsg::ServerPause>(&received->message) : nullptr;
+        return pause && pause->paused == paused;
+    });
+}
+
+// The latest tick the core handed to the session (a default one before the first tick).
+QcSessionEvent::Ticked lastTicked(const std::vector<QcSessionEvent> &events)
+{
+    for (const QcSessionEvent &event : std::ranges::reverse_view(events)) {
+        if (const auto *ticked = std::get_if<QcSessionEvent::Ticked>(&event.what)) {
+            return *ticked;
+        }
+    }
+    return {};
+}
+
+// Where the player is drawn between two ticks (QcFrameDriver: previous motion to motion by `alpha`,
+// the share of the tick).
+QcVec3 drawnPosition(const QcPrediction &prediction, double alpha)
+{
+    const QcVec3 &previous = prediction.previousMotion().position;
+    return previous + (prediction.motion().position - previous) * alpha;
+}
+
 } // namespace
 
 class TestSessionTick : public QObject
@@ -319,29 +348,40 @@ private slots:
             },
             timeoutMs));
 
-        const auto heardPause = [&events](bool paused) {
-            return std::ranges::any_of(events, [paused](const QcSessionEvent &event) {
-                const auto *received = std::get_if<QcSessionEvent::Received>(&event.what);
-                const auto *pause = received ? std::get_if<QcMsg::ServerPause>(&received->message) : nullptr;
-                return pause && pause->paused == paused;
-            });
-        };
-        const auto lastTickPredicted = [&events] {
-            for (const QcSessionEvent &event : std::ranges::reverse_view(events)) {
-                if (const auto *ticked = std::get_if<QcSessionEvent::Ticked>(&event.what)) {
-                    return ticked->predicted;
-                }
-            }
-            return false;
-        };
+        const auto heardPause = [&events](bool paused) { return heardServerPause(events, paused); };
+        const auto lastTickPredicted = [&events] { return lastTicked(events).predicted; };
+
+        // Walking into the pause menu (decision E-960): the walk key stays held, but the player
+        // drawn between two ticks (QcFrameDriver: previous motion to motion by the time since the
+        // tick) stands at one place throughout the pause, whatever the share of the tick.
+        QcPlayerInput forward;
+        forward.forward = 1.0f;
+        core.apply({QcSessionCommand::SetIntent{forward}});
+        for (int i = 0; i < 3; ++i) {
+            now += intervalNs;
+            QCOMPARE(core.runDueTicks(), 1);
+        }
+        const auto latest = [&events] { return lastTicked(events).after.prediction; };
+        const auto drawnAt = [&latest](double alpha) { return drawnPosition(latest(), alpha); };
+        QVERIFY((drawnAt(1.0) - drawnAt(0.0)).length() > 0.01);
+        const QcVec3 walked = drawnAt(1.0);
 
         core.apply({QcSessionCommand::Send{QcMsg::PauseRequest{true}}});
         QVERIFY(QTest::qWaitFor([&] { return heardPause(true); }, timeoutMs));
         const qsizetype inputs = wire->sentOf<QcMsg::PlayerInput>().size();
+        now += intervalNs;
+        QCOMPARE(core.runDueTicks(), 1);
+        const QcVec3 rested = drawnAt(1.0);
+        // Entering the pause does not jump: the player rests where the last step ended.
+        QVERIFY2((rested - walked).length() < 1e-6, qPrintable(QString::number((rested - walked).length())));
         for (int i = 0; i < 10; ++i) {
             now += intervalNs;
             QCOMPARE(core.runDueTicks(), 1);
             QVERIFY(!lastTickPredicted());
+            QCOMPARE(latest().intent().forward, 1.0f);
+            for (const double alpha : {0.0, 0.3, 0.7, 1.0}) {
+                QCOMPARE(drawnAt(alpha), rested);
+            }
         }
         QCOMPARE(wire->sentOf<QcMsg::PlayerInput>().size(), inputs);
 
@@ -351,6 +391,9 @@ private slots:
         QCOMPARE(core.runDueTicks(), 1);
         QVERIFY(lastTickPredicted());
         QCOMPARE(wire->sentOf<QcMsg::PlayerInput>().size(), inputs + 1);
+        // Resuming does not jump either: the first step starts where the player rested.
+        QVERIFY2((drawnAt(0.0) - rested).length() < 1e-6, qPrintable(QString::number((drawnAt(0.0) - rested).length())));
+        QVERIFY((drawnAt(1.0) - rested).length() > 0.01);
 
         core.shutdown();
         QVERIFY(host->shutdown().has_value());

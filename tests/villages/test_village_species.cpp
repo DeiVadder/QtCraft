@@ -42,13 +42,13 @@ private:
         double worldTime = QcDayCycle::dayLength * (10.0 + workPhase);
 
         QcVillage &state() const { return *world->villages().find(plan->id); }
-        int type(const QString &name) const { return *content->mobIndex(name); }
+        QcCreatureKindId type(const QString &name) const { return *content->mobKind(name); }
     };
 
     // A copy of the creature kind `from` named `name`; with `settings`, a villager living by them.
     static void addKind(QcContentRegistry &content, const QString &from, const QString &name, const QString &settings = {})
     {
-        QcMobDefinition kind = content.mobs()[*content.mobIndex(from)];
+        QcMobDefinition kind = content.mobs()[*content.mobKind(from)];
         kind.name = name;
         kind.spawnWeight = 0.0;
         kind.extraSpawns.clear();
@@ -124,7 +124,7 @@ private:
 
     static qsizetype countOf(const Village &village, const QString &kind)
     {
-        const int type = village.type(kind);
+        const QcCreatureKindId type = village.type(kind);
         return std::ranges::count_if(village.mobs->mobs(), [type](const QcCreature &mob) { return mob.type == type; });
     }
 

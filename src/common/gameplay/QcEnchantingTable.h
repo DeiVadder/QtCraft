@@ -25,6 +25,10 @@ namespace QcEnchantingTable {
 inline constexpr int maxShelves = 15;
 /*! The item an offer costs besides levels. */
 inline constexpr QLatin1StringView lapisItem("qtcraft:lapis_lazuli");
+/*! The enchanting table's block. */
+inline constexpr QLatin1StringView tableBlock("qtcraft:enchanting_table");
+/*! The block that counts around the table (at most maxShelves of it). */
+inline constexpr QLatin1StringView shelfBlock("qtcraft:bookshelf");
 /*! The number of offers. */
 inline constexpr int offerCount = 3;
 

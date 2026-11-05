@@ -9,14 +9,15 @@
 
 #include <QHash>
 
-// Boats and their drivers as the client draws them in a frame (decision E-920): a boat where the
-// mirror shows it (interpolated, bobbing while it floats) and its paddles rowing while its driver
-// paddles (the boat's QcMsg::Rowing bit), and every other player who sits on a boat's driver seat
-// drawn there facing the boat's way, his hands on the paddles in the same stroke.
+/*! \brief Boats and their drivers as the client draws them in a frame (decision E-920): a boat
+    where the mirror shows it (interpolated, bobbing while it floats) and its paddles rowing
+    while its driver paddles (the boat's QcMsg::Rowing bit), and every other player who sits on a
+    boat's driver seat drawn there facing the boat's way, their hands on the paddles in the same
+    stroke. */
 namespace QcBoatRiders {
 
-// A boat as drawn this frame: its feet (with the bob), its yaw, the moment of the paddles' stroke
-// (QcBoatModel::rowPhase, negative at rest).
+/*! \brief A boat as drawn this frame: its feet (with the bob), its yaw, the moment of the
+    paddles' stroke (QcBoatModel::rowPhase, negative at rest). \qcfields */
 struct Drawn
 {
     QcVec3 position;
@@ -24,8 +25,8 @@ struct Drawn
     double rowPhase = -1.0;
 };
 
-// Where a driver sits as drawn this frame: the boat, the feet on its seat (bobbing with it), the
-// boat's yaw and the paddles' stroke.
+/*! \brief Where a driver sits as drawn this frame: the boat, the feet on its seat (bobbing with
+    it), the boat's yaw and the paddles' stroke. \qcfields */
 struct Seat
 {
     quint32 boat = 0;
@@ -34,27 +35,31 @@ struct Seat
     double rowPhase = -1.0;
 };
 
-// A driver whose seat lies further than this from his drawn place sits in no boat (he got out or
-// sits in a cart).
+/*! A driver whose seat lies further than this from their drawn place sits in no boat (they got out
+    or sits in a cart). */
 inline constexpr double seatReach = 0.5;
 
-// The boat `entity` at `alpha` between its last two ticks and at `seconds` of the client clock.
+/*! Returns the boat \a entity at \a alpha between its last two ticks and at \a seconds of the
+    client clock. */
 [[nodiscard]] Drawn drawn(const QcClientEntity &entity, double alpha, double seconds);
-// The seat of a driver in a boat drawn as `boat`.
+/*! Returns the seat of a driver in the boat \a boatId drawn as \a boat. */
 [[nodiscard]] Seat seatIn(quint32 boatId, const Drawn &boat);
-// The seats of the riding players among `entities` that sit on a boat's driver seat, by player id.
+/*! Returns the seats of the riding players among \a entities that sit on a boat's driver seat,
+    by player id, at \a alpha between the last two ticks and at \a seconds of the client clock. */
 [[nodiscard]] QHash<quint32, Seat> seats(const QHash<quint32, QcClientEntity> &entities, double alpha, double seconds);
-// A driver figure on `seat`: its pose (`pose` sitting in the boat, rowing with it, the head along
-// `viewYaw`), its feet and the way it faces (the boat's).
+/*! \brief A driver figure as drawn on its seat: its pose, its feet and the way it faces. \qcfields
+ */
 struct Seated
 {
     QcEntityPose pose;
     QcVec3 feet;
     double yaw = 0.0;
 };
+/*! Returns the driver figure on \a seat: its \a pose sitting in the boat and rowing with it, the
+    head along \a viewYaw, the feet on the seat and facing the boat's way. */
 [[nodiscard]] Seated seated(QcEntityPose pose, const Seat &seat, double viewYaw);
-// How far the head of a driver looking along `viewYaw` turns against his body, which faces the
-// boat's `boatYaw` (degrees, wrapped to -180..180).
+/*! Returns how far the head of a driver looking along \a viewYaw turns against their body, which
+    faces the boat's \a boatYaw (degrees, wrapped to -180..180). */
 [[nodiscard]] double headYaw(double viewYaw, double boatYaw);
 
 } // namespace QcBoatRiders

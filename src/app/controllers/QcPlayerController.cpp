@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "app/controllers/QcPlayerController.h"
+#include "app/inventory/QcSlotCursor.h"
 
-#include "app/controllers/QcSettingsController.h"
+#include "app/models/QcDurationText.h"
 #include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcCrafting.h"
 
@@ -21,7 +24,21 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_settings(settings)
     , m_inventory(new QcInventoryModel(this))
     , m_creativeItems(new QcCreativeItemModel(this))
+    , m_slotCursor(new QcSlotCursor(*m_inventory, *this, this))
+    , m_advancementToasts(new QcAdvancementQueue(this))
+    , m_heartRow(new QcPointsRow(2, this))
+    , m_foodRow(new QcPointsRow(2, this))
+    , m_armourRow(new QcPointsRow(2, this))
+    , m_airRow(new QcPointsRow(1, this))
 {
+    // The status rows follow the vitals, the armour worn, the game mode and the content.
+    connect(this, &QcPlayerController::healthChanged, this, &QcPlayerController::updateStatusRows);
+    connect(this, &QcPlayerController::foodChanged, this, &QcPlayerController::updateStatusRows);
+    connect(this, &QcPlayerController::craftingChanged, this, &QcPlayerController::updateStatusRows);
+    connect(this, &QcPlayerController::airChanged, this, &QcPlayerController::updateStatusRows);
+    connect(this, &QcPlayerController::gameModeChanged, this, &QcPlayerController::updateStatusRows);
+    connect(this, &QcPlayerController::contentChanged, this, &QcPlayerController::updateStatusRows);
+    updateStatusRows();
     // The craftable recipes carry icon URLs, which change with new icons (decision E-650).
     connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
         if (m_parts.session) {
@@ -93,13 +110,17 @@ QVariantList QcPlayerController::effects() const
         if (!definition) {
             continue;
         }
+        const QString label = content->translations().translate(definition->translationKey, m_settings.contentLanguage());
+        const int seconds = (effect.ticksLeft + 19) / 20;
+        const QString named = effect.level > 1 ? u"%1 %2"_s.arg(label, QcStatusEffects::levelName(effect.level)) : label;
         list.append(QVariantMap{{u"name"_s, effect.name},
-                                {u"label"_s, content->translations().translate(definition->translationKey, m_settings.contentLanguage())},
+                                {u"label"_s, label},
                                 {u"icon"_s, definition->icon},
                                 {u"colour"_s, QColor(static_cast<QRgb>(definition->colour)).name()},
-                                {u"seconds"_s, (effect.ticksLeft + 19) / 20},
+                                {u"seconds"_s, seconds},
                                 {u"level"_s, effect.level},
-                                {u"levelName"_s, QcStatusEffects::levelName(effect.level)}});
+                                {u"levelName"_s, QcStatusEffects::levelName(effect.level)},
+                                {u"text"_s, u"%1  %2"_s.arg(named, QcDurationText::minutesSeconds(seconds))}});
     }
     return list;
 }
@@ -139,6 +160,43 @@ double QcPlayerController::experienceProgress() const
     return m_parts.session ? m_parts.session->vitals().experienceProgress() : 0.0;
 }
 
+bool QcPlayerController::statusShown() const
+{
+    return !m_parts.session || !m_parts.session->gameMode().rules().invulnerable;
+}
+
+void QcPlayerController::updateStatusRows()
+{
+    const bool shown = statusShown();
+    m_heartRow->setPoints(health(), maxHealth());
+    m_heartRow->setShown(shown);
+    m_foodRow->setPoints(food(), maxFood());
+    m_foodRow->setShown(shown);
+    const int points = armour();
+    m_armourRow->setPoints(points, maxArmour());
+    m_armourRow->setShown(shown && points > 0);
+
+    // The bubbles show under water and while the breath fills again.
+    const QcClientSession *session = m_parts.session.get();
+    m_airRow->setPoints(session ? session->vitals().airBubbles() : QcAirSupply::bubbles, QcAirSupply::bubbles);
+    m_airRow->setShown(shown && session && session->vitals().airShown());
+}
+
+QString QcPlayerController::foodIcon() const
+{
+    // A cooked porkchop, as in the reference.
+    const QString item = u"qtcraft:cooked_porkchop"_s;
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    return content && content->itemId(item) ? item : QString();
+}
+
+void QcPlayerController::reportRefusal()
+{
+    // Only the adventure allow-lists refuse today; another refusal says no more than that.
+    const bool adventure = m_parts.session && m_parts.session->gameMode().rules().buildByAllowList;
+    emit actionRefused(adventure ? tr("Adventure mode: not allowed here") : tr("Not allowed here"));
+}
+
 double QcPlayerController::machineBurn() const
 {
     return m_parts.session ? m_parts.session->machine().burn() : 0.0;
@@ -162,6 +220,11 @@ double QcPlayerController::machineProgress() const
 int QcPlayerController::craftingSize() const
 {
     return m_parts.session ? m_parts.session->inventoryMirror().craftingSize() : 2;
+}
+
+QString QcPlayerController::craftingHandbookTarget() const
+{
+    return craftingSize() == 3 ? u"qtcraft:crafting_table"_s : QString();
 }
 
 void QcPlayerController::selectHotbarSlot(int slot) const
@@ -315,29 +378,32 @@ void QcPlayerController::nameOpenMachine()
         const QcItemStack &stack = session.inventory().slot(held);
         const bool known = content->isValidItem(stack.item);
         const std::optional<QcBlockId> block = known ? content->blockId(content->item(stack.item).placesBlock) : std::nullopt;
-        m_machineLabel = known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString();
+        setMachineLabel(known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString());
         // A backpack named at the anvil shows its name (decision E-866).
         if (!stack.name().isEmpty()) {
-            m_machineLabel = stack.name();
+            setMachineLabel(stack.name());
         }
-        m_containerColumns = block ? content->block(*block).containerColumns : 9;
+        setContainerColumns(block ? content->block(*block).containerColumns : 9);
+        setMachineBlock({});
         return;
     }
     if (session.machine().entity() != 0) {
         // A container cart: named after its item, its rows as long as those of the block it carries.
         const QcClientEntity cart = session.entities().value(session.machine().entity());
         const std::optional<QcBlockId> carried = cart.cartBlock(*content);
-        m_machineLabel = content->isValidItem(cart.item.item) ? content->translations().translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
-        m_containerColumns = carried ? content->block(*carried).containerColumns : 9;
+        setMachineLabel(content->isValidItem(cart.item.item) ? content->translations().translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString());
+        setContainerColumns(carried ? content->block(*carried).containerColumns : 9);
+        setMachineBlock({});
         return;
     }
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
-    m_machineLabel = block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
+    setMachineLabel(block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString());
+    setMachineBlock(block ? content->block(*block).name : QString());
     // A chest or furnace placed from a named item shows the name (decision E-873).
     if (!session.machine().name().isEmpty()) {
-        m_machineLabel = session.machine().name();
+        setMachineLabel(session.machine().name());
     }
-    m_containerColumns = block ? content->block(*block).containerColumns : 9;
+    setContainerColumns(block ? content->block(*block).containerColumns : 9);
 }
 
 void QcPlayerController::updateMachine()
@@ -361,10 +427,10 @@ void QcPlayerController::announceAdvancement(const QString &advancement)
     } else if (definition->frame == QcAdvancementFrame::Challenge) {
         heading = tr("Challenge complete!");
     }
-    emit advancementReached(QVariantMap{{u"name"_s, advancement},
-                                        {u"title"_s, content->translations().translate(definition->titleKey, language)},
-                                        {u"description"_s, content->translations().translate(definition->descriptionKey, language)},
-                                        {u"icon"_s, QcItemIconUrls::url(definition->icon)},
-                                        {u"heading"_s, heading},
-                                        {u"special"_s, definition->frame != QcAdvancementFrame::Task}});
+    m_advancementToasts->add(QVariantMap{{u"name"_s, advancement},
+                                         {u"title"_s, content->translations().translate(definition->titleKey, language)},
+                                         {u"description"_s, content->translations().translate(definition->descriptionKey, language)},
+                                         {u"icon"_s, QcItemIconUrls::url(definition->icon)},
+                                         {u"heading"_s, heading},
+                                         {u"special"_s, definition->frame != QcAdvancementFrame::Task}});
 }

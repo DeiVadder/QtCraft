@@ -283,7 +283,7 @@ private slots:
         QVERIFY(session.entities().value(40).isItem());
 
         // A new count for a known item keeps the entity and its motion history.
-        server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false, 0.0f, 0, qcNoItem}}});
+        server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false, false, 0.0f, 0, qcNoItem}}});
         server.send(QcMsg::EntitySpawn{40, type, QString(), {9.5, 64.0, 0.5}, 0.0f, 0.0, {item, 7, 0}, {}, 0.0f, 0, qcNoItem});
         QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(40).item.count, 7, timeoutMs);
         // The newest snapshot without the interpolation delay (decision E-271): the move, not the spawn's place.

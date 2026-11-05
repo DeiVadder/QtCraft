@@ -4,12 +4,15 @@
 #include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/icons/QcBlockIcon.h"
 #include "clientcore/icons/QcItemIconSet.h"
+#include "clientcore/icons/QcMobIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/blocks/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/handbook/QcHandbookLinks.h"
 #include "fixtures/QcTestUtil.h"
 
+#include <QRegularExpression>
 #include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
@@ -107,6 +110,75 @@ private slots:
             return static_cast<double>(bounds.width()) / static_cast<double>(std::max(1, bounds.height()));
         };
         QVERIFY2(aspect(icon) > aspect(foot) + 0.1, qPrintable(u"%1 vs %2"_s.arg(aspect(icon)).arg(aspect(foot))));
+    }
+
+    // Every creature has a picture of its model among the icons (decision E-944), filling the icon
+    // like a block, and creatures look different.
+    void everyCreatureHasAPicture()
+    {
+        const auto content = QcTestUtil::baseContent();
+        QVERIFY(content.has_value());
+        const QcContentRegistry &registry = *content->registry;
+        const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
+        const QcBlockRenderTable table(registry, atlas);
+        const QHash<QString, QImage> icons = QcItemIconSet::draw(registry, atlas, &table, QcBlockIcon::iconSize);
+        for (const QcMobDefinition &mob : registry.mobs()) {
+            const QString name = QcHandbookLinks::mobIcon(mob.name);
+            QVERIFY2(icons.contains(name), qPrintable(name));
+            const QImage icon = icons.value(name);
+            QCOMPARE(icon.size(), QSize(QcBlockIcon::iconSize, QcBlockIcon::iconSize));
+            QVERIFY2(opaqueColours(icon).size() > 3, qPrintable(name));
+        }
+        // Creatures look different, except the people whose look comes from the server or an
+        // armour stand: their heads show the default appearance.
+        static const QStringList alike{u"qtcraft:mannequin"_s, u"qtcraft:caped_mannequin"_s, u"qtcraft:villager"_s};
+        QList<std::pair<QString, QImage>> seen;
+        for (const QcMobDefinition &mob : registry.mobs()) {
+            if (alike.contains(mob.name)) {
+                continue;
+            }
+            const QImage icon = icons.value(QcHandbookLinks::mobIcon(mob.name));
+            for (const auto &[other, image] : std::as_const(seen)) {
+                QVERIFY2(image != icon, qPrintable(mob.name + u" looks like "_s + other));
+            }
+            seen.append({mob.name, icon});
+        }
+        const QImage zombie = icons.value(QcHandbookLinks::mobIcon(u"qtcraft:zombie"_s));
+
+        // A head two metres up fills the icon as a block does: about as tall as the stone's icon.
+        const auto height = [](const QImage &image) {
+            int top = image.height();
+            int bottom = 0;
+            for (int y = 0; y < image.height(); ++y) {
+                for (int x = 0; x < image.width(); ++x) {
+                    if (image.pixelColor(x, y).alpha() > 0) {
+                        top = std::min(top, y);
+                        bottom = std::max(bottom, y);
+                    }
+                }
+            }
+            return bottom - top;
+        };
+        const int stone = height(icons.value(u"qtcraft:stone"_s));
+        QVERIFY2(height(zombie) * 10 >= stone * 9, qPrintable(u"%1 vs %2"_s.arg(height(zombie)).arg(stone)));
+    }
+
+    // A creature whose skeleton is unknown and that has no boxes gets an empty icon and a warning.
+    void aCreatureWithoutModelGetsAnEmptyIcon()
+    {
+        const auto content = QcTestUtil::baseContent();
+        QVERIFY(content.has_value());
+        const QcContentRegistry &registry = *content->registry;
+        const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
+        const std::array<QImage, 6> shaded = QcBlockIcon::shadedAtlases(atlas.levelForTile(QcBlockIcon::sourceTileSize));
+        QcMobDefinition ghost;
+        ghost.name = u"test:ghost"_s;
+        ghost.skeleton = u"test:nothing"_s;
+        ghost.outfit = u"test:nothing"_s;
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"test:ghost.*has no picture"_s));
+        const QImage icon = QcMobIcon::render(registry, ghost, atlas, shaded, QcBlockIcon::iconSize);
+        QCOMPARE(icon.size(), QSize(QcBlockIcon::iconSize, QcBlockIcon::iconSize));
+        QVERIFY(opaqueColours(icon).isEmpty());
     }
 
     void theContentSyncKeepsTheBed()

@@ -34,8 +34,9 @@ constexpr std::array<std::array<std::array<int, 3>, 4>, 6> faceCorners = {{
 constexpr std::array<float, 6> faceShade = {0.65f, 0.65f, 1.0f, 0.5f, 0.8f, 0.8f};
 using Tint = std::array<quint8, 4>;
 constexpr Tint white = {255, 255, 255, 255};
-// Hit entities flash red for a few ticks.
-constexpr Tint hurtTint = {255, 110, 110, 255};
+// Hit entities flash red for the hurt time: the alpha of the tint is the share of red the
+// entity shader mixes in (1 - 178 / 255 = 0.3, the reference's overlay; decision E-971).
+constexpr Tint hurtTint = {255, 255, 255, 178};
 
 Tint multiply(Tint a, Tint b)
 {
@@ -192,16 +193,19 @@ public:
     {
         QcVec3 p = m_bodyRotate(modelPoint - m_pose.bodyPivot) + m_pose.bodyPivot;
         p.y += m_pose.bodyLift;
+        p.z += m_pose.bodyBack;
         return m_position + m_turn(p * m_scale);
     }
 
-    // Places points of `bone`, turned by the bone's rotation in the pose.
+    // Places points of `bone`, turned by the bone's rotation in the pose and carried by the lean of
+    // the upper body.
     auto bone(const QcModelBone &bone) const
     {
         const QcAnimator::BoneRotation rotation = m_pose.bone(bone.role);
         const Rotate rotate(rotation.pitch, rotation.roll, rotation.yaw);
         const QcVec3 pivot = bone.pivot;
-        return [this, rotate, pivot](const QcVec3 &p) { return (*this)(rotate(p - pivot) + pivot); };
+        const QcBoneRole role = bone.role;
+        return [this, rotate, pivot, role](const QcVec3 &p) { return (*this)(m_pose.leaned(role, pivot, rotate(p - pivot) + pivot)); };
     }
 
 private:
@@ -333,7 +337,10 @@ void emitHeldHand(const LayerPainter &paint, const Figure &figure, const QcAnima
         emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return camera(armRest(local)); });
     }
     const HeldItemPainter item(paint.mesh, paint.uv, paint.light);
-    const HeldPlacement placement = figure.held->firstPerson.towards(figure.held->swing, hand.swing);
+    // A swing turns the item from its rest; a drawn launcher stays at its drawn placement
+    // (decision E-984), also through a swing.
+    const HeldPlacement swung = figure.held->firstPerson.towards(figure.held->swing, hand.swing);
+    const HeldPlacement placement = swung.towards(figure.held->drawn, hand.aim);
     item.paint(*figure.held, placement, [&](const QcVec3 &p) { return camera(grip + p); });
 }
 
@@ -432,6 +439,30 @@ void emitCape(const LayerPainter &paint, const ModelLook &look, const QcAnimator
                   *surfaces);
 }
 
+// A point `p` of `part` as a creature that swims in pulses holds it (decision E-974): a tentacle
+// turned outwards by look.spread degrees about the middle of its top, then the whole body tilted
+// by look.tilt degrees (its top towards -z) about the point look.tiltHeight above the feet.
+QcVec3 swum(const QcMobPart &part, const QcVec3 &p, const PartLook &look)
+{
+    QcVec3 point = p;
+    const QcVec3 top{(part.from.x + part.to.x) * 0.5, part.to.y, (part.from.z + part.to.z) * 0.5};
+    const double radius = std::hypot(top.x, top.z);
+    if (part.tentacle && radius > 1e-6) {
+        const QcVec3 out{top.x / radius, 0.0, top.z / radius};
+        const QcVec3 d = point - top;
+        const double along = d.x * out.x + d.z * out.z;
+        const QcVec3 across{d.x - out.x * along, 0.0, d.z - out.z * along};
+        const double angle = qDegreesToRadians(look.spread);
+        const double turned = along * std::cos(angle) - d.y * std::sin(angle);
+        const double height = along * std::sin(angle) + d.y * std::cos(angle);
+        point = top + across + out * turned + QcVec3{0.0, height, 0.0};
+    }
+
+    const double tilt = qDegreesToRadians(look.tilt);
+    const double y = point.y - look.tiltHeight;
+    return {point.x, look.tiltHeight + y * std::cos(tilt) + point.z * std::sin(tilt), -y * std::sin(tilt) + point.z * std::cos(tilt)};
+}
+
 } // namespace
 
 const QList<QcMobPart> &playerParts()
@@ -474,6 +505,7 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const bool walking = look.legs && !look.sitting && !look.legs->swings().isEmpty();
     const double stride = walking ? QcAnimator::legSwing(look.walked, look.speed, look.legs->length() * placement.scale) : 0.0;
     const double swing = walking ? stride * look.legs->maxSwing() / QcAnimator::maxLegSwing : 0.0;
+    const bool swimming = look.tilt != 0.0 || look.spread != 0.0;
     for (qsizetype index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
@@ -481,6 +513,8 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
         if (walking && index < look.legs->swings().size()) {
             const QcBoxLegs::Swing &leg = look.legs->swings().at(index);
             emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(leg.apply(p, swing) + offset); }, surface);
+        } else if (swimming) {
+            emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(swum(part, p, look)); }, surface);
         } else {
             emitBox(mesh, {part.from + offset, part.to + offset}, place, surface);
         }
@@ -528,7 +562,8 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
         const QcVec3 grip = gripOf(*arm);
         const auto armPlace = toWorld.bone(*arm);
         const HeldItemPainter item(mesh, uv, placement.light);
-        item.paint(*figure.held, figure.held->thirdPerson, [&](const QcVec3 &p) { return armPlace(grip + p); });
+        const HeldPlacement &held = pose.armsAimed ? figure.held->thirdPersonDrawn : figure.held->thirdPerson;
+        item.paint(*figure.held, held, [&](const QcVec3 &p) { return armPlace(grip + p); });
     }
 }
 
@@ -540,19 +575,18 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     const double bob = 0.06 + 0.05 * std::sin(frame.seconds * 2.5 + entity.id);
     const int copies = entity.item.count >= 16 ? 3 : (entity.item.count >= 2 ? 2 : 1);
 
+    // A block turns about its middle, a sprite about the upright line through its picture.
+    const Turn turn(yaw);
+    const QcVec3 centre{0.0, look.cube ? itemCubeSize * 0.5 : 0.0, 0.0};
+    const bool solid = !look.cube && look.shape && !look.shape->isEmpty();
+
     for (int copy = 0; copy < copies; ++copy) {
         const QcVec3 origin = position + QcVec3{copy * 0.07, bob + copy * 0.05, copy * -0.06};
-        if (look.cube) {
-            const QcVec3 centre{0.0, itemCubeSize * 0.5, 0.0};
-            const Turn turn(yaw);
-            emitItem(mesh, look, [&](const QcVec3 &p) { return origin + turn(p + centre); }, frame.light, uv);
-            continue;
-        }
-
-        // Two crossed sprites so the item shows from every side.
-        for (const double angle : {0.0, 90.0}) {
-            const Turn turn(yaw + angle);
-            emitSprite(mesh, itemSpriteSize, [&](const QcVec3 &p) { return origin + turn(p); }, uv(look.sprite), glowing(frame.light, look));
+        const auto place = [&](const QcVec3 &p) { return origin + turn(p + centre); };
+        if (solid) {
+            appendExtrudedSprite(mesh, {*look.shape, uv(look.sprite), itemSpriteSize, glowing(frame.light, look)}, place);
+        } else {
+            emitItem(mesh, look, place, frame.light, uv);
         }
     }
 }

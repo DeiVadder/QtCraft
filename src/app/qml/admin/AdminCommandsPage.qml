@@ -29,8 +29,8 @@ ColumnLayout {
     }
 
     function run() {
-        page.admin.runCommand(commandField.text);
-        commandField.text = "";
+        if (page.admin.runCommand(commandField.text))
+            commandField.text = "";
     }
 
     // Takes a suggestion and goes on writing after it.
@@ -87,8 +87,9 @@ ColumnLayout {
                     Accessible.name: qsTr("Command line")
                     onAccepted: page.run()
                     Keys.onTabPressed: event => {
-                        if (page.suggestions.length > 0 && page.suggestions[0].trim() !== text.trim())
-                            page.take(page.suggestions[0]);
+                        const completion = page.admin.tabCompletion(text);
+                        if (completion.length > 0)
+                            page.take(completion);
                         else
                             event.accepted = false;
                     }
@@ -97,7 +98,7 @@ ColumnLayout {
                     objectName: "adminCommandRun"
                     kind: GameButton.Primary
                     text: qsTr("Run")
-                    enabled: commandField.text.trim().length > 0
+                    enabled: page.admin.isLine(commandField.text)
                     onClicked: page.run()
                 }
             }

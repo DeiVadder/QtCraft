@@ -9,12 +9,13 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands that turn, walk and wait.
+/*! \brief Control commands that turn, walk and wait. */
 class QcControlMovementCommands
 {
 public:
     explicit QcControlMovementCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

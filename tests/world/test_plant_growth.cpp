@@ -126,7 +126,7 @@ private slots:
         };
 
         const auto parsed = parse(R"("support":"below","growth":{"maxHeight":5,"averageSeconds":30})");
-        QVERIFY2(parsed.has_value(), qPrintable(parsed.error()));
+        QVERIFY2(parsed.has_value(), qcErrorText(parsed).constData());
         QCOMPARE(parsed->growth.maxHeight, 5);
         QCOMPARE(parsed->growth.averageSeconds, 30.0);
 

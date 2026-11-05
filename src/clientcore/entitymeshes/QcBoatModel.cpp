@@ -35,7 +35,7 @@ QList<QcMobPart> parts(const QString &planks)
     };
 }
 
-QList<QcMobPart> paddleParts(const QString &planks, int side)
+QList<QcMobPart> paddleParts(const QString &planks, Side side)
 {
     // The shaft from the grip inside the boat through the oarlock, the blade at its outer end, flat
     // across the boat so it pushes the water back.
@@ -44,7 +44,7 @@ QList<QcMobPart> paddleParts(const QString &planks, int side)
         {{gripAt + 0.06, -0.025, -0.025}, {0.95, 0.025, 0.025}, planks},
         {{0.62, -0.12, -0.02}, {1.05, 0.12, 0.02}, planks},
     };
-    if (side < 0) {
+    if (side == Side::Left) {
         for (QcMobPart &part : parts) {
             part = {{-part.to.x, part.from.y, part.from.z}, {-part.from.x, part.to.y, part.to.z}, part.texture};
         }
@@ -64,7 +64,7 @@ Paddle paddleAt(double rowPhase)
     return {7.5 - 37.5 * std::cos(angle), 26.0 + 14.0 * std::sin(angle)};
 }
 
-QcVec3 paddlePoint(int side, Paddle paddle, const QcVec3 &local)
+QcVec3 paddlePoint(Side side, Paddle paddle, const QcVec3 &local)
 {
     // The right paddle tilts about the boat's length (outer end down), then turns about the vertical
     // (outer end towards the stern); the left one is its mirror image.
@@ -73,17 +73,17 @@ QcVec3 paddlePoint(int side, Paddle paddle, const QcVec3 &local)
     const QcVec3 tilted{local.x * std::cos(lift) + local.y * std::sin(lift), -local.x * std::sin(lift) + local.y * std::cos(lift), local.z};
     const QcVec3 turned{tilted.x * std::cos(sweep) - tilted.z * std::sin(sweep), tilted.y, tilted.x * std::sin(sweep) + tilted.z * std::cos(sweep)};
     const QcVec3 right = rightOarlock + turned;
-    return side < 0 ? QcVec3{-right.x, right.y, right.z} : right;
+    return side == Side::Left ? QcVec3{-right.x, right.y, right.z} : right;
 }
 
-QcVec3 partPoint(int side, Paddle paddle, const QcVec3 &corner)
+QcVec3 partPoint(Side side, Paddle paddle, const QcVec3 &corner)
 {
     // The left paddle's boxes are mirrored already: mirrored back, then placed as the mirror image,
     // so the whole stays a proper turn and its faces keep their winding.
-    return paddlePoint(side, paddle, side < 0 ? QcVec3{-corner.x, corner.y, corner.z} : corner);
+    return paddlePoint(side, paddle, side == Side::Left ? QcVec3{-corner.x, corner.y, corner.z} : corner);
 }
 
-QcVec3 gripOf(int side, Paddle paddle)
+QcVec3 gripOf(Side side, Paddle paddle)
 {
     return paddlePoint(side, paddle, {gripAt, 0.0, 0.0});
 }

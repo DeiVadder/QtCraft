@@ -11,7 +11,7 @@
 # Checks (any failure makes the script exit with 1):
 #   - every Mach-O file links only to the bundle (@rpath, @executable_path, @loader_path) or to the
 #     system, and has no rpath or install name pointing at the build or Qt directory (otool)
-#   - required parts are present (Info.plist keys, icon, qt.conf, frameworks, plugins, QML modules,
+#   - required parts are present (Info.plist keys, icon, frameworks, plugins, QML modules,
 #     FFmpeg libraries, example mod) and the signature verifies (codesign --verify --strict)
 #   - the game and the dedicated server are universal (arm64 and x86_64)
 #   - with gamepad support (QC_GAMEPAD, decision E-540): SDL3 is linked statically into the game for
@@ -38,11 +38,12 @@
 # focus, no captured mouse, sound muted. Temporary data lives in a directory below
 # QTCRAFT_RELEASE_TMP (default: $TMPDIR) and is removed when all checks pass.
 #
-# Usage: scripts/release.sh            (QT_DIR overrides the newest ~/Qt/6.8.*/macos; QTCRAFT_RELEASE_DMG=0
+# Usage: scripts/release.sh            (QT_DIR overrides the Qt that build/<preset> was configured
+#                                       with, else the newest ~/Qt/6.*/macos; QTCRAFT_RELEASE_DMG=0
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
 #                                       preset "deploy"; QTCRAFT_RELEASE_BUILD_LIMIT the build's
 #                                       seconds (1800); QTCRAFT_RELEASE_PROGRESS=1 prints the build's
-#                                       progress once a minute; QTCRAFT_RELEASE_GUI=0 skips the starts of
+#                                       progress once a minute (in a terminal every 5 s, =0 off); QTCRAFT_RELEASE_GUI=0 skips the starts of
 #                                       the game and keeps the static and dedicated-server checks,
 #                                       for machines without a display such as GitHub Actions;
 #                                       QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 declares QT_DIR an
@@ -52,7 +53,6 @@ set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
-QT_DIR=${QT_DIR:-$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)}
 PRESET=${QTCRAFT_RELEASE_PRESET:-deploy}
 # Seconds the build may take (the hosted CI runners need far longer than a development Mac).
 BUILD_LIMIT=${QTCRAFT_RELEASE_BUILD_LIMIT:-1800}
@@ -62,6 +62,11 @@ case "$GUI_RUNS" in
 *) echo "QTCRAFT_RELEASE_GUI must be 0 or 1, not '$GUI_RUNS'" >&2; exit 2 ;;
 esac
 BUILD_DIR="$PROJECT_DIR/build/$PRESET"
+# The Qt the release tree was configured with, else the newest installed Qt 6.
+if [ -z "${QT_DIR:-}" ]; then
+    QT_DIR=$(sed -n 's#^Qt6_DIR:PATH=\(.*\)/lib/cmake/Qt6$#\1#p' "$BUILD_DIR/CMakeCache.txt" 2>/dev/null)
+    [ -n "$QT_DIR" ] || QT_DIR=$(ls -d "$HOME"/Qt/6.*/macos 2>/dev/null | sort -V | tail -n 1)
+fi
 DEPLOY_DIR="$PROJECT_DIR/deploy"
 APP="$DEPLOY_DIR/QtCraft.app"
 VERSION=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
@@ -156,19 +161,18 @@ limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" -DQC_CCAC
 # libraries must be static (QC_SHARED_LIBS is for debug and sanitizer trees only, E-890).
 grep -q '^QC_SHARED_LIBS:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" &&
     abort "build/$PRESET has QC_SHARED_LIBS=ON; a release needs static project libraries (reconfigure with -DQC_SHARED_LIBS=OFF)"
-# QTCRAFT_RELEASE_PROGRESS=1 (the release workflow) prints the build's last line once a minute, so
-# a long build on a hosted runner shows that it moves.
-PROGRESS_PID=""
-if [ "${QTCRAFT_RELEASE_PROGRESS:-0}" = 1 ]; then
-    (while sleep 60; do tail -n 1 "$WORK/build.log" 2>/dev/null | cut -c1-120; done) &
-    PROGRESS_PID=$!
-fi
+# Progress in a terminal, and once a minute with QTCRAFT_RELEASE_PROGRESS=1 (the release workflow).
+. "$PROJECT_DIR/scripts/release-progress.sh"
+trap 'stop_build_progress' EXIT
+trap 'stop_build_progress; exit 1' INT TERM HUP
+start_build_progress "$WORK/build.log"
 if ! limited "$BUILD_LIMIT" cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1; then
-    [ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+    stop_build_progress
     tail -n 40 "$WORK/build.log"
     abort "build failed or took longer than $BUILD_LIMIT s, see $WORK/build.log"
 fi
-[ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+stop_build_progress
+trap - EXIT INT TERM HUP
 
 echo "== assemble $APP"
 mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"
@@ -231,10 +235,11 @@ QT_VERSION=$("$QT_DIR/bin/qtpaths" --query QT_VERSION 2>/dev/null)
 [ -n "$QT_VERSION" ] || abort "cannot read the Qt version from $QT_DIR/bin/qtpaths"
 QT_SERIES=${QT_VERSION%.*}
 FFMPEG_LIBRARIES=$(cd "$APP/Contents/Frameworks" && ls libav*.dylib libsw*.dylib 2>/dev/null | tr '\n' ' ')
-# The FFmpeg tag Qt builds from is named in Qt's provisioning script (n7.1 for Qt 6.8.3).
+# The FFmpeg tag Qt builds from is named in Qt's provisioning script (checked for each Qt release the workflows use).
 FFMPEG_SCRIPT="coin/provisioning/common/unix/install-ffmpeg.sh of the repository qt/qt5 at the tag v$QT_VERSION"
 case "$QT_VERSION" in
 6.8.3) FFMPEG_TAG="FFmpeg n7.1 (named in $FFMPEG_SCRIPT)" FFMPEG_URL_TAG=n7.1 ;;
+6.12.0) FFMPEG_TAG="FFmpeg n9.0.1 (named in $FFMPEG_SCRIPT)" FFMPEG_URL_TAG=n9.0.1 ;;
 *) FFMPEG_TAG="the FFmpeg tag named in $FFMPEG_SCRIPT" FFMPEG_URL_TAG="<tag>" ;;
 esac
 if [ "$LOCAL_ONLY" -eq 0 ]; then
@@ -419,7 +424,9 @@ done
 [ "$(plutil -extract CFBundleShortVersionString raw -o - "$plist" 2>/dev/null)" = "$VERSION" ] || problem "CFBundleShortVersionString is not $VERSION"
 [ "$(plutil -extract CFBundleVersion raw -o - "$plist" 2>/dev/null)" = "$BUILD_NUMBER" ] || problem "CFBundleVersion is not $BUILD_NUMBER"
 
-for part in Contents/MacOS/qtcraft-headless Contents/Resources/QtCraft.icns Contents/Resources/qt.conf \
+# No qt.conf check: macdeployqt of Qt 6.12 writes none (6.8 still did), Qt finds plugins and QML modules at the
+# bundle's standard places.
+for part in Contents/MacOS/qtcraft-headless Contents/Resources/QtCraft.icns \
     Contents/Frameworks/QtCore.framework Contents/Frameworks/QtGui.framework Contents/Frameworks/QtQuick.framework \
     Contents/Frameworks/QtQml.framework Contents/Frameworks/QtQuickControls2.framework Contents/Frameworks/QtMultimedia.framework \
     Contents/PlugIns/platforms/libqcocoa.dylib Contents/PlugIns/imageformats/libqjpeg.dylib \

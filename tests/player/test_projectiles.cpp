@@ -178,7 +178,7 @@ private slots:
     void hitsHurtPushAndBounceDuringInvulnerability()
     {
         join();
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         const QcVec3 target{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};
         const quint32 mob = m_server->entities().creatures().spawn(pig, target, m_server->entities().newId());
         const double before = m_server->entities().creatures().find(mob)->health;

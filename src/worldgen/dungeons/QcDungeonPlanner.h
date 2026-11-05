@@ -74,9 +74,9 @@ private:
     // The spawner's creature, by the weights of the settings.
     [[nodiscard]] QString mobOf(const QcDungeonPlan &plan) const;
     // The chests of the room, drawn from chestPlaces().
-    [[nodiscard]] QList<QcDungeonPlan::Placed> chestsOf(const QcDungeonPlan &plan) const;
+    [[nodiscard]] QList<QcPlacedBlock> chestsOf(const QcDungeonPlan &plan) const;
     // Every place a chest may stand, with the chest facing into the room.
-    QList<QcDungeonPlan::Placed> chestPlaces(const QcDungeonPlan &plan) const;
+    QList<QcPlacedBlock> chestPlaces(const QcDungeonPlan &plan) const;
     // The shortest corridors from the room's doors to caves, at most `corridors` of them.
     [[nodiscard]] QList<QcDungeonPlan::Corridor> corridorsOf(Probe &probe, const QcDungeonPlan &plan) const;
     // The shortest way from a door outwards along (dx, dz) to a cave: straight, or with one bend.
@@ -89,9 +89,9 @@ private:
     // The cells next to the corridors outside the room and the corridors (`inside`), sorted.
     [[nodiscard]] static QList<QcBlockPos> liningOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside);
     // The lights of the corridors; `inside` holds the corridors' cells.
-    [[nodiscard]] QList<QcDungeonPlan::Placed> lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const;
+    [[nodiscard]] QList<QcPlacedBlock> lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const;
     // A light on a wall beside the corridor's head cell `head` entered by `step`.
-    [[nodiscard]] std::optional<QcDungeonPlan::Placed> lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,
+    [[nodiscard]] std::optional<QcPlacedBlock> lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,
                                                                const QSet<QcBlockPos> &inside) const;
     // A random value in [0, 1) of the plan's region and a purpose.
     double random(const QcDungeonPlan &plan, int purpose, int index = 0) const;

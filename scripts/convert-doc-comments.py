@@ -28,7 +28,10 @@ Usage: scripts/convert-doc-comments.py [--dry-run | --check [--skip-internal] | 
                to convert, every plain `/* */` comment where one is needed, every enumerator of a
                documented enum without one, every QDoc comment line longer than 100 characters, and
                every undocumented variable right below a documented one ("shares the comment of X?":
-               confirm with \\qcshared in that comment, or give it its own); exit code 1 if any.
+               confirm with \\qcshared in that comment, or give it its own), and every QDoc comment
+               of a function with a result that never says "returns" ("result not named"; exempt
+               with `// NOLINT(qc-doc-returns): <reason>` before the declaration); exit code 1 if
+               any.
                Need no comment: constructors, destructors, overrides (the docs mark them as
                reimplementations), `= default`/`= delete`, the READ, WRITE, NOTIFY and RESET
                functions of a documented Q_PROPERTY, variables covered by a \\qcshared comment, the
@@ -193,6 +196,24 @@ def documented_namespaces(top=os.path.join(ROOT, "src")):
     return names
 
 
+RETURNS_EXCEPTION = re.compile(r"//\s*NOLINT\(qc-doc-returns\):\s*\S")
+
+
+def lacks_returns(item, lines):
+    """True for a function with a result (not a signal, constructor or `void` function) whose QDoc
+    comment never says "return" or "returns", the words qdoc looks for (else it warns "Undocumented
+    return value"). `// NOLINT(qc-doc-returns): <reason>` between the comment and the declaration
+    exempts it."""
+    if item.kind != "function" or item.section == "signals" or item.comment is None:
+        return False
+    if item.comment.style != "qdoc" or fmt.return_type(item) in ("", "void"):
+        return False
+    text = item.comment.text()
+    if fmt.RETURN_WORD.search(text) or "\\reimp" in text:
+        return False
+    return not any(RETURNS_EXCEPTION.search(line) for line in lines[item.comment.end + 1:item.start])
+
+
 def check_text(text, path, skip_internal=False, namespaces=frozenset()):
     """Findings of --check: (line, message); `namespaces` are the namespaces documented elsewhere."""
     lines = text.split("\n")
@@ -227,6 +248,8 @@ def check_text(text, path, skip_internal=False, namespaces=frozenset()):
             findings.append((item.comment.start + 1, f"{item.kind} {name}: plain /* comment: use /*! or //"))
         elif fmt.too_long(lines, item.comment):
             findings.append((item.comment.start + 1, f"{item.kind} {name}: comment line longer than {fmt.WIDTH}"))
+        if lacks_returns(item, lines):
+            findings.append((item.comment.start + 1, f"{item.kind} {name}: result not named (\"Returns ...\")"))
         if item.kind == "enum" and item.comment is not None:
             for enumerator in item.enumerators:
                 if enumerator.comment is None:
@@ -296,7 +319,7 @@ public:
     bool isOpen() const;
     // The width in blocks.
     int width() const;
-    // Adds `other` to this.
+    // Adds `other` to this; returns this.
     QcSample &operator+=(const QcSample &other);
     bool operator==(const QcSample &) const = default;
     // Waits up to maxWaitMs for the count of items.
@@ -348,7 +371,7 @@ public:
     bool isOpen() const;
     /*! Returns the width in blocks. */
     int width() const;
-    /*! Adds \a other to this. */
+    /*! Adds \a other to this; returns this. */
     QcSample &operator+=(const QcSample &other);
     bool operator==(const QcSample &) const = default;
     /*! Waits up to maxWaitMs for the count of items. */
@@ -569,6 +592,13 @@ public:
     explicit operator bool() const;
     /*! Takes \\a x. */
     void take(int x);
+    /*! The count. */
+    int count() const;
+    /*! Counted elsewhere. */
+    // NOLINT(qc-doc-returns): a sample of the exception
+    int size() const;
+    /*! Made from \\a x. */
+    explicit QcOp(int x);
 };
 inline int QcOp::operator()(int x) const
 {
@@ -613,7 +643,7 @@ def self_test_check():
     failures = 0
     found = [message for _, message in sorted(check_text(CHECKED, "QcOp.h"))]
     wanted = ["namespace QcMsg: no comment", "variable QcMsg::Ping::id: plain /* comment: use /*! or //",
-              "function QcOp::take: no comment"]
+              "function QcOp::count: result not named (\"Returns ...\")", "function QcOp::take: no comment"]
     if found != wanted:
         failures += 1
         print(f"check: {found}\n  instead of {wanted}")

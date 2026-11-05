@@ -27,7 +27,9 @@ struct QcJsonFieldReader
     bool ok() const { return error.isEmpty(); }
     /*! Records \a message, prefixed with the context, as the error unless there already is one. */
     void fail(const QString &message);
-    /*! Takes over the error of the reader \a nested for a nested object, if it has one. */
+    /*! Takes over the error of the reader \a nested for a nested object, if it has one and this
+        reader has none yet. The nested reader's context names the place in full (it starts with
+        this reader's context), so its error is kept as it is, without a second prefix. */
     void adopt(const QcJsonFieldReader &nested);
 
     /*! Returns the string at \a key; \a fallback when the key is missing or not a string (the

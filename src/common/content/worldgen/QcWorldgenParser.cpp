@@ -98,6 +98,7 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
 
     const bool singleBlock = m_feature.type == QcFeatureDefinition::Type::Plant || m_feature.type == QcFeatureDefinition::Type::Pool;
     m_feature.trunkBlock = m_reader.name(singleBlock ? u"block"_s : u"trunk"_s, m_namespace);
+    m_feature.icon = m_reader.name(u"icon"_s, m_namespace);
     if (m_feature.type == QcFeatureDefinition::Type::Pool) {
         readPool();
     }
@@ -161,7 +162,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         const QcFeaturePlacement placement{placementReader.name(u"feature"_s, packNamespace),
                                            placementReader.number(u"density"_s, 0.0, 0.0, 1.0)};
         if (!entry.isObject() || placement.feature.isEmpty() || !placementReader.ok()) {
-            reader.fail(placementReader.ok() ? u"feature entries need 'feature' and 'density'"_s : placementReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(placementReader);
+            reader.fail(u"feature entries need 'feature' and 'density'"_s);
             break;
         }
         placements.append(placement);
@@ -188,7 +191,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         QcJsonFieldReader shareReader{shareJson, reader.context, {}};
         const QcBlockShare share{shareReader.name(u"block"_s, packNamespace), shareReader.number(u"share"_s, 0.0, 0.0, 1.0)};
         if (!entry.isObject() || share.block.isEmpty() || !shareJson.contains(u"share"_s) || !shareReader.ok()) {
-            reader.fail(shareReader.ok() ? u"'%1' entries need 'block' and 'share'"_s.arg(key) : shareReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(shareReader);
+            reader.fail(u"'%1' entries need 'block' and 'share'"_s.arg(key));
             break;
         }
         total += share.share;
@@ -257,6 +262,7 @@ namespace QcWorldgenParser {
     biome.steepBlock = reader.name(u"steep"_s, packNamespace);
     biome.steepSlope = reader.integer(u"steepSlope"_s, biome.steepSlope, 1, 32);
     biome.surfaceBlock = reader.name(u"surface"_s, packNamespace);
+    biome.icon = reader.name(u"icon"_s, packNamespace);
     biome.subsurfaceBlock = reader.name(u"subsurface"_s, packNamespace, biome.surfaceBlock);
     biome.subsurfaceDepth = reader.integer(u"subsurfaceDepth"_s, 3, 0, 16);
     biome.underwaterBlock = reader.name(u"underwater"_s, packNamespace, biome.subsurfaceBlock);

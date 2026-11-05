@@ -9,28 +9,35 @@
 
 #include <functional>
 
-// Destructive commands wait for /confirm (decision E-245): each source (player or console) has at
-// most one pending action, a new one replaces it, and it expires after timeoutSeconds of real time
-// (the players' time of the server, QcServerClock::playerTimeNs). The action keeps the right its
-// command needs: a source that lost it (/deop) cannot confirm. The action receives the source that
-// confirms, so nothing refers to a player who has left.
+/*! \brief Destructive commands wait for /confirm (decision E-245): each source (player or console)
+    has at most one pending action, a new one replaces it, and it expires after timeoutSeconds of
+    real time (the players' time of the server, QcServerClock::playerTimeNs).
+
+    The action keeps the right its command needs: a source that lost it (/deop) cannot confirm.
+    The action receives the source that confirms, so nothing refers to a player who has left. */
 class QcPendingCommands
 {
 public:
+    /*! A pending action expires after this long of the players' time. \qcshared */
     static constexpr int timeoutSeconds = 30;
     static constexpr qint64 timeoutNs = static_cast<qint64>(timeoutSeconds) * 1'000'000'000;
+    /*! The destructive action, run for the \c {source} that confirms. */
     using Action = std::function<void(const QcCommandSource &source)>;
 
-    // Keeps `action` for the context's source and tells it how to confirm; `nowNs` is the players'
-    // time.
+    /*! Keeps \a action for the source of \a context and tells it how to confirm; \a nowNs is
+        the players' time. */
     void ask(const QcCommandContext &context, Action action, qint64 nowNs);
-    // Runs the source's pending action; false (after telling why) when there is none, it expired or
-    // the source may no longer run its command.
+    /*! Runs the pending action of \a source at the players' time \a nowNs. Returns \c false
+        (after telling why) when there is none, it expired or the source may no longer run its
+        command. */
     bool confirm(const QcCommandSource &source, qint64 nowNs);
-    // Drops the source's pending action; false when there was none.
+    /*! Drops the pending action of \a source and tells it so. Returns \c false when there was
+        none. */
     bool cancel(const QcCommandSource &source);
-    // A player left or lost his rights: his pending action goes.
+    /*! The player \a sourceId (QcCommandSource::id) left or lost his rights: his pending action
+        goes. */
     void forget(quint32 sourceId) { m_pending.remove(sourceId); }
+    /*! Returns whether the source \a sourceId has a pending action. */
     bool hasPending(quint32 sourceId) const { return m_pending.contains(sourceId); }
 
 private:

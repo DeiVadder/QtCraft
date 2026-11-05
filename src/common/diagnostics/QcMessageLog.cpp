@@ -7,13 +7,13 @@
 #include "common/diagnostics/QcCrashHandler.h"
 
 #include <QElapsedTimer>
-#include <QMutex>
 #include <QScopedValueRollback>
 #include <QThread>
 
 #include <algorithm>
 #include <atomic>
 #include <memory>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -21,7 +21,9 @@ namespace {
 
 struct State
 {
-    QMutex mutex;
+    // Any thread that logs hands its line to the log file under this mutex (never recursive:
+    // t_writing).
+    std::mutex mutex;
     std::unique_ptr<QcLogWriter> writer;
     // Atomic: handlers on other threads read it while install() or uninstall() run.
     std::atomic<QtMessageHandler> previous{nullptr};
@@ -33,7 +35,9 @@ struct State
 // while a line is written, and the ring must not wait for a slow disk.
 struct RecentRing
 {
-    QMutex mutex;
+    // Any thread that logs hands its line to the ring under this mutex, to the thread that calls
+    // recent().
+    std::mutex mutex;
     QList<QcMessageLog::RecentLine> lines;
     // Where the next line goes once the ring is full.
     qsizetype next = 0;
@@ -52,7 +56,7 @@ void keepRecent(QtMsgType type, const char *category, const QString &message)
     QcMessageLog::RecentLine line{0, QDateTime::currentMSecsSinceEpoch(), QcMessageLog::severity(type),
                                   QString::fromLatin1(category ? category : "default"), message.left(QcMessageLog::recentTextLimit)};
     RecentRing &recent = recentLines();
-    const QMutexLocker lock(&recent.mutex);
+    const std::scoped_lock lock(recent.mutex);
     line.sequence = ++recent.sequence;
     if (recent.lines.size() < QcMessageLog::recentLimit) {
         recent.lines.append(std::move(line));
@@ -115,7 +119,7 @@ void writeLocked(State &log, QtMsgType type, const char *category, const QString
 void writeToFile(QtMsgType type, const QMessageLogContext &context, const QString &message)
 {
     State &log = state();
-    const QMutexLocker lock(&log.mutex);
+    const std::scoped_lock lock(log.mutex);
     if (log.writer) {
         writeLocked(log, type, context.category, message);
     }
@@ -145,7 +149,7 @@ namespace QcMessageLog {
 void installWithoutFile()
 {
     State &log = state();
-    const QMutexLocker lock(&log.mutex);
+    const std::scoped_lock lock(log.mutex);
     if (!log.installed) {
         log.started.start();
         log.previous.store(qInstallMessageHandler(handle));
@@ -163,7 +167,7 @@ QcStatus install(const Config &config)
     installWithoutFile();
     State &log = state();
     {
-        const QMutexLocker lock(&log.mutex);
+        const std::scoped_lock lock(log.mutex);
         log.writer = std::move(writer);
         QcCrashHandler::setLogHandle(log.writer->handle());
     }
@@ -177,7 +181,7 @@ QcStatus install(const Config &config)
 void uninstall()
 {
     State &log = state();
-    const QMutexLocker lock(&log.mutex);
+    const std::scoped_lock lock(log.mutex);
     if (log.installed) {
         // A handler installed after this one stays.
         if (const QtMessageHandler current = qInstallMessageHandler(log.previous.load()); current != handle) {
@@ -192,14 +196,14 @@ void uninstall()
 QString path()
 {
     State &log = state();
-    const QMutexLocker lock(&log.mutex);
+    const std::scoped_lock lock(log.mutex);
     return log.writer ? log.writer->path() : QString();
 }
 
 void note(const char *category, const QString &text)
 {
     State &log = state();
-    const QMutexLocker lock(&log.mutex);
+    const std::scoped_lock lock(log.mutex);
     if (log.writer) {
         writeLocked(log, QtInfoMsg, category, text);
     }
@@ -234,7 +238,7 @@ int severity(QtMsgType type)
 Recent recent(int minimumSeverity, qsizetype count, quint64 after, const QSet<QString> &categories)
 {
     RecentRing &kept = recentLines();
-    const QMutexLocker lock(&kept.mutex);
+    const std::scoped_lock lock(kept.mutex);
     Recent found{{}, kept.sequence};
     QList<RecentLine> &result = found.lines;
     // Newest first from the slot before `next`, so the count keeps the newest lines.
@@ -255,7 +259,7 @@ Recent recent(int minimumSeverity, qsizetype count, quint64 after, const QSet<QS
 quint64 latestSequence()
 {
     RecentRing &kept = recentLines();
-    const QMutexLocker lock(&kept.mutex);
+    const std::scoped_lock lock(kept.mutex);
     return kept.sequence;
 }
 

@@ -119,7 +119,7 @@ private slots:
         QVERIFY(scaled && !scaled->hold.swing.scale);
 
         // Layers stack per field: a swing rotation over a category's swing translation.
-        const QcHoldDisplay category{{}, {}, {}, {}, {QcVec3{0.0, 0.2, 0.0}, QcVec3{1.0, 2.0, 3.0}, {}}};
+        const QcHoldDisplay category{{}, {}, {}, {}, {QcVec3{0.0, 0.2, 0.0}, QcVec3{1.0, 2.0, 3.0}, {}}, {}, {}};
         const QcHoldDisplay merged = club->hold.over(category);
         QCOMPARE(merged.swing.rotate, QcVec3(0.0, -90.0, 0.0));
         QCOMPARE(merged.swing.translate, QcVec3(0.0, 0.1, 0.0));
@@ -137,7 +137,9 @@ private slots:
     void swingPlacementTravelsOnTheWire()
     {
         const QcHoldDisplay display{QcHoldCategory::Weapon, QcHoldGrip::Handle, {{}, QcVec3{0.0, -20.0, 60.0}, QcVec3{0.4, 0.4, 0.4}}, {},
-                                    {QcVec3{0.0, 0.05, 0.0}, QcVec3{0.0, -85.0, -15.0}, {}}};
+                                    {QcVec3{0.0, 0.05, 0.0}, QcVec3{0.0, -85.0, -15.0}, {}},
+                                    {QcVec3{0.0, 0.04, 0.0}, QcVec3{-45.0, 110.0, -8.0}, {}},
+                                    {QcVec3{0.0, 0.06, -0.04}, QcVec3{-135.0, 90.0, 0.0}, {}}};
         QByteArray bytes;
         QDataStream out(&bytes, QIODevice::WriteOnly);
         QcHoldSerializer::write(out, display);
@@ -198,6 +200,40 @@ private slots:
         QCOMPARE(received->holdDefaults(), content.holdDefaults());
         QCOMPARE(lookOf(*received, u"qtcraft:iron_pickaxe"_s).firstPerson.rotate, lookOf(content, u"qtcraft:iron_pickaxe"_s).firstPerson.rotate);
         QCOMPARE(lookOf(*received, u"qtcraft:iron_pickaxe"_s).swing.rotate, lookOf(content, u"qtcraft:iron_pickaxe"_s).swing.rotate);
+        QCOMPARE(lookOf(*received, u"qtcraft:bow"_s).drawn.rotate, lookOf(content, u"qtcraft:bow"_s).drawn.rotate);
+    }
+
+    // A launcher's drawn placement (decision E-984): read like "swing" (no scale), unset fields
+    // keep the first-person ones, and the base game's bow has one of its own.
+    void drawnPlacementIsRead()
+    {
+        const QcResult<QcItemDefinition> bow = parseItem(R"({"name": "b", "hold": {"drawn": {"rotate": [-45, 100, 0]}}})");
+        QVERIFY(bow);
+        QCOMPARE(bow->hold.drawn.rotate, QcVec3(-45.0, 100.0, 0.0));
+        QVERIFY(!bow->hold.drawn.translate);
+        QVERIFY(!parseItem(R"({"name": "a", "hold": {"drawn": {"rotate": [0, 400, 0]}}})"));
+        const QcResult<QcItemDefinition> scaled = parseItem(R"({"name": "a", "hold": {"drawn": {"scale": 1}}})");
+        QVERIFY(scaled && !scaled->hold.drawn.scale);
+
+        QcContentRegistry content;
+        QVERIFY(QcBaseContent::loadInto(content));
+        QVERIFY(content.finish().isEmpty());
+        const QcEntityMesher::ItemLook look = lookOf(content, u"qtcraft:bow"_s);
+        QVERIFY(look.drawn.rotate != look.firstPerson.rotate);
+        QCOMPARE(look.drawn.scale, look.firstPerson.scale);
+        // Other items keep their first-person placement while "drawn".
+        const QcEntityMesher::ItemLook pickaxe = lookOf(content, u"qtcraft:iron_pickaxe"_s);
+        QCOMPARE(pickaxe.drawn.rotate, pickaxe.firstPerson.rotate);
+        QCOMPARE(pickaxe.drawn.translate, pickaxe.firstPerson.translate);
+
+        // A figure's aim the same way: "thirdPersonDrawn" over "thirdPerson", the size kept.
+        const QcResult<QcItemDefinition> aimed = parseItem(R"({"name": "b", "hold": {"thirdPersonDrawn": {"rotate": [-45, 100, 0], "scale": 1}}})");
+        QVERIFY(aimed);
+        QCOMPARE(aimed->hold.thirdPersonDrawn.rotate, QcVec3(-45.0, 100.0, 0.0));
+        QVERIFY(!aimed->hold.thirdPersonDrawn.scale);
+        QVERIFY(look.thirdPersonDrawn.rotate != look.thirdPerson.rotate);
+        QCOMPARE(look.thirdPersonDrawn.scale, look.thirdPerson.scale);
+        QCOMPARE(pickaxe.thirdPersonDrawn.rotate, pickaxe.thirdPerson.rotate);
     }
 
     void modsMoveHeldItems()

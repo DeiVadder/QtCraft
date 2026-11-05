@@ -25,7 +25,7 @@ QcPetCare::QcPetCare(QcServerState &state, QcServerSounds &sounds, QcServerInven
 bool QcPetCare::use(QcServerClient &client, quint32 mobId)
 {
     QcCreature *mob = m_state.entities().creatures().find(mobId);
-    if (!mob || mob->dormant || mob->type < 0 || mob->type >= m_state.content().mobs().size()) {
+    if (!mob || mob->dormant || !m_state.content().mobs().contains(mob->type)) {
         return false;
     }
     const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
@@ -106,7 +106,7 @@ void QcPetCare::noteUse(QcServerClient &client, const QcItemDefinition &held, co
 void QcPetCare::tame(QcEntities &entities, const QcContentRegistry &content, QcCreature &mob, const QString &owner)
 {
     const QcMobDefinition &wild = content.mobs()[mob.type];
-    const int type = wild.tameable && wild.tameable->becomesType >= 0 ? wild.tameable->becomesType : mob.type;
+    const QcCreatureKindId type = wild.tameable && wild.tameable->becomesType ? *wild.tameable->becomesType : mob.type;
     const QcMobDefinition &kind = content.mobs()[type];
     if (type != mob.type) {
         // A new kind keeps the share of health it had.

@@ -51,36 +51,20 @@ ColumnLayout {
         }
     }
 
-    // The entry of the preset list for the chosen values: the defaults first, then the presets; -1
-    // for values of one's own.
-    function presetIndex(): int {
-        if (page.options.changedCount === 0)
-            return 0;
-        const presets = page.options.presets;
-        for (let i = 0; i < presets.length; ++i) {
-            if (presets[i].name === page.options.preset)
-                return i + 1;
-        }
-        return -1;
-    }
-
     spacing: 0
 
+    // The preset list follows the values and the presets (WorldOptionsController.presetIndex).
     Connections {
         target: page.options
 
-        function onValuesChanged() {
-            presetChoice.currentIndex = page.presetIndex();
-        }
-        function onOptionsChanged() {
-            presetChoice.currentIndex = page.presetIndex();
+        function onSummaryChanged() {
+            presetChoice.currentIndex = page.options.presetIndex;
         }
     }
 
     SettingsPage {
         id: form
 
-        objectName: "worldOptionsForm"
         Layout.fillWidth: true
         Layout.fillHeight: true
         title: qsTr("World options")
@@ -101,7 +85,7 @@ ColumnLayout {
                 valueRole: "name"
                 model: [{ name: "", title: qsTr("Default") }].concat(page.options.presets)
                 onActivated: index => page.options.choosePreset(index > 0 ? page.options.presets[index - 1].name : "")
-                Component.onCompleted: currentIndex = page.presetIndex()
+                Component.onCompleted: currentIndex = page.options.presetIndex
             }
         }
 

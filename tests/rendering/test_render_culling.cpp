@@ -16,23 +16,32 @@ constexpr float aspect = 16.0f / 9.0f;
 constexpr float farPlane = 128.0f;
 constexpr float eyeY = 64.0f;
 
-// Clip-space corrections as QRhi applies them: none (OpenGL), depth to [0, 1] (Metal, D3D) and
-// depth to [0, 1] with y flipped (Vulkan).
-QMatrix4x4 correction(int kind)
+// Clip-space corrections as QRhi applies them.
+enum class Clip
+{
+    // None (OpenGL).
+    OpenGl,
+    // Depth to [0, 1] (Metal, D3D).
+    Metal,
+    // Depth to [0, 1] with y flipped (Vulkan).
+    Vulkan,
+};
+
+QMatrix4x4 correction(Clip clip)
 {
     QMatrix4x4 matrix;
-    if (kind >= 1) {
+    if (clip != Clip::OpenGl) {
         matrix = QMatrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.5f, 0.5f, 0, 0, 0, 1);
     }
-    if (kind == 2) {
+    if (clip == Clip::Vulkan) {
         matrix = QMatrix4x4(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) * matrix;
     }
     return matrix;
 }
 
-QcFrustum::Planes planesFor(const QcCamera &camera, int kind)
+QcFrustum::Planes planesFor(const QcCamera &camera, Clip clip)
 {
-    return QcFrustum::planes(correction(kind) * camera.projectionMatrix(aspect, farPlane) * camera.viewRotation());
+    return QcFrustum::planes(correction(clip) * camera.projectionMatrix(aspect, farPlane) * camera.viewRotation());
 }
 
 // Half-extent of the view at `distance` in front of the camera, from the field of view alone.
@@ -65,16 +74,16 @@ class TestRenderCulling : public QObject
 private slots:
     void boxes_data()
     {
-        QTest::addColumn<int>("kind");
-        QTest::newRow("opengl") << 0;
-        QTest::newRow("metal") << 1;
-        QTest::newRow("vulkan") << 2;
+        QTest::addColumn<Clip>("clip");
+        QTest::newRow("opengl") << Clip::OpenGl;
+        QTest::newRow("metal") << Clip::Metal;
+        QTest::newRow("vulkan") << Clip::Vulkan;
     }
 
     void boxes()
     {
-        QFETCH(int, kind);
-        const QcFrustum::Planes planes = planesFor(cameraAtOrigin(), kind);
+        QFETCH(Clip, clip);
+        const QcFrustum::Planes planes = planesFor(cameraAtOrigin(), clip);
         // The camera looks along -Z.
         QVERIFY(visible(planes, {-0.5f, eyeY - 0.5f, -20.5f}, {0.5f, eyeY + 0.5f, -19.5f}));
 
@@ -105,7 +114,7 @@ private slots:
     void turnedCamera()
     {
         // Yaw 90 looks along +X.
-        const QcFrustum::Planes planes = planesFor(cameraAtOrigin(90.0f), 1);
+        const QcFrustum::Planes planes = planesFor(cameraAtOrigin(90.0f), Clip::Metal);
         QVERIFY(visible(planes, {19.5f, eyeY - 0.5f, -0.5f}, {20.5f, eyeY + 0.5f, 0.5f}));
         QVERIFY(!visible(planes, {-20.5f, eyeY - 0.5f, -0.5f}, {-19.5f, eyeY + 0.5f, 0.5f}));
         QVERIFY(!visible(planes, {-0.5f, eyeY - 0.5f, -40.5f}, {0.5f, eyeY + 0.5f, -39.5f}));

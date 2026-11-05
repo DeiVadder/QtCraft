@@ -90,6 +90,13 @@ if [ "$(item_field newworld-terrain-de newWorldMap y)" -lt "$(item_field newworl
     grep 'Item ' "$DATA/newworld-terrain-de.log"
     failed=1
 fi
+# "Generator version" under "World generation" (decision E-922) with its list open.
+LOG_ITEMS=generatorVersionChoice
+check newworld-version-de --language de --overlay "@300 open:newWorldPage" --overlay "@600 open:generatorVersionChoice"
+if ! grep -q 'Item generatorVersionChoice: x .* visible yes' "$DATA/newworld-version-de.log"; then
+    echo "newworld-version-de: no generator version choice on the page of a normal world"
+    failed=1
+fi
 LOG_ITEMS=
 check worldoptions-terrain-de --language de --overlay "@300 open:worldOptionsPage"
 # The world gets the seed the field stands for (decision E-930): with the field empty the random
@@ -114,6 +121,11 @@ for run in seed-empty seed-die; do
         grep -E 'Item worldSeed|no such control|Opened world' "$DATA/$run-de.log"
         failed=1
     fi
+    # The menu's steps run once per program run, not again once the new world plays.
+    if grep 'no such control' "$DATA/$run-de.log"; then
+        echo "$run-de: a step of the menu ran again in the world"
+        failed=1
+    fi
 done
 RUN_DATA=
 LOG_ITEMS=
@@ -134,7 +146,7 @@ while [ ! -s "$DATA/port" ] && [ "$tries" -lt 50 ]; do
     tries=$((tries + 1))
 done
 check join-locked-de --language de --join "127.0.0.1:$(cat "$DATA/port")" --overlay multiplayer \
-    --overlay "@600 click:menuEntry2" --overlay "@900 click:cancelJoinButton"
+    --overlay "@600 click:menuEntry0" --overlay "@900 click:cancelJoinButton"
 kill "$listener" 2>/dev/null
 wait "$listener" 2>/dev/null
 if grep -q 'click:cancelJoinButton.*no such control' "$DATA/join-locked-de.log"; then
@@ -238,9 +250,11 @@ elif ! grep 'padFocus' "$DATA/character-leave-de.log" | tail -1 | grep -qE 'padF
     failed=1
 fi
 # With saved worlds (made by the headless bot) the start page offers to continue the one played
-# last, and the pad's focus starts on "Continue" (the first press shows the focus).
+# last, and the pad's focus starts on "Continue" (the first press shows the focus). The list below
+# holds the other two (HM-1 of docs/Menue-Pruefung.md).
 printf '%s\n' '{"cmd":"worldCreate","name":"Eine Welt mit einem recht langen Namen","seed":42,"gameMode":"creative"}' \
     '{"cmd":"waitUntilReady"}' '{"cmd":"worldCreate","name":"Flach","generator":"flat"}' '{"cmd":"waitUntilReady"}' \
+    '{"cmd":"worldCreate","name":"Leere","generator":"void"}' '{"cmd":"waitUntilReady"}' \
     '{"cmd":"quit"}' >"$DATA/worlds.jsonl"
 if ! perl -e 'alarm shift; exec @ARGV or die' 60 "$HEADLESS" --data-dir "$DATA" --no-mods --view-distance 2 \
     --script "$DATA/worlds.jsonl" >"$DATA/worlds.log" 2>&1; then
@@ -271,15 +285,15 @@ if ! grep -q 'Opened world' "$DATA/world-play-de.log"; then
     failed=1
 fi
 # "New world" in one column (decision E-930): the pad walks it in reading order, name, type, seed,
-# the die, game mode, keeping the inventory, the world options, and down from there reaches
-# "Create and play".
+# the die, game mode, keeping the inventory, the generator version, the world options, and down
+# from there reaches "Create and play".
 MENU_WORLD_TYPE=terrain
 check newworld-pad-de --language de --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
     --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
-    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
 MENU_WORLD_TYPE=
 order=$(grep 'padFocus' "$DATA/newworld-pad-de.log" | sed 's/^padFocus: //' | tr '\n' ' ')
-if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: moreWorldOptions createWorldButton " ]; then
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
     echo "newworld-pad-de: the pad's focus does not walk the form in reading order: $order"
     failed=1
 fi

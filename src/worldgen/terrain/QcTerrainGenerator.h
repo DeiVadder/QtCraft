@@ -56,6 +56,11 @@ public:
     ~QcTerrainGenerator() override;
     Q_DISABLE_COPY_MOVE(QcTerrainGenerator)
 
+    /*! Sets the world generator version to \a version, also for the rivers (version 2 on fades
+        small rings smoothly, QcRiverField::smoothRings(), decision E-969, and closes pieces up
+        to QcRiverPieces::longestVersion2 blocks long, decision E-976). */
+    void setVersion(int version) override;
+
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
@@ -85,7 +90,7 @@ public:
         blended ground of kinds with \c {blendVegetation} is left out but for the ring beside
         their walls (the generator's trees and plants stand on the ground as built; giant trees
         are planned on the terrain and keep off). */
-    [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
+    [[nodiscard]] QList<QcXzRect> structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
     /*! Returns the surface lakes (decision E-856). */
     const QcSurfaceLakes &lakes() const { return *m_lakes; }
     /*! Returns the lake of the chunk at \a pos; none in or near a village, near a surface
@@ -93,12 +98,12 @@ public:
     [[nodiscard]] std::optional<QcSurfaceLakes::Site> lakeIn(QcChunkPos pos) const;
     /*! Returns whether the entrance of a mine shaft touching the chunk at \a pos lies within
         \c {featureMargin} of \a footprint (world). */
-    [[nodiscard]] bool mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const;
+    [[nodiscard]] bool mineshaftEntranceNear(QcChunkPos pos, QcXzRect footprint) const;
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
-    /*! Villages, mine shafts, dungeons, coastal towers and the surface structures (decision
-        E-911). */
+    /*! Returns the villages, mine shafts, dungeons, coastal towers and the surface structures
+        (decision E-911). */
     QStringList locatableNames() const override;
     /*! Returns the mine shaft, dungeon or coastal tower of \a kind nearest to \a from within
         about \a reach blocks (as QcWorldGenerator::locate(); no place for other kinds): mine
@@ -154,7 +159,7 @@ public:
         placement may cross it between them. Only near a delta: away from the band along the
         coasts it reads the continent on a grid of a few blocks, near it the remembered delta of
         each cell of sites. */
-    [[nodiscard]] bool touchesDelta(QcSurfacePlanner::Rect footprint) const;
+    [[nodiscard]] bool touchesDelta(QcXzRect footprint) const;
     /*! Returns the block of the top water layer of \a column at \a x, \a z under the sea level
         (decision E-858): the biome's frozenWater, with freezing by temperature only where the
         column is cold enough (else water); with a \c {frozenDepth} only where the water is that
@@ -246,8 +251,8 @@ private:
     [[nodiscard]] std::optional<DeltaCut> deltaCut(int x, int z, double continent, const RiverCut &river) const;
     // The two gates of touchesDelta(), each one conservative: whether a footprint reaches into the
     // band along the coasts, and whether a cell of sites under it has a delta.
-    [[nodiscard]] bool nearDeltaBand(QcSurfacePlanner::Rect footprint) const;
-    [[nodiscard]] bool deltaSiteUnder(QcSurfacePlanner::Rect footprint) const;
+    [[nodiscard]] bool nearDeltaBand(QcXzRect footprint) const;
+    [[nodiscard]] bool deltaSiteUnder(QcXzRect footprint) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;
@@ -272,7 +277,7 @@ private:
     // Columns under and around `village` (may be null) and the footprints of surface structures
     // (`structures`) get none.
     void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, const QcVillagePlan *village,
-                       const QList<QcSurfacePlanner::Rect> &structures) const;
+                       const QList<QcXzRect> &structures) const;
     void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
     // Plants on the water of a column under the sea level (lily pads, decision E-774).
     void placeFeatureOnWater(QcChunk &chunk, const Column &column, const QList<bool> &carved, int x, int z) const;

@@ -3,8 +3,15 @@
 
 #include "clientcore/camera/QcFovEffect.h"
 
+#include "common/content/items/QcProjectileDefinition.h"
+
 #include <algorithm>
 #include <cmath>
+
+double QcFovEffect::drawShare(double drawProgress)
+{
+    return drawProgress >= 0.0 ? QcLauncherDefinition::shareOf(drawProgress) : 0.0;
+}
 
 void QcFovEffect::setShare(double share)
 {
@@ -14,7 +21,9 @@ void QcFovEffect::setShare(double share)
 double QcFovEffect::target(Movement movement) const
 {
     const double widening = (movement.sprinting ? sprintWidening : 0.0) + (movement.flying ? flyWidening : 0.0);
-    return 1.0 + widening * m_share;
+    const double draw = std::isfinite(movement.draw) ? std::clamp(movement.draw, 0.0, 1.0) : 0.0;
+    const double narrowing = drawNarrowing * draw * draw;
+    return (1.0 + widening * m_share) * (1.0 - narrowing * m_share);
 }
 
 double QcFovEffect::advance(Movement movement, double seconds)

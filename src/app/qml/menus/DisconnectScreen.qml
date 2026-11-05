@@ -18,7 +18,7 @@ Rectangle {
     focus: visible
     onVisibleChanged: if (visible) forceActiveFocus()
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape)
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.game.leaveGame();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }

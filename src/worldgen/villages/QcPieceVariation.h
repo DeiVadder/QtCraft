@@ -31,7 +31,7 @@ public:
     };
 
     /*! The result of resolve(): the variation, or the failure of the structure. */
-    using Resolved = std::expected<QcPieceVariation, QcStructure::Failure>;
+    using Resolved = std::expected<QcPieceVariation, QcLoadFailure>;
 
     /*! Returns \a definition resolved against the blocks of \a content; \a definition already
         carries the style's palette swaps. Unknown blocks of the structure fail; an option naming
@@ -52,7 +52,7 @@ public:
     /*! Returns the structure without parts and with every palette entry as written. */
     const std::shared_ptr<const QcStructure> &base() const { return m_base; }
     /*! Returns whether the blueprint has choices or parts. */
-    bool varies() const { return !m_choices.isEmpty() || !m_parts.isEmpty(); }
+    bool varies() const { return !choices().isEmpty() || !parts().isEmpty(); }
     /*! Returns how many options each choice has. */
     [[nodiscard]] QList<int> optionCounts() const;
     /*! Returns the chance of each part. */
@@ -77,6 +77,9 @@ private:
     };
 
     QcPieceVariation() = default;
+    // The options of every choice, and the optional parts.
+    const QList<QList<Option>> &choices() const { return m_choices; }
+    const QList<QcStructureDefinition::Part> &parts() const { return m_parts; }
     // One option of a choice; its unknown blocks go to the warnings.
     [[nodiscard]] Option resolveOption(const QcStructureDefinition &definition, const QHash<QString, QString> &swaps,
                                        const QcContentRegistry &content);

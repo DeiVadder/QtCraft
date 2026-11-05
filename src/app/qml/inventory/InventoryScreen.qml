@@ -8,197 +8,182 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Inventory and crafting (SlotScreen): the 2 x 2 grid, or 3 x 3 at a crafting table, its result
-// and the recipes the inventory can make right now. The result slot takes one crafted item, a
+// Inventory and crafting (SlotScreen): the character with its armour on the left, the 2 x 2 grid,
+// or 3 x 3 at a crafting table, with its result above the inventory, and the recipes the inventory
+// can make right now on the right. The result slot takes one crafted item, a
 // shift-click as many as possible.
 SlotScreen {
     id: screen
 
-    readonly property int gridFirst: 36
+    readonly property int gridFirst: InventoryModel.GridFirst
     // Small windows (from the minimum 1024 x 640 on): a smaller preview and recipe list, so the
     // panel keeps its margin to the window's edges.
-    readonly property bool narrow: width < Ui.px(1200)
+    readonly property bool narrow: width < Ui.screen.narrowWindow
 
-    resultSlot: 45
-    panelContent: content
+    title: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Crafting")
+    handbookTarget: screen.game.player.craftingHandbookTarget
+    creativeSwitch: true
+    keyHints: [
+        { keys: [qsTr("Click")], text: qsTr("take, put down") },
+        { keys: [qsTr("Right click")], text: qsTr("one") },
+        { keys: [qsTr("Shift-click")], text: qsTr("move across, on the result: craft all") }
+    ]
 
-    RowLayout {
-        id: content
+    // The character as others see it with the armour slots (head to feet) beside it and the armour
+    // points as a plate on the figure (decision E-234, IV-9 of docs/Menue-Pruefung.md).
+    startColumn: RowLayout {
+        spacing: Ui.space.s
 
-        anchors.centerIn: parent
-        spacing: Ui.px(screen.narrow ? 16 : 28)
-
-        // The character as others see it, the armour slots (head to feet) beside it and the armour
-        // points below them (decision E-234).
-        RowLayout {
+        ColumnLayout {
             Layout.alignment: Qt.AlignTop
-            spacing: Ui.px(8)
+            spacing: Ui.size.slotGap
 
-            ColumnLayout {
-                objectName: "equipmentColumn"
-                Layout.alignment: Qt.AlignTop
-                spacing: Ui.px(2)
-
-                Repeater {
-                    model: SlotRange {
-                        source: screen.game.player.inventory
-                        first: screen.game.player.equipmentFirstRow
-                        count: 4
-                    }
-
-                    InventorySlot {
-                        required property int index
-
-                        owner: screen
-                        // Icons exist once the content arrived.
-                        placeholderIcon: screen.game.phase === GameController.Phase.Playing && screen.game.player.armourPlaceholders[index]
-                                         ? ItemIcons.source(screen.game.player.armourPlaceholders[index], ItemIcons.generation) : ""
-                    }
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.game.player.equipmentFirstRow
+                    count: 4
                 }
 
-                Label {
-                    objectName: "armourPoints"
-                    Layout.alignment: Qt.AlignHCenter
-                    text: qsTr("Armour: %1").arg(screen.game.player.armour)
-                    color: Theme.text
-                    font.pixelSize: Ui.px(15)
+                InventorySlot {
+                    required property int index
+
+                    owner: screen
+                    // Icons exist once the content arrived.
+                    placeholderIcon: screen.game.phase === GameController.Phase.Playing && screen.game.player.armourPlaceholders[index]
+                                     ? ItemIcons.source(screen.game.player.armourPlaceholders[index], ItemIcons.generation) : ""
                 }
+            }
+        }
+
+        Rectangle {
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredWidth: screen.narrow ? Ui.size.inventoryFigureSmall : Ui.size.inventoryFigure
+            Layout.preferredHeight: Layout.preferredWidth * 1.6
+            radius: Ui.radius
+            color: Theme.panelRaised
+
+            CharacterPreviewHost {
+                previewName: "inventoryPreview"
+                anchors.fill: parent
+                anchors.margins: Ui.size.bevelDeep
+                source: screen.game.preview
+                paused: screen.game.handbook.isOpen
             }
 
             Rectangle {
-                Layout.preferredWidth: Ui.px(screen.narrow ? 120 : 160)
-                Layout.preferredHeight: Ui.px(screen.narrow ? 200 : 260)
-                radius: Ui.px(4)
-                color: Theme.panelRaised
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.margins: Ui.space.xs
+                implicitWidth: armourLabel.implicitWidth + 2 * Ui.space.s
+                implicitHeight: Ui.size.badge + Ui.space.xs
+                radius: Ui.radius
+                color: Theme.hudBackdrop
 
-                CharacterPreviewHost {
-                    previewName: "inventoryPreview"
-                    anchors.fill: parent
-                    anchors.margins: Ui.px(2)
-                    source: screen.game.preview
-                    paused: screen.game.handbook.isOpen
+                Label {
+                    id: armourLabel
+
+                    objectName: "armourPoints"
+                    anchors.centerIn: parent
+                    text: qsTr("Armour: %1").arg(screen.game.player.armour)
+                    color: Theme.text
+                    font.pixelSize: Ui.type.help
+                }
+            }
+        }
+    }
+
+    // The crafting grid, 2 x 2 or 3 x 3 at a crafting table, and its result.
+    RowLayout {
+        spacing: Ui.space.l
+
+        GridLayout {
+            columns: screen.game.player.craftingSize
+            rowSpacing: Ui.size.slotGap
+            columnSpacing: Ui.size.slotGap
+
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.gridFirst
+                    count: 9
+                }
+
+                InventorySlot {
+                    readonly property int cell: slot - screen.gridFirst
+
+                    owner: screen
+                    visible: Math.floor(cell / 3) < screen.game.player.craftingSize
+                             && cell % 3 < screen.game.player.craftingSize
                 }
             }
         }
 
-        ColumnLayout {
-            spacing: Ui.px(12)
+        PixelArt {
+            Layout.alignment: Qt.AlignVCenter
+            picture: "arrow/textSecondary"
+        }
 
-            RowLayout {
-                spacing: Ui.px(16)
-
-                // Creative mode: back to the item catalogue.
-                Button {
-                    objectName: "creativeItemsTab"
-                    visible: screen.game.player.creative
-                    text: qsTr("Creative items")
-                    onClicked: screen.game.overlay = GameController.Overlay.Creative
-                }
-
-                Label {
-                    Layout.fillWidth: true
-                    text: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")
-                    color: Theme.text
-                    font.pixelSize: Ui.px(24)
-                    font.bold: true
-                }
-
-                GridLayout {
-                    columns: screen.game.player.craftingSize
-                    rowSpacing: Ui.px(2)
-                    columnSpacing: Ui.px(2)
-
-                    Repeater {
-                        model: SlotRange {
-                            source: screen.game.player.inventory
-                            first: screen.gridFirst
-                            count: 9
-                        }
-
-                        InventorySlot {
-                            readonly property int cell: slot - screen.gridFirst
-
-                            owner: screen
-                            visible: Math.floor(cell / 3) < screen.game.player.craftingSize
-                                     && cell % 3 < screen.game.player.craftingSize
-                        }
-                    }
-                }
-
-                Label {
-                    text: "→"
-                    color: Theme.text
-                    font.pixelSize: Ui.px(28)
-                }
-
-                Repeater {
-                    model: SlotRange {
-                        source: screen.game.player.inventory
-                        first: screen.resultSlot
-                        count: 1
-                    }
-
-                    InventorySlot {
-                        owner: screen
-                    }
-                }
+        Repeater {
+            model: SlotRange {
+                source: screen.game.player.inventory
+                first: InventoryModel.Result
+                count: 1
             }
 
-            PlayerSlots {
+            InventorySlot {
                 owner: screen
             }
+        }
+    }
 
-            Label {
-                Layout.maximumWidth: Ui.px(9 * 54)
-                wrapMode: Text.Wrap
-                text: screen.game.gamepad.active ? qsTr("%1: pick up and put down. %2: put down one. %3: move the stack across (on the result: craft as many as possible). %4 closes.")
-                        .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                      : qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across (on the result: craft as many as possible). %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
-                color: Theme.textSecondary
-            }
+    endColumn: ColumnLayout {
+        Layout.preferredWidth: screen.narrow ? Ui.size.recipesSmall : Ui.size.recipes
+        Layout.fillHeight: true
+        spacing: Ui.space.s
+
+        Label {
+            text: qsTr("Can craft now")
+            color: Theme.heading
+            font.pixelSize: Ui.type.group
+            font.bold: true
         }
 
-        ColumnLayout {
-            Layout.preferredWidth: Ui.px(screen.narrow ? 200 : 260)
+        ListView {
+            objectName: "craftableRecipes"
+            Accessible.name: qsTr("Can craft now")
+            Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: Ui.px(6)
+            Layout.minimumHeight: Ui.size.listMinimum
+            clip: true
+            spacing: Ui.size.line
+            model: screen.game.player.craftableRecipes
+            ScrollBar.vertical: ThemedScrollBar {}
 
             Label {
-                text: qsTr("Can craft now")
-                color: Theme.text
-                font.pixelSize: Ui.px(18)
+                anchors.centerIn: parent
+                visible: parent.count === 0
+                width: parent.width
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Collect materials to see recipes here.")
+                color: Theme.textMuted
+                font.pixelSize: Ui.type.help
             }
 
-            ListView {
-                objectName: "craftableRecipes"
-                Accessible.name: qsTr("Can craft now")
-                Layout.fillWidth: true
-                Layout.preferredHeight: Ui.px(360)
-                clip: true
-                spacing: Ui.px(2)
-                model: screen.game.player.craftableRecipes
+            delegate: ItemDelegate {
+                id: recipeRow
 
-                Label {
-                    anchors.centerIn: parent
-                    visible: parent.count === 0
-                    width: parent.width
-                    wrapMode: Text.Wrap
-                    horizontalAlignment: Text.AlignHCenter
-                    text: qsTr("Collect materials to see recipes here.")
-                    color: Theme.textMuted
-                }
+                required property var modelData
 
-                delegate: ItemDelegate {
-                    id: recipeRow
-
-                    required property var modelData
-
-                    width: ListView.view.width
-                    icon.source: modelData.icon
-                    icon.color: Theme.clear
-                    text: modelData.count > 1 ? qsTr("%1 × %2").arg(modelData.count).arg(modelData.label) : modelData.label
-                    onClicked: screen.game.player.craftRecipe(recipeRow.modelData.recipe)
-                }
+                width: ListView.view.width
+                icon.source: modelData.icon
+                icon.color: Theme.clear
+                icon.width: Ui.size.handbookIcon
+                icon.height: Ui.size.handbookIcon
+                font.pixelSize: Ui.type.body
+                text: modelData.count > 1 ? qsTr("%1 × %2").arg(modelData.count).arg(modelData.label) : modelData.label
+                onClicked: screen.game.player.craftRecipe(recipeRow.modelData.recipe)
             }
         }
     }

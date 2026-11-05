@@ -4,39 +4,43 @@
 #pragma once
 
 #include "app/admin/QcAdminController.h"
-#include "app/controllers/QcAnvilController.h"
-#include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
 #include "app/controllers/QcPhotoMode.h"
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcSignController.h"
-#include "app/controllers/QcStonecutterController.h"
-#include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/controllers/QcWorldOptionsController.h"
 #include "app/controllers/QcWorldPause.h"
+#include "app/display/QcGraphicsGuard.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
+#include "app/inventory/QcAnvilController.h"
+#include "app/inventory/QcEnchantingController.h"
+#include "app/inventory/QcStonecutterController.h"
+#include "app/inventory/QcTradeController.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
+#include "app/session/QcAfterFrame.h"
 #include "app/session/QcFrameDriver.h"
+#include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcSessionWiring.h"
 #include "app/session/QcWorldAtlas.h"
 #include "app/session/QcWorldStarter.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/core/QcResult.h"
 
 #include <QObject>
 #include <QString>
+#include <QTimer>
 #include <QVariantMap>
 #include <QtQmlIntegration/qqmlintegration.h>
 
@@ -51,24 +55,41 @@ class QcMapImageProvider;
 class QQuickWindow;
 struct QcWorldInfo;
 
-// The game for QML (GameController, `game` in Main.qml): runs a single-player session with its
-// in-process server, or a session of a network game, and shows its phase, status and in-game
-// screen. Settings, library, player,
-// HUD, handbook and input are sub-objects with their own QML properties; the render bridge hands
-// the world to the view every frame. Lives in the GUI thread and is created from QML.
+// The game for QML (GameController, `gameController` in Main.qml, `game` in the screens): runs a
+// single-player session with its in-process server, or a session of a network game, and shows its
+// phase, status and in-game screen. Settings, library, player, HUD, handbook and input are
+// sub-objects with their own QML properties; the render bridge hands
+// the world to the view every frame. Lives in the GUI thread; main() makes it before the QML
+// engine (which it outlives) and hands it to Main.qml as its required property.
 class QcGameController : public QObject
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(GameController)
-    // GameController.Phase in QML: the enumeration lives in the screen state.
+    QML_UNCREATABLE("Made by main() and handed to Main.qml")
+    // GameController.Phase in QML: the enumeration lives in the screen state. Its values go by their
+    // enum; this type's class info decides that, not the one of the extension.
     QML_EXTENDED_NAMESPACE(QcScreenState)
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
 
     Q_PROPERTY(QcWorldView *view READ view WRITE setView NOTIFY viewChanged FINAL)
     Q_PROPERTY(QcScreenState::Phase phase READ phase NOTIFY phaseChanged FINAL)
     Q_PROPERTY(QString statusText READ statusText NOTIFY statusChanged FINAL)
-    Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
+    // How far the start of a world has come (the loading screen, decision E-943).
+    Q_PROPERTY(QcLoadingProgress *loading READ loading CONSTANT FINAL)
+    // The game is still starting (settings, worlds, mods, content): the window shows the start
+    // screen over the menu (decision E-943).
+    Q_PROPERTY(bool starting READ starting NOTIFY startingChanged FINAL)
+    // Input reaches the world only while it is played (QcScreenState::setPhase).
+    Q_PROPERTY(bool inputEnabled READ inputEnabled NOTIFY inputEnabledChanged FINAL)
     // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // The overlay is the pause menu or one of its screens (QcScreenState::isPauseMenu).
+    Q_PROPERTY(bool pauseMenuOpen READ pauseMenuOpen NOTIFY overlayChanged FINAL)
+    // The screen state's rules for the pause menu's sub-screens (subScreen, settingsPage,
+    // closeSubScreen()).
+    Q_PROPERTY(QcScreenState *screens READ screens CONSTANT FINAL)
+    // The overlay is a screen with item slots (QcScreenState::isSlotScreen).
+    Q_PROPERTY(bool slotScreenOpen READ slotScreenOpen NOTIFY overlayChanged FINAL)
     // How much of the HUD shows behind the open screens and the handbook (GameController.HudShown,
     // decision E-927): the one place that hides parts of the HUD behind screens.
     Q_PROPERTY(QcScreenState::HudShown hudShown READ hudShown NOTIFY hudShownChanged FINAL)
@@ -122,13 +143,20 @@ public:
     void setView(QcWorldView *view);
     Phase phase() const { return m_screens.phase(); }
     QString statusText() const { return m_screens.statusText(); }
+    QcLoadingProgress *loading() { return &m_loading; }
+    bool starting() const { return m_screens.starting(); }
+    // The start of the program is done (QcAppStartup): the start screen goes.
+    void finishStartup();
     bool inputEnabled() const { return m_screens.inputEnabled(); }
-    void setInputEnabled(bool enabled) { m_screens.setInputEnabled(enabled); }
     // In-game screen on top of the world (QcScreenState::overlay).
-    using Overlay = QcScreenState::Overlay;
-    Overlay overlay() const { return m_screens.overlay(); }
-    void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
-    QcScreenState::HudShown hudShown() const { return m_hudShown; }
+    QcScreenState::Overlay overlay() const { return m_screens.overlay(); }
+    void setOverlay(QcScreenState::Overlay overlay) { m_screens.setOverlay(overlay); }
+    bool pauseMenuOpen() const { return QcScreenState::isPauseMenu(overlay()); }
+    // Closes the advancements, back to where they opened from (QcScreenState::closeAdvancements).
+    Q_INVOKABLE void closeAdvancements() { m_screens.closeAdvancements(); }
+    QcScreenState *screens() { return &m_screens; }
+    bool slotScreenOpen() const { return QcScreenState::isSlotScreen(overlay()); }
+    QcScreenState::HudShown hudShown() const { return m_hud->hudShown(); }
     int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
     bool logScreenCreation() const { return m_screens.logScreenCreation(); }
     QString chatStart() const { return m_screens.chatStart(); }
@@ -169,13 +197,15 @@ public:
     // `gameMode` is that of the player ("survival", "creative").
     Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
                                        const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
-    // Creates a saved world in the library and starts it. `setup` holds "worldType" (terrain, flat,
-    // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory",
-    // "gameMode" ("survival", "creative"; decision E-282) and "worldOptions" of a terrain world (option
-    // -> value, decision E-917; missing options get their defaults) and "generatorVersion" (decision
-    // E-922; default: the current one); missing keys keep the defaults.
+    // Creates a saved world in the library and starts it. `setup` holds "worldType" (a
+    // WorldLibrary.WorldType; E-221, E-223), "layers" of a flat world (empty: the default),
+    // "keepInventory", "gameMode" (a GameMode.Mode; decision E-282) and "worldOptions" of a terrain
+    // world (option -> value, decision E-917; missing options get their defaults) and
+    // "generatorVersion" (decision E-922; default: the current one); missing keys keep the
+    // defaults, an unknown type or mode is refused with a warning.
     Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
-    // The layers a flat world gets by default (shown in the menu).
+    // The layers a flat world gets by default, base-game blocks without their namespace (shown in
+    // the menu).
     Q_INVOKABLE QString defaultFlatLayers();
     Q_INVOKABLE void playWorld(const QString &folder);
     Q_INVOKABLE void saveWorld() const;
@@ -211,19 +241,35 @@ signals:
     void worldRefused(const QString &reason);
     void overlayChanged();
     void hudShownChanged();
+    void startingChanged();
 
 private:
+    // How often the world start's progress is measured when no frame comes.
+    static constexpr int loadingPollMs = 100;
+
     void setPhase(Phase phase, const QString &status = {}) { m_screens.setPhase(phase, status); }
+    // Runs the next step of a world start once the loading screen is drawn (decision E-943).
+    QcAfterFrame &afterFrame() { return m_afterFrame; }
     // Follows the overlay and the handbook; hudShownChanged only when the level changes.
     void updateHudShown();
     void attachWindow(QQuickWindow *window);
     // Ends the session and the server; returns the result of the final save.
     [[nodiscard]] QcStatus stopSession();
-    // Name, seed, generator type and options of `world`; an empty directory runs it unsaved.
-    void startWorld(const QString &directory, const QcWorldInfo &world);
-    // The in-process server of `world` with base game and mods; false (and the error phase) when it
-    // cannot start.
-    [[nodiscard]] bool startServer(const QcWorldInfo &world);
+    // Name, seed, generator type and options of `world`; an empty directory runs it unsaved. Shows
+    // the loading screen at once; the steps that block the GUI thread follow after it is drawn
+    // (QcAfterFrame, decision E-943): loadContent(), then openWorld().
+    void startWorld(const QString &directory, const QcWorldInfo &world, QcLoadingProgress::Kind kind);
+    // The base game and mods for `world`, then openWorld() after the next frame.
+    void loadContent(const QcWorldInfo &world);
+    // The in-process server of `world` with `content` and the session joining it.
+    void openWorld(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
+    // The in-process server of `world` with `content`; false (and the error phase) when it cannot
+    // start.
+    [[nodiscard]] bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
+    // Every frame while a world loads: the spawn area as the session and the meshes hold it.
+    void updateLoading();
+    // The spawn area is meshed: the world is shown and the startup script runs.
+    void onWorldReady();
     // Wires the new session (m_parts.session) to meshes, HUD, sounds and screens.
     void beginSession();
     // Enabling or disabling a mod changes the outfits on offer and the icons.
@@ -233,12 +279,19 @@ private:
     // The frame rate limit follows what the window shows (decision E-835): the world in the
     // foreground, or a menu, a pause or an inactive window; character previews follow it too.
     void connectFrameLimit();
+    // The world start's progress: measured every frame and by the poll, ready shows the world.
+    void connectLoading();
     void updateForeground();
 
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.
     QcSessionParts m_parts;
+    // NOLINT(qc-member-access): a value member the controller forwards to; screens() hands it to QML only
     QcScreenState m_screens;
+    QcLoadingProgress m_loading;
+    QcAfterFrame m_afterFrame;
+    // Measures the spawn area while a start runs, also when no frame comes.
+    QTimer m_loadingPoll; // NOLINT(qc-member-access): a timer, started and stopped through its own API
     QcItemIcons m_icons;
     std::unique_ptr<QcAudioEngine> m_audio;
     std::unique_ptr<QcWorldLibraryController> m_library;
@@ -262,6 +315,7 @@ private:
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
     std::unique_ptr<QcAdminController> m_admin;
     std::unique_ptr<QcWorldPause> m_pause;
+    std::unique_ptr<QcGraphicsGuard> m_graphics;
     std::unique_ptr<QcGamepadSource> m_gamepadSource;
     QcGamepadControls m_gamepad;
     QcGamepadUi m_gamepadUi;
@@ -270,6 +324,4 @@ private:
     QcSessionWiring m_wiring;
     QcFrameDriver m_frame;
     QString m_worldDirectory;
-    // Nothing is open at the start: the whole HUD (decision E-927).
-    QcScreenState::HudShown m_hudShown = QcScreenState::HudShown::All;
 };

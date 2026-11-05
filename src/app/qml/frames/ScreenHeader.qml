@@ -15,8 +15,10 @@ RowLayout {
     property alias title: titleLabel.text
     // The pad's back button as the player reads it while the pad leads; empty: the keyboard's Esc.
     property string padKey: ""
+    // The keyboard's key that closes the screen (the slot screens show their inventory key).
+    property string keyboardKey: qsTr("Esc")
     // The key that closes the screen as the plate shows it.
-    readonly property string closeKey: padKey.length > 0 ? padKey : qsTr("Esc")
+    readonly property string closeKey: padKey.length > 0 ? padKey : keyboardKey
     // The close button's object name, for tests and the --overlay click: hook.
     property alias closeName: closeButton.objectName
 
@@ -41,6 +43,9 @@ RowLayout {
         kind: GameButton.Quiet
         text: qsTr("Close")
         keyHint: header.closeKey
+        // While the pad leads its own button closes (shown on the plate), so the focus starts in
+        // the screen's content instead of up here.
+        focusPolicy: header.padKey.length > 0 ? Qt.NoFocus : Qt.StrongFocus
         onClicked: header.closeRequested()
     }
 }

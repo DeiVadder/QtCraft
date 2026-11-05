@@ -8,9 +8,8 @@
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
-#if __has_include("QcPathPlanner.h")
+#if __has_include("server/pathing/QcPathPlanner.h")
 #include "server/pathing/QcPathPlanner.h"
-#define QC_HAS_PATHS 1
 #endif
 
 #include <QElapsedTimer>
@@ -102,12 +101,12 @@ private:
     {
         QcMobManager mobs(m_content, 7);
         mobs.setNaturalSpawning(false);
-#ifdef QC_HAS_PATHS
+#if __has_include("server/pathing/QcPathPlanner.h")
         mobs.setPathLimits(nodesPerTick, 512, 64);
 #else
         Q_UNUSED(nodesPerTick);
 #endif
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         for (int i = 0; i < count; ++i) {
             const double angle = i * 2.399963;
             const double distance = 8.0 + (i * 37 % 120) / 10.0;
@@ -142,7 +141,7 @@ private:
             const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
             total += ms;
             worst = std::max(worst, ms);
-#ifdef QC_HAS_PATHS
+#if __has_include("server/pathing/QcPathPlanner.h")
             nodes += mobs.paths().nodesLastTick();
 #endif
         }
@@ -151,7 +150,7 @@ private:
             chasing += mob.chasing != 0 ? 1 : 0;
         }
         qint64 searches = 0;
-#ifdef QC_HAS_PATHS
+#if __has_include("server/pathing/QcPathPlanner.h")
         searches = mobs.paths().searches();
 #endif
         qInfo("MEASURE %s %d zombies, %lld nodes/tick budget: %.3f ms mean, %.3f ms max per tick, %.0f nodes/tick, %lld searches, "

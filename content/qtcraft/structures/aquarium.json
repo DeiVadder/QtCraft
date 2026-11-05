@@ -119,6 +119,24 @@
                 4.5
             ],
             "confined": true
+        },
+        {
+            "mob": "squid",
+            "at": [
+                2.5,
+                1.2,
+                4.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "squid",
+            "at": [
+                6.5,
+                2.2,
+                2.5
+            ],
+            "confined": true
         }
     ],
     "labels": [

@@ -15,6 +15,10 @@ QVector3D QcCamera::forward() const
 QMatrix4x4 QcCamera::viewRotation() const
 {
     QMatrix4x4 view;
+    // A clockwise roll of the camera turns the world anticlockwise in view space.
+    if (roll != 0.0f) {
+        view.rotate(roll, 0.0f, 0.0f, 1.0f);
+    }
     view.lookAt(QVector3D(), forward(), QVector3D(0.0f, 1.0f, 0.0f));
     return view;
 }

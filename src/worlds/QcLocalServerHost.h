@@ -60,11 +60,11 @@ public:
     /*! Returns the damaged per-region file that kept the world from opening (decision E-366). */
     const QcDamagedFile &damagedFile() const { return m_damagedFile; }
 
-    /*! Connects a new client; the returned transport belongs to the caller's thread. Clients of
-        the host are local players (QcServer::ClientOrigin::Local: chat is not rate limited,
-        debug data is sent). */
+    /*! Connects a new client and returns its transport, which belongs to the caller's thread.
+        Clients of the host are local players (QcServer::ClientOrigin::Local: chat is not rate
+        limited, debug data is sent). */
     std::unique_ptr<QcTransport> connectClient();
-    /*! Saves the world now (blocks until done). */
+    /*! Saves the world now (blocks until done); returns an error when it fails. */
     [[nodiscard]] QcStatus save();
     /*! Lets network clients join as well (decision E-251): a listener in the server thread, the
         local player stays in-process. Returns the port in use; listening again replaces the
@@ -80,8 +80,8 @@ public:
     /*! Runs \a line as a line of the server console in the server thread (decision E-247) and
         returns the replies as English text (blocks until done). */
     QStringList runConsoleCommand(const QString &line);
-    /*! Server tick durations, lateness and skipped ticks so far (benchmark); zero when no world
-        is open. */
+    /*! Returns the server tick durations, lateness and skipped ticks so far (benchmark); zero
+        when no world is open. */
     QcTickSummary tickStats() const;
     /*! Clears the tick statistics that tickStats() reports, so a measurement starts afresh. */
     void resetTickTimes();
@@ -113,8 +113,8 @@ public:
         stalledTickNs: then it logs a warning with the phase that finished last instead of
         waiting for the server thread. */
     QcHealthSample health();
-    /*! Stops the server (which saves) and joins its thread. Safe to call more than once; later
-        calls report success. */
+    /*! Stops the server (which saves) and joins its thread; returns an error when saving failed.
+        Safe to call more than once; later calls return success. */
     [[nodiscard]] QcStatus shutdown();
 
 signals:

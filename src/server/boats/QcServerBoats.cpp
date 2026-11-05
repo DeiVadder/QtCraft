@@ -69,8 +69,8 @@ std::optional<QcBoatState> QcServerBoats::stateOf(const QcServerClient &client) 
 
 bool QcServerBoats::fits(const QcCreature &creature) const
 {
-    const QList<QcMobDefinition> &kinds = m_state.content().mobs();
-    if (creature.type < 0 || creature.type >= kinds.size()) {
+    const QcMobKinds kinds = m_state.content().mobs();
+    if (!kinds.contains(creature.type)) {
         return false;
     }
     const QcMobDefinition &kind = kinds[creature.type];

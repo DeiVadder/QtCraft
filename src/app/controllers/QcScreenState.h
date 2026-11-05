@@ -25,6 +25,16 @@ class QcScreenState : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
+    // QML names the values with their enum (GameController.Overlay.None, GameController.SubScreen.None):
+    // unscoped, the None of several enums would clash.
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
+    // The sub-screen of the pause menu the overlay names (GameController.screens.subScreen).
+    Q_PROPERTY(QcScreenState::SubScreen subScreen READ subScreen NOTIFY overlayChanged FINAL)
+    // The page of the settings the overlay opens (GameController.screens.settingsPage).
+    Q_PROPERTY(QcScreenState::SettingsPage settingsPage READ settingsPage NOTIFY overlayChanged FINAL)
+    // Where closing the open sub-screen leads (GameController.screens.subScreenReturn): None (the
+    // world) from the debug options, else the pause menu.
+    Q_PROPERTY(QcScreenState::Overlay subScreenReturn READ subScreenReturn NOTIFY overlayChanged FINAL)
 
 public:
     // What the window shows: the main menu, the loading screen, the world, the error screen (a
@@ -75,6 +85,15 @@ public:
     // chat line is open; everything in the world.
     enum class HudShown { Nothing, StatusRows, AllButHint, All };
     Q_ENUM(HudShown)
+    // The screens the pause menu opens over its card (GameController.SubScreen in QML): none, the
+    // settings (at any of their pages), the character screen, open to LAN or "Manage server".
+    enum class SubScreen { None, Settings, Character, Lan, Admin };
+    Q_ENUM(SubScreen)
+    // The pages of the settings in the order of their side bar (GameController.SettingsPage in QML,
+    // decision E-845): graphics (with the display options), audio, controls (the key table),
+    // controller, interface, texture packs and advanced (with the debug options).
+    enum class SettingsPage { Graphics, Audio, Controls, Controller, Interface, TexturePacks, Advanced };
+    Q_ENUM(SettingsPage)
 
     explicit QcScreenState(const QcSessionParts &parts, QObject *parent = nullptr);
 
@@ -87,23 +106,59 @@ public:
     // advancements (decision E-924): the world waits behind them, and the window draws at the
     // background frame rate (decision E-835).
     static bool isMenu(Overlay overlay);
+    // The pause menu and the screens it opens (settings, character, LAN, manage server): one
+    // PauseMenu shows them all (GameController.pauseMenuOpen); the menus of isMenu() without the
+    // advancements.
+    static bool isPauseMenu(Overlay overlay);
     // The full-screen screens (decision E-927): the settings at any page, "Manage server" and the
     // advancements cover the world and the HUD completely, as the handbook does.
     static bool isFullScreen(Overlay overlay);
+    // The pages of the settings (Settings, Display, Audio, Interface, Controls, Gamepad, Debug,
+    // TexturePacks): one SettingsScreen shows them, each at its page.
+    static bool isSettingsPage(Overlay overlay);
+    // The screens with item slots (inventory, creative, furnace, chest, trade, stonecutter,
+    // enchanting, anvil): the pad picks up and puts down there (decision E-583).
+    static bool isSlotScreen(Overlay overlay);
     // How much of the HUD shows with `overlay` open, the handbook open or not and the player dead
     // (the death screen) or not (decision E-927).
     static HudShown hudShown(Overlay overlay, bool handbookOpen, bool dead);
+    // The sub-screen of the pause menu that shows `overlay`; None for any other overlay.
+    static SubScreen subScreen(Overlay overlay);
+    // The page of the settings `overlay` opens: the settings and the display options the graphics
+    // page (it begins with them), the debug options the advanced page; Graphics for an overlay that
+    // is no page of the settings.
+    static SettingsPage settingsPage(Overlay overlay);
+    // Where closing the sub-screen that shows `overlay` leads: the debug options open from the world
+    // (debug options key) and return there (None), the other sub-screens to the pause menu; None for
+    // an overlay that is no sub-screen.
+    static Overlay subScreenReturn(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
     Phase phase() const { return m_phase; }
     bool playing() const { return m_phase == Phase::Playing; }
     QString statusText() const { return m_statusText; }
+    // A new phase also enables the world's input in the world and disables it elsewhere.
     void setPhase(Phase phase, const QString &status = {});
+    // The program is still starting: the start screen covers the menu (decision E-943).
+    bool starting() const { return m_starting; }
+    void setStarting(bool starting);
+    // Input reaches the world (set with the phase; a benchmark or a test may set it on its own).
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world.
     Overlay overlay() const { return m_overlay; }
     void setOverlay(Overlay overlay);
+    // Closes the advancements: back to the pause menu when they opened from it, else to the world.
+    // Refused with a warning while another overlay is open.
+    void closeAdvancements();
+    SubScreen subScreen() const { return subScreen(overlay()); }
+    SettingsPage settingsPage() const { return settingsPage(overlay()); }
+    Overlay subScreenReturn() const { return subScreenReturn(overlay()); }
+    // The sub-screen `closed` of the pause menu closed itself (its back entry, Esc, the pad's B):
+    // the overlay goes where subScreenReturn() leads. Nothing happens when the overlay names another
+    // screen already (the sub-screen closed because the overlay changed). None and values outside
+    // the enumeration are refused with a warning.
+    Q_INVOKABLE void closeSubScreen(QcScreenState::SubScreen closed);
     // How long a closed screen stays loaded (LazyScreen in QML, decision E-691): 60 s, or
     // QTCRAFT_SCREEN_KEEP_ALIVE_MS (tests and measurements unload at once with 0).
     int screenKeepAliveMs() const { return m_screenKeepAliveMs; }
@@ -146,6 +201,7 @@ public:
 signals:
     void phaseChanged();
     void statusChanged();
+    void startingChanged();
     void inputEnabledChanged();
     void overlayChanged();
     // Held keys and the latches built on them are to be forgotten (sent before anything else of a
@@ -163,8 +219,11 @@ private:
     const QcSessionParts &m_parts;
     Phase m_phase = Phase::Menu;
     QString m_statusText;
-    bool m_inputEnabled = true;
+    bool m_starting = true;
+    bool m_inputEnabled = false;
     Overlay m_overlay = Overlay::None;
+    // Where closeAdvancements() leads: set each time the advancements open.
+    Overlay m_advancementsReturn = Overlay::None;
     int m_screenKeepAliveMs = 60000;
     bool m_logScreenCreation = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
     QString m_chatStart;

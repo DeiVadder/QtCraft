@@ -37,20 +37,20 @@ private:
     QcBlockPos m_origin;
     int m_side = 0;
 
-    // A pond one block deep with `side` x `side` blocks of water, walled with stone, and a stone
+    // A pond one block deep with `edge` x `edge` blocks of water, walled with stone, and a stone
     // platform west of it for the pigs.
-    void buildPond(int side)
+    void buildPond(int edge)
     {
-        m_side = side;
-        m_origin = m_feet.offset(-side / 2, 20, -side / 2);
-        for (int x = -24; x <= side + 24; x += 8) {
-            for (int z = -24; z <= side + 24; z += 8) {
+        m_side = edge;
+        m_origin = m_feet.offset(-edge / 2, 20, -edge / 2);
+        for (int x = -24; x <= edge + 24; x += 8) {
+            for (int z = -24; z <= edge + 24; z += 8) {
                 m_server->world().loadChunk(m_origin.offset(x, 0, z).chunk());
             }
         }
-        for (int x = -1; x <= side; ++x) {
-            for (int z = -1; z <= side; ++z) {
-                const bool wall = x < 0 || z < 0 || x == side || z == side;
+        for (int x = -1; x <= edge; ++x) {
+            for (int z = -1; z <= edge; ++z) {
+                const bool wall = x < 0 || z < 0 || x == edge || z == edge;
                 QVERIFY(m_server->world().setBlock(m_origin.offset(x, -1, z), id("qtcraft:stone")));
                 QVERIFY(m_server->world().setBlock(m_origin.offset(x, 0, z), id(wall ? "qtcraft:stone" : "qtcraft:water")));
             }
@@ -78,8 +78,7 @@ private:
 
     void placePigs(int count)
     {
-        const auto it = std::ranges::find(m_content->mobs(), u"qtcraft:pig"_s, &QcMobDefinition::name);
-        const int type = static_cast<int>(it - m_content->mobs().begin());
+        const QcCreatureKindId type = m_content->mobKind(u"qtcraft:pig"_s).value_or(QcCreatureKindId{});
         for (int i = 0; i < count; ++i) {
             const QcVec3 at{m_origin.x - 19.5 + (i % 16), m_origin.y + 1.0, m_origin.z + 0.5 + (i / 16) % 16};
             const quint32 pig = m_server->entities().creatures().spawn(type, at, m_server->entities().newId());

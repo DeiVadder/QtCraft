@@ -3,16 +3,22 @@
 
 #include "clientcore/light/QcShadowCascades.h"
 #include "clientcore/light/QcSky.h"
+#include "clientcore/session/QcWorldMirror.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
 
 #include <QTest>
 #include <QVector4D>
 
 #include <cmath>
 #include <limits>
+#include <numbers>
+#include <tuple>
 
 // The pure parts of the sun shadows (decision E-903): the radii of the cascades, the light's axes,
-// the texel snapping that keeps a point of the world on the same texel grid while the camera
-// moves, the matrix into the map's texture coordinates, and which light casts with what strength.
+// the texel snapping that keeps a point of the world on the same texel grid and at the same depth
+// while the camera moves, the light turning in steps (decision E-960), the matrix into the map's
+// texture coordinates, and which light casts with what strength.
 class TestShadowCascades : public QObject
 {
     Q_OBJECT
@@ -30,6 +36,14 @@ class TestShadowCascades : public QObject
             cascade.lightViewProjection.map(QVector4D(static_cast<float>(relative.x), static_cast<float>(relative.y), static_cast<float>(relative.z), 1.0f));
         return clip.toVector3D() / clip.w();
     }
+
+    // The angle of a direction about the z axis, in radians.
+    static double turn(QVector3D toLight)
+    {
+        return std::atan2(static_cast<double>(toLight.y()), static_cast<double>(toLight.x()));
+    }
+
+    static constexpr double stepAngle = 2.0 * std::numbers::pi / QcShadowCascades::lightSteps;
 
 private slots:
     void radiiGrowToTheDistance()
@@ -126,7 +140,88 @@ private slots:
             const double texelsY = (clipB.y() - clipA.y()) * resolution / 2.0;
             QVERIFY2(std::abs(texelsX - std::round(texelsX)) < 0.02, qPrintable(QString::number(texelsX)));
             QVERIFY2(std::abs(texelsY - std::round(texelsY)) < 0.02, qPrintable(QString::number(texelsY)));
+            // Clip z spans two units over the box's depth: the depth moves by whole texels too.
+            const double depthUnit = 2.0 * a.texelSize / (2.0 * a.radius + QcShadowCascades::casterReach);
+            const double texelsZ = (clipB.z() - clipA.z()) / depthUnit;
+            QVERIFY2(std::abs(texelsZ - std::round(texelsZ)) < 0.02, qPrintable(QString::number(texelsZ)));
         }
+    }
+
+    // The direction turns about z to the nearest step and keeps its height across the path.
+    void steppedTurnsToTheNearestStep()
+    {
+        const QVector3D toLight = QVector3D(0.42f, 0.88f, 0.21f).normalized();
+        const QVector3D step = QcShadowCascades::stepped(toLight);
+        QVERIFY(std::abs(turn(step) - turn(toLight)) <= stepAngle / 2.0 + 1e-6);
+        const double steps = turn(step) / stepAngle;
+        QVERIFY2(std::abs(steps - std::round(steps)) < 1e-3, qPrintable(QString::number(steps)));
+        QVERIFY(qFuzzyCompare(step.length(), 1.0f));
+        QVERIFY(std::abs(step.z() - toLight.z()) <= 0.5f / QcShadowCascades::tiltSteps);
+        // Any direction within the same step gives the same vector bit for bit.
+        const float c = std::cos(1e-4f);
+        const float sn = std::sin(1e-4f);
+        const QVector3D near = QVector3D(toLight.x() * c - toLight.y() * sn, toLight.x() * sn + toLight.y() * c, toLight.z()) * 3.0f;
+        QCOMPARE(QcShadowCascades::stepped(near), step);
+
+        QCOMPARE(QcShadowCascades::stepped(QVector3D(0.0f, 0.0f, 2.0f)), QVector3D(0.0f, 0.0f, 1.0f));
+        QCOMPARE(QcShadowCascades::stepped(QVector3D()), QVector3D());
+        const QVector3D nan(std::numeric_limits<float>::quiet_NaN(), 1.0f, 0.0f);
+        QVERIFY(std::isnan(QcShadowCascades::stepped(nan).x()));
+    }
+
+    // Frame after frame of a day (sixty a second, from the sky the frames show): the light that
+    // casts the shadows stands still between its steps, so the map is rasterised alike, and moves
+    // by one step at a time; its strength fades without steps, also where the moon takes over.
+    void lightStandsStillBetweenSteps()
+    {
+        constexpr double frame = 1.0 / 60.0;
+        QVector3D last = QcShadowCascades::light(QcSky::at(0.0)).toLight;
+        float lastStrength = QcShadowCascades::light(QcSky::at(0.0)).strength;
+        int changes = 0;
+        int frames = 0;
+        const auto dayFrames = static_cast<int>(QcDayCycle::dayLength / frame);
+        for (int index = 1; index < dayFrames; ++index) {
+            const double time = index * frame;
+            const QcShadowLight light = QcShadowCascades::light(QcSky::at(time));
+            ++frames;
+            QVERIFY2(std::abs(light.strength - lastStrength) < 0.01f, qPrintable(QString::number(time)));
+            lastStrength = light.strength;
+            if (light.toLight == last) {
+                continue;
+            }
+            ++changes;
+            // A step of the sun, or the hand-over between sun and moon (no shadows there).
+            const double turned = std::remainder(turn(light.toLight) - turn(last), 2.0 * std::numbers::pi);
+            const bool oneStep = std::abs(std::abs(turned) - stepAngle) < 1e-4;
+            QVERIFY2(oneStep || light.strength == 0.0f, qPrintable(QString::number(time)));
+            last = light.toLight;
+        }
+        // About one change per step of a whole turn, one every ten frames.
+        QVERIFY2(changes <= QcShadowCascades::lightSteps + 4, qPrintable(QString::number(changes)));
+        QVERIFY(changes * 5 < frames);
+    }
+
+    // The frames between two ticks move the sky by the share of the next tick's step, and not at
+    // all while the time stands still: frozen time of day or a paused server (speed 0).
+    void skyTimeStandsStillWhileTimeStands()
+    {
+        QcWorldMirror mirror;
+        std::ignore = mirror.handle(QcMsg::WorldTime{300.0, 600.0, true, 1.0}, {}, 0);
+        QCOMPARE(mirror.timeAt(0.0), 300.0);
+        QCOMPARE(mirror.timeAt(0.5), 300.0 + 0.5 * QcPhysics::tickDuration);
+        QCOMPARE(mirror.timeAt(2.0), 300.0 + QcPhysics::tickDuration);
+        std::ignore = mirror.handle(QcMsg::WorldTime{300.0, 600.0, true, 3.0}, {}, 0);
+        QCOMPARE(mirror.timeAt(1.0), 300.0 + 3.0 * QcPhysics::tickDuration);
+
+        std::ignore = mirror.handle(QcMsg::WorldTime{300.0, 600.0, true, 0.0}, {}, 0);
+        for (const double alpha : {0.0, 0.4, 1.0}) {
+            QCOMPARE(mirror.timeAt(alpha), 300.0);
+        }
+        mirror.tick(1);
+        QCOMPARE(mirror.timeAt(0.7), 300.0);
+        std::ignore = mirror.handle(QcMsg::WorldTime{300.0, 600.0, false, 1.0}, {}, 0);
+        mirror.tick(2);
+        QCOMPARE(mirror.timeAt(0.7), 300.0);
     }
 
     void textureMatrixMapsClipToTheTile()
@@ -149,7 +244,10 @@ private slots:
         sky.sunDirection = QVector3D(0.2f, 0.95f, 0.1f).normalized();
         sky.moonDirection = -sky.sunDirection;
         const QcShadowLight noon = QcShadowCascades::light(sky);
-        QVERIFY(qFuzzyCompare(noon.toLight, sky.sunDirection));
+        QCOMPARE(noon.toLight, QcShadowCascades::stepped(sky.sunDirection));
+        // Facing, relief and highlights follow the light without steps.
+        QVERIFY(qFuzzyCompare(noon.sun, sky.sunDirection));
+        QVERIFY(std::abs(turn(noon.toLight) - turn(sky.sunDirection)) <= stepAngle / 2.0 + 1e-6);
         QCOMPARE(noon.strength, 1.0f);
         QVERIFY(qFuzzyCompare(noon.litTint, QVector3D(1.0f, 1.0f, 1.0f)));
 
@@ -164,7 +262,7 @@ private slots:
         sky.sunDirection = QVector3D(-0.2f, -0.95f, 0.1f).normalized();
         sky.moonDirection = QVector3D(0.2f, 0.95f, -0.1f).normalized();
         const QcShadowLight night = QcShadowCascades::light(sky);
-        QVERIFY(qFuzzyCompare(night.toLight, sky.moonDirection));
+        QCOMPARE(night.toLight, QcShadowCascades::stepped(sky.moonDirection));
         QVERIFY(qFuzzyCompare(night.strength, QcShadowCascades::moonShare));
 
         sky.overcast = 1.0;

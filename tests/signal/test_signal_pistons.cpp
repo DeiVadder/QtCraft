@@ -289,7 +289,7 @@ private slots:
         flip(0, 0, 5);
         ticks(4);
         QVERIFY(isBlock(2, 0, 5, "infested_stone"));
-        const int silverfish = *m_content->mobIndex(u"qtcraft:silverfish"_s);
+        const QcCreatureKindId silverfish = *m_content->mobKind(u"qtcraft:silverfish"_s);
         QCOMPARE(std::ranges::count(m_server->mobs().mobs(), silverfish, &QcCreature::type), 0);
     }
 
@@ -515,7 +515,7 @@ private slots:
         stand.id = 800002;
         stand.motion.position = centre;
         QVERIFY(m_server->stands().add(stand));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), centre, 800003, false, true);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), centre, 800003, false, true);
         for (QcItemEntity &entity : m_server->items().editableItems()) {
             entity.motion.position = entity.id == dropped ? centre : entity.motion.position;
         }

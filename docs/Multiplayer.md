@@ -71,6 +71,8 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `monstersPer289Chunks` | 70 | 0 – 256 | Monsters spawning by themselves for every 289 loaded chunks within 8 chunks of the players, shared by players close together (decision E-836). It replaces `hostileCreaturesPerPlayer` (8 per player): files with the old key get a warning at the start and the default applies; rename the key to keep an own value |
 | `passiveCreaturesPerPlayer` | 6 | 0 – 256 | Passive creatures spawning by themselves around one player |
 | `ambientCreaturesPerPlayer` | 10 | 0 – 256 | Ambient creatures (fireflies) spawning around one player |
+| `waterCreaturesPerPlayer` | 5 | 0 – 256 | Water creatures (fish) spawning around one player |
+| `largeWaterCreaturesPerPlayer` | 5 | 0 – 256 | Large water creatures (squid, `"cap": "large"`) spawning around one player, apart from the fish |
 | `pathNodesPerTick` | 4096 | 0 – 1048576 | Nodes all path searches of creatures expand per tick; searches beyond wait for the next tick, first come first served; 0 switches path finding off and creatures walk straight at their goals (E-400) |
 | `pathNodesPerSearch` | 512 | 16 – 65536 | Nodes one path search expands at most (a wandering creature a quarter); a goal out of reach gives a path to the closest cell reached (E-400) |
 | `pathLength` | 64 | 8 – 256 | Waypoints a creature's path keeps; at the end of a cut path it searches on (E-400) |
@@ -172,6 +174,14 @@ The game connects to `host`, `host:port`, `1.2.3.4:port` or `[ipv6]:port` (the p
 25600) with a player name and, if the server has one, its password
 (`game.multiplayer.join(address, name, password)`; command line: `qtcraft --join host:port
 --player-name Name --password …`). A refusal comes back with a translated reason.
+
+A failed join explains itself (E-964, `QcJoinFailure`): the step that failed (name lookup,
+connection timed out, refused, network or address family unreachable such as IPv6 without IPv6,
+TLS, certificate, login refused, server closed), the address and every IP address tried with its
+family ("Tried 203.0.113.5:25600 (IPv4)"), and a short hint what to check (server running? port
+forwarded, firewall? IPv6 on your side, try the IPv4 address or a VPN? same version?). A name
+with several addresses tries them in the system's order, each with a share of the time limit.
+The log has one `qtcraft.session` line with all of it plus Qt's error text per address.
 
 ## In the game (user interface)
 

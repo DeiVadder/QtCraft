@@ -12,6 +12,7 @@
 #include "common/diagnostics/QcCrashHandler.h"
 
 #include <array>
+#include <crtdbg.h>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
@@ -246,6 +247,12 @@ void preparePlatformCrashTest()
 {
     // No "stopped working" dialog of Windows Error Reporting: a test waits for the process to end.
     SetErrorMode(GetErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+    // Nor the debug runtime's dialog that Qt's debug library opens on a fatal message. Release
+    // builds have no debug runtime, and there the calls are empty expressions that /W4 warns about.
+#if defined(_DEBUG)
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+#endif
 }
 
 void reportFatalMessage()

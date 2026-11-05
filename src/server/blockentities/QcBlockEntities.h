@@ -17,99 +17,114 @@
 #include <optional>
 #include <vector>
 
-// State that belongs to single blocks of the world (decision E-357), filed by chunk so that it moves,
-// drops, is forgotten, saved and loaded with its chunk: the contents of containers (chests, barrels,
-// hoppers with their cooldown, dispensers) and machines (furnaces), the timers of growing saplings,
-// the memory of circuit components (torches burning out, openers last seen powered, pistons in the
-// middle of extending) and the scheduled ticks of components. The kind of an entry comes from the
-// block data: a block with `container` has a container, one with `machine` a machine, one with
-// `sapling` may have a timer.
-//
-// QcServerWorld keeps it in step with the blocks: a block set anywhere runs placed(), which drops
-// what no longer fits the new block (contents spill, to be dropped as items by the caller) and
-// creates the containers and machines of the new block; a chunk entering the world gets the
-// containers and machines of its blocks; a chunk generated again forgets everything of the old
-// one. Pistons move every entry of a cell with relocate().
+/*! \brief State that belongs to single blocks of the world (decision E-357), filed by chunk so that
+    it moves, drops, is forgotten, saved and loaded with its chunk: the contents of containers
+    (chests, barrels, hoppers with their cooldown, dispensers) and machines (furnaces), the timers
+    of growing saplings, the memory of circuit components (torches burning out, openers last seen
+    powered, pistons in the middle of extending) and the scheduled ticks of components.
+
+    The kind of an entry comes from the block data: a block with \c {container} has a container, one
+    with \c {machine} a machine, one with \c {sapling} may have a timer.
+
+    QcServerWorld keeps it in step with the blocks: a block set anywhere runs placed(), which
+    drops what no longer fits the new block (contents spill, to be dropped as items by the
+    caller) and creates the containers and machines of the new block; a chunk entering the world
+    gets the containers and machines of its blocks; a chunk generated again forgets everything of
+    the old one. Pistons move every entry of a cell with relocate(). */
 class QcBlockEntities
 {
 public:
+    /*! \brief The contents of a container block (chest, barrel, hopper, dispenser). */
     struct Container
     {
+        /*! The position of the block. */
         QcBlockPos pos;
+        /*! The item stacks in its slots, one per slot. */
         QList<QcItemStack> stacks;
-        // A Signal Hopper rests until this tick after moving an item (decision E-344); 0: never moved.
+        /*! A Signal Hopper rests until this tick after moving an item (decision E-344); 0: never
+            moved. */
         quint64 readyAt = 0;
-        // The custom name of the item it was placed from (decision E-873), the title of its screen
-        // and the name of the item it drops; empty for none.
+        /*! The custom name of the item it was placed from (decision E-873), the title of its
+            screen and the name of the item it drops; empty for none. */
         QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
-        // Something in one of its slots.
+        /*! Returns whether something lies in one of its slots. */
         bool isFilled() const;
-        // Nothing in it, no cooldown and no name: the same as a new one (not saved, forgotten with
-        // its chunk).
+        /*! Returns whether it holds nothing, has no cooldown and no name: the same as a new one
+            (not saved, forgotten with its chunk). */
         bool isPlain() const;
     };
 
+    /*! \brief The state of a machine block (a furnace): its slots, fuel, work and experience. */
     struct Machine
     {
+        /*! The indexes of the input, fuel and output slot and the number of slots. \qcshared */
         static constexpr int inputSlot = 0;
         static constexpr int fuelSlot = 1;
         static constexpr int outputSlot = 2;
         static constexpr int slotCount = 3;
 
+        /*! The position of the block. */
         QcBlockPos pos;
+        /*! The item stacks in its slots, indexed by inputSlot, fuelSlot and outputSlot. */
         std::array<QcItemStack, slotCount> stacks;
-        // Seconds left of the current fuel item and its full burning time.
+        /*! Seconds left of the current fuel item and its full burning time. \qcshared */
         double burnRemaining = 0.0;
         double burnSeconds = 0.0;
-        // Seconds of work done on the current input item (at speed 1), and that item; another
-        // input starts over.
+        /*! Seconds of work done on the current input item (at speed 1), and that item; another
+            input starts over. \qcshared */
         double progress = 0.0;
         QcItemId progressItem = qcNoItem;
-        // Experience of the items smelted since a player last took the output (decision E-398), at
-        // most maxExperience; it comes out as orbs when a player takes from the output slot.
+        /*! Experience of the items smelted since a player last took the output (decision E-398),
+            at most maxExperience; it comes out as orbs when a player takes from the output slot.
+            \qcshared */
         double experience = 0.0;
         static constexpr double maxExperience = 100000.0;
-        // The custom name of the item it was placed from (decision E-873); empty for none.
+        /*! The custom name of the item it was placed from (decision E-873); empty for none. */
         QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
-        // Nothing in it and nothing burning or in progress: nothing to simulate (gathered
-        // experience waits without a step).
+        /*! Returns whether nothing is in it and nothing burning or in progress: nothing to simulate
+            (gathered experience waits without a step). */
         bool isCold() const;
-        // Cold, without gathered experience and without a name: the same as a new one (removed, not
-        // saved).
+        /*! Returns whether it is cold, without gathered experience and without a name: the same as
+            a new one (removed, not saved). */
         bool isIdle() const;
     };
 
+    /*! \brief The growth timer of a sapling block. */
     struct Sapling
     {
+        /*! The position of the block. */
         QcBlockPos pos;
-        // Seconds of loaded time until it tries to grow.
+        /*! Seconds of loaded time until it tries to grow. */
         double remaining = 0.0;
-        // Saplings tick in the order they were planted.
+        /*! Saplings tick in the order they were planted. */
         quint64 order = 0;
     };
 
-    // What circuit components remember at their position (decision E-335).
+    /*! \brief What circuit components remember at their position (decision E-335). */
     struct Memory
     {
-        // Ticks at which a torch went out lately (for burning out); not saved.
+        /*! Ticks at which a torch went out lately (for burning out); not saved. */
         QList<quint64> torchOffTicks;
-        // A burnt-out torch may light again from this tick on; 0: not burnt out.
+        /*! A burnt-out torch may light again from this tick on; 0: not burnt out. */
         quint64 burntOutUntil = 0;
-        // An opener (the lower half of a door) that was powered when last looked at: it only
-        // switches when that changes, so players can still open and close it by hand.
+        /*! An opener (the lower half of a door) that was powered when last looked at: it only
+            switches when that changes, so players can still open and close it by hand. */
         bool powered = false;
-        // A piston whose extension started at this tick: retracting before it ends lets a sticky
-        // piston drop its block (block spitting).
+        /*! A piston whose extension started at this tick: retracting before it ends lets a
+            sticky piston drop its block (block spitting). */
         std::optional<quint64> extendingSince;
 
+        /*! Returns whether it remembers nothing. */
         bool isEmpty() const { return torchOffTicks.isEmpty() && burntOutUntil == 0 && !powered && !extendingSince; }
-        // Forgets what does not belong to a component of `kind`; whether nothing is left.
+        /*! Forgets what does not belong to a component of \a kind. Returns whether nothing is
+            left. */
         bool forgetUnfitting(QcSignalKind kind);
     };
 
-    // Everything of one chunk (a copy, see chunk()).
+    /*! \brief Everything of one chunk (a copy, see chunk()): its containers, machines, saplings
+        and memories by position. \qcfields */
     struct Chunk
     {
         QHash<QcBlockPos, Container> containers;
@@ -117,11 +132,13 @@ public:
         QHash<QcBlockPos, Sapling> saplings;
         QHash<QcBlockPos, Memory> memories;
 
+        /*! Returns whether the chunk holds no entry. */
         bool isEmpty() const { return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty(); }
     };
 
-    // Contents that left the world with their block, to be dropped as items at `pos`, and the
-    // experience a machine had gathered, to be dropped as orbs (decision E-398).
+    /*! \brief Contents that left the world with their block, to be dropped as items at \c {pos},
+        and the experience a machine had gathered, to be dropped as orbs (decision E-398).
+        \qcfields */
     struct Spill
     {
         QcBlockPos pos;
@@ -129,8 +146,8 @@ public:
         double experience = 0.0;
     };
 
-    // Entries of a kind in the whole world at most (QcServerLimits): placing beyond is refused,
-    // created entries beyond are left out.
+    /*! \brief Entries of a kind in the whole world at most (QcServerLimits): placing beyond is
+        refused, created entries beyond are left out. \qcfields */
     struct Limits
     {
         qsizetype containers = 16384;
@@ -140,61 +157,75 @@ public:
 
     explicit QcBlockEntities(std::shared_ptr<const QcContentRegistry> content);
 
+    /*! Returns the content registry the block data comes from. */
     const QcContentRegistry &content() const { return *m_content; }
+    /*! Sets the \a limits of the tables. */
     void setLimits(const Limits &limits) { m_limits = limits; }
+    /*! Returns the limits of the tables. */
     const Limits &limits() const { return m_limits; }
 
-    // What the block data says a block holds.
+    /*! Returns the number of container slots the block data gives \a block (0: no container). */
     int containerSlots(QcBlockId block) const;
+    /*! Returns the machine the block data gives \a block, or null when it is none. */
     const QcMachineDefinition *machineOf(QcBlockId block) const;
+    /*! Returns whether the block data marks \a block as a sapling. */
     bool isSapling(QcBlockId block) const;
-    // Whether `block` is a portable container (a backpack, decision E-832), and whether the one at
-    // `pos` holds anything: broken, it then drops as its item carrying the contents instead of its
-    // usual drop.
+    /*! Returns whether \a block is a portable container (a backpack, decision E-832). */
     bool isPortable(QcBlockId block) const;
+    /*! Returns whether \a block is a portable container and the one at \a pos holds anything:
+        broken, it then drops as its item carrying the contents instead of its usual drop. */
     bool carriesContents(QcBlockPos pos, QcBlockId block) const;
 
-    // The block at `pos` changed from `before` to `after` (QcServerWorld::setBlock): spills the
-    // contents of a machine that is no machine any more and of a container that is none or smaller
-    // (a portable container that leaves spills as its item carrying the contents, decision E-832),
-    // creates the container or machine of the new block, ends a sapling's timer and forgets the
-    // memory that does not fit the new kind of component. Scheduled ticks stay: they look at
-    // whatever block is there when they run.
+    /*! The block at \a pos changed from \a before to \a after (QcServerWorld::setBlock): spills
+        the contents of a machine that is no machine any more and of a container that is none or
+        smaller (a portable container that leaves spills as its item carrying the contents,
+        decision E-832), creates the container or machine of the new block, ends a sapling's
+        timer and forgets the memory that does not fit the new kind of component. Scheduled ticks
+        stay: they look at whatever block is there when they run. */
     void placed(QcBlockPos pos, QcBlockId before, QcBlockId after);
-    // A chunk entered the world: reconcile() and the missing containers and machines of the blocks
-    // in its marked sections.
+    /*! The \a chunk entered the world: reconcile() and the missing containers and machines of
+        the blocks in its marked \a sections (bit n: section n). */
     void chunkArrived(const QcChunk &chunk, quint32 sections);
-    // Fits what is kept for a chunk to its blocks (a mod took a block away, a save from another
-    // version): as placed() would for each entry.
+    /*! Fits what is kept for \a chunk to its blocks (a mod took a block away, a save from another
+        version): as placed() would for each entry. */
     void reconcile(const QcChunk &chunk);
-    // Moves everything of a cell to another (a piston pushed its block, decision E-337), entry by
-    // entry unless `to` has one of that kind already.
+    /*! Moves everything of the cell \a from to \a to (a piston pushed its block, decision
+        E-337), entry by entry unless \a to has one of that kind already. */
     void relocate(QcBlockPos from, QcBlockPos to);
-    // Forgets everything of a chunk without spilling (it was generated again).
+    /*! Forgets everything of \a chunk without spilling (it was generated again). */
     void forgetChunk(QcChunkPos chunk);
-    // The contents spilled since the last call, oldest first.
+    /*! Returns the contents spilled since the last call, oldest first. */
     QList<Spill> takeSpills();
 
+    /*! Returns the container at \a pos, or null when there is none. */
     Container *container(QcBlockPos pos);
+    /*! Returns the container at \a pos, or null when there is none. */
     const Container *container(QcBlockPos pos) const;
+    /*! Returns the machine at \a pos, or null when there is none. */
     Machine *machine(QcBlockPos pos);
+    /*! Returns the machine at \a pos, or null when there is none. */
     const Machine *machine(QcBlockPos pos) const;
-    // The portable container just placed at `pos` takes the contents its item `stack` carries
-    // (decision E-832); returns what does not fit its slots or must not lie in it, to be dropped.
+    /*! The portable container just placed at \a pos takes the contents its item \a stack carries
+        (decision E-832); returns what does not fit its slots or must not lie in it, to be
+        dropped. */
     [[nodiscard]] QList<QcItemStack> fillPortable(QcBlockPos pos, const QcItemStack &stack);
-    // The custom name of the container or machine at `pos` (decision E-873); empty for none or
-    // without one. setName() gives one to the container or machine there (a block placed from a
-    // named item); false when there is none.
+    /*! Returns the custom name of the container or machine at \a pos (decision E-873); empty for
+        none or without one. */
     QString nameAt(QcBlockPos pos) const;
+    /*! Gives the container or machine at \a pos the custom \a name (a block placed from a named
+        item). Returns \c false when there is none. */
     bool setName(QcBlockPos pos, const QString &name);
-    // Creates the container or machine of `block` at `pos` unless there is one; false when the
-    // block holds none or the limit of its kind is reached.
+    /*! Creates the container or machine of \a block at \a pos unless there is one. Returns
+        \c false when the block holds none or the limit of its kind is reached. */
     bool ensure(QcBlockPos pos, QcBlockId block);
-    // Takes a container or machine with its contents for setting up and loading; replaces one at
-    // the same position. The limits refuse only placing: what a save holds always comes back.
+    /*! Takes \a container with its contents for setting up and loading; replaces one at the
+        same position. The limits refuse only placing: what a save holds always comes back.
+        Returns \c false for a container without slots. */
     bool putContainer(const Container &container);
+    /*! Takes \a machine with its contents for setting up and loading, like putContainer().
+        Returns \c true. */
     bool putMachine(const Machine &machine);
-    // Calls `visit(Machine &)` for every machine (QcMachineRules::tick).
+    /*! Calls \a visit with \c {Machine &} for every machine (QcMachineRules::tick). */
     template<typename Visit>
     void forEachMachine(Visit visit)
     {
@@ -203,31 +234,48 @@ public:
             visit(machine);
         }
     }
+    /*! Returns the number of containers. */
     qsizetype containerCount() const { return m_containers.size(); }
+    /*! Returns the number of machines. */
     qsizetype machineCount() const { return m_machines.size(); }
+    /*! Returns whether the container table has reached its limit. */
     bool isContainerTableFull() const { return m_containers.size() >= m_limits.containers; }
+    /*! Returns whether the machine table has reached its limit. */
     bool isMachineTableFull() const { return m_machines.size() >= m_limits.machines; }
 
-    // Starts the timer of a sapling block just placed; false (with a warning) when too many grow.
+    /*! Starts the timer of the sapling block just placed at \a pos with \a remaining seconds.
+        Returns \c false (with a warning) when too many grow. */
     bool plantSapling(QcBlockPos pos, double remaining);
+    /*! Returns the timer of the sapling at \a pos, or null when there is none. */
     const Sapling *sapling(QcBlockPos pos) const;
+    /*! Sets the seconds \a remaining of the sapling at \a pos. */
     void setSaplingRemaining(QcBlockPos pos, double remaining);
+    /*! Ends the timer of the sapling at \a pos. */
     void removeSapling(QcBlockPos pos);
-    // All growing saplings in the order they were planted; their orders, and a sapling by its order
-    // (null once it is gone; valid until it is removed).
+    /*! Returns all growing saplings in the order they were planted. */
     QList<Sapling> saplingsInOrder() const;
+    /*! Returns the orders of all growing saplings, in planting order. */
     QList<quint64> saplingOrders() const;
+    /*! Returns the sapling with \a order (null once it is gone; valid until it is removed). */
     Sapling *saplingByOrder(quint64 order);
+    /*! Returns the number of growing saplings. */
     qsizetype saplingCount() const { return static_cast<qsizetype>(m_saplings.size()); }
-    // Takes a sapling from a save with its order (also beyond the limit); false when its position
-    // or order is taken.
+    /*! Takes \a sapling from a save with its order (also beyond the limit). Returns \c false
+        when its position or order is taken. */
     bool putSapling(Sapling sapling);
 
-    // What growSaplings-like ticks tell tickSaplings about one sapling.
-    enum class SaplingStep : quint8 { Keep, Remove, Grew };
-    // Calls `visit(Sapling &)` for every sapling in planting order. Keep: next one; Remove: the
-    // timer ends; Grew: the timer ends and the walk goes on after this sapling, because growing
-    // changed the world (and may have ended other timers).
+    /*! \brief What growSaplings-like ticks tell tickSaplings() about one sapling. */
+    enum class SaplingStep : quint8 {
+        /*! The timer goes on; the walk goes to the next sapling. */
+        Keep,
+        /*! The timer ends. */
+        Remove,
+        /*! The timer ends and the walk goes on after this sapling, because growing changed the
+            world (and may have ended other timers). */
+        Grew
+    };
+    /*! Calls \a visit with \c {Sapling &} for every sapling in planting order and acts on the
+        SaplingStep it returns. */
     template<typename Visit>
     void tickSaplings(Visit visit)
     {
@@ -250,20 +298,23 @@ public:
         }
     }
 
-    // The memory of the component at `pos`, if it has any; memoryAt() creates it.
+    /*! Returns the memory of the component at \a pos, or null when it has none. */
     const Memory *memory(QcBlockPos pos) const;
+    /*! Returns the memory of the component at \a pos, created when it has none. */
     Memory &memoryAt(QcBlockPos pos);
-    // Drops memories that ran out: torches that have not gone out within `torchWindow` ticks, ended
-    // burnouts and extensions that lasted `extensionTicks`; empty ones go. Ended hopper cooldowns
-    // are cleared.
+    /*! Drops memories that ran out at tick \a now: torches that have not gone out within
+        \a torchWindow ticks, ended burnouts and extensions that lasted \a extensionTicks; empty
+        ones go. Ended hopper cooldowns are cleared. */
     void prune(quint64 now, quint64 torchWindow, quint64 extensionTicks);
 
-    // Scheduled ticks of circuit components, one per position.
+    /*! Returns the scheduled ticks of circuit components, one per position. */
     QcSignalSchedule &schedule() { return m_schedule; }
+    /*! Returns the scheduled ticks of circuit components, one per position. */
     const QcSignalSchedule &schedule() const { return m_schedule; }
 
-    // The positions of a chunk's entries by kind: the entries live in one table per kind, so lookups
-    // and ticks are one hash access, and everything of a chunk is found without a scan.
+    /*! \brief The positions of a chunk's entries by kind: the entries live in one table per
+        kind, so lookups and ticks are one hash access, and everything of a chunk is found
+        without a scan. \qcfields */
     struct ChunkIndex
     {
         QList<QcBlockPos> containers;
@@ -271,18 +322,23 @@ public:
         QList<QcBlockPos> saplings;
         QList<QcBlockPos> memories;
 
+        /*! Returns whether the chunk has no entry. */
         bool isEmpty() const { return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty(); }
     };
 
-    // The chunks with entries (scheduled ticks are kept by the schedule), the positions of one
-    // chunk's entries (null for none; valid until the next change) and a copy of what one holds
-    // (tests and checks).
+    /*! Returns the chunks with entries (scheduled ticks are kept by the schedule). */
     QList<QcChunkPos> chunks() const { return m_byChunk.keys(); }
+    /*! Returns the positions of the entries of the chunk at \a pos (null for none; valid until
+        the next change). */
     const ChunkIndex *chunkIndex(QcChunkPos pos) const;
+    /*! Returns a copy of what the chunk at \a pos holds (tests and checks), or nothing when it
+        holds nothing. */
     [[nodiscard]] std::optional<Chunk> chunk(QcChunkPos pos) const;
-    // A chunk left the world (QcServerWorld::unloadChunk): containers that hold nothing and rest
-    // and machines that are idle go; they come back with their blocks when the chunk arrives.
+    /*! The chunk at \a pos left the world (QcServerWorld::unloadChunk): containers that hold
+        nothing and rest and machines that are idle go; they come back with their blocks when the
+        chunk arrives. */
     void chunkLeft(QcChunkPos pos);
+    /*! Forgets every entry and every scheduled tick. */
     void clear();
 
 private:

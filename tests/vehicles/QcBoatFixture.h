@@ -70,13 +70,12 @@ protected:
 
     quint32 spawnCreature(const QString &name, const QcVec3 &at)
     {
-        const auto it = std::ranges::find(m_content->mobs(), QStringLiteral("qtcraft:") + name, &QcMobDefinition::name);
-        if (it == m_content->mobs().end()) {
+        const std::optional<QcCreatureKindId> type = m_content->mobKind(QStringLiteral("qtcraft:") + name);
+        if (!type) {
             QcTestUtil::failCase(QStringLiteral("unknown creature %1").arg(name));
-            return 0;
+            return {};
         }
-        const int type = static_cast<int>(it - m_content->mobs().begin());
-        return m_server->entities().creatures().spawn(type, at, m_server->entities().newId(), false, true);
+        return m_server->entities().creatures().spawn(*type, at, m_server->entities().newId(), false, true);
     }
 
     QcBoat *spawnBoat(const QcVec3 &at, float yaw)

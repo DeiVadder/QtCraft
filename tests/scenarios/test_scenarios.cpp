@@ -595,7 +595,7 @@ private slots:
         // leaves free (a block is never placed into a creature).
         const QcVec3 pig = position(*settled);
         const std::shared_ptr<const QcContentRegistry> content = m_session->content();
-        const double width = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)].width;
+        const double width = content->mobs()[*content->mobKind(u"qtcraft:pig"_s)].width;
         const QcBlockPos ground = groundCellBeyond(pig, QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized(), width,
             static_cast<int>(std::floor(feet.y)) - 1);
         const QcVec3 face{ground.x + 0.5, ground.y + 1.0, ground.z + 0.5};

@@ -249,6 +249,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                                                         {u"weatherCycle"_s, info.weatherCycle},
                                                         {u"mobGriefing"_s, info.mobGriefing},
                                                         {u"explosionBlockDamage"_s, info.explosionBlockDamage},
+                                                        {u"drowningDamage"_s, info.drowningDamage},
                                                         {u"announceAdvancements"_s, info.announceAdvancements},
                                                         {u"spawnChunkRadius"_s, info.spawnChunkRadius},
                                                         {u"maxEntityCramming"_s, info.maxEntityCramming},

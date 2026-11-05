@@ -22,7 +22,7 @@ public:
     QcHandbookText(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules,
                    const QMap<QString, QStringList> &keys);
 
-    /*! Language of the English titles every entry carries for the search. */
+    /*! Returns the language of the English titles every entry carries for the search. */
     static QString english();
 
     /*! Returns the handbook's language. */

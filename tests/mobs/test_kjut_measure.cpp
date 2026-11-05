@@ -24,7 +24,7 @@ class TestKjutMeasure : public QcServerTestFixture
     static constexpr int families = 16;
     static constexpr int childrenEach = 4;
 
-    int kind(const QString &name) const { return *m_content->mobIndex(name); }
+    QcCreatureKindId kind(const QString &name) const { return *m_content->mobKind(name); }
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
 
@@ -46,7 +46,7 @@ class TestKjutMeasure : public QcServerTestFixture
     }
 
     // `families` creatures of `type` on a ring of 12 m around the player.
-    QList<quint32> spawnRing(int type)
+    QList<quint32> spawnRing(QcCreatureKindId type)
     {
         QList<quint32> ids;
         for (int i = 0; i < families; ++i) {

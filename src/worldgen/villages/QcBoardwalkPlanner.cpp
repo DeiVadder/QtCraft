@@ -143,15 +143,15 @@ std::optional<QcVillageDraft::Stairs> stairsAt(const QcTerrainGenerator &terrain
         return std::nullopt;
     }
 
-    QcVillageDraft::Rect rect{flight.front().at.x, flight.front().at.z, flight.front().at.x, flight.front().at.z};
+    QcXzRect rect{flight.front().at.x, flight.front().at.z, flight.front().at.x, flight.front().at.z};
     for (const QcVillagePlan::Deck &stair : std::as_const(flight)) {
-        rect = {std::min(rect.x0, stair.at.x), std::min(rect.z0, stair.at.z), std::max(rect.x1, stair.at.x), std::max(rect.z1, stair.at.z)};
+        rect = {std::min(rect.minX, stair.at.x), std::min(rect.minZ, stair.at.z), std::max(rect.maxX, stair.at.x), std::max(rect.maxZ, stair.at.z)};
     }
     const int spacing = draft.region.spacing;
     const int regionX0 = draft.region.x * spacing;
     const int regionZ0 = draft.region.z * spacing;
-    const bool inRegion = rect.x0 >= regionX0 && rect.z0 >= regionZ0 && rect.x1 < regionX0 + spacing && rect.z1 < regionZ0 + spacing;
-    const bool hitsPiece = std::ranges::any_of(draft.pieces, [&](QcVillageDraft::Rect other) { return rect.intersects(other, 0); });
+    const bool inRegion = rect.minX >= regionX0 && rect.minZ >= regionZ0 && rect.maxX < regionX0 + spacing && rect.maxZ < regionZ0 + spacing;
+    const bool hitsPiece = std::ranges::any_of(draft.pieces, [&](QcXzRect other) { return rect.intersects(other, 0); });
     if (!inRegion || hitsPiece || draft.touchesRoad(rect, 0)) {
         return std::nullopt;
     }
@@ -161,8 +161,8 @@ std::optional<QcVillageDraft::Stairs> stairsAt(const QcTerrainGenerator &terrain
     const int farX = endX + road.dx * (static_cast<int>(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
     const int farZ = endZ + road.dz * (static_cast<int>(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
     const int side = QcVillageDraft::roadHalfWidth + 1;
-    const QcVillageDraft::Rect dry{std::min(rect.x0, farX - side * std::abs(road.dz)), std::min(rect.z0, farZ - side * std::abs(road.dx)),
-                                   std::max(rect.x1, farX + side * std::abs(road.dz)), std::max(rect.z1, farZ + side * std::abs(road.dx))};
+    const QcXzRect dry{std::min(rect.minX, farX - side * std::abs(road.dz)), std::min(rect.minZ, farZ - side * std::abs(road.dx)),
+                                   std::max(rect.maxX, farX + side * std::abs(road.dz)), std::max(rect.maxZ, farZ + side * std::abs(road.dx))};
     return QcVillageDraft::Stairs{std::move(flight), rect, dry};
 }
 

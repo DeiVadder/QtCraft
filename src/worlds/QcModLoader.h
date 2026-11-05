@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcLoadFailure.h"
 #include "common/core/QcResult.h"
 #include "worlds/QcModStatus.h"
 
@@ -42,17 +43,8 @@ public:
         QStringList warnings;
     };
 
-    /*! \brief A load that failed: why, and the warnings collected until then. */
-    struct Failure
-    {
-        /*! Why the base game could not be loaded. */
-        QString error;
-        /*! Warnings collected before the failure. */
-        QStringList warnings;
-    };
-
     /*! The outcome of load(): the result, or the failure. */
-    using Loaded = std::expected<Result, Failure>;
+    using Loaded = std::expected<Result, QcLoadFailure>;
 
     /*! Returns the warnings of \a loaded, whether it succeeded or not (callers report them before
         the outcome). */
@@ -61,7 +53,7 @@ public:
     /*! Returns \c {<data root>/mods} (see QcWorldLibrary::dataRoot()). */
     static QString defaultDirectory();
 
-    /*! Reads all manifests below \a modsDirectory and decides the load order without loading
+    /*! Reads all manifests below \a modsDirectory and returns them in load order without loading
         content. An empty or missing directory gives an empty list. */
     static QList<QcModStatus> discover(const QString &modsDirectory);
 
@@ -72,8 +64,8 @@ public:
     static QList<QcModStatus> resolve(const QList<QcContentPackInfo> &candidates, const QStringList &disabled,
                                       const QList<QcPackReference> &available);
 
-    /*! Base game plus every loadable mod. Fails only when the base game cannot be loaded; an
-        empty \a modsDirectory loads no mods. */
+    /*! Returns the base game plus every loadable mod. Fails only when the base game cannot be
+        loaded; an empty \a modsDirectory loads no mods. */
     [[nodiscard]] static Loaded load(const QString &modsDirectory);
 
     /*! Returns the ids on the disabled list in \c {mods.json} of \a modsDirectory; empty when the

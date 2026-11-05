@@ -19,7 +19,7 @@ class TestFish : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     const QcMobDefinition &kind(const char *name) const { return m_content->mobs()[type(name)]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
     QcMobManager &creatures() { return m_server->entities().creatures(); }
@@ -245,7 +245,7 @@ private slots:
         for (int i = 0; i < 20; ++i) {
             const int row = i / 5;
             const QcVec3 at{m_feet.x - 2.5 + i % 5, static_cast<double>(m_feet.y), m_feet.z - 2.5 + row};
-            creatures().spawn(*m_content->mobIndex(u"qtcraft:cow"_s), at, m_server->entities().newId(), false, true);
+            creatures().spawn(*m_content->mobKind(u"qtcraft:cow"_s), at, m_server->entities().newId(), false, true);
         }
         ticks(20);
         const double withCows = meanTickMs(200);
@@ -279,7 +279,7 @@ private slots:
             }
         }
         QcMobManager mobs(m_content, 7);
-        mobs.spawner().setWaterCap(3);
+        mobs.spawner().setWaterCaps(3, 3);
         quint32 next = 100;
         const QList<QcMobManager::PlayerView> players{{.entityId = 1, .position = {0.5, 12.0, 0.5}}};
         for (int i = 0; i < 20 * 60; ++i) {
@@ -297,7 +297,7 @@ private slots:
             }
         }
         QcMobManager mobs(m_content, 7);
-        mobs.spawner().setWaterCap(0);
+        mobs.spawner().setWaterCaps(0, 0);
         const quint32 wild = mobs.spawn(type("cod"), {8.5, 6.0, 8.5}, 10);
         const quint32 released = mobs.spawn(type("cod"), {9.5, 6.0, 8.5}, 11, false, true);
         // The only player is far beyond the despawn distance.
@@ -388,14 +388,15 @@ private slots:
             }
         }
         QcMobManager mobs(m_content, 7);
-        mobs.spawner().setWaterCap(3);
+        mobs.spawner().setWaterCaps(3, 2);
         quint32 next = 100;
         const QList<QcMobManager::PlayerView> players{{.entityId = 1, .position = {0.5, 12.0, 0.5}}};
         for (int i = 0; i < 20 * 60; ++i) {
             mobs.tick(*world, players, 6000.0, 0.05, [&next] { return next++; });
         }
-        // Only cod live in plain water; at most the cap of them, none persistent, none as animals.
-        // Drowned come from deep water too, as monsters with their own cap (decision E-838).
+        // Only cod and squids (decision E-974) live in plain water below the sea level; at most the
+        // cap of each, which the other kind does not fill, none persistent, none as animals. Drowned come from deep water too, as
+        // monsters with their own cap (decision E-838).
         const auto fishOf = [this](const QcMobManager &manager) {
             QList<QcCreature> fish;
             for (const QcCreature &mob : manager.mobs()) {
@@ -406,17 +407,18 @@ private slots:
             return fish;
         };
         const QList<QcCreature> fish = fishOf(mobs);
-        QVERIFY(!fish.isEmpty());
-        QVERIFY2(fish.size() <= 3, qPrintable(QString::number(fish.size())));
+        const auto ofKind = [this, &fish](const char *name) { return std::ranges::count(fish, type(name), &QcCreature::type); };
+        QVERIFY2(ofKind("cod") == 3 && ofKind("squid") >= 1 && ofKind("squid") <= 2,
+                 qPrintable(u"%1 cod, %2 squids"_s.arg(ofKind("cod")).arg(ofKind("squid"))));
         for (const QcCreature &one : fish) {
-            QCOMPARE(one.type, type("cod"));
+            QVERIFY(one.type == type("cod") || one.type == type("squid"));
             QVERIFY(!one.persistent);
             QVERIFY(QcFishSwimming::inWater(*world, one.motion.position + QcVec3{0.0, 0.15, 0.0}));
         }
 
         // Without a cap none come.
         QcMobManager none(m_content, 7);
-        none.spawner().setWaterCap(0);
+        none.spawner().setWaterCaps(0, 0);
         for (int i = 0; i < 20 * 30; ++i) {
             none.tick(*world, players, 6000.0, 0.05, [&next] { return next++; });
         }

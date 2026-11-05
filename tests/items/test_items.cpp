@@ -64,7 +64,7 @@ private:
 
     // One tick after settling the items like the server.
     static QList<QcItemEntity> tickOnce(QcItemEntityManager &items, const QcTestWorld &world,
-                                        const QList<QcItemEntityManager::PlayerView> &players,
+                                        const QList<QcPickupPlayer> &players,
                                         const QcItemEntityManager::TickCallbacks &callbacks)
     {
         settle(items, callbacks.isLoaded);
@@ -73,7 +73,7 @@ private:
 
     // Runs ticks with `players` in the world and the given callbacks; new entity ids count up from 1000.
     static QList<QcItemEntity> tickTimes(QcItemEntityManager &items, const QcTestWorld &world, int count,
-                                                      const QList<QcItemEntityManager::PlayerView> &players,
+                                                      const QList<QcPickupPlayer> &players,
                                                       QcItemEntityManager::TickCallbacks callbacks)
     {
         quint32 nextId = 1000;
@@ -94,7 +94,7 @@ private:
 
     // Runs ticks with `players` in the loaded world; `give` hands them the items they touch.
     static QList<QcItemEntity> runWithPlayers(QcItemEntityManager &items, const QcTestWorld &world, int count,
-                                                           const QList<QcItemEntityManager::PlayerView> &players,
+                                                           const QList<QcPickupPlayer> &players,
                                                            const QcItemEntityManager::GiveFunction &give)
     {
         return tickTimes(items, world, count, players, {[](const QcVec3 &) { return true; }, give, {}});
@@ -155,7 +155,7 @@ private slots:
         const QcTestWorld world = floorWorld();
         QcItemEntityManager items(m_content, 1);
         items.spawn(dropAt({item("qtcraft:dirt"), 10, 0}, {0.5, 64.0, 0.5}, 0.5), 1);
-        const QList<QcItemEntityManager::PlayerView> players = {{7, {0.5, 64.0, 0.5}, true}};
+        const QList<QcPickupPlayer> players = {{7, {0.5, 64.0, 0.5}, true}};
 
         int given = 0;
         // The player has room for 4 items only.

@@ -43,7 +43,7 @@ private:
         const int ground = loaded->highestNonAir(4, 4) + 1;
         QVERIFY(m_server->world().setBlock({x, ground + 20, z}, id("qtcraft:stone")));
 
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(pig, {x + 4.5, static_cast<double>(ground), z + 4.5}, m_nextId++, false, true);
         m_server->mobs().spawn(pig, {x + 10.5, static_cast<double>(ground), z + 10.5}, m_nextId++, false, true);
         for (int i = 0; i < 4; ++i) {
@@ -114,7 +114,7 @@ private slots:
         }
 
         // A creature in the door blocks it.
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), feet + QcVec3{2.5, 0.0, 0.5}, m_nextId++, false, true);
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), feet + QcVec3{2.5, 0.0, 0.5}, m_nextId++, false, true);
         QCOMPARE(measure().second, checks);
     }
 

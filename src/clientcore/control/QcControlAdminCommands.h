@@ -13,21 +13,25 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands of the admin channel (decision E-848), for tests and automation: `admin` sends
-// one request and answers with its result and the report it brought, `adminFollow` chooses the
-// topics followed, `adminStatus` reports what arrived of them. The bot must be an operator on the
-// server; otherwise the server refuses and the command fails.
+/*! \brief Control commands of the admin channel (decision E-848), for tests and automation:
+    \c {admin} sends one request and answers with its result and the report it brought,
+    \c {adminFollow} chooses the topics followed, \c {adminStatus} reports what arrived of them.
+
+    The bot must be an operator on the server; otherwise the server refuses and the command
+    fails. */
 class QcControlAdminCommands
 {
 public:
-    // Ticks `admin` waits for the server's answer.
+    /*! Ticks \c {admin} waits for the server's answer. */
     static constexpr int answerTicks = 100;
 
     explicit QcControlAdminCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
-    // The request kind of a control name ("kick", "whitelistAdd"); std::nullopt for unknown names.
+    /*! Returns the request kind of the control name \a name ("kick", "whitelistAdd");
+        std::nullopt for unknown names. */
     [[nodiscard]] static std::optional<QcMsg::AdminRequest::Kind> kindNamed(const QString &name);
 
 private:

@@ -4,6 +4,9 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcIdList.h"
+#include "common/core/QcIndexId.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 #include "worldgen/villages/QcPieceVariation.h"
 
@@ -35,6 +38,11 @@ public:
     /*! Blocks between two samples of the ground along a footprint's edge. */
     static constexpr int edgeStep = 4;
 
+    /*! \brief Tells the kinds of a planner apart from the ids of other lists (QcIndexId). */
+    struct KindTag;
+    /*! The index of a kind in kinds() (decision E-952). */
+    using KindId = QcIndexId<KindTag>;
+
     /*! \brief A kind of surface structure: a structure with a \c {surface} rule, resolved. */
     struct Kind
     {
@@ -53,32 +61,9 @@ public:
         const std::shared_ptr<const QcStructure> &structure() const { return variation.base(); }
     };
 
-    /*! \brief A footprint in world columns, both corners inside. */
-    struct Rect
-    {
-        /*! The x, z of the north-west corner. \qcshared */
-        int x0 = 0;
-        int z0 = 0;
-        /*! The x, z of the south-east corner. \qcshared */
-        int x1 = 0;
-        int z1 = 0;
-
-        /*! Returns the x of the middle column, summed in 64 bits: near the edge of the world
-            (E-883) two corners add up beyond int. */
-        int middleX() const { return static_cast<int>((qint64{x0} + x1) / 2); }
-        /*! Returns the z of the middle column, summed in 64 bits like middleX(). */
-        int middleZ() const { return static_cast<int>((qint64{z0} + z1) / 2); }
-
-        /*! Returns whether \a other lies within \a margin columns of this footprint (or overlaps
-            it). */
-        bool intersects(Rect other, int margin) const
-        {
-            return x0 - margin <= other.x1 && other.x0 <= x1 + margin && z0 - margin <= other.z1 && other.z0 <= z1 + margin;
-        }
-    };
     /*! Whether something already stands within \c {margin} of a footprint (QcSurfaceStructures
         asks the villages and the kinds planned before this one). */
-    using Occupied = std::function<bool(int kind, Rect footprint, int margin)>;
+    using Occupied = std::function<bool(KindId kind, QcXzRect footprint, int margin)>;
 
     /*! Resolves the structures of \a content with a \c {surface} rule into kinds, each with its
         own seed from \a seed, planned on the columns of \a terrain. Structures with an unknown
@@ -91,23 +76,23 @@ public:
     const QStringList &warnings() const { return m_warnings; }
 
     /*! Returns the kinds, sorted by name. */
-    const QList<Kind> &kinds() const { return m_kinds; }
+    [[nodiscard]] QcIdList<KindId, Kind> kinds() const { return QcIdList<KindId, Kind>(m_kinds); }
     /*! Returns the index of the kind \a name, if any. */
-    [[nodiscard]] std::optional<int> kindIndex(const QString &name) const;
+    [[nodiscard]] std::optional<KindId> kindIndex(const QString &name) const;
     /*! Returns the copy of kind \a kind in region (\a regionX, \a regionZ) of its spacing, if
         any; \a occupied rules out places too close to something already standing. */
-    [[nodiscard]] std::optional<QcStructurePlacement> plan(int kind, int regionX, int regionZ, const Occupied &occupied) const;
+    [[nodiscard]] std::optional<QcStructurePlacement> plan(KindId kind, int regionX, int regionZ, const Occupied &occupied) const;
     /*! Returns the footprint of \a placement, a placed copy. */
-    static Rect footprintOf(const QcStructurePlacement &placement);
+    static QcXzRect footprintOf(const QcStructurePlacement &placement);
 
 private:
     // The floor (the top block of the lowest ground) of a footprint where every sample (the middle,
     // the edges every edgeStep blocks) is land of the rule's biomes above the sea and the ground
     // varies by at most `maxSlope`.
-    [[nodiscard]] std::optional<int> floorFor(const Kind &kind, Rect rect) const;
+    [[nodiscard]] std::optional<int> floorFor(const Kind &kind, QcXzRect rect) const;
     // Whether the blend (decision E-889) levels every column right beside the footprint's walls to
     // `floor`: none of them buried, so every opening at the floor leads out.
-    [[nodiscard]] bool levelsBeside(Rect rect, int floor, int blend) const;
+    [[nodiscard]] bool levelsBeside(QcXzRect rect, int floor, int blend) const;
     // The structure of the copy in the region: the kind's own, or its variation drawn from the region.
     static std::shared_ptr<const QcStructure> structureOf(const Kind &kind, int regionX, int regionZ);
 

@@ -45,8 +45,8 @@ class TestKjut : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int kjut() const { return *m_content->mobIndex(u"qtcraft:kjut"_s); }
-    int child() const { return *m_content->mobIndex(u"qtcraft:kjut_child"_s); }
+    QcCreatureKindId kjut() const { return *m_content->mobKind(u"qtcraft:kjut"_s); }
+    QcCreatureKindId child() const { return *m_content->mobKind(u"qtcraft:kjut_child"_s); }
 
     // A creative player (the Kjuts leave it alone) on the stage, without natural spawning.
     void joinStage()
@@ -192,7 +192,8 @@ private:
 
     // The highest a Kjut's feet were above `floor` and the lowest (after half a second to rise from
     // where it spawned), over `count` ticks of the player standing still, and whether it ever touched
-    // the ground or the water.
+    // the ground or the water. The player holds their place: the Kjut's blows would knock them off
+    // the run (decision E-971).
     struct Flight
     {
         double lowest = 1e9;
@@ -202,8 +203,13 @@ private:
     Flight follow(quint32 id, double floor, int count)
     {
         Flight flight;
+        QcEntityMotion &standing = m_server->entities().clients().front()->motion;
+        const QcVec3 place = standing.position;
         for (int i = 0; i < count && m_server->mobs().find(id); ++i) {
             idle(1);
+            standing.position = place;
+            standing.velocity = {};
+            standing.onGround = true;
             const QcCreature &mob = *m_server->mobs().find(id);
             if (i >= 10) {
                 flight.lowest = std::min(flight.lowest, mob.motion.position.y - floor);

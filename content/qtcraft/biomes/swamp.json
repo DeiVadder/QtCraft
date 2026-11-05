@@ -1,5 +1,6 @@
 {
     "name": "swamp",
+    "icon": "vines",
     "mapColour": "#5a6338",
     "deltaBiome": "lush_delta",
     "temperature": 0.94,

@@ -385,7 +385,7 @@ Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block wei
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -400,11 +400,11 @@ Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block wei
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Roter Farbstoff](items.md#item-qtcraft-red_dye) | [Bett](#block-qtcraft-bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Roter Farbstoff](items.md#item-qtcraft-red_dye) | [Bett](#block-qtcraft-bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -693,7 +693,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -898,7 +898,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -913,11 +913,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Blauer Farbstoff](items.md#item-qtcraft-blue_dye) | [Blaues Bett](#block-qtcraft-blue_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Blauer Farbstoff](items.md#item-qtcraft-blue_dye) | [Blaues Bett](#block-qtcraft-blue_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -1019,7 +1019,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -1223,7 +1223,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -1238,11 +1238,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Brauner Farbstoff](items.md#item-qtcraft-brown_dye) | [Braunes Bett](#block-qtcraft-brown_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Brauner Farbstoff](items.md#item-qtcraft-brown_dye) | [Braunes Bett](#block-qtcraft-brown_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -3134,7 +3134,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -3314,7 +3314,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -3329,11 +3329,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye) | [Gelbes Bett](#block-qtcraft-yellow_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye) | [Gelbes Bett](#block-qtcraft-yellow_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -3980,7 +3980,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -4160,7 +4160,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -4175,11 +4175,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Grauer Farbstoff](items.md#item-qtcraft-gray_dye) | [Graues Bett](#block-qtcraft-gray_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Grauer Farbstoff](items.md#item-qtcraft-gray_dye) | [Graues Bett](#block-qtcraft-gray_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -4266,7 +4266,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -4446,7 +4446,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -4461,11 +4461,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Grüner Farbstoff](items.md#item-qtcraft-green_dye) | [Grünes Bett](#block-qtcraft-green_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Grüner Farbstoff](items.md#item-qtcraft-green_dye) | [Grünes Bett](#block-qtcraft-green_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -4539,7 +4539,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -4719,7 +4719,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -4734,11 +4734,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye) | [Hellblaues Bett](#block-qtcraft-light_blue_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye) | [Hellblaues Bett](#block-qtcraft-light_blue_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -4786,7 +4786,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -4966,7 +4966,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -4981,11 +4981,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye) | [Hellgraues Bett](#block-qtcraft-light_gray_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye) | [Hellgraues Bett](#block-qtcraft-light_gray_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -5033,7 +5033,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -5213,7 +5213,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -5228,11 +5228,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye) | [Hellgrünes Bett](#block-qtcraft-lime_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye) | [Hellgrünes Bett](#block-qtcraft-lime_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -6370,7 +6370,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -6550,7 +6550,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -6565,11 +6565,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye) | [Magentafarbenes Bett](#block-qtcraft-magenta_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye) | [Magentafarbenes Bett](#block-qtcraft-magenta_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -7336,7 +7336,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -7516,7 +7516,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -7531,11 +7531,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye) | [Orangefarbenes Bett](#block-qtcraft-orange_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye) | [Orangefarbenes Bett](#block-qtcraft-orange_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -7883,7 +7883,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -8063,7 +8063,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -8078,11 +8078,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye) | [Rosafarbenes Bett](#block-qtcraft-pink_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye) | [Rosafarbenes Bett](#block-qtcraft-pink_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -8130,7 +8130,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -8803,7 +8803,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -8983,7 +8983,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -8998,11 +8998,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye) | [Schwarzes Bett](#block-qtcraft-black_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye) | [Schwarzes Bett](#block-qtcraft-black_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -10250,7 +10250,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -10430,7 +10430,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -10445,11 +10445,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye) | [Türkises Bett](#block-qtcraft-cyan_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye) | [Türkises Bett](#block-qtcraft-cyan_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -10497,7 +10497,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -10677,7 +10677,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -10692,11 +10692,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Violetter Farbstoff](items.md#item-qtcraft-purple_dye) | [Violettes Bett](#block-qtcraft-purple_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Violetter Farbstoff](items.md#item-qtcraft-purple_dye) | [Violettes Bett](#block-qtcraft-purple_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 
@@ -10784,7 +10784,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
-| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Gruppen | [Beliebige glasierte Terrakotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Im Ofen hergestellt**
 
@@ -10969,7 +10969,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
-| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+| Gruppen | [Beliebiges Bett](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -10984,11 +10984,11 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Weißer Farbstoff](items.md#item-qtcraft-white_dye) | [Weißes Bett](#block-qtcraft-white_bed) |
+| [Beliebiges Bett](tags.md#tag-qtcraft-beds) | [Weißer Farbstoff](items.md#item-qtcraft-white_dye) | [Weißes Bett](#block-qtcraft-white_bed) |
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+[Bett](#block-qtcraft-bed) (Beliebiges Bett), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebiges Bett), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebiges Bett), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebiges Bett), [Graues Bett](#block-qtcraft-gray_bed) (Beliebiges Bett), [Grünes Bett](#block-qtcraft-green_bed) (Beliebiges Bett), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebiges Bett), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebiges Bett), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebiges Bett), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebiges Bett), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebiges Bett), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebiges Bett), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebiges Bett), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebiges Bett), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebiges Bett), [Weißes Bett](#block-qtcraft-white_bed) (Beliebiges Bett)
 
 **Schneller mit**
 

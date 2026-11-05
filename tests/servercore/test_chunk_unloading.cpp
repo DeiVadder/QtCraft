@@ -157,7 +157,7 @@ private:
         put(13, 0, 3, u"signal_lamp"_s);
         flip(11, 0, 3);
 
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(pig, QcVec3{at(3, 0, 8).x + 0.5, static_cast<double>(at(3, 0, 8).y), at(3, 0, 8).z + 0.5}, m_nextId++, false, true);
         QcItemEntityManager::Drop drop;
         drop.stack = stack("qtcraft:diamond", 3);
@@ -617,6 +617,8 @@ private slots:
             m_server->items().spawn(drop, m_nextId++);
             // Within the chat rate of a player (2 lines a second): one teleport per leg.
             ticks(10);
+            // A leg takes half a second of play but under a millisecond here: the disk gets its time.
+            m_server->waitForStorage();
             mostLoaded = std::max(mostLoaded, m_server->world().loadedChunkCount());
             mostEntities = std::max(mostEntities, m_server->items().items().size());
             QVERIFY(m_server->chunkLoading().numbers().unsaved <= 2 * qsizetype(config.limits.unsavedChunks) + 25);

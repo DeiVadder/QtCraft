@@ -10,6 +10,7 @@
 #include <QStringList>
 
 #include <algorithm>
+#include <cmath>
 
 /*! \brief A kind of projectile (decision E-425), from projectiles/<name>.json; server side only.
 
@@ -111,6 +112,12 @@ struct QcLauncherDefinition
     {
         const double share = std::clamp(seconds / drawSeconds, 0.0, 1.0);
         return std::min(1.0, (share * share + 2.0 * share) / 3.0);
+    }
+    /*! Returns the share of drawSeconds (0..1) after which a draw reaches \a power: the inverse
+        of powerAfter's curve, for the view's zoom while drawing (decision E-984). */
+    static double shareOf(double power)
+    {
+        return std::sqrt(1.0 + 3.0 * std::clamp(power, 0.0, 1.0)) - 1.0;
     }
 
     bool operator==(const QcLauncherDefinition &) const = default;

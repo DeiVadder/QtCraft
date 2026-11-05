@@ -26,9 +26,10 @@ namespace {
 // kept inventory of the other mode, the experience (level and points, decision E-398) and the status
 // effects (decision E-450); version 7 adds the enchantment seed (decision E-864), version 8 the rune
 // seed (decision E-884), version 9 the advancements (decision E-923; QcAdvancementProgress::bytes as
-// one byte array, so a later format of it is skipped as a whole). Version 5 is read without effects, 5 and 6 without seeds, 7 without rune
-// seed; files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 9;
+// one byte array, so a later format of it is skipped as a whole), version 10 the air under water
+// (decision E-955). Version 5 is read without effects, 5 and 6 without seeds, 7 without rune
+// seed, 5 to 9 with a full breath; files of older development versions are refused (decision E-356).
+constexpr quint16 playerVersion = 10;
 constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -113,6 +114,11 @@ public:
             } else {
                 m_warnings.add(u"%1: the advancements are damaged; the player starts the adventure guide again"_s.arg(m_path));
             }
+        }
+        if (version >= 10) {
+            qint32 air = QcAirSupply::maxAir;
+            m_stream >> air;
+            player.air = std::clamp(air, 0, QcAirSupply::maxAir);
         }
         return player;
     }
@@ -268,7 +274,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     writeEquipment(stream, player.keptEquipment);
     stream << static_cast<qint32>(player.experience.level()) << static_cast<qint32>(player.experience.points());
     QcStatusEffects::write(stream, player.effects);
-    stream << player.enchantSeed << player.runeSeed << player.advancements.bytes();
+    stream << player.enchantSeed << player.runeSeed << player.advancements.bytes() << static_cast<qint32>(player.air);
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
@@ -295,7 +301,7 @@ QcPlayerStorage::Result QcPlayerStorage::read(const QString &playerName) const
         return Read{};
     }
     if (!stored.open(QIODevice::ReadOnly)) {
-        return std::unexpected(Failure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
+        return std::unexpected(QcLoadFailure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
     }
     return parse(playerName, stored.read(qint64{16} * 1024 * 1024));
 }
@@ -309,10 +315,10 @@ QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const 
 
     const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(*contents, file, playerMagic, playerVersion);
     if (!payload) {
-        return std::unexpected(Failure{payload.error(), {}});
+        return std::unexpected(QcLoadFailure{payload.error(), {}});
     }
     if (payload->version < oldestReadVersion) {
-        return std::unexpected(Failure{u"%1 is from an older development version"_s.arg(file), {}});
+        return std::unexpected(QcLoadFailure{u"%1 is from an older development version"_s.arg(file), {}});
     }
 
     QDataStream stream(payload->bytes);
@@ -321,10 +327,10 @@ QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const 
     QcResult<QcPlayerData> player = reader.read(payload->version);
     // What was read before a damaged part was warned about still is (unknown items dropped).
     if (!player) {
-        return std::unexpected(Failure{player.error(), reader.takeWarnings()});
+        return std::unexpected(QcLoadFailure{player.error(), reader.takeWarnings()});
     }
     if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(*player)) {
-        return std::unexpected(Failure{u"%1 is damaged"_s.arg(file), reader.takeWarnings()});
+        return std::unexpected(QcLoadFailure{u"%1 is damaged"_s.arg(file), reader.takeWarnings()});
     }
 
     player->health = std::clamp(player->health, 0.0, 1000.0);

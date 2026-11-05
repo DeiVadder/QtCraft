@@ -265,14 +265,14 @@ private:
     void checkSpawner(const QcMineshaftPlan &plan, const QcMineshaftPlan::Spawner &placed) const
     {
         const QcChunkFurnishing furnishing = m_terrain->furnishingIn(placed.at.chunk());
-        QVERIFY(std::ranges::any_of(furnishing.spawners, [&](const QcChunkFurnishing::Spawner &s) {
+        QVERIFY(std::ranges::any_of(furnishing.spawners, [&](const QcStructureDefinition::Spawner &s) {
             return s.at == placed.at && s.mob == u"qtcraft:cave_spider"_s && !s.confined;
         }));
         const QcBlockId spawner = id(u"qtcraft:spawner"_s);
         const QcBlockId cobweb = id(u"qtcraft:cobweb"_s);
-        QVERIFY(std::ranges::any_of(plan.blocks, [&](QcMineshaftPlan::Placed p) { return p.at == placed.at && p.block == spawner; }));
-        const auto webs = std::ranges::count_if(plan.blocks, [&](QcMineshaftPlan::Placed p) {
-            return p.block == cobweb && std::abs(p.at.x - placed.at.x) + std::abs(p.at.z - placed.at.z) <= 3;
+        QVERIFY(std::ranges::any_of(plan.blocks, [&](QcPlacedBlock p) { return p.pos == placed.at && p.block == spawner; }));
+        const auto webs = std::ranges::count_if(plan.blocks, [&](QcPlacedBlock p) {
+            return p.block == cobweb && std::abs(p.pos.x - placed.at.x) + std::abs(p.pos.z - placed.at.z) <= 3;
         });
         QVERIFY2(webs >= 3, qPrintable(QString::number(webs)));
     }
@@ -284,7 +284,7 @@ private:
         QVERIFY(std::ranges::any_of(furnishing.carts, [&](const QcChunkFurnishing::Cart &c) {
             return c.at == cart && c.item == u"qtcraft:chest_minecart"_s && c.lootTable == u"qtcraft:mineshaft_cart"_s;
         }));
-        QVERIFY(std::ranges::any_of(plan.blocks, [&](QcMineshaftPlan::Placed p) { return p.at == cart && block(p.block).rail; }));
+        QVERIFY(std::ranges::any_of(plan.blocks, [&](QcPlacedBlock p) { return p.pos == cart && block(p.block).rail; }));
     }
 
 private slots:
@@ -316,7 +316,7 @@ private slots:
             }
             QCOMPARE(a.blocks.size(), b.blocks.size());
             for (qsizetype n = 0; n < a.blocks.size(); ++n) {
-                QCOMPARE(a.blocks[n].at, b.blocks[n].at);
+                QCOMPARE(a.blocks[n].pos, b.blocks[n].pos);
                 QCOMPARE(a.blocks[n].block, b.blocks[n].block);
             }
             QCOMPARE(a.carts, b.carts);
@@ -383,8 +383,8 @@ private slots:
                 }
             }
             // The plan's blocks are there.
-            for (const QcMineshaftPlan::Placed &placed : plan->blocks) {
-                QCOMPARE(at(forward, placed.at), placed.block);
+            for (const QcPlacedBlock &placed : plan->blocks) {
+                QCOMPARE(at(forward, placed.pos), placed.block);
             }
         }
         QCOMPARE(checked, 2);
@@ -563,9 +563,9 @@ private slots:
             }
             QVERIFY(!QTest::currentTestFailed());
             // Lights keep away from every spawn area: a torch (14) leaves at most 6 there.
-            for (const QcMineshaftPlan::Placed &placed : plan->blocks) {
+            for (const QcPlacedBlock &placed : plan->blocks) {
                 const bool lit = block(placed.block).lightLevel > 0;
-                QVERIFY(!lit || std::ranges::all_of(plan->spawners, [&](const auto &area) { return distanceToArea(placed.at, area) >= settings.lightDistance; }));
+                QVERIFY(!lit || std::ranges::all_of(plan->spawners, [&](const auto &area) { return distanceToArea(placed.pos, area) >= settings.lightDistance; }));
             }
         }
         QVERIFY(spawners >= 10);
@@ -621,7 +621,7 @@ private slots:
         const QcStructure &structure = station->structure();
         QCOMPARE(structure.spawners.size(), 1);
         const QcBlockPos spawner = station->toWorld(structure.spawners[0].at);
-        QVERIFY(std::ranges::any_of(generator.furnishingIn(spawner.chunk()).spawners, [&](const QcChunkFurnishing::Spawner &s) {
+        QVERIFY(std::ranges::any_of(generator.furnishingIn(spawner.chunk()).spawners, [&](const QcStructureDefinition::Spawner &s) {
             return s.at == spawner && s.mob == u"qtcraft:cave_spider"_s && s.confined;
         }));
         QCOMPARE(structure.minecarts.size(), 1);

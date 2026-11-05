@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcSectionKey.h"
 #include "common/light/QcLightNibbles.h"
 #include "common/light/QcLightTable.h"
 #include "common/light/QcSkyLight.h"
@@ -58,14 +59,6 @@ public:
         /*! Remembers the sections whose levels were written, for takeTouched(). */
         bool trackChanges = false;
     };
-    /*! \brief A section of a chunk. */
-    struct SectionRef
-    {
-        /*! The chunk. */
-        QcChunkPos chunk;
-        /*! The section's index in it. */
-        int section = 0;
-    };
     /*! \brief Sections that hold cells and the bytes they take, per channel. */
     struct Memory
     {
@@ -83,7 +76,7 @@ public:
 
     QcLightEngine(std::shared_ptr<const QcLightTable> table, Options options);
 
-    /*! Thread-safe (reads only the table): the light of \a chunk alone, for addChunk(). */
+    /*! Returns the light of \a chunk alone, for addChunk(); thread-safe (reads only the table). */
     std::shared_ptr<Prepared> prepare(const QcChunk &chunk) const;
 
     /*! The engine keeps a snapshot of the chunk. */
@@ -131,11 +124,11 @@ public:
     void compact(Channel channel, QcChunkPos pos, int index);
     /*! Returns the sections of \a channel whose levels were written since the last call
         (Options::trackChanges). */
-    QList<SectionRef> takeTouched(Channel channel);
+    QList<QcSectionAddress> takeTouched(Channel channel);
     /*! Returns the highest cell of the block column \a column that sky light coming straight down
         does not reach (-1: none; QcWorld::worldHeight in a chunk that is not held). */
     int skyTop(QcBlockPos column) const;
-    /*! Cells visited by the propagation steps so far (work measure for benchmarks). */
+    /*! Returns the cells visited by the propagation steps so far (work measure for benchmarks). */
     quint64 visitedCells() const { return m_visited; }
     /*! Returns the memory the levels take. */
     Memory memory() const;
@@ -163,12 +156,6 @@ private:
         // sections lit cell by cell, one bit per section index.
         [[nodiscard]] quint32 seedSky(const SkyTops &tops);
     };
-    struct Cell
-    {
-        int x = 0;
-        int y = 0;
-        int z = 0;
-    };
     struct PosHash
     {
         std::size_t operator()(QcChunkPos pos) const { return static_cast<std::size_t>(qHash(pos)); }
@@ -176,7 +163,7 @@ private:
     struct Touched
     {
         QSet<quint64> keys;
-        QList<SectionRef> refs;
+        QList<QcSectionAddress> refs;
     };
 
     Column *column(int x, int z);
@@ -201,12 +188,12 @@ private:
     // Clears `next` (in `target`) when it was lit through a cleared cell of level `old`, else
     // queues it to refill; cleared light sources go to m_sources.
     template<Channel C>
-    void removeFrom(Column &target, Cell next, int old);
+    void removeFrom(Column &target, QcBlockPos next, int old);
     // The cell `cell` changed how light passes or what it gives off: clears it and the cells of its
     // column from lostFrom to lostTo (sky sources no more), refills around them and lights the
     // cells from gainFrom to gainTo (new sky sources) fully. Empty ranges have from > to.
     template<Channel C>
-    void relight(Cell cell, int lostFrom, int lostTo, int gainFrom, int gainTo);
+    void relight(QcBlockPos cell, int lostFrom, int lostTo, int gainFrom, int gainTo);
 
     // Queues the lit border cells of the column at `from` on its side `towards` that may light the
     // neighbour there.
@@ -240,12 +227,12 @@ private:
     std::shared_ptr<const QcLightTable> m_table;
     Options m_options;
     std::unordered_map<QcChunkPos, Column, PosHash> m_columns;
-    std::vector<Cell> m_add;
-    std::vector<std::pair<Cell, int>> m_remove;
+    std::vector<QcBlockPos> m_add;
+    std::vector<std::pair<QcBlockPos, int>> m_remove;
     // Light sources cleared by a removal, refilled after it (kept between calls for its capacity).
-    std::vector<Cell> m_sources;
+    std::vector<QcBlockPos> m_sources;
     // Removal seeds of a leaving column per channel (kept between calls for their capacity).
-    std::array<std::vector<std::pair<Cell, int>>, channelCount> m_seeds;
+    std::array<std::vector<std::pair<QcBlockPos, int>>, channelCount> m_seeds;
     std::array<Touched, channelCount> m_touched;
     // Sections (key and channel) where cells were set to 0 or the highest level, the levels a whole
     // section takes when it goes dark or opens to the sky; without change tracking they are compacted

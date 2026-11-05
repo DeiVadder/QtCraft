@@ -21,17 +21,17 @@ private:
     // The player's feet; the creatures stand around them.
     const QcVec3 m_feet{0.5, 64.0, 0.5};
 
-    int type(const QString &name) const
+    QcCreatureKindId type(const QString &name) const
     {
-        const std::optional<int> found = m_content->mobIndex(name);
+        const std::optional<QcCreatureKindId> found = m_content->mobKind(name);
         if (!found) {
             QcTestUtil::failCase(u"Test uses the creature %1, which the content does not have"_s.arg(name));
-            return 0;
+            return {};
         }
         return *found;
     }
 
-    static QcMsg::EntitySpawn spawn(quint32 id, int type, const QcVec3 &position, QcPose pose = QcPose::Standing)
+    static QcMsg::EntitySpawn spawn(quint32 id, QcCreatureKindId type, const QcVec3 &position, QcPose pose = QcPose::Standing)
     {
         QcMsg::EntitySpawn message;
         message.id = id;
@@ -96,7 +96,7 @@ private slots:
         bodies.apply(spawn(2, type(u"qtcraft:firefly"_s), m_feet + QcVec3{0.0, 0.5, 0.05}));
         QCOMPARE(pushOnPlayer(bodies), QcVec3{});
         // Not a creature: no body that pushes.
-        QcMsg::EntitySpawn item = spawn(3, 0, m_feet);
+        QcMsg::EntitySpawn item = spawn(3, QcCreatureKindId{}, m_feet);
         item.kind = QcEntityKind::Item;
         bodies.apply(item);
         QCOMPARE(pushOnPlayer(bodies), QcVec3{});

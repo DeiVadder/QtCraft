@@ -11,7 +11,6 @@
 
 namespace {
 
-using Rect = QcVillageDraft::Rect;
 constexpr int roadHalfWidth = QcVillageDraft::roadHalfWidth;
 // A forecourt reaches at most this far.
 constexpr int maxForecourt = 12;
@@ -44,7 +43,7 @@ std::optional<QList<std::pair<int, int>>> forecourtColumn(const QcTerrainGenerat
         if (draft.roadCells.contains(QcVillageDraft::cellKey(x, z))) {
             return column;
         }
-        const bool onPiece = std::ranges::any_of(draft.pieces, [&](Rect piece) { return piece.intersects({x, z, x, z}, 0); });
+        const bool onPiece = std::ranges::any_of(draft.pieces, [&](QcXzRect piece) { return piece.intersects({x, z, x, z}, 0); });
         // No path through a river delta either (decision E-850).
         const QcTerrainColumn ground = terrain.column(x, z);
         if (onPiece || ground.height - 1 < terrain.seaLevel() || terrain.isDeltaBiome(ground.biome)) {
@@ -59,7 +58,7 @@ std::optional<QList<std::pair<int, int>>> forecourtColumn(const QcTerrainGenerat
 
 namespace QcVillageForecourt {
 
-Rect behindFront(std::pair<int, int> middle, std::pair<int, int> facing, std::pair<int, int> size)
+QcXzRect behindFront(std::pair<int, int> middle, std::pair<int, int> facing, std::pair<int, int> size)
 {
     const auto [mx, mz] = middle;
     const auto [sizeX, sizeZ] = size;
@@ -68,15 +67,15 @@ Rect behindFront(std::pair<int, int> middle, std::pair<int, int> facing, std::pa
     return {x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
 }
 
-QList<std::pair<int, int>> forecourt(const QcTerrainGenerator &terrain, const QcVillageDraft &draft, Rect rect, std::pair<int, int> facing,
+QList<std::pair<int, int>> forecourt(const QcTerrainGenerator &terrain, const QcVillageDraft &draft, QcXzRect rect, std::pair<int, int> facing,
                                      const QList<QcBlockPos> &doorsteps)
 {
     // Straight out to the road from the columns of the front row next to a door: those beside it
     // that do not reach the road within the forecourt's reach stay grass, the door's own must.
     const bool alongX = facing.first == 0;
-    const int low = alongX ? rect.x0 : rect.z0;
-    const int high = alongX ? rect.x1 : rect.z1;
-    const int front = alongX ? (facing.second < 0 ? rect.z0 : rect.z1) : (facing.first < 0 ? rect.x0 : rect.x1);
+    const int low = alongX ? rect.minX : rect.minZ;
+    const int high = alongX ? rect.maxX : rect.maxZ;
+    const int front = alongX ? (facing.second < 0 ? rect.minZ : rect.maxZ) : (facing.first < 0 ? rect.minX : rect.maxX);
     const int step = alongX ? facing.second : facing.first;
     const QList<int> doors = doorColumns(doorsteps, alongX, front + step, (low + high) / 2);
 

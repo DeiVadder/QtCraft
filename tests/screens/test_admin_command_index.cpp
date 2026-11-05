@@ -77,6 +77,34 @@ private:
 
     static QString commandName(int index) { return u"c%1"_s.arg(index, 2, 10, QChar(u'0')); }
 
+    // Whether the focused row lies inside the list. The focused row grows (its description whole) and
+    // the list scrolls it back into view only in the next polish, so callers poll this (QTRY_VERIFY2):
+    // under load the event loop may run that polish later than the check.
+    bool focusedRowInView(const QQuickItem *list) const
+    {
+        const QQuickItem *row = m_window->activeFocusItem();
+        if (!row) {
+            return false;
+        }
+        const QRectF view = list->mapRectToScene(QRectF(0.0, 0.0, list->width(), list->height()));
+        return view.contains(row->mapRectToScene(QRectF(0.0, 0.0, row->width(), row->height())));
+    }
+
+    QString focusedRowPlace(const QQuickItem *list) const
+    {
+        const QQuickItem *row = m_window->activeFocusItem();
+        if (!row) {
+            return u"no focused row"_s;
+        }
+        const QRectF view = list->mapRectToScene(QRectF(0.0, 0.0, list->width(), list->height()));
+        const QRectF shown = row->mapRectToScene(QRectF(0.0, 0.0, row->width(), row->height()));
+        return u"%1 at y %2..%3, the list %4..%5"_s.arg(row->objectName())
+            .arg(shown.top())
+            .arg(shown.bottom())
+            .arg(view.top())
+            .arg(view.bottom());
+    }
+
 private slots:
     void initTestCase() { QQuickStyle::setStyle(u"Basic"_s); }
 
@@ -122,14 +150,7 @@ private slots:
         for (int index = 0; index < commandCount; ++index) {
             const QString expected = u"adminCommand_"_s + commandName(index);
             QTRY_COMPARE(m_window->activeFocusItem() ? m_window->activeFocusItem()->objectName() : QString(), expected);
-            const QQuickItem *row = m_window->activeFocusItem();
-            const QRectF view = list->mapRectToScene(QRectF(0.0, 0.0, list->width(), list->height()));
-            const QRectF shown = row->mapRectToScene(QRectF(0.0, 0.0, row->width(), row->height()));
-            QVERIFY2(view.contains(shown), qPrintable(u"%1 at y %2..%3, the list %4..%5"_s.arg(expected)
-                                                          .arg(shown.top())
-                                                          .arg(shown.bottom())
-                                                          .arg(view.top())
-                                                          .arg(view.bottom())));
+            QTRY_VERIFY2(focusedRowInView(list), qPrintable(focusedRowPlace(list)));
             QTest::keyClick(m_window, Qt::Key_Tab);
         }
         // Shift+Tab and the arrow keys walk back.
@@ -140,8 +161,7 @@ private slots:
             QTest::keyClick(m_window, Qt::Key_Up);
         }
         QTRY_COMPARE(m_window->activeFocusItem()->objectName(), u"adminCommand_"_s + commandName(commandCount - 52));
-        QVERIFY(list->mapRectToScene(QRectF(0.0, 0.0, list->width(), list->height()))
-                    .contains(m_window->activeFocusItem()->mapRectToScene(QRectF(0.0, 0.0, m_window->activeFocusItem()->width(), m_window->activeFocusItem()->height()))));
+        QTRY_VERIFY2(focusedRowInView(list), qPrintable(focusedRowPlace(list)));
     }
 
     // A description takes the row's width: it wraps only where the row ends.
@@ -152,7 +172,8 @@ private slots:
         const QString description = m_commands->shown().constFirst().description;
         QQuickItem *subtitle = find(row, [&description](QQuickItem *item) { return item->property("text").toString() == description; });
         QVERIFY(subtitle);
-        QVERIFY2(subtitle->width() > row->width() * 0.8, qPrintable(u"%1 of %2"_s.arg(subtitle->width()).arg(row->width())));
+        // Polled: the layout sets the width in a polish, which under load may come after the check.
+        QTRY_VERIFY2(subtitle->width() > row->width() * 0.8, qPrintable(u"%1 of %2"_s.arg(subtitle->width()).arg(row->width())));
     }
 };
 

@@ -11,9 +11,9 @@
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 
 #include <QHash>
-#include <QMutex>
 
 #include <memory>
+#include <mutex>
 #include <optional>
 
 class QcVillageGenerator;
@@ -45,12 +45,12 @@ public:
         out they lie. */
     struct PlanKey
     {
-        /*! The kind's index in QcSurfacePlanner::kinds(). */
-        int kind = 0;
+        /*! The kind. */
+        QcSurfacePlanner::KindId kind;
         /*! The region x in the upper 32 bits, the region z in the lower 32 bits. */
         qint64 region = 0;
         bool operator==(const PlanKey &) const = default;
-        friend size_t qHash(PlanKey key, size_t seed = 0) noexcept { return qHashMulti(seed, key.kind, key.region); }
+        friend size_t qHash(PlanKey key, size_t seed = 0) noexcept { return qHashMulti(seed, key.kind.index(), key.region); }
     };
 
     /*! Plans the kinds of \a content with \a seed on the columns of \a terrain, clear of the
@@ -58,25 +58,25 @@ public:
     QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content, quint64 seed);
 
     /*! Returns the cache key of region (\a regionX, \a regionZ) of kind \a kind. */
-    [[nodiscard]] static PlanKey planKey(int kind, int regionX, int regionZ);
+    [[nodiscard]] static PlanKey planKey(QcSurfacePlanner::KindId kind, int regionX, int regionZ);
 
     /*! Returns the planner of the kinds. */
     const QcSurfacePlanner &planner() const { return m_planner; }
     /*! Returns the copy of kind \a kind in region (\a regionX, \a regionZ), planned once; null
         when the region has none. */
-    [[nodiscard]] std::shared_ptr<const QcStructurePlacement> planOf(int kind, int regionX, int regionZ) const;
+    [[nodiscard]] std::shared_ptr<const QcStructurePlacement> planOf(QcSurfacePlanner::KindId kind, int regionX, int regionZ) const;
     /*! Returns the copies of every kind whose footprint or blended ground overlaps the chunk
         \a pos. */
     QList<std::shared_ptr<const QcStructurePlacement>> plansTouching(QcChunkPos pos) const;
     /*! Returns the footprints of the copies of every kind, grown by their blended ground, within
         \a margin columns of the chunk \a pos: the terrain generator places no features and no
         surface pools there (decisions E-630, E-889). */
-    QList<QcSurfacePlanner::Rect> footprintsNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> footprintsNear(QcChunkPos pos, int margin) const;
     /*! Returns the same as footprintsNear() for \a pos and \a margin where no trees or plants
         grow: kinds with \c {blendVegetation} keep only
         the ring right beside their walls bare, the others their whole blended ground (decision
         E-889). */
-    QList<QcSurfacePlanner::Rect> bareNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> bareNear(QcChunkPos pos, int margin) const;
     /*! \brief A column whose ground the blend moves: its new top block. */
     struct Moved
     {
@@ -110,19 +110,19 @@ public:
 
 private:
     // The copy of kind `kind` in the region when the region is planned; std::nullopt otherwise.
-    [[nodiscard]] std::optional<std::shared_ptr<const QcStructurePlacement>> plannedOf(int kind, int regionX, int regionZ) const;
+    [[nodiscard]] std::optional<std::shared_ptr<const QcStructurePlacement>> plannedOf(QcSurfacePlanner::KindId kind, int regionX, int regionZ) const;
     // The sites of the regions within `reach` of `from`; with `mayPlan` false only from
     // planned regions (std::nullopt when one is not planned yet).
     [[nodiscard]] std::optional<QcStructureSites> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
     // The footprints within `margin` of the chunk grown by their blend, or with `plantsOnBlend` by
     // the bare ring of kinds with `blendVegetation`.
-    [[nodiscard]] QList<QcSurfacePlanner::Rect> grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
+    [[nodiscard]] QList<QcXzRect> grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
     // The columns of `grid` (within the column grid) whose ground the blend around `plan` moves.
     [[nodiscard]] QList<Moved> movedAround(const QcStructurePlacement &plan, int blend, const QcTerrainColumnGrid &columns,
-                                           QcSurfacePlanner::Rect grid) const;
+                                           QcXzRect grid) const;
     // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint, or
     // within the larger blend of the two (decision E-889).
-    bool occupied(int kind, QcSurfacePlanner::Rect footprint, int margin) const;
+    bool occupied(QcSurfacePlanner::KindId kind, QcXzRect footprint, int margin) const;
     void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;
 
     const QcVillageGenerator &m_villages;
@@ -130,7 +130,11 @@ private:
     QcSurfaceBlend m_blend;
     // Per block state: ground a foundation stops at (solid and not a liquid).
     std::vector<bool> m_ground;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools, the world map preview's worker) hands the plans to the others under this
+    // mutex.
+    mutable std::mutex m_mutex;
     // By kind and region (planKey).
+    // NOLINT(qc-member-access): read and written only under m_mutex; an accessor would hide that the lock must be held
     mutable QHash<PlanKey, std::shared_ptr<const QcStructurePlacement>> m_plans;
 };

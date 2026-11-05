@@ -13,41 +13,51 @@
 #include <functional>
 #include <optional>
 
-// Item frames and paintings of a world (decision E-790): placed entities without AI, health or
-// physics. Pure data; QcServerHanging does what players and the world do to them.
+/*! \brief Item frames and paintings of a world (decision E-790): placed entities without AI, health
+    or physics.
+
+    Pure data; QcServerHanging does what players and the world do to them. */
 class QcHangingManager
 {
 public:
-    // Frames and paintings in the world by default (QcServerLimits::maxHangings).
+    /*! Frames and paintings in the world by default (QcServerLimits::maxHangings). */
     static constexpr int maxHangings = static_cast<int>(QcServerLimits{}.maxHangings);
-    // Every frame and painting checks its wall and room again within this many ticks, also without
-    // a block change next to it (decision E-790; changes outside the server's block changes).
+    /*! Every frame and painting checks its wall and room again within this many ticks, also
+        without a block change next to it (decision E-790; changes outside the server's block
+        changes). */
     static constexpr int supportCheckTicks = 100;
 
+    /*! Returns every frame and painting. */
     const QList<QcHangingEntity> &all() const { return m_all; }
-    // For waking and settling from outside (QcEntities); never add, remove or move through it (the
-    // cell index would go stale).
+    /*! Returns the frames and paintings for waking and settling from outside (QcEntities); never
+        add, remove or move through it (the cell index would go stale). */
     QList<QcHangingEntity> &editableAll() { return m_all; }
+    /*! Returns the frame or painting with entity \a id, or null when there is none. */
     QcHangingEntity *find(quint32 id);
+    /*! Returns the frame or painting with entity \a id, or null when there is none. */
     const QcHangingEntity *find(quint32 id) const;
-    // The frame or painting that covers `cell` on `face`; null for none.
+    /*! Returns the frame or painting that covers \a cell on \a face; null for none. */
     const QcHangingEntity *at(QcBlockPos cell, QcBlockFace face) const;
-    // False when the limit is reached.
+    /*! Adds \a hanging. Returns \c false when the limit is reached. */
     bool add(const QcHangingEntity &hanging);
-    // Removes it and returns it (to drop what it carried).
+    /*! Removes the frame or painting with entity \a id. Returns it (to drop what it carried), or
+        nothing when there is none. */
     std::optional<QcHangingEntity> remove(quint32 id);
+    /*! Returns the number of frames and paintings the world may hold. */
     qsizetype limit() const { return m_limit; }
+    /*! Sets the number of frames and paintings the world may hold to \a limit. */
     void setLimit(qsizetype limit) { m_limit = limit; }
-    // Adds those of a chunk that came back (decision E-374); returns how many were left out at the limit.
+    /*! Adds the \a hangings of a chunk that came back (decision E-374); returns how many were
+        left out at the limit. */
     qsizetype adopt(const QList<QcHangingEntity> &hangings);
-    // Removes those that match (their chunk leaves the world).
+    /*! Removes those for which \a matches is true (their chunk leaves the world). */
     void removeIf(const std::function<bool(const QcEntity &)> &matches);
 
-    // A block changed at `pos`: the frames and paintings it holds or stands in check again
-    // (decision E-790). One hash lookup, so a change far from any costs nothing.
+    /*! A block changed at \a pos: the frames and paintings it holds or stands in check again
+        (decision E-790). One hash lookup, so a change far from any costs nothing. */
     void noteBlockChange(QcBlockPos pos);
-    // The ids to check this tick: those next to changed blocks and the next slice of the round in
-    // which every one is checked once per supportCheckTicks ticks.
+    /*! Returns the ids to check this tick: those next to changed blocks and the next slice of
+        the round in which every one is checked once per supportCheckTicks ticks. */
     QList<quint32> takeDueChecks();
 
 private:

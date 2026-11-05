@@ -48,12 +48,12 @@ private:
         return {x + 0.5, static_cast<double>(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
     }
 
-    int type(const char *name) const
+    QcCreatureKindId type(const char *name) const
     {
-        const std::optional<int> index = m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name));
+        const std::optional<QcCreatureKindId> index = m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name));
         if (!index) {
             QcTestUtil::failCase(QStringLiteral("unknown mob %1").arg(QString::fromLatin1(name)));
-            return 0;
+            return {};
         }
         return *index;
     }

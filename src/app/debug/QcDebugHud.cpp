@@ -3,8 +3,8 @@
 
 #include "app/debug/QcDebugHud.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/debug/QcDebugText.h"
 #include "clientcore/light/QcLightProbe.h"
@@ -13,6 +13,8 @@
 #include "common/physics/QcPhysics.h"
 
 #include <QFontDatabase>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -200,4 +202,15 @@ void QcDebugHud::updateLightLabels()
     const QcLabelProjector::View view{m_parts.view->camera(), m_parts.view->width(), m_parts.view->height()};
     m_lightLabels->update(QcLabelProjector::visible(byChunk, view, m_parts.session->world()), *m_parts.session->content(),
                           m_settings.contentLanguage());
+}
+
+int QcDebugHud::tickBudgetMs()
+{
+    return static_cast<int>(1000.0 / QcPhysics::tickRate);
+}
+
+double QcDebugHud::tickScale(const QList<qreal> &ticks)
+{
+    const double longest = ticks.isEmpty() ? 0.0 : std::max(0.0, *std::ranges::max_element(ticks));
+    return std::min(2.0 * tickBudgetMs(), std::max(2.0, 1.5 * longest));
 }

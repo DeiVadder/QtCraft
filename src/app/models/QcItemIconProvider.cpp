@@ -5,7 +5,7 @@
 
 #include "app/models/QcItemIconUrls.h"
 
-#include <QMutexLocker>
+#include <mutex>
 
 QcItemIconProvider::QcItemIconProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
@@ -15,7 +15,7 @@ QcItemIconProvider::QcItemIconProvider()
 void QcItemIconProvider::setIcons(QHash<QString, QImage> icons)
 {
     {
-        const QMutexLocker locker(&m_mutex);
+        const std::scoped_lock locker(m_mutex);
         m_icons = std::move(icons);
         m_scaled.clear();
     }
@@ -29,7 +29,7 @@ QImage QcItemIconProvider::requestImage(const QString &id, QSize *size, const QS
     // The id carries "?g=<generation>" only for QML's cache.
     const QString name = id.section(u'?', 0, 0);
     const bool scale = requestedSize.isValid() && !requestedSize.isEmpty();
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
 
     QImage icon = m_icons.value(name);
     if (icon.isNull()) {

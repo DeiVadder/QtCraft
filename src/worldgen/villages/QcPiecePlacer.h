@@ -50,7 +50,6 @@ public:
     void placeLamps(QcVillageDraft &draft, const Road &road) const;
 
 private:
-    using Rect = QcVillageDraft::Rect;
 
     // On land pieces start one block of grass beyond the road's edge.
     static constexpr int pieceOffset = QcVillageDraft::roadHalfWidth + 2;
@@ -58,7 +57,7 @@ private:
     // Floor height for a piece over `rect` (the ground's top block), or std::nullopt where the
     // ground is too steep or wet; over water the floor height of the stilts (decision E-407), or
     // std::nullopt where the ground cannot carry them.
-    [[nodiscard]] std::optional<int> floorFor(const QcVillageDraft &draft, Rect rect, int maxSlope) const;
+    [[nodiscard]] std::optional<int> floorFor(const QcVillageDraft &draft, QcXzRect rect, int maxSlope) const;
     // The centre piece of the blueprint, its door towards the main road; false where the ground does
     // not fit.
     bool placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const;
@@ -71,9 +70,15 @@ private:
     bool placeAtWater(QcVillageDraft &draft, const QList<Road> &roads, int index) const;
     // A building of kind `index` beside the last blocks of the road; false when none fits.
     bool placeBesideEnd(QcVillageDraft &draft, const Road &road, int index) const;
-    // Places a piece `along` the road on `side` (-1 left, 1 right); returns how far along it reaches,
-    // 0 when it did not fit and -1 when no piece is left to place.
-    int tryPiece(QcVillageDraft &draft, const Road &road, int along, int side) const;
+    // The side of a road a piece stands on; the value is the sign placeAt() takes.
+    enum class RoadSide
+    {
+        Left = -1,
+        Right = 1,
+    };
+    // Places a piece `along` the road on `side`; returns how far along it reaches, 0 when it did not
+    // fit and -1 when no piece is left to place.
+    int tryPiece(QcVillageDraft &draft, const Road &road, int along, RoadSide side) const;
     // Places a building of kind `index` like tryPiece(); returns how far along it reaches, 0 when it
     // did not fit.
     int placeAt(QcVillageDraft &draft, const Road &road, std::pair<int, int> alongAndSide, int index) const;
@@ -87,7 +92,7 @@ private:
     // Adds a building of the blueprint with its choices and parts drawn, its beds, workstations and
     // creatures, on land with the doorsteps of its outer doors (QcVillagePlan::thresholds); the placed piece,
     // valid until the next piece is added.
-    [[nodiscard]] const QcStructurePlacement &addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin,
+    [[nodiscard]] const QcStructurePlacement &addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, QcXzRect rect, QcBlockPos origin,
                                          int turns) const;
     // The cells in front of the outer doors of a placed piece, at the height of its floor.
     QList<QcBlockPos> doorsteps(const QcStructurePlacement &piece) const;

@@ -28,7 +28,7 @@ protected:
     bool m_spawnedInsideBlock = false;
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
-    int type(const char *name) const { return *m_content->mobIndex(QStringLiteral("qtcraft:") + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(QStringLiteral("qtcraft:") + QString::fromLatin1(name)); }
     const QcMobDefinition &shadewalkerKind() const { return m_content->mobs()[type("shadewalker")]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
 

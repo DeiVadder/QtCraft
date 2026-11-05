@@ -21,7 +21,7 @@ class TestSilverfish : public QcServerTestFixture
 private:
     static constexpr int arena = 12;
 
-    int silverfishType() const { return *m_content->mobIndex(u"qtcraft:silverfish"_s); }
+    QcCreatureKindId silverfishType() const { return *m_content->mobKind(u"qtcraft:silverfish"_s); }
     QcBlockId at(QcBlockPos pos) const { return *m_server->world().blockAt(pos); }
 
     qsizetype silverfish() const

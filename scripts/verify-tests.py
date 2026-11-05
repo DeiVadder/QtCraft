@@ -470,8 +470,14 @@ def report(selected, considered, stamps, data_now, broad):
     print(f"verify --changed: {len(selected)} of {len(considered)} tests selected, {skipped} skipped (unchanged since they passed)", file=out)
 
 
+def resolved_build_dir(path):
+    """The build directory with links resolved: `build/` may be a link to another disk, and the
+    presets name their binaryDir by the real path, so ctest's commands do too."""
+    return os.path.realpath(path)
+
+
 def select(arguments):
-    build_dir = os.path.abspath(arguments.build_dir)
+    build_dir = resolved_build_dir(arguments.build_dir)
     tests = load_tests(build_dir)
     hasher = ContentHasher(build_dir)
     data_now = snapshot(runtime_data_paths(), hasher)
@@ -530,7 +536,7 @@ def passed_tests(junit):
 
 
 def record(arguments):
-    build_dir = os.path.abspath(arguments.build_dir)
+    build_dir = resolved_build_dir(arguments.build_dir)
     pending = read_json(os.path.join(build_dir, PENDING), None)
     if pending is None:
         return

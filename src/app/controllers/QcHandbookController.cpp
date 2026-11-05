@@ -3,11 +3,11 @@
 
 #include "app/controllers/QcHandbookController.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIcons.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/icons/QcBlockIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcGpuLimits.h"
@@ -27,6 +27,7 @@ QcHandbookController::QcHandbookController(const QcSessionParts &parts, const Qc
     , m_library(library)
     , m_icons(icons)
     , m_model(new QcHandbookModel(this))
+    , m_navigation(new QcHandbookNavigation(*m_model, this))
 {
 }
 
@@ -71,9 +72,10 @@ void QcHandbookController::ensureHandbook()
 void QcHandbookController::open(const QString &target)
 {
     ensureHandbook();
-    m_target = m_model->resolve(target);
-    m_query = m_target.isEmpty() ? target : QString();
-    m_open = true;
+    setTarget(m_model->resolve(target));
+    m_query = this->target().isEmpty() ? target : QString();
+    m_navigation->start(this->target(), m_query);
+    setOpen(true);
     emit opening();
     logFirstFrame();
     emit openChanged();
@@ -98,29 +100,19 @@ void QcHandbookController::logFirstFrame()
     });
 }
 
-void QcHandbookController::setPage(const QString &page)
-{
-    // Any entry id the screen showed; the screen sets it again for every page it opens.
-    if (m_page == page) {
-        return;
-    }
-    m_page = page;
-    emit pageChanged();
-}
-
 void QcHandbookController::close()
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return;
     }
 
-    m_open = false;
+    setOpen(false);
     emit openChanged();
 }
 
 void QcHandbookController::refreshIfOpen()
 {
-    if (m_open) {
+    if (isOpen()) {
         ensureHandbook();
     }
 }

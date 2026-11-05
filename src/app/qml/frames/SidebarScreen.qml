@@ -268,7 +268,6 @@ FocusScope {
         Label {
             id: noticeLabel
 
-            objectName: "sidebarNotice"
             anchors.centerIn: parent
             width: Math.min(implicitWidth, parent.width - 2 * Ui.space.l)
             text: screen.notice

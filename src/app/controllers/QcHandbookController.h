@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app/controllers/QcHandbookNavigation.h"
 #include "app/models/QcHandbookModel.h"
 #include "common/gameplay/QcKeyBindings.h"
 
@@ -27,11 +28,13 @@ class QcHandbookController : public QObject
     // The entry to show when it opens (empty: where it was left) and a search to start with.
     Q_PROPERTY(QString target READ target NOTIFY openChanged FINAL)
     Q_PROPERTY(QString query READ query NOTIFY openChanged FINAL)
-    // The entry the screen showed last: kept here, so the screen shows it again after it was
-    // unloaded (LazyScreen, decision E-691).
-    Q_PROPERTY(QString page READ page WRITE setPage NOTIFY pageChanged FINAL)
+    // The open page, the pages before it, the category or the search (decision E-954).
+    Q_PROPERTY(QcHandbookNavigation *navigation READ navigation CONSTANT FINAL)
+    // The page of the first steps (the main menu's "Handbook: first steps").
+    Q_PROPERTY(QString firstSteps READ firstSteps CONSTANT FINAL)
 
 public:
+    static QString firstSteps() { return QStringLiteral("chapter:qtcraft:basics"); }
     QcHandbookController(const QcSessionParts &parts, const QcSettingsController &settings, const QcWorldLibraryController &library,
                          QcItemIcons &icons, QObject *parent = nullptr);
 
@@ -39,11 +42,10 @@ public:
     bool isOpen() const { return m_open; }
     QString target() const { return m_target; }
     QString query() const { return m_query; }
-    QString page() const { return m_page; }
-    void setPage(const QString &page);
+    QcHandbookNavigation *navigation() const { return m_navigation; }
 
     // Opens the handbook at an entry id or content name ("qtcraft:stone"); anything else becomes a
-    // search.
+    // search. Without a target it shows the page where it was left (QcHandbookNavigation::startPage).
     Q_INVOKABLE void open(const QString &target = QString());
     Q_INVOKABLE void close();
     // Builds the handbook again when it is open and its language or content changed.
@@ -51,12 +53,14 @@ public:
 
 signals:
     void openChanged();
-    void pageChanged();
     // The handbook is about to open and takes keyboard and mouse from the world.
     void opening();
 
 private:
     void ensureHandbook();
+    // Without signals: open() and close() emit them in their order.
+    void setOpen(bool open) { m_open = open; }
+    void setTarget(const QString &target) { m_target = target; }
     // Logs how long the first frame with the handbook took (building the page included).
     void logFirstFrame();
 
@@ -65,10 +69,10 @@ private:
     const QcWorldLibraryController &m_library;
     QcItemIcons &m_icons;
     QcHandbookModel *m_model = nullptr;
+    QcHandbookNavigation *m_navigation = nullptr;
     bool m_open = false;
     QString m_target;
     QString m_query;
-    QString m_page;
     // What the current handbook was built from: content generation, language and keys.
     int m_generation = -1;
     QString m_language;

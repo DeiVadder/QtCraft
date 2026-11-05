@@ -1,0 +1,31 @@
+{
+    "name": "ink_sac",
+    "pattern": "icon",
+    "primary": "#1c1c24",
+    "variation": 0.0,
+    "seed": 7415,
+    "palette": {
+        "K": "#141418",
+        "D": "#2a2a36",
+        "L": "#4a4a5c",
+        "W": "#8a8aa0"
+    },
+    "bitmap": [
+        "",
+        "",
+        "      KKKK",
+        "     KDDDDK",
+        "    KDDLLDDK",
+        "   KDDLWLDDDK",
+        "   KDDLLDDDDK",
+        "  KDDDDDDDDDDK",
+        "  KDDDDDDDDDDK",
+        "  KDDDDDDDDDDK",
+        "   KDDDDDDDDK",
+        "   KKDDDDDDKK",
+        "     KKKKKK",
+        "",
+        "",
+        ""
+    ]
+}

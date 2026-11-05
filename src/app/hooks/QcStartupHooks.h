@@ -6,20 +6,28 @@
 #include "common/physics/QcPlayerInput.h"
 
 #include <QElapsedTimer>
+#include <QList>
 #include <QObject>
 #include <QPointer>
 #include <QString>
 #include <QStringList>
 
 #include <array>
+#include <functional>
+#include <map>
+#include <memory>
 #include <optional>
+#include <utility>
 
 class QcBenchmarkRun;
 class QcGameInput;
+class QcLoadingProgress;
 class QcHandbookController;
+class QcMultiplayerController;
 class QcScreenState;
 class QcScreenshotHook;
 class QcScriptedPad;
+class QcSlotCursor;
 struct QcSessionParts;
 
 // Test hooks from the command line for reproducible scenes: view direction, spawn column and
@@ -36,6 +44,10 @@ public:
         QcScreenState &state;
         QcHandbookController &handbook;
         QcGameInput &input;
+        // The loading screen's state (--overlay loading:..., decision E-943).
+        QcLoadingProgress &loading;
+        // The hand on the slot screens (--overlay pick:<row>).
+        QcSlotCursor &slotCursor;
     };
 
     QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
@@ -45,7 +57,7 @@ public:
     QcPlayerInput initialIntent() const;
     void setSpawnColumn(int x, int z) { m_spawnColumn = std::array<int, 2>{x, z}; }
     [[nodiscard]] std::optional<std::array<int, 2>> spawnColumn() const { return m_spawnColumn; }
-    // Freezes the local player's pose ("walk", "sprint", "swing", "swim", "jump", "fall", "sneak", "death").
+    // Freezes the local player's pose ("walk", "sprint", "swing", "swim", "jump", "fall", "sneak", "death", "hurt:<p>").
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
     QString forcedPose() const { return m_forcedPose; }
     // Chat lines sent and overlays opened once the world is playable. Like chat lines, an overlay
@@ -70,7 +82,15 @@ public:
 
     // Without --play: runs the "@<ms> open:", "click:", "hover:" and "pad:" steps in the main menu.
     void menuShown();
-    // Runs the script: the world has just become playable.
+    // --join from the main menu: the screenshot waits until the running join of `multiplayer` has
+    // ended, however long the system takes to report a refusal (seconds on Windows).
+    void holdScreenshotDuringJoin(QcMultiplayerController &multiplayer);
+    // A world start began (the loading screen shows): the screenshot waits until it plays or ends.
+    void worldStarting();
+    // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.
+    void worldStartEnded();
+    // The world has just become playable: sends --chat and opens the plain --overlay screen once per
+    // world start, and plans the "@<ms>" steps that have not run yet (each runs once per program run).
     void worldPlaying();
     // --overlay furnace|chest: fills the machine that just opened from the hotbar.
     void machineOpened();
@@ -80,18 +100,46 @@ public:
     void releaseScreenshotWhenLoaded(int viewDistance, bool playing);
 
 private:
+    // One "@<ms> <step>" line of the script. It runs at most once per program run: the main menu
+    // plans the steps it can run (menuShown()), the world plans every step not yet run once it plays
+    // (worldPlaying()); --chat and the plain --overlay screen still run once per world start.
+    struct OverlayStep {
+        QString line;
+        bool ran = false;
+    };
+
+    const QList<OverlayStep> &startupOverlaySteps() const { return m_startupOverlaySteps; }
+    void setStartupOverlaySteps(QList<OverlayStep> steps) { m_startupOverlaySteps = std::move(steps); }
+    void markOverlayStepRan(qsizetype index) { m_startupOverlaySteps[index].ran = true; }
+    bool startHold() const { return m_startHold; }
+    void setStartHold(bool held) { m_startHold = held; }
+    bool worldPlayed() const { return m_worldPlayed; }
+    void setWorldPlayed(bool played) { m_worldPlayed = played; }
+
     static constexpr int loadedScreenAttempts = 40;
     static constexpr int loadedScreenRetryMs = 50;
+    // `press:<key>@<screen>` and `key:<action>@<screen>` wait up to untilOverlayAttempts *
+    // untilOverlayRetryMs (long, for loaded machines and slow builds).
+    static constexpr int untilOverlayAttempts = 150;
+    static constexpr int untilOverlayRetryMs = 100;
     // `view:hide` waits up to viewAttempts * viewRetryMs for the view to hold meshed sections,
     // `view:show` as long for a pending hide (slow builds such as TSan mesh later).
     static constexpr int viewAttempts = 300;
     static constexpr int viewRetryMs = 100;
 
+    // The script's steps by their delay in milliseconds, in the script's order.
+    using DelayedSteps = std::map<int, QList<std::function<void()>>>;
+
     void sendStartupChat();
+    // One timer per delay, so the screenshot waits for each group and steps of the same delay keep
+    // their order: separate timers of equal length fire in an order the platform chooses (on
+    // Windows a coarse timer's last one first).
+    void runAfterDelays(const DelayedSteps &steps);
     void openStartupOverlay();
     // Uses the block in view once the startup commands have placed it.
     void openMachineInView();
-    void scheduleOverlaySteps();
+    // menuSteps: only the steps that run in the main menu (menuShown()), else every step not yet run.
+    void scheduleOverlaySteps(bool menuSteps);
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
     void runOverlayStep(const QString &step);
     // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
@@ -109,9 +157,18 @@ private:
     // "pick:", "open:", "text:" and "click:" steps: they act on a control of a shown screen and wait up to
     // loadedScreenAttempts * loadedScreenRetryMs for its screen to be loaded.
     void runOnLoadedScreen(const QString &step, int attempt);
+    // "press:<key>@<screen>" presses once that screen shows; "key:<action>@<screen>" repeats the key
+    // action until it shows (key:use@sign: uses the sign once its block arrived).
+    void runUntilOverlay(const QString &step);
+    void pressWhenShown(const QString &step, int attempt);
+    // `shown` turns true once the screen showed (set through `watch`, deleted at the end).
+    void repeatKeyUntilShown(const QString &actionId, const std::shared_ptr<bool> &shown, QObject *watch, int attempt);
     // Each returns whether it found what it acts on.
     [[nodiscard]] bool pickInOpenScreen(int row) const;
     void hoverAt(QStringView position) const;
+    // "loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]]": the loading screen in that state,
+    // without a start (QcLoadingProgress::parseShow; screenshots for the sign-off, decision E-943).
+    void showLoading(QStringView spec) const;
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
     [[nodiscard]] bool setText(const QString &assignment) const;
     [[nodiscard]] bool openPopup(const QString &objectName) const;
@@ -138,7 +195,7 @@ private:
     QString m_forcedPose;
     QStringList m_startupChat;
     QString m_startupOverlay;
-    QStringList m_startupOverlaySteps;
+    QList<OverlayStep> m_startupOverlaySteps;
     QString m_startupHandbook;
     // --overlay furnace: the screenshot waits until the machine has opened and filled.
     bool m_fillMachineOnOpen = false;
@@ -150,4 +207,8 @@ private:
     qint64 m_screenshotWaitLogged = 0; // NOLINT(qc-member-access): when the gate's timer last logged, only there
     // The menu's screenshot is held until the menu has scheduled its steps.
     bool m_menuHold = false;
+    // The screenshot is held while a world start runs (worldStarting() to worldPlaying()).
+    bool m_startHold = false;
+    // worldPlaying() ran its script since the last worldStarting().
+    bool m_worldPlayed = false;
 };

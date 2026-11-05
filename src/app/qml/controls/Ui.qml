@@ -91,6 +91,11 @@ QtObject {
         property real handbookRow
         property real handbookHeading
         property real handbookIcon
+        // An open page's icon, the label column of its facts, a cell of a recipe and a link.
+        property real handbookPageIcon
+        property real handbookFactLabel
+        property real handbookCell
+        property real handbookLink
         // The scroll bar (ThemedScrollBar) and its handle.
         property real scrollBar
         property real scrollHandle
@@ -116,6 +121,24 @@ QtObject {
         property real advancementDetails
         // The wooden frame of the sign's board (SignEditor).
         property real signBorder
+        // The slot screens (stage 76.2-e): the gap between slots and a slot with its gap, the character beside the
+        // inventory (its width; small windows take the small one), the list of recipes beside it,
+        // the column of the creative catalogue's categories, a furnace's flame and progress arrow,
+        // and the stonecutter's box of results (four slots wide, three high).
+        property real slotGap
+        property real slotCell
+        property real inventoryFigure
+        property real inventoryFigureSmall
+        property real recipes
+        property real recipesSmall
+        property real creativeCategories
+        property real flame
+        property real progressArrow
+        property real stoneResults
+        property real stoneResultsHeight
+        // A villager's offer in the trading screen's list, and the small slots of its costs.
+        property real offerRow
+        property real offerSlot
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -130,6 +153,9 @@ QtObject {
         property real column
         // The height of a screen with a list (mods, multiplayer), at most.
         property real height
+        // Windows narrower than this give the slot screens their small variants (fewer catalogue
+        // columns, a smaller character and recipe list).
+        property real narrowWindow
     }
 
     // Font sizes: logo (and in low windows), screen title, section, group heading, body text, help.
@@ -206,7 +232,24 @@ QtObject {
         advancementRow: ui.px(56)
         advancementDetails: ui.px(270)
         signBorder: ui.px(4)
-        handbookEntries: ui.px(220)
+        slotGap: ui.px(2)
+        slotCell: ui.px(54)
+        inventoryFigure: ui.px(160)
+        inventoryFigureSmall: ui.px(120)
+        recipes: ui.px(260)
+        recipesSmall: ui.px(200)
+        creativeCategories: ui.px(170)
+        flame: ui.px(26)
+        progressArrow: ui.px(52)
+        stoneResults: ui.px(4 * 54 + 12)
+        stoneResultsHeight: ui.px(3 * 54 + 12)
+        offerRow: ui.px(40)
+        offerSlot: ui.px(34)
+        handbookEntries: ui.px(264)
+        handbookPageIcon: ui.px(56)
+        handbookFactLabel: ui.px(210)
+        handbookCell: ui.px(44)
+        handbookLink: ui.px(28)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)
         handbookIcon: ui.px(24)
@@ -222,10 +265,12 @@ QtObject {
         marginVertical: ui.px(16)
         column: ui.px(320)
         height: ui.px(560)
+        narrowWindow: ui.px(1200)
     }
 
     // The pixel font Pixelify Sans (SIL Open Font License 1.1, src/app/fonts) for the logo and the
-    // workbench screens' titles, runes and levels (decision E-884).
+    // enchanting table's clues (decision E-884; titles, fields and levels use the system font since
+    // stage 76.2-e).
     readonly property FontLoader pixelFont: FontLoader {
         source: "qrc:/qt/qml/QtCraft/fonts/PixelifySans.ttf"
     }

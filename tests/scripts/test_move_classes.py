@@ -195,6 +195,10 @@ def make_project(root, script):
     os.makedirs(os.path.join(root, "scripts"))
     for name in ("move-classes.py", "fix-includes.py", "check-cmake-lists.py"):
         shutil.copy(os.path.join(os.path.dirname(script), name), os.path.join(root, "scripts", name))
+    # The bytecode Python writes next to the imported scripts is no change of the tree; without
+    # this, only a global ignore file of the developer hid it.
+    with open(os.path.join(root, ".gitignore"), "w", encoding="utf-8") as file:
+        file.write("__pycache__/\n")
     git(root, "init", "-q")
     git(root, "add", "-A")
     git(root, "commit", "-q", "-m", "sample")

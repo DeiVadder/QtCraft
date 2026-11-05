@@ -335,7 +335,7 @@ private slots:
             for (const int section : {0, 7, QcWorld::sectionCount - 1}) {
                 const QcSectionAddress address = qcSectionFromKey(qcSectionKey(chunk, section));
                 QCOMPARE(address.chunk, chunk);
-                QCOMPARE(address.sectionIndex, section);
+                QCOMPARE(address.section, section);
             }
         }
     }

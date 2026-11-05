@@ -62,6 +62,7 @@ class TestSectionSnapshots : public QObject
 private slots:
     void readersSeeTheirSnapshotWhileTheOwnerWrites()
     {
+        // The owner thread hands each snapshot to the reader threads under this mutex.
         std::mutex mutex;
         Snapshot latest{std::make_shared<const QcChunk>(QcChunkPos{0, 0}), 0};
         std::atomic<bool> done = false;

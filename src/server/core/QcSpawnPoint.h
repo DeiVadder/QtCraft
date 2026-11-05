@@ -14,22 +14,26 @@
 class QcServerWorld;
 struct QcServerClient;
 
-// Where players appear in the world, when they join for the first time and when they respawn: on
-// the surface of the generator's spawn column (or the configured one, QcServerConfig::spawnColumn)
-// as the world stores it; when that is no natural ground (a tree, a building, water), on the
-// nearest natural ground around it. A column without any block gets one under the generator's spawn
-// height, so a respawn never drops into the void (decision E-288).
+/*! \brief Where players appear in the world, when they join for the first time and when they
+    respawn: on the surface of the generator's spawn column (or the configured one,
+    QcServerConfig::spawnColumn) as the world stores it; when that is no natural ground (a tree, a
+    building, water), on the nearest natural ground around it.
+
+    A column without any block gets one under the generator's spawn height, so a respawn never
+    drops into the void (decision E-288). */
 class QcSpawnPoint
 {
 public:
+    /*! The clients of the server. */
     using Clients = std::vector<std::unique_ptr<QcServerClient>>;
 
     QcSpawnPoint(QcServerWorld &world, const QcServerConfig &config, const Clients &clients);
 
-    // The feet of a player appearing now; may generate chunks and place the ground block.
+    /*! Returns the feet of a player appearing now; may generate chunks and place the ground
+        block. */
     QcVec3 position();
-    // The spawn column (x and z; y is the generator's spawn height): the configured one or the
-    // generator's. Cheap after the first call.
+    /*! Returns the spawn column (x and z; y is the generator's spawn height): the configured one
+        or the generator's. Cheap after the first call. */
     QcBlockPos column();
 
 private:

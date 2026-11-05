@@ -16,31 +16,38 @@ class QcServerInventory;
 struct QcServerClient;
 class QcServerState;
 
-// Crafting of the players (decision E-367): the 2 x 2 grid of the inventory and the 3 x 3 grid of a
-// crafting table near them, recipes and repairs taken from the grid (once or as often as possible),
-// recipes crafted straight from the inventory (CraftRecipe) and the grid's items going back into the
-// inventory when it closes.
+/*! \brief Crafting of the players (decision E-367): the 2 x 2 grid of the inventory and the 3 x
+    3 grid of a crafting table near them, recipes and repairs taken from the grid (once or as
+    often as possible), recipes crafted straight from the inventory (CraftRecipe) and the grid's
+    items going back into the inventory when it closes. */
 class QcServerCrafting
 {
 public:
-    // Crafting needs a crafting table within this distance for 3 x 3 recipes.
+    /*! Crafting needs a crafting table within this distance for 3 x 3 recipes. */
     static constexpr double craftingTableReach = 5.0;
-    // Shift-clicks on a crafting result take it as often as possible, at most this many times.
+    /*! Shift-clicks on a crafting result take it as often as possible, at most this many times. */
     static constexpr int maxCraftAllRounds = 64;
 
     QcServerCrafting(QcServerState &state, QcServerInventory &inventory);
 
-    // What the player's grid makes now (a recipe, a repair or a map copied or zoomed out).
+    /*! Returns what the grid of the player \a client of \a state makes now (a recipe, a repair
+        or a map copied or zoomed out). */
     [[nodiscard]] static std::optional<QcItemStack> resultOf(const QcServerState &state, const QcServerClient &client);
 
+    /*! Takes the result of the grid of \a client once into the inventory. */
     void takeCraftingResult(QcServerClient &client);
+    /*! Takes the result of the grid of \a client into the inventory as often as possible (a
+        shift-click, at most maxCraftAllRounds times). */
     void craftAll(QcServerClient &client);
+    /*! Crafts the recipe of \a request for \a client straight from the inventory, up to its
+        count of rounds (at most 64), each round whole or not at all. */
     void craftRecipe(QcServerClient &client, const QcMsg::CraftRecipe &request);
-    // Opens the 3 x 3 grid of the crafting table at `pos`.
+    /*! Opens the 3 x 3 grid of the crafting table at \a pos for \a client. */
     void openCraftingTable(QcServerClient &client, QcBlockPos pos);
+    /*! Closes the crafting screen of \a client; the grid goes back (returnCraftingGrid()). */
     void closeCrafting(QcServerClient &client);
-    // Moves the crafting grid into the inventory; what does not fit is thrown on the ground, or
-    // deleted in a mode with the item catalogue.
+    /*! Moves the crafting grid of \a client into the inventory; what does not fit is thrown on
+        the ground, or deleted in a mode with the item catalogue. */
     void returnCraftingGrid(QcServerClient &client);
 
 private:

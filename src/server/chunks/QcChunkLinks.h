@@ -10,43 +10,70 @@
 #include <QHash>
 
 #include <array>
+#include <utility>
 #include <vector>
 
-// Which loaded chunks a circuit or machine connects across their border (decision E-375), kept up
-// to date as chunks arrive and blocks are set, never computed per tick. A chunk has a mark per side
-// (east +x, west -x, south +z, north -z):
-//   - strip: a circuit part (any signal component but doors, trapdoors and gates) lies within
-//     `stripWidth` cells of that side;
-//   - reach: a piston faces that side and could push blocks across it (within `pistonReach`).
-// Two neighbouring chunks are linked when both have a strip towards each other or either reaches
-// into the other. The marks of a chunk are saved with it (QcChunkStore::Stored::marks), so the links
-// of chunks that are not loaded are known without reading them; linked chunks form a group that
-// loads and unloads as a whole (QcChunkGroups).
+/*! \brief Which loaded chunks a circuit or machine connects across their border (decision E-375),
+    kept up to date as chunks arrive and blocks are set, never computed per tick.
+
+    A chunk has a mark per side (east +x, west -x, south +z, north -z):
+
+    \list
+    \li strip: a circuit part (any signal component but doors, trapdoors and gates) lies within
+        \c {stripWidth} cells of that side;
+    \li reach: a piston faces that side and could push blocks across it (within \c {pistonReach}).
+    \endlist
+    Two neighbouring chunks are linked when both have a strip towards each other or either
+    reaches into the other. The marks of a chunk are saved with it (QcChunkStore::Stored::marks),
+    so the links of chunks that are not loaded are known without reading them; linked chunks form
+    a group that loads and unloads as a whole (QcChunkGroups). */
 class QcChunkLinks
 {
 public:
+    /*! The sides of a chunk; the value is the side's bit in the marks (strip; reach four bits
+        higher), so it is part of the saved marks (QcChunkStore::Stored::marks). */
+    enum class Side : quint8
+    {
+        /*! Towards +x. */
+        East = 0,
+        /*! Towards -x. */
+        West = 1,
+        /*! Towards +z. */
+        South = 2,
+        /*! Towards -z. */
+        North = 3,
+    };
+    /*! The number of sides of a chunk. */
     static constexpr int sideCount = 4;
+    /*! All sides of a chunk, in the order of their bits. */
+    static constexpr std::array<Side, sideCount> sides{Side::East, Side::West, Side::South, Side::North};
+    /*! A circuit part this many cells or fewer from a side marks its strip. */
     static constexpr int stripWidth = 2;
-    // A piston pushes up to 12 blocks one cell on: blocks up to 13 cells ahead move.
+    /*! A piston pushes up to 12 blocks one cell on: blocks up to 13 cells ahead move. */
     static constexpr int pistonReach = 13;
 
     explicit QcChunkLinks(const QcContentRegistry &content);
 
-    // The neighbour of `chunk` across `side` and the side that faces back.
-    static QcChunkPos neighbour(QcChunkPos chunk, int side);
-    static int opposite(int side) { return side ^ 1; }
-    // Whether chunks with these marks are linked across `side` of the first one.
-    static bool linked(quint16 marks, quint16 neighbourMarks, int side);
+    /*! Returns the neighbour of \a chunk across \a side. */
+    static QcChunkPos neighbour(QcChunkPos chunk, Side side);
+    /*! Returns the side that faces back across \a side. */
+    static constexpr Side opposite(Side side) { return static_cast<Side>(std::to_underlying(side) ^ 1u); }
+    /*! Returns whether a chunk with \a marks and its neighbour with \a neighbourMarks are linked
+        across \a side of the first one. */
+    static bool linked(quint16 marks, quint16 neighbourMarks, Side side);
 
-    // A chunk entered the world: counts its circuit parts near its sides and its pistons.
+    /*! \a chunk entered the world: counts its circuit parts near its sides and its pistons. */
     void noteChunk(const QcChunk &chunk);
+    /*! The block at \a pos changed from \a before to \a after in a loaded chunk. */
     void noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after);
+    /*! \a chunk left the world: its marks are forgotten. */
     void forgetChunk(QcChunkPos chunk);
-    // The marks of a loaded chunk (0 for one without).
+    /*! Returns the marks of the loaded \a chunk (0 for one without). */
     quint16 marksOf(QcChunkPos chunk) const;
-    // The marks of any chunk, counted from its blocks.
+    /*! Returns the marks of any \a chunk, counted from its blocks. */
     quint16 marksOf(const QcChunk &chunk) const;
-    // Counts changes of the marks of loaded chunks (QcChunkLoading looks at groups again on a change).
+    /*! Returns the count of changes of the marks of loaded chunks (QcChunkLoading looks at
+        groups again on a change). */
     quint64 changes() const { return m_changes; }
 
 private:

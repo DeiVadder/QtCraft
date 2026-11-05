@@ -27,7 +27,7 @@ const QcVillagerLook &lookOf(const QcContentRegistry &content, const QcVillagerS
 
 namespace QcVillagerLooks {
 
-QcAppearance appearanceOf(const QcContentRegistry &content, int mobType, const QcVillagerRecord &villager)
+QcAppearance appearanceOf(const QcContentRegistry &content, QcCreatureKindId mobType, const QcVillagerRecord &villager)
 {
     const QcVillagerSettings &settings = content.villagerSettingsOf(mobType);
     const QcVillagerLook &look = lookOf(content, settings, villager.style);

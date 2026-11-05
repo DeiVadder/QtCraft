@@ -35,7 +35,7 @@ ApplicationWindow {
         anchors.fill: parent
         focus: true
 
-        function gamepadCommand(command: string): bool {
+        function gamepadCommand(command: int): bool {
             return nav.takeCommand(command);
         }
 

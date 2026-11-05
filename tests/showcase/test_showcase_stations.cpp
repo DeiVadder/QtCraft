@@ -43,7 +43,7 @@ private:
                 {u"qtcraft:silverfish_wall"_s, {u"qtcraft:silverfish"_s}, 3, {}},
                 {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
                 {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
-                {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
+                {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s, u"qtcraft:squid"_s}, 9, {}},
                 {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}},
                 {u"qtcraft:river_station"_s, {u"qtcraft:salmon"_s}, 2, {}},
                 {u"qtcraft:delta_station"_s, {u"qtcraft:salmon"_s}, 1, {}}};
@@ -199,7 +199,7 @@ private slots:
         client.hello(u"Viewer"_s);
         QcTestUtil::pump();
 
-        const int golem = *m_content->mobIndex(u"qtcraft:sand_golem"_s);
+        const QcCreatureKindId golem = *m_content->mobKind(u"qtcraft:sand_golem"_s);
         const auto guarding = [&](const QcGuardSite &site) {
             return std::ranges::count_if(server.mobs().mobs(), [&](const QcCreature &mob) { return mob.type == golem && mob.guards && mob.guards->site == site.id; });
         };
@@ -258,7 +258,7 @@ private slots:
         QCOMPARE(*server.world().blockAt(door), qcAirBlockId);
 
         // The witch: confined in her hut, still inside after a while.
-        const int witchType = *m_content->mobIndex(u"qtcraft:witch"_s);
+        const QcCreatureKindId witchType = *m_content->mobKind(u"qtcraft:witch"_s);
         server.world().loadChunk(hut->origin().chunk());
         server.world().loadChunk(hut->toWorld(QcBlockPos{8, 0, 10}).chunk());
         for (int i = 0; i < 100; ++i) {

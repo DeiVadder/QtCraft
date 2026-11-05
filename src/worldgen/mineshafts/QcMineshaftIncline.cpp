@@ -3,6 +3,7 @@
 
 #include "worldgen/mineshafts/QcMineshaftIncline.h"
 
+#include "common/core/QcBlockBox.h"
 #include "worldgen/mineshafts/QcMineshaftSite.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -25,41 +26,28 @@ constexpr int sideReach = 4;
 // Unit steps of the sides north, east, south, west (QcMineshaftBlocks::sideOf).
 constexpr std::array<std::pair<int, int>, 4> sideSteps{std::pair{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
-// A box of cells, inclusive corners.
-struct Box
-{
-    QcBlockPos low;
-    QcBlockPos high;
-
-    bool meets(const Box &other) const
-    {
-        return low.x <= other.high.x && other.low.x <= high.x && low.y <= other.high.y && other.low.y <= high.y && low.z <= other.high.z
-               && other.low.z <= high.z;
-    }
-};
-
-Box boxOf(QcBlockPos a, QcBlockPos b)
+QcBlockBox boxOf(QcBlockPos a, QcBlockPos b)
 {
     return {{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)}, {std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)}};
 }
 
 // The open cells of a corridor (all three lanes, its full height).
-Box boxOf(const QcMineshaftPlan::Corridor &corridor)
+QcBlockBox boxOf(const QcMineshaftPlan::Corridor &corridor)
 {
-    const Box ends = boxOf(corridor.cell(0, -1), corridor.cell(corridor.length - 1, 1));
+    const QcBlockBox ends = boxOf(corridor.cell(0, -1), corridor.cell(corridor.length - 1, 1));
     return {ends.low, ends.high.offset(0, corridor.height() - 1, 0)};
 }
 
 // The open cells of a node.
-Box boxOf(const QcMineshaftPlan::Node &node)
+QcBlockBox boxOf(const QcMineshaftPlan::Node &node)
 {
     return {node.centre.offset(-node.half, 0, -node.half), node.centre.offset(node.half, node.height - 1, node.half)};
 }
 
 // The cells of the tunnel's step `along` with its walls, floor and a row above.
-Box shellOf(const QcMineshaftPlan::Corridor &tunnel, int along)
+QcBlockBox shellOf(const QcMineshaftPlan::Corridor &tunnel, int along)
 {
-    const Box lanes = boxOf(tunnel.cell(along, -2), tunnel.cell(along, 2));
+    const QcBlockBox lanes = boxOf(tunnel.cell(along, -2), tunnel.cell(along, 2));
     return {lanes.low.offset(0, -1, 0), lanes.high.offset(0, tunnel.height(), 0)};
 }
 
@@ -90,7 +78,7 @@ std::optional<QcMineshaftPlan::Corridor> QcMineshaftIncline::layout(const QcMine
 {
     const QcBlockPos centre = plan.nodes.constFirst().centre;
     const QcMineshaftPlan::Node &room = plan.nodes.at(exit.node);
-    const auto [dx, dz] = sideSteps.at(static_cast<std::size_t>(exit.side));
+    const auto [dx, dz] = sideSteps.at(QcMineshaftBlocks::slotOf(exit.side));
     QcMineshaftPlan::Corridor tunnel;
     tunnel.start = room.centre.offset(dx * (room.half + 1), 1, dz * (room.half + 1));
     tunnel.dx = dx;
@@ -122,7 +110,7 @@ std::optional<QcMineshaftPlan::Corridor> QcMineshaftIncline::layout(const QcMine
 
 bool QcMineshaftIncline::apart(const QcMineshaftPlan &plan, const QcMineshaftPlan::Corridor &tunnel, int from) const
 {
-    QList<Box> taken;
+    QList<QcBlockBox> taken;
     for (qsizetype i = 0; i < plan.nodes.size(); ++i) {
         if (i != from) {
             taken.append(boxOf(plan.nodes.at(i)));
@@ -137,8 +125,8 @@ bool QcMineshaftIncline::apart(const QcMineshaftPlan &plan, const QcMineshaftPla
         taken.append({origin, origin.offset(room.placement.sizeX() - 1, m_settings.levelSpacing, room.placement.sizeZ() - 1)});
     }
     for (int along = 0; along < tunnel.length; ++along) {
-        const Box shell = shellOf(tunnel, along);
-        if (std::ranges::any_of(taken, [&shell](const Box &box) { return box.meets(shell); })) {
+        const QcBlockBox shell = shellOf(tunnel, along);
+        if (std::ranges::any_of(taken, [&shell](const QcBlockBox &box) { return box.intersects(shell); })) {
             return false;
         }
     }
@@ -147,7 +135,7 @@ bool QcMineshaftIncline::apart(const QcMineshaftPlan &plan, const QcMineshaftPla
 
 bool QcMineshaftIncline::clear(QcMineshaftSite &site, const QcMineshaftPlan::Corridor &tunnel) const
 {
-    const Box all = boxOf(shellOf(tunnel, 0).low, shellOf(tunnel, tunnel.length - 1).high);
+    const QcBlockBox all = boxOf(shellOf(tunnel, 0).low, shellOf(tunnel, tunnel.length - 1).high);
     if (!site.clearOfDungeons(all.low, all.high)) {
         return false;
     }
@@ -211,7 +199,7 @@ QcMineshaftPlan::Entrance QcMineshaftIncline::entrance(const QcMineshaftPlan::No
     // Rails from the node's edge up the middle lane, rising towards the mouth; level at the last
     // step unless the ground in front is one higher.
     if (rails) {
-        const QcBlockId up = m_blocks.railsUp.at(static_cast<std::size_t>(QcMineshaftBlocks::sideOf(tunnel.dx, tunnel.dz)));
+        const QcBlockId up = m_blocks.railsUp.at(QcMineshaftBlocks::slotOf(QcMineshaftBlocks::sideOf(tunnel.dx, tunnel.dz)));
         const QcBlockId level = tunnel.dx != 0 ? m_blocks.railEastWest : m_blocks.railNorthSouth;
         entrance.blocks.append({room.centre.offset(tunnel.dx * room.half, 0, tunnel.dz * room.half), up});
         for (int along = 0; along < tunnel.length; ++along) {

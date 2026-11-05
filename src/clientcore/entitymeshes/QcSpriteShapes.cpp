@@ -5,6 +5,8 @@
 
 #include "clientcore/textures/QcTextureAtlas.h"
 
+#include <algorithm>
+
 std::shared_ptr<const QcSpriteShape> QcSpriteShapes::shape(const std::shared_ptr<const QcTextureAtlas> &atlas, const QString &texture)
 {
     if (!atlas) {
@@ -20,5 +22,5 @@ std::shared_ptr<const QcSpriteShape> QcSpriteShapes::shape(const std::shared_ptr
     if (found != m_shapes.constEnd()) {
         return *found;
     }
-    return *m_shapes.insert(texture, std::make_shared<const QcSpriteShape>(QcSpriteShape::fromImage(atlas->tile(texture, maxTexels))));
+    return *m_shapes.insert(texture, std::make_shared<const QcSpriteShape>(QcSpriteShape::fromImage(atlas->tile(texture, std::min(atlas->tileSize(), maxTexels)))));
 }

@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcGamepadOptions.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadRoster.h"
 #include "app/input/QcGamepadUi.h"
+#include "app/input/QcPadGlyphPainter.h"
 #include "app/models/QcItemIcons.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcGamepadOptions.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/input/QcVirtualGamepadSource.h"
@@ -22,6 +23,7 @@
 #include "worlds/QcLocalServerHost.h"
 
 #include <QGuiApplication>
+#include <QRegularExpression>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QScopeGuard>
@@ -500,8 +502,24 @@ private slots:
         QCOMPARE(notices.size(), 3);
         QCOMPARE(roster.texts().value(u"south"_s).toString(), u"✕"_s);
         QCOMPARE(roster.text(u"rightStickMove"_s), QcGamepadRoster::tr("Right stick"));
-        QCOMPARE(roster.glyph(roster.family(), u"north"_s).value(u"shape"_s).toString(), u"triangle"_s);
+        QCOMPARE(roster.glyph(roster.family(), u"north"_s).value(u"shape"_s).toInt(),
+                 static_cast<int>(QcPadGlyphPainter::Shape::Triangle));
         QCOMPARE(roster.glyph(u"xbox"_s, u"north"_s).value(u"label"_s).toString(), u"Y"_s);
+
+        // The painter takes the roster's glyphs: shape, width and colour of the letters.
+        QcPadGlyphPainter painter;
+        painter.setSymbol(roster.glyph(roster.family(), u"north"_s));
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Triangle);
+        QVERIFY(!painter.isWide());
+        painter.setSymbol(roster.glyph(u"xbox"_s, u"leftShoulder"_s));
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Shoulder);
+        QVERIFY(painter.isWide());
+        const QColor plain = painter.ink();
+        painter.setSymbol(roster.glyph(u"xbox"_s, u"south"_s));
+        QVERIFY(painter.ink() != plain);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown shape"_s));
+        painter.setSymbol({{u"shape"_s, 99}});
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Label);
         QVERIFY(roster.glyph(roster.family(), u"turbo"_s).isEmpty());
         QCOMPARE(roster.list().size(), 2);
         QVERIFY(roster.list().at(1).toMap().value(u"inUse"_s).toBool());
@@ -611,6 +629,53 @@ private slots:
         QVERIFY(options.editable());
         QVERIFY(options.settings().controllers.isEmpty());
         QVERIFY(source.disconnectPad(pad));
+    }
+
+    // The profiles to choose from: all controllers first, then the connected models (each once,
+    // without an unknown GUID), then the stored models not connected; the list follows connects,
+    // disconnects and stored profiles.
+    void profileChoicesMergeConnectedAndStored()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadOptions options;
+        QSignalSpy choicesChanged(&options, &QcGamepadOptions::profileChoicesChanged);
+        options.setSource(&source);
+        const auto values = [&options] {
+            QStringList list;
+            const QVariantList choices = options.profileChoices();
+            for (const QVariant &choice : choices) {
+                list.append(choice.toMap().value(u"value"_s).toString());
+            }
+            return list;
+        };
+        QCOMPARE(values(), QStringList{QString()});
+
+        const int first = source.connectPad(u"Own"_s, QcGamepadType::Xbox, ownGuid);
+        const int second = source.connectPad(u"Own again"_s, QcGamepadType::Xbox, ownGuid);
+        const int unknown = source.connectPad(u"No model"_s, QcGamepadType::Generic);
+        QCOMPARE(values(), (QStringList{QString(), ownGuid}));
+
+        options.makeOwnProfile(ownGuid, u"Own"_s);
+        options.makeOwnProfile(u"gone"_s, u"Gone"_s);
+        QCOMPARE(values(), (QStringList{QString(), ownGuid, u"gone"_s}));
+        const QVariantMap gone = options.profileChoices().constLast().toMap();
+        QCOMPARE(gone.value(u"name"_s).toString(), u"Gone"_s);
+        QVERIFY2(gone.value(u"text"_s).toString().contains(u"Gone"_s), qPrintable(gone.value(u"text"_s).toString()));
+        QCOMPARE(options.profileChoices().constFirst().toMap().value(u"text"_s).toString(), u"All controllers"_s);
+
+        const qsizetype before = choicesChanged.size();
+        QVERIFY(source.disconnectPad(first));
+        QVERIFY(source.disconnectPad(second));
+        QVERIFY(choicesChanged.size() >= before + 2);
+        // The model's own profile stays, now as not connected.
+        QCOMPARE(values(), (QStringList{QString(), ownGuid, u"gone"_s}));
+        QVERIFY(options.profileChoices().at(1).toMap().value(u"text"_s).toString() != u"Own"_s);
+        QVERIFY(source.disconnectPad(unknown));
+
+        // The texts follow a switch of the UI language.
+        const qsizetype beforeSwitch = choicesChanged.size();
+        options.retranslate();
+        QCOMPARE(choicesChanged.size(), beforeSwitch + 1);
     }
 
     // Giving a photo action the start button is refused with a message naming the pause menu, so a

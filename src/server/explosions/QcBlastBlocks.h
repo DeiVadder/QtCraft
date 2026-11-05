@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcWorldMessages.h"
 
@@ -16,51 +17,55 @@ class QcServerBlocks;
 class QcServerFire;
 class QcServerState;
 
-// The block side of explosions (decision E-602): the cells a blast breaks wait in order and are
-// worked through at most `explosionBlocksPerTick` per tick (QcServerLimits), the rest in the next
-// ticks; nothing is ever lost on the way, but a cell whose chunk left the world in the meantime is
-// skipped. A cell holding an explosive is not broken but handed back to be lit (a chain reaction); any
-// other cell becomes air quietly, drops its items with the blast's chance, lets the plants and an
-// infested block react, and with a blast that sets fires may catch fire. Doors and beds break as a
-// whole through QcServerBlocks. The clients get every cell set in a tick as one QcMsg::BlockBatch
-// (several when there are more than QcMsg::BlockBatch::maxUpdates), so they relight and mesh each
-// section once.
+/*! \brief The block side of explosions (decision E-602): the cells a blast breaks wait in order and
+    are worked through at most \c {explosionBlocksPerTick} per tick (QcServerLimits), the rest in
+    the next ticks; nothing is ever lost on the way, but a cell whose chunk left the world in the
+    meantime is skipped.
+
+    A cell holding an explosive is not broken but handed back to be lit (a chain reaction); any
+    other cell becomes air quietly, drops its items with the blast's chance, lets the plants and
+    an infested block react, and with a blast that sets fires may catch fire. Doors and beds
+    break as a whole through QcServerBlocks. The clients get every cell set in a tick as one
+    QcMsg::BlockBatch (several when there are more than QcMsg::BlockBatch::maxUpdates), so they
+    relight and mesh each section once. */
 class QcBlastBlocks
 {
 public:
-    // What a blast does to the cells it breaks: drops each with `dropChance` (the reference game's
-    // 1 / power) and, with `fire`, lights one in three that stands on a solid block.
+    /*! \brief What a blast does to the cells it breaks: drops each with \c {dropChance} (the
+        reference game's 1 / power) and, with \c {fire}, lights one in three that stands on a
+        solid block. */
     struct Effects
     {
+        /*! The cell of the blast's centre (its dice). */
         QcBlockPos centre;
+        /*! The chance that a broken cell drops its items. */
         double dropChance = 0.25;
+        /*! The blast lights fires. */
         bool fire = false;
-    };
-
-    // An explosive a blast reached, to be lit with `fuse` ticks.
-    struct Chained
-    {
-        QcBlockPos pos;
-        QcBlockId block = qcAirBlockId;
     };
 
     QcBlastBlocks(QcServerState &state, QcServerBlocks &blocks, QcServerFire &fire, const QcBlastTable &table);
 
+    /*! Adds the \a cells a blast with \a effects breaks to the waiting cells. */
     void add(const QList<QcBlockPos> &cells, const Effects &effects);
-    // Works through at most `budget` waiting cells; returns the explosives among them, still in place.
-    QList<Chained> take(qint64 budget);
-    // Sets `pos` to air without telling the clients yet (a lit explosive leaves its cell).
+    /*! Works through at most \a budget waiting cells; returns the explosives among them, still
+        in place. */
+    QList<QcPlacedBlock> take(qint64 budget);
+    /*! Sets \a pos to air without telling the clients yet (a lit explosive leaves its cell).
+        Returns \c false when the block could not be set. */
     bool clear(QcBlockPos pos);
-    // Sends the cells set since the last flush to the clients that have their chunks, then lights the
-    // fires of blasts with fire.
+    /*! Sends the cells set since the last flush to the clients that have their chunks, then
+        lights the fires of blasts with fire. */
     void flush();
 
-    // Forgets the waiting cells (the game rule explosionBlockDamage was switched off).
+    /*! Forgets the waiting cells (the game rule explosionBlockDamage was switched off). */
     void drop() { m_waiting.clear(); }
+    /*! Returns the number of waiting cells. */
     qsizetype waiting() const { return static_cast<qsizetype>(m_waiting.size()); }
+    /*! Returns the blocks broken since the server started. */
     quint64 broken() const { return m_broken; }
 
-    // `updates` cut into batches of at most `most` updates each, in order.
+    /*! Returns \a updates cut into batches of at most \a most updates each, in order. */
     static QList<QcMsg::BlockBatch> pieces(const QList<QcMsg::BlockUpdate> &updates, qsizetype most);
 
 private:

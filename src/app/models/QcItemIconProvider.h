@@ -5,10 +5,10 @@
 
 #include <QHash>
 #include <QImage>
-#include <QMutex>
 #include <QQuickImageProvider>
 #include <QSize>
 
+#include <mutex>
 #include <utility>
 
 // Serves item icons to QML as image://items/<item name>?g=<generation> (QcItemIconUrls builds the
@@ -29,7 +29,8 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    QMutex m_mutex;
+    // The GUI thread hands the icons to Qt Quick's image loader threads under this mutex.
+    std::mutex m_mutex;
     QHash<QString, QImage> m_icons;
     QHash<std::pair<QString, QSize>, QImage> m_scaled;
 };

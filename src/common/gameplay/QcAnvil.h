@@ -65,8 +65,8 @@ struct Result
 /*! Returns the levels each level of \a enchantment costs when merged, from its weight as the
     reference's rarity: 1 (weight 10 or more), 2 (5 or more), 4 (2 or more), else 8. */
 [[nodiscard]] int costPerLevel(const QcEnchantmentDefinition &enchantment);
-/*! \a text as a custom name (QcNameText::clean: without control and format characters, trimmed),
-    cut between graphemes to at most QcItemData::maxNameLength UTF-16 units. */
+/*! Returns \a text as a custom name (QcNameText::clean: without control and format characters,
+    trimmed), cut between graphemes to at most QcItemData::maxNameLength UTF-16 units. */
 [[nodiscard]] QString nameFrom(const QString &text);
 
 } // namespace QcAnvil

@@ -13,37 +13,42 @@ class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
 
-// The enchanting table's screen in the server (decision E-864), as in the reference game: using a
-// table opens it; the player puts an item into the item slot (machineInputSlot) and lapis lazuli
-// into the lapis slot (machineFuelSlot) and sees three offers, whose levels depend on the
-// bookshelves around the table (QcEnchantingTable::shelvesAround) and whose enchantments follow from
-// the player's enchantment seed. Taking offer n (0–2) needs its level, costs n + 1 levels and n + 1
-// lapis (nothing in creative mode), enchants the item and draws a new seed. The screen closes when
-// the table is gone, out of reach, the player died or became a spectator; the slots then go back.
+/*! \brief The enchanting table's screen in the server (decision E-864), as in the reference game:
+    using a table opens it; the player puts an item into the item slot (machineInputSlot) and lapis
+    lazuli into the lapis slot (machineFuelSlot) and sees three offers, whose levels depend on the
+    bookshelves around the table (QcEnchantingTable::shelvesAround) and whose enchantments follow
+    from the player's enchantment seed.
+
+    Taking offer n (0–2) needs its level, costs n + 1 levels and n + 1 lapis (nothing in creative
+    mode), enchants the item and draws a new seed. The screen closes when the table is gone, out
+    of reach, the player died or became a spectator; the slots then go back. */
 class QcServerEnchanting
 {
 public:
     QcServerEnchanting(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcBlockScreens &screens);
-    // The closer registered with QcBlockScreens refers to this object.
+    /*! The closer registered with QcBlockScreens refers to this object. */
     QcServerEnchanting(const QcServerEnchanting &) = delete;
     QcServerEnchanting &operator=(const QcServerEnchanting &) = delete;
     ~QcServerEnchanting() = default;
 
-    // Opens the screen of the table at `pos`; false when it is no enchanting table. Any other screen
-    // closes; the same table again keeps its slots.
+    /*! Opens the screen of the table at \a pos for \a client. Returns \c false when it is no
+        enchanting table. Any other screen closes; the same table again keeps its slots. */
     bool open(QcServerClient &client, QcBlockPos pos);
-    // Takes offer `request.slot` when the player can pay for it; the client gets the slots either way.
+    /*! Takes offer \c {request.slot} of \a request when the player \a client can pay for it; the
+        client gets the slots either way. */
     void choose(QcServerClient &client, QcMsg::ChooseEnchantment request);
-    // Gives the slots back and forgets the screen; `notify` tells the client (the server closed it).
+    /*! Gives the slots back to \a client and forgets the screen; \a notify tells the client (the
+        server closed it). */
     void close(QcServerClient &client, bool notify);
-    // Once per tick: closes the screens that may not stay open.
+    /*! Once per tick: closes the screens that may not stay open. */
     void update();
 
-    // The offers the player sees at the open table now; none without an open table. Draws the
-    // player's seed on first use.
+    /*! Returns the offers the player \a client of \a state sees at the open table now; none
+        without an open table. Draws the player's seed on first use. */
     [[nodiscard]] static QcEnchantingTable::Offers offersFor(QcServerState &state, QcServerClient &client);
-    // The state message for the open table (slots, shelves, clues); QcServerInventory::send sends it
-    // with every inventory state while the table is open.
+    /*! Returns the state message for the table \a client has open in \a state (slots, shelves,
+        clues);
+        QcServerInventory::send sends it with every inventory state while the table is open. */
     [[nodiscard]] static QcMsg::EnchantingState stateOf(QcServerState &state, QcServerClient &client);
 
 private:

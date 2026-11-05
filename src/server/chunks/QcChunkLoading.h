@@ -19,68 +19,87 @@ class QcBlockUpdateQueue;
 class QcServerBlocks;
 class QcServerState;
 
-// Which chunks the server keeps loaded and how they come and go (decisions E-374 to E-377). Needed
-// are the chunks around the players (their view and what was sent to them), forced chunks
-// (/forceload), the spawn chunks (game rule spawnChunkRadius), the chunks of chunk loader blocks and
-// those with a load ticket of the circuits. Chunks come in whole groups (QcChunkGroups): an arrived
-// chunk waits until every chunk of its group has arrived, then all enter the world in the same tick.
-// A group leaves the world when none of its chunks is needed any more: everything attached to its
-// chunks (block entities, scheduled ticks, the circuits' and hoppers' work, pending block updates and
-// planned flow steps, burning fires, entities and whether the chunk got its animals) is taken out and handed to the
-// storage with the blocks if they changed (QcChunkIo), and comes back when the chunk is read again.
+/*! \brief Which chunks the server keeps loaded and how they come and go (decisions E-374 to E-377).
+
+    Needed are the chunks around the players (their view and what was sent to them), forced
+    chunks (/forceload), the spawn chunks (game rule spawnChunkRadius), the chunks of chunk
+    loader blocks and those with a load ticket of the circuits. Chunks come in whole groups
+    (QcChunkGroups): an arrived chunk waits until every chunk of its group has arrived, then all
+    enter the world in the same tick. A group leaves the world when none of its chunks is needed
+    any more: everything attached to its chunks (block entities, scheduled ticks, the circuits'
+    and hoppers' work, pending block updates and planned flow steps, burning fires, entities and
+    whether the chunk got its animals) is taken out and handed to the storage with the blocks if
+    they changed (QcChunkIo), and comes back when the chunk is read again. */
 class QcChunkLoading
 {
 public:
-    // Numbers for the debug display and /worldinfo.
+    /*! \brief Numbers for the debug display and /worldinfo. */
     struct Numbers
     {
+        /*! Chunks in the world. */
         qsizetype loaded = 0;
+        /*! Chunks the storage holds. */
         qsizetype stored = 0;
+        /*! Chunks being read or generated, or waiting for the rest of their group. */
         qsizetype waiting = 0;
+        /*! Loaded groups of more than one chunk, and the size of the largest. \qcshared */
         qsizetype groups = 0;
         qsizetype largestGroup = 0;
+        /*! Groups found larger than the limit. */
         qsizetype oversizeGroups = 0;
+        /*! Load tickets now, and tickets refused since the world opened. \qcshared */
         qsizetype tickets = 0;
         quint64 refusedTickets = 0;
+        /*! Forced chunks (/forceload). */
         qsizetype forced = 0;
+        /*! Spawn chunks. */
         qsizetype spawnChunks = 0;
+        /*! Chunk loader blocks in the world. */
         qsizetype loaders = 0;
+        /*! Chunks handed to the storage and not written yet. */
         qsizetype unsaved = 0;
+        /*! Chunks that left the world since it opened. */
         quint64 unloaded = 0;
     };
 
     QcChunkLoading(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates);
 
-    // Starts loading a chunk and the chunks of its group (background; streaming, tickets).
+    /*! Starts loading the chunk \a pos and the chunks of its group (background; streaming,
+        tickets). */
     void request(QcChunkPos pos);
-    // Loads a chunk and the chunks of its group now (QcServerWorld::loadChunk).
+    /*! Loads the chunk \a pos and the chunks of its group now (QcServerWorld::loadChunk). */
     void loadGroupNow(QcChunkPos pos);
-    // The tick of the next simulation step: the current one from its start until it has simulated,
-    // the next one after that and between ticks. What a chunk keeps is counted from it, so a chunk
-    // that leaves after a tick and comes back before one goes on with exactly the tick that follows
-    // (decision E-374).
+    /*! Returns the tick of the next simulation step: the current one from its start until it has
+        simulated, the next one after that and between ticks. What a chunk keeps is counted from
+        it, so a chunk that leaves after a tick and comes back before one goes on with exactly
+        the tick that follows (decision E-374). */
     quint64 upcomingTick() const;
-    // QcServer: a tick started (after the clock advanced) or simulated.
+    /*! QcServer: a tick started (after the clock advanced). */
     void beginTick() { m_simulated = false; }
+    /*! QcServer: the tick simulated. */
     void noteSimulated() { m_simulated = true; }
-    // Lets the chunks that arrived in the background into the world, whole groups at a time.
+    /*! Lets the chunks that arrived in the background into the world, whole groups at a time. */
     void admitArrivals();
-    // Asks the circuits' waiting chunks for load tickets and lets tickets run out (once per tick).
+    /*! Asks the circuits' waiting chunks for load tickets and lets tickets run out (once per
+        tick). */
     void updateTickets();
-    // Loads the chunks of entities that are in no loaded chunk (`strays`, from QcEntities::settle).
+    /*! Loads the chunks of entities that are in no loaded chunk (\a strays, from
+        QcEntities::settle). */
     void requestStrays(const QSet<QcChunkPos> &strays);
-    // Takes the groups no one needs out of the world (end of a tick).
+    /*! Takes the groups no one needs out of the world (end of a tick). */
     void unloadUnneeded();
-    // Loads the chunks of stray entities now, so a save sees every entity in a loaded chunk.
+    /*! Loads the chunks of stray entities now, so a save sees every entity in a loaded chunk. */
     void loadStraysNow();
-    // What a save keeps of every loaded chunk (blocks only of changed ones; they count as unchanged
-    // then). The caller hands it to QcChunkIo::save.
+    /*! Returns what a save keeps of every loaded chunk (blocks only of changed ones; they count as
+        unchanged then). The caller hands it to QcChunkIo::save. */
     QList<QcChunkIo::Departure> departuresForSave();
-    // The chunks needed now (see the class).
+    /*! Returns the chunks needed now (see the class). */
     QSet<QcChunkPos> neededChunks() const;
-    // The group of a loaded chunk as it is now (debug display).
+    /*! Returns the group of the loaded chunk \a pos as it is now (debug display). */
     QcChunkGroups::Group groupOf(QcChunkPos pos) const;
+    /*! Returns the numbers as they are now. */
     Numbers numbers() const;
+    /*! Returns the load tickets of the circuits. */
     const QcChunkTickets &tickets() const { return m_tickets; }
 
 private:

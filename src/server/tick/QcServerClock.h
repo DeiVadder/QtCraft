@@ -5,19 +5,23 @@
 
 #include <QtGlobal>
 
-// The time of the server (decision E-249): simulated ticks, and the real time as the players live
-// it. Each tick adds the real time it stands for (QcTickScheduler::tickRealNs); input budgets, rate
-// limits, autosaves, confirmations and the pace of messages to the clients follow the players' time
-// at every tick rate and during a sprint, the simulation follows the ticks.
+/*! \brief The time of the server (decision E-249): simulated ticks, and the real time as the
+    players live it.
+
+    Each tick adds the real time it stands for (QcTickScheduler::tickRealNs); input budgets, rate
+    limits, autosaves, confirmations and the pace of messages to the clients follow the players'
+    time at every tick rate and during a sprint, the simulation follows the ticks. */
 class QcServerClock
 {
 public:
+    /*! Returns the number of ticks counted. */
     quint64 tick() const { return m_tick; }
+    /*! Returns the players' time in nanoseconds: the real time all ticks stood for. */
     qint64 playerTimeNs() const { return m_playerTimeNs; }
-    // The real time the latest tick stood for.
+    /*! Returns the real time the latest tick stood for. */
     qint64 lastTickNs() const { return m_lastTickNs; }
 
-    // A new tick that stands for `realNs` of the players' time.
+    /*! A new tick that stands for \a realNs of the players' time. */
     void advance(qint64 realNs)
     {
         ++m_tick;

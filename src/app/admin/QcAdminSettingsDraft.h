@@ -35,6 +35,8 @@ public:
     static std::optional<qint64> parsed(const QString &text, const QcMsg::AdminSettings::Setting &setting);
 
     bool isEmpty() const { return m_values.isEmpty(); }
+    // The drafted value of the rule (`limit` false) or limit `key`; std::nullopt when unchanged.
+    std::optional<qint64> value(bool limit, const QString &key) const;
     // {id: value} for QML.
     QVariantMap values() const;
     QList<Entry> entries() const;

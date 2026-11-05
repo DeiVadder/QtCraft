@@ -25,6 +25,14 @@ inline constexpr double playerWidth = 0.6;
 inline constexpr double playerHeight = 1.8;
 /*! Height of the player's eyes above the feet. */
 inline constexpr double playerEyeHeight = 1.62;
+/*! Height of the eyes of a player who crouches (sneaks on foot, not flying or riding) above the
+    feet, as in the role model (decision E-961). The collision box keeps playerHeight. */
+inline constexpr double sneakEyeHeight = 1.27;
+/*! Returns the height of the player's eyes above the feet while he \a crouches or stands. */
+[[nodiscard]] constexpr double eyeHeight(bool crouches)
+{
+    return crouches ? sneakEyeHeight : playerEyeHeight;
+}
 
 /*! Downward acceleration out of liquids (m/s²). */
 inline constexpr double gravity = 28.0;
@@ -36,6 +44,10 @@ inline constexpr double jumpVelocity = 9.0;
 inline constexpr double walkSpeed = 4.3;
 inline constexpr double sprintSpeed = 5.6;
 inline constexpr double sneakSpeed = 1.3;
+/*! The share of a player's horizontal speed left while he holds an item in use (draws a bow,
+    decision E-986), as in the role model: it scales walking, sneaking, swimming and flying
+    alike. */
+inline constexpr double usingItemFactor = 0.2;
 /*! How fast the horizontal velocity approaches the wished one, per second (the share
     acceleration x dt per tick), on the ground and in the air. \qcshared */
 inline constexpr double groundAcceleration = 20.0;
@@ -69,6 +81,12 @@ inline constexpr double flyAcceleration = 10.0;
 
 /*! Bodies on the ground walk up steps this high without jumping (slabs, stairs). */
 inline constexpr double stepHeight = 0.5;
+/*! Edge guard of a sneaking player (decision E-961): a move on the ground is shortened per axis
+    in steps of \c {sneakEdgeStep} while the body moved by it would find nothing to stand on within
+    \c {sneakEdgeDepth} below its feet (the role model's 0.6 m: a slab or stair step down is
+    fine, a full block is not). \qcshared */
+inline constexpr double sneakEdgeDepth = 0.6;
+inline constexpr double sneakEdgeStep = 0.05;
 
 /*! On ladders: speed upwards while pushing against the wall or jumping, and the fastest slide
     down. \qcshared */
@@ -171,7 +189,8 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
 
 /*! \brief What an entity wants for one tick: \c {wish} is the horizontal movement direction (length
     <= 1), \c {speed} its target speed, \c {jump} jumps on ground, swims up in water or climbs,
-    \c {hold} keeps a climber in place, \c {slideDrag} is how it slides on slippery ground
+    \c {hold} keeps a climber in place, \c {keepsToEdges} stops it at edges it would drop off
+    (a sneaking player, sneakEdgeDepth), \c {slideDrag} is how it slides on slippery ground
     (footDrag, itemDrag, coastDrag).
 
     A body that \c {climbsWalls} (spiders) holds on to any wall it touches (clingsToWall) as to a
@@ -194,6 +213,8 @@ struct Steering
     bool climbsWalls = false;
     /*! Horizontal velocity added to this tick's move only (see the struct). */
     QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! On the ground, stops at edges deeper than sneakEdgeDepth instead of dropping off. */
+    bool keepsToEdges = false;
 };
 
 /*! Returns the share of its horizontal velocity a body on ground of \a slipperiness keeps per

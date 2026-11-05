@@ -81,6 +81,7 @@ void syncDirectory(const QString &directory)
     std::error_code error;
     std::filesystem::rename(QFileInfo(from).filesystemFilePath(), QFileInfo(to).filesystemFilePath(), error);
     if (error) {
+        // NOLINT(qc-std-string): std::error_code::message() only returns a std::string.
         return qcError(u"Cannot replace %1: %2"_s.arg(to, QString::fromStdString(error.message())));
     }
     return {};
@@ -114,6 +115,7 @@ QcStatus QcChunkStore::open()
     for (auto &index : m_indexes) {
         index.clear();
     }
+    setGenerated({QcGeneratedChunks{}, QcGeneratedChunks::fileName.toString(), false, {}});
     if (m_directory.isEmpty()) {
         return {};
     }
@@ -122,7 +124,12 @@ QcStatus QcChunkStore::open()
         return finished;
     }
     removeStaged();
-    return readIndexes();
+    if (const QcStatus read = readIndexes(); !read) {
+        return read;
+    }
+    // The index only adds knowledge: a damaged one does not keep the world from opening (E-946).
+    setGenerated(QcGeneratedChunks::open(m_directory));
+    return {};
 }
 
 QcStatus QcChunkStore::finishJournal()
@@ -404,11 +411,11 @@ QcStatus QcChunkStore::runSteps(const QList<Step> &steps)
             }
             continue;
         }
-        if (m_renamesLeft == 0) {
-            m_renamesLeft = -1;
+        if (renamesLeft() == 0) {
+            failRenamesAfter(-1);
             return qcError(u"Cannot replace %1: rename refused (test)"_s.arg(target));
         }
-        m_renamesLeft = std::max(-1, m_renamesLeft - 1);
+        failRenamesAfter(std::max(-1, renamesLeft() - 1));
         if (const QcStatus renamed = renameFile(target + u".next"_s, target); !renamed) {
             return renamed;
         }
@@ -508,6 +515,10 @@ QcStatus QcChunkStore::commit(const QList<WholeFile> &files)
     for (const WholeFile &file : files) {
         m_pendingFiles.insert(file.name, file.content);
     }
+    // The whole index goes with the save (decision E-946): what an earlier save wrote stays in it.
+    if (generated().isUnsaved()) {
+        m_pendingFiles.insert(generatedFile(), generated().bytes());
+    }
     const QcResult<Staging> staging = stageAll();
     // The journal makes the save happen: before it, the previous save is whole.
     const QcStatus result = staging ? writeJournal(staging->steps) : QcStatus(qcError(staging.error()));
@@ -537,6 +548,7 @@ QcStatus QcChunkStore::commit(const QList<WholeFile> &files)
         m_pending[static_cast<std::size_t>(k)].clear();
     }
     m_pendingFiles.clear();
+    markGeneratedSaved();
     return {};
 }
 

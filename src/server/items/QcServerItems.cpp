@@ -19,7 +19,7 @@ QcServerItems::QcServerItems(QcServerState &state, QcServerSounds &sounds, QcSer
 QList<QcItemEntity> QcServerItems::tick()
 {
     const double dt = QcPhysics::tickDuration;
-    QList<QcItemEntityManager::PlayerView> players;
+    QList<QcPickupPlayer> players;
     for (const auto &client : m_state.clients()) {
         // Spectators pick up nothing (decision E-730).
         if (client->hasBody()) {

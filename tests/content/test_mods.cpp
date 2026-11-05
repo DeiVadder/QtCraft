@@ -101,7 +101,7 @@ void copyExampleMod(const QString &target)
     }
 }
 
-const QList<QcPackReference> base{{u"qtcraft"_s, u"QtCraft"_s, u"0.1.0"_s}};
+const QList<QcPackReference> base{{u"qtcraft"_s, u"QtCraft"_s, u"1.0.0"_s}};
 
 } // namespace
 
@@ -555,7 +555,7 @@ private slots:
         QVERIFY(content.blockId(u"rubies:ruby_block"_s));
         QVERIFY(content.itemId(u"rubies:ruby_block"_s)); // block item created for mod blocks too
         QVERIFY(content.itemId(u"rubies:ruby_sword"_s));
-        QVERIFY(content.mobIndex(u"rubies:crystal_beetle"_s));
+        QVERIFY(content.mobKind(u"rubies:crystal_beetle"_s));
         QVERIFY(std::ranges::any_of(content.worldgen().ores(), [](const QcOreDefinition &ore) { return ore.block == u"rubies:ruby_ore"_s; }));
         QCOMPARE(content.translations().translate(u"item.rubies.ruby"_s, u"de"_s), u"Rubin"_s);
         QVERIFY(content.assets().texture(u"rubies:ruby"_s));
@@ -682,10 +682,10 @@ private slots:
         const auto plains = std::ranges::find(content->worldgen().biomes(), u"qtcraft:plains"_s, &QcBiomeDefinition::name);
         QVERIFY(plains != content->worldgen().biomes().end());
         // Among the flowers of its vegetation (decision E-814), next to the base game's grass.
-        QVERIFY(std::ranges::any_of(plains->vegetation.flowers.plants, [](const QcVegetationPlant &plant) {
+        QVERIFY(std::ranges::any_of(plains->vegetation.flowers.plants, [](const QcWeightedBlockName &plant) {
             return plant.block == u"rubies:ruby_rose"_s;
         }));
-        QVERIFY(std::ranges::any_of(plains->vegetation.grass.plants, [](const QcVegetationPlant &plant) {
+        QVERIFY(std::ranges::any_of(plains->vegetation.grass.plants, [](const QcWeightedBlockName &plant) {
             return plant.block == u"qtcraft:tall_grass"_s;
         }));
 
@@ -791,6 +791,9 @@ private slots:
         writeJson(tweak + u"/mobs/boar.json"_s, {{u"name"_s, u"tweak:boar"_s},
                                                  {u"model"_s, QJsonArray{boarPart}},
                                                  {u"breeding"_s, QJsonObject{{u"food"_s, QJsonArray{u"tweak:acorn"_s}}}}});
+        writeJson(tweak + u"/mobs/eel.json"_s, {{u"name"_s, u"tweak:eel"_s},
+                                                {u"model"_s, QJsonArray{boarPart}},
+                                                {u"aquatic"_s, QJsonObject{{u"ink"_s, u"tweak:no_ink"_s}, {u"cap"_s, u"large"_s}}}});
         writeJson(tweak + u"/recipes/ghost.json"_s,
                   {{u"name"_s, u"ghost"_s}, {u"type"_s, u"shapeless"_s}, {u"ingredients"_s, QJsonArray{u"nothing"_s}},
                    {u"result"_s, QJsonObject{{u"item"_s, u"qtcraft:stick"_s}}}});
@@ -807,7 +810,7 @@ private slots:
         QVERIFY(std::ranges::none_of(warnings, [](const QString &w) { return w.contains(u"glass"_s); }));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"unknown item 'tweak:nothing'"_s); }));
         for (const QString &expected : {u"unknown fruit 'tweak:no_fruit'"_s, u"unknown tillsInto 'tweak:no_soil'"_s,
-                                        u"unknown breeding food 'tweak:acorn'"_s}) {
+                                        u"unknown breeding food 'tweak:acorn'"_s, u"unknown ink texture 'tweak:no_ink'"_s}) {
             QVERIFY2(std::ranges::any_of(warnings, [&expected](const QString &w) { return w.contains(expected); }), qPrintable(warnings.join(u'\n')));
         }
     }

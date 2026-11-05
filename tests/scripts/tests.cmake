@@ -48,6 +48,23 @@ if(NOT WIN32)
     add_test(NAME script_check_member_access
         COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_member_access.py ${PROJECT_SOURCE_DIR}/scripts/check-member-access.py)
     set_tests_properties(script_check_member_access PROPERTIES TIMEOUT 60)
+    # Samples of the duplicate finder (clones, blocks repeated back to back, table rows, markers) and of the
+    # QML heuristics (decision E-942), held in memory.
+    add_test(NAME script_check_duplicates COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-duplicates.py --self-test)
+    set_tests_properties(script_check_duplicates PROPERTIES TIMEOUT 60)
+    # Samples of the duplicate-struct finder (members with macros, initialisers and template arguments, markers),
+    # decision E-975.
+    add_test(NAME script_check_duplicate_structs COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-duplicate-structs.py --self-test)
+    set_tests_properties(script_check_duplicate_structs PROPERTIES TIMEOUT 60)
+    add_test(NAME script_check_qml COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-qml.py --self-test)
+    set_tests_properties(script_check_qml PROPERTIES TIMEOUT 60)
+    # The ratchet of their counts (rise, fall, equal, unknown rule, missing baseline; row 79.48b).
+    add_test(NAME script_qc_ratchet COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/qc_ratchet.py --self-test)
+    set_tests_properties(script_qc_ratchet PROPERTIES TIMEOUT 60)
+    # Samples of the checks of E-379 (decision E-948): the text rules in memory, the AST rules through
+    # clang-query on a sample file in a temporary folder (skipped without Homebrew LLVM).
+    add_test(NAME script_check_ast COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-ast.py --self-test)
+    set_tests_properties(script_check_ast PROPERTIES TIMEOUT 120)
     # The large file check of the index, a commit and a push (decision E-933) in a throwaway git
     # repository with a bare remote, run from a pre-push hook like tools/githooks/pre-push.
     add_test(NAME script_check_large_files

@@ -6,6 +6,7 @@
         "hurt": "mob.iron_golem.hurt",
         "death": "mob.iron_golem.death"
     },
+    "breathesUnderWater": true,
     "health": 100,
     "width": 1.4,
     "height": 2.7,

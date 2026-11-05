@@ -8,6 +8,7 @@
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/core/QcConsole.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
 #include "common/diagnostics/QcHealthLog.h"
 #include "common/gameplay/QcKeyBindings.h"
@@ -41,7 +42,6 @@
 #include <QTimer>
 
 #include <cstdio>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -108,7 +108,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return false;
     }
     if (parser.isSet(u"help"_s)) {
-        std::print("{}", parser.helpText().toStdString());
+        QcConsole::print(parser.helpText());
         exitSoon(0);
         return true;
     }

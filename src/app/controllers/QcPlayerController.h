@@ -3,8 +3,11 @@
 
 #pragma once
 
+#include "app/controllers/QcAdvancementQueue.h"
+#include "app/inventory/QcSlotActions.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
+#include "app/models/QcPointsRow.h"
 
 #include <QObject>
 #include <QString>
@@ -14,22 +17,29 @@
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QcSettingsController;
+class QcSlotCursor;
 struct QcSessionParts;
 
 // The local player for the HUD and the inventory screens (GameController.player): inventory and
-// crafting, the open machine or chest, health and food.
-class QcPlayerController : public QObject
+// crafting, the open machine or chest, health and food; the slot screens' hand (slotCursor) acts
+// through its slot requests.
+class QcPlayerController : public QObject, public QcSlotActions
 {
     Q_OBJECT
     QML_ANONYMOUS
+    Q_MOC_INCLUDE("app/inventory/QcSlotCursor.h")
     Q_PROPERTY(QcInventoryModel *inventory READ inventory CONSTANT FINAL)
+    // What clicks on the slot screens do (picking up, carrying, putting down).
+    Q_PROPERTY(QcSlotCursor *slotCursor READ slotCursor CONSTANT FINAL)
     Q_PROPERTY(double health READ health NOTIFY healthChanged FINAL)
     Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
     // On fire (decision E-393): the HUD shows flames at the bottom of the view.
     Q_PROPERTY(bool burning READ burning NOTIFY healthChanged FINAL)
-    // Status effects (decision E-450): {name, label, icon, colour, seconds, level, levelName} each; the hearts
-    // take the colour of the first effect that tints them ("" for the usual red).
+    // Status effects (decision E-450): {name, label, icon, colour, seconds, level, levelName, text}
+    // each, `text` the line of the HUD (the name, the level in Roman numerals from II on and the
+    // time left as m:ss); the hearts take the colour of the first effect that tints them ("" for
+    // the usual red).
     Q_PROPERTY(QVariantList effects READ effects NOTIFY healthChanged FINAL)
     Q_PROPERTY(QString heartColour READ heartColour NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
@@ -37,6 +47,18 @@ class QcPlayerController : public QObject
     // Experience (decision E-398): the level and the share of the way to the next one (0..1).
     Q_PROPERTY(int experienceLevel READ experienceLevel NOTIFY experienceChanged FINAL)
     Q_PROPERTY(double experienceProgress READ experienceProgress NOTIFY experienceChanged FINAL)
+    // The status rows of the HUD show (hearts, food, experience; armour and air within them): the
+    // game mode can hurt the player, so not in creative or spectator mode (decisions E-282, E-730).
+    Q_PROPERTY(bool statusShown READ statusShown NOTIFY gameModeChanged FINAL)
+    // The status rows' icons, two points each: ten hearts, ten food icons and, while something is
+    // worn, ten armour icons (decision E-234). The air bubbles, one each, show with the eyes under
+    // water and until the breath is full again (decision E-955).
+    Q_PROPERTY(QcPointsRow *heartRow READ heartRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *foodRow READ foodRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *armourRow READ armourRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *airRow READ airRow CONSTANT FINAL)
+    // The item the food icons show (empty until the content has it).
+    Q_PROPERTY(QString foodIcon READ foodIcon NOTIFY contentChanged FINAL)
     // Armour points of what the player wears (0..20 count, decision E-234).
     Q_PROPERTY(int armour READ armour NOTIFY craftingChanged FINAL)
     Q_PROPERTY(int maxArmour READ maxArmour CONSTANT FINAL)
@@ -47,6 +69,9 @@ class QcPlayerController : public QObject
     Q_PROPERTY(QString armourIcon READ armourIcon NOTIFY contentChanged FINAL)
     // The open machine (furnace screen): its name, the share of fuel left and of the item done.
     Q_PROPERTY(QString machineLabel READ machineLabel NOTIFY machineChanged FINAL)
+    // The content name of the open machine's block ("qtcraft:smoker") for the handbook key; empty
+    // for a backpack, a cart or no machine.
+    Q_PROPERTY(QString machineBlock READ machineBlock NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerSlots READ containerSlots NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerColumns READ containerColumns NOTIFY machineChanged FINAL)
@@ -55,17 +80,22 @@ class QcPlayerController : public QObject
     Q_PROPERTY(int containerHeldSlot READ containerHeldSlot NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
+    // The handbook page of the crafting table while its 3x3 grid is open, else empty.
+    Q_PROPERTY(QString craftingHandbookTarget READ craftingHandbookTarget NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
     // The creative mode (decision E-282) and its item catalogue (decision E-286).
     Q_PROPERTY(bool creative READ creative NOTIFY gameModeChanged FINAL)
     // The spectator mode (decision E-730): no hotbar, health, food or hand.
     Q_PROPERTY(bool spectator READ spectator NOTIFY gameModeChanged FINAL)
     Q_PROPERTY(QcCreativeItemModel *creativeItems READ creativeItems CONSTANT FINAL)
+    // The toasts of reached advancements (decision E-923).
+    Q_PROPERTY(QcAdvancementQueue *advancementToasts READ advancementToasts CONSTANT FINAL)
 
 public:
     QcPlayerController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
 
     QcInventoryModel *inventory() const { return m_inventory; }
+    QcSlotCursor *slotCursor() const { return m_slotCursor; }
     double health() const;
     double maxHealth() const;
     bool dead() const;
@@ -76,12 +106,19 @@ public:
     int maxFood() const;
     int experienceLevel() const;
     double experienceProgress() const;
+    bool statusShown() const;
+    QcPointsRow *heartRow() const { return m_heartRow; }
+    QcPointsRow *foodRow() const { return m_foodRow; }
+    QcPointsRow *armourRow() const { return m_armourRow; }
+    QcPointsRow *airRow() const { return m_airRow; }
+    QString foodIcon() const;
     int armour() const;
     static int maxArmour();
     static int equipmentFirstRow() { return QcInventoryModel::equipmentFirstRow; }
     QStringList armourPlaceholders() const;
     QString armourIcon() const;
     QString machineLabel() const { return m_machineLabel; }
+    QString machineBlock() const { return m_machineBlock; }
     // Slots per row of the open container's screen (a dispenser's 3 x 3, a hopper's row of 5).
     int containerColumns() const { return m_containerColumns; }
     double machineBurn() const;
@@ -90,30 +127,38 @@ public:
     int containerHeldSlot() const;
     double machineProgress() const;
     int craftingSize() const;
+    QString craftingHandbookTarget() const;
     QVariantList craftableRecipes() const { return m_craftableRecipes; }
     bool creative() const;
     bool spectator() const;
     QcCreativeItemModel *creativeItems() const { return m_creativeItems; }
+    QcAdvancementQueue *advancementToasts() const { return m_advancementToasts; }
 
-    // The local player reached `advancement` just now (QcClientSession::advancementReached): emits
-    // advancementReached with what the toast shows.
+    // The local player reached `advancement` just now (QcClientSession::advancementReached): queues
+    // its toast with the texts translated; `special` for goals and challenges, which the toast sets
+    // apart.
     void announceAdvancement(const QString &advancement);
 
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
-    // Rows of QcInventoryModel; count 0 moves the whole stack.
-    Q_INVOKABLE void moveItem(int from, int to, int count = 0) const;
-    // Shift-click on a row: the server moves the stack where it belongs; on the crafting result
-    // it crafts as often as possible.
-    Q_INVOKABLE void quickMove(int row) const;
-    Q_INVOKABLE void takeCraftingResult() const;
     Q_INVOKABLE void craftRecipe(const QString &recipe) const;
     Q_INVOKABLE void respawn() const;
+    // The game mode refused a mining or use (QcClientSession::actionRefused): tells the HUD why.
+    void reportRefusal();
+
+    // The slot requests (QcSlotActions); the open container's held slot is locked.
+    int lockedRow() const override { return containerHeldSlot(); }
+    // Rows of QcInventoryModel; count 0 moves the whole stack.
+    void moveItem(int from, int to, int count) const override;
+    // Shift-click on a row: the server moves the stack where it belongs; on the crafting result
+    // it crafts as often as possible.
+    void quickMove(int row) const override;
+    void takeCraftingResult() const override;
     // Creative mode: puts `count` items from the catalogue into the slot of a row of the inventory
     // model (onto the same item up to its stack size, else replacing it); row -1 adds them to the
     // inventory. The server refuses it in other modes.
-    Q_INVOKABLE void putCreativeItem(int row, const QString &itemName, int count) const;
+    void putCreativeItem(int row, const QString &itemName, int count) const override;
     // Creative mode: empties the slot of a row (the bin).
-    Q_INVOKABLE void clearSlot(int row) const;
+    void clearSlot(int row) const override;
 
     // Item and recipe names of the session's content in the current language.
     void useContent();
@@ -128,24 +173,35 @@ signals:
     void healthChanged();
     void foodChanged();
     void experienceChanged();
+    void airChanged();
     void machineChanged();
     void craftingChanged();
     void gameModeChanged();
     // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
-    // every QcClientSession::refusalReportTicks; the HUD shows a short notice.
-    void actionRefused();
-    // An advancement was reached (decision E-923): {name, title, description, icon, heading, special}
-    // with the texts translated; `special` for goals and challenges, which the toast sets apart.
-    void advancementReached(const QVariantMap &advancement);
+    // every QcRefusalThrottle::reportTicks; the HUD shows `text` (translated) as a notice.
+    void actionRefused(const QString &text);
 
 private:
     void updateCraftableRecipes();
+    // The status rows from the session's health, food, armour, air and game mode.
+    void updateStatusRows();
+    // Without signals: nameOpenMachine() sets them before updateMachine() notifies.
+    void setMachineLabel(const QString &label) { m_machineLabel = label; }
+    void setMachineBlock(const QString &block) { m_machineBlock = block; }
+    void setContainerColumns(int columns) { m_containerColumns = columns; }
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     QcInventoryModel *m_inventory = nullptr;
     QcCreativeItemModel *m_creativeItems = nullptr;
+    QcSlotCursor *m_slotCursor = nullptr;
+    QcAdvancementQueue *m_advancementToasts = nullptr;
+    QcPointsRow *m_heartRow = nullptr;
+    QcPointsRow *m_foodRow = nullptr;
+    QcPointsRow *m_armourRow = nullptr;
+    QcPointsRow *m_airRow = nullptr;
     QString m_machineLabel;
+    QString m_machineBlock;
     int m_containerColumns = 9;
     QVariantList m_craftableRecipes;
 };

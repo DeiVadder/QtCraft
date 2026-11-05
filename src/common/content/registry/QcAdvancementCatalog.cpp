@@ -32,7 +32,7 @@ QStringList unknownNames(const QcContentRegistry &content, const QcAdvancementCr
     if (!c.block.isEmpty() && !hasItemOrTag(content, c.block) && !content.blockId(c.block)) {
         unknown.append(c.block);
     }
-    if (!c.entity.isEmpty() && !content.mobIndex(c.entity)) {
+    if (!c.entity.isEmpty() && !content.mobKind(c.entity)) {
         unknown.append(c.entity);
     }
     if (!c.biome.isEmpty() && !content.worldgen().biome(c.biome)) {
@@ -59,7 +59,7 @@ bool handbookTargetExists(const QcContentRegistry &content, const QString &link)
         return content.blockId(name).has_value();
     }
     if (kind == u"mob"_s) {
-        return content.mobIndex(name).has_value();
+        return content.mobKind(name).has_value();
     }
     return content.worldgen().biome(name) != nullptr;
 }

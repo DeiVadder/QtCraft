@@ -7,6 +7,7 @@
 #include "app/admin/QcAdminViews.h"
 #include "common/core/QcCommandCategory.h"
 
+#include <QRegularExpression>
 #include <QSignalSpy>
 #include <QTest>
 
@@ -151,9 +152,47 @@ private slots:
         m_controller->stop();
         QCOMPARE(sent<QcMsg::AdminRequest>().constLast().kind, Kind::Stop);
         QCOMPARE(sent<QcMsg::AdminRequest>().constLast().arguments, QStringList{u"confirm"_s});
+    }
+
+    // Names and lines are checked and trimmed here (decision E-688); the pages only bind isName and
+    // isLine. What is none is refused with a warning and sends nothing.
+    void namesAndLinesAreCheckedHere()
+    {
+        QVERIFY(QcAdminController::isName(u" Bob "_s));
+        QVERIFY(!QcAdminController::isName(u"   "_s));
+        QVERIFY(!QcAdminController::isName(u"Bob Smith"_s));
+        QVERIFY(!QcAdminController::isName(QString(QcAdminController::nameLength() + 1, u'a')));
+        // Code points, as the server counts them: 20 characters outside the BMP are 40 UTF-16 units.
+        QString wide;
+        for (int i = 0; i < 20; ++i) {
+            wide += QString::fromUcs4(U"\U0001F600", 1);
+        }
+        QCOMPARE(wide.size(), 40);
+        QVERIFY(QcAdminController::isName(wide));
+        QVERIFY(!QcAdminController::isName(wide + wide));
+        QVERIFY(QcAdminController::isLine(u" hello there "_s));
+        QVERIFY(!QcAdminController::isLine(u" \t "_s));
+        QVERIFY(!QcAdminController::isLine(QString(QcAdminController::textLength() + 1, u'a')));
+
+        QVERIFY(m_controller->whitelistAdd(u"  Anna "_s));
+        QCOMPARE(sent<QcMsg::AdminRequest>().constLast().kind, Kind::WhitelistAdd);
+        QCOMPARE(sent<QcMsg::AdminRequest>().constLast().arguments, QStringList{u"Anna"_s});
+        QVERIFY(m_controller->sendChat(u" hi all "_s));
+        QCOMPARE(sent<QcMsg::AdminRequest>().constLast().arguments, QStringList{u"hi all"_s});
+
         const qsizetype before = sent<QcMsg::AdminRequest>().size();
-        m_controller->sendChat(u"   "_s);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"refused \"  \" for request"_s));
+        QVERIFY(!m_controller->op(u"  "_s));
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"refused \"Bob Smith\" for request"_s));
+        QVERIFY(!m_controller->kick(u"Bob Smith"_s, u"loud"_s));
+        QCOMPARE(m_controller->noticeKind(), QcAdminController::Notice::Refused);
+        QVERIFY(!m_controller->notice().isEmpty());
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"refused the chat line \"   \""_s));
+        QVERIFY(!m_controller->sendChat(u"   "_s));
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"refused the command line \"\""_s));
+        QVERIFY(!m_controller->runCommand({}));
         QCOMPARE(sent<QcMsg::AdminRequest>().size(), before);
+        QCOMPARE(m_controller->output()->count(), 0);
     }
 
     void answersAndRefusalsBecomeTheNotice()
@@ -216,6 +255,12 @@ private slots:
         QCOMPARE(help.value(u"next"_s).toString(), u"<player>"_s);
         QVERIFY(m_controller->help(u"/nonsense"_s).isEmpty());
         QCOMPARE(m_controller->help(u"/time set "_s).value(u"next"_s).toString(), u"day|night"_s);
+
+        // Tab takes the first completion only when it says more than the line.
+        QCOMPARE(m_controller->tabCompletion(u"/time set n"_s), u"/time set night"_s);
+        QCOMPARE(m_controller->tabCompletion(u" /time set night "_s), QString());
+        QCOMPARE(m_controller->tabCompletion(u"/nonsense"_s), QString());
+        QCOMPARE(m_controller->tabCompletion(QString()), QString());
     }
 
     // The words of a structure come from the command's names (decision E-911).
@@ -437,8 +482,13 @@ private slots:
         m_controller->changeSetting(true, u"fires"_s, 5);
         QCOMPARE(m_controller->draft().value(u"limit:signalBudget"_s).toLongLong(), 5000000000LL);
         QCOMPARE(m_controller->draft().size(), 3);
+        // The rows show the draft's values, else the server's.
+        QCOMPARE(m_controller->valueOf(true, u"signalBudget"_s), 5000000000LL);
+        QCOMPARE(m_controller->valueOf(false, u"keepInventory"_s), 1);
+        QCOMPARE(m_controller->valueOf(true, u"unknown"_s), 0);
         // Back to the server's value: out of the draft.
         QVERIFY(m_controller->changeSettingText(true, u"fires"_s, u"100"_s));
+        QCOMPARE(m_controller->valueOf(true, u"fires"_s), 100);
         QVERIFY(m_controller->changeSettingText(true, u"fires"_s, u"300"_s));
 
         // The pause menu closed for another reason: the draft waits for the next open.

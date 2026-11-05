@@ -17,14 +17,15 @@ namespace QcGeneratorVersion {
 
 /*! The version of worlds saved without one (before decision E-922). */
 inline constexpr int unversioned = 1;
-/*! The oldest version this game still generates, and the version of new worlds. \qcshared */
+/*! The oldest version this game still generates. */
 inline constexpr int oldest = 1;
-inline constexpr int current = 1;
+/*! The newest version this game generates: the version of new worlds. */
+inline constexpr int current = 2;
 /*! The newest frozen version, 0 for none: a version freezes when a release build ships it, and
     its output is kept for good from then on. A newer one is open: it may still change (its
     checksums are recorded anew) until a release ships it (decision E-922). Set to \c {current}
-    with each release; release 0.1.0 froze version 1. */
-inline constexpr int lastFrozen = 1;
+    with each release; release 0.1.0 froze version 1, release 1.0.0 version 2. */
+inline constexpr int lastFrozen = 2;
 /*! Highest number world.json may name (a newer game's version) before it counts as damaged. */
 inline constexpr int maxStored = 1000;
 

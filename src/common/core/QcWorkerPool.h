@@ -41,6 +41,7 @@ public:
 private:
     void run();
 
+    // The submitting thread and the worker threads hand jobs over under this mutex.
     std::mutex m_mutex;
     std::condition_variable m_wake;
     std::condition_variable m_idle;

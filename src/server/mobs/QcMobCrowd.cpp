@@ -39,7 +39,7 @@ void QcMobCrowd::setThresholds(qint64 throttled, qint64 idle)
     m_idle = static_cast<int>(idle);
 }
 
-void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions)
+void QcMobCrowd::build(std::span<const QcCreature> mobs, QcMobKinds definitions)
 {
     // Emptied without giving back their storage: the crowd is counted anew every tick.
     m_cells.clear();

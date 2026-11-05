@@ -15,36 +15,53 @@
 
 #include <optional>
 
-// Who may join a world and who is an operator (decision E-244): operators, banned names and the
-// whitelist, kept in access.json in the world directory and written at once with every change.
-// Names are cleaned like player names (QcProfileValidation) and compared without case. Entries are
-// bound to the fingerprint of a player's identity (decision E-253): an entry with a fingerprint
-// counts only for that identity, a ban with one also under other names; an entry without one
-// counts by name and takes the fingerprint of the first player of that name who logs in. A damaged
-// file is copied aside and the world opens with empty lists but a switched-on whitelist, so nobody
-// banned slips in until an operator has looked at it; when no copy could be made, nothing is
-// written over the damaged file. Without a world directory the lists live in memory only.
+/*! \brief Who may join a world and who is an operator (decision E-244): operators, banned names and
+    the whitelist, kept in access.json in the world directory and written at once with every change.
+
+    Names are cleaned like player names (QcProfileValidation) and compared without case. Entries
+    are bound to the fingerprint of a player's identity (decision E-253): an entry with a
+    fingerprint counts only for that identity, a ban with one also under other names; an entry
+    without one counts by name and takes the fingerprint of the first player of that name who
+    logs in. A damaged file is copied aside and the world opens with empty lists but a
+    switched-on whitelist, so nobody banned slips in until an operator has looked at it; when no
+    copy could be made, nothing is written over the damaged file. Without a world directory the
+    lists live in memory only. */
 class QcAccessList
 {
 public:
+    /*! The name of the file in the world directory. */
     static constexpr QStringView fileName = u"access.json";
-    // Format 2 has the fingerprints; files of other formats count as damaged (decision E-356: no
-    // migration before the first release).
+    /*! Format 2 has the fingerprints; files of other formats count as damaged (decision E-356:
+        no migration before the first release). */
     static constexpr int formatVersion = 2;
-    // Per list; further entries of a file are left out with a warning.
+    /*! Per list; further entries of a file are left out with a warning. */
     static constexpr qsizetype maxEntries = 4096;
+    /*! The largest file read (a larger one counts as damaged). */
     static constexpr qint64 maxFileBytes = qint64{1024} * 1024;
+    /*! The longest reason and banning name kept for a ban. */
     static constexpr qsizetype maxReasonLength = 128;
 
-    enum class List { Operators, Bans, Whitelist };
+    /*! The three lists. */
+    enum class List {
+        /*! The operators. */
+        Operators,
+        /*! The banned names. */
+        Bans,
+        /*! The names on the whitelist. */
+        Whitelist
+    };
 
+    /*! \brief An entry of the operators or the whitelist. */
     struct Entry
     {
+        /*! The player name as written. */
         QString name;
-        // QcLoginCrypto::fingerprint of the player's identity; empty until known.
+        /*! QcLoginCrypto::fingerprint of the player's identity; empty until known. */
         QString fingerprint;
     };
 
+    /*! \brief A banned name: the name, the reason, who banned it, since when, and the
+        fingerprint of the banned identity (empty until known). \qcfields */
     struct Ban
     {
         QString name;
@@ -54,47 +71,69 @@ public:
         QString fingerprint;
     };
 
-    // Reads <directory>/access.json (an empty directory keeps the lists in memory). Never fails:
-    // the problems are the warnings it returns. `initialOperators` (server configuration) are
-    // operators too; invalid names among them are left out with a warning. Runs once, on a fresh
-    // list, when the server starts (QcServer).
+    /*! Reads access.json in \a directory (an empty directory keeps the lists in memory). Never
+        fails: the problems are the warnings it returns. \a initialOperators (server
+        configuration) are operators too; invalid names among them are left out with a warning.
+        Runs once, on a fresh list, when the server starts (QcServer). */
     [[nodiscard]] QStringList open(const QString &directory, const QStringList &initialOperators);
 
-    // The comparison key of a name: cleaned and case-folded.
+    /*! Returns the comparison key of \a name: cleaned and case-folded. */
     static QString key(const QString &name);
-    // Whether adding `name` to the list would go beyond maxEntries (a listed name always fits).
+    /*! Returns whether adding \a name to \a list would go beyond maxEntries (a listed name
+        always fits). */
     bool isFullFor(List list, const QString &name) const;
-    // The file was damaged when the world opened; the copy of it (empty when none could be made,
-    // then changes are not written).
+    /*! Returns whether the file was damaged when the world opened. */
     bool wasDamaged() const { return m_damaged; }
+    /*! Returns the copy of the damaged file (empty when none could be made, then changes are not
+        written). */
     const QString &damagedCopy() const { return m_damagedCopy; }
 
-    // Operators of the server configuration count for the identity of their first login, which
-    // bind() keeps in the file (configOperators), and by name until then.
+    /*! Returns whether \a name with the identity \a fingerprint is an operator. Operators of
+        the server configuration count for the identity of their first login, which bind() keeps
+        in the file (configOperators), and by name until then. */
     bool isOperator(const QString &name, const QString &fingerprint) const;
+    /*! Returns the names of the operators. */
     QStringList operators() const;
-    // Each returns whether the list changed; an error when it changed but could not be written.
-    // A known fingerprint binds the entry to that identity.
+    /*! Makes \a name an operator or no longer one (\a isOperator); a known \a fingerprint binds
+        the entry to that identity. Returns whether the list changed; an error when it changed but
+        could not be written. */
     [[nodiscard]] QcResult<bool> setOperator(const QString &name, bool isOperator, const QString &fingerprint = {});
 
+    /*! Returns the ban of \a name; nullptr when it is not banned by name. */
     const Ban *ban(const QString &name) const;
+    /*! Returns every ban. */
     QList<Ban> bans() const { return m_bans.values(); }
-    // Bans a name, or gives a banned name the new reason.
+    /*! Bans the name of \a ban, or gives a banned name the new reason. Returns whether the list
+        changed (\c false also when the list is full, isFullFor()); an error when it changed but
+        could not be written. */
     [[nodiscard]] QcResult<bool> addBan(const Ban &ban);
+    /*! Lifts the ban of \a name. Returns whether the list changed; an error when it changed but
+        could not be written. */
     [[nodiscard]] QcResult<bool> removeBan(const QString &name);
 
+    /*! Returns whether the whitelist is switched on. */
     bool whitelistEnabled() const { return m_whitelistEnabled; }
+    /*! Returns whether \a name with the identity \a fingerprint is on the whitelist. */
     bool isWhitelisted(const QString &name, const QString &fingerprint) const;
+    /*! Returns the names on the whitelist. */
     QStringList whitelist() const;
+    /*! Switches the whitelist on or off (\a enabled). Returns whether that changed; an error when
+        it changed but could not be written. */
     [[nodiscard]] QcResult<bool> setWhitelistEnabled(bool enabled);
+    /*! Puts \a name on the whitelist or takes it off (\a listed); a known \a fingerprint binds
+        the entry to that identity. Returns whether the list changed; an error when it changed but
+        could not be written. */
     [[nodiscard]] QcResult<bool> setWhitelisted(const QString &name, bool listed, const QString &fingerprint = {});
 
-    // A player logged in with this identity: entries of his name without a fingerprint get it.
+    /*! The player \a name logged in with the identity \a fingerprint: entries of his name without
+        a fingerprint get it. Returns whether a list changed; an error when it could not be
+        written. */
     [[nodiscard]] QcResult<bool> bind(const QString &name, const QString &fingerprint);
 
-    // Why a player may not join: banned by name or fingerprint (operators too), or not on the
-    // switched-on whitelist (operators pass it); the local player always may. The reason is a
-    // translatable disconnect (QcChatText); std::nullopt when he may.
+    /*! Returns why the player \a name with the identity \a fingerprint may not join: banned by
+        name or fingerprint (operators too), or not on the switched-on whitelist (operators pass
+        it); the local player (\a local) always may. The reason is a translatable disconnect
+        (QcChatText); std::nullopt when he may. */
     [[nodiscard]] std::optional<QcMsg::Disconnect> refusal(const QString &name, const QString &fingerprint, bool local) const;
 
 private:

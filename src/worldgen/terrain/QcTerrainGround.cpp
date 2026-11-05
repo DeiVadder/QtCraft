@@ -25,7 +25,14 @@ double QcTerrainGenerator::riverFreezeShare(const Column &column) const
     if (isRiverBiome(column.biome)) {
         return 1.0;
     }
-    if (column.riverHalfWidth <= 0.0 || column.riverDistance >= QcRiverField::reach) {
+    // The ramp is measured with the distance estimated with the river noise's bend, which grows by
+    // about a block per block, up to `reach` of that distance. Generator version 1 keeps the plain
+    // distance, which grows by several blocks per block where the noise flattens, so its threshold
+    // steps there and where that distance passes `reach` (decision E-969).
+    const bool plain = version() < 2;
+    const double distance = plain ? column.riverDistance : column.riverNearDistance;
+    const double halfWidth = plain ? column.riverHalfWidth : column.riverNearHalfWidth;
+    if (halfWidth <= 0.0 || distance >= QcRiverField::reach) {
         return 0.0;
     }
     // A river runs on through shallow still water (its line and bed go on there): the water along
@@ -33,8 +40,8 @@ double QcTerrainGenerator::riverFreezeShare(const Column &column) const
     // the river fades out (dry land, the end of a ring: its half width goes to 0) and towards the
     // depth where the river no longer reaches the ground. All three fall smoothly, so the threshold
     // has no step along a line.
-    const double across = 1.0 - QcTerrainMath::smoothstep(column.riverHalfWidth, column.riverHalfWidth + riverFreezeRamp, column.riverDistance);
-    const double presence = QcTerrainMath::smoothstep(0.0, QcRiverField::narrowestHalfWidth, column.riverHalfWidth);
+    const double across = 1.0 - QcTerrainMath::smoothstep(halfWidth, halfWidth + riverFreezeRamp, distance);
+    const double presence = QcTerrainMath::smoothstep(0.0, QcRiverField::narrowestHalfWidth, halfWidth);
     const bool exact = std::lround(column.exactHeight) == column.height;
     const double depth = seaLevel() - (exact ? column.exactHeight : static_cast<double>(column.height));
     return across * presence * (1.0 - QcTerrainMath::smoothstep(QcRiverField::deepestBed, QcRiverField::reachDown, depth));

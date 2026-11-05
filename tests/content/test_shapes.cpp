@@ -395,6 +395,12 @@ private slots:
             big.parts.append(shapePart);
         }
         QVERIFY(!content.registerShape(big).has_value());
+        // A name without a namespace is refused like a block's.
+        QcShapeDefinition unnamed;
+        unnamed.name = u"plain"_s;
+        unnamed.parts.append(QcShapePart{});
+        unnamed.parts.first().boxes = {QcAabb{{0, 0, 0}, {1, 0.5, 1}}};
+        QVERIFY(!content.registerShape(unnamed).has_value());
 
         // 1024 states of five properties and 16 parts of 4 boxes each, every part switched by its own
         // property value: about a thousand distinct variants per block. Blocks are refused with a

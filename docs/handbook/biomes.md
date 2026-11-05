@@ -38,7 +38,7 @@ Light forest of birches.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -65,7 +65,7 @@ Sand and sandstone with cacti and little else.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-flower_valley"></a>Flower Valley
 
@@ -100,7 +100,7 @@ A rare, sheltered valley in temperate land: a broad grassy floor between low hil
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-forest"></a>Forest
 
@@ -134,7 +134,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest_steppe"></a>Forest Steppe
 
@@ -168,7 +168,7 @@ Warm, dry grassland between the plains and the desert: tall grass with scattered
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-frozen_river"></a>Frozen River
 
@@ -190,7 +190,7 @@ A river through cold land (tundra, snowy taiga, taiga): ice covers it, its bed a
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-frozen_delta"></a>Frozen River Delta
 
@@ -216,7 +216,7 @@ A river delta in cold land (tundra, snowy taiga, taiga): bare islands of gravel 
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-jungle"></a>Jungle
 
@@ -250,7 +250,7 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-jungle_edge"></a>Jungle Edge
 
@@ -284,7 +284,7 @@ The thin edge of the jungle towards temperate forests: single jungle trees, many
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-lush_delta"></a>Lush River Delta
 
@@ -317,7 +317,7 @@ A river delta in warm, wet land (jungle, jungle edge, swamp): green islands of g
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-mountains"></a>Mountains
 
@@ -353,7 +353,7 @@ High rocky peaks with snow on top.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-plains"></a>Plains
 
@@ -387,7 +387,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-river"></a>River
 
@@ -408,7 +408,7 @@ The water of the winding rivers that run through the land down to the sea or int
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-delta"></a>River Delta
 
@@ -437,7 +437,7 @@ Where a wide river runs through flat land into the sea, it spreads into a fan of
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Snowy Taiga
 
@@ -465,7 +465,7 @@ Cold spruce forest on snow between the tundra and the taiga: fewer and smaller t
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
@@ -499,7 +499,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Firefly](creatures.md#mob-qtcraft-firefly), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Firefly](creatures.md#mob-qtcraft-firefly), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -531,7 +531,7 @@ Cool spruce forest with snow on the ground.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -558,4 +558,4 @@ Cold flat land under snow; its water freezes.
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)

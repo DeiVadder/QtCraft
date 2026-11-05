@@ -24,11 +24,12 @@ class QcServerBlocks;
 struct QcServerClient;
 class QcServerState;
 
-// Opening and saving the world of the server: world info, chunks with their block entities and
-// entities (through QcChunkIo, read when they are needed), pending block updates and players. A
-// save hands everything of the loaded chunks and world.json and blockupdates.qce to QcChunkIo, which
-// writes them with the unloaded chunks waiting in memory as one (decision E-373); players are written
-// at once.
+/*! \brief Opening and saving the world of the server: world info, chunks with their block entities
+    and entities (through QcChunkIo, read when they are needed), pending block updates and players.
+
+    A save hands everything of the loaded chunks and world.json and blockupdates.qce to
+    QcChunkIo, which writes them with the unloaded chunks waiting in memory as one (decision
+    E-373); players are written at once. */
 class QcServerPersistence
 {
 public:
@@ -36,41 +37,51 @@ public:
     ~QcServerPersistence();
     Q_DISABLE_COPY_MOVE(QcServerPersistence)
 
-    // Name of the lock file in the world directory, held while the world is open (decision E-093).
+    /*! Name of the lock file in the world directory, held while the world is open (decision
+        E-093). */
     static constexpr QStringView lockFileName = u"session.lock";
 
-    // Opens or creates the world directory given in the config (no-op without one).
+    /*! Opens or creates the world directory given in the config (no-op without one); returns an
+        error when it cannot. */
     [[nodiscard]] QcStatus open();
-    // Writes everything and waits for it; the first error is returned (see QcServer::save). No-op
-    // without storage.
+    /*! Writes everything and waits for it; returns the first error (see QcServer::save).
+        No-op without storage. */
     [[nodiscard]] QcStatus save();
-    // The same in the background (autosave, a player leaving): the tick does not wait for the disk;
-    // results come from takeNewFailures().
+    /*! The same in the background (autosave, a player leaving): the tick does not wait for the
+        disk; results come from takeNewFailure(). */
     void saveInBackground();
-    // Takes the results of finished saves; returns the failure that started a streak of failed saves
-    // (one report per streak, decision E-378).
+    /*! Takes the results of finished saves; returns the failure that started a streak of failed
+        saves (one report per streak, decision E-378). */
     std::optional<QcStatus> takeNewFailure();
-    // A save in the background has not finished yet (at most one autosave runs at a time).
+    /*! Returns whether a save in the background has not finished yet (at most one autosave runs
+        at a time). */
     bool saveRunning() const { return m_running > 0; }
-    // The latest save failed (no early save until one succeeds).
+    /*! Returns whether the latest save failed (no early save until one succeeds). */
     bool savesFailing() const { return m_failing; }
-    // More unloaded chunks wait in memory than the limit unsavedChunks allows.
+    /*! Returns whether more unloaded chunks wait in memory than the limit unsavedChunks allows. */
     bool manyUnsavedChunks() const;
-    // Waits until everything handed to the storage is written (tests, shutting down).
+    /*! Waits until everything handed to the storage is written (tests, shutting down). */
     void waitForStorage();
+    /*! Returns whether the world is kept in a directory. */
     bool hasStorage() const { return m_storage.has_value(); }
+    /*! Returns the player \a name as the latest save handed his file over or as it is on disk
+        (never saved: no player); without storage a player who was never saved. */
     [[nodiscard]] QcPlayerStorage::Result readPlayer(const QString &name) const;
-    // Problems found while opening the world (missing mods, unknown blocks); it still opened.
+    /*! Returns the problems found while opening the world (missing mods, unknown blocks); it
+        still opened. */
     const QStringList &openWarnings() const { return m_openWarnings; }
-    // Logs the warnings and keeps them for the players.
+    /*! Logs \a warnings and keeps them for the players. */
     void noteWarnings(const QStringList &warnings);
-    // Whether open() failed because another server (in this or another process) has the world open.
+    /*! Returns whether open() failed because another server (in this or another process) has the
+        world open. */
     bool worldInUse() const { return m_worldInUse; }
-    // Whether open() failed because the world comes from an older development version.
+    /*! Returns whether open() failed because the world comes from an older development version. */
     bool worldTooOld() const { return m_worldTooOld; }
-    // The damaged per-region file that made open() refuse the world (QcDamagedFile).
+    /*! What a damaged file held (QcDamagedPart). */
     using DamagedPart = QcDamagedPart;
+    /*! A damaged file of a world and what it held (QcDamagedFile). */
     using DamagedFile = QcDamagedFile;
+    /*! Returns the damaged per-region file that made open() refuse the world. */
     const DamagedFile &damagedFile() const { return m_damagedFile; }
 
 private:

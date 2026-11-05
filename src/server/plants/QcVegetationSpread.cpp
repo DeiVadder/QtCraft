@@ -51,9 +51,9 @@ std::optional<QcBlockPos> QcVegetationSpread::walk(const QcServerWorld &world, Q
     return pos;
 }
 
-QList<QcVegetationSpread::Planting> QcVegetationSpread::spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const
+QList<QcPlacedBlock> QcVegetationSpread::spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const
 {
-    QList<Planting> plantings;
+    QList<QcPlacedBlock> plantings;
     QSet<QcBlockPos> planned;
     for (int attempt = 0; attempt < attempts; ++attempt) {
         const std::optional<QcBlockPos> end = walk(world, target.offset(0, 1, 0), attempt / attemptsPerStep, random);

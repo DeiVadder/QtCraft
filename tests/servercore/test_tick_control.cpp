@@ -59,7 +59,7 @@ private slots:
     void aFrozenWorldStandsStillButPlayersMove()
     {
         join();
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         const quint32 mob = m_server->mobs().spawn(zombie, m_client->motion.position + QcVec3{3.0, 0.0, 0.0}, 900001);
         const QcBlockPos water = m_feet.offset(-2, 0, -2);
 
@@ -218,7 +218,7 @@ private slots:
         config.worldDirectory = dir.path();
         config.autosaveSeconds = 1;
         join(config);
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         m_server->mobs().spawn(zombie, m_client->motion.position + QcVec3{3.0, 0.0, 0.0}, 900002, false, true);
         m_server->start();
         const quint64 autosaves = m_server->autosaveCount();
@@ -265,7 +265,7 @@ private slots:
         // A sprint skips game time; the sounds of its thousands of ticks would reach the clients as
         // one burst, so none are sent (decision E-249). Before and after it the crowd is heard.
         join();
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         quint32 id = 900100;
         for (int x = 3; x < 8; ++x) {
             for (int z = -2; z < 2; ++z) {

@@ -40,9 +40,9 @@ Item {
     property double makeStartMs: 0
     // The screen is closed but still loaded, waiting for the keep-alive time to run out (also while
     // preload keeps it).
-    readonly property bool keepingAlive: keepTimer.running
+    readonly property bool keepingAlive: keepAlive.running
     // True while the screen is loaded: shown, or closed less than keepAliveMs ago.
-    property bool live: shown
+    readonly property bool live: keepAlive.live
 
     visible: shown
 
@@ -57,26 +57,14 @@ Item {
     }
 
     function expireKeepAlive() {
-        keepTimer.stop();
-        live = shown;
+        keepAlive.expire();
     }
 
-    onShownChanged: {
-        if (shown) {
-            keepTimer.stop();
-            live = true;
-        } else if (keepAliveMs > 0) {
-            keepTimer.restart();
-        } else {
-            live = false;
-        }
-    }
+    KeepAlive {
+        id: keepAlive
 
-    Timer {
-        id: keepTimer
-
+        shown: lazy.shown
         interval: lazy.keepAliveMs
-        onTriggered: lazy.expireKeepAlive()
     }
 
     // Hidden until the screen is complete (see above).

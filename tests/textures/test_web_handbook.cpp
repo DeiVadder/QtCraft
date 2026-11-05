@@ -191,7 +191,7 @@ private slots:
     void exportedDataMatchesTheHandbook()
     {
         QFETCH(QString, language);
-        const QcHandbookWeb::File file = QcHandbookWeb::data(build(*m_content, language));
+        const QcHandbookMarkdown::File file = QcHandbookWeb::data(build(*m_content, language));
         QCOMPARE(file.name, language + u".json"_s);
         QVERIFY2(readData(file.name) == file.content, qPrintable(u"%1 differs from the handbook built here"_s.arg(file.name)));
     }
@@ -202,13 +202,13 @@ private slots:
         languages.sort();
         QCOMPARE(languages, (QStringList{u"de"_s, u"en"_s}));
 
-        const QcHandbookWeb::File list = QcHandbookWeb::languages({u"en"_s, u"de"_s});
+        const QcHandbookMarkdown::File list = QcHandbookWeb::languages({u"en"_s, u"de"_s});
         QCOMPARE(readData(list.name), list.content);
         const QJsonArray entries = QJsonDocument::fromJson(list.content).object().value(u"languages"_s).toArray();
         QCOMPARE(entries.at(0).toObject().value(u"name"_s).toString(), u"English"_s);
         QCOMPARE(entries.at(1).toObject().value(u"name"_s).toString(), u"Deutsch"_s);
 
-        const QcHandbookWeb::File theme = QcWebHandbookAssets::theme();
+        const QcHandbookMarkdown::File theme = QcWebHandbookAssets::theme();
         QCOMPARE(readData(theme.name), theme.content);
     }
 
@@ -218,7 +218,7 @@ private slots:
     {
         const QcTextureAtlas atlas = QcTextureAtlas::build(*m_content);
         const QcBlockRenderTable table(*m_content, atlas);
-        const QList<QcHandbookWeb::File> files =
+        const QList<QcHandbookMarkdown::File> files =
             QcWebHandbookAssets::iconSheet(QcItemIconSet::draw(*m_content, atlas, &table, QcWebHandbookAssets::iconSize));
         QCOMPARE(files.size(), 2);
         QCOMPARE(files[1].name, u"icons.json"_s);
@@ -319,7 +319,7 @@ private slots:
     void sheetPlacesIconsByNameAndScalesThem()
     {
         const QHash<QString, QImage> icons{{u"b"_s, solid(Qt::red, 64)}, {u"a"_s, solid(Qt::blue, 48)}};
-        const QList<QcHandbookWeb::File> files = QcWebHandbookAssets::iconSheet(icons);
+        const QList<QcHandbookMarkdown::File> files = QcWebHandbookAssets::iconSheet(icons);
         const QImage sheet = QImage::fromData(files[0].content, "PNG");
         QCOMPARE(sheet.size(), QSize(QcWebHandbookAssets::sheetColumns * 64, 64));
 

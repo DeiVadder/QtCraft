@@ -177,7 +177,13 @@ bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAcce
             return growTree(*giant, *corner, square, world, setBlock);
         }
     }
-    return growTree(m_trees[block], sapling, {sapling}, world, setBlock);
+    // Callers only grow saplings with a tree (m_trees.contains); operator[] would add an empty one.
+    const auto tree = m_trees.constFind(block);
+    Q_ASSERT_X(tree != m_trees.constEnd(), "QcPlantManager::grow", "sapling without a tree");
+    if (tree == m_trees.constEnd()) {
+        return false;
+    }
+    return growTree(*tree, sapling, {sapling}, world, setBlock);
 }
 
 std::optional<QcBlockPos> QcPlantManager::giantSquare(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world) const

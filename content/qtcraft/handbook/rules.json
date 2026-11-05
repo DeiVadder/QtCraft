@@ -1,7 +1,7 @@
 {
     "name": "rules",
     "order": 120,
-    "icon": "bedrock",
+    "icon": "paper",
     "sections": [
         "rules"
     ]

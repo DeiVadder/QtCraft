@@ -6,6 +6,7 @@
         "hurt": "mob.sand_golem.hurt",
         "death": "mob.sand_golem.death"
     },
+    "breathesUnderWater": true,
     "health": 60,
     "width": 1.4,
     "height": 2.7,

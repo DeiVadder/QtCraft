@@ -1,5 +1,6 @@
 {
     "name": "jungle_edge",
+    "icon": "melon",
     "mapColour": "#86b828",
     "deltaBiome": "lush_delta",
     "temperature": 0.77,

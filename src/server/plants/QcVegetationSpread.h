@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "common/world/QcVegetationTable.h"
 
@@ -16,29 +17,28 @@
 class QcContentRegistry;
 class QcServerWorld;
 
-// What bone meal grows on a block that `growsVegetation` (a grass block, decision E-814), as in the
-// reference: `attempts` tries each walk from the cell above it up to attempt / 16 random steps (one
-// block sideways, sometimes one up or down) over cells whose block below also grows vegetation and
-// that are not solid; a try ending in air plants a flower of the biome there with one chance in
-// `flowerOdds` (if the biome has flowers), otherwise its grass. The biome is the generator's at the
-// end of the walk, the terrain's `vegetationBiome` where the generator names none.
+/*! \brief What bone meal grows on a block that \c {growsVegetation} (a grass block, decision
+    E-814), as in the reference: \c {attempts} tries each walk from the cell above it up to attempt
+    / 16 random steps (one block sideways, sometimes one up or down) over cells whose block below
+    also grows vegetation and that are not solid; a try ending in air plants a flower of the biome
+    there with one chance in \c {flowerOdds} (if the biome has flowers), otherwise its grass.
+
+    The biome is the generator's at the end of the walk, the terrain's \c {vegetationBiome} where
+    the generator names none. */
 class QcVegetationSpread
 {
 public:
+    /*! The tries per use, the tries per step a walk may take (try number / attemptsPerStep
+        steps) and the odds of a flower, as described above. \qcshared */
     static constexpr int attempts = 128;
     static constexpr int attemptsPerStep = 16;
     static constexpr int flowerOdds = 8;
 
-    struct Planting
-    {
-        QcBlockPos pos;
-        QcBlockId block = qcAirBlockId;
-    };
-
     explicit QcVegetationSpread(const QcContentRegistry &content);
 
-    // The plants bone meal on `target` grows, each cell at most once; the world is not changed.
-    [[nodiscard]] QList<Planting> spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const;
+    /*! Returns the plants bone meal on \a target of \a world grows, drawn from \a random, each
+        cell at most once; the world is not changed. */
+    [[nodiscard]] QList<QcPlacedBlock> spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const;
 
 private:
     struct Tables

@@ -153,7 +153,9 @@ namespace QcRecipeParser {
     recipe.resultItem = resultReader.name(u"item"_s, packNamespace);
     recipe.resultCount = resultReader.integer(u"count"_s, 1, 1, 64);
     if (!resultReader.ok() || recipe.resultItem.isEmpty()) {
-        reader.fail(resultReader.ok() ? u"'result' needs an 'item'"_s : resultReader.error);
+        // A problem inside the entry comes first; it names the place itself.
+        reader.adopt(resultReader);
+        reader.fail(u"'result' needs an 'item'"_s);
     }
 
     if (recipe.shaped) {
@@ -205,7 +207,9 @@ namespace QcRecipeParser {
     recipe.resultItem = resultReader.name(u"item"_s, packNamespace);
     recipe.resultCount = resultReader.integer(u"count"_s, 1, 1, 64);
     if (!result.isObject() || !resultReader.ok() || recipe.resultItem.isEmpty()) {
-        reader.fail(resultReader.ok() ? u"'result' needs an 'item'"_s : resultReader.error);
+        // A problem inside the entry comes first; it names the place itself.
+        reader.adopt(resultReader);
+        reader.fail(u"'result' needs an 'item'"_s);
     }
 
     if (!reader.ok()) {

@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcDiagnosticsSettings.h"
 #include "app/controllers/QcGameController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
@@ -11,10 +10,13 @@
 #include "app/models/QcPixelArtProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "app/models/QcWorldMapImageProvider.h"
+#include "app/settings/QcDiagnosticsSettings.h"
 #include "app/startup/QcAppLanguage.h"
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"
 #include "app/startup/QcAppWindow.h"
+#include "app/startup/QcStartFailure.h"
+#include "common/core/QcConsole.h"
 #include "common/core/QcDataRoot.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
 
@@ -28,7 +30,6 @@
 #endif
 
 #include <memory>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -59,8 +60,9 @@ ImageProviders addImageProviders(QQmlApplicationEngine &engine)
 
 } // namespace
 
-// The steps of the start in their order: command line, scripted-run setup, language, the QML
-// engine and its main window, then settings, language switching and the game (decision E-530).
+// The steps of the start in their order: command line, scripted-run setup, language, the game
+// with its settings and language switching, then the QML engine and its main window, and the start
+// of the game (decision E-530).
 int main(int argc, char *argv[])
 {
     QcScriptedRun::keepOutOfForeground(argc, argv);
@@ -74,7 +76,7 @@ int main(int argc, char *argv[])
         options.error = QcAppOptions::offscreenRunError();
     }
     if (!options.error.isEmpty()) {
-        std::println(stderr, "qtcraft: {}", options.error.toStdString());
+        QcConsole::printErrorLine(u"qtcraft: "_s + options.error);
         return 1;
     }
     // Logging and crash reports from here to the end of main() (decision E-834).
@@ -91,37 +93,42 @@ int main(int argc, char *argv[])
     QTranslator translator;
     const QString contentLanguage = QcAppLanguage::install(translator, language);
 
+    // Made before the engine and destroyed after it (decision E-530): the QML items that refer to
+    // the game go first. Main.qml takes it as its required property gameController.
+    QcGameController game;
     QQmlApplicationEngine engine;
     const ImageProviders providers = addImageProviders(engine);
+    game.settings()->diagnostics()->setSession(diagnostics);
+    game.setIconProvider(providers.icons);
+    game.setMapProvider(providers.maps);
+    game.worldOptions()->preview()->setProvider(providers.worldMap);
+    game.settings()->texturePacks()->setPreviewProvider(providers.texturePackPreviews);
+    QcAppStartup::loadSettings(game);
+    QcAppLanguage::followSettings(game, engine, translator, contentLanguage);
+
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
-    engine.loadFromModule("QtCraft", "Main");
-    if (engine.rootObjects().isEmpty()) {
+    // A stack object: the JavaScript garbage collector never takes it.
+    QQmlEngine::setObjectOwnership(&game, QQmlEngine::CppOwnership);
+    engine.setInitialProperties({{u"gameController"_s, QVariant::fromValue(&game)}});
+    if (!QcStartFailure::loadMainWindow(engine, offscreen)) {
         return 1;
     }
 
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());
-    auto *game = window ? window->findChild<QcGameController *>(u"game"_s) : nullptr;
-    if (!game) {
-        qCCritical(lcStartup, "Main.qml must contain a GameController with objectName 'game'");
+    if (!window) {
+        qCCritical(lcStartup, "Main.qml must be a window");
         return 1;
     }
     QcAppWindow::watchRenderThread(*window);
     const QcResult<std::unique_ptr<QcOffscreenRender>> offscreenRender =
-        QcAppWindow::startWindowOrOffscreen(*window, *game, options, offscreen);
+        QcAppWindow::startWindowOrOffscreen(*window, game, options, offscreen);
     if (!offscreenRender) {
-        std::println(stderr, "qtcraft: {}", offscreenRender.error().toStdString());
+        QcConsole::printErrorLine(u"qtcraft: "_s + offscreenRender.error());
         return 1;
     }
 
-    game->settings()->diagnostics()->setSession(diagnostics);
-    game->setIconProvider(providers.icons);
-    game->setMapProvider(providers.maps);
-    game->worldOptions()->preview()->setProvider(providers.worldMap);
-    game->settings()->texturePacks()->setPreviewProvider(providers.texturePackPreviews);
-    QcAppStartup::loadSettings(*game);
-    QcAppLanguage::followSettings(*game, engine, translator, contentLanguage);
-    QcAppStartup::startGame(*game, options, *window, offscreenRender->get());
-    game->startHealthLog(diagnostics.healthSeconds());
+    QcAppStartup::startGame(game, options, *window, offscreenRender->get());
+    game.startHealthLog(diagnostics.healthSeconds());
     return QGuiApplication::exec();
 }

@@ -121,16 +121,16 @@ private slots:
             QVERIFY(item.durability > 0);
         }
         QCOMPARE(m_content->item(*m_content->itemId(u"qtcraft:carrot"_s)).placesBlock, u"qtcraft:carrot_crop"_s);
-        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:pig"_s)].breeding.food,
+        QCOMPARE(m_content->mobs()[*m_content->mobKind(u"qtcraft:pig"_s)].breeding.food,
                  (QStringList{u"qtcraft:carrot"_s, u"qtcraft:potato"_s}));
-        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:sheep"_s)].breeding.food, QStringList{u"qtcraft:wheat"_s});
+        QCOMPARE(m_content->mobs()[*m_content->mobKind(u"qtcraft:sheep"_s)].breeding.food, QStringList{u"qtcraft:wheat"_s});
     }
 
     void parserChecksFarmingFields()
     {
         const auto crop = parseBlock(R"("shape":"cross","states":{"age":["0","1"]},"crop":{"averageSeconds":60,"plantChance":0.5},
                                         "drops":[{"item":"seed","when":{"age":"1"}}])");
-        QVERIFY2(crop.has_value(), qPrintable(crop.error()));
+        QVERIFY2(crop.has_value(), qcErrorText(crop).constData());
         QCOMPARE(crop->crop.property, u"age"_s);
         QCOMPARE(crop->crop.plantChance, 0.5);
         QCOMPARE(crop->drops.constFirst().when.constFirst().values, QStringList{u"1"_s});
@@ -149,7 +149,7 @@ private slots:
         QVERIFY(!parseBlock(R"("shape":"cross","states":{"age":["0","1"]},"crop":{},"growth":{"maxHeight":3})"));
 
         const auto soil = parseBlock(R"("states":{"moist":[false,true]},"soil":{"revertsTo":"dirt","reach":2})");
-        QVERIFY2(soil.has_value(), qPrintable(soil.error()));
+        QVERIFY2(soil.has_value(), qcErrorText(soil).constData());
         QCOMPARE(soil->soil.reach, 2);
         QCOMPARE(soil->soil.water, u"qtcraft:water"_s);
         QVERIFY(!parseBlock(R"("states":{"moist":[false,true]},"soil":{"revertsTo":"plant"})"));
@@ -358,7 +358,7 @@ private slots:
     void breedingStopsWhenTheAreaOrTheWorldIsFull()
     {
         const QcMobBreeding breeding(m_content);
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         const auto pigAt = [pig](double x, bool dormant = false, bool bred = false) {
             QcCreature mob;
             mob.type = pig;
@@ -378,7 +378,7 @@ private slots:
         mobs.append(pigAt(30.0));
         QVERIFY(!breeding.roomFor(mobs, pig, {8.0, 70.0, 8.0}));
         // Another kind does not count, nor does the area of another place.
-        QVERIFY(breeding.roomFor(mobs, *m_content->mobIndex(u"qtcraft:sheep"_s), {8.0, 70.0, 8.0}));
+        QVERIFY(breeding.roomFor(mobs, *m_content->mobKind(u"qtcraft:sheep"_s), {8.0, 70.0, 8.0}));
         QVERIFY(breeding.roomFor(mobs, pig, {200.0, 70.0, 8.0}));
 
         // The bred animals of a kind are limited in the whole world.

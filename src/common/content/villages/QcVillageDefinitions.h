@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/registry/QcWeightedNames.h"
 #include "common/content/villages/QcVillagerDefinitions.h"
 
 #include <QHash>
@@ -16,16 +17,6 @@
 // biome is built from and how their blocks are swapped; the settings (worldgen/villages.json) say
 // how often and where villages are built, which creature kind lives in them and which golems guard
 // them. Names are qualified content names. Server side only (not synchronised).
-
-/*! \brief One blueprint of a kind of building: a structure (structures/\unicode {0x2A}.json)
-    whose door side, the south side of its first layer, faces the road it stands on. */
-struct QcVillageBlueprint
-{
-    /*! The structure built (\c {"structure"}). */
-    QString structure;
-    /*! Relative chance against the other blueprints of the kind. */
-    int weight = 1;
-};
 
 /*! \brief The walkway of a piece with a water rule (decision E-404): from the end of the road it
     stands at straight on to the water and \c {over} blocks out over it, at the height of the
@@ -53,15 +44,6 @@ struct QcVillageRoad
 {
     QString block;
     QString step;
-    int weight = 1;
-};
-
-/*! \brief A crop the fields of a style are planted with (decision E-406): every crop cell of a
-    village piece takes the \c {block} of one of these, by \c {weight}, the same along a row of a
-    field, ripe or growing. \qcfields */
-struct QcVillageCrop
-{
-    QString block;
     int weight = 1;
 };
 
@@ -116,7 +98,7 @@ struct QcVillageWetland
 };
 
 /*! \brief A range a village draws one value from, uniformly: \c {min} to \c {max}, both
-    included. \qcfields */
+    included, of the type \a Value. \qcfields */
 template<typename Value>
 struct QcVillageRange
 {
@@ -189,8 +171,9 @@ struct QcVillagePiece
     static constexpr int maxBlueprints = 16;
 
     /*! Its blueprints: \c {"structure"} (one) or \c {"structures"} (1 to maxBlueprints, each
-        with a weight). */
-    QList<QcVillageBlueprint> blueprints;
+        with a weight), structures (structures/\unicode {0x2A}.json) whose door side, the south
+        side of their first layer, faces the road they stand on. */
+    QList<QcWeightedStructureName> blueprints;
     /*! Relative chance against the other kinds of the style. */
     int weight = 1;
     /*! At most this many in one village; 0: no limit. */
@@ -280,8 +263,10 @@ struct QcVillageStyleDefinition
         the same list); from \c {"path"} and \c {"branchPath"}, gravel without them. \qcshared */
     QList<QcVillageRoad> roads;
     QList<QcVillageRoad> branchRoads;
-    /*! Crops planted in the crop cells of the pieces; empty: the pieces' crops as written. */
-    QList<QcVillageCrop> crops;
+    /*! Crops planted in the crop cells of the pieces (decision E-406): every crop cell takes
+        the block of one of these, by weight, the same along a row of a field, ripe or growing;
+        empty: the pieces' crops as written. */
+    QList<QcWeightedBlockName> crops;
     /*! Street plans, one chosen per village by weight (decision E-408); never empty after
         parsing (QcVillageLayoutParser::defaultLayouts() without the field). */
     QList<QcVillageLayout> layouts;

@@ -36,7 +36,7 @@ QString dumpName(const QString &session);
     "<dir>/<session>.<part>.log". */
 QString rotatedPath(const QString &logPath, int part);
 
-/*! A session name for \a program started at \a start that no file in \a dir uses yet. */
+/*! Returns a session name for \a program started at \a start that no file in \a dir uses yet. */
 QString freeSessionName(const QDir &dir, const QString &program, const QDateTime &start);
 /*! Returns the sessions of \a program with files in \a dir, oldest first. */
 QStringList sessions(const QDir &dir, const QString &program);

@@ -16,27 +16,33 @@ class QcFireQueue;
 class QcSignTexts;
 class QcSpawners;
 
-// What the loaded chunks keep about their block entities besides the entities themselves (part of
-// QcServerWorld, decision E-716); saved with the chunk and forgotten with it.
-//
-// Furnished chunks had their generated block entities (the chests' loot, the spawners' kinds;
-// decision E-520) put in once (QcFurnishing). Kept parts are what the saved block entities hold that
-// this version does not read (decision E-440): unknown tables and tails of newer versions, written
-// back when the chunk is saved or leaves the world (QcChunkLoading). The tail of an entry goes when a
-// block set in the world ends the entry, so a block built anew at its place starts without it.
+/*! \brief What the loaded chunks keep about their block entities besides the entities themselves
+    (part of QcServerWorld, decision E-716); saved with the chunk and forgotten with it.
+
+    Furnished chunks had their generated block entities (the chests' loot, the spawners' kinds;
+    decision E-520) put in once (QcFurnishing). Kept parts are what the saved block entities hold
+    that this version does not read (decision E-440): unknown tables and tails of newer versions,
+    written back when the chunk is saved or leaves the world (QcChunkLoading). The tail of an
+    entry goes when a block set in the world ends the entry, so a block built anew at its place
+    starts without it. */
 class QcBlockEntityExtras
 {
 public:
+    /*! Returns whether the chunk at \a pos was furnished. */
     bool isFurnished(QcChunkPos pos) const { return m_furnished.contains(pos); }
+    /*! Notes that the chunk at \a pos was furnished. */
     void noteFurnished(QcChunkPos pos) { m_furnished.insert(pos); }
 
+    /*! Returns the kept parts of every loaded chunk that has some. */
     const QHash<QcChunkPos, QcBlockEntityKept> &keptParts() const { return m_parts; }
-    // Holds `parts` for a loaded chunk (nothing when they are empty).
+    /*! Holds \a parts for the loaded chunk at \a pos (nothing when they are empty). */
     void keepParts(QcChunkPos pos, QcBlockEntityKept parts);
+    /*! Returns the kept parts of the chunk at \a pos and forgets them. */
     [[nodiscard]] QcBlockEntityKept takeParts(QcChunkPos pos) { return m_parts.take(pos); }
-    // Whether any chunk keeps parts (a block set needs no check otherwise).
+    /*! Returns whether any chunk keeps parts (a block set needs no check otherwise). */
     bool hasKeptParts() const { return !m_parts.isEmpty(); }
-    // Every table of block entities of the world, whose entries kept tails belong to.
+    /*! \brief Every table of block entities of the world, whose entries kept tails belong to.
+        \qcfields */
     struct Tables
     {
         const QcBlockEntities &entities;
@@ -45,11 +51,12 @@ public:
         const QcSignTexts &signs;
         const QcCampfires &campfires;
     };
-    // Drops the kept tails of the entries at `pos` that the block just set there ended: those whose
-    // container, machine, sapling, memory, fire, spawner, campfire or sign text is gone.
+    /*! Drops the kept tails of the entries at \a pos that the block just set there ended, as
+        \a tables tell: those whose container, machine, sapling, memory, fire, spawner, campfire or
+        sign text is gone. */
     void dropOrphanTails(QcBlockPos pos, const Tables &tables);
 
-    // Forgets a chunk that left the world or is generated again.
+    /*! Forgets the chunk at \a pos, which left the world or is generated again. */
     void forgetChunk(QcChunkPos pos);
 
 private:

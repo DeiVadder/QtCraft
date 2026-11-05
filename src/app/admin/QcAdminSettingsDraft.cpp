@@ -36,6 +36,12 @@ std::optional<qint64> QcAdminSettingsDraft::parsed(const QString &text, const Qc
     return value;
 }
 
+std::optional<qint64> QcAdminSettingsDraft::value(bool limit, const QString &key) const
+{
+    const auto found = m_values.constFind(id(limit, key));
+    return found == m_values.cend() ? std::nullopt : std::optional<qint64>(*found);
+}
+
 QVariantMap QcAdminSettingsDraft::values() const
 {
     QVariantMap map;

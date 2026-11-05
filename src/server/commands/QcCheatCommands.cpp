@@ -85,7 +85,7 @@ constexpr const char *survivalInventoryHint =
 // The usage of /gamerule, also the reply to an unknown rule or a wrong value.
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
     "QcServerMessages",
-    "Usage: /gamerule <keepInventory|announceAdvancements|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
+    "Usage: /gamerule <keepInventory|announceAdvancements|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage|drowningDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
 
 // The words as QcStandCommands reads them: the command first.
 QStringList withName(const QString &name, const QStringList &args)
@@ -229,7 +229,7 @@ void QcCheatCommands::summon(const QcCommandContext &context)
         args.removeLast();
     }
     const QString name = qualified(args[0]);
-    const std::optional<int> type = m_state.content().mobIndex(name);
+    const std::optional<QcCreatureKindId> type = m_state.content().mobKind(name);
     const std::optional<int> count = QcCommandArguments::count(args, 1, 1, 1, 16);
     if (!type || !count) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {context.text});

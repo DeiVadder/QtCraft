@@ -89,7 +89,7 @@ struct Climate
 /*! Returns the climate of a column of \a biome; without a biome (flat, void and showcase worlds)
     it rains up to snowHeight. */
 Climate climateOf(const QcBiomeDefinition *biome);
-/*! What falls at height \a y of a column with \a climate while it rains. */
+/*! Returns what falls at height \a y of a column with \a climate while it rains. */
 QcPrecipitation precipitationAt(Climate climate, int y);
 
 } // namespace QcWeather

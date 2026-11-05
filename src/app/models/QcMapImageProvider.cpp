@@ -5,7 +5,7 @@
 
 #include "common/maps/QcMapData.h"
 
-#include <QMutexLocker>
+#include <mutex>
 
 QcMapImageProvider::QcMapImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
@@ -14,7 +14,7 @@ QcMapImageProvider::QcMapImageProvider()
 
 void QcMapImageProvider::setImage(quint32 id, const QImage &image)
 {
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     m_images.insert(id, image);
     m_order.removeOne(id);
     m_order.append(id);
@@ -29,7 +29,7 @@ QImage QcMapImageProvider::requestImage(const QString &id, QSize *size, const QS
     const quint32 mapId = id.section(u'/', 0, 0).toUInt(&ok);
     QImage image;
     if (ok) {
-        const QMutexLocker locker(&m_mutex);
+        const std::scoped_lock locker(m_mutex);
         image = m_images.value(mapId);
     }
 

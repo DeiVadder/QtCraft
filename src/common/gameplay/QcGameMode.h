@@ -4,16 +4,22 @@
 #pragma once
 
 #include <QLatin1StringView>
+#include <QtCore/qobjectdefs.h>
 #include <QStringView>
 #include <QtGlobal>
 
 #include <optional>
 
+/*! \brief The rules of each game mode, and its names; the mode itself is QcGameMode (registered
+    for QML as GameMode, with GameMode.Mode.Creative and so on). */
+namespace QcGameModes {
+Q_NAMESPACE
+
 /*! \brief The game mode of a player (decision E-282), a server state per player that the client
     mirrors.
 
     The values are stable: they are saved in player files and sent in the protocol. */
-enum class QcGameMode : quint8 {
+enum class Mode : quint8 {
     /*! The normal rules: health, hunger, mining and building with what one has. */
     Survival = 0,
     /*! Flying, instant breaking, unlimited items from the catalogue, no damage and no hunger. */
@@ -24,6 +30,12 @@ enum class QcGameMode : quint8 {
     /*! Flies through blocks, unseen and without touching anything (decision E-730). */
     Spectator = 3,
 };
+Q_ENUM_NS(Mode)
+
+} // namespace QcGameModes
+
+/*! The game mode of a player (QcGameModes::Mode), the name the code uses. */
+using QcGameMode = QcGameModes::Mode;
 
 /*! \brief How a game mode lets a player move (QcEntityMotion::stepPlayer): on foot, flying on a
     wish (creative, decision E-284) or flying through blocks all the time (spectator, decision
@@ -37,7 +49,6 @@ enum class QcMovement : quint8 {
     NoClip
 };
 
-/*! \brief The rules of each game mode, and its names. */
 namespace QcGameModes {
 
 /*! The number of modes; their values are 0 to count - 1. */

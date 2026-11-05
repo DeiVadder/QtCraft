@@ -6,7 +6,7 @@
             "hidden": true,
             "description": "Machine-specific paths: copy this file to CMakeUserPresets.json (not in git) and adjust them",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "$env{HOME}/Qt/6.8.3/macos",
+                "CMAKE_PREFIX_PATH": "$env{HOME}/Qt/6.12.0/macos",
                 "CMAKE_MAKE_PROGRAM": "$env{HOME}/Qt/Tools/Ninja/ninja"
             }
         },

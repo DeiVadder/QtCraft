@@ -34,9 +34,9 @@ QcWetlandShaper::QcWetlandShaper(const QcTerrainGenerator &terrain, quint64 seed
 double QcWetlandShaper::distanceToWet(const QcVillagePlan::Wetland &wetland, int x, int z)
 {
     double nearest = 1e9;
-    for (const QcVillagePlan::Area &area : wetland.wet) {
-        const int dx = std::max({0, area.x0 - x, x - area.x1});
-        const int dz = std::max({0, area.z0 - z, z - area.z1});
+    for (const QcXzRect &area : wetland.wet) {
+        const int dx = std::max({0, area.minX - x, x - area.maxX});
+        const int dz = std::max({0, area.minZ - z, z - area.maxZ});
         nearest = std::min(nearest, std::hypot(static_cast<double>(dx), static_cast<double>(dz)));
         if (nearest == 0.0) {
             break;
@@ -63,7 +63,7 @@ int QcWetlandShaper::levelAt(const QcVillagePlan &plan, int x, int z, int ground
 {
     const QcVillagePlan::Wetland &wetland = plan.wetland;
     const QcVillageStyle::Wetland &settings = wetland.settings;
-    if (!plan.covers(x, z, 0) || std::ranges::any_of(wetland.dry, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); })) {
+    if (!plan.covers(x, z, 0) || std::ranges::any_of(wetland.dry, [x, z](QcXzRect area) { return area.contains(x, z); })) {
         return ground;
     }
 
@@ -98,7 +98,7 @@ bool QcWetlandShaper::poolFits(const QcVillagePlan &plan, int x, int z) const
 std::optional<QcWetlandShaper::Column> QcWetlandShaper::targetAt(const QcVillagePlan &plan, int x, int z, int ground) const
 {
     const QcVillagePlan::Wetland &wetland = plan.wetland;
-    if (std::ranges::any_of(wetland.dry, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); })
+    if (std::ranges::any_of(wetland.dry, [x, z](QcXzRect area) { return area.contains(x, z); })
         || distanceToWet(wetland, x, z) > wetland.settings.reach()) {
         return std::nullopt;
     }
@@ -207,7 +207,7 @@ void QcWetlandShaper::plant(QcChunk &chunk, QcBlockPos local, const QcVillagePla
     }
 
     // Beside a pool (its water at the plant's ground level), never on pieces or boardwalks.
-    if (std::ranges::any_of(plan.wetland.wet, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); })) {
+    if (std::ranges::any_of(plan.wetland.wet, [x, z](QcXzRect area) { return area.contains(x, z); })) {
         return;
     }
     const bool besidePool = std::ranges::any_of(std::array{std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}, [&](auto side) {

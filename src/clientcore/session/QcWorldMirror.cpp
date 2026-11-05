@@ -5,6 +5,8 @@
 
 #include "common/physics/QcPhysics.h"
 
+#include <algorithm>
+
 std::optional<QcWorldMirror::Change> QcWorldMirror::handle(const QcMessage &message, const QcVec3 &eye, quint64 now)
 {
     if (const auto *chunkData = std::get_if<QcMsg::ChunkData>(&message)) {
@@ -47,9 +49,19 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
     return true;
 }
 
+double QcWorldMirror::timeAt(double alpha) const
+{
+    if (!m_worldTime.running) {
+        return m_worldTime.time;
+    }
+    return m_worldTime.time + std::clamp(alpha, 0.0, 1.0) * QcPhysics::tickDuration * m_worldTime.speed;
+}
+
 void QcWorldMirror::tick(quint64 now)
 {
     m_extras.pruneExplosions(now);
+    m_ink.prune(now);
+    m_effects.tick(m_worldTime.speed);
     if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
         m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;

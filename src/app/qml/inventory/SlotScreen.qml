@@ -5,113 +5,191 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import QtCraft
 
-// Base of the screens with slots (inventory and crafting, chest, furnace): picking a stack up and
-// putting it down, shift-click, the picked-up stack following the mouse, the dimmed source slot,
-// the panel behind the content and the keys. Rows are those of the inventory model.
+// Base of the screens with slots (inventory and crafting, chest, furnace): the picked-up stack
+// following the mouse, the dimmed source slot, the panel behind the content and the keys. Rows are
+// those of the inventory model. What a click does (pick up, put down, right click, shift-click,
+// the crafting result, a machine's output, the creative catalogue) decides the slot cursor in C++
+// (GameController.player.slotCursor, QcSlotCursor); the slots only forward their clicks to it. A
+// click outside the slots empties the hand.
 //
-// Left click picks a stack up and puts it down elsewhere (merging or swapping); right click puts
-// down a single item and keeps the rest picked up; shift-click moves the whole stack to where it
-// belongs (decided by the server). A click outside the slots drops the picked-up stack back. In
-// creative mode (CreativeScreen) an item taken from the catalogue is carried instead: a click on a
-// slot puts it there (right click: one item), a click outside drops it.
+// Every slot screen has the same frame (draft D.2 A of docs/Menue-Pruefung.md, stage 76.2-e): the
+// head with the title and "Close" with its key, the machine's part (the screen's own items) above
+// the inventory with its heading, which always stands in the same place, optional columns beside
+// them (recipes, offers, the creative catalogue), and a foot with the mouse's hints as key plates
+// and the way to the machine's page in the handbook. The pad's hints stand at the window's bottom
+// edge (PadHints) instead of the key plates.
 Rectangle {
     id: screen
 
     objectName: "slotScreen"
     required property GameController game
-    property int pickedSlot: -1
+    // The hand: the picked-up row, the carried catalogue item; the slots' clicks go to it.
+    readonly property SlotCursor cursor: game.player.slotCursor
     // Item under the mouse; the handbook key opens its page.
     property string hoveredItem
-    // The crafting result: clicks take it (shift: as often as possible) instead of picking it up.
-    property int resultSlot: -1
-    // A machine's output: it can be picked up, nothing can be put into it.
-    property int outputSlot: -1
-    // A slot that takes no clicks: the hotbar slot of a backpack opened from the hand (decision E-833).
-    property int lockedSlot: -1
-    // The content the panel is drawn behind.
-    property Item panelContent
     // Where the picked-up stack is drawn while the mouse is outside the window: next to its slot.
     property point pickedFrom
-    // The catalogue item carried in creative mode (its name, empty for none) and how many.
-    property string carriedItem
-    property int carriedCount
+
+    // The screen's title in its head.
+    property string title
+    // The entry "More in the handbook" opens (an item or block name); empty: no link.
+    property string handbookTarget
+    // The mouse's hints in the foot ({keys, text}, KeyHintRow); the usual three by default.
+    property var keyHints: [
+        { keys: [qsTr("Click")], text: qsTr("take, put down") },
+        { keys: [qsTr("Right click")], text: qsTr("one") },
+        { keys: [qsTr("Shift-click")], text: qsTr("move across") }
+    ]
+    // Only the hotbar below the machine (a backpack opened from the hand, decision E-833).
+    property bool hotbarOnly
+    // The creative catalogue and the inventory switch between each other in their heads.
+    property bool creativeSwitch
+    // The machine's part above the inventory and the columns before and after it.
+    default property alias machine: machineArea.data
+    property alias startColumn: startArea.data
+    property alias endColumn: endArea.data
 
     color: Theme.scrim
     focus: visible
+    // The hand is emptied in C++ whenever the overlay changes.
     onVisibleChanged: {
-        pickedSlot = -1;
-        carriedItem = "";
         if (visible)
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("inventory", event.key) && !event.isAutoRepeat)) {
+        const action = screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.InventoryKey);
+        if (action === KeyControls.ScreenKey.Close)
             screen.game.overlay = GameController.Overlay.None;
-        } else if (screen.game.settings.keys.matches("handbook", event.key)) {
+        else if (action === KeyControls.ScreenKey.Handbook)
             screen.game.handbook.open(screen.hoveredItem);
-        }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
-    }
-
-    function clicked(slot, empty, button, quick) {
-        if (slot === lockedSlot)
-            return;
-        if (carriedItem.length > 0) {
-            if (slot !== resultSlot && slot !== outputSlot)
-                game.player.putCreativeItem(slot, carriedItem, button === Qt.RightButton ? 1 : carriedCount);
-            if (button !== Qt.RightButton)
-                carriedItem = "";
-            return;
-        }
-
-        if (slot === resultSlot) {
-            if (empty)
-                return;
-            if (quick)
-                game.player.quickMove(slot);
-            else
-                game.player.takeCraftingResult();
-            return;
-        }
-
-        if (pickedSlot < 0) {
-            if (empty)
-                return;
-            if (quick)
-                game.player.quickMove(slot);
-            else
-                pickedSlot = slot;
-            return;
-        }
-
-        if (pickedSlot !== slot && slot !== outputSlot)
-            game.player.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
-        // Right click keeps the stack picked up so several cells can be filled one by one.
-        if (button !== Qt.RightButton || slot === outputSlot)
-            pickedSlot = -1;
     }
 
     // A click beside the slots puts the stack back: nothing a screen reader offers.
     MouseArea {
         anchors.fill: parent
         Accessible.ignored: true
-        onClicked: {
-            screen.pickedSlot = -1;
-            screen.carriedItem = "";
-        }
+        onClicked: screen.cursor.reset()
     }
 
     // Opaque panel so the crosshair and the world do not show through the slots.
-    Rectangle {
-        anchors.fill: screen.panelContent
-        anchors.margins: Ui.px(-20)
-        visible: screen.panelContent !== null
-        radius: Ui.px(6)
-        color: Theme.panel
-        border.color: Theme.panelBorder
+    ScreenFrame {
+        anchors.fill: frame
+        anchors.margins: -Ui.space.l
+    }
+
+    ColumnLayout {
+        id: frame
+
+        objectName: "slotFrame"
+        anchors.centerIn: parent
+        spacing: Ui.space.s
+
+        ScreenHeader {
+            Layout.fillWidth: true
+            title: screen.title
+            closeName: "slotScreenClose"
+            keyboardKey: screen.game.settings.keys.labels.inventory
+            padKey: screen.game.gamepad.active ? screen.game.gamepad.pads.texts.east : ""
+            onCloseRequested: screen.game.overlay = GameController.Overlay.None
+        }
+
+        Segments {
+            objectName: "creativeSwitch"
+            Layout.fillWidth: false
+            visible: screen.creativeSwitch && screen.game.player.creative
+            label: qsTr("Creative inventory")
+            model: [
+                { text: qsTr("Creative items"), value: GameController.Overlay.Creative },
+                { text: qsTr("Crafting and armour"), value: GameController.Overlay.Inventory }
+            ]
+            currentValue: screen.game.overlay
+            onActivated: value => screen.game.overlay = value
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: Ui.size.line
+            color: Theme.separator
+        }
+
+        RowLayout {
+            spacing: Ui.space.l
+
+            ColumnLayout {
+                id: startArea
+
+                Layout.alignment: Qt.AlignTop
+                Layout.fillHeight: true
+                visible: children.length > 0
+                spacing: Ui.space.s
+            }
+
+            ColumnLayout {
+                Layout.alignment: Qt.AlignTop
+                spacing: Ui.space.s
+
+                ColumnLayout {
+                    id: machineArea
+
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: Ui.space.m
+                }
+
+                Label {
+                    text: qsTr("Inventory")
+                    color: Theme.heading
+                    font.pixelSize: Ui.type.group
+                    font.bold: true
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
+                }
+
+                PlayerSlots {
+                    owner: screen
+                    hotbarOnly: screen.hotbarOnly
+                }
+            }
+
+            ColumnLayout {
+                id: endArea
+
+                Layout.alignment: Qt.AlignTop
+                Layout.fillHeight: true
+                visible: children.length > 0
+                spacing: Ui.space.s
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: Ui.size.line
+            color: Theme.separator
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Ui.space.l
+
+            // The pad's buttons stand at the window's bottom edge while it leads (PadHints).
+            KeyHintRow {
+                objectName: "slotKeyHints"
+                Layout.fillWidth: true
+                opacity: screen.game.gamepad.active ? 0 : 1
+                entries: screen.keyHints
+            }
+            GameButton {
+                objectName: "slotHandbookLink"
+                visible: screen.handbookTarget.length > 0
+                kind: GameButton.Quiet
+                text: qsTr("More in the handbook ›")
+                onClicked: screen.game.handbook.open(screen.handbookTarget)
+            }
+        }
     }
 
     HoverHandler {
@@ -124,11 +202,11 @@ Rectangle {
         z: 100
         x: (pointer.hovered ? pointer.point.position.x : screen.width / 2) - width / 2
         y: (pointer.hovered ? pointer.point.position.y : screen.height / 2) - height / 2
-        visible: screen.carriedItem.length > 0
+        visible: screen.cursor.carriedItem.length > 0
         enabled: false
         carried: true
-        slotIcon: visible ? ItemIcons.source(screen.carriedItem, ItemIcons.generation) : ""
-        slotCount: screen.carriedCount
+        slotIcon: visible ? ItemIcons.source(screen.cursor.carriedItem, ItemIcons.generation) : ""
+        slotCount: screen.cursor.carriedCount
         slotEmpty: !visible
     }
 
@@ -136,8 +214,8 @@ Rectangle {
     Repeater {
         model: SlotRange {
             source: screen.game.player.inventory
-            first: Math.max(0, screen.pickedSlot)
-            count: screen.pickedSlot >= 0 ? 1 : 0
+            first: Math.max(0, screen.cursor.pickedSlot)
+            count: screen.cursor.pickedSlot >= 0 ? 1 : 0
         }
 
         ItemSlot {
@@ -157,9 +235,6 @@ Rectangle {
             slotCount: count
             slotDurability: durability
             slotEmpty: empty
-            // The stack is gone (all put down one by one, or taken by someone else): nothing left
-            // to carry.
-            onSlotEmptyChanged: if (slotEmpty) screen.pickedSlot = -1
         }
     }
 }

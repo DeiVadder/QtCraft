@@ -7,6 +7,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QPointer>
 #include <QRgb>
 #include <QString>
 #include <QVariantList>
@@ -50,7 +51,7 @@ public:
     QVariantList markers() const { return m_markers; }
 
     // Where the images go; set once at the start (the QML engine owns the provider).
-    void setProvider(QcMapImageProvider *provider) { m_provider = provider; }
+    void setProvider(QcMapImageProvider *provider);
     // The map colours of a new atlas (decision E-801): maps are drawn again.
     void useAtlas(const QcContentRegistry &content, const QcTextureAtlas &atlas);
     // Follows the held item and the cached map, once per frame.
@@ -64,7 +65,8 @@ signals:
 
 private:
     const QcSessionParts &m_parts;
-    QcMapImageProvider *m_provider = nullptr;
+    // The engine owns the provider and may delete it first (the game outlives the QML engine).
+    QPointer<QcMapImageProvider> m_provider;
     QList<QRgb> m_colours;
     // Grows with every new set of colours; part of the image URL.
     quint64 m_colourGeneration = 0;

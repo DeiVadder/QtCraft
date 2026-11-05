@@ -318,7 +318,7 @@ private slots:
         QcVillagerBreeding breeding(content);
         QList<QcCreature> mobs(2);
         for (QcCreature &mob : mobs) {
-            mob.type = *content->mobIndex(u"qtcraft:villager"_s);
+            mob.type = *content->mobKind(u"qtcraft:villager"_s);
             mob.villager.emplace();
             mob.villager->village = 7;
         }
@@ -379,7 +379,7 @@ private slots:
         // An igloo's bed has two blocks of air above it: a villager lying in it has its eyes inside
         // the bed's cells, not a standing height above it in the roof.
         std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-        const QcMobDefinition &definition = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
+        const QcMobDefinition &definition = content->mobs()[*content->mobKind(u"qtcraft:villager"_s)];
         QcCreature mob;
         mob.motion.position = {10.5, 65.5625, 20.25};
         QVERIFY(QcEnvironmentDamage::eyesOf(mob, definition).y > 66.5);

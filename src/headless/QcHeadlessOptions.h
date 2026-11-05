@@ -45,7 +45,7 @@ struct Options
     QCommandLineOption biomeMap{u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s, u"file"_s};
     QCommandLineOption spawn{u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s};
     QCommandLineOption slice{u"slice-map"_s,
-                             u"Write a vertical cut through the world along x at z = 0 (--map-radius blocks to each side) and exit."_s,
+                             u"Write a vertical cut through the world along x at the z of --map-centre (--map-radius blocks to each side) and exit."_s,
                              u"file"_s};
     QCommandLineOption stats{u"world-stats"_s, u"Print numbers about the generated world (ores, surface, biomes, slopes) and exit."_s};
     QCommandLineOption statsRadius{u"stats-radius"_s, u"Chunk radius generated for --world-stats."_s, u"chunks"_s, u"16"_s};

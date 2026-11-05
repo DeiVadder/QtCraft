@@ -164,7 +164,7 @@ void QcHandbookIndex::indexBiome(const QcBiomeDefinition &biome, const QcHandboo
         if (layer->density <= 0.0 && layer->patches.chance <= 0.0) {
             continue;
         }
-        for (const QcVegetationPlant &plant : layer->plants) {
+        for (const QcWeightedBlockName &plant : layer->plants) {
             if (!m_content.blockId(plant.block)) {
                 continue;
             }

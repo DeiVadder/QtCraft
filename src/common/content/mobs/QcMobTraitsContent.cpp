@@ -29,14 +29,14 @@ Part<QcTameDefinition> resolveTame(const QcContentRegistry &content, const QcMob
     }
 
     QcTameDefinition &tame = *result.value;
-    tame.becomesType = -1;
+    tame.becomesType.reset();
     if (!tame.becomes.isEmpty()) {
-        const std::optional<int> type = content.mobIndex(tame.becomes);
+        const std::optional<QcCreatureKindId> type = content.mobKind(tame.becomes);
         const bool tameKind = type && content.mobs()[*type].tameable;
         if (!tameKind) {
             result.warnings.append(u"mob '%1': '%2' is no tameable creature; a tamed one stays a '%1'"_s.arg(mob.name, tame.becomes));
         }
-        tame.becomesType = tameKind ? *type : -1;
+        tame.becomesType = tameKind ? type : std::nullopt;
     }
     for (const QStringList *names : {&tame.items, &tame.healItems, &tame.collarDyes}) {
         for (const QString &name : *names) {
@@ -53,7 +53,7 @@ QStringList checkStructurePets(const QcContentRegistry &content)
     QStringList warnings;
     for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         for (const QcStructureDefinition::Mob &mob : structure.mobs) {
-            const std::optional<int> type = mob.owner.isEmpty() ? std::nullopt : content.mobIndex(mob.mob);
+            const std::optional<QcCreatureKindId> type = mob.owner.isEmpty() ? std::nullopt : content.mobKind(mob.mob);
             if (!mob.owner.isEmpty() && (!type || !content.mobs()[*type].tameable)) {
                 warnings.append(u"structure '%1': creature '%2' is not tameable; it has no owner"_s.arg(structure.name, mob.mob));
             }
@@ -134,7 +134,7 @@ namespace {
     if (!result.value) {
         return result;
     }
-    const std::optional<int> child = content.mobIndex(result.value->child);
+    const std::optional<QcCreatureKindId> child = content.mobKind(result.value->child);
     if (!child || content.mobs()[*child].family || content.mobs()[*child].flying || content.mobs()[*child].aquatic) {
         result.warnings.append(u"mob '%1': no creature on land '%2' without a family of its own to split into; it does not split"_s.arg(mob.name, result.value->child));
         result.value.reset();

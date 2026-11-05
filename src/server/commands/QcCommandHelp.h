@@ -11,20 +11,23 @@
 class QcContentRegistry;
 struct QcCommandMacroDefinition;
 
-// /help (decisions E-243, E-911): without a word one line per group (QcCommandCategory) with the
-// commands the source may run; `/help <group> [page]` those commands with their descriptions,
-// pageSize to a page; `/help <command>` its usage, its description and the words its usage cannot
-// name (QcCommandSpec::names, the structures of /locate). The macros of the content (decision
-// E-248) form the group "other" with their plain texts.
+/*! \brief /help (decisions E-243, E-911): without a word one line per group (QcCommandCategory)
+    with the commands the source may run; \c {/help <group> [page]} those commands with their
+    descriptions, pageSize to a page; \c {/help <command>} its usage, its description and the words
+    its usage cannot name (QcCommandSpec::names, the structures of /locate).
+
+    The macros of the content (decision E-248) form the group "other" with their plain texts. */
 class QcCommandHelp
 {
 public:
+    /*! Commands on a page of a group. */
     static constexpr qsizetype pageSize = 8;
 
     QcCommandHelp(const QcCommandRegistry &registry, const QcContentRegistry &content);
 
+    /*! Runs /help for the call \a context. */
     void run(const QcCommandContext &context) const;
-    // Whether the source may run a macro at all.
+    /*! Returns whether \a source may run \a macro at all. */
     static bool mayRun(const QcCommandSource &source, const QcCommandMacroDefinition &macro);
 
 private:

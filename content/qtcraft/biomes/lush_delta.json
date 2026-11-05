@@ -1,5 +1,6 @@
 {
     "name": "lush_delta",
+    "icon": "lily_pad",
     "mapColour": "#3fa89a",
     "delta": true,
     "temperature": 0.9,

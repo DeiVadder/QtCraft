@@ -77,7 +77,7 @@ private:
     // A creature of `type` without a mind standing at `pos`.
     quint32 spawnStill(const QString &type, QcBlockPos pos)
     {
-        const quint32 mob = m_server->mobs().spawn(*m_content->mobIndex(type), {pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5},
+        const quint32 mob = m_server->mobs().spawn(*m_content->mobKind(type), {pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5},
                                                    m_server->entities().newId());
         m_server->mobs().find(mob)->noAi = true;
         return mob;
@@ -280,7 +280,7 @@ private slots:
     {
         join();
         const QcBlockPos at = m_feet.offset(2, 0, 0);
-        const quint32 sheep = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:sheep"_s), {at.x + 0.5, static_cast<double>(at.y), at.z + 0.5},
+        const quint32 sheep = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:sheep"_s), {at.x + 0.5, static_cast<double>(at.y), at.z + 0.5},
                                                      m_server->entities().newId());
         // An unnamed tag does nothing.
         hold(u"name_tag"_s);

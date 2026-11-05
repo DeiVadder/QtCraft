@@ -5,6 +5,7 @@
 
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
+#include "common/core/QcCreatureKindId.h"
 
 #include <QList>
 #include <QString>
@@ -114,9 +115,9 @@ struct QcTameDefinition
     double chance = 1.0 / 3.0;
     /*! The kind it turns into when tamed (a wolf into a dog); empty: it stays its kind. */
     QString becomes;
-    /*! The index of \c {becomes} in the content's mobs, resolved when the content is finished;
-        -1 for none. */
-    int becomesType = -1;
+    /*! The kind \c {becomes} names among the content's mobs, resolved when the content is
+        finished; none when it stays its kind. */
+    std::optional<QcCreatureKindId> becomesType;
     /*! Food (\c {healItems}) that heals a tame one by \c {healAmount} (meat for dogs).
         \qcshared */
     QStringList healItems;
@@ -139,8 +140,8 @@ struct QcTameDefinition
     QList<quint32> collarColors;
     QString collarDefault;
 
-    /*! Most dyes a collar may take. */
-    static constexpr int maxItems = 32;
+    /*! Most dyes a collar may take (\c {collarDyes}). */
+    static constexpr int maxCollarDyes = 32;
 
     /*! Returns the colour of the dye \a name, if the collar takes it. */
     std::optional<quint32> collarColor(const QString &name) const
@@ -173,10 +174,19 @@ struct QcShyDefinition
     \c {neighbours} creatures of its kind within \c {schoolRadius} metres), flops about on land and
     suffocates there after \c {airSeconds}.
 
-    Water creatures have their own cap (QcServerLimits::waterCreaturesPerPlayer) and never count
-    as animals. Server side only. */
+    Water creatures have their own caps and never count as animals: fish that of
+    QcServerLimits::waterCreaturesPerPlayer, larger ones like the squid (\c {"cap": "large"},
+    decision E-974) that of QcServerLimits::largeWaterCreaturesPerPlayer. Server side only. */
 struct QcAquaticDefinition
 {
+    /*! The spawn cap a water creature counts against (\c {cap}). */
+    enum class Cap : quint8 {
+        /*! \c {"fish"} (default): small fish, QcServerLimits::waterCreaturesPerPlayer. */
+        Fish,
+        /*! \c {"large"}: the squid, QcServerLimits::largeWaterCreaturesPerPlayer. */
+        Large,
+    };
+
     /*! Speed in m/s while swimming; it darts away at the creature's chaseSpeed when hurt. */
     double swimSpeed = 1.5;
     /*! Seconds it lives out of water (\c {airSeconds}); after them it takes
@@ -197,8 +207,31 @@ struct QcAquaticDefinition
     double separationDistance = 0.8;
     /*! Most school mates (the nearest) it steers by; 0 for no schooling. */
     int neighbours = 8;
+    /*! The spawn cap it counts against. */
+    Cap cap = Cap::Fish;
 
     bool operator==(const QcAquaticDefinition &) const = default;
+};
+
+/*! \brief A water creature that swims in pulses (the squid, decision E-974), from its data
+    (\c {"aquatic": {"pulse": ...}}): each pulse of \c {seconds} starts with a push of
+    \c {thrust} times the pulse towards \c {speed} m/s, then it glides and slows down; hurt, it
+    pulses twice as often at its chaseSpeed.
+
+    Reaches the client, which opens the tentacles (QcMobPart::tentacle) by up to \c {spread}
+    degrees as the creature slows below \c {speed} and tilts the body along its way. */
+struct QcPulseDefinition
+{
+    /*! Seconds of one pulse. */
+    double seconds = 1.5;
+    /*! Share of the pulse that pushes (0.05..0.9). */
+    double thrust = 0.3;
+    /*! Speed in m/s a push drives it to. */
+    double speed = 2.0;
+    /*! Degrees the tentacles open while it glides slowly or rests. */
+    double spread = 40.0;
+
+    bool operator==(const QcPulseDefinition &) const = default;
 };
 
 /*! \brief How a creature with the archer AI shoots (decision E-426), from its data (\c {archer}).
@@ -280,9 +313,9 @@ struct QcDrinkHealDefinition
 struct QcFamilyDefinition
 {
     QString child;
-    /*! The index of \c {child} among the creatures, resolved when the content is finished
-        (QcMobTraitsContent::resolve); -1 before. */
-    int childType = -1;
+    /*! The kind \c {child} names among the creatures, resolved when the content is finished
+        (QcMobTraitsContent::resolve); none before. */
+    std::optional<QcCreatureKindId> childType;
     /*! Most of its children alive at once. */
     int maxChildren = 4;
     /*! Children split off by one hurt. */

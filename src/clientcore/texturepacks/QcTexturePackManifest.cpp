@@ -34,6 +34,7 @@ public:
     [[nodiscard]] int format();
     [[nodiscard]] int resolution();
     [[nodiscard]] QList<QcTexturePackManifest::Credit> credits();
+    [[nodiscard]] QHash<QString, QString> descriptions();
     [[nodiscard]] QString preview();
 
 private:
@@ -87,6 +88,31 @@ QList<QcTexturePackManifest::Credit> FieldReader::credits()
         credits.append(credit);
     }
     return credits;
+}
+
+QHash<QString, QString> FieldReader::descriptions()
+{
+    const QJsonValue value = m_json.value(u"descriptions"_s);
+    if (m_problem || value.isUndefined()) {
+        return {};
+    }
+    const QJsonObject object = value.toObject();
+    if (!value.isObject() || object.size() > QcTexturePackManifest::maxDescriptions) {
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'descriptions' in the manifest must be an object of at most %1 texts by language"),
+              {QString::number(QcTexturePackManifest::maxDescriptions)}});
+        return {};
+    }
+
+    QHash<QString, QString> texts;
+    for (auto it = object.begin(); it != object.end(); ++it) {
+        const QString text = textOf(object, it.key(), QcTexturePackManifest::maxTextLength);
+        if (m_problem) {
+            return {};
+        }
+        // By language only, as QLocale names it ("de" for "de_DE", "DE" or "de-AT").
+        texts.insert(it.key().toLower().section(u'_', 0, 0).section(u'-', 0, 0), text);
+    }
+    return texts;
 }
 
 int FieldReader::resolution()
@@ -151,6 +177,7 @@ std::expected<QcTexturePackManifest, QcTexturePackProblem> QcTexturePackManifest
     manifest.format = reader.format();
     manifest.name = reader.text(u"name"_s, maxNameLength);
     manifest.description = reader.text(u"description"_s, maxTextLength);
+    manifest.descriptions = reader.descriptions();
     manifest.license = reader.text(u"license"_s, static_cast<qsizetype>(maxNameLength) * 4);
     manifest.resolution = reader.resolution();
     manifest.credits = reader.credits();

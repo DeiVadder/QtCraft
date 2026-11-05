@@ -14,35 +14,45 @@ class QcInventoryAccess;
 class QcServerState;
 struct QcMinecart;
 
-// How items move between minecarts and the blocks around them (decision E-387), once per tick after
-// the carts moved, for awake carts only:
-// - a hopper cart that is enabled (no powered activator rail turned it off) and rested pulls one item
-//   from the container above the cell of its feet, or, without a container there, picks up the item
-//   entities lying in that cell or the one above (as much of a stack as fits);
-// - a Signal Hopper whose pickup cell (the cell above it, where a cart on a rail over it stands) holds
-//   a container cart pulls one item from it, if no power locks the hopper and its cooldown ended.
-// Who acts and what moves follows the hoppers of decision E-344 (first slot that fits, the hoppers'
-// cooldown after a move from QcServerLimits). Carts act in the order of their ids, so nothing about
-// places or directions decides; at most QcServerLimits::hopperBudget carts act per tick, the next
-// tick goes on after the last one.
+/*! \brief How items move between minecarts and the blocks around them (decision E-387), once per
+    tick after the carts moved, for awake carts only.
+
+    The moves:
+
+    \list
+    \li a hopper cart that is enabled (no powered activator rail turned it off) and rested pulls one
+        item from the container above the cell of its feet, or, without a container there, picks up
+        the item entities lying in that cell or the one above (as much of a stack as fits);
+    \li a Signal Hopper whose pickup cell (the cell above it, where a cart on a rail over it stands)
+        holds a container cart pulls one item from it, if no power locks the hopper and its cooldown
+        ended.
+    \endlist
+    Who acts and what moves follows the hoppers of decision E-344 (first slot that fits, the
+    hoppers' cooldown after a move from QcServerLimits). Carts act in the order of their ids, so
+    nothing about places or directions decides; at most QcServerLimits::hopperBudget carts act
+    per tick, the next tick goes on after the last one. */
 class QcMinecartHoppers
 {
 public:
+    /*! \brief What the carts did in the latest tick. */
     struct Stats
     {
-        // Container carts looked at and items moved in the latest tick.
+        /*! Container carts looked at and items moved in the latest tick. \qcshared */
         qsizetype acting = 0;
         qsizetype moved = 0;
     };
 
     QcMinecartHoppers(QcServerState &state, QcBlockScreens &screens);
 
+    /*! Moves the items of one server tick. */
     void tick();
+    /*! Returns what the carts did in the latest tick. */
     const Stats &lastTick() const { return m_stats; }
-    // A tick without carts: nothing acted and nothing moved.
+    /*! A tick without carts: nothing acted and nothing moved. */
     void forgetTick() { m_stats = {}; }
 
-    // The slot of `stacks` that takes one more of `unit`'s item, or -1 (first that fits).
+    /*! Returns the slot of \a stacks that takes one more of \a unit's item with stacks of at
+        most \a maxStack, or -1 (first that fits). */
     static int slotFor(const QList<QcItemStack> &stacks, const QcItemStack &unit, int maxStack);
 
 private:

@@ -3,19 +3,10 @@
 
 #pragma once
 
+#include "common/content/registry/QcWeightedNames.h"
+
 #include <QList>
 #include <QString>
-
-/*! \brief One plant of a table and how often it is chosen against the others.
-
-    \c {block} is the qualified plant block (an entry of \c {"plants"} or its \c {"block"}),
-    \c {weight} its relative weight (\c {"weight"}, 1 to QcVegetationLayer::maxWeight, 1 for a
-    plain name). \qcfields */
-struct QcVegetationPlant
-{
-    QString block;
-    int weight = 1;
-};
 
 /*! \brief Patches the generator lays out of one plant of the table (flower patches): a patch
     cell of patchCell × patchCell blocks holds one with \c {chance}, centred at a random spot of
@@ -53,8 +44,10 @@ struct QcVegetationLayer
     int patchSize = 0;
     /*! Patches of a single plant kind (\c {"patches"}). */
     QcVegetationPatches patches;
-    /*! The weighted plant table (\c {"plants"}, 1 to maxPlants entries). */
-    QList<QcVegetationPlant> plants;
+    /*! The weighted plant table (\c {"plants"}, 1 to maxPlants entries): an entry of
+        \c {"plants"} is a plain block name (weight 1) or an object with \c {"block"} and
+        \c {"weight"} (1 to QcVegetationLayer::maxWeight). */
+    QList<QcWeightedBlockName> plants;
 };
 
 /*! \brief The grass and flowers of a biome (decision E-814): two weighted tables of plant blocks.

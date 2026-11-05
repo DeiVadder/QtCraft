@@ -151,7 +151,7 @@ namespace QcWorldOptionParser {
     const QList<QJsonObject> options = objectsAt(json, u"options"_s, reader);
     const QList<QJsonObject> presets = objectsAt(json, u"presets"_s, reader);
     for (const QJsonObject &entry : groups) {
-        QcJsonFieldReader nested{entry, u"world options group"_s, {}};
+        QcJsonFieldReader nested{entry, reader.context + u" group"_s, {}};
         QcWorldOptionGroup group;
         group.name = requiredName(u"name"_s, packNamespace, nested);
         group.translationKey = QcContentFields::translationKey(u"world_option_group"_s, group.name);

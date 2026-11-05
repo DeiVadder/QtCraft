@@ -134,6 +134,13 @@ set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 300 COST 40)
+    # The loading and start screens at two scales, a refused hook and a real start (decision E-943).
+    add_test(NAME app_offscreen_loading_screen COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh $<TARGET_FILE:qtcraft>
+        $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_loading_screen)
+    # The checks read English texts; QTCRAFT_LANGUAGE keeps them on a system in another language.
+    set_tests_properties(app_offscreen_loading_screen PROPERTIES TIMEOUT 600 COST 40
+        ENVIRONMENT "QTCRAFT_LANGUAGE=en"
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh")
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
@@ -190,13 +197,8 @@ endif()
 # The menu's multiplayer page with a refused join (nobody listens on port 1), and a world opened
 # to the network on this computer only with the open-to-LAN screen and the player list, load
 # without QML errors or binding loops. English texts whatever the system language (the expected
-# line is the English one; Windows takes the language of the user's account). 300 frames on
-# Windows: it reports a refused connection only after about 2 s (it repeats the refused connect).
-if(WIN32)
-    set(qc_multiplayer_menu_frames 300)
-else()
-    set(qc_multiplayer_menu_frames 60)
-endif()
+# line is the English one; Windows takes the language of the user's account). The screenshot
+# waits for the end of the join (a refusal takes Windows seconds: it repeats the refused connect).
 if(NOT QC_SANITIZERS)
     add_test(NAME app_offscreen_multiplayer_menu_qml
         COMMAND ${CMAKE_COMMAND}
@@ -207,7 +209,7 @@ if(NOT QC_SANITIZERS)
             "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
             -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
     set_tests_properties(app_offscreen_multiplayer_menu_qml PROPERTIES TIMEOUT 120
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_multiplayer_menu_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=${qc_multiplayer_menu_frames}")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_multiplayer_menu_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=60")
     add_test(NAME app_offscreen_open_to_lan_qml
         COMMAND ${CMAKE_COMMAND}
             "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--host-lan;0;--overlay;@1000 lan;--overlay;@2000 ;--overlay;@2500 players;--no-mods;--no-audio"
@@ -249,11 +251,13 @@ add_test(NAME app_offscreen_pad_keyboard
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-keyboard.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# The main menu on a first start: down to "Create a new world", left along the first-start links
+# (Character, Multiplayer, Handbook) into the side bar, down along its entries.
 add_test(NAME app_offscreen_pad_menu
     COMMAND ${CMAKE_COMMAND}
-        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadLeft;--overlay;@1300 pad:dpadDown"
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadLeft;--overlay;@1300 pad:dpadLeft;--overlay;@1800 pad:dpadLeft;--overlay;@2300 pad:dpadLeft;--overlay;@2800 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: firstWorldButton.*padFocus: menuEntry[0-9].*padFocus: menuEntry[0-9]"
+        "-DEXPECTED_ERROR=padFocus: firstWorldButton.*padFocus: GameButton:Character.*padFocus: GameButton:Multiplayer.*padFocus: GameButton:Handbook.*padFocus: menuEntry[0-9].*padFocus: menuEntry[0-9]"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
@@ -276,16 +280,38 @@ add_test(NAME app_offscreen_pad_settings
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-settings.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-# Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691): the pause
-# menu made again on its second opening takes the pad's focus like the first time. The pause card
-# (decision E-928) starts on "Continue" both times, not on the remembered "Settings", and Down
-# reaches "Settings" again.
+# Binding a pad button on the controller page: "Change" of Jump starts the capture, the next button
+# (west) is bound to Jump, and the page says which action lost it (row 79.48b: the page used to drop
+# its capture before the captured button arrived, so nothing was bound).
+add_test(NAME app_offscreen_pad_bind
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@800 pad:connect=playstation;--overlay;@1200 gamepad;--overlay;@1700 click:padChange_jump;--overlay;@2200 pad:west"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=Item gamepadMessage: [^\n]* visible yes text [^\n]*now has the button of [^\n]*Jump"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-bind.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691), but the pause
+# menu is made in the background while the world plays and kept (decision E-875). The pause card
+# (decision E-928) starts on "Continue" at each opening, not on the remembered "Settings", and
+# Down reaches "Settings" again.
 add_test(NAME app_offscreen_pad_lazy_menu
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 pad:start;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:start;--overlay;@2500 pad:start;--overlay;@3000 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
         "-DEXPECTED_ERROR=padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n.*padFocus: \n.*padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# A screen made anew on each opening (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decisions E-691, E-875): the
+# advancement tree, opened and closed with J, is made twice (QTCRAFT_UI_STATS logs each) and takes
+# the pad's focus both times: on its first node, so Right reaches the same child each time.
+add_test(NAME app_offscreen_pad_lazy_advancements
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 press:J;--overlay;@1500 pad:dpadRight;--overlay;@2000 press:J;--overlay;@2500 press:J;--overlay;@3000 pad:dpadRight"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=AdvancementsScreen[^\n]* made in.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*AdvancementsScreen[^\n]* made in.*padFocus: advancement_qtcraft_mountain_top"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_advancements.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 # The advancement tree (decision E-924): the pad walks along the tree, right to the nearest child,
@@ -312,20 +338,63 @@ add_test(NAME app_offscreen_advancements_return
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_advancements_return PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_advancements_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-advancements-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
-foreach(pad inventory radial keyboard menu playstation settings lazy_menu advancements)
+# Closing the pause menu's sub-screens (QcScreenState::closeSubScreen, row 79.58) with real key presses:
+# Esc on a settings page and on the character screen leads back to the pause menu, Esc on the debug
+# options (opened from the world) back to the world; the pad's B on the settings leads back to the
+# pause menu, so the last Esc closes it.
+add_test(NAME app_offscreen_subscreen_return
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@500 audio;--overlay;@1500 press:Escape;--overlay;@2000 debug;--overlay;@3000 press:Escape;--overlay;@3500 character;--overlay;@4500 press:Escape;--overlay;@5000 settings;--overlay;@6000 pad:east;--overlay;@6500 press:Escape"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Escape: overlay pause[^\n]*\n.*press:Escape: overlay none[^\n]*\n.*press:Escape: overlay pause[^\n]*\n.*press:Escape: overlay none"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-subscreen-return.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_subscreen_return PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_subscreen_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-subscreen-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Esc on the HUD's lines (row 79.76): the chat line and a sign's editor (opened by using a sign in
+# view) close with a real Esc press, back to the world. Each press waits for its screen
+# (press:<key>@<screen>), the use repeats until the placed sign's editor opens (key:use@sign), so
+# no step depends on the wall clock.
+add_test(NAME app_offscreen_escape_chat_sign
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--look;0,-45;--chat;/setblock ~ ~ ~-1 oak_sign;--overlay;@1000 chat;--overlay;@1000 press:Escape@chat;--overlay;@1500 key:use@sign;--overlay;@1500 press:Escape@sign"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Escape: overlay none \\(was chat\\)[^\n]*\n.*press:Escape: overlay none \\(was sign\\)"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-escape-chat-sign.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_escape_chat_sign PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_escape_chat_sign;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-escape-chat-sign.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Arrow up and down in the chat line (row 79.78, E-970): two lines typed and sent with a real
+# Return, then on a new draft Up, Up, Down shows the newer one again; the screenshot logs what the
+# line shows. Each press waits for the chat line (press:<key>@chat).
+add_test(NAME app_offscreen_chat_history
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 chat;--overlay;@1300 text:chatInput=first;--overlay;@1300 press:Return@chat;--overlay;@1600 chat;--overlay;@1900 text:chatInput=second;--overlay;@1900 press:Return@chat;--overlay;@2200 chat;--overlay;@2500 text:chatInput=draft;--overlay;@2500 press:Up@chat;--overlay;@2500 press:Up@chat;--overlay;@2500 press:Down@chat"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Return: overlay none \\(was chat\\)[^\n]*\n.*press:Return: overlay none \\(was chat\\).*Item chatInput:[^\n]* text \"second\""
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-chat-history.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_chat_history PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_chat_history;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-chat-history.png;QTCRAFT_SCREENSHOT_FRAMES=30;QTCRAFT_LOG_ITEMS=chatInput")
+foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu lazy_advancements advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
     set(frames 90)
     set(keep_alive 60000)
-    if(pad STREQUAL lazy_menu)
+    if(pad STREQUAL lazy_menu OR pad STREQUAL lazy_advancements)
         set(keep_alive 0)
     endif()
     if(pad STREQUAL menu)
         set(frames 300)
     endif()
     set_tests_properties(app_offscreen_pad_${pad} PROPERTIES TIMEOUT 180
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
 endforeach()
+set_property(TEST app_offscreen_pad_bind APPEND PROPERTY ENVIRONMENT "QTCRAFT_LOG_ITEMS=gamepadMessage")
+set_property(TEST app_offscreen_pad_lazy_advancements APPEND PROPERTY ENVIRONMENT "QTCRAFT_UI_STATS=1")
 # The startup script's steps on a control wait for its screen to be made (decision E-691): the
 # search text is set before the creative inventory opens and is typed once it is there.
 add_test(NAME app_offscreen_lazy_screen_hooks
@@ -370,7 +439,7 @@ set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
-    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 450 COST 60
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 630 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
 endif()
 # qtcraft is a GUI program on Windows (WIN32_EXECUTABLE): without a console, Qt sends its messages to

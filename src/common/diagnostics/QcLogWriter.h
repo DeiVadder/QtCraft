@@ -28,7 +28,8 @@ public:
 
     QcLogWriter(QString path, Limits limits);
 
-    /*! Opens the file for appending (making its folder); the error says why it cannot. */
+    /*! Opens the file for appending (making its folder); returns an error that says why it
+        cannot. */
     [[nodiscard]] QcStatus open();
     /*! Appends \a line, rotating first when it would grow the file beyond the cap; does nothing
         while the file is not open. */
@@ -41,7 +42,7 @@ public:
     /*! Returns the operating system's handle of the open file (for the crash handler); -1 when
         closed. */
     int handle() const { return m_file.isOpen() ? m_file.handle() : -1; }
-    /*! Rotations so far (tests). */
+    /*! Returns the rotations so far (tests). */
     int rotationCount() const { return m_rotationCount; }
 
 private:

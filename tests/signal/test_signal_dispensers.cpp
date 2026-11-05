@@ -75,7 +75,7 @@ private:
     // The cod around local (5, 0, 5), where a dispenser facing east at (4, 0, 5) pours.
     QList<const QcCreature *> codInFront() const
     {
-        const int cod = *m_content->mobIndex(u"qtcraft:cod"_s);
+        const QcCreatureKindId cod = *m_content->mobKind(u"qtcraft:cod"_s);
         const QcBlockPos front = at(5, 0, 5);
         const QcVec3 centre{front.x + 0.5, static_cast<double>(front.y), front.z + 0.5};
         QList<const QcCreature *> found;
@@ -182,7 +182,7 @@ private slots:
         put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
         put(4, 0, 6, u"lever[attach=floor]"_s);
         const QcBlockPos front = at(5, 0, 5);
-        m_server->entities().creatures().spawn(*m_content->mobIndex(u"qtcraft:cod"_s), {front.x + 0.5, static_cast<double>(front.y), front.z + 0.5},
+        m_server->entities().creatures().spawn(*m_content->mobKind(u"qtcraft:cod"_s), {front.x + 0.5, static_cast<double>(front.y), front.z + 0.5},
                                                m_server->entities().newId(), false, true);
         fill(4, 0, 5, {stack("qtcraft:cod_bucket", 1)});
         ticks(2);

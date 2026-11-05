@@ -9,6 +9,9 @@
 
 namespace {
 
+// Coordinates of layers and parts lie within this many metres of the bone, as the parser allows.
+constexpr double coordinateLimit = 8.0;
+
 void writeVector(QDataStream &stream, const QcVec3 &v)
 {
     stream << v.x << v.y << v.z;
@@ -16,11 +19,10 @@ void writeVector(QDataStream &stream, const QcVec3 &v)
 
 [[nodiscard]] std::optional<QcVec3> readVector(QDataStream &stream)
 {
-    constexpr double limit = 8.0;
     QcVec3 v;
     stream >> v.x >> v.y >> v.z;
-    const bool valid = std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z) && std::abs(v.x) <= limit
-                       && std::abs(v.y) <= limit && std::abs(v.z) <= limit;
+    const bool valid = std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z) && std::abs(v.x) <= coordinateLimit
+                       && std::abs(v.y) <= coordinateLimit && std::abs(v.z) <= coordinateLimit;
     return valid ? std::optional(v) : std::nullopt;
 }
 
@@ -56,7 +58,8 @@ void writeVector(QDataStream &stream, const QcVec3 &v)
     stream >> layer.texture >> layer.front >> layer.inflate >> layer.fromY >> layer.toY;
     const bool valid = stream.status() == QDataStream::Ok && std::isfinite(layer.inflate) && layer.inflate >= 0.0
                        && layer.inflate <= QcArmourDefinition::maxInflate && std::isfinite(layer.fromY)
-                       && std::isfinite(layer.toY) && layer.fromY < layer.toY;
+                       && std::isfinite(layer.toY) && layer.fromY >= -coordinateLimit && layer.toY <= coordinateLimit
+                       && layer.fromY < layer.toY;
     return valid ? std::optional(std::move(layer)) : std::nullopt;
 }
 
@@ -72,7 +75,7 @@ void writeVector(QDataStream &stream, const QcVec3 &v)
 
     const std::optional<QcVec3> from = readVector(stream);
     const std::optional<QcVec3> to = from ? readVector(stream) : std::nullopt;
-    if (!to) {
+    if (!to || from->x >= to->x || from->y >= to->y || from->z >= to->z) {
         return std::nullopt;
     }
     part.from = *from;

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcXzRect.h"
 #include "common/world/QcChunk.h"
 #include "worldgen/mineshafts/QcMineshaftBlocks.h"
 #include "worldgen/mineshafts/QcMineshaftPlan.h"
@@ -32,25 +33,14 @@ public:
     void buildEntrance(QcChunk &chunk, const QcMineshaftPlan::Entrance &entrance) const;
 
 private:
-    // The chunk's columns (inclusive), with a margin, as a quick test for a box of cells.
-    struct Area
-    {
-        int x0 = 0;
-        int z0 = 0;
-        int x1 = 0;
-        int z1 = 0;
-
-        bool overlaps(int lowX, int lowZ, int highX, int highZ) const { return highX >= x0 && lowX <= x1 && highZ >= z0 && lowZ <= z1; }
-    };
-
     void placePillars(QcChunk &chunk, const QcMineshaftPlan &plan) const;
-    void placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;
-    void placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;
+    void placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const;
+    void placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const;
     // Whether a corridor (with its walls) reaches into the area.
-    static bool near(const QcMineshaftPlan::Corridor &corridor, Area area);
+    static bool near(const QcMineshaftPlan::Corridor &corridor, QcXzRect area);
     // Opens the cells of the plan's nodes and corridors in the chunk; seals liquid beside them and
     // sand or gravel above them (also beside cells in the neighbouring chunks).
-    void open(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;
+    void open(QcChunk &chunk, const QcMineshaftPlan &plan, QcXzRect area) const;
     void seal(QcChunk &chunk, QcBlockPos cell) const;
     // Planks where the cell is open (not solid or liquid); nothing outside the chunk.
     void plankIfOpen(QcChunk &chunk, QcBlockPos cell) const;

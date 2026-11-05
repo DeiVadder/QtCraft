@@ -89,8 +89,8 @@ private:
         for (const QcVillagePlan::Run &run : plan.runs) {
             addInts(hash, {run.x, run.z, run.dx, run.dz, run.length, run.arm, run.branch ? 1 : 0});
         }
-        for (const QcVillagePlan::Step &step : plan.steps) {
-            addBlockPos(hash, step.at);
+        for (const QcPlacedBlock &step : plan.steps) {
+            addBlockPos(hash, step.pos);
             addBlock(hash, step.block);
         }
         for (const QList<QcVillagePlan::Deck> *decks : {&plan.decks, &plan.bridges}) {
@@ -100,10 +100,10 @@ private:
                 addBlock(hash, deck.post);
             }
         }
-        for (const QList<QcVillagePlan::Area> *areas : {&plan.wetland.wet, &plan.wetland.dry}) {
+        for (const QList<QcXzRect> *areas : {&plan.wetland.wet, &plan.wetland.dry}) {
             addInts(hash, {areas->size()});
-            for (const QcVillagePlan::Area &area : *areas) {
-                addInts(hash, {area.x0, area.z0, area.x1, area.z1});
+            for (const QcXzRect &area : *areas) {
+                addInts(hash, {area.minX, area.minZ, area.maxX, area.maxZ});
             }
         }
         QList<QcBlockPos> fields(plan.fields.cbegin(), plan.fields.cend());
@@ -177,9 +177,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64{42} << QByteArray("2ed3ea8402da8dc66d5946e8ecfaaae5144b0cf567e6634806296c91fea23b7e") << 166;
-        QTest::newRow("seed 7") << qint64{7} << QByteArray("b7119a642462baaa7b0add87c52250e946bf1a5dd7997c1bd63c888a19615203") << 166;
-        QTest::newRow("seed 20261017") << qint64{20261017} << QByteArray("c8b31c9f349ef59900b7a77385d407ad81a719fc7a3aef3029bedf36db76e0b1") << 168;
+        QTest::newRow("seed 42") << qint64{42} << QByteArray("20525420ac38abfdfb1289fd171012a27ccfd37b969d61137dbf4975527ffadb") << 165;
+        QTest::newRow("seed 7") << qint64{7} << QByteArray("26cd5875441dd0fbbdb1911143ecebfcfef71fc3b46b11b1018f98d3486c9702") << 166;
+        QTest::newRow("seed 20261017") << qint64{20261017} << QByteArray("9e45e000edc2d302c6e75698be18c29746da9d2a3925f3ad842bfea057449845") << 169;
     }
 
     void plansStayTheSame()

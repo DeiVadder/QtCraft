@@ -48,7 +48,7 @@ QJsonObject entry(const QcHandbook &handbook, const QcHandbookEntry &entry)
 {
     QJsonArray facts;
     for (const QcHandbookEntry::Fact &fact : entry.facts) {
-        facts.append(QJsonObject{{u"label"_s, fact.label}, {u"value"_s, fact.value}, {u"links"_s, links(fact.links)}});
+        facts.append(QJsonObject{{u"label"_s, fact.label}, {u"value"_s, fact.value}, {u"links"_s, links(fact.links)}, {u"technical"_s, fact.technical}});
     }
 
     QJsonArray sections;

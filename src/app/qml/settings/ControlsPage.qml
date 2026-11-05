@@ -11,31 +11,23 @@ import QtCraft
 // The controls page of the settings: the mouse (sensitivity, invert), then the key table, every
 // action with its primary and secondary key. Clicking a key waits for the next key press; Esc
 // cancels, Backspace removes the key, a key used elsewhere is swapped (the message above the table,
-// scrolled into view, says what moved).
+// scrolled into view, says what moved). KeyControls does the capture; the page shows it.
 SettingsPage {
     id: page
 
     required property GameController game
     readonly property KeyControls keys: game.settings.keys
-    // The slot waiting for a key press: action id and slot (0 primary, 1 secondary).
-    property string captureAction
-    property int captureSlot: -1
-    // A modifier pressed while capturing; it is bound when released without another key, so
-    // Shift+7 binds the character it types ("/" on a German keyboard).
-    property int pendingModifier: 0
 
-    function isModifier(key) {
-        return key === Qt.Key_Shift || key === Qt.Key_Control || key === Qt.Key_Meta || key === Qt.Key_Alt
-               || key === Qt.Key_AltGr;
-    }
-
-    function bindCaptured(key) {
-        // The table is rebuilt from the new bindings; keep the page's position.
-        const position = contentY;
-        message = keys.bind(captureAction, captureSlot, key);
-        cancelCapture();
-        contentY = position;
-        Qt.callLater(revealMessage);
+    // Follows what a key did to the capture (KeyControls): the focus leaves the capture when it
+    // ended, and after a binding the page keeps its place (the table is rebuilt from the new
+    // bindings) and shows the message.
+    function follow(result: int, position: real) {
+        if (result === KeyControls.Bound || result === KeyControls.Cancelled)
+            page.forceActiveFocus();
+        if (result === KeyControls.Bound) {
+            contentY = position;
+            Qt.callLater(revealMessage);
+        }
     }
 
     // Scrolls the page so the message above the key table is in view (once laid out).
@@ -45,35 +37,32 @@ SettingsPage {
     }
 
     function startCapture(action, slot) {
-        captureAction = action;
-        captureSlot = slot;
-        pendingModifier = 0;
-        message = "";
-        keyCapture.forceActiveFocus();
+        keys.startCapture(action, slot);
+        if (keys.capturing)
+            keyCapture.forceActiveFocus();
     }
 
     function cancelCapture() {
-        if (captureSlot < 0)
+        if (!keys.capturing)
             return;
 
-        captureAction = "";
-        captureSlot = -1;
+        keys.cancelCapture();
         page.forceActiveFocus();
     }
 
     function clear() {
         cancelCapture();
-        message = "";
+        keys.clearCapture();
     }
 
     title: qsTr("Controls")
+    message: keys.message
     resettable: true
     resetButton: resetKeysButton
     // From the pad the focus stays on the reset button and the screen shows the message.
     onResetRequested: byPad => {
         cancelCapture();
         keys.reset();
-        message = qsTr("All keys are back to their defaults.");
         if (!byPad)
             Qt.callLater(revealMessage);
     }
@@ -141,21 +130,13 @@ SettingsPage {
                 Keys.onShortcutOverride: event => event.accepted = true
                 Keys.onPressed: event => {
                     event.accepted = true;
-                    if (event.isAutoRepeat)
-                        return;
-
-                    if (event.key === Qt.Key_Escape) {
-                        page.cancelCapture();
-                    } else if (page.isModifier(event.key)) {
-                        page.pendingModifier = event.key;
-                    } else {
-                        page.bindCaptured(event.key);
-                    }
+                    const position = page.contentY;
+                    page.follow(page.keys.keyPressed(event.key, event.isAutoRepeat), position);
                 }
                 Keys.onReleased: event => {
                     event.accepted = true;
-                    if (!event.isAutoRepeat && page.captureSlot >= 0 && event.key === page.pendingModifier)
-                        page.bindCaptured(event.key);
+                    const position = page.contentY;
+                    page.follow(page.keys.keyReleased(event.key, event.isAutoRepeat), position);
                 }
             }
             Label {
@@ -200,7 +181,8 @@ SettingsPage {
 
                     delegate: GameButton {
                         required property int index
-                        readonly property bool capturing: page.captureAction === keyRow.modelData.action && page.captureSlot === index
+                        readonly property bool capturing: page.keys.captureAction === keyRow.modelData.action && page.keys.captureSlot === index
+                        readonly property bool bound: index === 0 ? keyRow.modelData.primaryBound : keyRow.modelData.secondaryBound
 
                         Layout.preferredWidth: Ui.size.keyButton
                         enabled: !keyRow.modelData.fixed
@@ -209,7 +191,7 @@ SettingsPage {
                         // "–" or an arrow says little without the row: the action, which key and the key.
                         Accessible.name: qsTr("%1, %2: %3").arg(keyRow.modelData.label)
                                          .arg(index === 0 ? qsTr("primary key") : qsTr("secondary key"))
-                                         .arg(text === "–" ? qsTr("none") : text)
+                                         .arg(capturing || bound ? text : qsTr("none"))
                         onClicked: page.startCapture(keyRow.modelData.action, index)
                     }
                 }

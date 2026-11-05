@@ -1,0 +1,10 @@
+{
+    "name": "black_dye_from_ink_sac",
+    "type": "shapeless",
+    "ingredients": [
+        "ink_sac"
+    ],
+    "result": {
+        "item": "black_dye"
+    }
+}

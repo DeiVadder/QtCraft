@@ -21,6 +21,7 @@
 #include <QSet>
 
 #include <algorithm>
+#include <tuple>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -343,7 +344,8 @@ ModLoadState::Admission ModLoadState::admit(const QcModStatus &mod, const QcCont
     }
 
     result.content = std::make_shared<QcContentRegistry>(std::move(base));
-    result.content->finish();
+    // The base game's warnings went into the result when it was loaded (ModLoadState::baseWarnings).
+    std::ignore = result.content->finish();
     return result;
 }
 
@@ -493,7 +495,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
     // The pack loader fails only on an unusable manifest, before it reads (and warns about) anything.
     const QcResult<QcLoadedPack> loaded = QcBaseContent::loadInto(base);
     if (!loaded) {
-        return std::unexpected(Failure{loaded.error(), {}});
+        return std::unexpected(QcLoadFailure{loaded.error(), {}});
     }
     result.warnings = loaded->warnings;
 
@@ -503,7 +505,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
         state.baseWarnings = finished.finish();
         result.warnings += state.baseWarnings;
         if (const QString problem = state.clientProblem(finished); !problem.isEmpty()) {
-            return std::unexpected(Failure{u"base game: "_s + problem, std::move(result.warnings)});
+            return std::unexpected(QcLoadFailure{u"base game: "_s + problem, std::move(result.warnings)});
         }
     }
 
@@ -530,7 +532,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
 
     result.content = std::make_shared<QcContentRegistry>(std::move(accepted));
     // Warnings of the parts were reported with the mod that caused them.
-    result.content->finish();
+    std::ignore = result.content->finish();
     // Safety net: read the final content back exactly like a client. The checks of ModLoadState::admit() should
     // make this pass; if not, the game starts with the base content alone rather than with content
     // clients refuse.

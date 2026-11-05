@@ -3,6 +3,7 @@
 
 #include "worldgen/generators/QcWorldGenerators.h"
 
+#include "common/content/worldgen/QcWorldTypeParser.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
@@ -80,7 +81,7 @@ bool isKnown(const QString &type)
     }
 
     if (type == QLatin1StringView(flat)) {
-        return options.isEmpty() ? content.worldgen().flatWorld().preset : options;
+        return QcWorldTypeParser::shortPreset(options.isEmpty() ? content.worldgen().flatWorld().preset : options);
     }
     if (type == QLatin1StringView(empty)) {
         return QcVoidGenerator::optionsOf(*QcVoidGenerator::parseOptions(options, content));

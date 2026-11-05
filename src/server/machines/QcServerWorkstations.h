@@ -7,9 +7,11 @@
 #include "server/machines/QcServerEnchanting.h"
 #include "server/machines/QcServerStonecutter.h"
 
-// The block screens with slots of their own that the player fills from the inventory and that
-// give their items back on closing: the stonecutter (decision E-785) and the enchanting table
-// (decision E-864) and the anvil (decision E-866). At most one of them is open per player.
+/*! \brief The block screens with slots of their own that the player fills from the inventory and
+    that give their items back on closing: the stonecutter (decision E-785) and the enchanting table
+    (decision E-864) and the anvil (decision E-866).
+
+    At most one of them is open per player. */
 struct QcServerWorkstations
 {
     QcServerWorkstations(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcBlockScreens &screens, QcServerBlocks &blocks)
@@ -19,7 +21,7 @@ struct QcServerWorkstations
     {
     }
 
-    // Once per tick: closes the screens that may not stay open.
+    /*! Once per tick: closes the screens that may not stay open. */
     void update()
     {
         stonecutter.update();
@@ -27,7 +29,7 @@ struct QcServerWorkstations
         anvil.update();
     }
 
-    // The player left: the slots go back, nothing is sent.
+    /*! The player \a client left: the slots go back, nothing is sent. */
     void leave(QcServerClient &client)
     {
         stonecutter.close(client, false);
@@ -35,7 +37,8 @@ struct QcServerWorkstations
         anvil.close(client, false);
     }
 
-    // Handles the choices and closes of the workstation screens; false for another message.
+    /*! Handles the choices and closes of the workstation screens in \a message of \a client.
+        Returns \c false for another message. */
     bool handleMessage(QcServerClient &client, const QcMessage &message)
     {
         if (const auto *recipe = std::get_if<QcMsg::SelectStonecutterRecipe>(&message)) {
@@ -58,7 +61,10 @@ struct QcServerWorkstations
         return true;
     }
 
+    /*! The stonecutter screens. */
     QcServerStonecutter stonecutter;
+    /*! The enchanting table screens. */
     QcServerEnchanting enchanting;
+    /*! The anvil screens. */
     QcServerAnvil anvil;
 };

@@ -689,6 +689,11 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     const FrameView &view = cull(viewProjection, drawCamera, updates);
     m_sample.visibleSections = static_cast<int>(view.visible.size());
     drawPlan(commandBuffer, updates, view, outputSize);
+    // The material maps go up in strips, one per frame (decision E-912): the next frame is asked
+    // for here, as a still view (decision E-963) asks for none.
+    if (m_materials.holdsPixels()) {
+        update();
+    }
 
     if (m_frame.collectRenderSamples) {
         m_sample.sections = static_cast<int>(m_meshStore.meshes().size());

@@ -68,6 +68,7 @@ public:
             acknowledged = state->lastInputSequence;
             vehicle = state->vehicle;
             boat = state->boat;
+            usingItem = state->usingItem;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
             viewDistanceGranted = welcome->viewDistance;
@@ -78,7 +79,7 @@ public:
             chatLines.append(chat->text);
             chatKeys.append(*chat);
         } else if (const auto *healthState = std::get_if<QcMsg::PlayerHealth>(&message)) {
-            ++healthMessages;
+            healths.append(*healthState);
             health = healthState->health;
             dead = healthState->dead;
             burning = healthState->burning;
@@ -87,6 +88,8 @@ public:
             food = foodState->food;
         } else if (const auto *experienceState = std::get_if<QcMsg::PlayerExperience>(&message)) {
             experience = *experienceState;
+        } else if (const auto *airState = std::get_if<QcMsg::PlayerAir>(&message)) {
+            airMessages.append(*airState);
         } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
             gameMode = mode->mode;
             adventure = mode->adventure;
@@ -202,6 +205,8 @@ public:
     quint32 acknowledged = 0;
     quint32 vehicle = 0;
     std::optional<QcBoatState> boat;
+    // Whether the server knows the player to draw (PlayerState).
+    bool usingItem = false;
     // Messages received in all.
     int messageCount = 0;
     // Keys of all sounds heard, oldest first.
@@ -228,6 +233,8 @@ public:
     QList<QcMsg::MapUpdate> mapUpdates;
     // Advancement messages (decision E-923), oldest first.
     QList<QcMsg::AdvancementProgress> advancements;
+    // Air messages (decision E-955), oldest first.
+    QList<QcMsg::PlayerAir> airMessages;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;
@@ -238,9 +245,10 @@ public:
     bool dead = false;
     // The player is on fire (decision E-393).
     bool burning = false;
-    // His status effects (decision E-450) and how many health messages brought them.
+    // His status effects (decision E-450) and all health messages, oldest first (how many brought
+    // the effects; which told of a fresh hit, decision E-971).
     QList<QcStatusEffect> effects;
-    int healthMessages = 0;
+    QList<QcMsg::PlayerHealth> healths;
     int food = -1;
     // The experience the server reported last (decision E-398); empty before the first.
     std::optional<QcMsg::PlayerExperience> experience;

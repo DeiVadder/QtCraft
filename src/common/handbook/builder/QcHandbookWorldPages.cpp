@@ -54,10 +54,10 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
 
 // The plants of one vegetation layer the content knows (decision E-814); unknown ones are noted as
 // problems and get no link.
-[[nodiscard]] QList<QcVegetationPlant> knownPlants(const QcHandbookContext &context, const QcBiomeDefinition &biome, const QcVegetationLayer &layer)
+[[nodiscard]] QList<QcWeightedBlockName> knownPlants(const QcHandbookContext &context, const QcBiomeDefinition &biome, const QcVegetationLayer &layer)
 {
-    QList<QcVegetationPlant> plants;
-    for (const QcVegetationPlant &plant : layer.plants) {
+    QList<QcWeightedBlockName> plants;
+    for (const QcWeightedBlockName &plant : layer.plants) {
         if (context.content.blockId(plant.block)) {
             plants.append(plant);
         } else {
@@ -79,14 +79,14 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
         if (layer->density <= 0.0 && layer->patches.chance <= 0.0) {
             continue;
         }
-        const QList<QcVegetationPlant> plants = knownPlants(context, biome, *layer);
+        const QList<QcWeightedBlockName> plants = knownPlants(context, biome, *layer);
         int total = 0;
-        for (const QcVegetationPlant &plant : plants) {
+        for (const QcWeightedBlockName &plant : plants) {
             total += plant.weight;
         }
 
         Section section{text.label(label), {}, {}, {}};
-        for (const QcVegetationPlant &plant : plants) {
+        for (const QcWeightedBlockName &plant : plants) {
             section.links.append(context.links.blockLink(plant.block, text.percent(static_cast<double>(plant.weight) / total)));
         }
         if (!section.links.isEmpty()) {
@@ -104,9 +104,9 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     const QcSpawnWeights weights(content);
     Section monsters{context.text.label(u"section.monsters"_s), {}, {}, {}};
     Section creatures{context.text.label(u"section.creatures"_s), {}, {}, {}};
-    for (qsizetype type = 0; type < content.mobs().size(); ++type) {
+    for (const QcCreatureKindId type : content.mobs().ids()) {
         const QcMobDefinition &mob = content.mobs()[type];
-        const double weight = weights.weight(static_cast<int>(type), biome.name);
+        const double weight = weights.weight(type, biome.name);
         if (mob.isMonster() && weight > 0.0) {
             monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
         } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
@@ -180,10 +180,13 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.category = u"biomes"_s;
     entry.pack = QcHandbookLinks::packOf(biome.name);
     entry.title = context.content.translations().translate(biome.translationKey, text.language());
-    entry.icon = context.links.itemIcon(biome.surfaceBlock);
+    entry.icon = context.links.biomeIcon(biome);
+    if (!biome.icon.isEmpty() && context.links.itemIcon(biome.icon).isEmpty()) {
+        text.addProblem(u"biome %1: unknown icon %2"_s.arg(biome.name, biome.icon));
+    }
     entry.text = text.description(biome.descriptionKey, biome.name);
 
-    entry.facts.append({text.label(u"fact.id"_s), biome.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), biome.name, {}, true});
     if (biome.river || biome.delta) {
         // A river or delta biome has no climate cell or height of its own: it lies in the rivers
         // and deltas of others.
@@ -260,7 +263,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     entry.title = links.oreTitle(ore, text.language());
     entry.icon = links.itemIcon(ore.block);
 
-    entry.facts.append({text.label(u"fact.id"_s), ore.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), ore.name, {}, true});
     entry.facts.append({text.label(u"fact.block"_s), {}, {links.blockLink(ore.block)}});
     const QString replaces = ore.replaces.isEmpty() ? context.content.worldgen().terrainSettings().stoneBlock : ore.replaces;
     if (context.content.blockId(replaces) == qcAirBlockId) {
@@ -362,9 +365,12 @@ QcHandbookEntry featurePage(const QcHandbookContext &context, const QcFeatureDef
     entry.category = u"worldgen"_s;
     entry.pack = QcHandbookLinks::packOf(feature.name);
     entry.title = links.featureTitle(feature, text.language());
-    entry.icon = links.itemIcon(feature.trunkBlock);
+    entry.icon = links.featureIcon(feature);
+    if (!feature.icon.isEmpty() && links.itemIcon(feature.icon).isEmpty()) {
+        context.text.addProblem(u"feature %1: unknown icon %2"_s.arg(feature.name, feature.icon));
+    }
 
-    entry.facts.append({text.label(u"fact.id"_s), feature.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), feature.name, {}, true});
     entry.facts += shapeFacts(context, feature);
 
     Section biomes = featureBiomes(context, feature);

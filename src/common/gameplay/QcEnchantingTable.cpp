@@ -4,6 +4,7 @@
 #include "common/gameplay/QcEnchantingTable.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcWeightedChoice.h"
 #include "common/gameplay/QcEnchanting.h"
 
 #include <QRandomGenerator>
@@ -41,18 +42,9 @@ QList<Candidate> candidatesFor(const QcContentRegistry &content, const QcItemDef
 // One candidate, chosen by weight.
 Candidate pickWeighted(const QList<Candidate> &candidates, QRandomGenerator &random)
 {
-    int total = 0;
-    for (const Candidate &candidate : candidates) {
-        total += candidate.definition->weight;
-    }
-    int roll = random.bounded(total);
-    for (const Candidate &candidate : candidates) {
-        roll -= candidate.definition->weight;
-        if (roll < 0) {
-            return candidate;
-        }
-    }
-    return candidates.constLast();
+    const auto weightOf = [](Candidate candidate) { return candidate.definition->weight; };
+    const auto chosen = qcWeightedFind(candidates, random.bounded(qcWeightTotal(candidates, weightOf)), weightOf);
+    return chosen != candidates.end() ? *chosen : candidates.constLast();
 }
 
 // The enchanting power of `levelCost` for an item with `enchantability`, varied by up to 15 %.
@@ -100,7 +92,7 @@ bool letsShelfThrough(const QcContentRegistry &content, std::optional<QcBlockId>
 
 QList<QcBlockPos> shelvesIn(const QcContentRegistry &content, QcBlockPos table, const BlockAt &blockAt)
 {
-    const std::optional<QcBlockId> shelf = content.blockId(QStringLiteral("qtcraft:bookshelf"));
+    const std::optional<QcBlockId> shelf = content.blockId(QString(shelfBlock));
     if (!shelf) {
         return {};
     }

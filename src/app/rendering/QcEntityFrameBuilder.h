@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app/rendering/QcForcedPose.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/entitymeshes/QcBoatRiders.h"
 #include "clientcore/entitymeshes/QcEntityCulling.h"
@@ -13,6 +14,7 @@
 #include "clientcore/figures/QcCapeTracker.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/session/QcCampfireSmoke.h"
+#include "clientcore/session/QcEffectPuff.h"
 #include "clientcore/session/QcEnchantingAura.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
@@ -32,7 +34,7 @@ class QcTextureAtlas;
 struct QcSessionParts;
 
 // Builds the entity meshes of one frame from the running session: creatures, armour stands, carts
-// with their load, boats, drops, projectiles, flames, lit explosives and the puffs of explosions, the local
+// with their load, boats, drops, projectiles, flames, lit explosives, the puffs of explosions and ink, the local
 // player seen from outside and the
 // first-person arm, with their capes and the light they stand in. Hands nothing to the view; that
 // is QcRenderBridge's part. Lives in the GUI thread.
@@ -51,17 +53,16 @@ public:
         m_signTexts.clear();
         m_mapColoursStale = true;
     }
-    // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
-    // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
-    // "walk:<metres>" also freezes every other figure and creature at that point of its walk.
-    void setForcedPose(const QString &pose) { m_forcedPose = pose; }
+    // Test hook: freezes the local player's pose for screenshots (QcForcedPose); the cape then rests
+    // on its target for that movement.
+    void setForcedPose(const QString &pose) { m_forcedPose.set(pose); }
 
     // The local player's pose at `alpha` between the last two ticks, or the forced pose.
     QcEntityPose localPose(double alpha) const;
     // The pose of a mirrored creature or player, with the walk of the screenshot hook.
     QcEntityPose creaturePose(const QcClientEntity &entity, double alpha) const;
-    // The metres walked that `--pose walk:<metres>` fixes; nullopt for other poses.
-    std::optional<double> forcedWalk() const;
+    // The pose the screenshot hook forces (`--pose`; none set: the real one).
+    const QcForcedPose &forcedPose() const { return m_forcedPose; }
     // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an
     // atlas. The maps in item frames go into a mesh of their own (framedMaps()). Animated textures
     // (flames on burning bodies) show their frame at `animationTicks` (QcWorldView::animationTicks,
@@ -88,6 +89,7 @@ private:
         const QcClientWorld &world;
         const QcEntityMesher::UvLookup &uv;
         double alpha = 0.0;
+        // The animations' time (QcWorldMirror::animationSeconds, decision E-962), not the time of day.
         double seconds = 0.0;
     };
 
@@ -95,6 +97,10 @@ private:
     void appendEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // A creature; `scale` shrinks it about its feet (the small creature in a spawner).
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
+    // A creature of static boxes in `pose` at `placement`: walking legs, sitting, tentacles and tilt
+    // of a pulsing swimmer (decision E-974); the plain player figure for a look that did not load.
+    void appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement, const EntityFrame &frame,
+                           const QcEntityPose &pose);
     // The small creature spinning in each monster spawner near the player (decision E-520).
     void appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame);
     // The text on the signs near the player (decision E-766).
@@ -111,8 +117,13 @@ private:
     [[nodiscard]] QcVec3 meshOrigin() const;
     // A falling or moving block or a lit explosive, drawn as its block.
     void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
-    // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).
+    // QcEntityFramePuffs.cpp: the puffs of flash and smoke of explosions and the clouds of ink of
+    // hurt squids (decision E-974) at the client tick `ticks` (with its fraction).
     void appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
+    void appendInk(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
+    // A puff of smoke, fire or ink drawn as the cube `look` around its middle (decision E-975).
+    static void appendPuff(QcEntityMesh &mesh, const QcEntityMesher::ItemLook &look, const QcEffectPuff &puff, QcEntityLight light,
+                           const QcEntityMesher::UvLookup &uv);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
     // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
     static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);
@@ -138,16 +149,16 @@ private:
     float blockLightAt(QcBlockPos pos) const;
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
     // What a hand holds: a sprite with its shape (decision E-831).
-    [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
+    [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item, double drawProgress = -1.0) const;
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     std::shared_ptr<const QcBlockRenderTable> m_renderTable;
-    // A cache: the shapes of held sprites, cut from the atlas on first use (decision E-831). GUI
+    // A cache: the shapes of held and dropped sprites, cut from the atlas on first use (decision E-831). GUI
     // thread only: frames are built there, and the cache is not locked.
     mutable QcSpriteShapes m_spriteShapes;
-    QString m_forcedPose;
+    QcForcedPose m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
     // The other players on boats' driver seats this frame, by player id (QcBoatRiders::seats).

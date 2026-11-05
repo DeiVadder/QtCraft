@@ -7,6 +7,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcToolWear.h"
 #include "server/projectiles/QcServerProjectiles.h"
@@ -85,6 +86,11 @@ void QcPlayerLaunchers::tick()
     }
 }
 
+bool QcPlayerLaunchers::draws(const QcServerClient &client) const
+{
+    return client.drawing && mayDraw(client, m_state.heldItem(client));
+}
+
 bool QcPlayerLaunchers::mayDraw(const QcServerClient &client, const QcItemDefinition *held)
 {
     // A draw belongs to the slot it began in: another bow there or in another slot starts anew.
@@ -118,7 +124,7 @@ bool QcPlayerLaunchers::shoot(QcServerClient &client, double power)
         return false;
     }
 
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = QcLineOfSight::eyeOf(client);
     const QcVec3 direction = QcProjectileFlight::direction(client.yaw, client.pitch);
     const QcProjectileManager::Launch shot{client.id,       ammunition->projectile,
                                            eye + direction * muzzle, direction * (held->launcher->speed * std::min(power, 1.0)),

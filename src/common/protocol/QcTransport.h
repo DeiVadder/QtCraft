@@ -24,13 +24,17 @@ public:
     virtual void close() = 0;
     /*! Returns whether the link is open. */
     virtual bool isOpen() const = 0;
-    /*! Where the other end is ("address:port"); empty in-process. */
+    /*! Returns where the other end is ("address:port"); empty in-process. */
     virtual QString peerAddress() const { return {}; }
-    /*! Bytes sent but not yet handed to the network (0 in-process); senders of bulk data hold
-        back while a slow peer has much waiting. */
+    /*! Returns the bytes sent but not yet handed to the network (0 in-process); senders of bulk
+        data hold back while a slow peer has much waiting. */
     virtual qint64 pendingBytes() const { return 0; }
-    /*! Why the transport closed itself (timeout, too slow, broken frame); empty otherwise. */
+    /*! Returns why the transport closed itself (timeout, too slow, broken frame); empty
+        otherwise. */
     virtual QString closeReason() const { return {}; }
+    /*! Returns whether the other end closed the link (without an error on this end); false while
+        open and in-process. */
+    virtual bool closedByPeer() const { return false; }
     /*! Returns whether the transport must stay in the thread it was made in (moveToThread()
         would break it; a TLS socket, decision E-872). Whoever wants it in another thread makes
         it there. */

@@ -13,7 +13,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // One entry of `plants`: a block name (weight 1) or {"block", "weight"}.
-[[nodiscard]] QcVegetationPlant parsePlant(const QJsonValue &entry, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QcWeightedBlockName parsePlant(const QJsonValue &entry, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     if (entry.isString()) {
         return {QcContentNames::qualify(entry.toString(), packNamespace), 1};
@@ -25,7 +25,7 @@ namespace {
 
     const QJsonObject object = entry.toObject();
     QcJsonFieldReader nested{object, reader.context + u" plant"_s, {}};
-    QcVegetationPlant plant{nested.name(u"block"_s, packNamespace), nested.integer(u"weight"_s, 1, 1, QcVegetationLayer::maxWeight)};
+    QcWeightedBlockName plant{nested.name(u"block"_s, packNamespace), nested.integer(u"weight"_s, 1, 1, QcVegetationLayer::maxWeight)};
     reader.adopt(nested);
     return plant;
 }
@@ -54,7 +54,7 @@ namespace {
 
     const QJsonArray list = plants.toArray();
     for (const auto &entry : list) {
-        const QcVegetationPlant plant = parsePlant(entry, reader, packNamespace);
+        const QcWeightedBlockName plant = parsePlant(entry, reader, packNamespace);
         if (!reader.ok()) {
             break;
         }

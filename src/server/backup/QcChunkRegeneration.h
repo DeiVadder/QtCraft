@@ -10,22 +10,25 @@
 class QcBlockUpdateQueue;
 class QcServerState;
 
-// Repairs chunks by generating them again (decision E-246): the blocks become what the world's
-// generator (terrain, flat, void or showcase) makes of the chunk, its block entities go with the old
-// blocks (QcServerWorld::regenerateChunk: chests and machines lose their contents, saplings and
-// circuit memory are forgotten), pending block, liquid, circuit and hopper work and falling blocks
-// in it are dropped, minecarts without a rider go and the generated ones (a mine shaft's chest
-// minecarts) come again, players get the chunk again, players inside blocks are lifted to free
-// space and creatures inside blocks are removed. Other entities stay; /remove clears them.
+/*! \brief Repairs chunks by generating them again (decision E-246): the blocks become what the
+    world's generator (terrain, flat, void or showcase) makes of the chunk, its block entities go
+    with the old blocks (QcServerWorld::regenerateChunk: chests and machines lose their contents,
+    saplings and circuit memory are forgotten), pending block, liquid, circuit and hopper work and
+    falling blocks in it are dropped, minecarts without a rider go and the generated ones (a mine
+    shaft's chest minecarts) come again, players get the chunk again, players inside blocks are
+    lifted to free space and creatures inside blocks are removed.
+
+    Other entities stay; /remove clears them. */
 class QcChunkRegeneration
 {
 public:
-    // Chunks one command regenerates at most.
+    /*! Chunks one command regenerates at most. */
     static constexpr qsizetype maxChunks = 64;
 
     QcChunkRegeneration(QcServerState &state, QcBlockUpdateQueue &updates);
 
-    // Returns how many of the chunks were loaded and regenerated; the others are as generated already.
+    /*! Regenerates \a chunks (a stored chunk that is not loaded comes in first). Returns how
+        many were regenerated; the others are as generated already. */
     int regenerate(const QList<QcChunkPos> &chunks);
 
 private:

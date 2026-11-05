@@ -12,15 +12,21 @@
 #include <array>
 #include <memory>
 
-// Block light levels (0..15) of one chunk as immutable section snapshots; a missing section is dark.
-// QcBlockLightEngine produces them (from the shared QcLightEngine), the mesher and the entity lighting read them.
+/*! \brief Block light levels (0..15) of one chunk as immutable section snapshots; a missing section
+    is dark.
+
+    QcBlockLightEngine produces them (from the shared QcLightEngine), the mesher and the entity
+    lighting read them. */
 struct QcChunkLight
 {
+    /*! Light levels of one section, immutable once published. */
     using Section = QcLightNibbles;
 
+    /*! Sections from the bottom up; null where the section is dark. */
     std::array<std::shared_ptr<const Section>, QcWorld::sectionCount> sections;
 
-    // Local x and z in [0, 16); y outside the world reads dark.
+    /*! Returns the level of the cell at local \a x and \a z in [0, 16) and height \a y; outside
+        the world dark. */
     int level(int x, int y, int z) const
     {
         if (y < 0 || y >= QcWorld::worldHeight) {

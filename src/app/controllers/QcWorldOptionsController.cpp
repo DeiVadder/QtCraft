@@ -3,6 +3,7 @@
 
 #include "app/controllers/QcWorldOptionsController.h"
 
+#include "app/controllers/QcNewWorldDraft.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -35,6 +36,7 @@ QcWorldOptionsController::QcWorldOptionsController(QcWorldLibraryController &lib
     , m_library(library)
     , m_language(std::move(language))
     , m_preview(std::make_unique<QcWorldMapPreview>(m_language))
+    , m_draft(std::make_unique<QcNewWorldDraft>(*this))
 {
     // Mods switched: the next form takes the options of the new content.
     connect(&m_library, &QcWorldLibraryController::contentReset, this, &QcWorldOptionsController::release);
@@ -52,6 +54,29 @@ int QcWorldOptionsController::changedCount() const
     return static_cast<int>(std::ranges::count_if(options(), [this](const QcWorldOptions::Option &option) {
         return chosen().value(option.definition->name) != option.json(option.defaultValue);
     }));
+}
+
+int QcWorldOptionsController::presetIndex() const
+{
+    if (changedCount() == 0) {
+        return 0;
+    }
+    const QString chosenPreset = preset();
+    const QVariantList list = presets();
+    const auto found = std::ranges::find_if(list, [&chosenPreset](const QVariant &each) { return each.toMap().value(u"name"_s).toString() == chosenPreset; });
+    return chosenPreset.isEmpty() || found == list.end() ? -1 : static_cast<int>(std::distance(list.begin(), found)) + 1;
+}
+
+QString QcWorldOptionsController::summary() const
+{
+    const int index = presetIndex();
+    if (index == 0) {
+        return tr("Every option at its default.");
+    }
+    if (index > 0) {
+        return tr("Preset: %1").arg(presets().at(index - 1).toMap().value(u"title"_s).toString());
+    }
+    return tr("%n option(s) changed.", nullptr, changedCount());
 }
 
 void QcWorldOptionsController::reset()
@@ -138,6 +163,7 @@ void QcWorldOptionsController::retranslate()
     }
     preview()->retranslate();
     emit optionsChanged();
+    emit summaryChanged();
 }
 
 void QcWorldOptionsController::release()
@@ -162,6 +188,8 @@ void QcWorldOptionsController::setContent(std::shared_ptr<const QcContentRegistr
     m_options = content ? QcWorldOptions::optionsOf(*content) : QList<QcWorldOptions::Option>{};
     m_content = std::move(content);
     preview()->setWorld(this->content(), chosen());
+    // The preset and the count of changed options depend on the content's options.
+    emit summaryChanged();
 }
 
 void QcWorldOptionsController::setChosen(const QJsonObject &values)
@@ -173,6 +201,7 @@ void QcWorldOptionsController::setChosen(const QJsonObject &values)
     m_values = values;
     preview()->setWorld(content(), chosen());
     emit valuesChanged();
+    emit summaryChanged();
 }
 
 // The content's text of `key` in the current language; empty when no language has it (a help line

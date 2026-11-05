@@ -60,6 +60,19 @@ QStringList languages(const QcContentRegistry &content)
     return list;
 }
 
+// The ids of the entries of the content categories (blocks, items, tools, ...) without an icon.
+QStringList entriesWithoutIcon(const QcHandbook &book)
+{
+    static const QSet<QString> withIcons{u"blocks"_s, u"parts"_s, u"liquids"_s, u"items"_s, u"tools"_s, u"food"_s};
+    QStringList names;
+    for (const QcHandbookEntry &entry : book.entries()) {
+        if (entry.icon.isEmpty() && withIcons.contains(entry.category)) {
+            names.append(entry.id);
+        }
+    }
+    return names;
+}
+
 } // namespace
 
 namespace QcHandbookExport {
@@ -89,11 +102,16 @@ int web(const QCommandLineParser &parser, const QcHeadlessOptions::Options &opti
     }
 
     const QStringList ids = languages(*exported);
-    QList<QcHandbookWeb::File> files{QcHandbookWeb::languages(ids), QcWebHandbookAssets::theme()};
+    QList<QcHandbookMarkdown::File> files{QcHandbookWeb::languages(ids), QcWebHandbookAssets::theme()};
     QSet<QString> shown;
     qsizetype entries = 0;
+    QStringList withoutIcon;
     for (const QString &language : ids) {
         const QcHandbook book = build(*exported, language);
+        // An entry's icon does not depend on the language, so one language shows them all.
+        if (language == ids.constFirst()) {
+            withoutIcon = entriesWithoutIcon(book);
+        }
         files.append(QcHandbookWeb::data(book));
         const QStringList icons = QcHandbookWeb::icons(book);
         shown.unite(QSet<QString>(icons.begin(), icons.end()));
@@ -111,6 +129,11 @@ int web(const QCommandLineParser &parser, const QcHeadlessOptions::Options &opti
         }
     }
     files.append(QcWebHandbookAssets::iconSheet(icons));
+    // Entries without an icon of their own show none in the lists (HB-5 of docs/Menue-Pruefung.md):
+    // named here so they get one, without failing the export.
+    for (const QString &name : std::as_const(withoutIcon)) {
+        printError(u"handbook problem: the entry %1 has no icon"_s.arg(name));
+    }
 
     const QcStatus written = QcHandbookWeb::write(files, parser.value(options.handbookWeb));
     if (!written) {

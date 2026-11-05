@@ -183,7 +183,7 @@ private slots:
         QcEntityRecord record;
         record.chunk = {0, 0};
         QcMobManager::Stored sheep;
-        sheep.type = *m_content->mobIndex(u"qtcraft:sheep"_s);
+        sheep.type = *m_content->mobKind(u"qtcraft:sheep"_s);
         sheep.position = {8.5, 65.0, 8.5};
         sheep.health = 8.0;
         sheep.uid = 5;

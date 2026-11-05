@@ -80,9 +80,11 @@ ColumnLayout {
             Accessible.name: qsTr("Mods folder: %1").arg(text)
         }
 
+        // Only with a mod to switch off (MO-1 of docs/Menue-Pruefung.md).
         Hint {
             Layout.fillWidth: true
             Layout.rightMargin: Ui.space.l
+            visible: modList.count > 0
             kind: Hint.Warning
             text: qsTr("Opening a world without a mod it was played with removes that mod's blocks and items from it.")
         }
@@ -100,15 +102,38 @@ ColumnLayout {
             model: screen.game.library.mods
             ScrollBar.vertical: ThemedScrollBar {}
 
-            Label {
+            // The empty list says what to do and offers it (MO-1 of docs/Menue-Pruefung.md).
+            ColumnLayout {
+                objectName: "noMods"
                 anchors.centerIn: parent
-                visible: modList.count === 0
-                text: qsTr("No mods installed. Put a mod folder with a pack.json into the mods directory.")
-                wrapMode: Text.Wrap
                 width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Ui.type.body
-                color: Theme.textSecondary
+                visible: modList.count === 0
+                spacing: Ui.space.m
+
+                Label {
+                    Layout.fillWidth: true
+                    text: qsTr("No mods yet.")
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: Ui.type.section
+                    font.bold: true
+                    color: Theme.text
+                }
+                Label {
+                    Layout.fillWidth: true
+                    visible: screen.game.library.modsDirectory.length > 0
+                    text: qsTr("A mod is a folder that you copy into the mods folder.")
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.Wrap
+                    font.pixelSize: Ui.type.body
+                    color: Theme.textSecondary
+                }
+                GameButton {
+                    objectName: "openModsFolderEmpty"
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: screen.game.library.modsDirectory.length > 0
+                    text: qsTr("Open mods folder")
+                    onClicked: screen.game.library.openModsFolder()
+                }
             }
 
             delegate: ListRow {
@@ -125,18 +150,18 @@ ColumnLayout {
                 Label {
                     Layout.fillWidth: true
                     textFormat: Text.PlainText
-                    text: modRow.modelData.state === "loaded" ? qsTr("Active")
-                        : modRow.modelData.state === "disabled" ? qsTr("Disabled")
+                    text: modRow.modelData.state === ModStatus.State.Loaded ? qsTr("Active")
+                        : modRow.modelData.state === ModStatus.State.Disabled ? qsTr("Disabled")
                         : qsTr("Not loaded: %1").arg(modRow.modelData.reason)
                     font.pixelSize: Ui.type.help
-                    color: modRow.modelData.state === "failed" ? Theme.error : Theme.textMuted
+                    color: modRow.modelData.state === ModStatus.State.Failed ? Theme.error : Theme.textMuted
                     wrapMode: Text.Wrap
                 }
 
                 actions: GameSwitch {
                     Accessible.name: qsTr("Enable %1").arg(modRow.modelData.name)
                     visible: modRow.modelData.id.length > 0
-                    checked: modRow.modelData.state !== "disabled"
+                    checked: modRow.modelData.state !== ModStatus.State.Disabled
                     onToggled: screen.game.library.setModEnabled(modRow.modelData.id, checked)
                 }
             }
@@ -147,8 +172,10 @@ ColumnLayout {
             Layout.rightMargin: Ui.space.l
             spacing: Ui.space.s
 
+            // The empty list offers it itself.
             GameButton {
                 large: true
+                visible: modList.count > 0
                 text: qsTr("Open mods folder")
                 enabled: screen.game.library.modsDirectory.length > 0
                 onClicked: screen.game.library.openModsFolder()

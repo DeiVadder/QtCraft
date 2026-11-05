@@ -51,13 +51,13 @@ ColumnLayout {
         switched();
     }
 
-    // The pad's shoulders (gamepadCommand "tabNext", "tabPrevious") switch the category: true if
+    // The pad's shoulders (gamepadCommand TabNext, TabPrevious) switch the category: true if
     // `command` was one of them.
-    function takeCommand(command: string): bool {
-        if (command !== "tabNext" && command !== "tabPrevious")
+    function takeCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.TabNext && command !== GamepadMenuInput.Command.TabPrevious)
             return false;
 
-        next(command === "tabNext" ? 1 : -1);
+        next(command === GamepadMenuInput.Command.TabNext ? 1 : -1);
         return true;
     }
 

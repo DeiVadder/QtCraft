@@ -8,7 +8,9 @@ import QtCraft
 
 // The player's profile at the foot of the main menu's side bar (decision E-231, variant C of
 // docs/UI-Leitfaden.md): a small live figure of the character as others will see it and the name
-// the game joins network games with; a click (Enter, the pad's A) opens the character screen.
+// the game joins network games with; a click (Enter, the pad's A) opens the character page, which
+// has no other entry in the bar (HM-5 of docs/Menue-Pruefung.md); while it shows, the card is
+// marked like a chosen entry.
 AbstractButton {
     id: card
 
@@ -17,8 +19,14 @@ AbstractButton {
     readonly property string playerName: game.multiplayer.settings.playerName.length > 0 ? game.multiplayer.settings.playerName : qsTr("Player")
     // Another screen covers the card: its preview stops moving.
     property bool covered: false
+    // The character page shows beside the bar.
+    property bool chosen: false
 
     Layout.fillWidth: true
+    // Kept off the window's edge like the bar's entries (NavButton), so the focus outline and the
+    // pad's ring stay inside it.
+    Layout.leftMargin: Ui.space.xs
+    Layout.rightMargin: Ui.space.xs
     leftPadding: Ui.space.l
     rightPadding: Ui.space.s
     topPadding: Ui.space.xs
@@ -33,7 +41,14 @@ AbstractButton {
     Keys.onEnterPressed: click()
 
     background: Rectangle {
-        color: card.hovered ? Theme.rowHighlight : Theme.clear
+        color: card.chosen ? Theme.panelRaised : card.hovered ? Theme.rowHighlight : Theme.clear
+
+        Rectangle {
+            visible: card.chosen
+            width: Ui.size.bar
+            height: parent.height
+            color: Theme.accent
+        }
 
         FocusOutline {
             visible: card.visualFocus

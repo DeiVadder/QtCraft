@@ -77,12 +77,12 @@ void QcNetworkClient::inConnectorThread(const std::function<void()> &job)
 void QcNetworkClient::openConnection(quint64 attempt)
 {
     // In the connector's thread: the socket is made here and stays here.
-    m_connector = new QcTcpConnector;
-    connect(m_connector, &QcTcpConnector::connected, m_connector, [this, attempt] {
+    m_connector = std::make_unique<QcTcpConnector>();
+    connect(m_connector.get(), &QcTcpConnector::connected, m_connector.get(), [this, attempt] {
         report({attempt, m_connector->takeTransport(), m_connector->peerFingerprint(), {}});
     });
-    connect(m_connector, &QcTcpConnector::failed, m_connector, [this, attempt](const QString &reason) {
-        report({attempt, nullptr, {}, reason});
+    connect(m_connector.get(), &QcTcpConnector::failed, m_connector.get(), [this, attempt](const QcJoinFailure &failure) {
+        report({attempt, nullptr, {}, failure});
     });
     m_connector->connectTo(m_request.address, m_request.connectTimeoutMs);
 }
@@ -99,7 +99,7 @@ void QcNetworkClient::endAttempt(std::unique_ptr<QcTcpTransport> transport)
 {
     inConnectorThread([this, &transport] {
         transport.reset();
-        delete std::exchange(m_connector, nullptr);
+        m_connector.reset();
         std::ignore = m_outcomes.takeAll();
     });
     m_thread.reset();
@@ -115,7 +115,7 @@ void QcNetworkClient::takeOutcomes()
         }
         if (!outcome.transport) {
             endAttempt();
-            fail(outcome.error.isEmpty() ? tr("The connection was lost") : outcome.error, {});
+            fail(outcome.failure, {});
             return;
         }
         onConnected(std::move(outcome));
@@ -174,12 +174,12 @@ void QcNetworkClient::onConnected(Outcome &&outcome)
         if (distrust->changed) {
             emit certificateChanged(m_request.address.toString());
         }
-        fail(distrust->reason, {});
+        fail(failureOf(QcJoinFailure::Kind::Untrusted, distrust->reason), {});
         return;
     }
 
     // The connector is done; the transport stays in its thread, which the session ticks on.
-    inConnectorThread([this] { delete std::exchange(m_connector, nullptr); });
+    inConnectorThread([this] { m_connector.reset(); });
     if (m_thread) {
         m_session = std::make_unique<QcClientSession>(std::move(m_thread), std::move(outcome.transport), m_request.playerName);
     } else {
@@ -200,10 +200,10 @@ void QcNetworkClient::onSessionState()
     }
 
     if (m_session->state() == QcClientSession::State::Disconnected) {
-        const QString reason = m_session->disconnectReason();
+        const QcJoinFailure failure = sessionFailure();
         const QcMsg::Disconnect refusal = m_session->disconnectMessage();
         m_session.release()->deleteLater();
-        fail(reason, refusal);
+        fail(failure, refusal);
         return;
     }
 
@@ -223,8 +223,42 @@ void QcNetworkClient::setStage(Stage stage)
     }
 }
 
-void QcNetworkClient::fail(const QString &reason, const QcMsg::Disconnect &refusal)
+QcJoinFailure QcNetworkClient::sessionFailure() const
 {
+    using Kind = QcJoinFailure::Kind;
+    const QString reason = m_session->disconnectReason();
+    QcJoinFailure failure = failureOf(Kind::Other, reason);
+    failure.detail = reason;
+    switch (m_session->ending()) {
+    case QcSessionEnding::Refused:
+        failure.kind = Kind::LoginRefused;
+        break;
+    case QcSessionEnding::ProtocolMismatch:
+        failure.kind = Kind::OtherVersion;
+        failure.reason = tr("The server runs another version of QtCraft");
+        break;
+    case QcSessionEnding::PeerClosed:
+        // Full, restarting, or the address is not let in.
+        failure.kind = Kind::ServerClosed;
+        failure.reason = QcJoinFailure::reasonFor(Kind::ServerClosed, m_request.address.host);
+        break;
+    // A broken connection keeps the socket's translated text; an error of this client its own.
+    case QcSessionEnding::Lost:
+    case QcSessionEnding::LocalError:
+    case QcSessionEnding::None:
+        break;
+    }
+    return failure;
+}
+
+QcJoinFailure QcNetworkClient::failureOf(QcJoinFailure::Kind kind, const QString &reason) const
+{
+    return {.kind = kind, .address = m_request.address, .tried = {}, .reason = reason, .detail = {}, .steps = {}};
+}
+
+void QcNetworkClient::fail(const QcJoinFailure &failure, const QcMsg::Disconnect &refusal)
+{
+    qCWarning(lcSession).noquote() << failure.logText();
     setStage(Stage::Idle);
-    emit failed(reason, refusal);
+    emit failed(failure, refusal);
 }

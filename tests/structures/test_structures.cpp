@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/registry/QcContentParser.h"
+#include "common/content/registry/QcJsonFieldReader.h"
+#include "common/content/villages/QcVillagerParser.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 #include "worldgen/structures/QcStructure.h"
@@ -173,6 +175,12 @@ private slots:
         QTest::newRow("space key") << text("{\"name\": \"a\", \"palette\": {\" \": \"stone\"}, \"layers\": [[\" \"]]}") << u"single character"_s;
         QTest::newRow("long key") << text("{\"name\": \"a\", \"palette\": {\"ab\": \"stone\"}, \"layers\": [[\"a\"]]}") << u"single character"_s;
         QTest::newRow("bad state") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone[x=1\"}, \"layers\": [[\"#\"]]}") << u"block name"_s;
+        QTest::newRow("bad spawner mob") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], "
+                                                 "\"spawners\": [{\"at\": [0, 0, 0], \"mob\": \"Not A Mob\"}]}")
+                                         << u"valid 'mob' name"_s;
+        QTest::newRow("bad loot table") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], "
+                                                "\"loot\": [{\"at\": [0, 0, 0], \"table\": \"Not A Table\"}]}")
+                                        << u"valid 'table' name"_s;
         QTest::newRow("update outside") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"updates\": [[1, 0, 0]]}")
                                         << u"cells inside"_s;
         QTest::newRow("fractional cell") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"growing\": [[0.5, 0, 0]]}")
@@ -214,7 +222,7 @@ private slots:
             json("{ \"name\": \"hut\", \"palette\": { \"#\": \"stone\", \"C\": \"cobblestone\" }, \"layers\": [ [\"##\"], [\"  \"] ], "
                  "\"choices\": { \"rock\": [ {}, { \"stone\": \"bricks\" } ] }, \"parts\": [ { \"name\": \"top\", \"chance\": 0.25, \"at\": [1, 1, 0], \"layers\": [[\"C\"]] } ] }"),
             u"qtcraft"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         const QcStructureDefinition &hut = *parsed;
         QCOMPARE(hut.choices.size(), 1);
         QCOMPARE(hut.choices[0].name, u"rock"_s);
@@ -235,7 +243,7 @@ private slots:
             json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structures\": [ { \"structure\": \"a\", \"weight\": 3 }, { \"structure\": \"b\" } ], \"weight\": 2 }, "
                  "{ \"structure\": \"hut\", \"max\": 1, \"chance\": 0.5, \"minRoadLength\": 120, \"water\": 10, \"jetty\": { \"deck\": \"spruce_planks\", \"width\": 2, \"over\": 3 } } ] }"),
             u"mod"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         QCOMPARE(parsed->pieces.size(), 2);
         const QcVillagePiece &houses = parsed->pieces[0];
         QCOMPARE(houses.blueprints.size(), 2);
@@ -268,7 +276,7 @@ private slots:
                  "{ \"kind\": \"street\", \"weight\": 3, \"winding\": 0.5, \"branches\": { \"every\": 12, \"length\": [0.2, 0.4] } }, "
                  "{ \"kind\": \"tree\", \"arms\": [3, 4], \"bends\": 1, \"diagonals\": false }, { \"kind\": \"plaza\", \"ring\": [10, 12] } ] }"),
             u"mod"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         QCOMPARE(parsed->layouts.size(), 3);
         const QcVillageLayout &street = parsed->layouts[0];
         QCOMPARE(street.kind, QcVillageLayout::Kind::Street);
@@ -309,6 +317,21 @@ private slots:
         const QcResult<QcStructureDefinition> parsed = QcContentParser::parseStructure(QJsonDocument::fromJson(text.toUtf8()).object(), u"qtcraft"_s);
         QVERIFY(!parsed);
         QVERIFY2(parsed.error().contains(problem), qPrintable(parsed.error()));
+    }
+
+    void villagerHairListsNames()
+    {
+        // "" is a choice without hair; anything but a string fails instead of meaning no hair.
+        const auto hairOf = [](const char *hair) {
+            const QJsonObject json = QJsonDocument::fromJson(QByteArray(R"({"look": {"outfit": "villager_coat", "hair": )") + hair + "}}").object();
+            QcJsonFieldReader reader{json, u"villager settings 'x'"_s, {}};
+            const QcVillagerLook look = QcVillagerParser::readLook(u"look"_s, u"qtcraft"_s, reader);
+            return std::pair{look.hair, reader.error};
+        };
+        const auto [hair, error] = hairOf(R"(["short_hair", ""])");
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(hair, (QStringList{u"qtcraft:short_hair"_s, QString()}));
+        QVERIFY(hairOf(R"(["short_hair", 3])").second.contains(u"'hair'"_s));
     }
 
     void readsTheMapOfAFrame()
@@ -561,6 +584,28 @@ private slots:
         // Without the part the two ends stand alone.
         const std::shared_ptr<const QcStructure> open = variation->build({{0}, {false}});
         QCOMPARE(content.property(*open->block(0, 0, 0), u"east"_s), u"false"_s);
+    }
+
+    void theBuiltCopyOfAVariationKeepsTheExtras()
+    {
+        // Every extra of the blueprint comes along, as QcStructure::fromDefinition takes them.
+        QcStructureDefinition definition = layer({u"F.F"_s}, u"F"_s, {u"qtcraft:oak_fence"_s});
+        definition.parts.append({u"gap"_s, 0.5, {QcStructureDefinition::keep, 0, QcStructureDefinition::keep}});
+        definition.boats.append({{1.5, 0.0, 0.5}, u"qtcraft:oak_boat"_s, 90.0f});
+        definition.signs.append({{1, 0, 0}, {u"Welcome"_s}, {}});
+        definition.hangings.append({{0, 0, 0}, QcBlockFace::South, u"qtcraft:item_frame"_s, u"qtcraft:stick"_s, 0, {}, {}});
+        QVERIFY(definition.adventure.allow(QcAdventureRules::Action::Break, u"qtcraft:wooden_pickaxe"_s, {u"qtcraft:oak_fence"_s}));
+        const QcStructure expected = *QcStructure::fromDefinition(definition, *m_content);
+        const QcPieceVariation::Resolved variation = QcPieceVariation::resolve(definition, *m_content);
+        QVERIFY(variation);
+
+        const std::shared_ptr<const QcStructure> built = variation->build({{}, {false}});
+        QCOMPARE(built->boats.size(), 1);
+        QCOMPARE(built->boats.constFirst().item, expected.boats.constFirst().item);
+        QCOMPARE(built->signs.constFirst().lines, expected.signs.constFirst().lines);
+        QCOMPARE(built->hangings.constFirst().held, expected.hangings.constFirst().held);
+        QVERIFY(!built->adventure.isEmpty());
+        QCOMPARE(built->adventure, expected.adventure);
     }
 
     void baseStructuresConnectTheirFences()

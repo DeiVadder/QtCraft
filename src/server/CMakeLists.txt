@@ -95,6 +95,7 @@ target_sources(qc_server PRIVATE
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
+    core/QcSaveSchedule.h core/QcSaveSchedule.cpp
     core/QcServer.h core/QcServer.cpp
     core/QcServerClient.h
     core/QcServerConfig.h
@@ -141,6 +142,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
     gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
+    gameplay/QcDrowning.h gameplay/QcDrowning.cpp
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
@@ -177,6 +179,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
     items/QcItemEntityManager.h items/QcItemEntityManager.cpp
+    items/QcPickupPlayer.h
     items/QcServerExperience.h items/QcServerExperience.cpp
     items/QcServerItems.h items/QcServerItems.cpp
 )
@@ -259,6 +262,8 @@ target_sources(qc_server PRIVATE
     pathing/QcPathSteps.h
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
+    pathing/QcSwimRoutes.h pathing/QcSwimRoutes.cpp
+    pathing/QcSwimSpace.h pathing/QcSwimSpace.cpp
 )
 target_sources(qc_server PRIVATE
     plants/QcCropGrowth.h plants/QcCropGrowth.cpp
@@ -320,6 +325,7 @@ target_sources(qc_server PRIVATE
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
+    storage/QcGeneratedChunks.h storage/QcGeneratedChunks.cpp
     storage/QcHangingCodec.h storage/QcHangingCodec.cpp
     storage/QcItemDataCodec.h storage/QcItemDataCodec.cpp
     storage/QcLoadWarnings.h

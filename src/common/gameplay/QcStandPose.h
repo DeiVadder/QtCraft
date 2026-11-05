@@ -68,13 +68,14 @@ struct QcStandPose
     Rotation &at(Part part) { return parts[static_cast<std::size_t>(part)]; }
     bool operator==(const QcStandPose &) const = default;
 
-    /*! Arms hanging slightly apart, legs a little spread. */
+    /*! Returns the default pose: arms hanging slightly apart, legs a little spread. */
     static std::array<Rotation, partCount> defaultParts()
     {
         return {{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {-10.0f, 0.0f, -10.0f}, {-15.0f, 0.0f, 10.0f}, {-1.0f, 0.0f, -1.0f}, {1.0f, 0.0f, 1.0f}}};
     }
 
-    /*! Every angle finite and within (-180, 180]; non-finite angles become 0. */
+    /*! Returns the pose with every angle finite and within (-180, 180]; non-finite angles
+        become 0. */
     QcStandPose normalized() const;
     /*! Returns arms, base plate, size and name display as flag bits, as sent and saved. */
     quint8 flags() const;

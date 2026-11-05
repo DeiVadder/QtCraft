@@ -17,6 +17,8 @@ qc_add_test(test_framed_map_texture SOURCES rendering/test_framed_map_texture.cp
 qc_add_test(test_label_projector SOURCES rendering/test_label_projector.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 # The pure parts of the sun shadows (decision E-903): cascades, light axes, texel snapping, light.
 qc_add_test(test_shadow_cascades SOURCES rendering/test_shadow_cascades.cpp LIBRARIES qc_clientcore)
+# The graphics guard (decision E-963): options after a lost device on a fake clock, the still view.
+qc_add_test(test_graphics_guard SOURCES rendering/test_graphics_guard.cpp LIBRARIES qc_app_core qc_worlds)
 # The frame limit on the world's frames: QcFrameDriver::onFrame with a session and a fake clock
 # (decision E-835).
 qc_add_test(test_frame_driver SOURCES rendering/test_frame_driver.cpp LIBRARIES qc_server qc_app_core qc_worlds)
@@ -109,6 +111,13 @@ qt_add_shaders(test_shadow_map "test_shadow_map_solid_shaders"
     OUTPUTS
         shaders/shadow_solid.frag.qsb
 )
+# The refraction of the realistic water keeps the edges under it in place (79.82, E-906): the game
+# renders a shore offscreen; on macOS only, where offscreen pictures come from Metal.
+if(APPLE)
+    qc_add_test(test_water_refraction_edge SOURCES rendering/test_water_refraction_edge.cpp LIBRARIES Qt6::Gui TIMEOUT 300)
+    target_compile_definitions(test_water_refraction_edge PRIVATE QTCRAFT_APP_PATH="$<TARGET_FILE:qtcraft>")
+    add_dependencies(test_water_refraction_edge qtcraft)
+endif()
 # The water of the realistic mode (decision E-906) on QRhi's Null backend, with its shaders baked
 # into the test.
 qc_add_test(test_water_surface SOURCES rendering/test_water_surface.cpp LIBRARIES qc_app_core)

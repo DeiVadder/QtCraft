@@ -46,6 +46,7 @@ public:
     }
 
 private:
+    // The backup thread and the test's thread hand the gate's state over under this mutex.
     std::mutex m_mutex;
     std::condition_variable m_changed;
     bool m_entered = false;

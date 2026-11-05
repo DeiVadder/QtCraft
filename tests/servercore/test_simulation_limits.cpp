@@ -103,6 +103,7 @@ private slots:
         QCOMPARE(limits.villagerHarvestsPerTick, 4);
         QCOMPARE(limits.villageGolems, 256);
         QCOMPARE(limits.waterCreaturesPerPlayer, 5);
+        QCOMPARE(limits.largeWaterCreaturesPerPlayer, 5);
         QCOMPARE(limits.spawnerCreatures, 256);
         QCOMPARE(limits.guardians, 64);
     }
@@ -117,7 +118,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(72));
+        QCOMPARE(keys.size(), qsizetype(73));
         const QcServerLimits::Read defaults = QcServerLimits::fromJson({}, u"server.json"_s);
         QCOMPARE(defaults.limits, limits);
         QVERIFY(defaults.warnings.isEmpty());

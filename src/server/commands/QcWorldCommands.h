@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcItemStack.h"
 #include "server/backup/QcBackupRunner.h"
@@ -19,33 +20,38 @@ class QcTickPhaseTimer;
 class QcTickScheduler;
 class QcServerState;
 
-// Maintenance of the world (decisions E-245, E-246): saving, backups, the world's numbers, removing
-// entities and stopping the server.
+/*! \brief Maintenance of the world (decisions E-245, E-246): saving, backups, the world's
+    numbers, removing entities and stopping the server. */
 class QcWorldCommands
 {
 public:
-    // Default and largest radius of /remove (metres).
+    /*! Default and largest radius of /remove (metres). \qcshared */
     static constexpr int defaultRemoveRadius = 32;
     static constexpr int maxRemoveRadius = 256;
-    // Removals of more entities than this (and every removal of stands or in the whole world) ask
-    // for /confirm first.
+    /*! Removals of more entities than this (and every removal of stands or in the whole world)
+        ask for /confirm first. */
     static constexpr int confirmRemoveCount = 16;
 
+    /*! \brief What the commands need of the server: the phase timer and tick schedule for the
+        world's numbers, and how to save. \qcfields */
     struct Parts
     {
         const QcTickPhaseTimer &phases;
         const QcTickScheduler &ticks;
         std::function<QcStatus()> save;
-        // Asks the host to stop the server (console only).
+        /*! Asks the host to stop the server (console only). */
         std::function<void()> stop;
     };
 
     QcWorldCommands(QcServerState &state, QcPendingCommands &pending, Parts parts);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
-    // Reports a finished background backup (every tick) and waits for a running one (server stop).
+    /*! Reports a finished background backup (every tick). */
     void pollBackup() { m_backups.poll(); }
+    /*! Waits for a running background backup (server stop). */
     void waitForBackup() { m_backups.wait(); }
+    /*! Returns the runner of background backups. */
     QcBackupRunner &backups() { return m_backups; }
 
 private:
@@ -78,7 +84,7 @@ private:
     [[nodiscard]] Swept sweep(const Removal &removal, bool apply);
     // Selectors: mobs, hostile, animals, ambient, items, stands, all, a creature name or "item:<name>".
     bool isKnownSelector(const QString &what) const;
-    bool matchesMob(const QString &what, int type) const;
+    bool matchesMob(const QString &what, QcCreatureKindId type) const;
     bool matchesItem(const QString &what, const QcItemStack &stack) const;
 
     QcServerState &m_state;

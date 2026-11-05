@@ -55,7 +55,8 @@ public:
     // The pad in use (0: none).
     int inUse() const { return m_inUse; }
 
-    // The glyph of `input` in `family`: {shape, label, colour, direction}; empty for an unknown name.
+    // The glyph of `input` in `family`: {shape (PadGlyphPainter.Shape), label, colour,
+    // direction}; empty for an unknown name.
     Q_INVOKABLE QVariantMap glyph(const QString &family, const QString &input) const;
     // `input` in running text for the family in use.
     Q_INVOKABLE QString text(const QString &input) const;

@@ -76,11 +76,15 @@ QcTerrainGenerator::RiverCut QcTerrainGenerator::riverCut(int x, int z, const Qc
                                                           int biome) const
 {
     const QcRiverField::Cut cut = m_rivers.cut(x, z, climate, height, seaLevel());
-    // A closed piece of a river (ending on land at both ends, decision E-851) is not built.
-    if (cut.river.distance < QcRiverField::reach && cut.river.strength > 0.0 && !m_riverPieces.leadsOn(cut.river, TerrainLand(*this))) {
+    // A closed piece of a river (ending on land at both ends, decision E-851) is not built. From
+    // generator version 2 on also where only the near distance lies within reach: the freezing
+    // ramp reads the river there (decision E-969); the column's blocks are the same either way.
+    const bool near = cut.river.distance < QcRiverField::reach || (version() >= 2 && cut.river.nearDistance < QcRiverField::reach);
+    if (near && cut.river.strength > 0.0 && !m_riverPieces.leadsOn(cut.river, TerrainLand(*this))) {
         return {height, biome, biome, false, {.value = cut.river.value}};
     }
     // Lands without a river biome keep their own biome along their rivers.
+    Q_ASSERT_X(biome >= 0 && biome < m_definitions.biomes.size(), "QcTerrainGenerator::riverCut", "biome index out of range");
     const int riverBiome = m_definitions.biomes[biome].riverBiome;
     return {cut.height, cut.water && riverBiome >= 0 ? riverBiome : biome, biome, cut.bank && riverBiome >= 0, cut.river};
 }
@@ -109,15 +113,15 @@ bool QcTerrainGenerator::isDeltaBiome(int biome) const
     return biome >= 0 && biome < m_definitions.biomes.size() && m_definitions.biomes[biome].delta;
 }
 
-bool QcTerrainGenerator::touchesDelta(QcSurfacePlanner::Rect footprint) const
+bool QcTerrainGenerator::touchesDelta(QcXzRect footprint) const
 {
     // As in column(): no delta without rivers and deltas. Then the two gates, and only near a delta
     // every column of the footprint.
     if (!m_definitions.rivers || !m_definitions.deltas || !nearDeltaBand(footprint) || !deltaSiteUnder(footprint)) {
         return false;
     }
-    for (int z = footprint.z0; z <= footprint.z1; ++z) {
-        for (int x = footprint.x0; x <= footprint.x1; ++x) {
+    for (int z = footprint.minZ; z <= footprint.maxZ; ++z) {
+        for (int x = footprint.minX; x <= footprint.maxX; ++x) {
             if (isDeltaBiome(column(x, z).biome)) {
                 return true;
             }
@@ -126,13 +130,13 @@ bool QcTerrainGenerator::touchesDelta(QcSurfacePlanner::Rect footprint) const
     return false;
 }
 
-bool QcTerrainGenerator::nearDeltaBand(QcSurfacePlanner::Rect footprint) const
+bool QcTerrainGenerator::nearDeltaBand(QcXzRect footprint) const
 {
     // Every column lies at most 4 columns from a probe along each axis, under 6 blocks, and the
     // continent changes by at most 0.078 over 8 blocks (measured over 10^6 samples of five seeds):
     // the band widened by bandPad holds a probe near every column of the band.
-    const QList<int> xs = probeLine(footprint.x0, footprint.x1);
-    const QList<int> zs = probeLine(footprint.z0, footprint.z1);
+    const QList<int> xs = probeLine(footprint.minX, footprint.maxX);
+    const QList<int> zs = probeLine(footprint.minZ, footprint.maxZ);
     for (const int z : zs) {
         for (const int x : xs) {
             if (QcRiverDelta::mayReach(continentAt(x, z), bandPad)) {
@@ -143,15 +147,15 @@ bool QcTerrainGenerator::nearDeltaBand(QcSurfacePlanner::Rect footprint) const
     return false;
 }
 
-bool QcTerrainGenerator::deltaSiteUnder(QcSurfacePlanner::Rect footprint) const
+bool QcTerrainGenerator::deltaSiteUnder(QcXzRect footprint) const
 {
     // Every column of a cell of sites reads the same site: one reading per cell (the columns read it
     // again from the thread's memory).
     const auto cellOf = [](int at) { return static_cast<int>(std::floor(at / QcDeltaSites::siteCell)); };
     const int cell = static_cast<int>(QcDeltaSites::siteCell);
     const TerrainLand land(*this);
-    for (int cz = cellOf(footprint.z0); cz <= cellOf(footprint.z1); ++cz) {
-        for (int cx = cellOf(footprint.x0); cx <= cellOf(footprint.x1); ++cx) {
+    for (int cz = cellOf(footprint.minZ); cz <= cellOf(footprint.maxZ); ++cz) {
+        for (int cx = cellOf(footprint.minX); cx <= cellOf(footprint.maxX); ++cx) {
             if (m_deltas.hasSiteAt(cx * cell + cell / 2, cz * cell + cell / 2, land)) {
                 return true;
             }

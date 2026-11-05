@@ -3,6 +3,7 @@
 
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEnchantingAura.h"
+#include "common/content/items/QcEnchantmentSerializer.h"
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcEnchanting.h"
@@ -90,6 +91,43 @@ private slots:
         QVERIFY(QcContentParser::parseEnchantment(json, u"qtcraft"_s).has_value());
         json[u"items"_s] = QJsonArray{u"spoon"_s};
         QVERIFY(!QcContentParser::parseEnchantment(json, u"qtcraft"_s).has_value());
+        json[u"items"_s] = QJsonArray{u"armour"_s};
+        json[u"conflicts"_s] = QJsonArray{QString(QcItemData::maxEnchantmentName, u'c')};
+        QVERIFY(!QcContentParser::parseEnchantment(json, u"qtcraft"_s).has_value());
+    }
+
+    void enchantmentListsAreBoundedOnTheWire()
+    {
+        // The item kinds and conflicts are read with the parser's bounds, before anything is
+        // reserved: a forged count fails the read.
+        const auto reads = [](const QcEnchantmentDefinition &enchantment) {
+            QByteArray bytes;
+            {
+                QDataStream out(&bytes, QIODevice::WriteOnly);
+                QcEnchantmentSerializer::write(out, {enchantment});
+            }
+            QDataStream in(bytes);
+            QcContentRegistry registry;
+            return QcEnchantmentSerializer::read(in, registry).has_value();
+        };
+        QcEnchantmentDefinition enchantment = *m_content->enchantment(u"qtcraft:efficiency"_s);
+        QVERIFY(reads(enchantment));
+        enchantment.items = QStringList(QcEnchantmentDefinition::maxItemKinds + 1, u"pickaxe"_s);
+        QVERIFY(!reads(enchantment));
+        enchantment.items = {u"pickaxe"_s};
+        enchantment.conflicts = QStringList(QcEnchantmentDefinition::maxConflicts + 1, u"qtcraft:x"_s);
+        QVERIFY(!reads(enchantment));
+        enchantment.conflicts = {QString(QcItemData::maxEnchantmentName + 1, u'c')};
+        QVERIFY(!reads(enchantment));
+
+        QByteArray forged;
+        {
+            QDataStream out(&forged, QIODevice::WriteOnly);
+            out << quint32{1} << u"qtcraft:x"_s << u"t"_s << quint8{0} << qint32{1} << qint32{10} << quint32{0xFFFFFFF0u};
+        }
+        QDataStream in(forged);
+        QcContentRegistry registry;
+        QVERIFY(!QcEnchantmentSerializer::read(in, registry));
     }
 
     void shelvesCountWithAirBetween()

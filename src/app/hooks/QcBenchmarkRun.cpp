@@ -4,11 +4,11 @@
 #include "app/hooks/QcBenchmarkRun.h"
 
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
-#include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/input/QcGameInput.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcClientWorld.h"

@@ -3,13 +3,14 @@
 
 #include "clientcore/player/QcLocalAnimation.h"
 
+#include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/player/QcPrediction.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>
 #include <cmath>
 
-void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
+void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed, double draw)
 {
     const auto advance = [](int &ticks, int length) {
         if (ticks < 0) {
@@ -25,10 +26,25 @@ void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
     advance(m_useTicks, QcHandTimers::useTicks);
     advance(m_switchTicks, QcHandTimers::switchTicks);
     advance(m_landingTicks, QcHandTimers::landingTicks);
+    advance(m_hurtTicks, hurtTicks);
+
+    // The hand comes to a drawn launcher and leaves it again over aimTicks (decision E-984).
+    setAimTicks(aimTicks() + (drawing() ? 1 : -1));
+    setDrawing(draw >= 0.0);
+    if (drawing()) {
+        setRunningDraw(std::min(draw, 1.0));
+        setLastDraw(std::max(runningDraw(), lastDraw() - lastDrawFade));
+    } else if (aimTicks() == 0) {
+        setLastDraw(0.0);
+    }
 
     if (held != m_lastHeld) {
         m_lastHeld = held;
         m_switchTicks = 0;
+        // The pose of a launcher does not run on over the new item.
+        setAimTicks(0);
+        setDrawing(false);
+        setLastDraw(0.0);
     }
 
     // Keep swinging while a block is being mined: the next swing starts in the tick the last one
@@ -59,25 +75,48 @@ QcEntityPose QcLocalAnimation::localPose(double alpha, const QcPrediction &predi
     pose.onGround = motion.onGround;
     pose.inWater = motion.inWater;
     // Sneaking in flight is descending, not crouching (decision E-284).
-    pose.sneaking = intent.sneak && !motion.flying;
-    pose.sprinting = intent.sprint && intent.forward > 0.0f && !intent.sneak;
+    pose.sneaking = prediction.crouches();
+    pose.sprinting = intent.sprints() && !intent.sneak;
     pose.flying = motion.flying;
     pose.riding = prediction.riding().isRiding();
-    pose.sneaking = pose.sneaking && !pose.riding;
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / m_swingLength;
+    pose.hurtProgress = m_hurtTicks < 0 ? -1.0 : (m_hurtTicks + alpha) / hurtTicks;
     pose.drawProgress = drawProgress;
     pose.headPitch = intent.pitch;
     return pose;
 }
 
+void QcLocalAnimation::hurt(std::optional<float> from, float viewYaw)
+{
+    m_hurtTicks = 0;
+    m_hurtFrom.reset();
+    if (from) {
+        m_hurtFrom = static_cast<double>(qcWrappedYaw(*from - viewYaw));
+    }
+}
+
+QcHurtTilt::Tilt QcLocalAnimation::hurtTilt(double alpha) const
+{
+    if (m_hurtTicks < 0) {
+        return {};
+    }
+    return QcHurtTilt::at((m_hurtTicks + alpha) / hurtTicks, m_hurtFrom);
+}
+
 QcHandTimers QcLocalAnimation::handTimers(double alpha) const
 {
     const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
-    return {progress(m_switchTicks, QcHandTimers::switchTicks), progress(m_landingTicks, QcHandTimers::landingTicks),
-            progress(m_useTicks, QcHandTimers::useTicks), m_swingTicks >= 0 && m_swingStyle == QcHandSwing::Style::Mining};
+    const double aimed = aimTicks() + (drawing() ? alpha : -alpha);
+    const bool fading = drawing() && lastDraw() > runningDraw();
+    return {progress(m_switchTicks, QcHandTimers::switchTicks),
+            progress(m_landingTicks, QcHandTimers::landingTicks),
+            progress(m_useTicks, QcHandTimers::useTicks),
+            m_swingTicks >= 0 && m_swingStyle == QcHandSwing::Style::Mining,
+            std::clamp(aimed / QcHandTimers::aimTicks, 0.0, 1.0),
+            fading ? std::max(runningDraw(), lastDraw() - lastDrawFade * alpha) : lastDraw()};
 }
 
-QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha)
+QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha, const QcContentRegistry *content)
 {
     QcEntityPose pose;
     pose.speed = entity.speed;
@@ -92,7 +131,12 @@ QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
     pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * static_cast<float>(alpha);
-    // Others only tell that they draw (decision E-425): shown fully drawn.
-    pose.drawProgress = (entity.flags & QcMsg::Drawing) != 0 ? 1.0 : -1.0;
+    // Others only tell that they draw (decision E-425); how far comes from the time since, on the
+    // curve of what they hold (decision E-987).
+    if ((entity.flags & QcMsg::Drawing) != 0) {
+        const QcLauncherDefinition *launcher = content ? QcFigureLook::launcher(*content, entity.held) : nullptr;
+        const double ticks = std::max(0.0, entity.drawTicks) + alpha * entity.drawStep;
+        pose.drawProgress = launcher ? launcher->powerAfter(ticks * QcPhysics::tickDuration) : 1.0;
+    }
     return pose;
 }

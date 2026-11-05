@@ -123,8 +123,8 @@ private slots:
 
             // The room as planned.
             QCOMPARE(at(forward, plan->spawner), id(u"qtcraft:spawner"_s));
-            for (const QcDungeonPlan::Placed &chest : plan->chests) {
-                QCOMPARE(at(forward, chest.at), chest.block);
+            for (const QcPlacedBlock &chest : plan->chests) {
+                QCOMPARE(at(forward, chest.pos), chest.block);
             }
             const QSet<QcBlockId> walls{id(u"qtcraft:cobblestone"_s), id(u"qtcraft:mossy_cobblestone"_s)};
             QVERIFY(walls.contains(at(forward, plan->origin)));
@@ -173,10 +173,10 @@ private slots:
                     QVERIFY(!m_content->block(at(chunks, feet.offset(0, 1, 0))).solid);
                 }
             }
-            for (const QcDungeonPlan::Placed &placed : plan->lights) {
+            for (const QcPlacedBlock &placed : plan->lights) {
                 ++lights;
-                QVERIFY(plan->distanceToArea(placed.at) >= settings.lightDistance);
-                QCOMPARE(at(chunks, placed.at), placed.block);
+                QVERIFY(plan->distanceToArea(placed.pos) >= settings.lightDistance);
+                QCOMPARE(at(chunks, placed.pos), placed.block);
             }
         }
         qInfo().noquote() << u"%1 dungeons in %2 regions, %3 corridors, %4 lights"_s.arg(all.size()).arg((2 * regions + 1) * (2 * regions + 1)).arg(corridors).arg(lights);
@@ -274,13 +274,13 @@ private slots:
         const QcTerrainGenerator terrain(m_content, seed);
         const std::shared_ptr<const QcDungeonPlan> plan = plans(terrain).constFirst();
         const QcChunkFurnishing furnishing = terrain.furnishingIn(plan->spawner.chunk());
-        QVERIFY(std::ranges::any_of(furnishing.spawners, [&](const QcChunkFurnishing::Spawner &spawner) {
+        QVERIFY(std::ranges::any_of(furnishing.spawners, [&](const QcStructureDefinition::Spawner &spawner) {
             return spawner.at == plan->spawner && spawner.mob == plan->mob && !spawner.confined;
         }));
-        for (const QcDungeonPlan::Placed &chest : plan->chests) {
-            const QList<QcChunkFurnishing::Chest> chests = terrain.furnishingIn(chest.at.chunk()).chests;
+        for (const QcPlacedBlock &chest : plan->chests) {
+            const QList<QcChunkFurnishing::Chest> chests = terrain.furnishingIn(chest.pos.chunk()).chests;
             QVERIFY(std::ranges::any_of(chests, [&](const QcChunkFurnishing::Chest &placed) {
-                return placed.at == chest.at && placed.lootTable == u"qtcraft:dungeon_chest"_s;
+                return placed.at == chest.pos && placed.lootTable == u"qtcraft:dungeon_chest"_s;
             }));
         }
     }

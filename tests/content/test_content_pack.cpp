@@ -161,7 +161,7 @@ private slots:
         QVERIFY(copy.has_value());
         QCOMPARE(copy->mobs().size(), content->mobs().size());
 
-        const int zombie = *content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *content->mobKind(u"qtcraft:zombie"_s);
         QCOMPARE(copy->mobs()[zombie].parts.size(), content->mobs()[zombie].parts.size());
         QCOMPARE(copy->mobs()[zombie].height, content->mobs()[zombie].height);
 

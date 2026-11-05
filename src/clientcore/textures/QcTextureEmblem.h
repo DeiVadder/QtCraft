@@ -10,18 +10,21 @@
 
 #include <optional>
 
-// The pattern "emblem" (decision E-241): pixel art from a small bitmap in the content data, on
-// woven cloth in the primary colour. Cape emblems are drawn this way, so the motif is data and a
-// mod can exchange it without code.
+/*! \brief The pattern "emblem" (decision E-241): pixel art from a small bitmap in the content data,
+    on woven cloth in the primary colour.
+
+    Cape emblems are drawn this way, so the motif is data and a mod can exchange it without code. */
 namespace QcTextureEmblem {
 
-// Colour of the pixel (x, y): the palette's colour for the bitmap's character there, else cloth.
+/*! Returns the colour of pixel (\a x, \a y) of \a spec: the palette's colour for the bitmap's
+    character there, else cloth in \a color. */
 QColor paint(const QcTextureSpec &spec, int x, int y, QColor color);
-// The pattern "icon": the palette's colour for the bitmap's character at (x, y), else transparent.
+/*! Returns the pattern "icon": the palette's colour for the character of the bitmap of \a spec at
+    (\a x, \a y), else transparent; \a color is unused. */
 QColor paintIcon(const QcTextureSpec &spec, int x, int y, QColor color);
 
-// `spec` with "bitmap" (an array of strings) and "palette" (character -> "#rrggbb") of a texture
-// definition; the problem when they are malformed.
+/*! Returns \a spec with "bitmap" (an array of strings) and "palette" (character -> "#rrggbb") read
+    from \a json, a texture definition; the problem when they are malformed. */
 [[nodiscard]] QcResult<QcTextureSpec> read(const QJsonObject &json, QcTextureSpec spec);
 
 } // namespace QcTextureEmblem

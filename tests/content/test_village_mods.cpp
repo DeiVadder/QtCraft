@@ -98,7 +98,7 @@ private slots:
         QCOMPARE(content.villageCatalog().professions().size(), 6);
         QVERIFY(content.villageCatalog().profession(u"bakery:baker"_s));
         QVERIFY(content.villageCatalog().profession(u"library:librarian"_s));
-        const QcVillagerSettings &species = content.villagerSettingsOf(*content.mobIndex(u"qtcraft:villager"_s));
+        const QcVillagerSettings &species = content.villagerSettingsOf(*content.mobKind(u"qtcraft:villager"_s));
         QCOMPARE(species.professions.size(), 6);
         QCOMPARE(species.forWorkstation(u"bakery:baker"_s)->name, u"bakery:baker"_s);
         const QHash<QString, QString> &workstations = content.villageCatalog().settings().workstations;
@@ -192,8 +192,8 @@ private slots:
         QVERIFY2(loaded.warnings.isEmpty(), qPrintable(loaded.warnings.join(u'\n')));
 
         const QcContentRegistry &content = *loaded.content;
-        const int gnome = *content.mobIndex(u"gnomes:gnome"_s);
-        const int villager = *content.mobIndex(u"qtcraft:villager"_s);
+        const QcCreatureKindId gnome = *content.mobKind(u"gnomes:gnome"_s);
+        const QcCreatureKindId villager = *content.mobKind(u"qtcraft:villager"_s);
         QVERIFY(content.mobs()[gnome].villager);
         const QcVillagerSettings &gnomes = content.villagerSettingsOf(gnome);
         QCOMPARE(gnomes.name, u"gnomes:gnome"_s);
@@ -353,8 +353,8 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"mob 'odd:gnome': no villager settings 'odd:gnome'"_s));
         const QcContentRegistry &content = *loaded.content;
         QVERIFY(!content.villageCatalog().villagerSettings(u"odd:gnome"_s));
-        QVERIFY(!content.mobs()[*content.mobIndex(u"odd:gnome"_s)].villager);
-        const int villager = *content.mobIndex(u"qtcraft:villager"_s);
+        QVERIFY(!content.mobs()[*content.mobKind(u"odd:gnome"_s)].villager);
+        const QcCreatureKindId villager = *content.mobKind(u"qtcraft:villager"_s);
         QCOMPARE(content.villagerSettingsOf(villager).name, u"qtcraft:villager"_s);
         QCOMPARE(content.mobs()[villager].villagerSettingsIndex, 0);
     }
@@ -365,7 +365,7 @@ private slots:
         const QString pack = writePack(dir.path(), u"lonely"_s, {{u"mobs/gnome.json"_s, gnomeMob}});
         const Loaded loaded = load({pack});
         QVERIFY(anyContains(loaded.warnings, u"no villager settings 'lonely:gnome'; it is no villager and opens no doors"_s));
-        const QcMobDefinition &gnome = loaded.content->mobs()[*loaded.content->mobIndex(u"lonely:gnome"_s)];
+        const QcMobDefinition &gnome = loaded.content->mobs()[*loaded.content->mobKind(u"lonely:gnome"_s)];
         QVERIFY(!gnome.villager);
         QCOMPARE(gnome.ai, QcMobDefinition::Ai::Passive);
         // It keeps the villager's other abilities (it still climbs ladders and keeps off deep jumps).

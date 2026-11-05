@@ -79,7 +79,7 @@ public:
             addString(chest.lootTable);
             addInts({static_cast<qint64>(chest.seed)});
         }
-        for (const QcChunkFurnishing::Spawner &spawner : furnishing.spawners) {
+        for (const QcStructureDefinition::Spawner &spawner : furnishing.spawners) {
             addBlockPos(spawner.at);
             addString(spawner.mob);
         }

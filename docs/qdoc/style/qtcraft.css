@@ -51,6 +51,10 @@ table { border-collapse: collapse; margin: 12px 0; max-width: 100%; display: blo
 td, th { border: 1px solid var(--rule); padding: 6px 10px; vertical-align: top; text-align: left; }
 th { background: var(--code-bg); }
 table.alignedsummary td, table.propsummary td, table.annotated td { border: none; padding: 2px 8px; }
+/* Class lists: the name stays on one line (main may break words anywhere, which squeezed the name
+   column to a letter's width next to a long description); the table scrolls on narrow screens. */
+td.tblName { white-space: nowrap; overflow-wrap: normal; }
+td.tblName p, td.tblDescr p { margin: 4px 0; }
 .sidebar, .toc { display: none; }
 ul.breadcrumb, .navigationbar { list-style: none; padding: 0; margin: 12px 0 0; color: var(--muted); font-size: 14px; }
 ul.breadcrumb li { display: inline; }

@@ -183,16 +183,16 @@ public:
     /*! Sets \a slot of \a action to \a key as it is, without resolving conflicts (loading; see
         dropConflicts()). Fixed actions and unbindable keys are ignored. */
     void setKey(Action action, int slot, int key);
-    /*! Pairs of (action, slot) that share a key with an earlier one; empty for a consistent
-        table. */
+    /*! Returns the pairs of (action, slot) that share a key with an earlier one; empty for a
+        consistent table. */
     QList<std::pair<Action, int>> conflicts() const;
     /*! Removes keys used twice. A key stays with the first of the \a preferred slots that holds
         it (loading: the slots the player set himself beat defaults that came later), otherwise
         with the first action in table order. Returns the slots that lost their key. */
     QList<std::pair<Action, int>> dropConflicts(const QList<std::pair<Action, int>> &preferred = {});
 
-    /*! Values for handbook placeholders: "key.<id>" lists all keys of an action, "key1.<id>"
-        only the primary key, both as key names; on a Mac the modifiers are "MacCmd",
+    /*! Returns the values for handbook placeholders: "key.<id>" lists all keys of an action,
+        "key1.<id>" only the primary key, both as key names; on a Mac the modifiers are "MacCmd",
         "MacControl" and "MacOption", so the handbook names them like the keyboard, and a
         function key that comes first is "fn+F11" (no letter key before it; a Mac needs fn for
         it). "key.stackModifier" names the modifier of stackModifier(). */
@@ -201,7 +201,11 @@ public:
     friend bool operator==(const QcKeyBindings &, const QcKeyBindings &) = default;
 
 private:
-    void set(Action action, int slot, int key) { m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)] = key; }
+    void set(Action action, int slot, int key)
+    {
+        Q_ASSERT_X(slot >= 0 && slot < slotCount, "QcKeyBindings::set", "key slot out of range");
+        m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)] = key;
+    }
 
     std::array<std::array<int, slotCount>, actionCount> m_keys{};
     Platform m_platform = Platform::Other;

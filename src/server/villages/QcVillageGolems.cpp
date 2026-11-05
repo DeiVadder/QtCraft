@@ -42,10 +42,10 @@ QcVillageGolems::QcVillageGolems(std::shared_ptr<const QcContentRegistry> conten
 {
 }
 
-std::optional<int> QcVillageGolems::kind(const QString &style) const
+std::optional<QcCreatureKindId> QcVillageGolems::kind(const QString &style) const
 {
     const QString name = m_content->villageCatalog().golemOfStyle(style).mob;
-    const std::optional<int> type = name.isEmpty() ? std::nullopt : m_content->mobIndex(name);
+    const std::optional<QcCreatureKindId> type = name.isEmpty() ? std::nullopt : m_content->mobKind(name);
     if (!type && !name.isEmpty() && !m_missingLogged) {
         m_missingLogged = true;
         qCInfo(lcServer) << "Villagers summon no golems: the content has no creature" << name;
@@ -71,18 +71,18 @@ QList<QcVillageGolems::Spawn> QcVillageGolems::check(const QList<QcCreature> &mo
     // Every reconciled, loaded village counts its golems, wanted or not.
     for (const qint64 id : villages) {
         QcVillage *village = context.world.villages().find(id);
-        const std::optional<int> type = village ? kind(village->style) : std::nullopt;
+        const std::optional<QcCreatureKindId> type = village ? kind(village->style) : std::nullopt;
         if (type && loaded(context.world, *village)) {
             recount(*village, mobs, *type, context);
         }
     }
 
     forgetRestedChunks(context.worldTime);
-    QHash<int, qint64> inWorld;
+    QHash<QcCreatureKindId, qint64> inWorld;
     QList<Spawn> spawns;
     for (Group &group : groups(mobs, villages, context)) {
         const QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
-        const std::optional<int> type = kind(village ? village->style : QString());
+        const std::optional<QcCreatureKindId> type = kind(village ? village->style : QString());
         if (!type) {
             continue;
         }
@@ -122,7 +122,7 @@ QList<QcVillageGolems::Group> QcVillageGolems::groups(const QList<QcCreature> &m
     return list;
 }
 
-QList<QcVillageGolems::Spawn> QcVillageGolems::summon(const Group &group, int type, const QList<QcCreature> &mobs, const Context &context,
+QList<QcVillageGolems::Spawn> QcVillageGolems::summon(const Group &group, QcCreatureKindId type, const QList<QcCreature> &mobs, const Context &context,
                                                      qint64 allowed)
 {
     QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
@@ -203,7 +203,7 @@ bool QcVillageGolems::rested(const QcVillage *village, const QcVillageGolemSetti
     return true;
 }
 
-void QcVillageGolems::recount(QcVillage &village, const QList<QcCreature> &mobs, int type, const Context &context)
+void QcVillageGolems::recount(QcVillage &village, const QList<QcCreature> &mobs, QcCreatureKindId type, const Context &context)
 {
     const int golems = golemsIn(village, mobs, type);
     // The world time went back (a command set it): the last golem counts as long ago.
@@ -215,7 +215,7 @@ void QcVillageGolems::recount(QcVillage &village, const QList<QcCreature> &mobs,
     }
 }
 
-qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages) const
+qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, QcCreatureKindId type, const QcVillages &villages) const
 {
     // Golems of `type` outside every village, and per village those in its area now or, for a
     // village whose golems are of `type`, those it counted last where that is more (its chunks may
@@ -236,7 +236,7 @@ qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, c
     return outside + villages.golems(byVillage, [this, type](const QcVillage &village) { return kind(village.style) == type; });
 }
 
-int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, int type)
+int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, QcCreatureKindId type)
 {
     return static_cast<int>(std::ranges::count_if(mobs, [&](const QcCreature &mob) {
         return mob.type == type && village.contains(QcPhysics::blockContaining(mob.motion.position));
@@ -271,7 +271,7 @@ bool QcVillageGolems::loadedAround(const QcServerWorld &world, const QcVec3 &at,
     return true;
 }
 
-std::optional<QcVec3> QcVillageGolems::placeNear(const QcVec3 &around, int type, int radius, const Context &context, quint64 draw) const
+std::optional<QcVec3> QcVillageGolems::placeNear(const QcVec3 &around, QcCreatureKindId type, int radius, const Context &context, quint64 draw) const
 {
     const QcBlockPos centre = QcPhysics::blockContaining(around);
     const int tick = tickOf(context.worldTime);
@@ -305,7 +305,7 @@ bool QcVillageGolems::opaqueFloor(QcBlockPos column, const Context &context) con
     return false;
 }
 
-std::optional<QcVec3> QcVillageGolems::standsAt(QcBlockPos feet, int type, const Context &context) const
+std::optional<QcVec3> QcVillageGolems::standsAt(QcBlockPos feet, QcCreatureKindId type, const Context &context) const
 {
     const QcMobDefinition &definition = m_content->mobs()[type];
     const QcPathRules rules = QcPathRules::of(definition);

@@ -204,7 +204,7 @@ void QcMineshaftDetails::placeLights(Work &work, const Random &random) const
                 || distanceToSpawners(work.furnishing.spawners, cell) < m_settings.lightDistance) {
                 continue;
             }
-            work.place(cell, m_blocks.lights[static_cast<std::size_t>(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
+            work.place(cell, m_blocks.lights[QcMineshaftBlocks::slotOf(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
         }
     }
 }

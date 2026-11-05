@@ -13,8 +13,8 @@ import QtCraft
 // details of the one under the pointer or the focus beside the tree. The tree pans by dragging, the
 // wheel and the pad's right stick, and zooms with Ctrl and the wheel or + and -; the arrow keys and
 // the pad's directions walk along the tree (left: parent, right: child, up and down: the next one in
-// the column). Opened by its key, the pause menu or --overlay advancements; Esc, its key or B close
-// it (closeRequested).
+// the column; AdvancementTree.neighbour). Opened by its key, the pause menu or --overlay
+// advancements; Esc, its key or B close it (closeRequested).
 Item {
     id: screen
 
@@ -34,28 +34,6 @@ Item {
     readonly property real nodeSize: Ui.size.advancementNode * zoom
 
     signal closeRequested
-
-    // The neighbour of node `index` in the tree in a direction; -1 for none.
-    function neighbour(index: int, dx: int, dy: int): int {
-        const nodes = screen.nodes;
-        const from = nodes[index];
-        if (dx < 0)
-            return from.parent;
-
-        let best = -1;
-        let bestDistance = 0;
-        for (let i = 0; i < nodes.length; ++i) {
-            const other = nodes[i];
-            const inDirection = dx > 0 ? other.parent === index
-                                       : other.column === from.column && (dy < 0 ? other.row < from.row : other.row > from.row);
-            const distance = Math.abs(other.row - from.row);
-            if (inDirection && (best < 0 || distance < bestDistance)) {
-                best = i;
-                bestDistance = distance;
-            }
-        }
-        return best;
-    }
 
     function focusNode(index: int): bool {
         const item = index >= 0 ? nodeItems.itemAt(index) : null;
@@ -101,7 +79,7 @@ Item {
 
     function step(dx: int, dy: int): bool {
         const from = focusedNode();
-        return from >= 0 && focusNode(neighbour(from, dx, dy));
+        return from >= 0 && focusNode(tree.neighbour(from, dx, dy));
     }
 
     // Scrolls the view so node `index` shows whole, with a margin around it.
@@ -144,38 +122,35 @@ Item {
     }
 
     function switchTab(direction: int): bool {
-        const next = tree.tab + direction;
-        if (next < 0 || next >= tree.tabs.length)
+        if (!tree.stepTab(direction))
             return false;
-        tree.tab = next;
         Qt.callLater(screen.focusNode, 0);
         return true;
     }
 
     // The pad: B closes, the shoulders switch the tab, the directions walk along the tree.
-    function gamepadCommand(command: string): bool {
+    function gamepadCommand(command: int): bool {
         switch (command) {
-        case "back":
+        case GamepadMenuInput.Command.Back:
             closeRequested();
             return true;
-        case "tabNext":
+        case GamepadMenuInput.Command.TabNext:
             return switchTab(1);
-        case "tabPrevious":
+        case GamepadMenuInput.Command.TabPrevious:
             return switchTab(-1);
-        case "left":
+        case GamepadMenuInput.Command.Left:
             return step(-1, 0);
-        case "right":
+        case GamepadMenuInput.Command.Right:
             return step(1, 0);
-        case "up":
+        case GamepadMenuInput.Command.Up:
             return step(0, -1);
-        case "down":
+        case GamepadMenuInput.Command.Down:
             return step(0, 1);
         default:
             return false;
         }
     }
 
-    objectName: "advancementsScreen"
     focus: visible
     onVisibleChanged: {
         if (!visible)
@@ -187,9 +162,10 @@ Item {
     }
     Keys.onPressed: event => {
         // The key that opened it closes it, but not its auto-repeat while it is still held.
-        if (event.key === Qt.Key_Escape || (game.settings.keys.matches("advancements", event.key) && !event.isAutoRepeat)) {
+        const action = game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.AdvancementsKey);
+        if (action === KeyControls.ScreenKey.Close) {
             screen.closeRequested();
-        } else if (game.settings.keys.matches("handbook", event.key)) {
+        } else if (action === KeyControls.ScreenKey.Handbook) {
             screen.openHandbook(screen.selected >= 0 ? screen.nodes[screen.selected].handbook : "");
         } else if (event.key === Qt.Key_Plus || event.key === Qt.Key_Equal) {
             screen.setZoom(screen.zoom + 0.2);
@@ -239,7 +215,6 @@ Item {
                     Accessible.name: text
                 }
                 Label {
-                    objectName: "advancementCount"
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignBaseline
                     text: qsTr("%1 of %2 reached").arg(screen.tree.reached).arg(screen.tree.total)

@@ -287,6 +287,17 @@ private slots:
         QVERIFY2(output.contains(u"Stopping (SIGINT)"_s) && output.contains(u"World saved"_s), qPrintable(output));
     }
 
+    // Killed like a crash: nothing releases the world, and its next start must not be refused.
+    void aKilledServerDoesNotLockItsWorld()
+    {
+        QVERIFY(startServer({}) != 0);
+        m_process.kill();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QVERIFY(QFile::exists(QDir(worldDirectory()).filePath(u"session.lock"_s)));
+
+        QVERIFY2(startServer({}) != 0, qPrintable(QString::fromUtf8(m_process.readAllStandardError())));
+    }
+
     void contentFingerprintsTellPacksApart()
     {
         // The base game: hashed from its resources, the same every time.

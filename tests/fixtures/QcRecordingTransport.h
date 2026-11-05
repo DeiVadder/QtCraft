@@ -7,10 +7,9 @@
 #include "common/protocol/QcTransport.h"
 
 #include <QList>
-#include <QMutex>
-#include <QMutexLocker>
 
 #include <memory>
+#include <mutex>
 
 // A client's transport that notes the messages the client sends, in the order they go out, before
 // it passes them on: what reaches the server, seen from the test's thread while the client sends from
@@ -33,7 +32,7 @@ public:
     void sendFrame(const QByteArray &frame) override
     {
         if (QcResult<QcMessage> message = QcProtocol::decode(frame, QcProtocol::Peer::Client)) {
-            const QMutexLocker lock(&m_mutex);
+            const std::scoped_lock lock(m_mutex);
             m_sent.append(std::move(*message));
         }
         m_inner->sendFrame(frame);
@@ -46,7 +45,7 @@ public:
     // The messages sent so far.
     QList<QcMessage> sent() const
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         return m_sent;
     }
 
@@ -66,6 +65,7 @@ public:
 
 private:
     std::unique_ptr<QcTransport> m_inner;
-    mutable QMutex m_mutex;
+    // The session's tick thread hands the sent messages to the test's thread under this mutex.
+    mutable std::mutex m_mutex;
     QList<QcMessage> m_sent;
 };

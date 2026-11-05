@@ -28,7 +28,9 @@ namespace {
                                         reactionReader.name(u"flowing"_s, packNamespace)};
         if (!entry.isObject() || !reactionReader.ok() || reaction.with.isEmpty() || reaction.source.isEmpty()
             || reaction.flowing.isEmpty()) {
-            flowReader.fail(reactionReader.ok() ? u"reactions need 'with', 'source' and 'flowing'"_s : reactionReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            flowReader.adopt(reactionReader);
+            flowReader.fail(u"reactions need 'with', 'source' and 'flowing'"_s);
             break;
         }
         result.append(reaction);

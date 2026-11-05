@@ -69,7 +69,7 @@ private slots:
         content->registerMob(odd);
         const QStringList warnings = content->finish();
         QVERIFY2(warnings.contains(u"mob 'test:odd': no block 'test:nothing' with an item to carry"_s), qPrintable(warnings.join(u'\n')));
-        QVERIFY(!content->mobs()[*content->mobIndex(u"test:odd"_s)].carries);
+        QVERIFY(!content->mobs()[*content->mobKind(u"test:odd"_s)].carries);
     }
 
     void aLookAtTheHeadProvokes()

@@ -61,8 +61,9 @@ private:
     // One layer of a giant crown: the cells within `radius` of the 2×2 trunk at `base` (its y is the
     // layer's), the outer ring thinned by chance.
     void giantLayer(const QcTreeShape::Params &params, QcBlockPos base, int radius, quint64 seed);
-    // A branch leaving the trunk at `start` (a trunk block) towards side `side`, with leaves at its end.
-    void branch(const QcTreeShape::Params &params, QcBlockPos start, int side, quint64 seed);
+    // A branch leaving the trunk at `start` (a trunk block) in the unit step `step` (x, z) of a side,
+    // with leaves at its end.
+    void branch(const QcTreeShape::Params &params, QcBlockPos start, std::pair<int, int> step, quint64 seed);
 
     const QcTreeShape::Put &m_put;
     bool m_tracks = false;

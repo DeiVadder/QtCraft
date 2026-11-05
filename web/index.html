@@ -28,11 +28,27 @@
     <main>
         <h1>QtCraft</h1>
         <p>A voxel sandbox game built with Qt: generated worlds, survival and creative, Signal Dust, villages, multiplayer and data-only mods.</p>
-        <a class="card" href="https://github.com/DeiVadder/QtCraft/releases/latest"><strong>Download</strong>The latest release: the macOS app (Apple silicon and Intel) and the Windows x64 zip.</a>
+        <a class="card" id="download" href="https://github.com/DeiVadder/QtCraft/releases/latest"><strong>Download</strong><span id="download-text">The latest release</span>: the macOS app (Apple silicon and Intel), the Windows x64 zip and the Linux AppImage.</a>
         <a class="card" href="handbook/"><strong>Handbook</strong>How to play: blocks, items, recipes, creatures and the world.</a>
         <a class="card" href="api/"><strong>API reference</strong>The C++ libraries of the game, generated from the sources (more follow after 0.1.0).</a>
         <a class="card" href="https://github.com/DeiVadder/QtCraft"><strong>Source code</strong>The repository on GitHub: building from source, modding, multiplayer and server hosting, contributing.</a>
         <p class="small"><a href="https://github.com/DeiVadder/QtCraft/releases">All releases and release notes</a></p>
     </main>
+    <script>
+        // The download card points at the newest published release, pre-releases (release
+        // candidates) included; without the API answer it keeps the latest full release.
+        fetch("https://api.github.com/repos/DeiVadder/QtCraft/releases?per_page=1")
+            .then(response => response.ok ? response.json() : [])
+            .then(releases => {
+                const release = releases[0];
+                if (!release || !release.html_url)
+                    return;
+                document.getElementById("download").href = release.html_url;
+                document.getElementById("download-text").textContent = release.prerelease
+                    ? "The newest pre-release (" + release.tag_name + ")"
+                    : "The latest release (" + release.tag_name + ")";
+            })
+            .catch(() => {});
+    </script>
 </body>
 </html>

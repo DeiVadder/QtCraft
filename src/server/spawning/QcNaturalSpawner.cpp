@@ -3,6 +3,7 @@
 
 #include "server/spawning/QcNaturalSpawner.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcSpawnGround.h"
 #include "server/core/QcServerWorld.h"
@@ -255,8 +256,8 @@ int QcNaturalSpawner::spawnInArea(QcServerWorld &world, SpawnPlace place, Sky sk
     }
     // As in the original game: the kinds of the area alike, one at a time, and the light test, the
     // ground and the room for the body as anywhere else (the caller checked distance and cap).
-    const int type = area.types.at(static_cast<qsizetype>(m_draws->bounded(static_cast<int>(area.types.size()))));
-    const SpawnCandidate chosen{type, &m_areaRules.at(type)};
+    const QcCreatureKindId type = area.types.at(static_cast<qsizetype>(m_draws->bounded(static_cast<int>(area.types.size()))));
+    const SpawnCandidate chosen{type, &m_areaRules.at(type.index())};
     if (!ruleAllows(world, place, chosen, sky)) {
         return 0;
     }
@@ -405,21 +406,21 @@ QList<QcNaturalSpawner::SpawnCandidate> QcNaturalSpawner::candidatesAt(const QcS
                                                                        const NearbyCounts &counts, Pass pass) const
 {
     QList<SpawnCandidate> candidates;
-    for (qsizetype type = 0; type < m_content->mobs().size(); ++type) {
+    for (const QcCreatureKindId type : m_content->mobs().ids()) {
         const QcMobDefinition &definition = m_content->mobs()[type];
         // Monsters have their own cap (QcMonsterCap), which the caller checked.
         const bool monster = isMonster(definition);
         const bool capOk = monster == (pass == Pass::Monsters) && (monster || counts.of(definition) < capOf(definition))
-                           && (definition.maxCount == 0 || counts.perType.value(static_cast<int>(type)) < definition.maxCount)
+                           && (definition.maxCount == 0 || counts.perType.value(type) < definition.maxCount)
                            && !(QcChunkSpawns::isAnimal(definition) && counts.animalsNear);
         if (!capOk) {
             continue;
         }
 
         // Each kind takes the first of its rules that allows this place.
-        for (const SpawnRule &rule : m_rules.at(type)) {
-            if (ruleAllows(world, place, {static_cast<int>(type), &rule}, sky)) {
-                candidates.append({static_cast<int>(type), &rule});
+        for (const SpawnRule &rule : m_rules.at(type.index())) {
+            if (ruleAllows(world, place, {type, &rule}, sky)) {
+                candidates.append({type, &rule});
                 break;
             }
         }
@@ -450,7 +451,7 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     const bool lightOk = rule.darkness ? place.darkEnough(world, sky, rule.maxLight, *m_draws)
                                        : rule.maxLight >= QcLightEngine::maxLevel || place.lightIn(world) <= rule.maxLight;
     // The index of the kind's rule matters only for a share of chunks (rules of spawn areas have none).
-    const int ruleIndex = rule.chunkChance < 1.0 ? static_cast<int>(candidate.rule - m_rules.at(candidate.type).constData()) : 0;
+    const int ruleIndex = rule.chunkChance < 1.0 ? static_cast<int>(candidate.rule - m_rules.at(candidate.type.index()).constData()) : 0;
     // Husks and strays only under the open sky, like the reference's test of the sky light.
     if (rule.sky && place.skyLightIn(world) < QcLightEngine::maxLevel) {
         return false;
@@ -496,36 +497,22 @@ bool QcNaturalSpawner::SpawnPlace::darkEnough(const QcServerWorld &world, Sky sk
 
 QcNaturalSpawner::SpawnCandidate QcNaturalSpawner::pick(const QList<SpawnCandidate> &candidates)
 {
-    double totalWeight = 0.0;
-    for (const SpawnCandidate candidate : candidates) {
-        totalWeight += candidate.rule->weight;
-    }
-
-    double pick = m_draws->bounded(totalWeight);
-    for (const SpawnCandidate candidate : candidates) {
-        pick -= candidate.rule->weight;
-        if (pick < 0.0) {
-            return candidate;
-        }
-    }
-    return candidates.constLast();
+    const auto weightOf = [](SpawnCandidate candidate) { return candidate.rule->weight; };
+    const auto chosen = qcWeightedFind(candidates, m_draws->bounded(qcWeightTotal(candidates, weightOf)), weightOf);
+    return chosen != candidates.end() ? *chosen : candidates.constLast();
 }
 
 std::optional<QcNaturalSpawner::SpawnCandidate> QcNaturalSpawner::pickOfBiome(const QList<SpawnCandidate> &candidates, const QString &biome)
 {
-    double weights = 0.0;
-    for (const SpawnCandidate candidate : candidates) {
-        weights += m_weights.weight(candidate.type, biome);
-    }
+    const auto weightOf = [this, &biome](SpawnCandidate candidate) { return m_weights.weight(candidate.type, biome); };
+    const double weights = qcWeightTotal(candidates, weightOf);
 
-    double pick = m_draws->bounded(std::max(weights, m_weights.total(biome)));
-    for (const SpawnCandidate candidate : candidates) {
-        pick -= m_weights.weight(candidate.type, biome);
-        if (pick < 0.0) {
-            return candidate;
-        }
+    // Below the biome's total the draw may miss every candidate here: then nothing spawns.
+    const auto chosen = qcWeightedFind(candidates, m_draws->bounded(std::max(weights, m_weights.total(biome))), weightOf);
+    if (chosen == candidates.end()) {
+        return std::nullopt;
     }
-    return std::nullopt;
+    return *chosen;
 }
 
 int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, int room, const NextId &nextEntityId)
@@ -628,7 +615,7 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
     return true;
 }
 
-bool QcNaturalSpawner::spawnsInChunk(int type, QcChunkPos pos) const
+bool QcNaturalSpawner::spawnsInChunk(QcCreatureKindId type, QcChunkPos pos) const
 {
     return m_chunks.spawnsInChunk(type, pos, m_content->mobs()[type].spawnChunkChance, 0);
 }
@@ -640,7 +627,16 @@ void QcNaturalSpawner::setCaps(int hostile, int passive, int ambient)
     m_ambientCap = ambient;
 }
 
+std::size_t QcNaturalSpawner::categoryOf(const QcMobDefinition &definition)
+{
+    if (definition.aquatic) {
+        return definition.aquatic->cap == QcAquaticDefinition::Cap::Large ? 4 : 3;
+    }
+    return definition.ambient ? 2 : (definition.hostile ? 0 : 1);
+}
+
 int QcNaturalSpawner::capOf(const QcMobDefinition &definition) const
 {
-    return definition.aquatic ? m_waterCap : (definition.ambient ? m_ambientCap : (definition.hostile ? m_hostileCap : m_passiveCap));
+    const std::array<int, categories> caps{m_hostileCap, m_passiveCap, m_ambientCap, m_waterCap, m_largeWaterCap};
+    return caps[categoryOf(definition)];
 }

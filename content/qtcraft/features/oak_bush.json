@@ -1,5 +1,6 @@
 {
     "name": "oak_bush",
+    "icon": "oak_leaves",
     "type": "tree",
     "trunk": "oak_log",
     "leaves": "oak_leaves",

@@ -148,6 +148,13 @@ public:
     // `origin`; null or empty draws none.
     void setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops, const QcVec3 &origin);
 
+    // Still (decision E-963): behind a paused pause menu and a full-screen screen the world is not
+    // drawn every frame. The motion setters (camera, sky, entities, hand, selection, lights,
+    // weather, debug lines) keep their values without asking for a frame; content (sections,
+    // atlas, material maps, render options, filtering) and the end of the still time still do.
+    void setStill(bool still);
+    [[nodiscard]] bool isStill() const { return m_still; }
+
     qsizetype meshCount() const { return m_meshKeys.size(); }
 
     // Benchmark: while enabled, the renderer hands over one QcRenderSample per rendered frame.
@@ -176,6 +183,8 @@ private:
     void meshesLostOnDevice();
     // Render thread, GUI thread blocked: queues materialsLost() for the GUI thread.
     void materialsLostOnDevice();
+    // update(), unless the view is still.
+    void requestFrame();
 
     FrameInput m_frame;
     int m_animationCycleTicks = 1;
@@ -190,4 +199,5 @@ private:
     // Renderers created so far: a later one starts without the sections of the earlier.
     int m_renderers = 0;
     QList<QcRenderSample> m_renderSamples;
+    bool m_still = false;
 };

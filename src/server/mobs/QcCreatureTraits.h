@@ -9,14 +9,16 @@ class QcServerBlocks;
 class QcServerSounds;
 class QcServerState;
 
-// What creatures with traits do to the world (decision E-460), after the creatures' tick: the blocks
-// they took and put down (QcMobManager::takeBlockActions) become ordinary block changes of the server
-// (QcServerBlocks: clients, light, neighbour updates, saving), the teleports since the last call
-// (QcCreature::teleportedFrom) play their sound at both places and show the clients the new place at
-// once, and a creature that dies drops the block it carried. A creature that was not kept with the
-// world is kept (QcMobManager::keep, QcCreature::keptForBlock) while it carries a block and let go
-// when it puts the block down (or drops it, game rule mobGriefing off); one that was kept before (a
-// structure placed it, it was named) stays kept.
+/*! \brief What creatures with traits do to the world (decision E-460), after the creatures' tick:
+    the blocks they took and put down (QcMobManager::takeBlockActions) become ordinary block changes
+    of the server (QcServerBlocks: clients, light, neighbour updates, saving), the teleports since
+    the last call (QcCreature::teleportedFrom) play their sound at both places and show the clients
+    the new place at once, and a creature that dies drops the block it carried.
+
+    A creature that was not kept with the world is kept (QcMobManager::keep,
+    QcCreature::keptForBlock) while it carries a block and let go when it puts the block down (or
+    drops it, game rule mobGriefing off); one that was kept before (a structure placed it, it was
+    named) stays kept. */
 class QcCreatureTraits
 {
 public:
@@ -25,10 +27,12 @@ public:
     QcCreatureTraits(const QcCreatureTraits &) = delete;
     QcCreatureTraits &operator=(const QcCreatureTraits &) = delete;
 
+    /*! Carries out the block actions of the creatures' tick (taking, placing, dropping) and
+        announces the teleports since the last call. */
     void apply();
-    // Plays the sounds of the teleports since the last call and sends the creatures anew, so the
-    // clients show them at the new place in the same tick: after the creatures' tick and again after
-    // the projectiles and burning, which also make creatures teleport.
+    /*! Plays the sounds of the teleports since the last call and sends the creatures anew, so
+        the clients show them at the new place in the same tick: after the creatures' tick and
+        again after the projectiles and burning, which also make creatures teleport. */
     void announceTeleports();
 
 private:

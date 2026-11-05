@@ -19,24 +19,6 @@ SettingsPage {
     // The screen's modal dialog for actions that ask first.
     required property AdminActionDialog dialog
 
-    // The host plays in the server's process: no round trip and no address to show.
-    function details(player: var): string {
-        if (player.local)
-            return player.modeName;
-        const parts = [player.ping < 0 ? qsTr("Ping unknown") : qsTr("Ping %1 ms").arg(player.ping), player.modeName];
-        if (player.address.length > 0)
-            parts.push(player.address);
-        return parts.join(" · ");
-    }
-
-    // The row of the operator looking at the screen: he neither kicks nor bans himself. Only the
-    // screen protects him; the server refuses actions on the host alone (decision E-931).
-    function isOwn(player: var): bool {
-        // isOwnName() is a call: the own name is read for the binding.
-        void page.admin.ownName;
-        return page.admin.isOwnName(player.name);
-    }
-
     title: qsTr("Players")
 
     // The rows lie on the page as in the other lists of rows (worlds, texture packs), not on a card:
@@ -72,10 +54,14 @@ SettingsPage {
 
                 required property var modelData
                 required property int index
-                readonly property bool own: page.isOwn(modelData)
+                // The row of the operator looking at the screen: he neither kicks nor bans himself.
+                // Only the screen protects him; the server refuses actions on the host alone
+                // (decision E-931).
+                readonly property bool own: modelData.own
 
                 title: modelData.operator ? qsTr("%1 · operator").arg(modelData.name) : modelData.name
-                subtitle: page.details(modelData)
+                // Ping, game mode and address (QcAdminViews::players).
+                subtitle: modelData.details
                 actions: [
                     Label {
                         // The host's row has no actions: the server refuses them on him.

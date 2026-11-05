@@ -621,7 +621,7 @@ private slots:
         auto old = std::make_unique<QcTcpTransport>(listener.nextPendingConnection(), QcTcpTransport::Limits{.maxIncomingFrameBytes = qint64{256} * 1024});
 
         QVERIFY(failed.count() == 1 || failed.wait(timeoutMs));
-        QVERIFY2(failed.first().first().toString().contains(u"encrypted connection"_s), qPrintable(failed.first().first().toString()));
+        QVERIFY2(failed.first().first().value<QcJoinFailure>().reason.contains(u"encrypted connection"_s), qPrintable(failed.first().first().value<QcJoinFailure>().reason));
         QVERIFY(!connector.takeTransport());
         QTRY_VERIFY_WITH_TIMEOUT(!old->isOpen(), timeoutMs);
     }
@@ -639,7 +639,7 @@ private slots:
         connector.connectTo({u"127.0.0.1"_s, port});
         QVERIFY(failed.wait(timeoutMs));
         QCOMPARE(connected.count(), 0);
-        QVERIFY(!failed.first().first().toString().isEmpty());
+        QVERIFY(!failed.first().first().value<QcJoinFailure>().reason.isEmpty());
         QVERIFY(!connector.takeTransport());
     }
 };

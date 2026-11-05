@@ -13,49 +13,19 @@ import QtCraft
 // categories; on the right the entries of the chosen category (or the search results) and the open
 // page. Links and recipe cells open other pages; "Previous page" and Backspace return. The back
 // entry, Esc, the handbook key and the pad's B close it and give the keyboard back to the screen
-// below; the pad's shoulders switch the category.
+// below; the pad's shoulders switch the category. Page, history, category, search and the entry list
+// are the controller's (HandbookNavigation, decision E-954); this screen keeps focus and scrolling.
 SidebarScreen {
     id: screen
 
     required property GameController game
 
-    property string current
-    property var page: ({})
-    property var history: []
-    property string category
+    readonly property HandbookNavigation browse: game.handbook.navigation
     property Item focusBefore: null
     // The item that had the focus outside the handbook until it opened (Main.qml keeps it).
     property Item focusOutside: null
 
-    readonly property bool searching: searchField.text.trim().length > 0
     readonly property var categories: game.handbook.model.categories
-    // Reads `categories` so the lists follow a rebuilt handbook (other language or mods).
-    readonly property var listed: !visible || categories.length === 0 ? []
-                                  : (searching ? game.handbook.model.search(searchField.text) : game.handbook.model.entries(category))
-
-    function navigate(target, remember) {
-        const id = game.handbook.model.resolve(target);
-        if (id.length === 0 || id === current)
-            return;
-        if (remember && current.length > 0)
-            history = history.concat([current]);
-        current = id;
-        game.handbook.page = id;
-        page = game.handbook.model.page(id);
-        if (!searching)
-            category = page.category;
-        pageView.contentY = 0;
-        entryList.select();
-    }
-
-    function back() {
-        if (history.length === 0)
-            return;
-        const previous = history[history.length - 1];
-        history = history.slice(0, history.length - 1);
-        current = "";
-        navigate(previous, false);
-    }
 
     function close() {
         game.handbook.close();
@@ -66,19 +36,33 @@ SidebarScreen {
     function focusFirstEntry() {
         entryList.forceLayout();
         entryList.positionViewAtBeginning();
-        const index = listed.findIndex(row => row.id !== undefined);
-        entryList.itemAtIndex(index)?.forceActiveFocus(Qt.TabFocusReason);
+        entryList.itemAtIndex(browse.firstEntry)?.forceActiveFocus(Qt.TabFocusReason);
     }
 
     // Marks the shown category in the bar; none while search results show.
     function markCategory() {
-        nav.currentIndex = searching ? -1 : categories.findIndex(entry => entry.id === category);
+        nav.currentIndex = browse.categoryIndex;
+    }
+
+    // Gives the focus back to the item that had it before the handbook opened, once the screens below
+    // show again (they hide while the handbook covers them).
+    function returnFocus() {
+        const before = focusBefore;
+        focusBefore = null;
+        if (before)
+            Qt.callLater(() => before?.forceActiveFocus(Qt.TabFocusReason));
+    }
+
+    // A page was shown: from its top, its row marked in the list.
+    function showPage() {
+        pageView.contentY = 0;
+        entryList.select();
     }
 
     // The pad's B closes the handbook, its shoulders switch the category (QcMenuNavigator asks the
     // items above the focus).
-    function gamepadCommand(command: string): bool {
-        if (command === "back") {
+    function gamepadCommand(command: int): bool {
+        if (command === GamepadMenuInput.Command.Back) {
             close();
             return true;
         }
@@ -96,55 +80,44 @@ SidebarScreen {
               : game.overlay === GameController.Overlay.Pause ? qsTr("‹ Pause menu")
               : game.overlay === GameController.Overlay.None ? qsTr("‹ Back to game") : qsTr("‹ Back")
     onBackRequested: close()
-    onCategoryChanged: markCategory()
-    onSearchingChanged: markCategory()
-    onCategoriesChanged: markCategory()
+    Component.onCompleted: markCategory()
 
+    // The controller chose the start page when the handbook opened (also while this screen was not
+    // made yet); here only the focus and the scrolling follow.
     onVisibleChanged: {
         if (visible) {
             focusBefore = focusOutside ?? Window.activeFocusItem;
-            history = [];
-            searchField.text = game.handbook.query;
-            const found = game.handbook.query.length > 0 ? game.handbook.model.search(game.handbook.query)[0] : undefined;
-            if (game.handbook.target.length > 0) {
-                navigate(game.handbook.target, false);
-            } else if (found) {
-                navigate(found.id, false);
-            } else if (current.length === 0 && game.handbook.page.length === 0) {
-                const first = game.handbook.model.entries("playing").find(row => row.id !== undefined);
-                if (first)
-                    navigate(first.id, false);
-            } else {
-                // The page where it was left, also after the screen was unloaded (the controller
-                // keeps it) or the handbook was rebuilt (language, mods).
-                const shown = current.length > 0 ? current : game.handbook.page;
-                current = "";
-                navigate(shown, false);
-            }
+            showPage();
             markCategory();
             if (game.handbook.query.length > 0)
                 searchField.forceActiveFocus();
             else
                 forceActiveFocus();
-        } else if (focusBefore) {
-            // Once the screens below show again (they hide while the handbook covers them).
-            const before = focusBefore;
-            focusBefore = null;
-            Qt.callLater(() => {
-                if (before)
-                    before.forceActiveFocus(Qt.TabFocusReason);
-            });
+        } else {
+            returnFocus();
         }
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("handbook", event.key) && !event.isAutoRepeat)) {
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.HandbookKey) === KeyControls.ScreenKey.Close) {
             screen.close();
         } else if (event.key === Qt.Key_Backspace || (event.key === Qt.Key_Left && (event.modifiers & Qt.AltModifier))) {
-            screen.back();
+            screen.browse.back();
         }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
+    }
+
+    Connections {
+        target: screen.browse
+
+        function onListChanged() {
+            screen.markCategory();
+        }
+
+        function onPageShown() {
+            screen.showPage();
+        }
     }
 
     entries: [
@@ -156,16 +129,18 @@ SidebarScreen {
             Layout.rightMargin: Ui.space.s
             Accessible.name: qsTr("Search the handbook")
             placeholderText: qsTr("Search …")
+            // The controller keeps the search; typing changes it, opening and the side bar set it.
+            text: screen.browse.search
+            onTextEdited: screen.browse.search = text
             Keys.onPressed: event => {
-                // A handbook key that types a character (H) goes into the search.
-                if (event.key === Qt.Key_Escape
-                    || (screen.game.settings.keys.matches("handbook", event.key) && (event.text.length === 0 || event.text < " "))) {
+                // A handbook key that types a character (H) goes into the search; one that does not
+                // closes the handbook, held or not.
+                const typed = event.text.length > 0 && event.text >= " ";
+                if (!typed && screen.game.settings.keys.screenKey(event.key, false, KeyControls.ClosingKey.HandbookKey) === KeyControls.ScreenKey.Close) {
                     screen.close();
                     event.accepted = true;
-                } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && screen.listed.length > 0) {
-                    const first = screen.listed.find(row => row.id !== undefined);
-                    if (first)
-                        screen.navigate(first.id, true);
+                } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && screen.browse.firstEntry >= 0) {
+                    screen.browse.openRow(screen.browse.firstEntry);
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Down) {
                     entryList.forceActiveFocus(Qt.TabFocusReason);
@@ -206,12 +181,7 @@ SidebarScreen {
                 // The shoulders and Ctrl+Tab put the focus on the category's first entry.
                 onSwitched: screen.focusFirstEntry()
                 // A category chosen in the bar (click, Ctrl+Tab, shoulders) ends a search.
-                onCurrentIndexChanged: {
-                    if (currentIndex < 0 || currentIndex >= screen.categories.length)
-                        return;
-                    screen.category = screen.categories[currentIndex].id;
-                    searchField.text = "";
-                }
+                onCurrentIndexChanged: screen.browse.chooseCategory(currentIndex)
             }
         }
     ]
@@ -227,18 +197,20 @@ SidebarScreen {
             GameButton {
                 kind: GameButton.Quiet
                 text: qsTr("‹ Previous page")
-                enabled: screen.history.length > 0
-                onClicked: screen.back()
+                enabled: screen.browse.canGoBack
+                onClicked: screen.browse.back()
             }
-            Label {
+            // The keys as plates (HB-4 of docs/Menue-Pruefung.md); the pad's buttons stand at the
+            // window's bottom edge while it leads (PadHints).
+            KeyHintRow {
+                objectName: "handbookKeyHints"
                 Layout.fillWidth: true
-                text: screen.game.gamepad.active ? qsTr("%1 on a name or an item opens its page. %2 closes.").arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.east)
-                      : qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.settings.keys.labels.handbook)
-                font.pixelSize: Ui.type.help
-                color: Theme.textMuted
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
-                elide: Text.ElideRight
+                visible: !screen.game.gamepad.active
+                entries: [
+                    { keys: [qsTr("Click")], text: qsTr("open a name or an item") },
+                    { keys: [qsTr("Backspace")], text: qsTr("previous page") },
+                    { keys: [qsTr("Esc"), screen.game.settings.keys.labels.handbook], text: qsTr("close") }
+                ]
             }
         }
 
@@ -253,7 +225,7 @@ SidebarScreen {
                 Accessible.name: qsTr("Entries")
                 // Highlights the open page in the list and scrolls it into view.
                 function select() {
-                    const index = screen.listed.findIndex(row => row.id === screen.current);
+                    const index = screen.browse.currentRow;
                     currentIndex = index;
                     if (index >= 0)
                         positionViewAtIndex(index, ListView.Contain);
@@ -263,29 +235,28 @@ SidebarScreen {
                 Layout.fillHeight: true
                 clip: true
                 spacing: Ui.size.line
-                model: screen.listed
+                model: screen.browse.listed
                 currentIndex: -1
                 onModelChanged: Qt.callLater(select)
                 keyNavigationEnabled: true
                 Keys.onReturnPressed: {
-                    const row = screen.listed[currentIndex];
-                    if (row && row.id !== undefined)
-                        screen.navigate(row.id, true);
+                    if (currentIndex >= 0)
+                        screen.browse.openRow(currentIndex);
                 }
                 ScrollBar.vertical: ThemedScrollBar {}
 
                 Label {
                     anchors.centerIn: parent
-                    visible: screen.searching && entryList.count === 0
+                    visible: screen.browse.searching && entryList.count === 0
                     text: qsTr("Nothing found.")
                     color: Theme.textMuted
                 }
 
                 delegate: HandbookEntryRow {
                     width: ListView.view.width
-                    searching: screen.searching
-                    open: screen.current
-                    onClicked: screen.navigate(modelData.id, true)
+                    searching: screen.browse.searching
+                    open: screen.browse.current
+                    onClicked: screen.browse.navigate(modelData.id, true)
                 }
             }
 
@@ -300,8 +271,8 @@ SidebarScreen {
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                page: screen.page
-                onLinkActivated: target => screen.navigate(target, true)
+                page: screen.browse.page
+                onLinkActivated: target => screen.browse.navigate(target, true)
             }
         }
     }

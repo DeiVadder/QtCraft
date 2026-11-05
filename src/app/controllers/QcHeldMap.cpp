@@ -92,3 +92,8 @@ QVariantList QcHeldMap::markerList(const QList<QcMapMarker> &markers)
     }
     return list;
 }
+
+void QcHeldMap::setProvider(QcMapImageProvider *provider)
+{
+    m_provider = provider;
+}

@@ -42,6 +42,13 @@ struct QcTerrainColumn
         \qcshared */
     double riverDistance = 1.0e9;
     double riverHalfWidth = 0.0;
+    /*! Blocks from the middle line of that river, estimated without the steep growth of
+        \c {riverDistance} where the river noise flattens (QcRiverField::Sample::nearDistance);
+        1e9 where \c {riverDistance} is. */
+    double riverNearDistance = 1.0e9;
+    /*! Half the width of that river's water as the freezing ramp reads it
+        (QcRiverField::Sample::nearHalfWidth). */
+    double riverNearHalfWidth = 0.0;
 
     /*! Returns the biome whose ground blocks the column takes: \c {groundBiome}, or \c {biome}
         for -1. Only for a looked-up column (never \c {unresolvedGround}). */

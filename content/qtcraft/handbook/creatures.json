@@ -1,7 +1,7 @@
 {
     "name": "creatures",
     "order": 100,
-    "icon": "rotten_flesh",
+    "icon": "zombie",
     "sections": [
         "spawning",
         "biomes",
@@ -12,6 +12,7 @@
         "chickens",
         "shadewalkers",
         "cows_and_fish",
+        "squids",
         "pets",
         "limits"
     ],
@@ -41,6 +42,8 @@
         "cod",
         "salmon",
         "cod_bucket",
+        "squid",
+        "ink_sac",
         "kjut",
         "kjut_child",
         "spark_gel",

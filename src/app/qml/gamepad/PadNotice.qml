@@ -12,7 +12,7 @@ Rectangle {
 
     required property GameController game
     readonly property int shownMs: 3000
-    // Read by the column of notices in Main.qml (the effective `visible` would loop through it).
+    // Read by the column of notices in Notices.qml (the effective `visible` would loop through it).
     readonly property bool showing: timer.running
 
     width: label.implicitWidth + Ui.hudPx(28)

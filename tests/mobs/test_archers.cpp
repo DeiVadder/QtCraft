@@ -34,7 +34,7 @@ private:
     static constexpr int arena = 22;
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     const QcMobDefinition &skeletonKind() const { return m_content->mobs()[type("skeleton")]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
 

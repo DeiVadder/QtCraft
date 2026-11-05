@@ -10,7 +10,9 @@
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/hooks/QcScriptedPad.h"
 #include "app/input/QcGameInput.h"
+#include "app/inventory/QcSlotCursor.h"
 #include "app/rendering/QcWorldView.h"
+#include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
@@ -45,6 +47,21 @@ namespace {
         found.append(namedItems(child, objectName));
     }
     return found;
+}
+
+// The name of `overlay` in the test hooks' log lines ("none" for none).
+[[nodiscard]] QString overlayLogName(QcScreenState::Overlay overlay)
+{
+    const QString name = QcScreenState::overlayName(overlay);
+    return name.isEmpty() ? u"none"_s : name;
+}
+
+// Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
+[[nodiscard]] bool runsInMenu(const QString &step)
+{
+    return step.startsWith(u"open:"_s) || step.startsWith(u"click:"_s) || step.startsWith(u"hover:"_s)
+           || step.startsWith(u"pad:"_s) || step.startsWith(u"focus:"_s) || step.startsWith(u"text:"_s)
+           || step.startsWith(u"message:"_s) || step.startsWith(u"loading:"_s) || step == u"starting"_s;
 }
 
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
@@ -98,17 +115,18 @@ void QcStartupHooks::setStartupScript(QStringList chatLines, const QStringList &
 {
     m_startupChat = std::move(chatLines);
     m_startupOverlay.clear();
-    m_startupOverlaySteps.clear();
+    QList<OverlayStep> steps;
     for (const QString &overlay : overlays) {
         if (overlay.startsWith(u'@')) {
-            m_startupOverlaySteps.append(overlay);
-        } else if (overlay.startsWith(u"message:"_s)) {
+            steps.append({.line = overlay});
+        } else if (overlay.startsWith(u"message:"_s) || overlay.startsWith(u"loading:"_s)) {
             // A step at once, so it shows in the main menu as well as in a world.
-            m_startupOverlaySteps.append(u"@0 "_s + overlay);
+            steps.append({.line = u"@0 "_s + overlay});
         } else if (m_startupOverlay.isEmpty()) {
             m_startupOverlay = overlay;
         }
     }
+    setStartupOverlaySteps(std::move(steps));
 }
 
 void QcStartupHooks::setScriptedPad(QcScriptedPad *pad)
@@ -162,7 +180,7 @@ void QcStartupHooks::releaseScreenshot() const
 void QcStartupHooks::menuShown()
 {
     // Each step holds the screenshot until it ran; then the menu's own hold ends.
-    scheduleOverlaySteps();
+    scheduleOverlaySteps(true);
     if (m_menuHold) {
         m_menuHold = false;
         m_screenshotReleased = true;
@@ -170,16 +188,43 @@ void QcStartupHooks::menuShown()
     }
 }
 
+void QcStartupHooks::worldStarting()
+{
+    setWorldPlayed(false);
+    // A start from the menu would otherwise be pictured on the loading screen.
+    if (startHold() || !screenshotHook()) {
+        return;
+    }
+    setStartHold(true);
+    holdScreenshot();
+}
+
+void QcStartupHooks::worldStartEnded()
+{
+    if (!startHold()) {
+        return;
+    }
+    setStartHold(false);
+    releaseScreenshot();
+}
+
 void QcStartupHooks::worldPlaying()
 {
+    worldStartEnded();
+    // The script runs once per start.
+    if (worldPlayed()) {
+        return;
+    }
+    setWorldPlayed(true);
     sendStartupChat();
     openStartupOverlay();
-    scheduleOverlaySteps();
+    scheduleOverlaySteps(false);
     m_benchmark->scheduleStart();
 }
 
 void QcStartupHooks::sendStartupChat()
 {
+    DelayedSteps planned;
     for (const QString &line : std::as_const(m_startupChat)) {
         // "@<ms> <text>" waits that long after loading (scenes in motion for screenshots);
         // the screenshot is taken only after the last delayed line.
@@ -190,10 +235,22 @@ void QcStartupHooks::sendStartupChat()
             continue;
         }
 
-        holdScreenshot();
-        QTimer::singleShot(*delayMs, this, [this, text = line.mid(space + 1)] {
+        planned[*delayMs].append([this, text = line.mid(space + 1)] {
             if (m_parts.session) {
                 m_parts.session->sendChat(text);
+            }
+        });
+    }
+    runAfterDelays(planned);
+}
+
+void QcStartupHooks::runAfterDelays(const DelayedSteps &steps)
+{
+    for (const auto &[delayMs, group] : steps) {
+        holdScreenshot();
+        QTimer::singleShot(delayMs, this, [this, inOrder = group] {
+            for (const std::function<void()> &step : inOrder) {
+                step();
             }
             releaseScreenshot();
         });
@@ -235,9 +292,18 @@ void QcStartupHooks::openMachineInView()
     });
 }
 
-void QcStartupHooks::scheduleOverlaySteps()
+void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
 {
-    for (const QString &step : std::as_const(m_startupOverlaySteps)) {
+    DelayedSteps planned;
+    const QList<OverlayStep> &steps = startupOverlaySteps();
+    for (qsizetype index = 0; index < steps.size(); ++index) {
+        const QString &step = steps.at(index).line;
+        // The menu plans only the steps it can run, so a world step waits for the world to play
+        // (and is not run on a session that is still loading).
+        if (steps.at(index).ran || (menuSteps && !runsInMenu(step.mid(step.indexOf(u' ') + 1)))) {
+            continue;
+        }
+
         const qsizetype space = step.indexOf(u' ');
         const std::optional<int> delayMs = delayOf(step, space);
         if (!delayMs) {
@@ -245,17 +311,17 @@ void QcStartupHooks::scheduleOverlaySteps()
             continue;
         }
 
-        holdScreenshot();
-        QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
-            // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
-            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
-                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)
-                || overlay.startsWith(u"message:"_s)) {
+        planned[*delayMs].append([this, index, overlay = step.mid(space + 1)] {
+            // The menu and the world may both have planned it; the first to run it with what it
+            // needs wins. The list is fixed once setStartupScript() ran, before any plan.
+            Q_ASSERT(index < startupOverlaySteps().size());
+            if (!startupOverlaySteps().at(index).ran && (m_parts.session || runsInMenu(overlay))) {
+                markOverlayStepRan(index);
                 runOverlayStep(overlay);
             }
-            releaseScreenshot();
         });
     }
+    runAfterDelays(planned);
 }
 
 void QcStartupHooks::runOverlayStep(const QString &step)
@@ -273,10 +339,17 @@ void QcStartupHooks::runOverlayStep(const QString &step)
     } else if (step.startsWith(u"message:"_s)) {
         // The message screen as after a world that could not start, with its way back.
         m_screens.state.setPhase(QcScreenState::Phase::Error, step.mid(8));
+    } else if (step == u"starting"_s) {
+        // The start screen again, as while the program starts (decision E-943).
+        m_screens.state.setStarting(true);
+    } else if (step.startsWith(u"loading:"_s)) {
+        showLoading(QStringView(step).mid(8));
     } else if (step == u"handbook"_s) {
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {
         m_screens.input.setPlayerListHeld(true);
+    } else if ((step.startsWith(u"key:"_s) || step.startsWith(u"press:"_s)) && step.lastIndexOf(u'@') > step.indexOf(u':') + 1) {
+        runUntilOverlay(step);
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
     } else if (step.startsWith(u"press:"_s)) {
@@ -310,6 +383,11 @@ void QcStartupHooks::pressKey(const QString &actionId) const
         m_parts.session->useItem();
         return;
     }
+    // The mine key once on the creature the player aims at (hit feedback, decision E-971).
+    if (*action == QcKeyBindings::Action::Mine) {
+        qCInfo(lcGame) << "--overlay key:mine: hit" << (m_parts.session->attack() ? "a creature" : "nothing");
+        return;
+    }
     // As if its key were pressed in the world.
     m_screens.input.worldAction(*action, true);
 }
@@ -330,10 +408,10 @@ void QcStartupHooks::pressWindowKey(const QString &name) const
     const QString text = name.size() == 1 ? name.toLower() : QString();
     QKeyEvent press(QEvent::KeyPress, key.key(), key.keyboardModifiers(), text);
     QKeyEvent release(QEvent::KeyRelease, key.key(), key.keyboardModifiers(), text);
+    const QString before = overlayLogName(m_screens.state.overlay());
     QCoreApplication::sendEvent(window, &press);
     QCoreApplication::sendEvent(window, &release);
-    const QString overlay = QcScreenState::overlayName(m_screens.state.overlay());
-    qCInfo(lcGame).noquote() << u"--overlay press:%1: overlay %2"_s.arg(name, overlay.isEmpty() ? u"none"_s : overlay);
+    qCInfo(lcGame).noquote() << u"--overlay press:%1: overlay %2 (was %3)"_s.arg(name, overlayLogName(m_screens.state.overlay()), before);
 }
 
 void QcStartupHooks::holdKey(const QString &actionId, bool held) const
@@ -381,53 +459,29 @@ void QcStartupHooks::openOverlay(const QString &name) const
     m_screens.state.setOverlay(*overlay);
 }
 
-void QcStartupHooks::runOnLoadedScreen(const QString &step, int attempt)
-{
-    bool done = false;
-    if (step.startsWith(u"pick:"_s)) {
-        done = pickInOpenScreen(QStringView(step).mid(5).toInt());
-    } else if (step.startsWith(u"open:"_s)) {
-        done = openPopup(step.mid(5));
-    } else if (step.startsWith(u"click:"_s)) {
-        done = clickControl(step.mid(6));
-    } else if (step.startsWith(u"focus:"_s)) {
-        done = focusControl(step.mid(6));
-    } else {
-        done = setText(step.mid(5));
-    }
-    if (done) {
-        if (attempt > 0) {
-            qCInfo(lcGame) << "--overlay" << step << ": waited" << attempt * loadedScreenRetryMs << "ms for its screen";
-        }
-        return;
-    }
-
-    // Screens are made when they open (LazyScreen, decision E-691): until the one the step needs
-    // is there, the step and the screenshot wait for it.
-    if (attempt + 1 >= loadedScreenAttempts) {
-        qCWarning(lcGame) << "--overlay" << step << ": no such control on a shown screen";
-        return;
-    }
-    holdScreenshot();
-    QTimer::singleShot(loadedScreenRetryMs, this, [this, step, attempt] {
-        runOnLoadedScreen(step, attempt + 1);
-        releaseScreenshot();
-    });
-}
-
 bool QcStartupHooks::pickInOpenScreen(int row) const
 {
     if (!m_parts.window) {
         return false;
     }
     const QList<QQuickItem *> screens = m_parts.window->findChildren<QQuickItem *>(u"slotScreen"_s);
-    for (QQuickItem *screen : screens) {
-        if (screen->isVisible()) {
-            screen->setProperty("pickedSlot", row);
-            return true;
-        }
+    const bool shown = std::ranges::any_of(screens, [](const QQuickItem *screen) { return screen->isVisible(); });
+    if (shown) {
+        m_screens.slotCursor.pick(row);
     }
-    return false;
+    return shown;
+}
+
+void QcStartupHooks::showLoading(QStringView spec) const
+{
+    const std::optional<QcLoadingProgress::Shown> shown = QcLoadingProgress::parseShow(spec);
+    if (!shown) {
+        qCWarning(lcStartup).noquote() << u"--overlay loading:%1: expected a stage (content, world, joining, chunks, meshes), then "
+                                          u"newworld, savedworld or network and three counts (arrived, meshed, needed; meshed <= arrived <= needed)"_s.arg(spec);
+        return;
+    }
+    m_screens.loading.show(*shown);
+    m_screens.state.setPhase(QcScreenState::Phase::Loading);
 }
 
 void QcStartupHooks::hoverAt(QStringView position) const

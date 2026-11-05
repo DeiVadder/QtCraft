@@ -6,11 +6,11 @@
 #include "worldgen/generators/QcWorldgenLogging.h"
 
 #include <QHash>
-#include <QMutex>
 #include <QSet>
 #include <QtLogging>
 
 #include <array>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -36,11 +36,12 @@ int directionIndex(const QString &name)
 // Once per block, property and value: structures are placed chunk by chunk on several threads.
 void warnMissingValue(const QString &block, const QString &property, const QString &value)
 {
-    static QMutex mutex;
+    // The generation threads placing structures share the reported keys under this mutex.
+    static std::mutex mutex;
     static QSet<QString> reported;
     const QString key = block + u'|' + property + u'=' + value;
     {
-        const QMutexLocker locker(&mutex);
+        const std::scoped_lock locker(mutex);
         if (reported.contains(key)) {
             return;
         }

@@ -8,9 +8,9 @@
 #include "worldgen/towers/QcCoastalTowerPlanner.h"
 
 #include <QHash>
-#include <QMutex>
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 /*! \brief Builds the coastal towers of the terrain generator into its chunks (decision E-605): each
@@ -40,7 +40,7 @@ public:
     /*! Returns the footprints of the towers within \a margin columns of the chunk \a pos: the
         terrain generator places no features and no surface pools there, like near surface
         structures. */
-    QList<QcCoastalTowerPlan::Footprint> footprintsNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> footprintsNear(QcChunkPos pos, int margin) const;
     /*! Writes the cells of the towers touching \a chunk into it, with their foundations, cleared
         columns and the opening in front of the door. Builds after the terrain's features and
         surface pools, before the villages. */
@@ -78,13 +78,13 @@ private:
         Plan get(qint64 key, Make make)
         {
             {
-                const QMutexLocker lock(&m_mutex);
+                const std::scoped_lock lock(m_mutex);
                 if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
                     return *it;
                 }
             }
             const Plan plan = make();
-            const QMutexLocker lock(&m_mutex);
+            const std::scoped_lock lock(m_mutex);
             if (m_plans.size() >= capacity) {
                 m_plans.clear();
             }
@@ -93,7 +93,10 @@ private:
 
     private:
         static constexpr qsizetype capacity = 1024;
-        QMutex m_mutex;
+        // Every thread that generates or plans with this generator (the server's generation pool,
+        // headless tools, the world map preview's worker) hands the plans to the others under this
+        // mutex.
+        std::mutex m_mutex;
         QHash<qint64, Plan> m_plans;
     };
 

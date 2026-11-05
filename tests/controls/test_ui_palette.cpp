@@ -10,7 +10,7 @@
 #include <QMetaEnum>
 #include <QRegularExpression>
 #include <QSet>
-#include <QTemporaryFile>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <algorithm>
@@ -106,26 +106,30 @@ bool setsPlainText(const QStringList &lines, qsizetype start, qsizetype indent)
 }
 
 // Whether a numeric literal in a property's value is a size of its own: above 1 and not a factor or
-// divisor ("2 * Ui.space.l", "width / 2").
-bool ownNumber(QStringView value, const QRegularExpressionMatch &number)
+// divisor ("2 * Ui.space.l", "width / 2"); with \a counts also not compared with or taken modulo.
+bool ownNumber(QStringView value, const QRegularExpressionMatch &number, bool counts)
 {
     if (number.captured(1).toDouble() <= 1.0) {
         return false;
     }
     const QStringView before = value.first(number.capturedStart(1)).trimmed();
     const QStringView after = value.sliced(number.capturedEnd(1)).trimmed();
-    return !before.endsWith(u'*') && !before.endsWith(u'/') && !after.startsWith(u'*') && !after.startsWith(u'/');
+    // A number compared with or taken modulo is a count ("slot < 9", "craftingSize === 3").
+    const bool compared = counts && (before.endsWith(u'<') || before.endsWith(u'>') || before.endsWith(u'=') || before.endsWith(u'%'));
+    return !compared && !before.endsWith(u'*') && !before.endsWith(u'/') && !after.startsWith(u'*') && !after.startsWith(u'/');
 }
 
-// Whether a line (without comment and strings) gives a property a number above 1 of its own.
-bool assignsOwnNumber(const QString &code)
+// Whether a line (without comment and strings) gives a property a number above 1 of its own. In
+// the slot screens (\a inventory) rows and slots of the inventory model and compared counts are no
+// sizes either.
+bool assignsOwnNumber(const QString &code, bool inventory)
 {
     // Properties whose numbers are no sizes: ranges and values (also of a validator), stacking,
-    // counts (lines, characters, grid columns and spans, a chart's values), stretch factors,
+    // counts (lines, characters, grid rows, columns and spans, a chart's values), stretch factors,
     // decimals of a shown value, a chart's limit line, frame rates, times in milliseconds and angles.
     static const QSet<QString> notSizes = {u"rotation"_s, u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"bottom"_s, u"top"_s,
                                            u"opacity"_s, u"z"_s, u"maximumLineCount"_s, u"maximumLength"_s,
-                                           u"columns"_s, u"rows"_s, u"columnSpan"_s, u"rowSpan"_s,
+                                           u"columns"_s, u"rows"_s, u"row"_s, u"column"_s, u"columnSpan"_s, u"rowSpan"_s,
                                            u"horizontalStretchFactor"_s, u"verticalStretchFactor"_s, u"model"_s,
                                            u"valueText"_s, u"framesPerSecond"_s, u"interval"_s, u"duration"_s,
                                            u"capacity"_s, u"limit"_s};
@@ -138,12 +142,16 @@ bool assignsOwnNumber(const QString &code)
         return false;
     }
     const QString name = match.captured(1).section(u'.', -1);
-    if (notSizes.contains(name) || name.endsWith(u"Ms"_s)) {
+    // The slot screens name rows of the inventory model ("inputRow: 46", "first: leftRow + 2",
+    // "count: 9") and count their grids' columns ("catalogueColumns: 7").
+    const bool inventoryRow = inventory && (name == u"first"_s || name == u"count"_s || name.endsWith(u"Row"_s) || name.endsWith(u"Slot"_s)
+                              || name.endsWith(u"First"_s) || name.endsWith(u"Columns"_s));
+    if (notSizes.contains(name) || name.endsWith(u"Ms"_s) || inventoryRow) {
         return false;
     }
     const QString value = match.captured(2);
     for (auto it = number.globalMatch(value); it.hasNext();) {
-        if (ownNumber(value, it.next())) {
+        if (ownNumber(value, it.next(), inventory)) {
             return true;
         }
     }
@@ -162,6 +170,7 @@ QStringList ownSizes(const QString &path)
         return {u"cannot open"_s};
     }
 
+    const bool inventory = path.contains(u"/inventory/"_s);
     QStringList found;
     int number = 0;
     while (!file.atEnd()) {
@@ -169,20 +178,11 @@ QStringList ownSizes(const QString &path)
         ++number;
         QString code = line.section(u"//"_s, 0, 0);
         code.replace(strings, u"\"\""_s);
-        if (scaled.match(code).hasMatch() || assignsOwnNumber(code)) {
+        if (scaled.match(code).hasMatch() || assignsOwnNumber(code, inventory)) {
             found.append(u"%1:%2: %3"_s.arg(QFileInfo(path).fileName()).arg(number).arg(line.trimmed()));
         }
     }
     return found;
-}
-
-// The shared parts of the workbench screens (decision E-884), the first inventory parts on the named
-// steps (the screens themselves name rows of the inventory model).
-bool isWorkbench(const QString &path)
-{
-    static const QStringList files = {u"/EnchantingOffer.qml"_s, u"/LevelBadge.qml"_s, u"/MachineSlotRow.qml"_s,
-                                      u"/ParchmentField.qml"_s,  u"/PixelArt.qml"_s,   u"/WorkbenchTitle.qml"_s};
-    return std::ranges::any_of(files, [&path](const QString &name) { return path.endsWith(name); });
 }
 
 } // namespace
@@ -424,42 +424,47 @@ private slots:
 
     // The shared controls, the settings, the main menu with its pages and screens (world list, new
     // world, multiplayer, LAN, mods), the pause menu, the death, disconnect and message screens
-    // (stage 76.2-d), the sign's editor, the character screen, the handbook's screen with its list
-    // and "Manage server" (decision E-863) take every gap, margin, size, radius and font size from
-    // the named steps of Ui (decisions E-845, E-852), so they change in one place. Ui.qml itself
-    // holds the values. Still open (stage 76.2): the handbook's page, recipes and links, the
-    // inventories and the rest of the HUD.
+    // (stage 76.2-d), the sign's editor, the character screen, the inventories and machines (stage
+    // 76.2-e), the handbook (stage 76.2-f) and "Manage server" (decision E-863) take every gap,
+    // margin, size, radius and font size from the named steps of Ui (decisions E-845, E-852), so
+    // they change in one place. Ui.qml itself holds the values. Still open: the rest of the HUD.
     void menusUseOnlyTheSizeSteps()
     {
-        static const QStringList stillOpen = {u"/HandbookPage.qml"_s, u"/HandbookRecipe.qml"_s, u"/HandbookLink.qml"_s};
         QStringList problems;
         int checked = 0;
         const QStringList files = qmlFiles();
         for (const QString &path : files) {
             const bool folder = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.contains(u"/menus/"_s)
-                                || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s)
-                                || path.contains(u"/admin/"_s) || path.endsWith(u"/hud/SignEditor.qml"_s) || isWorkbench(path);
-            const bool covered = folder &&std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
+                                || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s) || path.contains(u"/inventory/"_s)
+                                || path.contains(u"/admin/"_s) || path.endsWith(u"/hud/SignEditor.qml"_s);
             // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
             // (ItemSlot.px), in the HUD and on the screens alike.
-            if (!covered || path.endsWith(u"/Ui.qml"_s) || path.endsWith(u"/ItemSlot.qml"_s)) {
+            if (!folder || path.endsWith(u"/Ui.qml"_s) || path.endsWith(u"/ItemSlot.qml"_s)) {
                 continue;
             }
             ++checked;
             problems += ownSizes(path);
         }
-        QVERIFY(checked >= 54);
+        QVERIFY(checked >= 70);
         QVERIFY2(problems.isEmpty(), qPrintable(u"use a step of Ui (Ui.space, Ui.size, Ui.screen, Ui.type, Ui.radius):\n"_s + problems.join(u'\n')));
 
-        // The check finds what it looks for.
-        QTemporaryFile probe;
-        QVERIFY(probe.open());
-        probe.write("    spacing: Ui.px(10)\n    radius: 3\n    padding: 0\n    font.pixelSize: Ui.type.body\n"
-                    "    width: parent.width - 2 * Ui.space.l\n    sourceSize: Qt.size(96, 48)\n"
-                    "    property real gap: 10\n    x: parent.width - 12\n    stepSize: 5\n"
-                    "    implicitWidth: slot.hudPx(52)\n    text: \"12 chunks\"\n    keepAliveMs: 60000\n");
-        probe.close();
-        QCOMPARE(ownSizes(probe.fileName()).size(), 6);
+        // The check finds what it looks for; the inventory's rows, slots and compared counts pass
+        // only in the slot screens.
+        static constexpr QByteArrayView probeLines =
+            "    spacing: Ui.px(10)\n    radius: 3\n    padding: 0\n    font.pixelSize: Ui.type.body\n"
+            "    width: parent.width - 2 * Ui.space.l\n    sourceSize: Qt.size(96, 48)\n"
+            "    property real gap: 10\n    x: parent.width - 12\n    stepSize: 5\n"
+            "    implicitWidth: slot.hudPx(52)\n    text: \"12 chunks\"\n    keepAliveMs: 60000\n"
+            "    fooRow: 48\n    y: slot < 9 ? Ui.space.m : 0\n";
+        QTemporaryDir probes;
+        QVERIFY(probes.isValid() && QDir(probes.path()).mkpath(u"menus"_s) && QDir(probes.path()).mkpath(u"inventory"_s));
+        for (const QString &folder : {u"menus"_s, u"inventory"_s}) {
+            QFile probe(probes.filePath(folder + u"/Probe.qml"_s));
+            QVERIFY(probe.open(QIODevice::WriteOnly));
+            probe.write(probeLines.data(), probeLines.size());
+        }
+        QCOMPARE(ownSizes(probes.filePath(u"menus/Probe.qml"_s)).size(), 8);
+        QCOMPARE(ownSizes(probes.filePath(u"inventory/Probe.qml"_s)).size(), 6);
     }
 };
 

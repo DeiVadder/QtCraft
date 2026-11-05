@@ -4,6 +4,7 @@
 #include "worldgen/generators/QcBiomeMap.h"
 
 #include "common/core/QcIntMath.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/towers/QcCoastalTowerGenerator.h"
@@ -16,15 +17,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The regions of edge `spacing` blocks that a map's area reaches into.
-struct Regions
-{
-    int x0 = 0;
-    int z0 = 0;
-    int x1 = 0;
-    int z1 = 0;
-};
-
-Regions regionsOver(QcBiomeMap::Area area, int spacing)
+QcXzRect regionsOver(QcBiomeMap::Area area, int spacing)
 {
     return {qcFloorDiv(area.centreX - area.radius, spacing), qcFloorDiv(area.centreZ - area.radius, spacing),
             qcFloorDiv(area.centreX + area.radius - 1, spacing), qcFloorDiv(area.centreZ + area.radius - 1, spacing)};
@@ -42,9 +35,9 @@ template<typename PlaceOf>
                                                                     const PlaceOf &placeOf)
 {
     QList<QcBiomeMap::Site> sites;
-    const Regions regions = regionsOver(area, spacing);
-    for (int rz = regions.z0; rz <= regions.z1; ++rz) {
-        for (int rx = regions.x0; rx <= regions.x1; ++rx) {
+    const QcXzRect regions = regionsOver(area, spacing);
+    for (int rz = regions.minZ; rz <= regions.maxZ; ++rz) {
+        for (int rx = regions.minX; rx <= regions.maxX; ++rx) {
             if (cancelled && cancelled()) {
                 return std::nullopt;
             }
@@ -121,14 +114,14 @@ std::optional<QList<QcBiomeMap::Site>> QcBiomeMap::sites(const QcTerrainGenerato
     }
 
     const QcSurfaceStructures &surface = generator.surfaceStructures();
-    for (qsizetype kind = 0; kind < surface.planner().kinds().size(); ++kind) {
+    for (const QcSurfacePlanner::KindId kind : surface.planner().kinds().ids()) {
         const QcSurfacePlanner::Kind &type = surface.planner().kinds().at(kind);
         const std::optional<QList<Site>> found = sitesInRegions(area, type.rule.spacing, cancelled, [&](int rx, int rz) -> std::optional<Site> {
-            const std::shared_ptr<const QcStructurePlacement> plan = surface.planOf(static_cast<int>(kind), rx, rz);
+            const std::shared_ptr<const QcStructurePlacement> plan = surface.planOf(kind, rx, rz);
             if (!plan) {
                 return std::nullopt;
             }
-            const QcSurfacePlanner::Rect footprint = QcSurfacePlanner::footprintOf(*plan);
+            const QcXzRect footprint = QcSurfacePlanner::footprintOf(*plan);
             return Site{Site::Kind::Structure, footprint.middleX(), footprint.middleZ(), type.name};
         });
         if (!found) {

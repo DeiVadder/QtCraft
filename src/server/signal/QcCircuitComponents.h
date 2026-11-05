@@ -14,31 +14,41 @@
 
 struct QcSignalDefinition;
 
-// How each kind of component reacts (decision E-336), as decisions on the world before a step. A
-// component reacts when a block changes next to it (or next to what powers it) and again when its
-// scheduled tick comes:
-// - a Signal Torch goes out or lights 2 ticks after its block's power changed; going out 8 times
-//   within 60 ticks burns it out for 160 ticks (it fizzles);
-// - a Signal Repeater switches after 2 ticks per delay step and always gives a pulse of at least its
-//   delay; a powered repeater pointing at its side locks it;
-// - a Signal Lamp lights at once and goes dark `offDelayTicks` after losing power;
-// - an opener follows rising and falling power, so players can still use it in between;
-// - a piston extends or retracts at once (BUD: with quasi-connectivity it is also powered through
-//   the block above it, but only finds out when something next to it changes);
-// - buttons spring back after `pulseTicks`, plates when nothing stands on them any more;
-// - a Signal Comparator recomputes its output 2 ticks after its inputs changed: the back input (or
-//   the reading of a container or readable block behind it, also through one conductor) compared
-//   with or reduced by the strongest side input (decision E-343);
-// - a Signal Observer turns on 2 ticks after the block in front of it changed and off 2 ticks later;
-// - a Signal Hopper is locked while it gets any power;
-// - a Signal Dispenser or dropper notes rising power (also quasi-connectivity, like a piston) and
-//   ejects an item 4 ticks later (decision E-345);
-// - a rail slot (powered and activator rails) is powered at once while it or a rail of the same block
-//   within its reach along the line gets power; a change at one rail decides all rails within reach
-//   of it (decision E-384).
+/*! \brief How each kind of component reacts (decision E-336), as decisions on the world before a
+    step.
+
+    A component reacts when a block changes next to it (or next to what powers it) and again when
+    its scheduled tick comes:
+
+    \list
+    \li a Signal Torch goes out or lights 2 ticks after its block's power changed; going out 8 times
+        within 60 ticks burns it out for 160 ticks (it fizzles);
+    \li a Signal Repeater switches after 2 ticks per delay step and always gives a pulse of at least
+        its delay; a powered repeater pointing at its side locks it;
+    \li a Signal Lamp lights at once and goes dark \c {offDelayTicks} after losing power;
+    \li an opener follows rising and falling power, so players can still use it in between;
+    \li a piston extends or retracts at once (BUD: with quasi-connectivity it is also powered
+        through the block above it, but only finds out when something next to it changes);
+    \li buttons spring back after \c {pulseTicks}, plates when nothing stands on them any more;
+    \li a Signal Comparator recomputes its output 2 ticks after its inputs changed: the back input
+        (or the reading of a container or readable block behind it, also through one conductor)
+        compared with or reduced by the strongest side input (decision E-343);
+    \li a Signal Observer turns on 2 ticks after the block in front of it changed and off 2 ticks
+        later;
+    \li a Signal Hopper is locked while it gets any power;
+    \li a Signal Dispenser or dropper notes rising power (also quasi-connectivity, like a piston)
+        and ejects an item 4 ticks later (decision E-345);
+    \li a rail slot (powered and activator rails) is powered at once while it or a rail of the same
+        block within its reach along the line gets power; a change at one rail decides all rails
+        within reach of it (decision E-384).
+    \endlist */
 class QcCircuitComponents
 {
 public:
+    /*! The timings of the components in ticks, as listed above: torch delay, burnout after
+        \c {burnoutToggles} times going out within \c {burnoutWindowTicks} for
+        \c {burnoutTicks}, a repeater's step, the check of a plate, the comparator's delay, the
+        observer's pulse and the dispenser's delay. \qcshared */
     static constexpr int torchDelayTicks = 2;
     static constexpr int burnoutToggles = 8;
     static constexpr int burnoutWindowTicks = 60;
@@ -49,8 +59,8 @@ public:
     static constexpr int observerPulseTicks = 2;
     static constexpr int dispenserDelayTicks = 4;
 
-    // Plates something lies on in this tick, those a player or creature stands on and those a
-    // minecart stands on; tripwire something touches (decision E-782).
+    /*! \brief Plates something lies on in this tick, those a player or creature stands on and
+        those a minecart stands on; tripwire something touches (decision E-782). \qcfields */
     struct Plates
     {
         QSet<QcBlockPos> anything;
@@ -58,48 +68,55 @@ public:
         QSet<QcBlockPos> carts;
         QSet<QcBlockPos> wires;
 
-        // The plates of this tick that a plate with `signal` counts as pressed
-        // (QcSignalDefinition::detectsItems, detectsCarts).
+        /*! Returns the plates of this tick that a plate with \a signal counts as pressed
+            (QcSignalDefinition::detectsItems, detectsCarts). */
         const QSet<QcBlockPos> &pressing(const QcSignalDefinition &signal) const;
+        /*! Forgets every plate and wire. */
         void clear();
     };
 
+    /*! \brief What the components decide on: the world before the step and what the tick
+        knows. */
     struct Context
     {
-        // A view of the world and the signal table, copied.
+        /*! A view of the world and the signal table, copied. */
         QcSignalPower power;
-        // What components remember at their position and their scheduled ticks.
+        /*! What components remember at their position and their scheduled ticks. */
         QcBlockEntities &entities;
+        /*! The current tick. */
         quint64 now = 0;
-        // The world's game rule; each piston can also refuse it in data.
+        /*! The world's game rule; each piston can also refuse it in data. */
         bool quasiConnectivity = true;
-        // Pistons that already extended (bit 1) or retracted (bit 2) in this tick.
+        /*! Pistons that already extended (bit 1) or retracted (bit 2) in this tick. */
         const QHash<QcBlockPos, quint8> &pistonActs;
+        /*! What lies on plates and touches tripwire in this tick. */
         const Plates &plates;
-        // What comparators read from containers and readable blocks.
+        /*! What comparators read from containers and readable blocks. */
         const QcComparatorReadings &readings;
-        // The tracks of rails (the lines of powered and activator rails).
+        /*! The tracks of rails (the lines of powered and activator rails). */
         const QcRails::Table &rails;
     };
 
+    /*! The bits of Context::pistonActs. \qcshared */
     static constexpr quint8 extendedThisTick = 1;
     static constexpr quint8 retractedThisTick = 2;
 
     explicit QcCircuitComponents(const Context &context);
 
-    // A block changed near the component at `pos`.
+    /*! A block changed near the component at \a pos: its decisions go into \a plan. */
     void react(QcBlockPos pos, QcCircuitPlan &plan);
-    // The scheduled tick of the component at `pos` came.
+    /*! The scheduled tick of the component at \a pos came: its decisions go into \a plan. */
     void scheduled(QcBlockPos pos, QcCircuitPlan &plan);
-    // Whether the piston at `pos` is powered now.
+    /*! Returns whether the piston at \a pos in \a state is powered now. */
     bool pistonPowered(QcBlockPos pos, QcSignalState state) const;
-    // Powered through any face but those in `ignoredFaces`, or (with quasi-connectivity, the world's
-    // rule and the block's) through what would power the block above it.
+    /*! Returns whether the block at \a pos is powered through any face but those in
+        \a ignoredFaces, or (with quasi-connectivity, the world's rule and the block's) through what
+        would power the block above it. */
     bool poweredOrQuasi(QcBlockPos pos, quint8 ignoredFaces) const;
-    // An observer at `pos` saw the block in front of it change.
+    /*! An observer at \a pos saw the block in front of it change: its pulse goes into \a plan. */
     void observed(QcBlockPos pos, QcCircuitPlan &plan) const;
-    // The block `before` at `pos` became `after`: a tripwire hook or wire that is gone tells its
-    // lines (decision E-782).
+    /*! The block \a before at \a pos became \a after: a tripwire hook or wire that is gone tells
+        its lines in \a plan (decision E-782). */
     void replaced(QcBlockPos pos, QcBlockId before, QcBlockId after, QcCircuitPlan &plan) const;
 
 private:

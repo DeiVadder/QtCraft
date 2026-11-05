@@ -115,10 +115,33 @@ Link QcHandbookLinks::itemLink(const QString &item, const QString &note) const
     return {itemEntryId(item), itemTitle(item, m_text.language()), icon, note};
 }
 
+QString QcHandbookLinks::itemOrMobIcon(const QString &name) const
+{
+    if (m_content.itemId(name)) {
+        return name;
+    }
+    return m_content.mobKind(name) ? mobIcon(name) : QString();
+}
+
+QString QcHandbookLinks::biomeIcon(const QcBiomeDefinition &biome) const
+{
+    const QString icon = itemIcon(biome.icon);
+    return icon.isEmpty() ? itemIcon(biome.surfaceBlock) : icon;
+}
+
+QString QcHandbookLinks::featureIcon(const QcFeatureDefinition &feature) const
+{
+    const QString icon = itemIcon(feature.icon);
+    return icon.isEmpty() ? itemLink(feature.trunkBlock).icon : icon;
+}
+
 Link QcHandbookLinks::tagLink(const QString &tag) const
 {
     const QStringList members = m_tagMembers.value(tag);
-    return {u"tag:"_s + tag, tagTitle(tag, m_text.language()), members.isEmpty() ? QString() : itemIcon(members.first()), {}};
+    // The plainest member stands for the group: the shortest name ("bed", "oak_log", "red_wool"),
+    // the first in content order of equally short ones.
+    const auto plainest = std::ranges::min_element(members, {}, [](const QString &member) { return localPart(member).size(); });
+    return {u"tag:"_s + tag, tagTitle(tag, m_text.language()), plainest == members.end() ? QString() : itemIcon(*plainest), {}};
 }
 
 Link QcHandbookLinks::ingredientLink(const QString &ingredient) const
@@ -128,17 +151,17 @@ Link QcHandbookLinks::ingredientLink(const QString &ingredient) const
 
 Link QcHandbookLinks::mobLink(const QcMobDefinition &mob, const QString &note) const
 {
-    return {u"mob:"_s + mob.name, m_content.translations().translate(mob.translationKey, m_text.language()), {}, note};
+    return {u"mob:"_s + mob.name, m_content.translations().translate(mob.translationKey, m_text.language()), mobIcon(mob.name), note};
 }
 
 Link QcHandbookLinks::biomeLink(const QcBiomeDefinition &biome, const QString &note) const
 {
-    return {u"biome:"_s + biome.name, m_content.translations().translate(biome.translationKey, m_text.language()), itemIcon(biome.surfaceBlock), note};
+    return {u"biome:"_s + biome.name, m_content.translations().translate(biome.translationKey, m_text.language()), biomeIcon(biome), note};
 }
 
 Link QcHandbookLinks::featureLink(const QcFeatureDefinition &feature, const QString &note) const
 {
-    return {u"feature:"_s + feature.name, featureTitle(feature, m_text.language()), itemIcon(feature.trunkBlock), note};
+    return {u"feature:"_s + feature.name, featureTitle(feature, m_text.language()), featureIcon(feature), note};
 }
 
 Link QcHandbookLinks::oreLink(const QcOreDefinition &ore, const QString &note) const

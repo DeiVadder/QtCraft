@@ -1,5 +1,6 @@
 {
     "name": "forest_steppe",
+    "icon": "dead_bush",
     "mapColour": "#cfa95a",
     "temperature": 0.71,
     "humidity": 0.3,

@@ -12,9 +12,10 @@
 class QcThreadCpuClock
 {
 public:
-    /*! Nanoseconds of CPU time of the calling thread, or -1 where the platform does not provide
-        it. POSIX: CLOCK_THREAD_CPUTIME_ID; Windows: GetThreadTimes (kernel plus user time),
-        which advances in scheduler ticks of about 15.6 ms and so suits only long measurements. */
+    /*! Returns the nanoseconds of CPU time of the calling thread, or -1 where the platform does
+        not provide it. POSIX: CLOCK_THREAD_CPUTIME_ID; Windows: GetThreadTimes (kernel plus user
+        time), which advances in scheduler ticks of about 15.6 ms and so suits only long
+        measurements. */
     static qint64 nowNs();
 
     /*! Returns whether nowNs() resolves far below a frame (true on POSIX). Per-frame
@@ -29,7 +30,7 @@ public:
 #endif
     }
 
-    /*! nowNs() where fineGrained(), otherwise -1: the reading for per-frame measurements.
+    /*! Returns nowNs() where fineGrained(), otherwise -1: the reading for per-frame measurements.
         Defined out of line so callers do not test a value the compiler already knows (MSVC
         C4127). */
     static qint64 frameNowNs();

@@ -193,7 +193,7 @@ private slots:
     {
         m_origin = QcServer::ClientOrigin::Local;
         join();
-        const std::optional<int> zombie = m_content->mobIndex(u"qtcraft:zombie"_s);
+        const std::optional<QcCreatureKindId> zombie = m_content->mobKind(u"qtcraft:zombie"_s);
         QVERIFY(zombie.has_value());
         const QcVec3 player = m_client->motion.position;
         const quint32 chaser = m_server->mobs().spawn(*zombie, player + QcVec3{4.0, 0.0, 0.0}, 900001);
@@ -260,7 +260,7 @@ private slots:
         // Only operators see the server's counts and whom creatures chase (widened in stage 24).
         m_origin = QcServer::ClientOrigin::Remote;
         join(notOperator());
-        const std::optional<int> zombie = m_content->mobIndex(u"qtcraft:zombie"_s);
+        const std::optional<QcCreatureKindId> zombie = m_content->mobKind(u"qtcraft:zombie"_s);
         QVERIFY(zombie.has_value());
         m_server->mobs().spawn(*zombie, m_client->motion.position + QcVec3{4.0, 0.0, 0.0}, 900001);
 

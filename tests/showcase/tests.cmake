@@ -9,4 +9,5 @@ qc_add_test(test_showcase SOURCES showcase/test_showcase.cpp LIBRARIES qc_base_c
 qc_add_test(test_showcase_stations SOURCES showcase/test_showcase_stations.cpp showcase/QcShowcaseTestUtil.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_showcase_world SOURCES showcase/test_showcase_world.cpp showcase/QcShowcaseTestUtil.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 300)
 qc_add_test(test_signal_showcase SOURCES showcase/test_signal_showcase.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 240)
+qc_add_test(test_showcase_clock SOURCES showcase/test_showcase_clock.cpp showcase/QcShowcaseTestUtil.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_showcase_griefing SOURCES showcase/test_showcase_griefing.cpp LIBRARIES qc_server TIMEOUT 300)

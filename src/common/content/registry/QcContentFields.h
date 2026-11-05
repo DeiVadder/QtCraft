@@ -39,8 +39,10 @@ QString qualifyIngredient(const QString &text, const QString &packNamespace);
 /*! Returns the tags in \a value (an array of at most 16 names, qualified with \a packNamespace;
     missing: empty). Anything else fails \a reader and gives an empty list. */
 QStringList parseTags(const QJsonValue &value, const QString &packNamespace, QcJsonFieldReader &reader);
+/*! The most names parseNames() accepts. */
+inline constexpr qsizetype maxNames = 64;
 /*! Returns the array of content names at \a key of the object of \a reader, qualified with
-    \a packNamespace (at most 64; missing: empty). Anything else fails \a reader and gives an
+    \a packNamespace (at most maxNames; missing: empty). Anything else fails \a reader and gives an
     empty list. */
 QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonFieldReader &reader);
 /*! Returns the state value in \a value: strings as they are, booleans as "true"/"false"; none for

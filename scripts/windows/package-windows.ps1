@@ -95,9 +95,9 @@ if ($Ci) {
     if (-not $PSBoundParameters.ContainsKey("Server") -or -not $Server) { $Server = "(die Adresse, die die Spielleitung nennt / the address your host names)" }
 }
 if (-not $Ci -and -not $QtDir) {
-    # Default: the newest Qt 6.8 kit for MSVC x64 below C:\Qt (any Qt 6.8 release works).
+    # Default: the newest Qt 6.12 (else 6.8) kit for MSVC x64 below C:\Qt.
     $QtDir = "C:\Qt\6.8\msvc2022_64"
-    $kit = Get-ChildItem -Directory -ErrorAction SilentlyContinue "C:\Qt" | Where-Object { $_.Name -match '^6\.8\.\d+$' } |
+    $kit = Get-ChildItem -Directory -ErrorAction SilentlyContinue "C:\Qt" | Where-Object { $_.Name -match '^6\.(8|12)\.\d+$' } |
         Sort-Object { [version]$_.Name } | Select-Object -Last 1
     if ($kit) { $QtDir = Join-Path $kit.FullName "msvc2022_64" }
 }
@@ -146,11 +146,19 @@ function Test-RuntimeDll([string]$name) {
 }
 
 # A DLL in System32 counts only if it is part of Windows (product name with "Windows", also when
-# localized: "Betriebssystem Microsoft(R) Windows(R)") and not a VC++ runtime DLL.
+# localized: "Betriebssystem Microsoft(R) Windows(R)", or Windows' ICU signed by Microsoft, see
+# below) and not a VC++ runtime DLL.
+# Windows' own ICU (icu.dll, icuuc.dll, icuin.dll; Qt 6.12's Qt6Core imports icuuc.dll) carries the
+# product name "International Components for Unicode", so it counts by its Microsoft signature.
 function Test-WindowsComponent([string]$path) {
     if (Test-RuntimeDll (Split-Path -Leaf $path)) { return $false }
     $product = (Get-Item $path).VersionInfo.ProductName
-    return ("$product" -match 'Windows')
+    if ("$product" -match 'Windows') { return $true }
+    if ((Split-Path -Leaf $path) -match '^icu(uc|in)?\.dll$') {
+        $signature = Get-AuthenticodeSignature $path
+        return ($signature.Status -eq 'Valid') -and ("$($signature.SignerCertificate.Subject)" -match '(^|, )O=Microsoft Corporation(,|$)')
+    }
+    return $false
 }
 
 # Imports the environment of vcvarsall (cross compiler ARM64 host -> x64 target) into this process.
@@ -551,6 +559,10 @@ $ffmpegUrlTag = "<tag>"
 if ($qtVersion -eq "6.8.3") {
     $ffmpegTag = "FFmpeg n7.1 (named in $ffmpegScript)"
     $ffmpegUrlTag = "n7.1"
+}
+if ($qtVersion -eq "6.12.0") {
+    $ffmpegTag = "FFmpeg n9.0.1 (named in $ffmpegScript)"
+    $ffmpegUrlTag = "n9.0.1"
 }
 if ($ffmpeg.Count -gt 0) {
     Copy-Required (Join-Path $Source "licenses-third-party\LGPL-2.1-or-later.txt") (Join-Path $licenses "FFmpeg-LGPL-2.1.txt")

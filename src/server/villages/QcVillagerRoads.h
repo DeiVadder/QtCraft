@@ -15,30 +15,35 @@
 
 struct QcVillagePlan;
 
-// Long walks through a village (decision E-411): a path search covers only 64 x 64 cells around the
-// walker (QcPathWindow, decision E-400), so a villager whose goal lies farther first walks to the
-// cell of the village's roads that brings it closest to the goal along the roads, and from there on
-// (legs). The roads are a coarse graph: the cells above the road, branch road and doorstep cells and
-// the boardwalks and jetties of the plan (QcVillagePlan), each joined to its eight neighbours at
-// most one block higher or lower; the distance along them comes from a breadth-first search from
-// the road cell nearest the goal. The graphs of the villages last used are kept.
+/*! \brief Long walks through a village (decision E-411): a path search covers only 64 x 64 cells
+    around the walker (QcPathWindow, decision E-400), so a villager whose goal lies farther first
+    walks to the cell of the village's roads that brings it closest to the goal along the roads, and
+    from there on (legs).
+
+    The roads are a coarse graph: the cells above the road, branch road and doorstep cells and
+    the boardwalks and jetties of the plan (QcVillagePlan), each joined to its eight neighbours
+    at most one block higher or lower; the distance along them comes from a breadth-first search
+    from the road cell nearest the goal. The graphs of the villages last used are kept. */
 class QcVillagerRoads
 {
 public:
-    // Goals within this many cells (on both horizontal axes) are walked to directly.
+    /*! Goals within this many cells (on both horizontal axes) are walked to directly. */
     static constexpr int legReach = 24;
-    // Road cells farther than this above or below the walker are no leg.
+    /*! Road cells farther than this above or below the walker are no leg. */
     static constexpr int legHeight = 12;
+    /*! Road graphs of villages kept at most; the least recently used goes. */
     static constexpr int maxGraphs = 32;
 
-    // The next leg from `from` towards `to` in the village of `plan`: the stand cell on its roads to
-    // walk to first. None when `to` lies within legReach or the roads bring the walker no closer.
+    /*! Returns the next leg from \a from towards \a to in the village of \a plan: the stand cell
+        on its roads to walk to first. None when \a to lies within legReach or the roads bring
+        the walker no closer. */
     std::optional<QcBlockPos> nextLeg(const QcVillagePlan &plan, QcBlockPos from, QcBlockPos to);
-    // The way out of the water for a villager at `from` that found no path from there (fallen off
-    // a boardwalk, under its own house): the nearest road cell on land (not a boardwalk or jetty)
-    // within legHeight above or below. None without one.
+    /*! Returns the way out of the water in the village of \a plan for a villager at \a from that
+        found no path from there (fallen off a boardwalk, under its own house): the nearest road
+        cell on land (not a boardwalk or jetty) within legHeight above or below. None without one.
+    */
     std::optional<QcBlockPos> wayOutOfWater(const QcVillagePlan &plan, QcBlockPos from);
-    // Legs planned since the start (tests, measurements).
+    /*! Returns the legs planned since the start (tests, measurements). */
     qint64 planned() const { return m_planned; }
 
 private:

@@ -1,5 +1,6 @@
 {
     "name": "taiga",
+    "icon": "spruce_log",
     "mapColour": "#2c5a62",
     "deltaBiome": "frozen_delta",
     "temperature": 0.15,

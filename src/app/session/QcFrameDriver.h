@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "clientcore/camera/QcEyeHeight.h"
 #include "common/core/QcVec3.h"
 #include "common/diagnostics/QcIntervalStats.h"
 
@@ -77,6 +78,8 @@ private:
     QElapsedTimer m_frameClock;
     // The player's feet as drawn in the latest frame (interpolated between ticks).
     QcVec3 m_drawnFeet;
+    // The camera's height above the feet, lower while crouching (decision E-961).
+    QcEyeHeight m_eyeHeight;
     std::unique_ptr<QcStatsLog> m_statsLog;
     std::unique_ptr<QcHealthLog> m_healthLog;
     // Frame intervals since the previous health line.

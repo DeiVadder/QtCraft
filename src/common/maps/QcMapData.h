@@ -66,7 +66,7 @@ public:
     /*! Writes \a values (row by row) into \a area. Returns false, with no change, when they do not
         fit. */
     bool setPixels(QRect area, const QList<quint16> &values);
-    /*! How many pixels show something. */
+    /*! Returns how many pixels show something. */
     int revealedCount() const;
 
     /*! Returns the rectangle of all pixels. */

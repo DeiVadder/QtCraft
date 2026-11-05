@@ -198,10 +198,10 @@ bool QcWorldCommands::isKnownSelector(const QString &what) const
     if (what.startsWith(u"item:"_s)) {
         return m_state.content().itemId(QcCommandArguments::qualified(what.mid(5))).has_value();
     }
-    return kinds.contains(what) || m_state.content().mobIndex(QcCommandArguments::qualified(what)).has_value();
+    return kinds.contains(what) || m_state.content().mobKind(QcCommandArguments::qualified(what)).has_value();
 }
 
-bool QcWorldCommands::matchesMob(const QString &what, int type) const
+bool QcWorldCommands::matchesMob(const QString &what, QcCreatureKindId type) const
 {
     const QcMobDefinition &mob = m_state.content().mobs()[type];
     if (what == u"mobs"_s || what == u"all"_s) {
@@ -211,7 +211,7 @@ bool QcWorldCommands::matchesMob(const QString &what, int type) const
         const bool animal = !mob.hostile && !mob.ambient;
         return (what == u"hostile"_s && mob.hostile) || (what == u"animals"_s && animal) || (what == u"ambient"_s && mob.ambient);
     }
-    return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content().mobIndex(QcCommandArguments::qualified(what)) == type;
+    return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content().mobKind(QcCommandArguments::qualified(what)) == type;
 }
 
 bool QcWorldCommands::matchesItem(const QString &what, const QcItemStack &stack) const

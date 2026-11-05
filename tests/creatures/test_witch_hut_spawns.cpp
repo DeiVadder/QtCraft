@@ -65,7 +65,7 @@ private:
 // A creature as it appeared: its kind and its feet.
 struct Appearance
 {
-    int type = 0;
+    QcCreatureKindId type;
     QcVec3 feet;
 };
 
@@ -110,7 +110,7 @@ private:
         return *id;
     }
 
-    int type(const QString &name) const { return m_content->mobIndex(u"qtcraft:"_s + name).value_or(0); }
+    QcCreatureKindId type(const QString &name) const { return m_content->mobKind(u"qtcraft:"_s + name).value_or(QcCreatureKindId{}); }
 
     // Content in which only zombies spawn by themselves outside spawn areas.
     std::shared_ptr<QcContentRegistry> onlyZombies() const
@@ -464,7 +464,7 @@ private slots:
         auto world = makeWorld(content, 0, {witchArea({0, 0, 0}, {3, 0, 3})});
         areas.refresh(*world, {playerAt(*world, 0, 0)});
         QCOMPARE(areas.areas().size(), qsizetype{1});
-        QCOMPARE(areas.areas().front().types, QList<int>{type(u"witch"_s)});
+        QCOMPARE(areas.areas().front().types, QList<QcCreatureKindId>{type(u"witch"_s)});
         QVERIFY(areas.at(3, 3) && !areas.at(4, 3));
     }
 
@@ -475,7 +475,7 @@ private slots:
         int huts = 0;
         for (const qint64 seed : {qint64{513}, qint64{7}, qint64{20261017}, QcTestUtil::randomSeed()}) {
             const QcTerrainGenerator terrain(m_content, seed);
-            const std::optional<int> kind = terrain.surfaceStructures().planner().kindIndex(u"qtcraft:witch_hut"_s);
+            const std::optional<QcSurfacePlanner::KindId> kind = terrain.surfaceStructures().planner().kindIndex(u"qtcraft:witch_hut"_s);
             QVERIFY(kind);
             for (int rz = -4; rz <= 4; ++rz) {
                 for (int rx = -4; rx <= 4; ++rx) {

@@ -72,7 +72,7 @@ machine_load() {
 
 # Succeeds when load $1 is below $2 times QUIET_LOAD.
 load_below() {
-    awk -v load="$1" -v limit="$QUIET_LOAD" -v factor="$2" 'BEGIN { exit !(load < limit * factor) }'
+    awk -v current="$1" -v limit="$QUIET_LOAD" -v factor="$2" 'BEGIN { exit !(current < limit * factor) }'
 }
 
 # Waits until the load average is below QUIET_LOAD, at most $1 seconds; says how it ended.

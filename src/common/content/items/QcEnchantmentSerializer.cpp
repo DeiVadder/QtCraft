@@ -5,21 +5,24 @@
 
 #include "common/content/items/QcEnchantmentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcItemStack.h"
 #include "common/protocol/QcStreamLimits.h"
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-// At most this many names in `items` or `conflicts`, as the parser allows.
-constexpr qsizetype maxNames = 64;
+// The longest item kind name (QcEnchantmentParser::isItemKind).
+constexpr qsizetype maxKindLength = 32;
 
 bool plausible(const QcEnchantmentDefinition &enchantment, quint8 effect)
 {
     const auto allKinds = [](const QStringList &kinds) { return std::ranges::all_of(kinds, QcEnchantmentParser::isItemKind); };
     return !enchantment.name.isEmpty() && effect <= static_cast<quint8>(QcEnchantmentEffect::FeatherFalling) && enchantment.maxLevel >= 1
            && enchantment.maxLevel <= QcEnchantmentDefinition::maxLevelLimit && enchantment.weight >= 1 && enchantment.weight <= 1000
-           && enchantment.items.size() <= maxNames && enchantment.conflicts.size() <= maxNames && allKinds(enchantment.items)
+           && !enchantment.items.isEmpty() && allKinds(enchantment.items)
            && enchantment.minPower >= 1 && enchantment.minPower <= 100 && enchantment.powerPerLevel >= 0 && enchantment.powerPerLevel <= 100
            && enchantment.powerSpread >= 0 && enchantment.powerSpread <= 100;
 }
@@ -52,8 +55,17 @@ QcStatus read(QDataStream &stream, QcContentRegistry &registry)
         qint32 minPower = 0;
         qint32 powerPerLevel = 0;
         qint32 powerSpread = 0;
-        stream >> enchantment.name >> enchantment.translationKey >> effect >> maxLevel >> weight >> enchantment.items
-            >> enchantment.conflicts >> minPower >> powerPerLevel >> powerSpread;
+        stream >> enchantment.name >> enchantment.translationKey >> effect >> maxLevel >> weight;
+        // Bounded reads: QDataStream's own QStringList operator reserves whatever count it reads.
+        const std::optional<QStringList> items = QcStreamLimits::readBoundedStrings(stream, QcEnchantmentDefinition::maxItemKinds, maxKindLength);
+        const std::optional<QStringList> conflicts =
+            items ? QcStreamLimits::readBoundedStrings(stream, QcEnchantmentDefinition::maxConflicts, QcItemData::maxEnchantmentName) : std::nullopt;
+        if (!conflicts) {
+            return qcError(u"Corrupt content: enchantment %1"_s.arg(i));
+        }
+        enchantment.items = *items;
+        enchantment.conflicts = *conflicts;
+        stream >> minPower >> powerPerLevel >> powerSpread;
         enchantment.effect = static_cast<QcEnchantmentEffect>(effect);
         enchantment.maxLevel = maxLevel;
         enchantment.weight = weight;

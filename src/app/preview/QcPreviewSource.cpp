@@ -3,11 +3,11 @@
 
 #include "app/preview/QcPreviewSource.h"
 
-#include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcTexturePackController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcCharacterSettings.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcGpuLimits.h"
 #include "clientcore/textures/QcTextureAtlas.h"

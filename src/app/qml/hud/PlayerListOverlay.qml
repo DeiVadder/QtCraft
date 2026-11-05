@@ -129,7 +129,9 @@ Item {
                             id: bars
 
                             readonly property int lit: playerRow.modelData.bars
-                            readonly property color litColor: lit >= 4 ? Theme.statusGood : lit >= 2 ? Theme.statusWarn : Theme.statusBad
+                            readonly property int signal: playerRow.modelData.signal
+                            readonly property color litColor: signal === PlayerList.Signal.Good ? Theme.statusGood
+                                                              : signal === PlayerList.Signal.Fair ? Theme.statusWarn : Theme.statusBad
 
                             Layout.alignment: Qt.AlignVCenter
                             spacing: Ui.hudPx(1)

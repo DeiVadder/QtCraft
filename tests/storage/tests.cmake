@@ -16,4 +16,5 @@ qc_add_test(test_entity_storage SOURCES storage/test_entity_storage.cpp LIBRARIE
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
 qc_add_test(test_entity_components SOURCES storage/test_entity_components.cpp LIBRARIES qc_server)
 qc_add_test(test_chunk_store SOURCES storage/test_chunk_store.cpp LIBRARIES qc_server)
+qc_add_test(test_generated_chunks SOURCES storage/test_generated_chunks.cpp LIBRARIES qc_server)
 qc_add_test(test_world_details SOURCES storage/test_world_details.cpp fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)

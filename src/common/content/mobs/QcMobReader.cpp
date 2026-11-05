@@ -19,7 +19,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The tint and the sitting offset of a model part (decision E-480): "tint" none or collar,
-// "sitOffset" three numbers within 1 m.
+// "sitOffset" three numbers within 1 m; "tentacle" (decision E-974).
 [[nodiscard]] std::optional<QcMobPart> partLook(QcMobPart part, const QJsonObject &json, QcJsonFieldReader &reader)
 {
     const QString tint = json.value(u"tint"_s).toString(u"none"_s);
@@ -36,6 +36,8 @@ namespace {
         }
         part.sitOffset = *offset;
     }
+    // A tentacle of a creature that swims in pulses (decision E-974).
+    part.tentacle = json.value(u"tentacle"_s).toBool(false);
     return part;
 }
 
@@ -54,10 +56,14 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     for (const auto &entry : list) {
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
-        const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
-                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0)};
+        const QcItemDrop drop{.item = dropReader.name(u"item"_s, packNamespace),
+                              .count = dropReader.integer(u"count"_s, 1, 1, 64),
+                              .chance = dropReader.number(u"chance"_s, 1.0, 0.0, 1.0),
+                              .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64)};
         if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
-            reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(dropReader);
+            reader.fail(u"drop needs an 'item'"_s);
             break;
         }
         result.append(drop);
@@ -357,6 +363,8 @@ QcResult<QcMobDefinition> QcMobReader::read()
     parseFighting();
     parseCreatureTraits();
     m_mob.burnsInDaylight = m_reader.boolean(u"burnsInDaylight"_s, false);
+    // Swimmers, divers and fish need no air unless the data says otherwise (decision E-955).
+    m_mob.breathesUnderWater = m_reader.boolean(u"breathesUnderWater"_s, m_mob.abilities.swims || m_mob.abilities.dives || m_mob.aquatic.has_value());
     parseHostileTraits();
     m_mob.heldItem = m_reader.name(u"heldItem"_s, m_namespace);
     m_mob.drops = parseDrops(m_json.value(u"drops"_s), m_namespace, m_reader);
@@ -473,7 +481,7 @@ void QcMobReader::parseExtraSpawns(const QJsonObject &spawn, QcJsonFieldReader &
 
         m_mob.extraSpawns.append(parseSpawnRule(entry.toObject(), ruleReader, m_mob.hostile, m_namespace));
         if (!ruleReader.ok()) {
-            spawnReader.fail(ruleReader.error);
+            spawnReader.adopt(ruleReader);
             break;
         }
     }

@@ -18,7 +18,7 @@ namespace QcPlayerKey {
 /*! The key file's name in the data root. */
 inline constexpr char fileName[] = "player.key";
 
-/*! <data root>/player.key (QcDataRoot). */
+/*! Returns <data root>/player.key (QcDataRoot). */
 QString defaultPath();
 /*! Returns the key read from \a path; when the file does not exist, makes a new key and writes
     it. A damaged file is an error (it is not replaced: the identity on every server hangs on

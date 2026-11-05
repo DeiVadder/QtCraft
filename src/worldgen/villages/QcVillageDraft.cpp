@@ -30,7 +30,7 @@ int QcVillageDraft::turnsFacing(int fx, int fz)
     return fz < 0 ? 2 : 3;
 }
 
-QcVillageDraft::Rect QcVillageDraft::brush(std::pair<int, int> cell, int dx, int dz, bool square)
+QcXzRect QcVillageDraft::brush(std::pair<int, int> cell, int dx, int dz, bool square)
 {
     const auto [x, z] = cell;
     if (square) {
@@ -55,16 +55,16 @@ double QcVillageDraft::cropRandom()
     return qcPositionRandom(seeds.crop, region.x, nextCrop++, region.z);
 }
 
-bool QcVillageDraft::insideRadius(Rect rect) const
+bool QcVillageDraft::insideRadius(QcXzRect rect) const
 {
     const int reach = region.radius;
-    return rect.x0 >= centreX - reach && rect.x1 <= centreX + reach && rect.z0 >= centreZ - reach && rect.z1 <= centreZ + reach;
+    return rect.minX >= centreX - reach && rect.maxX <= centreX + reach && rect.minZ >= centreZ - reach && rect.maxZ <= centreZ + reach;
 }
 
-bool QcVillageDraft::touchesRoad(Rect rect, int gap) const
+bool QcVillageDraft::touchesRoad(QcXzRect rect, int gap) const
 {
-    for (int z = rect.z0 - gap; z <= rect.z1 + gap; ++z) {
-        for (int x = rect.x0 - gap; x <= rect.x1 + gap; ++x) {
+    for (int z = rect.minZ - gap; z <= rect.maxZ + gap; ++z) {
+        for (int x = rect.minX - gap; x <= rect.maxX + gap; ++x) {
             if (roadCells.contains(cellKey(x, z))) {
                 return true;
             }
@@ -73,10 +73,10 @@ bool QcVillageDraft::touchesRoad(Rect rect, int gap) const
     return false;
 }
 
-void QcVillageDraft::markRoad(Rect rect)
+void QcVillageDraft::markRoad(QcXzRect rect)
 {
-    for (int z = rect.z0; z <= rect.z1; ++z) {
-        for (int x = rect.x0; x <= rect.x1; ++x) {
+    for (int z = rect.minZ; z <= rect.maxZ; ++z) {
+        for (int x = rect.minX; x <= rect.maxX; ++x) {
             roadCells.insert(cellKey(x, z));
         }
     }
@@ -86,7 +86,7 @@ void QcVillageDraft::markRoad(Rect rect)
 void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<RoadLevel> level)
 {
     const auto [x, z] = cell;
-    const bool underPiece = std::ranges::any_of(pieces, [&](Rect piece) { return piece.intersects({x, z, x, z}, 0); });
+    const bool underPiece = std::ranges::any_of(pieces, [&](QcXzRect piece) { return piece.intersects({x, z, x, z}, 0); });
     if (underPiece || roadCells.contains(cellKey(x, z))) {
         return;
     }
@@ -159,9 +159,9 @@ void QcVillageDraft::addRun(const Road &run, int arm)
 {
     const int endX = run.x + run.dx * (run.length - 1);
     const int endZ = run.z + run.dz * (run.length - 1);
-    const Rect first = brush({run.x, run.z}, run.dx, run.dz, true);
-    const Rect last = brush({endX, endZ}, run.dx, run.dz, true);
-    roads.append({std::min(first.x0, last.x0), std::min(first.z0, last.z0), std::max(first.x1, last.x1), std::max(first.z1, last.z1)});
+    const QcXzRect first = brush({run.x, run.z}, run.dx, run.dz, true);
+    const QcXzRect last = brush({endX, endZ}, run.dx, run.dz, true);
+    roads.append({std::min(first.minX, last.minX), std::min(first.minZ, last.minZ), std::max(first.maxX, last.maxX), std::max(first.maxZ, last.maxZ)});
     plan.runs.append({run.x, run.z, run.dx, run.dz, run.length, arm, run.branch});
     plan.roadLength += run.length;
 }
@@ -171,16 +171,16 @@ void QcVillageDraft::addStairs(const Stairs &laid)
     plan.decks.append(laid.flight);
     markRoad(laid.extent);
     stairs.append(laid.extent);
-    plan.wetland.dry.append({laid.dry.x0, laid.dry.z0, laid.dry.x1, laid.dry.z1});
+    plan.wetland.dry.append({laid.dry.minX, laid.dry.minZ, laid.dry.maxX, laid.dry.maxZ});
 }
 
-void QcVillageDraft::addJetty(const QList<QcVillagePlan::Deck> &decks, Rect deck)
+void QcVillageDraft::addJetty(const QList<QcVillagePlan::Deck> &decks, QcXzRect deck)
 {
     plan.decks.append(decks);
     markRoad(deck);
 }
 
-const QcStructurePlacement &QcVillageDraft::addPiece(QcStructurePlacement piece, Rect rect, const QList<QcVillageSpot> &spots,
+const QcStructurePlacement &QcVillageDraft::addPiece(QcStructurePlacement piece, QcXzRect rect, const QList<QcVillageSpot> &spots,
                                                      const QList<QcBlockPos> &crops)
 {
     plan.pieces.append(std::move(piece));
@@ -210,7 +210,7 @@ void QcVillageDraft::addThresholds(const QList<QcBlockPos> &steps)
     }
 }
 
-bool QcVillageDraft::nearPiece(Rect rect) const
+bool QcVillageDraft::nearPiece(QcXzRect rect) const
 {
     for (qsizetype i = 0; i < pieces.size(); ++i) {
         const int gap = i == 0 ? std::max(pieceGap, plan.centreBlend) : pieceGap;
@@ -238,17 +238,17 @@ void QcVillageDraft::coverArea()
 {
     plan.minX = plan.maxX = centreX;
     plan.minZ = plan.maxZ = centreZ;
-    QList<Rect> covered = pieces + roads;
+    QList<QcXzRect> covered = pieces + roads;
     // The centre's blended ground is the village's too: no tree grows on ground that moves.
     if (plan.centreBlend > 0 && !pieces.isEmpty()) {
-        const Rect centre = pieces.front();
-        covered.append({centre.x0 - plan.centreBlend, centre.z0 - plan.centreBlend, centre.x1 + plan.centreBlend, centre.z1 + plan.centreBlend});
+        const QcXzRect centre = pieces.front();
+        covered.append({centre.minX - plan.centreBlend, centre.minZ - plan.centreBlend, centre.maxX + plan.centreBlend, centre.maxZ + plan.centreBlend});
     }
-    for (const Rect rect : std::as_const(covered)) {
-        plan.minX = std::min(plan.minX, rect.x0);
-        plan.minZ = std::min(plan.minZ, rect.z0);
-        plan.maxX = std::max(plan.maxX, rect.x1);
-        plan.maxZ = std::max(plan.maxZ, rect.z1);
+    for (const QcXzRect rect : std::as_const(covered)) {
+        plan.minX = std::min(plan.minX, rect.minX);
+        plan.minZ = std::min(plan.minZ, rect.minZ);
+        plan.maxX = std::max(plan.maxX, rect.maxX);
+        plan.maxZ = std::max(plan.maxZ, rect.maxZ);
     }
     if (style->overWater && style->wetland.bottom != qcAirBlockId) {
         spreadWetland();
@@ -260,10 +260,10 @@ void QcVillageDraft::spreadWetland()
     // The wetland spreads from the pieces and boardwalks, not from the stairs down to land.
     QcVillagePlan::Wetland &wetland = plan.wetland;
     wetland.settings = style->wetland;
-    const QList<Rect> covered = pieces + roads;
-    for (const Rect rect : covered) {
+    const QList<QcXzRect> covered = pieces + roads;
+    for (const QcXzRect rect : covered) {
         if (!stairs.contains(rect)) {
-            wetland.wet.append({rect.x0, rect.z0, rect.x1, rect.z1});
+            wetland.wet.append({rect.minX, rect.minZ, rect.maxX, rect.maxZ});
         }
     }
 

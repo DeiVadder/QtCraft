@@ -14,8 +14,8 @@ namespace QcHandbookJson {
 
 /*! Returns the page of \a entry with the category and pack names of \a handbook: {"id", "name",
     "category", "categoryTitle", "pack", "packName", "title", "icon", "text", "facts": [{"label",
-    "value", "links": [link]}], "sections": [{"title", "text", "links": [link], "recipes":
-    [recipe]}]} with link = {"target", "text", "icon", "note"} and recipe = {"kind"
+    "value", "links": [link], "technical"}], "sections": [{"title", "text", "links": [link],
+    "recipes": [recipe]}]} with link = {"target", "text", "icon", "note"} and recipe = {"kind"
     ("crafting"/"machine"), "name", "shapeless", "needsTable", "width", "height", "cells": [link
     or null], "result": link, "count", "seconds", "machines": [link], "note"}. */
 QJsonObject entry(const QcHandbook &handbook, const QcHandbookEntry &entry);

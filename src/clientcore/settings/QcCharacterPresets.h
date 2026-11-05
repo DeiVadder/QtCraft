@@ -11,9 +11,11 @@
 
 #include <optional>
 
-// The presets of the character screen (decision E-231): the built-in ones, translated, followed by
-// the player's own (at most QcCharacterProfile::maxPresets). Rows count across both. The labels
-// follow the UI language: `changed` is also emitted when a translator is installed or removed.
+/*! \brief The presets of the character screen (decision E-231): the built-in ones, translated,
+    followed by the player's own (at most QcCharacterProfile::maxPresets).
+
+    Rows count across both. The labels follow the UI language: \c {changed} is also emitted when
+    a translator is installed or removed. */
 class QcCharacterPresets : public QObject
 {
     Q_OBJECT
@@ -21,26 +23,31 @@ class QcCharacterPresets : public QObject
 public:
     explicit QcCharacterPresets(QObject *parent = nullptr);
 
-    // [{label, builtIn, look}], look as QcCharacterProfile::lookMap.
+    /*! Returns the rows for QML: [{label, builtIn, look}], look as QcCharacterProfile::lookMap. */
     QVariantList rows() const;
+    /*! Returns the player's own presets. */
     const QList<QcCharacterPreset> &saved() const { return m_saved; }
+    /*! Takes the player's own \a presets from the settings (at most
+        QcCharacterProfile::maxPresets). */
     void load(const QList<QcCharacterPreset> &presets);
 
-    // The look of a row; none for a row that does not exist.
+    /*! Returns the look of \a row; none for a row that does not exist. */
     [[nodiscard]] std::optional<QcAppearance> appearance(int row) const;
-    // A free place for another preset of the player.
+    /*! Returns whether there is a free place for another preset of the player. */
     bool canSave() const { return m_saved.size() < QcCharacterProfile::maxPresets; }
-    // Whether save(name) would succeed: a usable name and a free place or a preset of that name
-    // to replace.
+    /*! Returns whether save(\a name) would succeed: a usable name and a free place or a preset of
+        that name to replace. */
     bool canSaveAs(const QString &name) const;
-    // Saves `look` as the player's preset `name` (cleaned; replacing one of that name).
+    /*! Saves \a look as the player's preset \a name (cleaned; replacing one of that name).
+        Returns false when canSaveAs() refuses. */
     bool save(const QString &name, const QcAppearance &look);
-    // Removes a preset of the player; built-in ones stay.
+    /*! Removes the preset of the player in \a row; built-in ones stay. */
     void remove(int row);
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 signals:
+    /*! The rows changed: a preset saved, removed or loaded, or the UI language changed. */
     void changed();
 
 private:

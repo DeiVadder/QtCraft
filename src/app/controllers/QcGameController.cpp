@@ -3,39 +3,80 @@
 
 #include "app/controllers/QcGameController.h"
 
+#include "app/controllers/QcChatFeed.h"
+#include "app/controllers/QcChatInputHistory.h"
+#include "app/controllers/QcHudState.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/input/QcGamepadBackend.h"
+#include "app/inventory/QcSlotCursor.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/rendering/QcFramePlan.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/worldgen/QcWorldTypeParser.h"
+#include "common/core/QcBlockPos.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcWorldLibrary.h"
 
 #include <QCoreApplication>
+#include <QMetaEnum>
 #include <QQuickWindow>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
+// The value of `key` in a new world's setup as a whole number, `missing` without the key; none for
+// anything else (a text, a fraction). QML may hand a whole number over as a double.
+std::optional<int> wholeNumberOf(const QVariantMap &setup, const QString &key, int missing)
+{
+    const QVariant given = setup.value(key, missing);
+    const bool integer = given.typeId() == QMetaType::Int || given.typeId() == QMetaType::LongLong;
+    const bool wholeDouble = given.typeId() == QMetaType::Double && given.toDouble() == std::trunc(given.toDouble());
+    return integer || wholeDouble ? std::optional<int>(given.toInt()) : std::nullopt;
+}
+
 // The "generatorVersion" of a new world's setup (decision E-922): a whole number the game has; none
 // for anything else. Without the key the current version.
 std::optional<int> generatorVersionOf(const QVariantMap &setup)
 {
-    const QVariant given = setup.value(u"generatorVersion"_s, QcGeneratorVersion::current);
-    const bool whole = given.typeId() == QMetaType::Int || given.typeId() == QMetaType::LongLong;
-    if (!whole || !QcGeneratorVersion::isKnown(given.toInt())) {
+    const std::optional<int> version = wholeNumberOf(setup, u"generatorVersion"_s, QcGeneratorVersion::current);
+    return version && QcGeneratorVersion::isKnown(*version) ? version : std::nullopt;
+}
+
+// The generator of a new world's "worldType" (WorldLibrary.WorldType); none, with a warning, for
+// a value that is no world type. Without the key a terrain world.
+std::optional<QString> generatorOf(const QVariantMap &setup)
+{
+    using WorldType = QcWorldLibraryController::WorldType;
+    const std::optional<int> value = wholeNumberOf(setup, u"worldType"_s, static_cast<int>(WorldType::Terrain));
+    if (!value || !QMetaEnum::fromType<WorldType>().valueToKey(*value)) {
+        qCWarning(lcGame) << "createWorld: refused the world type" << setup.value(u"worldType"_s) << "(a WorldLibrary.WorldType is needed)";
         return std::nullopt;
     }
-    return given.toInt();
+    return QString(QcWorldLibraryController::generatorOf(static_cast<WorldType>(*value)));
+}
+
+// The game mode of a new world's "gameMode" (GameMode.Mode); none, with a warning, for a value
+// that is no game mode. Without the key survival.
+std::optional<QcGameMode> gameModeOf(const QVariantMap &setup)
+{
+    const std::optional<int> value = wholeNumberOf(setup, u"gameMode"_s, static_cast<int>(QcGameMode::Survival));
+    const std::optional<QcGameMode> mode = value && *value >= 0 && *value < QcGameModes::count
+                                               ? QcGameModes::fromValue(static_cast<quint8>(*value))
+                                               : std::nullopt;
+    if (!mode) {
+        qCWarning(lcGame) << "createWorld: refused the game mode" << setup.value(u"gameMode"_s) << "(a GameMode.Mode is needed)";
+    }
+    return mode;
 }
 
 } // namespace
@@ -61,10 +102,11 @@ QcGameController::QcGameController(QObject *parent)
     , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
-    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get()))
+    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_admin(std::make_unique<QcAdminController>())
     , m_pause(std::make_unique<QcWorldPause>(m_parts, m_screens, *m_settings))
+    , m_graphics(std::make_unique<QcGraphicsGuard>(*m_settings->rendering(), m_screens, *m_pause))
     , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render, *m_hud->heldMap()})
@@ -92,7 +134,6 @@ QcGameController::QcGameController(QObject *parent)
         m_gamepad.setSettings(m_settings->gamepad());
         if (m_parts.view) {
             m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
-            m_parts.view->setRenderOptions(m_settings->rendering()->options());
         }
     });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
@@ -116,11 +157,24 @@ QcGameController::QcGameController(QObject *parent)
             m_multiplayer->forget();
         }
     });
+    // Leaving the world (or losing it) forgets the advancements still waiting for their toast.
+    connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
+        if (!m_screens.playing()) {
+            m_player->advancementToasts()->clear();
+        }
+    });
     connect(&m_screens, &QcScreenState::phaseChanged, this, &QcGameController::phaseChanged);
     connect(&m_screens, &QcScreenState::statusChanged, this, &QcGameController::statusChanged);
+    connect(&m_screens, &QcScreenState::startingChanged, this, &QcGameController::startingChanged);
     connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::updateHudShown);
+    connect(m_hud.get(), &QcHudState::shownChanged, this, &QcGameController::hudShownChanged);
+    // The chat lines of the HUD all show while the chat line is open and fade while it is closed
+    // (decision E-875).
+    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_hud->chat()->setOpen(m_screens.overlay() == QcScreenState::Overlay::Chat); });
+    // Every screen starts with an empty hand (nothing picked up or carried).
+    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_player->slotCursor()->showScreen(m_screens.overlay()); });
     connect(m_handbook.get(), &QcHandbookController::openChanged, this, &QcGameController::updateHudShown);
     connect(m_player.get(), &QcPlayerController::healthChanged, this, &QcGameController::updateHudShown);
     connect(this, &QcGameController::sessionStarted, m_multiplayer.get(), &QcMultiplayerController::sessionStarted);
@@ -132,20 +186,41 @@ QcGameController::QcGameController(QObject *parent)
             startRemoteSession(std::move(session));
         }
     });
-    connect(&m_wiring, &QcSessionWiring::playing, this, [this] { setPhase(Phase::Playing); });
+    connectLoading();
     connect(&m_wiring, &QcSessionWiring::disconnected, &m_screens, &QcScreenState::sessionDisconnected);
     connect(&m_wiring, &QcSessionWiring::ticked, this, [this] { m_frame.restartTickClock(); });
 }
 
+void QcGameController::connectLoading()
+{
+    // The world shows once its spawn area is meshed (decision E-943); a start that ends otherwise
+    // (error, cancel, disconnect) leaves the progress idle.
+    connect(&m_wiring, &QcSessionWiring::playing, this, &QcGameController::updateLoading);
+    connect(loading(), &QcLoadingProgress::ready, this, &QcGameController::onWorldReady);
+    connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
+        if (m_screens.phase() != Phase::Loading && m_screens.phase() != Phase::Playing) {
+            afterFrame().cancel();
+            loading()->reset();
+            m_startup->worldStartEnded();
+        }
+    });
+
+    // Every frame measures the spawn area; a window that draws no frames (minimised, covered)
+    // still moves on through the poll, and so does the longest wait.
+    m_loadingPoll.setInterval(loadingPollMs);
+    connect(&m_loadingPoll, &QTimer::timeout, this, &QcGameController::updateLoading);
+    connect(loading(), &QcLoadingProgress::changed, this, [this] {
+        if (!loading()->active()) {
+            m_loadingPoll.stop();
+        } else if (!m_loadingPoll.isActive()) {
+            m_loadingPoll.start();
+        }
+    });
+}
+
 void QcGameController::updateHudShown()
 {
-    const QcScreenState::HudShown shown = QcScreenState::hudShown(m_screens.overlay(), m_handbook->isOpen(), m_player->dead());
-    if (shown == hudShown()) {
-        return;
-    }
-
-    m_hudShown = shown;
-    emit hudShownChanged();
+    m_hud->setHudShown(QcScreenState::hudShown(m_screens.overlay(), m_handbook->isOpen(), m_player->dead()));
 }
 
 QcGameController::~QcGameController()
@@ -167,13 +242,14 @@ void QcGameController::setView(QcWorldView *view)
     }
 
     m_parts.view = view;
+    // The render options and the still state (decision E-963).
+    m_graphics->setView(view);
     if (m_parts.view) {
         if (m_parts.view->window()) {
             attachWindow(m_parts.view->window());
         }
         connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
         m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
-        m_parts.view->setRenderOptions(m_settings->rendering()->options());
         connect(m_parts.view, &QcWorldView::meshesLost, this, [this] {
             if (m_parts.meshes) {
                 m_parts.meshes->remeshAll();
@@ -196,8 +272,13 @@ void QcGameController::attachWindow(QQuickWindow *window)
     }
     m_parts.window = window;
     m_gamepadUi.setWindow(window);
+    m_graphics->setWindow(window);
+    afterFrame().setWindow(window);
     if (m_parts.window) {
-        connect(m_parts.window, &QQuickWindow::afterAnimating, this, [this] { m_frame.onFrame(); });
+        connect(m_parts.window, &QQuickWindow::afterAnimating, this, [this] {
+            m_frame.onFrame();
+            updateLoading();
+        });
         connect(m_parts.window, &QWindow::activeChanged, this, [this] {
             updateForeground();
             if (!m_parts.window->isActive()) {
@@ -270,6 +351,7 @@ void QcGameController::setLanguage(const QString &language)
     m_settings->character()->refreshLists();
     // Key and action names are translated.
     m_settings->keys()->retranslate();
+    m_settings->gamepadOptions()->retranslate();
     m_handbook->refreshIfOpen();
     m_worldOptions->retranslate();
 }
@@ -283,15 +365,21 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
     world.generator = generator;
     world.generatorOptions = options.trimmed();
     world.defaultGameMode = QcGameModes::parse(gameMode).value_or(QcGameMode::Survival);
-    startWorld({}, world);
+    startWorld({}, world, QcLoadingProgress::Kind::NewWorld);
 }
 
 void QcGameController::createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup)
 {
     QcWorldLibrary::NewWorld world;
     world.keepInventory = setup.value(u"keepInventory"_s, true).toBool();
-    world.generator = setup.value(u"worldType"_s, world.generator).toString();
-    world.gameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+    const std::optional<QString> generator = generatorOf(setup);
+    const std::optional<QcGameMode> gameMode = gameModeOf(setup);
+    if (!generator || !gameMode) {
+        setPhase(Phase::Error, tr("Cannot create the world: unknown world type or game mode"));
+        return;
+    }
+    world.generator = *generator;
+    world.gameMode = *gameMode;
     // The menu offers no choice while the game has a single generator version (decision E-922).
     const std::optional<int> version = generatorVersionOf(setup);
     if (!version) {
@@ -332,12 +420,12 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
     }
 
     m_library->refreshWorlds();
-    startWorld(entry->directory, entry->info);
+    startWorld(entry->directory, entry->info, QcLoadingProgress::Kind::NewWorld);
 }
 
 QString QcGameController::defaultFlatLayers()
 {
-    return m_library->content().worldgen().flatWorld().preset;
+    return QcWorldTypeParser::shortPreset(m_library->content().worldgen().flatWorld().preset);
 }
 
 void QcGameController::playWorld(const QString &folder)
@@ -350,7 +438,7 @@ void QcGameController::playWorld(const QString &folder)
         return;
     }
 
-    startWorld(it->directory, it->info);
+    startWorld(it->directory, it->info, QcLoadingProgress::Kind::SavedWorld);
 }
 
 void QcGameController::saveWorld() const
@@ -360,6 +448,8 @@ void QcGameController::saveWorld() const
 
 void QcGameController::sendChat(const QString &text) const
 {
+    // Arrow up in the chat line brings it back (decision E-970), client commands too.
+    m_hud->chat()->inputs()->remember(text);
     // A client command (decision E-875): empties the chat lines of the HUD, the server never sees it.
     if (text.trimmed().compare(QcChatFeed::clearCommand, Qt::CaseInsensitive) == 0) {
         m_hud->chat()->clear();
@@ -370,7 +460,7 @@ void QcGameController::sendChat(const QString &text) const
     }
 }
 
-void QcGameController::startWorld(const QString &directory, const QcWorldInfo &world)
+void QcGameController::startWorld(const QString &directory, const QcWorldInfo &world, QcLoadingProgress::Kind kind)
 {
     if (const QcStatus saved = stopSession(); !saved) {
         qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
@@ -378,10 +468,28 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
     m_worldDirectory = directory;
     // The world plays with its own content; the menu's options load theirs again with the next form.
     m_worldOptions->release();
-    setOverlay(Overlay::None);
-    setPhase(Phase::Loading, tr("Loading content..."));
+    setOverlay(QcScreenState::Overlay::None);
+    loading()->begin(kind);
+    m_startup->worldStarting();
+    setPhase(Phase::Loading);
+    afterFrame().run([this, world] { loadContent(world); });
+}
 
-    if (!startServer(world)) {
+void QcGameController::loadContent(const QcWorldInfo &world)
+{
+    const QcResult<std::shared_ptr<const QcContentRegistry>> content = m_worlds.loadContent();
+    if (!content) {
+        setPhase(Phase::Error, content.error());
+        return;
+    }
+
+    loading()->advance(QcLoadingProgress::Stage::World);
+    afterFrame().run([this, world, content = *content] { openWorld(content, world); });
+}
+
+void QcGameController::openWorld(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world)
+{
+    if (!startServer(content, world)) {
         return;
     }
 
@@ -389,7 +497,7 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
     m_parts.session->setAppearance(m_settings->character()->appearance());
     beginSession();
     m_parts.session->start();
-    setPhase(Phase::Loading, tr("Generating world..."));
+    loading()->advance(QcLoadingProgress::Stage::Joining);
     emit sessionStarted(m_parts.session.get());
 }
 
@@ -400,12 +508,38 @@ void QcGameController::startRemoteSession(std::unique_ptr<QcClientSession> sessi
     }
     // A network game: the server keeps the world, nothing is saved here.
     m_worldDirectory.clear();
-    setOverlay(Overlay::None);
+    setOverlay(QcScreenState::Overlay::None);
 
     m_parts.session = std::move(session);
     beginSession();
-    setPhase(Phase::Loading, tr("Loading the world..."));
+    loading()->begin(QcLoadingProgress::Kind::Network);
+    m_startup->worldStarting();
+    setPhase(Phase::Loading);
     emit sessionStarted(m_parts.session.get());
+}
+
+void QcGameController::updateLoading()
+{
+    if (!loading()->active() || !m_parts.session || !m_parts.meshes || !m_parts.session->world()) {
+        return;
+    }
+
+    const QcVec3 &feet = m_parts.session->playerMotion().position;
+    const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(feet.x)), 0, static_cast<int>(std::floor(feet.z))}.chunk();
+    const bool playing = m_parts.session->state() == QcClientSession::State::Playing;
+    const int radius = QcLoadingProgress::spawnRadiusFor(m_parts.session->welcome().viewDistance);
+    loading()->observe(QcLoadingProgress::measure(*m_parts.session->world(), *m_parts.meshes, centre, radius), playing);
+}
+
+void QcGameController::finishStartup()
+{
+    m_screens.setStarting(false);
+}
+
+void QcGameController::onWorldReady()
+{
+    setPhase(Phase::Playing);
+    m_startup->worldPlaying();
 }
 
 void QcGameController::beginSession()
@@ -427,16 +561,10 @@ void QcGameController::beginSession()
     m_frame.startTickClock();
 }
 
-bool QcGameController::startServer(const QcWorldInfo &world)
+bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world)
 {
-    const QcResult<std::shared_ptr<const QcContentRegistry>> content = m_worlds.loadContent();
-    if (!content) {
-        setPhase(Phase::Error, content.error());
-        return false;
-    }
-
     std::expected<std::unique_ptr<QcLocalServerHost>, QcWorldStarter::Refusal> server =
-        m_worlds.startServer(*content, world, m_worldDirectory, m_startup->spawnColumn());
+        m_worlds.startServer(content, world, m_worldDirectory, m_startup->spawnColumn());
     if (!server) {
         const QcWorldStarter::Refusal &refusal = server.error();
         setPhase(Phase::Error, refusal.status);
@@ -475,6 +603,12 @@ void QcGameController::onContentReset()
 QcStatus QcGameController::stopSession()
 {
     QcStatus saved;
+    // A draft of the look left open by a screen destroyed with the session is dropped, and a
+    // change of the settings still waiting for its save is stored with the session's end.
+    m_settings->character()->endDraft();
+    m_settings->flushPendingSave();
+    // A start that has not reached its next step stops here.
+    afterFrame().cancel();
     m_input->releaseMouse();
     m_audio->setMusicEnabled(false);
     m_audio->stopWorldSounds();

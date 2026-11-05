@@ -9,15 +9,19 @@ import QtQuick.Layouts
 import QtCraft
 
 // The main menu's start page (variant C, decision E-852): a note after a crash, the card to continue
-// the world played last (or to create the first one), and every saved world with Play and Delete,
-// the last played first. The list scrolls on its own.
+// the world played last (or to create the first one, with ways into the handbook, multiplayer and
+// the character below it: HM-4 of docs/Menue-Pruefung.md), and the other saved worlds with Play and
+// a "…" menu, the last played first; the card's world is not repeated in the list (HM-1). The list
+// scrolls on its own.
 ColumnLayout {
     id: page
 
     required property GameController game
     readonly property var worlds: game.library.worlds
-    // The world played last that can be opened, else null.
-    readonly property var lastWorld: worlds.find(world => world.error.length === 0) ?? null
+    // The world played last that can be opened, else null (WorldLibrary.continueWorld).
+    readonly property var lastWorld: game.library.continueWorld
+    // The worlds of the list: all but the card's.
+    readonly property var otherWorlds: game.library.otherWorlds
 
     // The room on the right of the list for its scroll bar; the card and the heading above keep
     // it too, so their right edges line up with the rows.
@@ -26,14 +30,17 @@ ColumnLayout {
     signal playRequested(string folder)
     signal deleteRequested(string folder, string name)
     signal newWorldRequested
+    // A page of the menu beside the bar should show (MenuSidebar.Multiplayer, Character).
+    signal entryRequested(int entry)
 
-    function modeText(mode: string): string {
+    // The game mode of new players (GameMode.Mode).
+    function modeText(mode: int): string {
         switch (mode) {
-        case "creative":
+        case GameMode.Mode.Creative:
             return qsTr("Creative");
-        case "adventure":
+        case GameMode.Mode.Adventure:
             return qsTr("Adventure");
-        case "spectator":
+        case GameMode.Mode.Spectator:
             return qsTr("Spectator");
         default:
             return qsTr("Survival");
@@ -42,12 +49,12 @@ ColumnLayout {
 
     // The world's type; with `withSeed`, a normal world's seed too.
     function typeText(world: var, withSeed: bool): string {
-        switch (world.generator) {
-        case "flat":
+        switch (world.worldType) {
+        case WorldLibrary.WorldType.Flat:
             return qsTr("Flat");
-        case "void":
+        case WorldLibrary.WorldType.Void:
             return qsTr("Void");
-        case "showcase":
+        case WorldLibrary.WorldType.Showcase:
             return qsTr("Showcase");
         default:
             return withSeed ? qsTr("Normal, seed %1").arg(world.seed) : qsTr("Normal");
@@ -63,7 +70,6 @@ ColumnLayout {
 
     // The previous session ended with a crash (decision E-834): where its report is.
     RowLayout {
-        objectName: "crashNotice"
         Layout.fillWidth: true
         Layout.rightMargin: page.gutter
         visible: page.game.settings.diagnostics.crashReport !== ""
@@ -96,21 +102,52 @@ ColumnLayout {
         onNewWorldRequested: page.newWorldRequested()
     }
 
+    // The first start: three ways on besides the first world.
+    RowLayout {
+        objectName: "firstStartLinks"
+        Layout.rightMargin: page.gutter
+        visible: page.worlds.length === 0
+        spacing: Ui.space.s
+
+        GameButton {
+            text: qsTr("Handbook: first steps")
+            keyHint: page.game.settings.keys.labels.handbook
+            onClicked: page.game.handbook.open(page.game.handbook.firstSteps)
+        }
+        GameButton {
+            text: qsTr("Multiplayer")
+            onClicked: page.entryRequested(MenuSidebar.Multiplayer)
+        }
+        GameButton {
+            text: qsTr("Character")
+            onClicked: page.entryRequested(MenuSidebar.Character)
+        }
+    }
+
     RowLayout {
         Layout.fillWidth: true
         Layout.topMargin: Ui.space.s
         Layout.rightMargin: page.gutter
-        visible: page.worlds.length > 0
+        visible: page.lastWorld !== null || page.otherWorlds.length > 0
         spacing: Ui.space.s
 
         Label {
+            id: listHeading
+
             Layout.fillWidth: true
-            text: qsTr("Your worlds")
+            // No heading above an empty list (only the card's world is saved).
+            visible: page.otherWorlds.length > 0
+            text: page.lastWorld !== null ? qsTr("More worlds") : qsTr("Your worlds")
             font.pixelSize: Ui.type.section
             font.bold: true
             color: Theme.text
             Accessible.role: Accessible.Heading
             Accessible.name: text
+        }
+        // Keeps "New world…" on the right without the heading.
+        Item {
+            Layout.fillWidth: true
+            visible: !listHeading.visible
         }
         GameButton {
             objectName: "newWorldButton"
@@ -133,7 +170,7 @@ ColumnLayout {
         clip: true
         spacing: Ui.space.s
         boundsBehavior: Flickable.StopAtBounds
-        model: page.worlds
+        model: page.otherWorlds
         ScrollBar.vertical: ThemedScrollBar {}
 
         delegate: WorldRow {
@@ -143,6 +180,7 @@ ColumnLayout {
             summary: page.summary(worldRow.modelData, true)
             onPlayRequested: folder => page.playRequested(folder)
             onDeleteRequested: (folder, name) => page.deleteRequested(folder, name)
+            onOpenFolderRequested: folder => page.game.library.openWorldFolder(folder)
         }
     }
 

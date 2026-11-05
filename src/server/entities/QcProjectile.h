@@ -8,16 +8,25 @@
 
 #include <QString>
 
-// Whether a player may pick up a stuck projectile (decision E-425): as its item (shot from a
-// survival player's ammunition), only to remove it (shot in creative mode, which used no item), or
-// not at all (shot by a creature).
-enum class QcProjectilePickup : quint8 { Item, Remove, Never };
+/*! \brief Whether a player may pick up a stuck projectile (decision E-425): as its item (shot
+    from a survival player's ammunition), only to remove it (shot in creative mode, which used no
+    item), or not at all (shot by a creature). */
+enum class QcProjectilePickup : quint8 {
+    /*! Picked up as its item. */
+    Item,
+    /*! Picked up only to remove it. */
+    Remove,
+    /*! Not picked up at all. */
+    Never
+};
 
-// A projectile flying or stuck in a block (decision E-425); QcProjectileManager moves, sticks and
-// ages them. Its motion's velocity is the flight; yaw and pitch (degrees) point along it.
+/*! \brief A projectile flying or stuck in a block (decision E-425); QcProjectileManager moves,
+    sticks and ages them.
+
+    Its motion's velocity is the flight; yaw and pitch (degrees) point along it. */
 struct QcProjectile : QcEntity
 {
-    // The kind of every entity of this type (QcEntity::as).
+    /*! The kind of every entity of this type (QcEntity::as). */
     static constexpr QcEntityKind entityKind = QcEntityKind::Projectile;
 
     QcProjectile()
@@ -25,21 +34,25 @@ struct QcProjectile : QcEntity
     {
     }
 
-    // Name of its QcProjectileDefinition.
+    /*! Name of its QcProjectileDefinition. */
     QString type;
+    /*! The pitch in degrees (up positive), along the flight. */
     float pitch = 0.0f;
-    // Seconds since it was shot, or since it stuck while `stuck`.
+    /*! Seconds since it was shot, or since it stuck while \c {stuck}. */
     double age = 0.0;
+    /*! Whether a player may pick it up when it is stuck. */
     QcProjectilePickup pickup = QcProjectilePickup::Item;
-    // Damage of a hit is multiplied by this (a fully drawn bow: 1; later enchantments).
+    /*! Damage of a hit is multiplied by this (a fully drawn bow: 1; later enchantments). */
     double damageFactor = 1.0;
-    // The entity that shot it (not saved): it does not hit its shooter while it leaves him.
+    /*! The entity that shot it (not saved): it does not hit its shooter while it leaves him. */
     quint32 shooter = 0;
+    /*! Whether it sticks in a block. */
     bool stuck = false;
-    // The block it sticks in, and that block's state: it falls again when the block changes.
+    /*! The block it sticks in, and that block's state: it falls again when the block changes.
+        \qcshared */
     QcBlockPos stuckIn;
     quint32 stuckState = 0;
-    // Never saved (a fishing rod's bobber, decision E-503): left out of the chunk's records
-    // (QcEntityRecords), so it goes with its chunk.
+    /*! Never saved (a fishing rod's bobber, decision E-503): left out of the chunk's records
+        (QcEntityRecords), so it goes with its chunk. */
     bool transient = false;
 };

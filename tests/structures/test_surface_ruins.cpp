@@ -44,9 +44,9 @@ private:
                });
     }
 
-    int kindOf(const QcTerrainGenerator &terrain, const QString &name) const
+    std::optional<QcSurfacePlanner::KindId> kindOf(const QcTerrainGenerator &terrain, const QString &name) const
     {
-        return terrain.surfaceStructures().planner().kindIndex(name).value_or(-1);
+        return terrain.surfaceStructures().planner().kindIndex(name);
     }
 
     int spacingOf(const QString &name) const { return m_content->worldgen().structure(name)->surface->spacing; }
@@ -54,7 +54,7 @@ private:
     Plans plans(const QcTerrainGenerator &terrain, const QString &name, bool reversed = false) const
     {
         Plans found;
-        const int kind = kindOf(terrain, name);
+        const QcSurfacePlanner::KindId kind = kindOf(terrain, name).value_or(QcSurfacePlanner::KindId{});
         for (int i = 0; i < (2 * regions + 1) * (2 * regions + 1); ++i) {
             const int index = reversed ? (2 * regions + 1) * (2 * regions + 1) - 1 - i : i;
             const int rx = index % (2 * regions + 1) - regions;
@@ -242,7 +242,7 @@ private slots:
     {
         m_terrain = std::make_unique<QcTerrainGenerator>(m_content, seed);
         for (const QString &name : std::as_const(m_names)) {
-            QVERIFY2(kindOf(*m_terrain, name) >= 0, qPrintable(name));
+            QVERIFY2(kindOf(*m_terrain, name).has_value(), qPrintable(name));
             m_plans.insert(name, plans(*m_terrain, name));
             qInfo().noquote() << u"%1: %2 in %3 regions"_s.arg(name).arg(m_plans[name].size()).arg((2 * regions + 1) * (2 * regions + 1));
             QVERIFY2(m_plans[name].size() >= 2, qPrintable(name));
@@ -302,7 +302,7 @@ private slots:
     {
         // The cache key holds both region coordinates in full (decision E-883): with 24 bits each,
         // regions 2^24 apart shared one, and regions of 64 blocks reach 2^24 within the world.
-        const auto key = &QcSurfaceStructures::planKey;
+        const auto key = [](int index, int regionX, int regionZ) { return QcSurfaceStructures::planKey(QcSurfacePlanner::KindId{index}, regionX, regionZ); };
         QVERIFY(key(0, 1 << 23, 5) != key(0, -(1 << 23), 5));
         QVERIFY(key(0, 5, 1 << 23) != key(0, 5, -(1 << 23)));
         QVERIFY(key(0, -1, 0) != key(0, 0, -1));
@@ -313,7 +313,7 @@ private slots:
         // region at the other end in the cache.
         const QcTerrainGenerator terrain(m_content, seed);
         for (const QString &name : std::as_const(m_names)) {
-            const int kind = kindOf(terrain, name);
+            const QcSurfacePlanner::KindId kind = kindOf(terrain, name).value_or(QcSurfacePlanner::KindId{});
             const int spacing = spacingOf(name);
             const int edge = QcWorld::maxHorizontalBlock / spacing - 1;
             for (const int region : {edge, -edge}) {

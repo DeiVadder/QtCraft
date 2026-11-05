@@ -13,50 +13,59 @@
 #include <atomic>
 #include <optional>
 
-// Permanent, cheap phase counters of the server tick (decision E-225): one monotonic clock read per
-// phase, no allocation per tick. The time since the previous lap goes to the phase named by lap(),
-// so the phases of a tick add up to its duration; the time spent on client messages between ticks
-// is collected separately. The latest ticks stay in a window (mean and maximum per phase, the tick's
-// duration and lateness) for the debug display. Lives in the server's thread; not thread-safe, except
-// stall(), which other threads may call (tick watchdog, decision E-834).
+/*! \brief Permanent, cheap phase counters of the server tick (decision E-225): one monotonic clock
+    read per phase, no allocation per tick.
+
+    The time since the previous lap goes to the phase named by lap(), so the phases of a tick add
+    up to its duration; the time spent on client messages between ticks is collected separately.
+    The latest ticks stay in a window (mean and maximum per phase, the tick's duration and
+    lateness) for the debug display. Lives in the server's thread; not thread-safe, except
+    stall(), which other threads may call (tick watchdog, decision E-834). */
 class QcTickPhaseTimer
 {
 public:
-    // Monotonic time in nanoseconds; replaceable for tests.
+    /*! Monotonic time in nanoseconds; replaceable for tests. */
     using Clock = qint64 (*)();
+    /*! Returns the steady clock's time in nanoseconds (the default clock). */
     static qint64 steadyNow();
 
-    // Five seconds of ticks.
+    /*! Five seconds of ticks. */
     static constexpr int windowTicks = 100;
-    // Window series after the phases: the tick's duration (phases inside the tick) and its lateness.
+    /*! Window series after the phases: the tick's duration (phases inside the tick) and its
+        lateness; seriesCount series in all. \qcshared */
     static constexpr int durationSeries = QcTickPhases::count;
     static constexpr int lateSeries = QcTickPhases::count + 1;
     static constexpr int seriesCount = QcTickPhases::count + 2;
 
+    /*! Nanoseconds per phase of one tick. */
     using Durations = std::array<qint64, QcTickPhases::count>;
 
     explicit QcTickPhaseTimer(Clock clock = steadyNow);
 
+    /*! Returns the clock's time in nanoseconds. */
     qint64 now() const { return m_clock(); }
+    /*! Begins a tick: the phase durations start at zero and the first lap starts now. */
     void beginTick();
-    // The time since beginTick() or the previous lap belongs to `phase` (a phase may get several laps).
+    /*! The time since beginTick() or the previous lap belongs to \a phase (a phase may get
+        several laps). */
     void lap(QcTickPhase phase);
-    // Ends the tick that started `lateNs` after it was due: the message time collected since the
-    // previous tick joins it, and the tick enters the window.
+    /*! Ends the tick that started \a lateNs after it was due: the message time collected since
+        the previous tick joins it, and the tick enters the window. */
     void endTick(qint64 lateNs);
-    // Time spent handling client messages outside the tick.
+    /*! Adds \a ns spent handling client messages outside the tick. */
     void addMessageTime(qint64 ns) { m_messagesNs += ns; }
 
-    // When the tick running now has run for longer than `limitNs`: a line with how long and the phase
-    // that finished last (the next one hangs); std::nullopt between ticks or before the limit. Safe
-    // from any thread.
+    /*! Returns, when the tick running now has run for longer than \a limitNs, a line with how
+        long and the phase that finished last (the next one hangs); std::nullopt between ticks or
+        before the limit. Safe from any thread. */
     std::optional<QString> stall(qint64 limitNs) const;
 
-    // Nanoseconds per phase of the last finished tick.
+    /*! Returns the nanoseconds per phase of the last finished tick. */
     const Durations &lastTick() const { return m_lastTick; }
+    /*! Returns the window of the latest ticks. */
     const QcPhaseWindow &window() const { return m_window; }
 
-    // Measures the lifetime of a scope as message time.
+    /*! \brief Measures the lifetime of a scope as message time of the timer it was made with. */
     class MessageScope
     {
     public:

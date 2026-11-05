@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/content/registry/QcWeightedNames.h"
+
 #include <QList>
 #include <QString>
 
@@ -14,16 +16,6 @@
     wholly inside its region. Server side only. */
 struct QcCoastalTowerSettings
 {
-    /*! \brief One entry of \c {"structures"}: a tower structure and its weight.
-
-        \c {structure} is the qualified structure name (key \c {"structure"}); \c {weight} is
-        its relative weight in the pick (key \c {"weight"}, at least 1). \qcfields */
-    struct Structure
-    {
-        QString structure;
-        int weight = 1;
-    };
-
     /*! No "coastalTowers" object, or \c {"enabled": false}: none. */
     bool enabled = false;
     /*! Side of the square region in blocks that holds at most one tower (\c {"regionSize"},
@@ -60,7 +52,7 @@ struct QcCoastalTowerSettings
     /*! Deepest foundation in blocks below the tower's floor (\c {"maxFoundation"}). */
     int maxFoundation = 12;
     /*! Tower structures picked by weight (\c {"structures"}); at least one is required. */
-    QList<Structure> structures;
+    QList<QcWeightedStructureName> structures;
 
     /*! Largest accepted \c {regionSize}. */
     static constexpr int maxRegionSize = 512;

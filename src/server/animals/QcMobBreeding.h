@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/world/QcBlockAccess.h"
 #include "server/core/QcServerLimits.h"
 #include "server/mobs/QcMobManager.h"
@@ -12,48 +13,65 @@
 
 #include <memory>
 
-// Breeding of peaceful animals (decision E-293), on the timers of QcCreature. An adult fed
-// with one of its `breeding.food` falls in love (unless it is in love already or still resting
-// after breeding); two awake animals of a kind in love within `partnerDistance` that see each other
-// get a young one at the feet of one of them and rest for `cooldownSeconds`. Feeding a young one
-// brings it closer to growing up. Timers only run while the animal is awake (its chunk loaded).
+/*! \brief Breeding of peaceful animals (decision E-293), on the timers of QcCreature.
+
+    An adult fed with one of its \c {breeding.food} falls in love (unless it is in love already or
+    still resting after breeding); two awake animals of a kind in love within \c {partnerDistance}
+    that see each other get a young one at the feet of one of them and rest for \c
+    {cooldownSeconds}. Feeding a young one brings it closer to growing up. Timers only run while the
+    animal is awake (its chunk loaded). */
 class QcMobBreeding
 {
 public:
-    // Share of the time to grow up that feeding a young one takes off.
+    /*! Share of the time to grow up that feeding a young one takes off. */
     static constexpr double feedGrowUpShare = 0.1;
-    // No young one is born while this many animals of the kind (awake or dormant) live in the 3 x 3
-    // chunks around the birth place or this many bred animals of the kind live in the whole world,
-    // by default (QcServerLimits::breedingCrowd, bredPerKind).
+    /*! No young one is born while this many animals of the kind (awake or dormant) live in the 3
+        x 3 chunks around the birth place or this many bred animals of the kind live in the whole
+        world, by default (QcServerLimits::breedingCrowd, bredPerKind). \qcshared */
     static constexpr int crowdLimit = static_cast<int>(QcServerLimits{}.breedingCrowd);
     static constexpr int maxBredPerKind = static_cast<int>(QcServerLimits{}.bredPerKind);
-    // Seconds an animal is in love before it pairs (others see it in love first).
+    /*! Seconds an animal is in love before it pairs (others see it in love first). */
     static constexpr double courtshipSeconds = 1.0;
 
-    enum class Fed { No, Love, Young };
+    /*! \brief What feeding did (feed()). */
+    enum class Fed {
+        /*! It does not eat that now. */
+        No,
+        /*! It is in love. */
+        Love,
+        /*! A young one grew up a little. */
+        Young
+    };
 
+    /*! Sets the bounds of breeding: \a crowd animals around the birth place and \a bredPerKind
+        bred ones of a kind in the world. */
     void setLimits(qint64 crowd, qint64 bredPerKind)
     {
         m_crowdLimit = crowd;
         m_bredPerKind = bredPerKind;
     }
 
+    /*! \brief A young one to spawn. */
     struct Birth
     {
-        int type = 0;
+        /*! Its creature kind. */
+        QcCreatureKindId type;
+        /*! Where it spawns. */
         QcVec3 position;
     };
 
     explicit QcMobBreeding(std::shared_ptr<const QcContentRegistry> content);
 
-    // Whether `mob` would eat the item named `item` now (in love or growing up).
+    /*! Returns whether \a mob would eat the item named \a item now (in love or growing up). */
     bool wouldEat(const QcCreature &mob, const QString &item) const;
-    // Feeds `mob` with the item named `item`; what happened (No: it does not eat that now).
+    /*! Feeds \a mob with the item named \a item; returns what happened (No: it does not eat that
+        now). */
     Fed feed(QcCreature &mob, const QString &item) const;
-    // Advances the timers by `dt` seconds and pairs animals in love; returns the young ones to spawn.
+    /*! Advances the timers of \a mobs by \a dt seconds and pairs animals in love (the crowd
+        around the birth place read from \a world); returns the young ones to spawn. */
     QList<Birth> tick(const QcBlockAccess &world, QcMobManager &mobs, double dt) const;
-    // Whether another young one of `type` may be born at `position`.
-    bool roomFor(const QList<QcCreature> &mobs, int type, const QcVec3 &position) const;
+    /*! Returns whether another young one of \a type may be born at \a position among \a mobs. */
+    bool roomFor(const QList<QcCreature> &mobs, QcCreatureKindId type, const QcVec3 &position) const;
 
 private:
     // Animals in love look for a partner within partnerDistance times this ...

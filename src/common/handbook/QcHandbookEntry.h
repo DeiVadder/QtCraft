@@ -40,6 +40,9 @@ struct QcHandbookEntry
         QString value;
         /*! The links; may be empty. */
         QList<Link> links;
+        /*! Whether the row is technical (the content id, a block's states and sound): the game's
+            screen shows such rows folded under "Technical". */
+        bool technical = false;
     };
 
     /*! \brief A crafting recipe (cells of a grid, row by row; empty links are empty cells) or a

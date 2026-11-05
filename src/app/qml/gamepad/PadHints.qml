@@ -17,11 +17,8 @@ Rectangle {
     required property GameController game
     // Something covers the bottom edge (the on-screen keyboard has hints of its own).
     property bool covered
-    readonly property bool slotScreen: [GameController.Overlay.Inventory, GameController.Overlay.Creative, GameController.Overlay.Furnace,
-                                        GameController.Overlay.Chest, GameController.Overlay.Trade,
-                                        GameController.Overlay.Stonecutter, GameController.Overlay.Enchanting,
-                                        GameController.Overlay.Anvil].includes(game.overlay)
-                                       && game.phase === GameController.Phase.Playing && !game.handbook.isOpen
+    readonly property bool slotScreen: game.slotScreenOpen && game.phase === GameController.Phase.Playing
+                                       && !game.handbook.isOpen
     // The focus is in an open popup (a prompt, a list): the shoulders switch no tabs there.
     readonly property bool inPopup: game.gamepad.focusLayer !== null
     // The screen with a side bar of categories around the focus, null for none.

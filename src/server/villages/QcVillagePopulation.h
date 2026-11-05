@@ -22,44 +22,52 @@ class QcServerWorld;
 struct QcVillage;
 class QcVillages;
 
-// The villagers of the villages among the creatures (decisions E-411, E-415, E-422): one moves in
-// beside each free bed when a chunk of its village is seen for the first time, the claims of a
-// village are reconciled once per run when all its villagers' chunks are loaded, every
-// villageLifeTicks ticks villagers move between villages (QcVillagerRelocation, decision E-490),
-// get children (QcVillagerBreeding) and summon iron golems (QcVillageGolems, decision E-470), and
-// a villager that leaves the world for good (QcMobManager::Departure: died, removed, despawned,
-// void) frees its claims. Part of QcMobManager, which owns the creatures and tells it when one
-// leaves.
+/*! \brief The villagers of the villages among the creatures (decisions E-411, E-415, E-422): one
+    moves in beside each free bed when a chunk of its village is seen for the first time, the claims
+    of a village are reconciled once per run when all its villagers' chunks are loaded, every
+    villageLifeTicks ticks villagers move between villages (QcVillagerRelocation, decision E-490),
+    get children (QcVillagerBreeding) and summon iron golems (QcVillageGolems, decision E-470), and
+    a villager that leaves the world for good (QcMobManager::Departure: died, removed, despawned,
+    void) frees its claims.
+
+    Part of QcMobManager, which owns the creatures and tells it when one leaves. */
 class QcVillagePopulation
 {
 public:
-    // Village life runs every this many ticks.
+    /*! Village life runs every this many ticks. */
     static constexpr int villageLifeTicks = 100;
 
+    /*! Gives the entity id of the next creature. */
     using NextId = std::function<quint32()>;
 
-    // `mobs` owns the villagers and outlives this; the population listens to its departures.
+    /*! \a mobs owns the villagers and outlives this; the population listens to its departures.
+        Kinds from \a content, villagers' looks from the world \a seed. */
     QcVillagePopulation(QcMobManager &mobs, std::shared_ptr<const QcContentRegistry> content, quint64 seed);
 
-    // The village state villagers claim beds and workstations in (a villager that leaves frees its
-    // claims there), how many may live and their budgets per tick.
+    /*! Sets the village state villagers claim beds and workstations in (a villager that leaves
+        frees its claims there) to \a villages. */
     void setVillages(QcVillages *villages) { m_villages = villages; }
+    /*! Sets how many villagers may live (\a homes) and their budgets per tick (\a behaviour). */
     void setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour);
-    // At most `golems` iron golems in the world (QcServerLimits villageGolems; 0: villagers summon
-    // none).
+    /*! At most \a golems iron golems in the world (QcServerLimits villageGolems; 0: villagers
+        summon none). */
     void setGolemLimit(qint64 golems) { m_golemLimit = golems; }
+    /*! Returns the iron golems the villagers summon. */
     const QcVillageGolems &golems() const { return m_golems; }
 
-    // A chunk of a village arrived: the claims of the villages whose holders are all loaded now are
-    // reconciled (checkVillageClaims).
+    /*! The chunk at \a pos of \a world of a village arrived: the claims of the villages whose
+        holders are all loaded now are reconciled (checkVillageClaims). */
     void noteChunk(QcServerWorld &world, QcChunkPos pos);
-    // A villager for every free bed of a village whose head lies in the chunk, within the limits,
-    // then the neighbours waiting for this chunk; with `onlyAlwaysLivedIn` only in a village that is
-    // always lived in (QcVillagePlan::alwaysLivedIn).
+    /*! Spawns, with ids from \a nextEntityId, a villager for every free bed of a village of \a
+        world whose head lies in the chunk at \a pos, within the limits, then the neighbours waiting
+        for this chunk; with \a onlyAlwaysLivedIn only in a village that is always lived in
+        (QcVillagePlan::alwaysLivedIn). */
     void settle(QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId, bool onlyAlwaysLivedIn);
-    // Counts down to the next village life (children and golems).
+    /*! Counts down to the next village life (children and golems) in \a world at \a worldTime,
+        new creatures with ids from \a nextEntityId. */
     void tick(QcServerWorld &world, double worldTime, const NextId &nextEntityId);
-    // Whether the village's claims were reconciled in this run (checkVillageClaims).
+    /*! Returns whether the claims of \a village were reconciled in this run (checkVillageClaims).
+    */
     bool claimsReconciled(qint64 village) const { return m_claimsChecked.contains(village); }
 
 private:

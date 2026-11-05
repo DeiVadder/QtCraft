@@ -87,14 +87,14 @@ QList<QcMsg::BlockUpdate> QcBlockForecast::placing(const QcBlockAccess &world, c
         return {};
     }
 
-    const std::optional<QcBlockRules::Placement> placement = QcBlockRules::placement(world, *placed, aim);
+    const std::optional<QcPlacedBlock> placement = QcBlockRules::placement(world, *placed, aim);
     if (!placement || !world.blockAt(placement->pos) || !QcRaycast::isWithinReach(eye, placement->pos)) {
         return {};
     }
 
-    const QList<QcAabb> room = roomOf(world, placement->state, placement->pos);
+    const QList<QcAabb> room = roomOf(world, placement->block, placement->pos);
     const bool blocked = std::ranges::any_of(room, [&bodies](const QcAabb &box) {
         return std::ranges::any_of(bodies, [&box](const QcAabb &body) { return body.intersects(box); });
     });
-    return blocked ? QList<QcMsg::BlockUpdate>{} : placedCells(world, placement->state, placement->pos);
+    return blocked ? QList<QcMsg::BlockUpdate>{} : placedCells(world, placement->block, placement->pos);
 }

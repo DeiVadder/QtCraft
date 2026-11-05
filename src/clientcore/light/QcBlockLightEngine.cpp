@@ -79,10 +79,10 @@ public:
         }
     }
 
-    QList<QcBlockLightEngine::SectionRef> take() { return std::move(m_sections); }
+    QList<QcSectionAddress> take() { return std::move(m_sections); }
 
 private:
-    QList<QcBlockLightEngine::SectionRef> m_sections;
+    QList<QcSectionAddress> m_sections;
     QSet<quint64> m_listed;
 };
 
@@ -125,8 +125,8 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
 {
     Changes changes;
     RemeshList remesh;
-    const QList<QcLightEngine::SectionRef> touched = m_engine.takeTouched(Channel::Block);
-    for (const QcLightEngine::SectionRef &ref : touched) {
+    const QList<QcSectionAddress> touched = m_engine.takeTouched(Channel::Block);
+    for (const QcSectionAddress &ref : touched) {
         const auto it = m_published.find(ref.chunk);
         if (it == m_published.end()) {
             continue;

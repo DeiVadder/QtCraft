@@ -16,19 +16,21 @@ class QcPendingCommands;
 class QcServerBlocks;
 class QcServerState;
 
-// Commands that change blocks (decision E-245): /setblock, /fill (optionally only replacing one
-// block), /clear and /regenerate. Areas are limited in size; large fills and every regeneration
-// wait for /confirm.
+/*! \brief Commands that change blocks (decision E-245): /setblock, /fill (optionally only replacing
+    one block), /clear and /regenerate.
+
+    Areas are limited in size; large fills and every regeneration wait for /confirm. */
 class QcBlockCommands
 {
 public:
-    // Largest volume one /fill or /clear changes.
+    /*! Largest volume one /fill or /clear changes. */
     static constexpr qint64 maxFillBlocks = 32768;
-    // Fills larger than this ask for /confirm first.
+    /*! Fills larger than this ask for /confirm first. */
     static constexpr qint64 confirmFillBlocks = 4096;
 
     QcBlockCommands(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcPendingCommands &pending);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

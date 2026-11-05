@@ -42,7 +42,8 @@ inline constexpr qsizetype maxOptionsLength = 4096;
 [[nodiscard]] QcStatus checkOptions(const QString &type, const QString &options, const QcContentRegistry &content);
 /*! Returns the options a new world of \a type stores for \a options: checked, with the current
     defaults of \a content filled in (the flat preset, the void platform), so that later changes
-    of those defaults by mods or updates do not change existing worlds. */
+    of those defaults by mods or updates do not change existing worlds. The flat preset names
+    base-game blocks without their namespace (QcWorldTypeParser::shortPreset). */
 [[nodiscard]] QcResult<QString> optionsToStore(const QString &type, const QString &options, const QcContentRegistry &content);
 /*! Returns a generator of \a type for \a content, \a seed and \a options that generates as world
     generator version \a version does (decision E-922, QcGeneratorVersion; a world passes its

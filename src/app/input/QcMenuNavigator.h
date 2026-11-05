@@ -22,9 +22,9 @@
 // switches the tab of the nearest TabBar; left and right change a horizontal slider or a spin box
 // (as their arrow keys do) instead of leaving it. Clicks and keys go in through the platform's input path
 // (QWindowSystemInterface), so every screen handles them as it handles the mouse and keyboard. An
-// item of the scope may take a command first with a QML function `gamepadCommand(name)` returning
-// true (names: up, down, left, right, confirm, back, secondary, tertiary, start, tabPrevious,
-// tabNext); the nearest one above the focus is asked. Start does what back does unless taken.
+// item of the scope may take a command first with a QML function `gamepadCommand(command: int)`
+// returning true; it gets the Command value and compares with GamepadMenuInput.Command.Back and so
+// on (QcGamepadMenuInputForeign). The nearest one above the focus is asked. Start does what back does unless taken.
 // An item with the QML property `padLeftOnly` set (a side bar's back entry) is never where the focus
 // starts; it is reached by moving left, or up from within its own group (the first category below
 // it), never down (docs/UI-Leitfaden.md 10, decision E-925).
@@ -60,12 +60,13 @@ public:
     // Without a focused candidate, focuses where the focus starts: the one focused last in this
     // scope, else a highlighted (default) button, else the top left (never a `padLeftOnly` item).
     void focusStart();
+    // Forgets the focus remembered on `screen` and its items: the next press starts there again as
+    // on a screen made anew (a screen kept loaded that opens at its start each time).
+    void forgetFocusIn(const QQuickItem *screen);
     // Moves the pointer over the focused candidate, so the hover follows a focus that QML moved.
     void hoverFocus();
     // Input made by the navigator is being sent (it is not the mouse's or the keyboard's).
     bool sending() const { return m_sending; }
-
-    static QString commandName(Command command);
 
 signals:
     // Confirm on an editable text field: the on-screen keyboard should open for it.

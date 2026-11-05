@@ -23,7 +23,7 @@ class TestWaterLook : public QObject
     {
         QcWaterFrame result;
         result.viewProjection.perspective(70.0f, 1.6f, 0.05f, 300.0f);
-        result.light.toLight = QVector3D(0.0f, 2.0f, 0.0f);
+        result.light.sun = QVector3D(0.0f, 2.0f, 0.0f);
         result.light.strength = 0.75f;
         result.light.litTint = QVector3D(1.0f, 0.9f, 0.8f);
         result.camera = QcVec3{100.25, 70.5, -3.75};
@@ -117,7 +117,7 @@ private slots:
     void brokenValuesGiveNoHighlight()
     {
         QcWaterFrame input = frame();
-        input.light.toLight = QVector3D(std::numeric_limits<float>::quiet_NaN(), 1.0f, 0.0f);
+        input.light.sun = QVector3D(std::numeric_limits<float>::quiet_NaN(), 1.0f, 0.0f);
         QcWaterUniforms uniforms = QcWaterLook::uniforms(input);
         QCOMPARE(uniforms.toLight[3], 0.0f);
         QCOMPARE(uniforms.toLight[1], 1.0f);

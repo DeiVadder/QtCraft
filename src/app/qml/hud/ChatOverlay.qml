@@ -36,18 +36,19 @@ Item {
         readonly property real roomLeft: overlay.statusArea.x - input.x - Ui.hudPx(8)
         readonly property bool besideHotbar: roomLeft >= Ui.hudPx(160)
 
-        objectName: "chatHelpHint"
         x: input.x
         y: (besideHotbar ? input.y : Math.min(input.y, overlay.statusArea.y)) - height - Ui.hudPx(4)
         width: Math.min(implicitWidth, besideHotbar ? roomLeft : input.width)
         wrapMode: Text.Wrap
-        visible: (input.text.length === 0 && !overlay.commandSent) || (input.text.startsWith("/") && input.text.indexOf(" ") < 0)
+        visible: overlay.game.hud.chat.showsHelpHint(input.text, overlay.commandSent)
         text: qsTr("/help lists the commands by group, /help <command> explains one")
     }
 
     TextField {
         id: input
 
+        // The startup hooks' text: step and QTCRAFT_LOG_ITEMS find it (app_offscreen_chat_history).
+        objectName: "chatInput"
         Accessible.name: qsTr("Chat")
         anchors.left: parent.left
         anchors.right: parent.right
@@ -55,9 +56,23 @@ Item {
         anchors.margins: Ui.hudPx(12)
         placeholderText: overlay.game.gamepad.active ? qsTr("Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels").arg(overlay.game.gamepad.pads.texts.start).arg(overlay.game.gamepad.pads.texts.east)
                                                    : qsTr("Chat or /command (e.g. /help), Enter to send, Esc to cancel")
-        Keys.onEscapePressed: overlay.game.overlay = GameController.Overlay.None
+        // The lines sent before, as in a shell (decision E-970); past the newest the draft.
+        Keys.onUpPressed: event => input.recall(event, true)
+        Keys.onDownPressed: event => input.recall(event, false)
+        Keys.onPressed: event => {
+            event.accepted = overlay.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close;
+            if (event.accepted)
+                overlay.game.overlay = GameController.Overlay.None;
+        }
+        // Up or down without modifiers (the arrow keys carry the keypad flag on macOS) recall a
+        // line; with Shift, Ctrl or Cmd the field keeps them (selection, start and end).
+        function recall(event: KeyEvent, back: bool) {
+            event.accepted = (event.modifiers & ~Qt.KeypadModifier) === Qt.NoModifier;
+            if (event.accepted)
+                text = back ? overlay.game.hud.chat.inputs.previous(text) : overlay.game.hud.chat.inputs.next(text);
+        }
         onAccepted: {
-            overlay.commandSent = text.startsWith("/");
+            overlay.commandSent = overlay.game.hud.chat.isCommand(text);
             overlay.game.sendChat(text);
             overlay.game.overlay = GameController.Overlay.None;
         }

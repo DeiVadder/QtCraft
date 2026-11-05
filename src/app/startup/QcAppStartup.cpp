@@ -9,13 +9,16 @@
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/hooks/QcScriptedPad.h"
+#include "app/session/QcAfterFrame.h"
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/debug/QcStatsLog.h"
+#include "common/core/QcConsole.h"
 #include "worlds/QcBundledMods.h"
 #include "worlds/QcModLoader.h"
 
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QQuickWindow>
 
 #include <algorithm>
@@ -25,6 +28,32 @@
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// Started when the program's libraries are loaded, before main(): the start-up times in the log
+// (decision E-943) count from about the program's start.
+const QElapsedTimer programClock = [] {
+    QElapsedTimer clock;
+    clock.start();
+    return clock;
+}();
+
+// "Startup: first frame after <n> ms" once the window has drawn its first picture (the main menu, or
+// the loading screen of --play).
+void logFirstFrame(QQuickWindow &window)
+{
+    auto connection = std::make_shared<QMetaObject::Connection>();
+    // frameSwapped comes from the render thread; a second queued call may already wait.
+    *connection = QObject::connect(
+        &window, &QQuickWindow::frameSwapped, qApp,
+        [connection] {
+            if (*connection) {
+                qCInfo(lcStartup) << "Startup: first frame after" << programClock.elapsed() << "ms";
+                QObject::disconnect(*connection);
+                *connection = {};
+            }
+        },
+        Qt::QueuedConnection);
+}
 
 // Without --play (test hooks): --overlay multiplayer opens the main menu's multiplayer page; with
 // --join it joins from there, so a refusal is shown like after a click. Runs the menu steps of the
@@ -47,6 +76,7 @@ void openMenuScreen(const QQuickWindow &window, QcGameController &game, const Qc
 
     QMetaObject::invokeMethod(menu, "openMultiplayer", Q_ARG(QString, options.join.value_or(QString())), Q_ARG(QString, options.playerName),
                               Q_ARG(QString, options.password));
+    game.startup()->holdScreenshotDuringJoin(*game.multiplayer());
 }
 
 // First start of a release bundle: its example mods go, switched off, into the player's mods
@@ -110,6 +140,8 @@ void applySceneOptions(QcGameController &game, const QcAppOptions &options)
             game.settings()->debug()->setShown(*visual, true);
         }
     }
+    // The scene is the run's, not the player's choice.
+    game.settings()->keepSceneOptionsUnsaved();
 }
 
 // --join: plays a network game at once; a failure ends the run like a bad option. --host-lan:
@@ -121,7 +153,7 @@ void startNetworkRun(QcGameController &game, const QcAppOptions &options)
         QObject::connect(
             multiplayer, &QcMultiplayerController::joinFailed, qApp,
             [](const QString &reason) {
-                std::println(stderr, "qtcraft: cannot join: {}", reason.toStdString());
+                QcConsole::printErrorLine(u"qtcraft: cannot join: "_s + reason);
                 QCoreApplication::exit(1);
             },
             Qt::QueuedConnection);
@@ -182,7 +214,7 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
         QObject::connect(
             &game, &QcGameController::worldRefused, qApp,
             [](const QString &reason) {
-                std::println(stderr, "qtcraft: {}", reason.toStdString());
+                QcConsole::printErrorLine(u"qtcraft: "_s + reason);
                 QCoreApplication::exit(1);
             },
             Qt::QueuedConnection);
@@ -205,17 +237,8 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
     }
 }
 
-} // namespace
-
-void QcAppStartup::loadSettings(QcGameController &game)
-{
-    if (const QString packs = qEnvironmentVariable("QTCRAFT_TEXTURE_PACKS"); !packs.isEmpty()) {
-        game.settings()->texturePacks()->overrideSelection(packs == u"none"_s ? QStringList() : packs.split(u',', Qt::SkipEmptyParts));
-    }
-    game.settings()->loadSettings();
-}
-
-void QcAppStartup::startGame(QcGameController &game, const QcAppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
+// Worlds, mods, the screenshot hook and the scripted parts of the run.
+void runGame(QcGameController &game, const QcAppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
 {
     game.library()->refreshWorlds();
     setUpMods(game, options);
@@ -228,4 +251,30 @@ void QcAppStartup::startGame(QcGameController &game, const QcAppOptions &options
     game.photo()->setGrabber(QcScreenshotHook::grabberFor(window, offscreenRender));
     startScriptedRun(game, options, screenshot);
     openMenuScreen(offscreenRender ? *offscreenRender->window() : window, game, options);
+}
+
+} // namespace
+
+void QcAppStartup::loadSettings(QcGameController &game)
+{
+    if (const QString packs = qEnvironmentVariable("QTCRAFT_TEXTURE_PACKS"); !packs.isEmpty()) {
+        game.settings()->texturePacks()->overrideSelection(packs == u"none"_s ? QStringList() : packs.split(u',', Qt::SkipEmptyParts));
+    }
+    game.settings()->loadSettings();
+}
+
+void QcAppStartup::startGame(QcGameController &game, const QcAppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
+{
+    qCInfo(lcStartup) << "Startup: window and main menu made after" << programClock.elapsed() << "ms";
+    QQuickWindow &shown = offscreenRender ? *offscreenRender->window() : window;
+    logFirstFrame(shown);
+    // The start screen is drawn first (decision E-943); worlds, mods and content follow.
+    auto *afterFrame = new QcAfterFrame(&game);
+    afterFrame->setWindow(&shown);
+    afterFrame->run([&game, options, &window, offscreenRender, afterFrame] {
+        runGame(game, options, window, offscreenRender);
+        game.finishStartup();
+        qCInfo(lcStartup) << "Startup: game started after" << programClock.elapsed() << "ms";
+        afterFrame->deleteLater();
+    });
 }

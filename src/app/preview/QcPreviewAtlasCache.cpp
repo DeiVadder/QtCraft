@@ -5,9 +5,8 @@
 
 #include "app/rendering/QcAtlasTexture.h"
 
-#include <QMutex>
-
 #include <algorithm>
+#include <mutex>
 #include <vector>
 
 namespace QcPreviewAtlasCache {
@@ -22,7 +21,8 @@ struct Entry
     std::weak_ptr<QRhiTexture> texture;
 };
 
-QMutex mutex;
+// The render threads of the preview items (one per window) share the textures under this mutex.
+std::mutex mutex;
 std::vector<Entry> entries;
 
 void dropExpired()
@@ -35,7 +35,7 @@ void dropExpired()
 std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QList<QImage> &levels, QRhiResourceUpdateBatch *updates)
 {
     const QImage &image = levels.front();
-    const QMutexLocker locker(&mutex);
+    const std::scoped_lock locker(mutex);
     dropExpired();
     const auto known = std::ranges::find_if(entries, [rhi, &image](const Entry &entry) { return entry.rhi == rhi && entry.imageKey == image.cacheKey(); });
     if (known != entries.end()) {
@@ -56,7 +56,7 @@ std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QList<QImage> &levels, QRh
 
 int liveTextures()
 {
-    const QMutexLocker locker(&mutex);
+    const std::scoped_lock locker(mutex);
     dropExpired();
     return static_cast<int>(entries.size());
 }

@@ -10,83 +10,87 @@
 
 #include <QByteArray>
 
-// The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
-// E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks and lit explosives, armour stands,
-// minecarts (E-382), experience orbs (E-398), projectiles (E-425), and whether the chunk already got its animals,
-// then item frames and paintings (E-793) and boats (E-920). Items,
-// blocks, creatures, armour and capes are stored by name.
-//
-// Every entry is a header (type name, position, velocity, yaw, order, persistent id) and a list of
-// components (QcComponentFrames): the fields of its kind and, for a villager, its record. A new field
-// is a new version of its component or a new component, not a new world format.
+/*! \brief The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions
+    E-366, E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks and
+    lit explosives, armour stands, minecarts (E-382), experience orbs (E-398), projectiles (E-425),
+    and whether the chunk already got its animals, then item frames and paintings (E-793) and boats
+    (E-920).
+
+    Items, blocks, creatures, armour and capes are stored by name.
+
+    Every entry is a header (type name, position, velocity, yaw, order, persistent id) and a list
+    of components (QcComponentFrames): the fields of its kind and, for a villager, its record. A
+    new field is a new version of its component or a new component, not a new world format. */
 namespace QcEntityCodec {
 
-// Entries of one kind in one chunk at most; a valid world never comes close.
+/*! Entries of one kind in one chunk at most; a valid world never comes close. */
 inline constexpr quint32 maxPerChunk = 65536;
-// The current version of the components of each kind (QcVillagerCodec::version for villagers; the
-// creature components beyond Creature have their own, QcCreatureComponents).
+/*! The current version of the components of each kind (QcVillagerCodec::version for villagers;
+    the creature components beyond Creature have their own, QcCreatureComponents). */
 inline constexpr quint16 kindVersion = 1;
-// Type names (creatures, items, block states) longer than this are damaged data.
+/*! Type names (creatures, items, block states) longer than this are damaged data. */
 inline constexpr qsizetype maxTypeName = 512;
 
-// The ids of the components of entity entries; a later version adds ids below
-// QcComponentFrames::firstModId, a mod from it on; none is ever reused.
+/*! \brief The ids of the components of entity entries; a later version adds ids below
+    QcComponentFrames::firstModId, a mod from it on; none is ever reused. */
 enum class Component : quint16 {
-    // Health, breeding timers, bred (version 1).
+    /*! Health, breeding timers, bred (version 1). */
     Creature = 1,
-    // QcVillagerRecord (QcVillagerCodec::version).
+    /*! QcVillagerRecord (QcVillagerCodec::version). */
     Villager = 2,
-    // Count, damage, age, pickup delay of a dropped stack (version 1).
+    /*! Count, damage, age, pickup delay of a dropped stack (version 1). */
     Item = 3,
-    // Age of a falling block (version 1).
+    /*! Age of a falling block (version 1). */
     FallingBlock = 4,
-    // Pose, name, item, held item, armour, cape of an armour stand (version 1).
+    /*! Pose, name, item, held item, armour, cape of an armour stand (version 1). */
     ArmourStand = 5,
-    // Item, slots and whether a hopper cart pulls (version 1).
+    /*! Item, slots and whether a hopper cart pulls (version 1). */
     Minecart = 6,
-    // Value, age, pickup delay of an experience orb (version 1).
+    /*! Value, age, pickup delay of an experience orb (version 1). */
     ExperienceOrb = 7,
-    // Pitch, age, pickup, damage factor and where it sticks of a projectile (version 1).
+    /*! Pitch, age, pickup, damage factor and where it sticks of a projectile (version 1). */
     Projectile = 8,
-    // Status effects of a creature: count, then name, level and ticks left of each (version 1,
-    // decision E-450).
+    /*! Status effects of a creature: count, then name, level and ticks left of each (version 1,
+        decision E-450). */
     Effects = 9,
-    // The block state a creature carries, by name, and whether it is kept with the world only for
-    // that block (version 1; decision E-460).
+    /*! The block state a creature carries, by name, and whether it is kept with the world only
+        for that block (version 1; decision E-460). */
     Carried = 10,
-    // A creature that stays in its enclosure (version 1, no fields; decision E-460).
+    /*! A creature that stays in its enclosure (version 1, no fields; decision E-460). */
     Confined = 11,
-    // Whether a player built the golem (version 1, decision E-471).
+    /*! Whether a player built the golem (version 1, decision E-471). */
     Golem = 12,
-    // Seconds until a laying creature lays next (version 1, decision E-452); only while its timer
-    // runs.
+    /*! Seconds until a laying creature lays next (version 1, decision E-452); only while its
+        timer runs. */
     Laying = 13,
-    // Owner identity, sitting and collar colour of a tame creature (version 1; decision E-480).
+    /*! Owner identity, sitting and collar colour of a tame creature (version 1; decision E-480). */
     Tame = 14,
-    // A creature without a mind (version 1, no fields; decision E-510).
+    /*! A creature without a mind (version 1, no fields; decision E-510). */
     NoAi = 16,
-    // The ticks left of a lit explosive, on a falling block entry (version 1, decision E-601): the
-    // entry is a lit explosive, which a version without it reads as a falling block.
+    /*! The ticks left of a lit explosive, on a falling block entry (version 1, decision E-601):
+        the entry is a lit explosive, which a version without it reads as a falling block. */
     Fuse = 17,
-    // Type, face, cell, motif by name, rotation and held stack of an item frame or painting
-    // (version 1, decision E-793; QcHangingCodec).
+    /*! Type, face, cell, motif by name, rotation and held stack of an item frame or painting
+        (version 1, decision E-793; QcHangingCodec). */
     Hanging = 18,
-    // The data of a dropped stack: the components of its QcItemData (QcItemDataCodec; version 1,
-    // decision E-823); only for stacks with data.
+    /*! The data of a dropped stack: the components of its QcItemData (QcItemDataCodec; version
+        1, decision E-823); only for stacks with data. */
     ItemData = 19,
-    // The persistent id of the parent of a child of a kept family and the chunk it was last in
-    // (version 1, decision E-839).
+    /*! The persistent id of the parent of a child of a kept family and the chunk it was last in
+        (version 1, decision E-839). */
     Family = 20,
-    // The name a name tag gave a creature (version 1, decision E-866).
+    /*! The name a name tag gave a creature (version 1, decision E-866). */
     Name = 21,
-    // Feet, velocity and yaw of a boat (version 1, decision E-920; QcBoatCodec).
+    /*! Feet, velocity and yaw of a boat (version 1, decision E-920; QcBoatCodec). */
     Boat = 22,
 };
 
+/*! Returns the blob of \a record, names after \a content. */
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);
-// The record of `chunk`. Unknown items, blocks, creatures and capes and armour that no longer fits
-// its slot are dropped with a warning (each unknown name once per world: QcLoadWarnings::addOnce);
-// damaged or implausible data (an entity outside the chunk, values that cannot be) is an error.
+/*! Returns the record of \a chunk read from \a blob, names looked up in \a content. Unknown
+    items, blocks, creatures and capes and armour that no longer fits its slot are dropped with a
+    warning in \a warnings (each unknown name once per world: QcLoadWarnings::addOnce); damaged
+    or implausible data (an entity outside the chunk, values that cannot be) is an error. */
 [[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
                                               QcLoadWarnings &warnings);
 

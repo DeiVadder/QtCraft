@@ -16,7 +16,9 @@ using namespace Qt::StringLiterals;
 
 // A paused server keeps its connections (decision E-877): the tick loop stands still, but the
 // transports send keep-alives on their own, so neither end drops the other while nothing else is
-// said. Waits in real time (three idle timeouts of 1 s, long enough for a sanitizer build), hence in tests/timing.cmake.
+// said. Waits in real time (three idle timeouts of 3 s; under TSan the tick that sends the joined
+// player's view alone takes about 1.1 s, so a shorter timeout drops the link before the login), hence
+// in tests/timing.cmake.
 class TestPauseKeepAlive : public QObject
 {
     Q_OBJECT
@@ -36,7 +38,7 @@ private slots:
         QTcpSocket *accepted = listener.nextPendingConnection();
 
         // The host's own player over a short-lived TCP link (the in-process transport has no timeout).
-        const QcTcpTransport::Limits limits{.keepAliveMs = 100, .idleTimeoutMs = 1000};
+        const QcTcpTransport::Limits limits{.keepAliveMs = 100, .idleTimeoutMs = 3000};
         QcServerConfig config;
         config.viewDistance = 1;
         QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
@@ -64,7 +66,7 @@ private slots:
         // Three idle timeouts with the server's ticks running empty: both ends stay.
         QElapsedTimer waited;
         waited.start();
-        while (waited.elapsed() < 3000) {
+        while (waited.elapsed() < qint64{3} * limits.idleTimeoutMs) {
             QcTestUtil::ticks(server, 1);
             QTest::qWait(20);
         }
@@ -76,7 +78,7 @@ private slots:
         QVERIFY(QTest::qWaitFor(
             [&] {
                 QcTestUtil::ticks(server, 1);
-                return server.tickCount() > paused;
+                return server.tickCount() > paused && client.pauses.size() == 2;
             },
             timeoutMs));
         QCOMPARE(client.pauses, (QList<bool>{true, false}));

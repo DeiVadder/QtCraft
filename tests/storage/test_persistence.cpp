@@ -12,7 +12,7 @@
 
 #include <QDir>
 #include <QFile>
-#include <QSysInfo>
+#include <QLockFile>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -85,10 +85,21 @@ private slots:
     void aLockOfACrashedProcessDoesNotBlockTheWorld()
     {
         QTemporaryDir dir;
-        // QLockFile's format: process id, application name, host name; no process has this id.
-        QFile lock(QDir(dir.path()).filePath(u"session.lock"_s));
+        // A lock as this machine writes it (its name and ids are QLockFile's business, on Windows
+        // they differ from QSysInfo::machineHostName()), left by a process that is gone: no process
+        // has this id. Written by hand it would come from another machine, which QLockFile respects.
+        const QString path = QDir(dir.path()).filePath(u"session.lock"_s);
+        QByteArray content;
+        {
+            QLockFile written(path);
+            QVERIFY(written.tryLock(0));
+            QFile reader(path);
+            QVERIFY(reader.open(QIODevice::ReadOnly));
+            content = reader.readAll();
+        }
+        QFile lock(path);
         QVERIFY(lock.open(QIODevice::WriteOnly));
-        lock.write("999999\nqtcraft\n" + QSysInfo::machineHostName().toUtf8() + "\n");
+        lock.write("999999" + content.mid(content.indexOf('\n')));
         lock.close();
 
         auto server = host(dir.path());

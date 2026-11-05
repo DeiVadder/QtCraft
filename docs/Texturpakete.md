@@ -49,6 +49,7 @@ The texture name is `<folder below textures>:<file name without extension>`. The
     "format": 1,
     "name": "My pack",
     "description": "What makes it special.",
+    "descriptions": { "de": "Was es besonders macht." },
     "resolution": 32,
     "license": "CC-BY-4.0",
     "credits": [
@@ -64,6 +65,7 @@ The texture name is `<folder below textures>:<file name without extension>`. The
 | `format` | Always `1` |
 | `name` | Required, at most 64 characters |
 | `description` | Optional, at most 1000 characters |
+| `descriptions` | Optional: the description in other languages by language code (`"de"`; read in lower case up to `_` or `-`, so `"de_DE"` counts as `"de"`), at most 32 texts of at most 1000 characters; the settings show the one of the game's language, else `description` |
 | `resolution` | Edge length of every texture in pixels: 16, 32, 64, 128, 256 or 512 |
 | `license`, `credits` | Shown in the settings; at most 32 credits with `author`, `license`, `source`, `note`. Fill them in for material by others (see `docs/ASSETS.md`) |
 | `procedural` | `true`: also paint every procedural texture of the game and of mods at `resolution` (how QtCraft HD works) |
@@ -76,6 +78,8 @@ An invalid or missing manifest makes the pack unusable; the settings show why.
 One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully transparent pixels are holes on cut-out blocks (`"render": "cutout"`: leaves, plants, torches), on items and on figures; partial transparency is kept where the game draws a block as translucent (glass, water, ice). Blocks of the opaque layer (the default: stone, logs, planks and the like) are drawn without alpha test (decision E-756), so a transparent pixel in their textures shows in its colour, not as a hole; a texture pack must keep those textures fully opaque. Faces of blocks, item icons and the body parts of figures use the same squares as the 16×16 originals, so the easiest start is an export at the resolution you want.
 
 **Animation** (decision E-878): a vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames, the first at the top) animates. The frames are shown at the frame time of the game's own texture when that one is animated (fire, lava, water: `frameTime` and `interpolate` of its definition), otherwise for 2 ticks (100 ms) each without blending; a strip of one frame keeps an animated texture still. `--export-textures` writes animated textures as such strips, a good start for your own frames. A procedural spec animates with the same fields as the content (`frames`, `frameTime`, `interpolate`, see below).
+
+**Draw stages of the bow** (decision E-987): `qtcraft:bow_draw_1` to `qtcraft:bow_draw_3` are ordinary textures: the bow with the string pulled back and an arrow on it, shown in the hand while it is drawn, whereas the icon, item frames and dropped bows keep `qtcraft:bow`. Keep the grip where `qtcraft:bow` has it: the hand holds every stage by the grip of the resting sprite. A pack that only changes `qtcraft:bow` should bring the three stages too, otherwise the game's own stages show while drawing. `--export-textures` writes them with the rest. A mod's launcher has the same textures under its own names (`docs/Modding.md`).
 
 ## Material maps (realistic mode)
 
@@ -123,6 +127,8 @@ A `.json` file uses the same format as `content/*/textures/*.json` (`pattern`, `
 | `smooth` | Round diagonal and curved outlines while enlarging; `false` keeps straight boards and bricks crisp |
 
 `detail` also works in a mod's own texture definitions; at 16× it has no effect.
+
+Outlines follow the shape, never the colours (decision E-1000): the pixel variation of a thin shape does not notch it. Tools and weapons (`tool`, `pickaxe`, `axe`, `shovel`, `sword`, `hoe`, `stick`, `arrow`, `fishing_rod`) take their outline from strokes between the 16×16 pixels, so blades and handles stay straight at every resolution; other cut-out shapes keep the Scale2x outline. Cut-out shapes are bevelled only along their outline. Above 16× the `sword` pattern adds a guard, a wrapped grip and a pommel that its 16×16 icon leaves out, and the `axe` pattern a real head: a narrow cheek at the haft, a bit flaring into a long convex cutting edge with a small beard, a poll behind the haft, which passes through the eye. Tool icons never repeat: their outline does not join parts across the tile's border.
 
 Animated textures (decision E-878) add three fields:
 

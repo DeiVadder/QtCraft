@@ -12,13 +12,14 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands about entities: listing them, attacking or using an item on a creature,
-// collecting dropped items, and riding minecarts.
+/*! \brief Control commands about entities: listing them, attacking or using an item on a
+    creature, collecting dropped items, and riding minecarts. */
 class QcControlEntityCommands
 {
 public:
     explicit QcControlEntityCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

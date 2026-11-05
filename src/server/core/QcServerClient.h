@@ -5,6 +5,7 @@
 
 #include "common/content/mobs/QcAppearance.h"
 #include "common/gameplay/QcAdvancementProgress.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
@@ -27,13 +28,14 @@
 #include <memory>
 #include <optional>
 
-// Server-internal state of one connected client, shared by the parts of QcServer, grouped by what it
-// is for (decision E-367). Its player is an
-// entity like the others (decision E-364): id, motion and yaw are the player's; only its inputs move
-// it (QcEntityMotion::stepPlayer), and it never rests.
+/*! \brief Server-internal state of one connected client, shared by the parts of QcServer, grouped
+    by what it is for (decision E-367).
+
+    Its player is an entity like the others (decision E-364): id, motion and yaw are the
+    player's; only its inputs move it (QcEntityMotion::stepPlayer), and it never rests. */
 struct QcServerClient : QcEntity
 {
-    // The kind of every entity of this type (QcEntity::as).
+    /*! The kind of every entity of this type (QcEntity::as). */
     static constexpr QcEntityKind entityKind = QcEntityKind::Player;
 
     QcServerClient()
@@ -41,33 +43,46 @@ struct QcServerClient : QcEntity
     {
     }
 
-    enum class State { AwaitingHello, AwaitingLogin, Playing, Closed };
+    /*! Where the client stands in its connection. */
+    enum class State {
+        /*! Connected, the Hello has not come yet. */
+        AwaitingHello,
+        /*! The LoginChallenge went out, the answer has not come yet. */
+        AwaitingLogin,
+        /*! Logged in and playing. */
+        Playing,
+        /*! The connection is closed; the client is removed. */
+        Closed
+    };
 
-    // Inputs a client may queue before further inputs are dropped (anti speed-hack); at slow tick
-    // rates a whole tick's share of inputs plus inputMargin (decision E-249).
+    /*! Inputs a client may queue before further inputs are dropped (anti speed-hack); at slow
+        tick rates a whole tick's share of inputs plus inputMargin (decision E-249). \qcshared */
     static constexpr int maxInputBudget = 10;
     static constexpr int inputMargin = 5;
+    /*! The health of a player at full health. */
     static constexpr double maxHealth = 20.0;
-    // Blocks resent per tick for dropped mining messages (QcServer::resendDroppedMiningTarget).
+    /*! Blocks resent per tick for dropped mining messages (QcServer::resendDroppedMiningTarget). */
     static constexpr qsizetype maxMiningResendsPerTick = 3;
 
-    // The login (decision E-252): where the client connects from (address and port of a network
-    // client; empty in-process), the program it reports, since when (the login must finish within loginTimeoutMs), the nonce
-    // of the challenge and the fingerprint of the proven identity (remote clients).
+    /*! \brief The login (decision E-252): where the client connects from (address and port of a
+        network client; empty in-process), the program it reports, since when (the login must
+        finish within loginTimeoutMs), the nonce of the challenge and the fingerprint of the
+        proven identity (remote clients). \qcfields */
     struct Login
     {
         QString address;
-        // What the client said it is (QcMsg::Hello::client), for the log.
+        /*! What the client said it is (QcMsg::Hello::client), for the log. */
         QString client;
         QElapsedTimer connected;
         QByteArray nonce;
         QString fingerprint;
     };
 
-    // What the client may send: inputs refilled each tick by the real time it stands for, one per
-    // 50 ms (decision E-249), so other tick rates and sprints keep the player's pace; budgets of the
-    // other spammable messages; the latest input applied; positions whose true block was resent in
-    // tick `miningResendTick` after a dropped mining message.
+    /*! \brief What the client may send: inputs refilled each tick by the real time it stands
+        for, one per 50 ms (decision E-249), so other tick rates and sprints keep the player's
+        pace; budgets of the other spammable messages; the latest input applied; positions whose
+        true block was resent in tick \c {miningResendTick} after a dropped mining message.
+        \qcfields */
     struct Input
     {
         double budget = maxInputBudget;
@@ -77,22 +92,24 @@ struct QcServerClient : QcEntity
         quint64 miningResendTick = 0;
     };
 
-    // What the client has been told about the world: chunks streamed around the player within
-    // `distance`, entities it knows (with the stack count of an item, the position of its last
-    // move and whether that move came in the last tick, QcEntitySync), known entities whose spawn
-    // data changed and must be sent again, and the debug data it subscribed to
-    // (QcMsg::DebugSubscribe) and when that was last sent.
+    /*! \brief What a client knows of an entity: the stack count of an item, the position of
+        its last move and whether that move came in the last tick (QcEntitySync). \qcfields */
     struct SentEntity
     {
         int count = 0;
         QcVec3 position;
         bool moving = false;
     };
+    /*! \brief What the client has been told about the world: chunks streamed around the player
+        within \c {distance}, entities it knows (SentEntity), known entities whose spawn data
+        changed and must be sent again, and the debug data it subscribed to
+        (QcMsg::DebugSubscribe) and when that was last sent. \qcfields */
     struct View
     {
         int distance = 0;
         QSet<QcChunkPos> sentChunks;
-        // Counts changes of sentChunks (QcChunkLoading recomputes the needed chunks only on a change).
+        /*! Counts changes of sentChunks (QcChunkLoading recomputes the needed chunks only on a
+            change). */
         quint64 sentChanges = 0;
         QHash<quint32, SentEntity> known;
         QSet<quint32> stale;
@@ -100,8 +117,8 @@ struct QcServerClient : QcEntity
         std::optional<quint64> debugSentTick;
     };
 
-    // The crafting grid, row-major with three cells per row; a 2 x 2 grid uses the top-left four,
-    // a crafting table at `table` the whole grid.
+    /*! \brief The crafting grid, row-major with three cells per row; a 2 x 2 grid uses the
+        top-left four, a crafting table at \c {table} the whole grid. \qcfields */
     struct Crafting
     {
         QList<QcItemStack> grid = QList<QcItemStack>(9);
@@ -109,17 +126,18 @@ struct QcServerClient : QcEntity
         std::optional<QcBlockPos> table;
     };
 
-    // The open stonecutter (QcServerStonecutter, decision E-785): where it stands, the stack in its
-    // input slot and the stonecutting recipe chosen for it (empty: none). Its output is not stored; it
-    // follows from both (QcStonecutting::output).
+    /*! \brief The open stonecutter (QcServerStonecutter, decision E-785): where it stands, the
+        stack in its input slot and the stonecutting recipe chosen for it (empty: none).
+
+        Its output is not stored; it follows from both (QcStonecutting::output). \qcfields */
     struct Stonecutter
     {
         QcBlockPos pos;
         QcItemStack input;
         QString recipe;
 
-        // Puts `stack` into the input slot; another item or none drops the chosen recipe, as in the
-        // reference (more or fewer of the same item keep it).
+        /*! Puts \a stack into the input slot; another item or none drops the chosen recipe, as
+            in the reference (more or fewer of the same item keep it). */
         void setInput(const QcItemStack &stack)
         {
             if (stack.isEmpty() || stack.item != input.item) {
@@ -129,10 +147,12 @@ struct QcServerClient : QcEntity
         }
     };
 
-    // The open enchanting table (QcServerEnchanting, decision E-864): where it stands and the stacks in
-    // its item and lapis slots. Its offers follow from the item, the bookshelves and the player's
-    // enchantment seed. `shown` and `shownShelves` are what the client was last told (stateOf):
-    // the player takes only an offer he saw, and a changed shelf count sends the offers again.
+    /*! \brief The open enchanting table (QcServerEnchanting, decision E-864): where it stands and
+        the stacks in its item and lapis slots.
+
+        Its offers follow from the item, the bookshelves and the player's enchantment seed.
+        \c {shown} and \c {shownShelves} are what the client was last told (stateOf): the player
+        takes only an offer he saw, and a changed shelf count sends the offers again. \qcfields */
     struct Enchanting
     {
         QcBlockPos pos;
@@ -142,10 +162,12 @@ struct QcServerClient : QcEntity
         int shownShelves = -1;
     };
 
-    // The open anvil (QcServerAnvil, decision E-866): where it stands, its left and right slots and
-    // the text of its name field. What it makes follows from them (QcAnvil::result). The name field
-    // follows the left stack: whenever another stack (or the same with other data) lies there, the
-    // field holds that stack's custom name, so a repair keeps the name (as in the reference).
+    /*! \brief The open anvil (QcServerAnvil, decision E-866): where it stands, its left and right
+        slots and the text of its name field.
+
+        What it makes follows from them (QcAnvil::result). The name field follows the left stack:
+        whenever another stack (or the same with other data) lies there, the field holds that
+        stack's custom name, so a repair keeps the name (as in the reference). \qcfields */
     struct Anvil
     {
         QcBlockPos pos;
@@ -153,6 +175,8 @@ struct QcServerClient : QcEntity
         QcItemStack right;
         QString name;
 
+        /*! Puts \a stack into the left slot; another item or other data takes its custom name
+            into the name field. */
         void setLeft(const QcItemStack &stack)
         {
             if (stack.item != left.item || !(stack.itemData() == left.itemData())) {
@@ -162,43 +186,51 @@ struct QcServerClient : QcEntity
         }
     };
 
-    // The machine, container or villager whose screen the player has open, and what the client was
-    // last told about it.
-    // A portable container opened from the hand (a backpack, decision E-833): the hotbar slot that
-    // holds it, locked while open, and its slots as a working copy of the item's contents, filled
-    // from the item whenever the screen is used (QcBlockScreens::openContainerOf) and written back
-    // into it by QcServerInventory.
+    /*! \brief The machine, container or villager whose screen the player has open, and what the
+        client was last told about it.
+
+        A portable container opened from the hand (a backpack, decision E-833): the hotbar slot
+        that holds it, locked while open, and its slots as a working copy of the item's contents,
+        filled from the item whenever the screen is used (QcBlockScreens::openContainerOf) and
+        written back into it by QcServerInventory. \qcfields */
     struct HeldContainer
     {
         int slot = 0;
         QList<QcItemStack> stacks;
     };
 
+    /*! \brief The screens the player has open and what the client was last told about them. */
     struct Screen
     {
+        /*! The machine or container block whose screen is open. */
         std::optional<QcBlockPos> open;
-        // A container minecart (entity id) instead of a block; `open` is unset then.
+        /*! A container minecart (entity id) instead of a block; \c {open} is unset then. */
         quint32 cart = 0;
-        // A backpack opened from the hand instead of a block or cart; `open` is unset and `cart` 0 then.
+        /*! A backpack opened from the hand instead of a block or cart; \c {open} is unset and
+            \c {cart} 0 then. */
         std::optional<HeldContainer> held;
+        /*! The machine screen as last sent. */
         std::optional<QcMsg::MachineState> sent;
-        // The villager (entity id) whose trading screen is open (QcServerTrading), 0 for none, and
-        // the screen as last sent.
+        /*! The villager (entity id) whose trading screen is open (QcServerTrading), 0 for none,
+            and the screen as last sent. \qcshared */
         quint32 trading = 0;
         std::optional<QcMsg::TradeState> sentTrade;
-        // The stonecutter whose screen is open. It, a machine, chest or cart (`open`, `cart`) and a
-        // trade (`trading`) are never open at once: opening one closes the others
-        // (QcServerStonecutter::open, QcBlockScreens::open/openCart, QcServerTrading::open).
+        /*! The stonecutter whose screen is open. It, a machine, chest or cart (\c {open},
+            \c {cart}) and a trade (\c {trading}) are never open at once: opening one closes the
+            others (QcServerStonecutter::open, QcBlockScreens::open/openCart,
+            QcServerTrading::open). */
         std::optional<Stonecutter> stonecutter;
-        // The enchanting table whose screen is open; never together with any of the above.
+        /*! The enchanting table whose screen is open; never together with any of the above. */
         std::optional<Enchanting> enchanting;
-        // The anvil whose screen is open; never together with any of the above.
+        /*! The anvil whose screen is open; never together with any of the above. */
         std::optional<Anvil> anvil;
-        // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
+        /*! The sign whose editor the server opened for the player (QcServerSigns, decision
+            E-766). */
         std::optional<QcBlockPos> sign;
     };
 
-    // The block being mined, since which tick and players' time (QcServerClock::playerTimeNs).
+    /*! \brief The block being mined, since which tick and players' time
+        (QcServerClock::playerTimeNs). \qcfields */
     struct Mining
     {
         std::optional<QcBlockPos> pos;
@@ -206,22 +238,28 @@ struct QcServerClient : QcEntity
         qint64 startNs = 0;
     };
 
+    /*! The connection to the client. */
     std::unique_ptr<QcConnection> connection;
+    /*! Where the client stands in its connection. */
     State state = State::AwaitingHello;
-    // Connected through the in-process host (the local single player): exempt from the chat limit,
-    // always an operator, no login.
+    /*! Connected through the in-process host (the local single player): exempt from the chat
+        limit, always an operator, no login. */
     bool local = false;
+    /*! The player joined the world (restored or spawned, decision E-367). */
     bool joined = false;
-    // The player has the pause menu open (QcMsg::PauseRequest, decision E-877); only a local
-    // player's wish pauses the server (QcServerPause).
+    /*! The player has the pause menu open (QcMsg::PauseRequest, decision E-877); only a local
+        player's wish pauses the server (QcServerPause). */
     bool pauseRequested = false;
-    // A network client's pause request was refused in the log already (once per connection).
+    /*! A network client's pause request was refused in the log already (once per connection). */
     bool pauseRefusalLogged = false;
+    /*! The player's name. */
     QString name;
-    // The round trip the player list shows for the client (decision E-886), in microseconds; -1
-    // while unknown. A display value: the client's reports replace it only when the change shows
-    // (QcServerState::reportLatency).
+    /*! The round trip the player list shows for the client (decision E-886), in microseconds; -1
+        while unknown. A display value: the client's reports replace it only when the change
+        shows (QcServerState::reportLatency). */
     qint32 listedLatencyUs = -1;
+    /*! The login, the input budgets, what the client was told, the crafting grid, the open
+        screens and the block being mined (see their types). \qcshared */
     Login login;
     Input input;
     View view;
@@ -229,71 +267,89 @@ struct QcServerClient : QcEntity
     Screen screen;
     Mining mining;
 
-    // The player's body and look; id, motion and yaw are in QcEntity.
+    /*! The player's body and look; id, motion and yaw are in QcEntity. */
     float pitch = 0.0f;
-    // Position before the last processed input; actions may have been aimed from there.
+    /*! Position before the last processed input; actions may have been aimed from there. */
     std::optional<QcVec3> previousPosition;
-    // The client must get its position again (PlayerState): a correction or an acknowledged input.
+    /*! The client must get its position again (PlayerState): a correction or an acknowledged
+        input. */
     bool stateDirty = false;
-    // The highest prediction sequence (decision E-853) of the actions handled since the last world
-    // sync; acknowledged after it (BlockAck), so the client knows the drops and other entities of
-    // the actions by then. 0: nothing to acknowledge.
+    /*! The highest prediction sequence (decision E-853) of the actions handled since the last
+        world sync; acknowledged after it (BlockAck), so the client knows the drops and other
+        entities of the actions by then. 0: nothing to acknowledge. */
     quint32 pendingBlockAck = 0;
+    /*! Whether the player sneaks and sprints (his latest input). \qcshared */
     bool sneaking = false;
     bool sprinting = false;
-    // Set by actions that swing the arm; reported to other clients in this tick's sync.
+    /*! Whether the player sneaked on the input before the latest one: the server still accepts an
+        aim from the crouched eyes then (QcLineOfSight, decision E-961). */
+    bool sneakedBefore = false;
+    /*! Set by actions that swing the arm; reported to other clients in this tick's sync. */
     bool swung = false;
-    // Drawing the launcher in the hotbar slot drawSlot since the tick drawStart (decision E-425,
-    // QcPlayerLaunchers); others see the aim.
+    /*! Drawing the launcher in the hotbar slot drawSlot since the tick drawStart (decision
+        E-425, QcPlayerLaunchers); others see the aim. \qcshared */
     bool drawing = false;
     quint64 drawStart = 0;
     int drawSlot = -1;
-    // The tick from which each thrown item may be thrown again (decision E-427, QcPlayerThrows).
+    /*! The tick from which each thrown item may be thrown again (decision E-427,
+        QcPlayerThrows). */
     QHash<QcItemId, quint64> throwReady;
+    /*! The player's look: skin, cape and the rest others see. */
     QcAppearance appearance;
+    /*! The hotbar and the main inventory. */
     QcInventory inventory;
-    // Armour slots; sent to the player and to everyone who sees them.
+    /*! Armour slots; sent to the player and to everyone who sees them. */
     QcEquipment equipment;
-    // Game mode (decision E-282) and the inventory and armour of the other inventory set, kept
-    // aside until the player changes back (decision E-283).
+    /*! Game mode (decision E-282) and the inventory and armour of the other inventory set, kept
+        aside until the player changes back (decision E-283). \qcshared */
     QcGameMode gameMode = QcGameMode::Survival;
     QcInventory keptInventory;
     QcEquipment keptEquipment;
+    /*! Returns the rules of the player's game mode. */
     QcGameModes::Rules rules() const { return QcGameModes::rules(gameMode); }
-    // Whether the player's body is in the world: playing, alive and no spectator (decision E-730).
-    // Only such a body is seen by others, noticed by creatures, hit, pushed and pressing plates.
+    /*! Returns whether the player's body is in the world: playing, alive and no spectator
+        (decision E-730). Only such a body is seen by others, noticed by creatures, hit, pushed
+        and pressing plates. */
     [[nodiscard]] bool hasBody() const { return state == State::Playing && !dead && rules().tangible; }
 
-    // Health and food (QcPlayerHealth).
+    /*! Health points and whether the player is dead (QcPlayerHealth). \qcshared */
     double health = maxHealth;
     bool dead = false;
-    // Highest point of the current fall, for fall damage.
+    /*! Highest point of the current fall, for fall damage. */
     double fallPeak = 0.0;
+    /*! Food, saturation and exhaustion (QcPlayerHealth). */
     QcHunger hunger;
-    // Food points last sent to the client; -1 before the first message.
+    /*! Food points last sent to the client; -1 before the first message. */
     int sentFood = -1;
-    // The short invulnerability after a hurt (game rule playerInvulnerabilityTicks, decision E-429).
+    /*! The short invulnerability after a hurt (game rule playerInvulnerabilityTicks, decision
+        E-429). */
     QcHurtWindow hurt;
+    /*! Seconds until an attack deals full damage again. */
     double attackCooldown = 0.0;
-    // Ticks spent below the void limit in a row (QcPlayerHealth::applyVoidDamage).
+    /*! Air under water (QcDrowning, decision E-955; saved) and what the client last heard of it;
+        none before the first message. \qcshared */
+    QcAirSupply air;
+    std::optional<QcMsg::PlayerAir> sentAir;
+    /*! Ticks spent below the void limit in a row (QcPlayerHealth::applyVoidDamage). */
     int voidTicks = 0;
-    // Set when damage was taken; reported to other clients in this tick's sync.
+    /*! Set when damage was taken; reported to other clients in this tick's sync. */
     bool hurtThisTick = false;
-    // The weather last sent to the client (QcServerWeather); none before the first message.
+    /*! The weather last sent to the client (QcServerWeather); none before the first message. */
     std::optional<QcMsg::Weather> sentWeather;
-    // Experience (QcServerExperience, decision E-398) and what the client last got of it; none before
-    // the first message.
+    /*! Experience (QcServerExperience, decision E-398). */
     QcExperience experience;
-    // Fixes the enchanting table's offers until the player enchants (decision E-864); saved with the
-    // player, 0 until the server draws one.
+    /*! Fixes the enchanting table's offers until the player enchants (decision E-864); saved
+        with the player, 0 until the server draws one. */
     quint32 enchantSeed = 0;
-    // Orders the runes of the enchanting screen (decision E-884): drawn on its own whenever
-    // enchantSeed is, so the client learns nothing about the offers from it; saved with the player.
+    /*! Orders the runes of the enchanting screen (decision E-884): drawn on its own whenever
+        enchantSeed is, so the client learns nothing about the offers from it; saved with the
+        player. */
     quint32 runeSeed = 0;
+    /*! The experience the client last got; none before the first message. */
     std::optional<QcExperience> sentExperience;
-    // The creatures this player fought lately (decision E-480): the last that hurt them and the last
-    // they struck (entity ids, 0: none) with the tick it happened; their pets defend them
-    // (QcMobManager::PlayerView::hurtBy and struck).
+    /*! \brief The creatures this player fought lately (decision E-480): the last that hurt them
+        and the last they struck (entity ids, 0: none) with the tick it happened; their pets
+        defend them (QcMobManager::PlayerView::hurtBy and struck). \qcfields */
     struct Foes
     {
         quint32 hurtBy = 0;
@@ -301,15 +357,16 @@ struct QcServerClient : QcEntity
         quint32 struck = 0;
         quint64 struckTick = 0;
     };
+    /*! The creatures this player fought lately. */
     Foes foes;
-    // Status effects (QcServerEffects, decision E-450) and those last sent with the health, counted
-    // down in step with them: the two differ only when an effect came, went, changed its level or
-    // was given again for longer.
+    /*! Status effects (QcServerEffects, decision E-450) and those last sent with the health,
+        counted down in step with them: the two differ only when an effect came, went, changed
+        its level or was given again for longer. \qcshared */
     QcStatusEffects effects;
     QcStatusEffects sentEffects;
-    // Fishing with a rod (QcPlayerFishing, decision E-503; not saved): the bobber cast (entity id,
-    // 0: none) from the hotbar slot `slot`, the ticks until a fish bites (-1: not drawn yet, the bobber
-    // does not float) and the ticks the bite still lasts.
+    /*! \brief Fishing with a rod (QcPlayerFishing, decision E-503; not saved): the bobber cast
+        (entity id, 0: none) from the hotbar slot \c {slot}, the ticks until a fish bites (-1:
+        not drawn yet, the bobber does not float) and the ticks the bite still lasts. \qcfields */
     struct Fishing
     {
         quint32 bobber = 0;
@@ -317,12 +374,14 @@ struct QcServerClient : QcEntity
         int waitTicks = -1;
         int biteTicks = 0;
     };
+    /*! Fishing with a rod. */
     Fishing fishing;
-    // The adventure guide (QcServerAdvancements, decision E-923; `progress` is saved): the met
-    // criteria, the advancements whose change the client has not heard of yet (with whether to
-    // announce them), whether it got the whole progress since joining, the block where the
-    // location criteria were last checked, and the chat lines about his reached ones this tick
-    // (decision E-924): those sent and those beyond the limit, folded into one line at its end.
+    /*! \brief The adventure guide (QcServerAdvancements, decision E-923; \c {progress} is
+        saved): the met criteria, the advancements whose change the client has not heard of yet
+        (with whether to announce them), whether it got the whole progress since joining, the
+        block where the location criteria were last checked, and the chat lines about his reached
+        ones this tick (decision E-924): those sent and those beyond the limit, folded into one
+        line at its end. \qcfields */
     struct Advancements
     {
         QcAdvancementProgress progress;
@@ -332,5 +391,6 @@ struct QcServerClient : QcEntity
         int announced = 0;
         int folded = 0;
     };
+    /*! The adventure guide's progress and what the client has heard of it. */
     Advancements advancements;
 };

@@ -49,7 +49,7 @@ public:
     explicit QcHeadlessJoin(QObject *parent = nullptr);
 
     /*! Starts connecting as \a options describe, offering the packs of \a content to the server;
-        an error (bad address, damaged key) when it cannot even start. */
+        returns an error (bad address, damaged key) when it cannot even start. */
     [[nodiscard]] QcStatus start(const Options &options, const QcModLoader::Result &content);
     /*! Returns the session after joined(); null before and once taken. */
     std::unique_ptr<QcClientSession> takeSession();

@@ -3,8 +3,8 @@
 
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
+#include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/display/QcDisplaySettings.h"
 #include "app/hooks/QcBenchmarkRun.h"
@@ -14,7 +14,9 @@
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
 #include "app/session/QcFrameDriver.h"
+#include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
@@ -60,6 +62,8 @@ private:
     std::unique_ptr<QcRenderBridge> m_render;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcBenchmarkRun> m_benchmark;
+    std::unique_ptr<QcPlayerController> m_player;
+    QcLoadingProgress m_loading;
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcFrameDriver> m_driver;
     std::unique_ptr<QQuickWindow> m_window;
@@ -99,8 +103,9 @@ private slots:
         m_preview = std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks());
         m_render = std::make_unique<QcRenderBridge>(m_parts, *m_settings);
         m_hud = std::make_unique<QcHudState>(m_parts, *m_settings);
+        m_player = std::make_unique<QcPlayerController>(m_parts, *m_settings);
         m_benchmark = std::make_unique<QcBenchmarkRun>(*m_screens, m_parts, *m_input, *m_settings);
-        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get());
+        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get());
         m_driver = std::make_unique<QcFrameDriver>(m_parts,
                                                    QcFrameDriver::Targets{*m_settings, *m_input, m_gamepad, *m_preview, *m_render, *m_hud,
                                                                           *m_benchmark, *m_startup},

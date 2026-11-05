@@ -240,7 +240,7 @@ void QcServerProjectiles::spawnWhereBroken(const QcProjectile &projectile, const
 {
     QRandomGenerator &random = m_state.random();
     for (const QcHitEffect &effect : definition.onHit) {
-        const std::optional<int> type = effect.is(QcHitEffect::spawn) ? m_state.content().mobIndex(effect.subject) : std::nullopt;
+        const std::optional<QcCreatureKindId> type = effect.is(QcHitEffect::spawn) ? m_state.content().mobKind(effect.subject) : std::nullopt;
         if (!type) {
             continue;
         }

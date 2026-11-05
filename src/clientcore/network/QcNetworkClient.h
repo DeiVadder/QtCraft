@@ -8,6 +8,7 @@
 #include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcMailbox.h"
 #include "common/protocol/QcSessionMessages.h"
+#include "network/QcJoinFailure.h"
 #include "network/QcServerAddress.h"
 #include "network/QcTcpTransport.h"
 
@@ -21,37 +22,55 @@ class QcClientSession;
 class QcSessionThread;
 class QcTcpConnector;
 
-// Joins a network game (decisions E-251, E-252, E-872): connects over TLS to the address, checks
-// the server's certificate against the pin in the known servers (pins it at the first connection),
-// logs in with the credentials and hands over the session once the server welcomed the player.
-// Every join ends with exactly one of joined() and failed(); cancel() ends it silently. Lives in
-// the GUI thread like the session it makes. A session that ticks on its own thread (decision E-560)
-// gets that thread from here: the connector runs in it, so the TLS socket is made, used and closed
-// in that one thread and never changes threads (decision E-872); the outcome comes back through a
-// QcMailbox, the pin is checked here before anything is sent.
+/*! \brief Joins a network game (decisions E-251, E-252, E-872): connects over TLS to the address,
+    checks the server's certificate against the pin in the known servers (pins it at the first
+    connection), logs in with the credentials and hands over the session once the server welcomed
+    the player.
+
+    Every join ends with exactly one of joined() and failed(); cancel() ends it silently. Lives
+    in the GUI thread like the session it makes. A session that ticks on its own thread (decision
+    E-560) gets that thread from here: the connector runs in it, so the TLS socket is made, used
+    and closed in that one thread and never changes threads (decision E-872); the outcome comes
+    back through a QcMailbox, the pin is checked here before anything is sent. */
 class QcNetworkClient : public QObject
 {
     Q_OBJECT
 
 public:
-    enum class Stage { Idle, Connecting, LoggingIn };
+    /*! How far the join is. */
+    enum class Stage {
+        Idle,       // no join running
+        Connecting, // making the TLS connection
+        LoggingIn   // connected, logging in until the server welcomes the player
+    };
     Q_ENUM(Stage)
 
-    // Whether the server's certificate is checked against its pin. Only tests that do not test
-    // the pinning turn it off; every program checks.
-    enum class Pinning { Check, DisabledForTests };
+    /*! \brief Whether the server's certificate is checked against its pin.
 
+        Only tests that do not test the pinning turn it off; every program checks. */
+    enum class Pinning {
+        Check,            // checked (every program)
+        DisabledForTests  // not checked (tests of other things)
+    };
+
+    /*! \brief What to join with. */
     struct Request
     {
+        /*! The server's address. */
         QcServerAddress address;
+        /*! The player's name. */
         QString playerName;
+        /*! The player's look. */
         QcAppearance appearance;
+        /*! The login data. */
         QcClientLogin::Credentials credentials;
+        /*! Milliseconds the connection may take before the join fails. */
         int connectTimeoutMs = 10'000;
-        // How the session ticks (the headless client ticks in its own thread, decision E-560).
+        /*! How the session ticks (the headless client ticks in its own thread, decision E-560). */
         QcSessionTickMode tickMode = QcSessionTickMode::Threaded;
-        // The pins (QcKnownServers). With Pinning::Check and TLS a join without it fails.
+        /*! The pins (QcKnownServers). With Pinning::Check and TLS a join without it fails. */
         QString knownServersFile;
+        /*! Whether the server's certificate is checked against its pin. */
         Pinning pinning = Pinning::Check;
     };
 
@@ -59,23 +78,30 @@ public:
     ~QcNetworkClient() override;
     Q_DISABLE_COPY_MOVE(QcNetworkClient)
 
+    /*! Starts joining as \a request says; a join still running is cancelled first. */
     void join(const Request &request);
+    /*! Ends the join silently; neither joined() nor failed() follows. */
     void cancel();
+    /*! Returns how far the join is. */
     Stage stage() const { return m_stage; }
-    // The session after joined(): logged in, loading the world, ticking. The caller
-    // takes it over; null before and once taken.
+    /*! Returns the session after joined(): logged in, loading the world, ticking. The caller
+        takes it over; null before and once taken. */
     std::unique_ptr<QcClientSession> takeSession();
-    // SHA-256 of the certificate of the server of the last join (QcTlsFingerprint), once connected.
+    /*! Returns the SHA-256 of the certificate of the server of the last join (QcTlsFingerprint),
+        once connected. */
     QByteArray serverFingerprint() const { return m_fingerprint; }
 
 signals:
+    /*! The join reached \a stage. */
     void stageChanged(QcNetworkClient::Stage stage);
+    /*! The server welcomed the player; takeSession() hands over the session. */
     void joined();
-    // Why the join failed: the connection could not be made or broke, or the server refused the
-    // login; `refusal` is the server's Disconnect (with its translation key) when it sent one.
-    void failed(const QString &reason, const QcMsg::Disconnect &refusal);
-    // Just before failed(): the server showed another certificate than the one pinned for the
-    // address; the join was refused before anything was sent.
+    /*! Emitted with the \a failure that ended the join (decision E-964): the step that failed
+        (connection, certificate, login), the addresses tried and a translated reason and hint;
+        \a refusal is the server's Disconnect (with its translation key) when it sent one. */
+    void failed(const QcJoinFailure &failure, const QcMsg::Disconnect &refusal);
+    /*! Just before failed(): the server showed another certificate than the one pinned for \a
+        address; the join was refused before anything was sent. */
     void certificateChanged(const QString &address);
 
 private:
@@ -86,7 +112,8 @@ private:
         // Lives in the connector's thread; null when the connection failed.
         std::unique_ptr<QcTcpTransport> transport;
         QByteArray fingerprint;
-        QString error;
+        // Why the connection failed (no transport).
+        QcJoinFailure failure;
     };
     // Why the server's certificate is not trusted.
     struct Distrust
@@ -112,13 +139,18 @@ private:
     void endAttempt(std::unique_ptr<QcTcpTransport> transport = {});
     void onSessionState();
     void setStage(Stage stage);
-    void fail(const QString &reason, const QcMsg::Disconnect &refusal);
+    // Logs `failure` and ends the join with failed().
+    void fail(const QcJoinFailure &failure, const QcMsg::Disconnect &refusal);
+    // Why the session ended while logging in (QcClientSession::ending()).
+    QcJoinFailure sessionFailure() const;
+    // A failure of `kind` at the joined address with `reason`.
+    QcJoinFailure failureOf(QcJoinFailure::Kind kind, const QString &reason) const;
 
     Request m_request;
     // The thread the session will tick on, from join() until the session takes it.
     std::unique_ptr<QcSessionThread> m_thread;
     // Made, used and deleted in m_thread when there is one, else in this thread.
-    QcTcpConnector *m_connector = nullptr;
+    std::unique_ptr<QcTcpConnector> m_connector;
     QcMailbox<Outcome> m_outcomes;
     // Counts the joins: an outcome of an earlier one is dropped.
     quint64 m_attempt = 0;

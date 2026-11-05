@@ -22,7 +22,7 @@ constexpr qsizetype boxVertices = 24;
 
 const QcMobDefinition &mob(const QcContentRegistry &content, const QString &name)
 {
-    const std::optional<int> index = content.mobIndex(u"qtcraft:"_s + name);
+    const std::optional<QcCreatureKindId> index = content.mobKind(u"qtcraft:"_s + name);
     if (!index) {
         qFatal("No creature %s in the base content", qPrintable(name));
     }

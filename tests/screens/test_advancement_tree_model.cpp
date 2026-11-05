@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
@@ -13,6 +13,8 @@
 
 #include <QSignalSpy>
 #include <QTest>
+
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -142,6 +144,46 @@ private slots:
         m_model->show(&registry, progress);
         QCOMPARE(m_model->tab(), 0);
         QCOMPARE(tabName(), u"t:open"_s);
+    }
+
+    // The arrow keys and the pad walk the tree: left to the parent, right to the child nearest the
+    // row, up and down to the next one in the column.
+    void neighboursAlongTheTree()
+    {
+        const QcContentRegistry registry = content();
+        m_model->show(&registry, {});
+        const QVariantList nodes = m_model->nodes();
+        const auto rowOf = [&nodes](int index) { return nodes[index].toMap().value(u"row"_s).toDouble(); };
+        const int upper = rowOf(1) < rowOf(2) ? 1 : 2;
+        const int lower = upper == 1 ? 2 : 1;
+        const int nearer = std::abs(rowOf(1) - rowOf(0)) <= std::abs(rowOf(2) - rowOf(0)) ? 1 : 2;
+
+        QCOMPARE(m_model->neighbour(0, -1, 0), -1);
+        QCOMPARE(m_model->neighbour(0, 1, 0), nearer);
+        QCOMPARE(m_model->neighbour(1, -1, 0), 0);
+        QCOMPARE(m_model->neighbour(upper, 0, 1), lower);
+        QCOMPARE(m_model->neighbour(lower, 0, -1), upper);
+        QCOMPARE(m_model->neighbour(upper, 0, -1), -1);
+        QCOMPARE(m_model->neighbour(upper, 1, 0), -1);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"No advancement neighbour of node 3"_s));
+        QCOMPARE(m_model->neighbour(3, 1, 0), -1);
+    }
+
+    void stepTabStopsAtTheEnds()
+    {
+        const QcContentRegistry registry = content();
+        QcAdvancementProgress progress;
+        progress.grant(u"t:secret"_s, u"c0"_s);
+        m_model->show(&registry, progress);
+        QCOMPARE(m_model->tabs().size(), qsizetype{2});
+        QCOMPARE(m_model->tab(), 0);
+        QVERIFY(!m_model->stepTab(-1));
+        QVERIFY(m_model->stepTab(1));
+        QCOMPARE(m_model->tab(), 1);
+        QVERIFY(!m_model->stepTab(1));
+        QVERIFY(m_model->stepTab(0));
+        QVERIFY(m_model->stepTab(-1));
+        QCOMPARE(m_model->tab(), 0);
     }
 };
 

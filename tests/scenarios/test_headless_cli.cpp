@@ -137,8 +137,8 @@ private slots:
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
         // Zombie, skeleton, spider, cave spider, silverfish, shadewalker, pig, chicken, slime, firefly,
         // sheep, villager, iron golem, sand golem, witch, wolf, dog, cat, ocelot, cow, cod, salmon, the
-        // Kjut and its child, and the two mannequins of the showcase (one with a cape).
-        QCOMPARE(creatures.size(), 29);
+        // Kjut and its child, the squid, and the two mannequins of the showcase (one with a cape).
+        QCOMPARE(creatures.size(), 30);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);
@@ -169,7 +169,7 @@ private slots:
         QVERIFY(index.open(QIODevice::ReadOnly));
         const QByteArray indexText = index.readAll();
         QVERIFY(indexText.startsWith("# QtCraft-Handbuch\n"));
-        QVERIFY(indexText.contains("**Inhaltspakete:** QtCraft 0.1.0\n"));
+        QVERIFY(indexText.contains("**Inhaltspakete:** QtCraft 1.0.0\n"));
         QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"blocks.md"_s)));
     }
 
@@ -323,6 +323,27 @@ private slots:
         QVERIFY(QString::fromUtf8(m_process.readAllStandardOutput()).contains(u"Standard input closed; the server keeps running."_s));
     }
 
+    // The console reads its input in pieces (E-949): a line written in two parts is one command,
+    // and a last line without a newline before the end of the input still runs.
+    void theServerConsoleRunsALastLineWithoutNewline()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--console"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"60"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        m_process.write("/whitelist ");
+        QVERIFY(m_process.waitForBytesWritten(timeoutMs));
+        m_process.write("on\ntick query");
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+
+        const QString output = QString::fromUtf8(m_process.readAllStandardOutput()).replace(u"\r\n"_s, u"\n"_s);
+        QVERIFY2(output.contains(u"\nThe whitelist is on\n"_s), qPrintable(output));
+        QVERIFY2(output.contains(u"\nTick rate "_s), qPrintable(output));
+    }
+
     // --join checks the server's certificate against the pins in its data folder and pins it at
     // the first connection (decision E-872): known-servers.json appears there with the fingerprint
     // the dedicated server printed.
@@ -450,7 +471,7 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 83);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 88);
         // The round trip to the in-process server (decision E-886) is reported once measured.
         QVERIFY(client.value(u"latency"_s).isObject());
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
@@ -476,7 +497,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 83);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 88);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

@@ -10,54 +10,79 @@
 #include <QList>
 #include <QString>
 
-// The look of a boat (decision E-920): an open hull of planks with an oarlock on each side wall,
-// built of boxes like the other static models, pointing north (-z) and turned by the boat's yaw,
-// and two paddles turning in the oarlocks. Its planks are those of the block its item names
-// (QcItemDefinition::boatBlock), so every kind of wood gives its boat and its paddles their colour
-// without textures of their own. A floating boat bobs a little on the water. While the boat is
-// rowed the paddles row in strokes (`rowPhase` 0..1); otherwise they rest along the sides with their
-// blades in the water. The driver's hands hold the grips (QcAnimator: inBoat).
+#include <array>
+#include <utility>
+
+/*! \brief The look of a boat (decision E-920): an open hull of planks with an oarlock on each side
+    wall, built of boxes like the other static models, pointing north (-z) and turned by the boat's
+    yaw, and two paddles turning in the oarlocks.
+
+    Its planks are those of the block its item names (QcItemDefinition::boatBlock), so every kind
+    of wood gives its boat and its paddles their colour without textures of their own. A floating
+    boat bobs a little on the water. While the boat is rowed the paddles row in strokes
+    (\c {rowPhase} 0..1); otherwise they rest along the sides with their blades in the water. The
+    driver's hands hold the grips (QcAnimator: inBoat). */
 namespace QcBoatModel {
 
-// Amplitude (m) and period (s) of the bobbing of a floating boat.
+/*! Amplitude (m) and period (s) of the bobbing of a floating boat. \qcshared */
 inline constexpr double bobHeight = 0.025;
 inline constexpr double bobPeriod = 3.0;
-// Height of the side walls above the boat's feet; the oarlocks sit on them.
+/*! Height of the side walls above the boat's feet; the oarlocks sit on them. */
 inline constexpr double wallHeight = 0.5;
-// Seconds per paddle stroke while rowing.
+/*! Seconds per paddle stroke while rowing. */
 inline constexpr double strokeSeconds = 0.9;
 
-// How a paddle lies in its oarlock, in degrees: `sweep` turns its outer end towards the stern
-// (negative towards the bow), `lift` tilts its outer end down towards the water.
+/*! The side of the boat a paddle is on; the value is the sign of its x in the boat's frame. */
+enum class Side
+{
+    /*! The left side, x < 0. */
+    Left = -1,
+    /*! The right side, x > 0. */
+    Right = 1,
+};
+/*! Both sides, right first. */
+inline constexpr std::array<Side, 2> sides{Side::Right, Side::Left};
+/*! Returns the sign of the x of \a side in the boat's frame: +1 right, -1 left. */
+[[nodiscard]] constexpr double signOf(Side side)
+{
+    return static_cast<double>(std::to_underlying(side));
+}
+
+/*! \brief How a paddle lies in its oarlock, in degrees: \c {sweep} turns its outer end towards
+    the stern (negative towards the bow), \c {lift} tilts its outer end down towards the water.
+    \qcfields */
 struct Paddle
 {
     double sweep = 0.0;
     double lift = 0.0;
 };
 
-// The boxes of a boat built of planks with the texture `planks`, without the paddles.
+/*! Returns the boxes of a boat built of planks with the texture \a planks, without the paddles. */
 [[nodiscard]] QList<QcMobPart> parts(const QString &planks);
-// The boxes of the paddle on `side` (+1 right, -1 left) in its own frame: the oarlock at the
-// origin, the shaft along +x (the left paddle's mirrored along -x), the grip inside the boat, the
-// blade outside. Placed with partPoint.
-[[nodiscard]] QList<QcMobPart> paddleParts(const QString &planks, int side);
-// The paddle at the moment `rowPhase` (0..1) of a stroke; negative: at rest. Both paddles move
-// alike.
+/*! Returns the boxes of the paddle on \a side in its own frame: the oarlock
+    at the origin, the shaft along +x (the left paddle's mirrored along -x), the grip inside the
+    boat, the blade outside. Placed with partPoint; textured with \a planks. */
+[[nodiscard]] QList<QcMobPart> paddleParts(const QString &planks, Side side);
+/*! Returns the paddle at the moment \a rowPhase (0..1) of a stroke; negative: at rest. Both
+    paddles move alike. */
 [[nodiscard]] Paddle paddleAt(double rowPhase);
-// A point `local` of a paddle's frame (outer end along +x) in the boat's frame, for the paddle on
-// `side` (+1 right, -1 left) lying as `paddle`.
-[[nodiscard]] QcVec3 paddlePoint(int side, Paddle paddle, const QcVec3 &local);
-// A corner of a box of paddleParts(…, side) in the boat's frame.
-[[nodiscard]] QcVec3 partPoint(int side, Paddle paddle, const QcVec3 &corner);
-// Where the driver's hand holds the paddle on `side`, in the boat's frame.
-[[nodiscard]] QcVec3 gripOf(int side, Paddle paddle);
-// The phase of the stroke at `seconds` of the client clock while the boat is rowed; -1 when not.
+/*! Returns the point \a local of a paddle's frame (outer end along +x) in the boat's frame, for
+    the paddle on \a side lying as \a paddle. */
+[[nodiscard]] QcVec3 paddlePoint(Side side, Paddle paddle, const QcVec3 &local);
+/*! Returns the \a corner of a box of paddleParts(…, \a side) in the boat's frame, the paddle
+    lying as \a paddle. */
+[[nodiscard]] QcVec3 partPoint(Side side, Paddle paddle, const QcVec3 &corner);
+/*! Returns where the driver's hand holds the paddle on \a side, lying as \a paddle, in the
+    boat's frame. */
+[[nodiscard]] QcVec3 gripOf(Side side, Paddle paddle);
+/*! Returns the phase of the stroke at \a seconds of the client clock while the boat is rowed (\a
+    rowing); -1 when not. */
 [[nodiscard]] double rowPhase(double seconds, bool rowing);
-// The texture of the planks of the boat item `item`: the side of its boatBlock; empty for items the
-// content does not know or that place no boat.
+/*! Returns the texture of the planks of the boat item \a item: the side of its boatBlock; empty
+    for items \a content does not know or that place no boat. */
 [[nodiscard]] QString planksOf(const QcContentRegistry &content, QcItemId item);
-// How far a floating boat lies above or below its place at `seconds` of the client clock; each boat
-// (by `id`) in its own phase.
+/*! Returns how far a floating boat lies above or below its place at \a seconds of the client
+    clock; each boat (by \a id) in its own phase. */
 [[nodiscard]] double bob(double seconds, quint32 id);
 
 } // namespace QcBoatModel

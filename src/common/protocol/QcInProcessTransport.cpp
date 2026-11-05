@@ -11,6 +11,8 @@
 
 struct QcInProcessTransport::Link
 {
+    // The threads of the two ends (server thread and session tick thread) hand frames over under
+    // this mutex.
     std::mutex mutex;
     std::array<QcInProcessTransport *, 2> ends{};
     std::array<std::vector<QByteArray>, 2> inboxes;
@@ -19,22 +21,22 @@ struct QcInProcessTransport::Link
     bool open = true;
 
     // Precondition: mutex is held.
-    void wake(int side)
+    void wake(End which)
     {
-        QcInProcessTransport *end = ends[static_cast<std::size_t>(side)];
-        if (!end || wakePending[static_cast<std::size_t>(side)]) {
+        QcInProcessTransport *end = ends[slotOf(which)];
+        if (!end || wakePending[slotOf(which)]) {
             return;
         }
-        wakePending[static_cast<std::size_t>(side)] = true;
+        wakePending[slotOf(which)] = true;
         // Posted events of a destroyed receiver are discarded; `end` is valid now because the
         // destructor clears it under the same mutex.
         QMetaObject::invokeMethod(end, &QcInProcessTransport::drainInbox, Qt::QueuedConnection);
     }
 };
 
-QcInProcessTransport::QcInProcessTransport(std::shared_ptr<Link> link, int side)
+QcInProcessTransport::QcInProcessTransport(std::shared_ptr<Link> link, End end)
     : m_link(std::move(link))
-    , m_side(side)
+    , m_end(end)
 {
 }
 
@@ -42,14 +44,14 @@ QcInProcessTransport::~QcInProcessTransport()
 {
     close();
     const std::scoped_lock lock(m_link->mutex);
-    m_link->ends[static_cast<std::size_t>(m_side)] = nullptr;
+    m_link->ends[slotOf(m_end)] = nullptr;
 }
 
 std::pair<std::unique_ptr<QcInProcessTransport>, std::unique_ptr<QcInProcessTransport>> QcInProcessTransport::createPair()
 {
     auto link = std::make_shared<Link>();
-    std::unique_ptr<QcInProcessTransport> first(new QcInProcessTransport(link, 0));
-    std::unique_ptr<QcInProcessTransport> second(new QcInProcessTransport(link, 1));
+    std::unique_ptr<QcInProcessTransport> first(new QcInProcessTransport(link, End::First));
+    std::unique_ptr<QcInProcessTransport> second(new QcInProcessTransport(link, End::Second));
     link->ends = {first.get(), second.get()};
     return {std::move(first), std::move(second)};
 }
@@ -60,8 +62,8 @@ void QcInProcessTransport::sendFrame(const QByteArray &frame)
     if (!m_link->open) {
         return;
     }
-    const int peer = 1 - m_side;
-    m_link->inboxes[static_cast<std::size_t>(peer)].push_back(frame);
+    const End peer = peerOf(m_end);
+    m_link->inboxes[slotOf(peer)].push_back(frame);
     m_link->wake(peer);
 }
 
@@ -72,8 +74,8 @@ void QcInProcessTransport::close()
         return;
     }
     m_link->open = false;
-    m_link->wake(0);
-    m_link->wake(1);
+    m_link->wake(End::First);
+    m_link->wake(End::Second);
 }
 
 bool QcInProcessTransport::isOpen() const
@@ -88,8 +90,8 @@ void QcInProcessTransport::drainInbox()
     bool open = true;
     {
         const std::scoped_lock lock(m_link->mutex);
-        frames = std::exchange(m_link->inboxes[static_cast<std::size_t>(m_side)], {});
-        m_link->wakePending[static_cast<std::size_t>(m_side)] = false;
+        frames = std::exchange(m_link->inboxes[slotOf(m_end)], {});
+        m_link->wakePending[slotOf(m_end)] = false;
         open = m_link->open;
     }
 

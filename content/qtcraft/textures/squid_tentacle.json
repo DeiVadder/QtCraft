@@ -1,0 +1,8 @@
+{
+    "name": "squid_tentacle",
+    "pattern": "speckle",
+    "primary": "#3a5878",
+    "secondary": "#5c7c9e",
+    "variation": 0.15,
+    "seed": 7412
+}

@@ -19,7 +19,7 @@ public:
 
     /*! Returns whether water freezes by temperature; otherwise by the biomes' frozenWater. */
     bool byTemperature() const { return m_settings.byTemperature; }
-    /*! Blocks a column's ground biome may lie away (0: every column keeps its own). */
+    /*! Returns the blocks a column's ground biome may lie away (0: every column keeps its own). */
     int groundBlend() const { return m_settings.groundBlend; }
 
     /*! Returns whether the top water layer of the column at \a x, \a z with the climate

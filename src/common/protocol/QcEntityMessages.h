@@ -9,6 +9,7 @@
 
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/mobs/QcAppearance.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcHanging.h"
@@ -108,7 +109,7 @@ struct EntitySpawn
     /*! Armour stands only: pose and what they show. */
     QcStandPose stand{};
     /*! Creatures only: index into the content's mobs (at most QcStreamLimits::maxDefinitions). */
-    qint32 creatureType = 0;
+    QcCreatureKindId creatureType{}; // NOLINT(readability-redundant-member-init): spawns built field by field leave it out (-Wmissing-field-initializers)
     /*! Item frames and paintings only (decision E-790): where they hang and what they show;
         \c {held} names their own item (the client finds a painting's motifs there), \c {item} is
         the stack a frame holds. */
@@ -128,6 +129,9 @@ struct EntityMove
     double health = 0.0;
     /*! Set in the tick the entity took damage (for a hurt flash). */
     bool hurt = false;
+    /*! Set in the tick a blow struck the entity: an attack, a projectile, an explosion (not
+        burning, drowning or suffocation); a squid leaves its ink cloud (decision E-974). */
+    bool struck = false;
     /*! View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
         \qcshared */
     float pitch = 0.0f;

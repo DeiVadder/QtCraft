@@ -45,6 +45,7 @@ target_sources(qc_common PRIVATE
     content/blocks/QcMaterialParser.h content/blocks/QcMaterialParser.cpp
     content/blocks/QcPartFamily.h
     content/blocks/QcPartGenerator.h content/blocks/QcPartGenerator.cpp
+    content/blocks/QcPlacedBlock.h
     content/blocks/QcShapeCondition.h
     content/blocks/QcShapeDefinition.h
     content/blocks/QcShapeParser.h content/blocks/QcShapeParser.cpp
@@ -55,7 +56,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     content/items/QcAnvilSwap.h
     content/items/QcAnvilSwaps.h content/items/QcAnvilSwaps.cpp
-    content/items/QcArmourDefinition.h
+    content/items/QcArmourDefinition.h content/items/QcArmourDefinition.cpp
     content/items/QcArmourParser.h content/items/QcArmourParser.cpp
     content/items/QcArmourSerializer.h content/items/QcArmourSerializer.cpp
     content/items/QcEffectDefinition.h
@@ -123,6 +124,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcSoundKeys.h content/registry/QcSoundKeys.cpp
     content/registry/QcSoundParser.h content/registry/QcSoundParser.cpp
     content/registry/QcTranslations.h content/registry/QcTranslations.cpp
+    content/registry/QcWeightedNames.h
 )
 target_sources(qc_common PRIVATE
     content/villages/QcTradeDefinitions.h
@@ -161,16 +163,22 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     core/QcAabb.h
+    core/QcBlockBox.h
     core/QcBlockFace.h
     core/QcBlockPos.h core/QcBlockPos.cpp
     core/QcChunkPos.h core/QcChunkPos.cpp
     core/QcCommandCategory.h core/QcCommandCategory.cpp
     core/QcCommandSyntax.h core/QcCommandSyntax.cpp
+    core/QcConsole.h core/QcConsole.cpp
     core/QcCrc32.h core/QcCrc32.cpp
+    core/QcCreatureKindId.h
     core/QcDataRoot.h core/QcDataRoot.cpp
     core/QcDowncast.h
+    core/QcIdList.h
+    core/QcIndexId.h
     core/QcIntMath.h
     core/QcKeptComponent.h
+    core/QcLoadFailure.h
     core/QcLogging.h core/QcLogging.cpp
     core/QcMailbox.h
     core/QcNameText.h core/QcNameText.cpp
@@ -181,8 +189,10 @@ target_sources(qc_common PRIVATE
     core/QcTickPhase.h
     core/QcTickSummary.h
     core/QcVec3.h
+    core/QcWeightedChoice.h
     core/QcWorkerPool.h core/QcWorkerPool.cpp
     core/QcWorldConstants.h
+    core/QcXzRect.h
 )
 target_sources(qc_common PRIVATE
     diagnostics/QcBuildInfo.h diagnostics/QcBuildInfo.cpp
@@ -203,6 +213,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     gameplay/QcAdvancementProgress.h gameplay/QcAdvancementProgress.cpp
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
+    gameplay/QcAirSupply.h gameplay/QcAirSupply.cpp
     gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp

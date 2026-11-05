@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Desktop Entry]
+Type=Application
+Name=QtCraft
+Comment=Voxel sandbox game
+Comment[de]=Voxel-Sandbox-Spiel
+Exec=qtcraft
+Icon=qtcraft
+Terminal=false
+Categories=Game;

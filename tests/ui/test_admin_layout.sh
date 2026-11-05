@@ -109,12 +109,13 @@ if ! grep -q 'focus:adminKick0.*no such control' "$DATA/own-row.log"; then
 fi
 
 # With only the host on the players page nothing there takes the pad's focus: it goes to the
-# section's entry in the side bar, never to the back entry. The first shoulder press shows the
-# pad's focus, the second shows the players (pad steps run in the order of their delays).
-check pad-players 1280x800 3 --language de --overlay admin --overlay "@2500 pad:rightShoulder" \
-    --overlay "@2500 pad:rightShoulder"
+# section's entry in the side bar, never to the back entry. One shoulder press, 2.5 s after the
+# screen opened (it is made when it first opens, decision E-875), shows the players; a single
+# press leaves no order to race (two presses at the same delay could land on either side of the
+# screen's completion), so the step's focus is the players' entry.
+check pad-players 1280x800 2 --language de --overlay admin --overlay "@2500 pad:rightShoulder"
 if [ "$(grep 'padFocus' "$DATA/pad-players.log" | tail -1)" != 'padFocus: adminSection1' ]; then
-    echo "pad-players: the pad's focus is not on the players' entry:"
+    echo "pad-players: the pad's last focus is not on the players' entry:"
     grep 'padFocus' "$DATA/pad-players.log"
     failed=1
 fi

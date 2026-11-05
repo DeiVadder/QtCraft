@@ -3,8 +3,12 @@
 
 #include "clientcore/textures/QcTextureRangedPatterns.h"
 
+#include <QPointF>
+
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <numbers>
 #include <utility>
 
 namespace {
@@ -37,6 +41,60 @@ QColor paintBow(const QcTextureSpec &spec, int x, int y, QColor color)
     }
     const bool string = x + y == 16 && x >= 3 && x <= 13;
     return string ? spec.secondary : clear();
+}
+
+// Whether (x, y) lies on the thin line from `from` to `to`.
+bool onLine(int x, int y, QPointF from, QPointF to)
+{
+    const QPointF way = to - from;
+    const QPointF point = QPointF(x, y) - from;
+    const double along = QPointF::dotProduct(point, way) / QPointF::dotProduct(way, way);
+    const QPointF nearest = from + way * std::clamp(along, 0.0, 1.0);
+    return std::hypot(x - nearest.x(), y - nearest.y()) <= 0.5;
+}
+
+// The bow drawn `stage` (1..3) texels back along the diagonal to the bottom right: the limbs bend
+// tighter around the same grip, the string (secondary) runs from their tips to the nock, and the
+// arrow lies on the diagonal with its stone head beyond the grip and its fletching (secondary) at
+// the nock.
+QColor paintDrawnBow(const QcTextureSpec &spec, int x, int y, QColor color, int stage)
+{
+    constexpr double gripAt = 13.5 - 11.0 / std::numbers::sqrt2;
+    constexpr int arrowLength = 9;
+    constexpr QColor stone(0x6e, 0x6e, 0x72);
+    const int nock = 8 + stage;
+    const int head = nock - arrowLength;
+    const int side = std::abs(x - y);
+    // The head: a point with two barbs along the edges of a corner.
+    if ((side == 0 && x >= head && x <= head + 1) || (side >= 1 && side <= 2 && std::min(x, y) == head)) {
+        return varied(spec, stone, x, y, 8);
+    }
+    if (side == 1 && std::max(x, y) >= nock - 1 && std::max(x, y) <= nock) {
+        return varied(spec, spec.secondary, x, y, 6);
+    }
+    if (side == 0 && x > head && x <= nock) {
+        return varied(spec, scaled(color, 1.25), x, y, 5);
+    }
+
+    const double radius = 11.0 - 0.5 * stage;
+    const double centre = gripAt + radius / std::numbers::sqrt2;
+    // The limb keeps its length: the tighter the bend, the wider the arc.
+    const double half = 9.6 / radius;
+    const double tipAcross = radius * std::sin(half) / std::numbers::sqrt2;
+    const double tipAlong = centre - radius * std::cos(half) / std::numbers::sqrt2;
+    if (std::abs(std::hypot(x - centre, y - centre) - radius) <= 0.85 && x + y <= 2.0 * tipAlong + 0.5) {
+        return varied(spec, side <= 1 ? scaled(color, 0.65) : color, x, y, 6);
+    }
+    const QPointF nockPoint(nock, nock);
+    const bool string = onLine(x, y, {tipAlong + tipAcross, tipAlong - tipAcross}, nockPoint)
+                        || onLine(x, y, {tipAlong - tipAcross, tipAlong + tipAcross}, nockPoint);
+    return string ? spec.secondary : clear();
+}
+
+template <int Stage>
+QColor paintBowDrawn(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return paintDrawnBow(spec, x, y, color, Stage);
 }
 
 // A shaft (primary) with a stone head at the top right and white fletching (secondary) at the
@@ -105,8 +163,11 @@ QColor paintFishingRod(const QcTextureSpec &spec, int x, int y, QColor color)
     return line || hook ? spec.secondary : clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 5> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 8> painters = {{
     {Pattern::Bow, paintBow},
+    {Pattern::BowDrawn1, paintBowDrawn<1>},
+    {Pattern::BowDrawn2, paintBowDrawn<2>},
+    {Pattern::BowDrawn3, paintBowDrawn<3>},
     {Pattern::Arrow, paintArrow},
     {Pattern::Feather, paintFeather},
     {Pattern::Bone, paintBone},

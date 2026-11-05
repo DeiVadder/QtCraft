@@ -56,7 +56,7 @@ private:
         QcEntityRecord record;
         record.chunk = {0, 0};
 
-        QcMobManager::Stored pig{.type = *m_content->mobIndex(u"qtcraft:pig"_s), .position = {8.5, 65.0, 8.5}, .yaw = 45.0f, .health = 7.5, .villager = std::nullopt, .uid = 77};
+        QcMobManager::Stored pig{.type = *m_content->mobKind(u"qtcraft:pig"_s), .position = {8.5, 65.0, 8.5}, .yaw = 45.0f, .health = 7.5, .villager = std::nullopt, .uid = 77};
         pig.kept = newerData(C::Creature, 900, false);
         pig.kept.uid = 0;
         record.creatures = {{pig, 0}};

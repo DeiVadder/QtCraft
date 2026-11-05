@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <QPointer>
+
 class QcBlockRenderTable;
 class QcContentRegistry;
 class QcItemIconProvider;
@@ -13,7 +15,7 @@ class QcTextureAtlas;
 class QcItemIcons
 {
 public:
-    void setProvider(QcItemIconProvider *provider) { m_provider = provider; }
+    void setProvider(QcItemIconProvider *provider);
     // The provider holds icons of the current content.
     bool isReady() const { return m_ready; }
     void invalidate() { m_ready = false; }
@@ -21,6 +23,7 @@ public:
     void draw(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable);
 
 private:
-    QcItemIconProvider *m_provider = nullptr;
+    // The engine owns the provider and may delete it first (the game outlives the QML engine).
+    QPointer<QcItemIconProvider> m_provider;
     bool m_ready = false;
 };

@@ -23,7 +23,7 @@ int toByte(float value)
     return std::clamp(static_cast<int>(std::lround(value)), 0, 255);
 }
 
-struct Normal
+struct Normal // NOLINT(qc-duplicate-struct): a unit normal vector, not the angles of QcStandPose::Rotation
 {
     float x = 0.0f;
     float y = 0.0f;
@@ -106,13 +106,13 @@ std::array<QRgb, 4> block(const QImage &image, int x, int y)
 
 } // namespace
 
-Level halve(const QImage &normal, const QImage &specular)
+QcMaterialSynthesizer::Maps halve(const QImage &normal, const QImage &specular)
 {
     const QImage normals = normal.convertToFormat(QImage::Format_RGBA8888);
     const QImage speculars = specular.convertToFormat(QImage::Format_RGBA8888);
     const int width = std::max(1, normals.width() / 2);
     const int height = std::max(1, normals.height() / 2);
-    Level level{QImage(width, height, QImage::Format_RGBA8888), QImage(width, height, QImage::Format_RGBA8888)};
+    QcMaterialSynthesizer::Maps level{QImage(width, height, QImage::Format_RGBA8888), QImage(width, height, QImage::Format_RGBA8888)};
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             const Average average = averageNormals(block(normals, 2 * x, 2 * y));

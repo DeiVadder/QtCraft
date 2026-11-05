@@ -103,7 +103,6 @@ SettingGroup {
                 // Markers under the pointer: their own tooltip shows instead of the map's.
                 property int hoveredMarkers: 0
 
-                objectName: "worldMapFrame"
                 Layout.preferredWidth: body.mapSide
                 Layout.preferredHeight: body.mapSide
                 color: Theme.field
@@ -137,7 +136,6 @@ SettingGroup {
                     height: frame.height
 
                     Image {
-                        objectName: "worldMapImage"
                         anchors.fill: parent
                         source: group.preview.source
                         // Every revision is a new image: Qt's cache would only keep the old ones alive.
@@ -150,7 +148,6 @@ SettingGroup {
 
                     // The square searched for villages and structures, when the view is larger.
                     Rectangle {
-                        objectName: "worldMapSitesArea"
                         visible: group.sitesShown && group.preview.radius > group.preview.sitesRadius
                         anchors.centerIn: parent
                         width: parent.width * group.preview.sitesRadius / group.preview.radius
@@ -202,7 +199,6 @@ SettingGroup {
                 }
 
                 Label {
-                    objectName: "worldMapRefining"
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     visible: group.preview.busy && group.preview.stage !== WorldMapPreview.Empty
@@ -247,7 +243,6 @@ SettingGroup {
                     y: mapHover.point.position.y + Ui.space.l
 
                     ThemedToolTip {
-                        objectName: "worldMapTip"
                         shown: mapHover.hovered && frame.hoveredMarkers === 0 && text.length > 0
                         text: group.preview.source.length > 0
                               ? group.preview.placeAt((mapHover.point.position.x - shownMap.x) / frame.width, (mapHover.point.position.y - shownMap.y) / frame.height).text ?? ""
@@ -289,7 +284,6 @@ SettingGroup {
             Label {
                 id: focusInfo
 
-                objectName: "worldMapFocusInfo"
                 visible: !group.compact
                 Layout.preferredWidth: body.mapSide
                 opacity: frame.activeFocus ? 1 : 0
@@ -301,7 +295,6 @@ SettingGroup {
         }
 
         ColumnLayout {
-            objectName: "worldMapLegend"
             Layout.fillWidth: true
             Layout.minimumWidth: body.beside ? body.legendWidth : 0
             Layout.alignment: Qt.AlignTop
@@ -344,7 +337,6 @@ SettingGroup {
 
             // The compact legend's rest.
             Label {
-                objectName: "worldMapMoreBiomes"
                 Layout.leftMargin: Ui.size.icon + Ui.space.s
                 visible: group.compact && group.preview.legend.length > biomeRows.count
                 text: qsTr("+ %n more", "", group.preview.legend.length - biomeRows.count)

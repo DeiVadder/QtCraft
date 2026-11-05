@@ -5,6 +5,6 @@
 
 #include "clientcore/textures/QcTexturePaint.h"
 
-// Painter of a coat pattern of creatures (decision E-880): large smooth-edged patches like a
-// Holstein cow's; nullptr for the patterns other painters draw.
+/*! Returns the painter of \a pattern, a coat pattern of creatures (decision E-880): large
+    smooth-edged patches like a Holstein cow's; nullptr for the patterns other painters draw. */
 [[nodiscard]] QcTexturePaint::Painter qcCoatPatternPainter(QcTextureSpec::Pattern pattern);

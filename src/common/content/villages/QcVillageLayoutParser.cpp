@@ -42,7 +42,7 @@ QcVillageRange<Value> readRange(const QString &key, QcVillageRange<Value> fallba
                         .arg(static_cast<double>(bounds.second)));
         return fallback;
     }
-    return {Value(array[0].toDouble()), Value(array[1].toDouble())};
+    return {static_cast<Value>(array[0].toDouble()), static_cast<Value>(array[1].toDouble())};
 }
 
 // One entry of `layouts`: "kind" (required), "weight" and the kind's parameters over its defaults.

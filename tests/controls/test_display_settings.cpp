@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/display/QcDisplaySettings.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/settings/QcKeyControls.h"
 
 #include <QDir>

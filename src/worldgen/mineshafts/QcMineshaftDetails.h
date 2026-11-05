@@ -34,7 +34,7 @@ public:
     struct Furnishing
     {
         /*! The blocks placed: spawners, rails, supports, lights and cobwebs. */
-        QList<QcMineshaftPlan::Placed> blocks;
+        QList<QcPlacedBlock> blocks;
         /*! The spawners with their spawn areas. */
         QList<QcMineshaftPlan::Spawner> spawners;
         /*! The rail cells that get a chest minecart. */

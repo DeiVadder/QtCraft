@@ -238,7 +238,7 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
 // the same half is in the way, or neither.
 struct SlabOutcome
 {
-    std::optional<Placement> doubled;
+    std::optional<QcPlacedBlock> doubled;
     bool blocked = false;
 };
 
@@ -257,7 +257,7 @@ SlabOutcome slabOutcome(const QcBlockAccess &world, QcBlockId state, const Aim &
         return {};
     }
     const bool upper = aim.face == QcBlockFace::Down || (aim.face != QcBlockFace::Up && aim.hit.y > 0.5);
-    if (const std::optional<Placement> doubled = QcSlabRules::doubled(world, state, aim.clicked, aim.face, upper)) {
+    if (const std::optional<QcPlacedBlock> doubled = QcSlabRules::doubled(world, state, aim.clicked, aim.face, upper)) {
         return {doubled};
     }
     // A slab of the same half is already there.
@@ -346,7 +346,7 @@ bool pairSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
 
 } // namespace
 
-[[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
+[[nodiscard]] std::optional<QcPlacedBlock> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
 {
     const QcContentRegistry &content = world.content();
     if (!content.isValidBlock(block)) {
@@ -407,7 +407,7 @@ bool pairSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         return std::nullopt;
     }
 
-    return Placement{target, state};
+    return QcPlacedBlock{target, state};
 }
 
 QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)

@@ -46,9 +46,9 @@ QHash<QString, QString> nameMap(const QJsonObject &json, const QString &key, con
 }
 
 // The blueprints of a kind: "structure" (one) or "structures" ([{"structure", "weight"}]).
-QList<QcVillageBlueprint> readBlueprints(const QJsonObject &json, const QString &packNamespace, QcJsonFieldReader &reader)
+QList<QcWeightedStructureName> readBlueprints(const QJsonObject &json, const QString &packNamespace, QcJsonFieldReader &reader)
 {
-    QList<QcVillageBlueprint> blueprints;
+    QList<QcWeightedStructureName> blueprints;
     if (json.contains(u"structure"_s)) {
         blueprints.append({reader.name(u"structure"_s, packNamespace), 1});
         return blueprints;
@@ -61,7 +61,7 @@ QList<QcVillageBlueprint> readBlueprints(const QJsonObject &json, const QString 
     }
     for (const auto &value : array) {
         QcJsonFieldReader nested{value.toObject(), reader.context, {}};
-        const QcVillageBlueprint blueprint{nested.name(u"structure"_s, packNamespace), nested.integer(u"weight"_s, 1, 1, 1000)};
+        const QcWeightedStructureName blueprint{nested.name(u"structure"_s, packNamespace), nested.integer(u"weight"_s, 1, 1, 1000)};
         if (!value.isObject() || blueprint.structure.isEmpty()) {
             nested.fail(u"every entry of 'structures' needs a 'structure'"_s);
         }
@@ -107,7 +107,7 @@ QList<QcVillagePiece> readPieces(const QJsonObject &json, const QString &packNam
         piece.minRoadLength = nested.integer(u"minRoadLength"_s, 0, 0, 4096);
         piece.water = nested.integer(u"water"_s, 0, 0, 32);
         piece.jetty = readJetty(packNamespace, nested);
-        const bool named = std::ranges::all_of(piece.blueprints, [](const QcVillageBlueprint &b) { return !b.structure.isEmpty(); });
+        const bool named = std::ranges::all_of(piece.blueprints, [](const QcWeightedStructureName &b) { return !b.structure.isEmpty(); });
         if (!value.isObject() || piece.blueprints.isEmpty() || !named) {
             nested.fail(u"every piece needs a 'structure'"_s);
         }
@@ -415,7 +415,7 @@ void StyleReader::readPlacement()
         }
     }
     if (reads(m_json, u"crops"_s, m_extending)) {
-        m_style.crops = readWeightedList<QcVillageCrop>(m_json, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, m_reader);
+        m_style.crops = readWeightedList<QcWeightedBlockName>(m_json, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, m_reader);
     }
     m_style.foundationBlock = m_reader.name(u"foundation"_s, m_namespace, m_extending ? m_style.foundationBlock : u"cobblestone"_s);
 }
@@ -460,7 +460,7 @@ void StyleReader::readAdditions()
             }
         }
         if (add.contains(u"crops"_s)) {
-            m_style.crops += readWeightedList<QcVillageCrop>(add, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, nested);
+            m_style.crops += readWeightedList<QcWeightedBlockName>(add, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, nested);
         }
         if (add.contains(u"pieces"_s)) {
             m_style.pieces += readPieces(add, m_namespace, nested);

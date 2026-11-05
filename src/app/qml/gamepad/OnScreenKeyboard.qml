@@ -20,12 +20,6 @@ import QtCraft
 Popup {
     id: keyboard
 
-    // Where y and z sit.
-    enum KeyLayout {
-        Qwerty,
-        Qwertz
-    }
-
     // The text field typed into (a TextField, TextInput or TextEdit); null once it is destroyed.
     property Item target
     // The same field untyped for its text methods, which TextInput and TextEdit share without a type.
@@ -38,13 +32,12 @@ Popup {
     required property real areaHeight
     // The game for the pad's symbols below the keys; without one (a test) the hints are left out.
     property GameController game
-    // The UI language ("en", "de"; GameSettings.contentLanguage, which follows a switch at runtime).
-    property string language
-    readonly property int keyLayout: language === "de" ? OnScreenKeyboard.KeyLayout.Qwertz : OnScreenKeyboard.KeyLayout.Qwerty
+    // Where y and z sit (GameSettings.keyboardLayout, which follows a language switch at runtime).
+    property int keyLayout: GameSettings.KeyboardLayout.Qwerty
 
     // Each key: its character and the one under shift.
     readonly property var rows: {
-        const qwertz = keyLayout === OnScreenKeyboard.KeyLayout.Qwertz;
+        const qwertz = keyLayout === GameSettings.KeyboardLayout.Qwertz;
         const upper = qwertz ? "zZ" : "yY";
         const lower = qwertz ? "yY" : "zZ";
         return [
@@ -92,7 +85,6 @@ Popup {
             field.accepted();
     }
 
-    objectName: "onScreenKeyboard"
     x: Math.round((areaWidth - width) / 2)
     y: areaHeight - height - Ui.px(24)
     modal: true
@@ -119,24 +111,24 @@ Popup {
         spacing: Ui.px(6)
 
         // Pad commands besides moving and pressing keys (QcMenuNavigator asks this first).
-        function gamepadCommand(command: string): bool {
+        function gamepadCommand(command: int): bool {
             switch (command) {
-            case "secondary":
+            case GamepadMenuInput.Command.Secondary:
                 keyboard.deleteBack();
                 return true;
-            case "tertiary":
+            case GamepadMenuInput.Command.Tertiary:
                 keyboard.type(" ");
                 return true;
-            case "tabPrevious":
+            case GamepadMenuInput.Command.TabPrevious:
                 keyboard.moveCursor(-1);
                 return true;
-            case "tabNext":
+            case GamepadMenuInput.Command.TabNext:
                 keyboard.moveCursor(1);
                 return true;
-            case "start":
+            case GamepadMenuInput.Command.Start:
                 keyboard.finish();
                 return true;
-            case "back":
+            case GamepadMenuInput.Command.Back:
                 keyboard.close();
                 return true;
             }

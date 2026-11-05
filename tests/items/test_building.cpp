@@ -344,7 +344,8 @@ private slots:
         registry.registerRecipe(*QcContentParser::parseRecipe(
             json("{\"name\":\"granite_steps\",\"pattern\":[\"#\"],\"key\":{\"#\":\"m:marble\"},\"result\":{\"item\":\"o:granite_steps\",\"count\":7}}"),
             u"o"_s));
-        registry.finish();
+        const QStringList warnings = registry.finish();
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         QVERIFY(registry.blockId(u"o:marble_steps"_s));
         QVERIFY(!registry.blockId(u"o:marble_posts"_s));
         QVERIFY(registry.blockId(u"o:granite_posts"_s));
@@ -817,7 +818,7 @@ private slots:
         QCOMPARE(m_content->property(at(door), u"open"_s), u"true"_s);
 
         // A pig in the doorway: the door cannot swing shut onto it.
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(pig, {door.x + 0.5, static_cast<double>(door.y), door.z + 0.5}, 9000);
         use(door, QcBlockFace::South);
         QCOMPARE(m_content->property(at(door), u"open"_s), u"true"_s);

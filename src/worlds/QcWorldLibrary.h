@@ -52,8 +52,8 @@ public:
 
     explicit QcWorldLibrary(QString root);
 
-    /*! Base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's application
-        data location (tests, screenshots). */
+    /*! Returns the base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's
+        application data location (tests, screenshots). */
     static QString dataRoot();
     /*! Returns \c {<data root>/worlds}. */
     static QString defaultRoot();
@@ -64,13 +64,18 @@ public:
 
     /*! Returns the directory that holds the worlds. */
     const QString &root() const { return m_root; }
-    /*! Returns the worlds (directories with a world.json), newest first by last played time. */
+    /*! Returns the worlds (directories with a world.json), newest first by last played time, worlds
+        played at the same time by name and folder. */
     QList<Entry> list() const;
     /*! Creates the directory and world.json for a new world called \a name with \a seed and
         \a setup; returns the new entry. The folder name comes from \a name (other characters
         than letters, digits, \c {-} and \c {_} replaced), with a number appended when it is
         taken. The generator's setup runs when the world first opens. */
     [[nodiscard]] QcResult<Entry> create(const QString &name, qint64 seed, const NewWorld &setup = {}) const;
+    /*! Returns the path of the world directory \a folder, or an error when \a folder is no plain
+        folder name directly below the root, is a link or holds no world.json. remove() and
+        whoever opens a world's folder check a folder from outside with it. */
+    [[nodiscard]] QcResult<QString> worldDirectory(const QString &folder) const;
     /*! Deletes the world directory \a folder. Only plain folder names directly below the root are
         accepted. Returns an error when \a folder is no plain name, is a link, holds no
         world.json or cannot be deleted. */

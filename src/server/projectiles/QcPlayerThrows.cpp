@@ -5,6 +5,7 @@
 
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/mobbrains/QcArcherBrain.h"
 #include "server/projectiles/QcServerProjectiles.h"
@@ -33,7 +34,7 @@ bool QcPlayerThrows::throwHeld(QcServerClient &client)
     }
 
     const bool creative = client.rules().infiniteItems;
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = QcLineOfSight::eyeOf(client);
     const QcVec3 direction = QcProjectileFlight::direction(client.yaw, client.pitch);
     const QcVec3 velocity = QcArcherBrain::spread(direction * held->throwable->speed, held->throwable->inaccuracyDegrees, m_state.random());
     const QcProjectileManager::Launch shot{client.id, held->projectile, eye + direction * QcPlayerLaunchers::muzzle, velocity,

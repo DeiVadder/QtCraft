@@ -7,6 +7,7 @@
 #include "fixtures/QcTestUtil.h"
 #include "fixtures/QcTestWorld.h"
 #include "server/core/QcRateLimiter.h"
+#include "server/core/QcServerClient.h"
 #include "server/gameplay/QcLineOfSight.h"
 
 #include <QRegularExpression>
@@ -434,7 +435,7 @@ private slots:
         buildWallWithTargetBehind();
         // A pig behind the wall; no tick runs, so it stays there.
         const QcBlockPos pen = m_feet.offset(3, 0, 1);
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pen.x + 0.5, static_cast<double>(pen.y), pen.z + 0.5}, 600);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), {pen.x + 0.5, static_cast<double>(pen.y), pen.z + 0.5}, 600);
         const double health = m_server->mobs().find(pig)->health;
 
         m_client->connection.send(QcMsg::AttackEntity{pig});
@@ -464,6 +465,41 @@ private slots:
         QVERIFY(QcLineOfSight::reaches(world, low, QcLineOfSight::blockBox({1, 0, 0}), QcBlockPos{1, 0, 0}));
     }
 
+    // Rays and projectiles of a crouching player start from his lower eyes (decision E-961); in
+    // flight sneak descends and the eyes stay where they are.
+    void aCrouchingPlayerAimsFromLowerEyes()
+    {
+        m_server.reset();
+        QcServerClient player;
+        player.motion.position = {0.5, 1.0, 0.5};
+        QCOMPARE(QcLineOfSight::eyeOf(player), (QcVec3{0.5, 1.0 + QcPhysics::playerEyeHeight, 0.5}));
+        player.sneaking = true;
+        QCOMPARE(QcLineOfSight::eyeOf(player), (QcVec3{0.5, 1.0 + QcPhysics::sneakEyeHeight, 0.5}));
+        player.motion.flying = true;
+        QCOMPARE(QcLineOfSight::eyeHeight(player), QcPhysics::playerEyeHeight);
+    }
+
+    // A box that only the crouched eyes see under a ceiling: it counts while the player sneaks or
+    // sneaked on the input before, never otherwise (decision E-961).
+    void crouchedEyesCountOnlyWhileSneaking()
+    {
+        m_server.reset();
+        QcTestWorld world(*m_content);
+        world.fillBox({1, 3, -2}, {5, 3, 2}, id("qtcraft:stone"));
+        // Standing eyes at 3.22 sit in the cell under no ceiling; every ray from there to the box
+        // enters the ceiling at x = 1. The crouched eyes at 2.87 pass below it.
+        QcServerClient player;
+        player.motion.position = {0.5, 1.6, 0.5};
+        const QcAabb box{{3.0, 2.3, 0.4}, {3.2, 2.5, 0.6}};
+        QVERIFY(!QcLineOfSight::canSee(world, player, box));
+
+        player.sneaking = true;
+        QVERIFY(QcLineOfSight::canSee(world, player, box));
+        player.sneaking = false;
+        player.sneakedBefore = true;
+        QVERIFY(QcLineOfSight::canSee(world, player, box));
+    }
+
     void theEyeSeesOutOfItsOwnCell()
     {
         // The eye inside sugar cane: its box would stop every ray at distance 0.
@@ -488,7 +524,7 @@ private slots:
         const QcBlockPos eyeCell = m_feet.offset(0, 1, 0);
         const QcBlockPos target = m_feet.offset(2, 1, 0);
         m_server->world().setBlock(target, id("qtcraft:dirt"));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s),
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s),
             {m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 2.5}, 600);
         const double health = m_server->mobs().find(pig)->health;
         const int enough = static_cast<int>(QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr) * QcPhysics::tickRate) + 2;

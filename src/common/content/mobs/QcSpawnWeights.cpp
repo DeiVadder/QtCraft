@@ -53,10 +53,10 @@ const QcSpawnWeights::Table &QcSpawnWeights::find(const QString &biome) const
     return table != m_tables.cend() ? *table : *m_tables.constFind(QString());
 }
 
-double QcSpawnWeights::weight(int type, const QString &biome) const
+double QcSpawnWeights::weight(QcCreatureKindId type, const QString &biome) const
 {
     const Table &table = find(biome);
-    return type >= 0 && type < table.weights.size() ? table.weights.at(type) : 0.0;
+    return type.index() >= 0 && type.index() < table.weights.size() ? table.weights.at(type.index()) : 0.0;
 }
 
 double QcSpawnWeights::total(const QString &biome) const
@@ -69,7 +69,7 @@ QStringList QcSpawnWeights::problems(const QcContentRegistry &content)
     QStringList warnings;
     for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
         for (const QcSpawnWeight &entry : biome.monsterWeights) {
-            const std::optional<int> type = content.mobIndex(entry.mob);
+            const std::optional<QcCreatureKindId> type = content.mobKind(entry.mob);
             if (!type) {
                 warnings.append(u"biome '%1': unknown creature '%2' in 'monsters', left out"_s.arg(biome.name, entry.mob));
             } else if (!content.mobs()[*type].isMonster()) {

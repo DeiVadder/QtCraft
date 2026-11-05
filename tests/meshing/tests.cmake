@@ -7,7 +7,9 @@
 
 # When the HUD names the selected item over the hotbar (decision E-885).
 qc_add_test(test_held_item_name SOURCES meshing/test_held_item_name.cpp LIBRARIES qc_app_core)
-qc_add_test(test_mesher SOURCES meshing/test_mesher.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_mesher SOURCES meshing/test_mesher.cpp fixtures/QcMesherFixture.h LIBRARIES qc_clientcore)
+# Faces where translucent blocks meet translucent water (decisions E-868, E-959).
+qc_add_test(test_mesher_shores SOURCES meshing/test_mesher_shores.cpp fixtures/QcMesherFixture.h LIBRARIES qc_clientcore)
 # The corner heights of a liquid's surface (decision E-885).
 qc_add_test(test_liquid_surface SOURCES meshing/test_liquid_surface.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_packed_mesh SOURCES meshing/test_packed_mesh.cpp LIBRARIES qc_clientcore)
@@ -16,16 +18,25 @@ qc_add_test(test_mesh_scheduler SOURCES meshing/test_mesh_scheduler.cpp LIBRARIE
 qc_add_test(test_water_look SOURCES meshing/test_water_look.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES meshing/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES meshing/test_entity_culling.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_bow_pose SOURCES meshing/test_bow_pose.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_bow_stages SOURCES meshing/test_bow_stages.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_forced_pose SOURCES meshing/test_forced_pose.cpp LIBRARIES qc_app_core)
 qc_add_test(test_hand_swing SOURCES meshing/test_hand_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_held_item SOURCES meshing/test_held_item.cpp LIBRARIES qc_base_content qc_clientcore)
+# Dropped items on the ground: one solid turning item (decision E-991).
+qc_add_test(test_dropped_item SOURCES meshing/test_dropped_item.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_sprite_resolution SOURCES meshing/test_sprite_resolution.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_hold_content SOURCES meshing/test_hold_content.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_boat_look SOURCES meshing/test_boat_look.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_cape SOURCES meshing/test_cape.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape_swing SOURCES meshing/test_cape_swing.cpp LIBRARIES qc_clientcore)
 # The walk and the eyes of creatures built from boxes (decision E-888).
 qc_add_test(test_box_legs SOURCES meshing/test_box_legs.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_squid_looks SOURCES meshing/test_squid_looks.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_mesher_shapes SOURCES meshing/test_mesher_shapes.cpp fixtures/QcWorldMesh.h LIBRARIES qc_clientcore)
 # Piston heads and diode tops of the base content (decision E-874).
 qc_add_test(test_mesher_signal_shapes SOURCES meshing/test_mesher_signal_shapes.cpp fixtures/QcWorldMesh.h LIBRARIES qc_base_content qc_clientcore)
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES meshing/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
+# Headless measurement of the mesh of many dropped items (decision E-991); QTCRAFT_DROP_MEASURE=full for the recorded sizes.
+qc_add_test(test_drop_measure SOURCES meshing/test_drop_measure.cpp LIBRARIES qc_base_content qc_clientcore)

@@ -24,7 +24,7 @@ Link relatedLink(const QcHandbookContext &context, const QString &name)
         return link;
     }
 
-    if (const std::optional<int> mob = content.mobIndex(name)) {
+    if (const std::optional<QcCreatureKindId> mob = content.mobKind(name)) {
         return context.links.mobLink(content.mobs()[*mob]);
     }
     if (const auto biome = std::ranges::find(content.worldgen().biomes(), name, &QcBiomeDefinition::name); biome != content.worldgen().biomes().end()) {
@@ -42,7 +42,10 @@ QcHandbookEntry chapterPage(const QcHandbookContext &context, const QcHandbookCh
     entry.category = u"playing"_s;
     entry.pack = QcHandbookLinks::packOf(chapter.name);
     entry.title = context.content.translations().translate(chapter.titleKey, text.language());
-    entry.icon = context.links.itemIcon(chapter.iconItem);
+    entry.icon = context.links.itemOrMobIcon(chapter.iconItem);
+    if (!chapter.iconItem.isEmpty() && entry.icon.isEmpty()) {
+        text.addProblem(u"chapter %1: unknown icon %2"_s.arg(chapter.name, chapter.iconItem));
+    }
 
     for (const QString &name : chapter.sections) {
         const QString key = chapter.titleKey + u'.' + name;

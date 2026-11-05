@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <array>
 #include <tuple>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -182,6 +183,7 @@ bool usableZ(int z)
 
 QList<QcBlockId> shownStates(const QcContentRegistry &content, quint32 type)
 {
+    Q_ASSERT_X(std::cmp_less(type, content.blocks().size()), "shownStates", "block type out of range");
     const QcBlockDefinition &block = content.blocks()[type];
     const QcBlockStateTable &table = content.stateTable();
     const QcBlockProperty *half = block.property(u"half"_s);

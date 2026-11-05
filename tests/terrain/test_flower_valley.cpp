@@ -132,7 +132,7 @@ private:
     {
         QSet<QcBlockId> flowers;
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
-            for (const QcVegetationPlant &plant : biome.vegetation.flowers.plants) {
+            for (const QcWeightedBlockName &plant : biome.vegetation.flowers.plants) {
                 flowers.insert(m_content->blockId(plant.block).value_or(qcAirBlockId));
             }
         }
@@ -306,7 +306,7 @@ private slots:
         const QStringList newFlowers{u"qtcraft:oxeye_daisy"_s, u"qtcraft:orange_tulip"_s, u"qtcraft:pink_tulip"_s};
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
             QStringList plants;
-            for (const QcVegetationPlant &plant : biome.vegetation.flowers.plants) {
+            for (const QcWeightedBlockName &plant : biome.vegetation.flowers.plants) {
                 plants.append(plant.block);
             }
             for (const QString &flower : newFlowers) {

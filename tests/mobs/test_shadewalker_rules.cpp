@@ -215,7 +215,7 @@ private slots:
                 QString::fromLatin1(name));
             QVERIFY2(warnings.contains(expected), qPrintable(warnings.join(u'\n')));
         }
-        const QcCarryDefinition &carry = *content->mobs()[*content->mobIndex(u"test:odd"_s)].carries;
+        const QcCarryDefinition &carry = *content->mobs()[*content->mobKind(u"test:odd"_s)].carries;
         QCOMPARE(carry.blockIds, QList<QcBlockId>{id("qtcraft:dirt")});
     }
 

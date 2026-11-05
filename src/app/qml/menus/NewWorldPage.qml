@@ -17,18 +17,13 @@ ColumnLayout {
     id: page
 
     required property GameController game
+    // The form's values and defaults (decision E-956); the map preview follows its seed, also the
+    // random one of an empty seed field (decision E-921).
+    readonly property NewWorldDraft draft: game.worldOptions.draft
+    // A normal world: it has world options and a map preview.
+    readonly property bool terrain: draft.terrain
 
     // The page should be shown (open(), also the test hook "@<ms> open:newWorldPage").
-    // The type and mode the form starts with (indexes into their lists; the test hooks
-    // QTCRAFT_MENU_WORLD_TYPE and QTCRAFT_MENU_GAME_MODE set them).
-    property int startWorldType: 0
-    property int startGameMode: 0
-    // The seed of a world whose seed field stays empty, drawn when the form opens, so that the map
-    // preview shows the world that will be created (decision E-921).
-    property string randomSeed: ""
-    // A normal world: it has world options and a map preview.
-    readonly property bool terrain: worldType.currentValue === "terrain"
-
     signal openRequested
     signal backRequested
     // "Customise …": the page of the world generation options (WorldOptionsPage).
@@ -36,55 +31,15 @@ ColumnLayout {
 
     // Shows the form with its defaults, the name chosen for typing over it.
     function open() {
-        worldName.text = qsTr("New World");
-        worldType.currentIndex = startWorldType;
-        seed.text = "";
-        drawSeed();
-        flatLayers.text = "";
-        gameMode.currentIndex = startGameMode;
-        keepInventory.checked = true;
-        page.game.worldOptions.reset();
-        page.game.worldOptions.preview.resetView();
+        page.draft.reset();
         form.contentY = 0;
         openRequested();
         worldName.forceActiveFocus(Qt.TabFocusReason);
         worldName.selectAll();
     }
 
-    // A new random seed for an empty seed field.
-    function drawSeed() {
-        randomSeed = String(Math.floor(Math.random() * 2147483647));
-    }
-
-    // The die: a new random seed in the field, which the map then shows.
-    function rollSeed() {
-        drawSeed();
-        seed.text = randomSeed;
-    }
-
-    // The seed the world gets: the field's text, else the random one.
-    function worldSeed(): string {
-        const seedText = seed.text.trim();
-        return seedText.length > 0 ? seedText : randomSeed;
-    }
-
     function create() {
-        page.game.createWorld(worldName.text, page.worldSeed(), {
-            keepInventory: keepInventory.checked,
-            worldType: worldType.currentValue,
-            layers: worldType.currentValue === "flat" ? flatLayers.text : "",
-            gameMode: gameMode.currentValue,
-            worldOptions: page.game.worldOptions.values
-        });
-    }
-
-    // What the world generation options say in a line: their preset, or how many differ.
-    function optionsSummary(): string {
-        const options = page.game.worldOptions;
-        if (options.changedCount === 0)
-            return qsTr("Every option at its default.");
-        const preset = options.presets.find(each => each.name === options.preset);
-        return preset ? qsTr("Preset: %1").arg(preset.title) : qsTr("%n option(s) changed.", "", options.changedCount);
+        page.game.createWorld(page.draft.name, page.draft.seed, page.draft.setup());
     }
 
     // Back from the options: the small map shows the default view again (the options' map may
@@ -105,8 +60,8 @@ ColumnLayout {
 
     // The pad's down from the form's last setting goes to "Create and play": the footer lies too
     // far to the side of it for the spatial step (the map column has no focus target).
-    function gamepadCommand(command: string): bool {
-        if (command !== "down" || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Down || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
             return false;
         createButton.forceActiveFocus(Qt.TabFocusReason);
         return true;
@@ -142,11 +97,9 @@ ColumnLayout {
 
     spacing: 0
 
-    Binding {
-        target: page.game.worldOptions.preview
-        property: "seedText"
-        value: page.worldSeed()
-    }
+    // The dropdowns show the draft's choices (shownValue), also after it was reset. The text fields
+    // bind the draft's texts and write every change back (also one a test hook sets), the
+    // dropdowns and the switch the player's choice.
 
     SettingsPage {
         id: form
@@ -160,12 +113,11 @@ ColumnLayout {
         // small map on the right; one column where the page is too narrow for both, the map then at
         // the end, below the world options.
         GridLayout {
-            id: columns
+            id: layoutColumns
 
             readonly property real mapColumn: Ui.size.map + 2 * Ui.space.l
             readonly property bool beside: page.terrain && width >= Ui.screen.s + mapColumn + columnSpacing
 
-            objectName: "newWorldColumns"
             Layout.fillWidth: true
             columns: beside ? 2 : 1
             columnSpacing: Ui.space.xl
@@ -188,7 +140,8 @@ ColumnLayout {
                             objectName: "worldName"
                             Layout.fillWidth: true
                             Accessible.name: qsTr("World name")
-                            text: qsTr("New World")
+                            text: page.draft.name
+                            onTextChanged: page.draft.name = text
                             onAccepted: page.create()
                         }
                     }
@@ -196,19 +149,21 @@ ColumnLayout {
                         id: worldType
 
                         objectName: "worldTypeChoice"
+                        shownValue: page.draft.worldType
                         label: qsTr("World type")
-                        help: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
-                              : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
-                              : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
-                              : qsTr("Hills, mountains, caves, oceans and biomes.")
+                        // Each type with what it is.
+                        readonly property var choices: [
+                            { value: WorldLibrary.WorldType.Terrain, text: qsTr("Normal"), help: qsTr("Hills, mountains, caves, oceans and biomes.") },
+                            { value: WorldLibrary.WorldType.Flat, text: qsTr("Flat"), help: qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.") },
+                            { value: WorldLibrary.WorldType.Void, text: qsTr("Void"), help: qsTr("Nothing but a small platform; noon, no creatures of their own accord.") },
+                            { value: WorldLibrary.WorldType.Showcase, text: qsTr("Showcase"), help: qsTr("A flat world with every block, creature and item on show, at noon.") }
+                        ]
+
+                        help: worldType.choices[worldType.currentIndex]?.help ?? ""
                         textRole: "text"
                         valueRole: "value"
-                        model: [
-                            { value: "terrain", text: qsTr("Normal") },
-                            { value: "flat", text: qsTr("Flat") },
-                            { value: "void", text: qsTr("Void") },
-                            { value: "showcase", text: qsTr("Showcase") }
-                        ]
+                        model: worldType.choices
+                        onActivated: index => page.draft.worldType = worldType.choices[index].value
                     }
                     // The field shows the random seed as its placeholder while it is empty, so the
                     // map always shows the seed the field stands for; the die draws a new one.
@@ -223,7 +178,9 @@ ColumnLayout {
                             objectName: "worldSeed"
                             Layout.fillWidth: true
                             Accessible.name: qsTr("Seed")
-                            placeholderText: page.randomSeed
+                            text: page.draft.seedText
+                            placeholderText: page.draft.randomSeed
+                            onTextChanged: page.draft.seedText = text
                             onAccepted: page.create()
                         }
                         GameButton {
@@ -235,7 +192,7 @@ ColumnLayout {
                             leftPadding: Ui.space.s + Ui.size.icon + Ui.space.s
                             text: qsTr("Roll")
                             Accessible.name: qsTr("Random seed")
-                            onClicked: page.rollSeed()
+                            onClicked: page.draft.rollSeed()
 
                             DieIcon {
                                 x: Ui.space.s
@@ -248,7 +205,7 @@ ColumnLayout {
                         }
                     }
                     SettingRow {
-                        visible: worldType.currentValue === "flat"
+                        visible: page.draft.worldType === WorldLibrary.WorldType.Flat
                         label: qsTr("Layers")
                         help: qsTr("From the bottom up; empty for the default.")
 
@@ -257,7 +214,9 @@ ColumnLayout {
 
                             Layout.fillWidth: true
                             Accessible.name: qsTr("Layers from the bottom up")
+                            text: page.draft.layers
                             placeholderText: visible ? page.game.defaultFlatLayers() : ""
+                            onTextChanged: page.draft.layers = text
                             onAccepted: page.create()
                         }
                     }
@@ -270,29 +229,29 @@ ColumnLayout {
                         id: gameMode
 
                         objectName: "gameModeChoice"
+                        shownValue: page.draft.gameMode
                         label: qsTr("Game mode")
-                        help: gameMode.currentValue === "creative"
-                              ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
-                              : gameMode.currentValue === "adventure"
-                              ? qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.")
-                              : gameMode.currentValue === "spectator"
-                              ? qsTr("Fly through blocks and look around, unseen; nothing can be touched.")
-                              : qsTr("Gather, craft and survive: health, hunger and creatures count.")
+                        // Each mode with what it is.
+                        readonly property var choices: [
+                            { value: GameMode.Mode.Survival, text: qsTr("Survival"), help: qsTr("Gather, craft and survive: health, hunger and creatures count.") },
+                            { value: GameMode.Mode.Creative, text: qsTr("Creative"), help: qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.") },
+                            { value: GameMode.Mode.Adventure, text: qsTr("Adventure"), help: qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.") },
+                            { value: GameMode.Mode.Spectator, text: qsTr("Spectator"), help: qsTr("Fly through blocks and look around, unseen; nothing can be touched.") }
+                        ]
+
+                        help: gameMode.choices[gameMode.currentIndex]?.help ?? ""
                         textRole: "text"
                         valueRole: "value"
-                        model: [
-                            { value: "survival", text: qsTr("Survival") },
-                            { value: "creative", text: qsTr("Creative") },
-                            { value: "adventure", text: qsTr("Adventure") },
-                            { value: "spectator", text: qsTr("Spectator") }
-                        ]
+                        model: gameMode.choices
+                        onActivated: index => page.draft.gameMode = gameMode.choices[index].value
                     }
                     SettingSwitch {
                         id: keepInventory
 
                         objectName: "keepInventory"
                         label: qsTr("Keep inventory on death")
-                        checked: true
+                        checked: page.draft.keepInventory
+                        onToggled: page.draft.keepInventory = checked
                     }
                 }
 
@@ -300,9 +259,28 @@ ColumnLayout {
                     visible: page.terrain
                     title: qsTr("World generation")
 
+                    // Only while the game has more than one version (decision E-922).
+                    SettingDropdown {
+                        id: versionChoice
+
+                        objectName: "generatorVersionChoice"
+                        shownValue: page.draft.generatorVersion
+                        visible: page.draft.generatorVersions.length > 1
+                        label: qsTr("Generator version")
+                        help: page.draft.generatorVersion === page.draft.currentGeneratorVersion
+                              ? qsTr("The newest terrain. A world keeps its version for good.")
+                              : qsTr("Makes the same worlds as the release that brought this version.")
+                        textRole: "text"
+                        valueRole: "value"
+                        model: page.draft.generatorVersions.map(version => ({
+                            value: version,
+                            text: version === page.draft.currentGeneratorVersion ? qsTr("Current (%1)").arg(version) : qsTr("Version %1").arg(version)
+                        }))
+                        onActivated: index => page.draft.generatorVersion = page.draft.generatorVersions[index]
+                    }
                     SettingRow {
                         label: qsTr("World options")
-                        help: page.optionsSummary()
+                        help: page.game.worldOptions.summary
 
                         // At the start of the control column like the switch above it, so the
                         // pad's down reaches it from there.
@@ -325,8 +303,8 @@ ColumnLayout {
             // legend and the villages are on the world options page.
             MapPreviewGroup {
                 objectName: "newWorldMap"
-                Layout.preferredWidth: columns.beside ? columns.mapColumn : -1
-                Layout.fillWidth: !columns.beside
+                Layout.preferredWidth: layoutColumns.beside ? layoutColumns.mapColumn : -1
+                Layout.fillWidth: !layoutColumns.beside
                 Layout.alignment: Qt.AlignTop
                 visible: page.terrain
                 compact: true

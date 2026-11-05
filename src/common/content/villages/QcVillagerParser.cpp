@@ -63,6 +63,11 @@ QStringList readHair(const QJsonObject &json, const QString &packNamespace, QcJs
         return hair;
     }
     for (const auto &entry : array) {
+        // "" is a choice without hair; anything but a string is a mistake.
+        if (!entry.isString()) {
+            reader.fail(u"'hair' lists style names or \"\" for none"_s);
+            return {};
+        }
         const QString name = entry.toString();
         hair.append(name.isEmpty() ? QString() : QcContentNames::qualify(name, packNamespace));
     }
@@ -245,6 +250,7 @@ QcResult<QcVillagerProfession> parseProfession(const QJsonObject &json, const QS
     if (json.contains(u"routine"_s)) {
         profession.routine = readRoutine(json, reader);
     }
+    // Left out, it is 0: the species' number (QcTradingSettings::offersPerLevel); given, 1 to 8.
     profession.offersPerLevel = reader.integer(u"offersPerLevel"_s, 0, 1, 8);
     if (!reader.ok()) {
         return qcError(reader.error);

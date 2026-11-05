@@ -7,7 +7,9 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 
+#include <algorithm>
 #include <array>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -86,7 +88,17 @@ bool QcScreenState::isMenu(Overlay overlay)
     }
 }
 
+bool QcScreenState::isPauseMenu(Overlay overlay)
+{
+    return isMenu(overlay) && overlay != Overlay::Advancements;
+}
+
 bool QcScreenState::isFullScreen(Overlay overlay)
+{
+    return isSettingsPage(overlay) || overlay == Overlay::Admin || overlay == Overlay::Advancements;
+}
+
+bool QcScreenState::isSettingsPage(Overlay overlay)
 {
     switch (overlay) {
     case Overlay::Settings:
@@ -97,8 +109,6 @@ bool QcScreenState::isFullScreen(Overlay overlay)
     case Overlay::Gamepad:
     case Overlay::Debug:
     case Overlay::TexturePacks:
-    case Overlay::Admin:
-    case Overlay::Advancements:
         return true;
     // No default: a new overlay must be placed here (-Wswitch).
     case Overlay::None:
@@ -115,6 +125,42 @@ bool QcScreenState::isFullScreen(Overlay overlay)
     case Overlay::Stonecutter:
     case Overlay::Enchanting:
     case Overlay::Anvil:
+    case Overlay::Admin:
+    case Overlay::Advancements:
+        return false;
+    }
+    return false;
+}
+
+bool QcScreenState::isSlotScreen(Overlay overlay)
+{
+    switch (overlay) {
+    case Overlay::Inventory:
+    case Overlay::Creative:
+    case Overlay::Furnace:
+    case Overlay::Chest:
+    case Overlay::Trade:
+    case Overlay::Stonecutter:
+    case Overlay::Enchanting:
+    case Overlay::Anvil:
+        return true;
+    // No default: a new overlay must be placed here (-Wswitch).
+    case Overlay::None:
+    case Overlay::Pause:
+    case Overlay::Settings:
+    case Overlay::Display:
+    case Overlay::Audio:
+    case Overlay::Interface:
+    case Overlay::Controls:
+    case Overlay::Gamepad:
+    case Overlay::Debug:
+    case Overlay::TexturePacks:
+    case Overlay::Character:
+    case Overlay::Lan:
+    case Overlay::Chat:
+    case Overlay::Sign:
+    case Overlay::Admin:
+    case Overlay::Advancements:
         return false;
     }
     return false;
@@ -139,6 +185,43 @@ QcScreenState::HudShown QcScreenState::hudShown(Overlay overlay, bool handbookOp
     return HudShown::StatusRows;
 }
 
+QcScreenState::SubScreen QcScreenState::subScreen(Overlay overlay)
+{
+    if (isSettingsPage(overlay)) {
+        return SubScreen::Settings;
+    }
+    if (overlay == Overlay::Character) {
+        return SubScreen::Character;
+    }
+    if (overlay == Overlay::Lan) {
+        return SubScreen::Lan;
+    }
+    return overlay == Overlay::Admin ? SubScreen::Admin : SubScreen::None;
+}
+
+QcScreenState::SettingsPage QcScreenState::settingsPage(Overlay overlay)
+{
+    // The overlays that open another page than the graphics page.
+    static constexpr std::array<std::pair<Overlay, SettingsPage>, 6> pages{{
+        {Overlay::Audio, SettingsPage::Audio},
+        {Overlay::Controls, SettingsPage::Controls},
+        {Overlay::Gamepad, SettingsPage::Controller},
+        {Overlay::Interface, SettingsPage::Interface},
+        {Overlay::TexturePacks, SettingsPage::TexturePacks},
+        {Overlay::Debug, SettingsPage::Advanced},
+    }};
+    const auto found = std::ranges::find(pages, overlay, &std::pair<Overlay, SettingsPage>::first);
+    return found != pages.end() ? found->second : SettingsPage::Graphics;
+}
+
+QcScreenState::Overlay QcScreenState::subScreenReturn(Overlay overlay)
+{
+    if (overlay == Overlay::Debug || subScreen(overlay) == SubScreen::None) {
+        return Overlay::None;
+    }
+    return Overlay::Pause;
+}
+
 std::optional<QcScreenState::Overlay> QcScreenState::overlayFromName(QStringView name)
 {
     for (std::size_t index = 0; index < overlayNames.size(); ++index) {
@@ -157,9 +240,20 @@ void QcScreenState::setPhase(Phase phase, const QString &status)
     }
     if (m_phase != phase) {
         m_phase = phase;
+        // The input is off before the phase is told (interrupted, mouseFreed first).
+        setInputEnabled(playing());
         emit phaseChanged();
         emit worldInputChanged();
     }
+}
+
+void QcScreenState::setStarting(bool starting)
+{
+    if (starting == m_starting) {
+        return;
+    }
+    m_starting = starting;
+    emit startingChanged();
 }
 
 void QcScreenState::setInputEnabled(bool enabled)
@@ -188,6 +282,9 @@ void QcScreenState::setOverlay(Overlay overlay)
         return;
     }
 
+    if (overlay == Overlay::Advancements) {
+        m_advancementsReturn = m_overlay == Overlay::Pause ? Overlay::Pause : Overlay::None;
+    }
     m_overlay = overlay;
     emit interrupted();
     if (m_overlay != Overlay::Chat) {
@@ -197,6 +294,31 @@ void QcScreenState::setOverlay(Overlay overlay)
     emit overlayChanged();
     // Opening a screen frees the mouse; closing the last one captures it again without a click.
     emit worldInputChanged();
+}
+
+void QcScreenState::closeAdvancements()
+{
+    if (m_overlay != Overlay::Advancements) {
+        qCWarning(lcGame) << "Ignoring closeAdvancements: the overlay is" << overlayName(m_overlay) << "instead of the advancements";
+        return;
+    }
+
+    setOverlay(m_advancementsReturn);
+}
+
+void QcScreenState::closeSubScreen(SubScreen closed)
+{
+    const int value = static_cast<int>(closed);
+    if (value <= static_cast<int>(SubScreen::None) || value > static_cast<int>(SubScreen::Admin)) {
+        qCWarning(lcGame) << "Ignoring closeSubScreen" << value << ": not a sub-screen of the pause menu";
+        return;
+    }
+    // The overlay moved on already and closed the sub-screen: it decides where the menu is.
+    if (subScreen() != closed) {
+        return;
+    }
+
+    setOverlay(subScreenReturn());
 }
 
 void QcScreenState::closeSessionScreens() const

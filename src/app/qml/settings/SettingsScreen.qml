@@ -12,49 +12,18 @@ import QtCraft
 // (SidebarScreen), with a back entry and the categories (graphics with the display options of
 // decision E-835, audio, controls, controller, interface, texture packs, advanced with debug and
 // diagnostics) in the bar and the chosen page on the right, scrolling as a whole. Changes apply at
-// once and are stored when the screen closes. The back entry, Esc and the pad's B close it; the
+// once and the settings store them themselves. The back entry, Esc and the pad's B close it; the
 // pad's shoulders and Ctrl+Tab switch the category. The main menu and the pause menu show the same
 // screen.
 SidebarScreen {
     id: screen
 
-    enum Page {
-        Graphics,
-        Audio,
-        Controls,
-        Controller,
-        Interface,
-        TexturePacks,
-        Advanced
-    }
-
     required property GameController game
-    // The page to open on (SettingsScreen.Graphics, ...; pageOfOverlay() for an overlay).
-    property int startPage: SettingsScreen.Graphics
+    // The page to open on (GameController.SettingsPage.Graphics, ...).
+    property int startPage: GameController.SettingsPage.Graphics
 
     // The screen was closed (back entry, Esc, the pad's B or close()).
     signal closed
-
-    // The page an overlay opens: the settings and the display options the graphics page (it begins
-    // with them), the debug options the advanced page.
-    function pageOfOverlay(overlay: int): int {
-        switch (overlay) {
-        case GameController.Overlay.Audio:
-            return SettingsScreen.Audio;
-        case GameController.Overlay.Controls:
-            return SettingsScreen.Controls;
-        case GameController.Overlay.Gamepad:
-            return SettingsScreen.Controller;
-        case GameController.Overlay.Interface:
-            return SettingsScreen.Interface;
-        case GameController.Overlay.TexturePacks:
-            return SettingsScreen.TexturePacks;
-        case GameController.Overlay.Debug:
-            return SettingsScreen.Advanced;
-        default:
-            return SettingsScreen.Graphics;
-        }
-    }
 
     // Opens on `startPage` with the focus on its first setting (docs/UI-Leitfaden.md 10).
     function open() {
@@ -65,27 +34,32 @@ SidebarScreen {
         focusPage();
     }
 
+    // Opens on `page` (GameController.SettingsPage).
+    function openAt(page: int) {
+        startPage = page;
+        open();
+    }
+
     function close() {
         if (!visible)
             return;
 
         controlsPage.cancelCapture();
         visible = false;
-        game.settings.saveSettings();
         closed();
     }
 
     // The pad's shoulders switch the category, its B closes the screen, its Y resets a page that
     // has defaults to go back to after a second Y (QcMenuNavigator asks the items above the focus).
     // Any other command cancels a reset that waits for its second Y.
-    function gamepadCommand(command: string): bool {
-        if (command !== "tertiary")
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Tertiary)
             cancelReset();
-        if (command === "back") {
+        if (command === GamepadMenuInput.Command.Back) {
             close();
             return true;
         }
-        if (command === "tertiary" && resettable) {
+        if (command === GamepadMenuInput.Command.Tertiary && resettable) {
             padReset();
             return true;
         }
@@ -129,7 +103,7 @@ SidebarScreen {
     // Keys the controls leave end here; Esc closes the screen, Tab moves the focus (Ctrl+Tab and
     // Ctrl+Shift+Tab switch the category: shortcuts of the NavList).
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape)
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.close();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -141,6 +115,8 @@ SidebarScreen {
             objectName: "settingsNav"
             Layout.fillWidth: true
             onSwitched: screen.focusPage()
+            // In the order of GameController.SettingsPage (QcScreenState::SettingsPage) and of the
+            // pages below: startPage indexes both.
             model: [qsTr("Graphics"), qsTr("Audio"), qsTr("Controls"), qsTr("Controller"), qsTr("Interface"),
                 qsTr("Texture packs"), qsTr("Advanced")]
         },

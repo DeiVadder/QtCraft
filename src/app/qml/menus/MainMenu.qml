@@ -58,12 +58,12 @@ Rectangle {
     }
     // Keys the text fields and buttons leave; Tab moves the focus, Esc goes back to the start page.
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && menu.page === MainMenu.WorldOptions)
+        const action = menu.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly);
+        if (action === KeyControls.ScreenKey.Close && menu.page === MainMenu.WorldOptions)
             menu.backToNewWorld();
-        else if (event.key === Qt.Key_Escape && menu.leavesPage())
+        else if (action === KeyControls.ScreenKey.Close && menu.leavesPage())
             menu.navigate(() => menu.showHome());
-        else if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen
-                 && !menu.game.multiplayer.joining)
+        else if (action === KeyControls.ScreenKey.Handbook && !menu.game.handbook.isOpen && !menu.game.multiplayer.joining)
             menu.game.handbook.open("");
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -137,8 +137,8 @@ Rectangle {
 
     // The pad's B (Escape) leaves the shown page for the start page (QcMenuNavigator asks the
     // items above the focus before it sends Escape).
-    function gamepadCommand(command: string): bool {
-        if (command !== "back" || !leavesPage())
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Back || !leavesPage())
             return false;
 
         if (page === MainMenu.WorldOptions)
@@ -150,8 +150,7 @@ Rectangle {
 
     function openSettings(startPage: int, back: var) {
         settingsReturn = back;
-        settingsScreen.startPage = startPage;
-        settingsScreen.open();
+        settingsScreen.openAt(startPage);
     }
 
     // A side bar entry: the handbook and the settings open over the page, the others leave it.
@@ -187,7 +186,7 @@ Rectangle {
             modsPage.open();
             break;
         case MenuSidebar.Settings:
-            openSettings(SettingsScreen.Graphics, null);
+            openSettings(GameController.SettingsPage.Graphics, null);
             break;
         case MenuSidebar.Quit:
             quitRequested();
@@ -247,6 +246,7 @@ Rectangle {
             game: menu.game
             onPlayRequested: folder => menu.game.playWorld(folder)
             onNewWorldRequested: newWorldPage.open()
+            onEntryRequested: entry => menu.choose(entry)
             onDeleteRequested: (folder, name) => {
                 deleteDialog.folder = folder;
                 deleteDialog.worldName = name;
@@ -301,7 +301,7 @@ Rectangle {
             objectName: "modsScreen"
             game: menu.game
             onOpenRequested: menu.page = MainMenu.Mods
-            onTexturePacksRequested: menu.openSettings(SettingsScreen.TexturePacks, () => modsPage.focusTexturePacks())
+            onTexturePacksRequested: menu.openSettings(GameController.SettingsPage.TexturePacks, () => modsPage.focusTexturePacks())
         }
     }
 

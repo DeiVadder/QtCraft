@@ -328,8 +328,8 @@ private slots:
         QVERIFY(!QcPathTerrain::standAt(cells, {0, 3, 0}, m_rules).ok);
 
         // A zombie's own rules, a villager's.
-        const QcMobDefinition &zombie = m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)];
-        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)];
+        const QcMobDefinition &zombie = m_content->mobs()[*m_content->mobKind(u"qtcraft:zombie"_s)];
+        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)];
         QVERIFY(!QcPathRules::of(zombie).climbsLadders);
         QVERIFY(QcPathRules::of(villager).climbsLadders);
         m_rules = QcPathRules::of(zombie);
@@ -368,8 +368,8 @@ private slots:
         QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","abilities":{"climbs":"trees"}})").error().contains(u"'climbs'"_s));
 
         // The base content's villager names them, its zombie has none.
-        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)].abilities, villager->abilities);
-        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)].ai, QcMobDefinition::Ai::Hostile);
+        QCOMPARE(m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)].abilities, villager->abilities);
+        QCOMPARE(m_content->mobs()[*m_content->mobKind(u"qtcraft:zombie"_s)].ai, QcMobDefinition::Ai::Hostile);
     }
 
     void villagersDoNotJumpIntoDeepWater()
@@ -423,7 +423,7 @@ private slots:
         QVERIFY(player.position.x > 1.5);
 
         // A villager (1.9 high; a body 1.95 high does not fit under the lintel from the path).
-        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)];
+        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)];
         QcEntityMotion mob;
         mob.position = {-2.5, onPath, 0.5};
         const QcPhysics::Steering steering{{1.0, 0.0, 0.0}, villager.walkSpeed, false};

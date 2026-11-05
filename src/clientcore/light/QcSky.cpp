@@ -68,9 +68,13 @@ QcSkyState at(double worldTime)
     const double dayNumber = std::floor(worldTime / QcDayCycle::dayLength);
     const double phase = std::fmod(dayNumber / static_cast<double>(lunarDays) + 0.5, 1.0);
     sky.moonPhase = phase < 0.0 ? phase + 1.0 : phase;
+    return sky;
+}
 
-    sky.cloudOffsetX = worldTime * cloudSpeed;
-    sky.cloudOffsetZ = worldTime * cloudSpeed * 0.35;
+QcSkyState withCloudDrift(QcSkyState sky, double seconds)
+{
+    sky.cloudOffsetX = seconds * cloudSpeed;
+    sky.cloudOffsetZ = seconds * cloudSpeed * 0.35;
     return sky;
 }
 

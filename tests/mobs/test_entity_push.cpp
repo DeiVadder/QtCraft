@@ -25,12 +25,12 @@ private:
 
     const QcServerClient &player() const { return *m_server->entities().clients().front(); }
 
-    int type(const char *name) const
+    QcCreatureKindId type(const char *name) const
     {
-        const std::optional<int> found = m_content->mobIndex(QString::fromLatin1(name));
+        const std::optional<QcCreatureKindId> found = m_content->mobKind(QString::fromLatin1(name));
         if (!found) {
             QcTestUtil::failCase(u"Test uses the creature %1, which the content does not have"_s.arg(QString::fromLatin1(name)));
-            return 0;
+            return {};
         }
         return *found;
     }

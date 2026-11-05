@@ -14,73 +14,98 @@
 #include <span>
 #include <vector>
 
-// Crowds of creatures (decision E-401). At the start of each tick the awake walkers (flyers, water
-// creatures of decision E-502 and dormant ones take no part) are counted into cells of one block,
-// by the block their feet are in, with the sum of their positions and half widths. A creature is
-// pushed away from the centre of the others in its cell and from the centre of each of the eight
-// cells around it on the same level, as far as it overlaps them: one push per cell instead of one
-// per pair, so the cost grows with the number of creatures (nine cell lookups each), however
-// densely they stand. Creatures have no collision with each other; this push is all that keeps
-// them apart.
-//
-// Hoverers that chase someone (decision E-839) form a crowd of their own (Members::Hoverers): only
-// the push keeps them apart (the same cells, by the block their feet are in), the tiers and cramming
-// are the walkers'. Children orbiting their parent chase nobody and take no part, so the parent in
-// the middle of their circle is not pushed.
-//
-// The number in a creature's cell also decides its AI tier (Tier, thresholds QcServerLimits
-// crowdThrottled and crowdIdle) and whether the cell is crammed (game rule maxEntityCramming).
+/*! \brief Crowds of creatures (decision E-401).
+
+    At the start of each tick the awake walkers (flyers, water creatures of decision E-502 and
+    dormant ones take no part) are counted into cells of one block, by the block their feet are in,
+    with the sum of their positions and half widths. A creature is pushed away from the centre of
+    the others in its cell and from the centre of each of the eight cells around it on the same
+    level, as far as it overlaps them: one push per cell instead of one per pair, so the cost grows
+    with the number of creatures (nine cell lookups each), however densely they stand. Creatures
+    have no collision with each other; this push is all that keeps them apart.
+
+    Hoverers that chase someone (decision E-839) form a crowd of their own (Members::Hoverers): only
+    the push keeps them apart (the same cells, by the block their feet are in), the tiers and
+    cramming are the walkers'. Children orbiting their parent chase nobody and take no part, so the
+    parent in the middle of their circle is not pushed.
+
+    The number in a creature's cell also decides its AI tier (Tier, thresholds QcServerLimits
+    crowdThrottled and crowdIdle) and whether the cell is crammed (game rule maxEntityCramming). */
 class QcMobCrowd
 {
 public:
-    // Full: everything. Throttled: thinks only every thinkInterval() ticks, without path searches,
-    // and keeps its last steering in between. Idle: no AI (gravity, currents, damage and the push only).
-    // A blow at a directly adjacent player stays in every tier.
-    enum class Tier : quint8 { Full, Throttled, Idle };
+    /*! \brief The AI tier of a creature in a crowd.
 
-    // How strongly an overlap turns the steering (1: a full overlap outweighs the wish to walk).
+        A blow at a directly adjacent player stays in every tier. */
+    enum class Tier : quint8 {
+        /*! Everything. */
+        Full,
+        /*! Thinks only every thinkInterval() ticks, without path searches, and keeps its last
+            steering in between. */
+        Throttled,
+        /*! No AI (gravity, currents, damage and the push only). */
+        Idle
+    };
+
+    /*! How strongly an overlap turns the steering (1: a full overlap outweighs the wish to
+        walk). */
     static constexpr double strength = 1.5;
-    // A throttled creature thinks every this many ticks at the throttled threshold, up to the most
-    // at the idle threshold.
+    /*! A throttled creature thinks every this many ticks at the throttled threshold, up to the
+        most at the idle threshold. \qcshared */
     static constexpr int fewestThinkTicks = 4;
     static constexpr int mostThinkTicks = 10;
 
-    // Who takes part: the awake walkers, or the awake hoverers (QcMobDefinition::hover) that chase
-    // someone.
-    enum class Members : quint8 { Walkers, Hoverers };
+    /*! \brief Who takes part: the awake walkers, or the awake hoverers (QcMobDefinition::hover)
+        that chase someone. */
+    enum class Members : quint8 {
+        /*! The awake walkers. */
+        Walkers,
+        /*! The awake hoverers that chase someone. */
+        Hoverers
+    };
 
     explicit QcMobCrowd(Members members = Members::Walkers)
         : m_kind(members)
     {
     }
 
+    /*! Sets the numbers in a cell from which its creatures are \a throttled and \a idle
+        (QcServerLimits crowdThrottled and crowdIdle). */
     void setThresholds(qint64 throttled, qint64 idle);
 
-    // Counts the awake members of `mobs` where they stand at the start of the tick; the other calls
-    // take the index of a creature in this list.
-    void build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions);
+    /*! Counts the awake members of \a mobs (kinds in \a definitions) where they stand at the start
+        of the tick; the other calls take the index of a creature in this list. */
+    void build(std::span<const QcCreature> mobs, QcMobKinds definitions);
 
-    // Creatures in the cell of the creature (itself included); 0 for one that takes no part.
+    /*! Returns the creatures in the cell of the creature at \a index (itself included); 0 for one
+        that takes no part. */
     int countAt(qsizetype index) const;
+    /*! Returns the AI tier of the creature at \a index. */
     Tier tierAt(qsizetype index) const;
-    // Ticks between two thoughts of a throttled creature, more the denser its cell.
+    /*! Returns the ticks between two thoughts of the throttled creature at \a index, more the
+        denser its cell. */
     int thinkInterval(qsizetype index) const;
-    // Horizontal push of `self` (where it stands now, half width `halfWidth`) away from the others
-    // in its cell and the cells around it, as they stood when build() ran; zero when none overlaps.
+    /*! Returns the horizontal push of \a self (at \a index, where it stands now, half width
+        \a halfWidth) away from the others in its cell and the cells around it, as they stood
+        when build() ran; zero when none overlaps. */
     QcVec3 push(qsizetype index, const QcCreature &self, double halfWidth) const;
-    // A creature in a cell with more than the limit of them: its id, its index in the list build()
-    // counted, its cell (an index) and the number in the cell.
+    /*! \brief A creature in a cell with more than the limit of them: its id, its index in the
+        list build() counted, its cell (an index) and the number in the cell. */
     struct Crammed
     {
+        /*! Its entity id. */
         quint32 id = 0;
+        /*! Its index in the list build() counted. */
         qsizetype index = 0;
+        /*! Its cell (an index). */
         int cell = 0;
+        /*! The number in the cell. */
         int count = 0;
     };
-    // The creatures in cells with more than `limit` of them (game rule maxEntityCramming; 0 or
-    // less: none), in the order of the list.
+    /*! Returns the creatures in cells with more than \a limit of them (game rule maxEntityCramming;
+        0 or less: none), in the order of the list. */
     QList<Crammed> crammed(int limit) const;
-    // The most creatures in one cell (tests, debug).
+    /*! Returns the most creatures in one cell (tests, debug). */
     int largestCell() const;
 
 private:

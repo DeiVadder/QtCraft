@@ -327,12 +327,11 @@ bool QcBlockRenderTable::liquidStandsFor(const Entry &self, QcBlockFace face, co
     return face == QcBlockFace::Down && neighbour.liquidHeight >= 1.0f - liquidSurfaceDrop - tolerance;
 }
 
-bool QcBlockRenderTable::blockStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour)
+bool QcBlockRenderTable::isShore(const Entry &self, const Entry &neighbour)
 {
-    const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
-    const bool translucentLiquid = self.liquid && self.layer == QcRenderLayer::Translucent;
-    const bool translucentBlock = !neighbour.liquid && neighbour.layer == QcRenderLayer::Translucent;
-    return side && translucentLiquid && translucentBlock;
+    const bool translucentBlock = !self.liquid && self.layer == QcRenderLayer::Translucent;
+    const bool translucentLiquid = neighbour.liquid && neighbour.layer == QcRenderLayer::Translucent;
+    return translucentBlock && translucentLiquid;
 }
 
 bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace face, const Entry &neighbour)
@@ -347,7 +346,7 @@ bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace fac
         return true;
     }
     const bool sameTranslucent = neighbour.type == self.type && self.layer == QcRenderLayer::Translucent;
-    if (neighbour.layer != QcRenderLayer::Opaque && !sameTranslucent && !blockStandsFor(self, face, neighbour)) {
+    if (neighbour.layer != QcRenderLayer::Opaque && !sameTranslucent) {
         return false;
     }
     const QList<SideRect> &covers = neighbour.cover[static_cast<std::size_t>(opposite(face))];

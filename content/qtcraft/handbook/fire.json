@@ -1,7 +1,7 @@
 {
     "name": "fire",
     "order": 81,
-    "icon": "magma_block",
+    "icon": "flint_and_steel",
     "sections": [
         "burning",
         "lighting",

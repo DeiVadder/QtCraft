@@ -47,6 +47,9 @@ struct PlayerState
     quint32 vehicle = 0;
     /*! The state of the boat the player drives (see the struct). */
     std::optional<QcBoatState> boat = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! The server knows the player to draw a launcher (decision E-986). False after an input the
+        client sent as drawing: the server refused the draw or ended it, the client lets go. */
+    bool usingItem = false;
 };
 
 /*! \brief Client -> server: the player selected another hotbar slot. */
@@ -107,11 +110,14 @@ struct QuickMoveItem
     slots. */
 struct InventoryState
 {
+    /*! The cells of the crafting grid; the decoder refuses more. */
+    static constexpr int craftingCells = 9;
+
     /*! The inventory slots (QcInventory::allSlots). */
     QList<QcItemStack> stacks;
     /*! The selected hotbar slot. */
     qint32 selected = 0;
-    /*! The nine cells of the crafting grid, row-major. */
+    /*! The craftingCells cells of the crafting grid, row-major. */
     QList<QcItemStack> craftingGrid;
     /*! The grid's size in use: 2 in the inventory, 3 at a crafting table. */
     qint32 craftingSize = 2;
@@ -170,6 +176,11 @@ struct PlayerHealth
     bool burning = false;
     /*! The player's status effects. */
     QList<QcStatusEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! Whether a fresh hit hurt the player just now (decision E-971): the client tilts the view. */
+    bool hurt = false;
+    /*! The world yaw in degrees from the player towards where that hit came from (the attacker);
+        none for a hit without a direction (a fall, fire, hunger) or no hit. */
+    std::optional<float> hurtFrom = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 /*! \brief Client -> server: leave the death screen. */
@@ -197,6 +208,18 @@ struct PlayerFood
     /*! The current and the highest food points. \qcshared */
     qint32 food = 0;
     qint32 maxFood = 0;
+};
+
+/*! \brief Server -> client: the receiving player's air under water (decision E-955), sent only when
+    what the HUD shows changes: the bubbles (QcAirSupply::bubblesOf), a full breath or whether the
+    eyes are under water. */
+struct PlayerAir
+{
+    /*! The air left and of a full breath, in game ticks. \qcshared */
+    qint32 air = 0;
+    qint32 maxAir = 0;
+    /*! Whether the player's eyes are under water. */
+    bool submerged = false;
 };
 
 /*! \brief Server -> client: the receiving player's experience (decision E-398): his level and

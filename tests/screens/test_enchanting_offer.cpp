@@ -9,7 +9,6 @@
 #include "app/models/QcPixelArtProvider.h"
 #include "clientcore/settings/QcUiPalette.h"
 
-#include <QMutex>
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 #include <QQuickStyle>
@@ -18,6 +17,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -41,6 +41,7 @@ ApplicationWindow {
             property int clicks: 0
 
             objectName: "usable"
+            lapisItem: "qtcraft:lapis_lazuli"
             offerData: ({ levelCost: 7, price: 1, signs: [{ rune: 3, text: "a" }, { rune: -1, text: "b" }], letters: 2,
                           readableLetters: 1, clue: "", levelsLacking: false, lapisLacking: false, affordable: true })
             onClicked: clicks++
@@ -49,6 +50,7 @@ ApplicationWindow {
             property int clicks: 0
 
             objectName: "unusable"
+            lapisItem: "qtcraft:lapis_lazuli"
             offerData: ({ levelCost: 30, price: 3, signs: [{ rune: -1, text: "a" }, { rune: -1, text: "b" }], letters: 2,
                           readableLetters: 2, clue: "ab", levelsLacking: true, lapisLacking: true, affordable: false })
             onClicked: clicks++
@@ -72,7 +74,7 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override
     {
         {
-            const QMutexLocker lock(&m_mutex);
+            const std::scoped_lock lock(m_mutex);
             m_requested.append(id);
         }
         return QcPixelArtProvider::requestImage(id, size, requestedSize);
@@ -80,12 +82,13 @@ public:
 
     static QStringList requested()
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         return m_requested;
     }
 
 private:
-    static inline QMutex m_mutex;
+    // QML's image loader threads hand the requested ids to the test's thread under this mutex.
+    static inline std::mutex m_mutex;
     static inline QStringList m_requested;
 };
 
@@ -191,7 +194,7 @@ private slots:
     void levelsTakeTheParchmentsTones()
     {
         const auto toneOf = [this](const QString &offer) {
-            const QQuickItem *badge = find(named(offer), [](QQuickItem *item) { return item->property("onParchment").isValid(); });
+            const QQuickItem *badge = find(named(offer), [](QQuickItem *item) { return item->property("parchment").isValid(); });
             return badge ? badge->property("tone").value<QColor>() : QColor();
         };
         QCOMPARE(toneOf(u"usable"_s), QcUiPalette::color(QcUiPalette::Role::LevelOnParchment));

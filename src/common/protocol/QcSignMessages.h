@@ -27,7 +27,7 @@ struct SignText
 
 /*! \brief Server -> client: the player placed or used the sign at \c {pos}; the client opens its
     editor with the sign's current lines. */
-struct OpenSignEditor
+struct OpenSignEditor // NOLINT(qc-duplicate-struct): protocol message, its own type
 {
     /*! The sign's block. */
     QcBlockPos pos;
@@ -39,7 +39,7 @@ struct OpenSignEditor
 
     The server checks the sign, the reach and the rate and cleans the lines (QcSignText::cleaned)
     before it keeps them. */
-struct EditSign
+struct EditSign // NOLINT(qc-duplicate-struct): protocol message, its own type
 {
     /*! The sign's block. */
     QcBlockPos pos;

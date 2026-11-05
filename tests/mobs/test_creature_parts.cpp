@@ -21,7 +21,7 @@ class TestCreatureParts : public QObject
 private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
-    int type(const QString &name) const { return *m_content->mobIndex(u"qtcraft:"_s + name); }
+    QcCreatureKindId type(const QString &name) const { return *m_content->mobKind(u"qtcraft:"_s + name); }
 
     // Routes that give one leg and count the questions.
     class OneLeg : public QcMobLegs::Routes

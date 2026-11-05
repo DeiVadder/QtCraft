@@ -7,6 +7,7 @@ qt_add_library(qc_network ${QC_LIBRARY_TYPE})
 # Sources sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_network PRIVATE
+    QcJoinFailure.h QcJoinFailure.cpp
     QcNetworkConfig.h
     QcServerAddress.h QcServerAddress.cpp
     QcSocketErrors.h QcSocketErrors.cpp

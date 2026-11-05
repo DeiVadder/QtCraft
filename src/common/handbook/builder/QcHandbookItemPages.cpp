@@ -159,7 +159,7 @@ QcHandbookEntry itemPage(const QcHandbookContext &context, const QcItemDefinitio
     entry.icon = item.name;
     entry.text = text.description(item.descriptionKey, item.name);
 
-    entry.facts.append({text.label(u"fact.id"_s), item.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), item.name, {}, true});
     entry.facts.append({text.label(u"fact.maxStack"_s), QString::number(item.maxStack), {}});
     entry.facts += useFacts(context, item);
     entry.facts += linkFacts(context, item);

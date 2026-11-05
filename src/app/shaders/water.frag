@@ -51,6 +51,9 @@ layout(std140, binding = 3) uniform Shadow {
     // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
     // highlights, z the strength of the relief, w of the highlights and reflections.
     vec4 material;
+    // xyz: towards the light without steps (decision E-960), for how a face turns to it (facing,
+    // relief, highlights); toLight, in steps, is the direction of the map and its lookups.
+    vec4 sun;
 } shadow;
 
 layout(binding = 4) uniform sampler2DShadow shadowMap;
@@ -102,7 +105,7 @@ vec3 skyColour(vec3 p, vec3 n, float distance)
     float strength = shadow.toLight.w;
     if (strength <= 0.0)
         return vec3(1.0);
-    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.toLight.xyz)) : 1.0;
+    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.sun.xyz)) : 1.0;
     float lit = facing > 0.0 ? facing * sunVisibility(p, n, distance) : 0.0;
     vec3 shaded = mix(shadow.shadowTint.rgb * shadow.litTint.w, shadow.litTint.rgb, lit);
     return mix(vec3(1.0), shaded, strength);
@@ -153,6 +156,15 @@ const float loopSeconds = 600.0;
 const float baseReflectance = 0.02;
 // The distance the copy of the scene gives the sky (water_behind.frag).
 const float farDistance = 60000.0;
+// Refraction: how far (blocks) the ray behind the surface moves per block of water it crosses and
+// unit of the waves' tilt, at refraction strength 1; the depth of water (blocks) from which the
+// picture behind is bent fully (the bend fades in from the shore up to it, and the ray's length in
+// the water counts up to it); the most the picture moves, as a share of the screen's height; how
+// far (blocks) a sample must lie beyond the surface's plane to be seen through it.
+const float bendPerBlock = 0.35;
+const float fullBendDepth = 1.5;
+const float maxBend = 0.012;
+const float surfaceMargin = 0.02;
 
 // `speed` (radians per second) rounded to a whole number of turns per loop.
 float looped(float speed)
@@ -224,6 +236,63 @@ vec2 screenOf(vec3 p, out float w)
     return vec2(ndc.x * 0.5 + 0.5, ndc.y * 0.5 * water.glow.w + 0.5);
 }
 
+// The point the copy shows at `uv` (relative to the camera), `distance` blocks away.
+vec3 pointAt(vec2 uv, float distance)
+{
+    vec2 ndc = vec2(uv.x * 2.0 - 1.0, (uv.y - 0.5) * 2.0 * water.glow.w);
+    vec4 onRay = water.inverseViewProjection * vec4(ndc, 0.5, 1.0);
+    return normalize(onRay.xyz / onRay.w) * distance;
+}
+
+// Whether the copy at `uv`, `distance` blocks away there, shows something on the far side of the
+// surface at `p`: behind it as seen from the camera, and below it from above (above it from
+// below). A post or a bank above the water, or anything in front of the surface, is not seen
+// through it.
+bool beyondSurface(vec2 uv, float distance, vec3 p, bool fromBelow)
+{
+    if (distance <= vDistance)
+        return false;
+    float height = pointAt(uv, distance).y - p.y;
+    return fromBelow ? height > surfaceMargin : height < -surfaceMargin;
+}
+
+// Where the surface at `uv` (the point `p`) shows what lies behind it, bent by the tilt of the
+// waves: xy the texture coordinates of the copy, z the distance the copy has there. The ray
+// through the surface leans by the tilt, the more the deeper the water it crosses; none at the
+// shore and in water a few hand widths deep, at most maxBend of the picture's height, inside the
+// picture, and only onto what lies beyond the surface: a rejected sample tries half the bend
+// (no hard seam where the mask starts), then straight through.
+vec3 refractedUv(vec2 uv, vec3 p, vec3 tilt, bool fromBelow)
+{
+    float straight = distanceAt(uv);
+    float depth = fromBelow ? fullBendDepth : max(p.y - pointAt(uv, straight).y, 0.0);
+    float along = fromBelow ? fullBendDepth : min(straight - vDistance, fullBendDepth);
+    float fade = smoothstep(0.05, fullBendDepth, depth);
+    if (fade <= 0.0 || water.pixel.w <= 0.0)
+        return vec3(uv, straight);
+
+    float w;
+    vec3 shift = tilt * (water.pixel.w * bendPerBlock * max(along, 0.0) * fade);
+    vec2 offset = screenOf(p + shift, w) - uv;
+    if (w <= 0.0)
+        return vec3(uv, straight);
+    // At most maxBend of the picture's height, measured in pixels so it is round on any aspect.
+    vec2 pixels = offset / water.pixel.xy;
+    float limit = maxBend / water.pixel.y;
+    float size = sqrt(dot(pixels, pixels));
+    if (size > limit)
+        offset *= limit / size;
+
+    for (int i = 0; i < 2; ++i) {
+        vec2 bent = clamp(uv + offset, 0.5 * water.pixel.xy, 1.0 - 0.5 * water.pixel.xy);
+        float distance = distanceAt(bent);
+        if (beyondSurface(bent, distance, p, fromBelow))
+            return vec3(bent, distance);
+        offset *= 0.5;
+    }
+    return vec3(uv, straight);
+}
+
 // What the mirror shows of the world drawn before the water (High: water.effects.x steps along the
 // mirrored ray in growing strides); alpha is how sure the hit is (0: none, the sky stays).
 vec4 screenReflection(vec3 p, vec3 r)
@@ -293,12 +362,10 @@ void main()
     // light that reaches the surface.
     vec3 scattered = linear(texel.rgb * light) * 0.55;
 
-    // What lies behind, bent by the waves; what lies in front of the surface is not bent into it.
+    // What lies behind, bent by the waves (refractedUv).
     vec2 uv = gl_FragCoord.xy * water.pixel.xy;
-    vec2 bend = (n.xz - face.xz) * water.pixel.w * 0.35 * 8.0 / (8.0 + vDistance);
-    vec4 seen = vec4(texture(behind, uv + bend).rgb, distanceAt(uv + bend));
-    if (seen.a < vDistance)
-        seen = vec4(texture(behind, uv).rgb, distanceAt(uv));
+    vec3 seenAt = refractedUv(uv, vPosition, vec3(n.x - face.x, 0.0, n.z - face.z), fromBelow);
+    vec4 seen = vec4(texture(behind, seenAt.xy).rgb, seenAt.z);
     vec3 through = linear(seen.rgb);
     float cosine = clamp(dot(towardsEye, -view), 0.0, 1.0);
 

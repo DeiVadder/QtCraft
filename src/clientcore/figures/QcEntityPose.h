@@ -5,42 +5,48 @@
 
 #include "common/physics/QcPose.h"
 
-// What the animator needs to know about an entity in one frame. Movement states come from the
-// server; progress values are advanced by the client.
+/*! \brief What the animator needs to know about an entity in one frame.
+
+    Movement states come from the server; progress values are advanced by the client. */
 struct QcEntityPose
 {
-    // Horizontal speed in m/s and the distance walked so far (drives the stride).
+    /*! Horizontal speed in m/s and the distance walked so far (drives the stride). \qcshared */
     double speed = 0.0;
     double walkDistance = 0.0;
+    /*! Standing or walking on the ground. */
     bool onGround = true;
+    /*! In water. */
     bool inWater = false;
+    /*! Sneaking. */
     bool sneaking = false;
+    /*! Sprinting. */
     bool sprinting = false;
-    // Flying in creative mode (decision E-284); only the local player's view uses it so far.
+    /*! Flying in creative mode (decision E-284); only the local player's view uses it so far. */
     bool flying = false;
-    // Sitting in a minecart (decision E-382): the legs point forward.
+    /*! Sitting in a minecart (decision E-382): the legs point forward. */
     bool riding = false;
-    // Driving a boat (decision E-920): sitting low with the thighs level, the hands on the paddle
-    // grips; `rowPhase` is the moment of the stroke (QcBoatModel::rowPhase), negative while the
-    // paddles rest. The figure faces the boat's way, the head the view.
+    /*! Driving a boat (decision E-920): sitting low with the thighs level, the hands on the
+        paddle grips; \c {rowPhase} is the moment of the stroke (QcBoatModel::rowPhase), negative
+        while the paddles rest. The figure faces the boat's way, the head the view. \qcshared */
     bool inBoat = false;
     double rowPhase = -1.0;
-    // How the body holds itself (decision E-423): lying on its back (a villager in its bed, decision
-    // E-411) or sitting with the legs forward.
+    /*! How the body holds itself (decision E-423): lying on its back (a villager in its bed,
+        decision E-411) or sitting with the legs forward. */
     QcPose body = QcPose::Standing;
-    // 0..1 while the right arm swings (mining, attacking, using), negative otherwise.
+    /*! 0..1 while the right arm swings (mining, attacking, using), negative otherwise. */
     double swingProgress = -1.0;
-    // The power of a launcher being drawn (decision E-425), 0..1: both arms aim along the view;
-    // negative when not drawing.
+    /*! The power of a launcher being drawn (decision E-425), 0..1: both arms aim along the view;
+        negative when not drawing. */
     double drawProgress = -1.0;
-    // 0..1 while the entity recoils from a hit, negative otherwise.
+    /*! 0..1 while the entity recoils from a hit, negative otherwise. */
     double hurtProgress = -1.0;
-    // 0..1 while the entity falls over dying, negative otherwise.
+    /*! 0..1 while the entity falls over dying, negative otherwise. */
     double deathProgress = -1.0;
-    // View pitch in degrees, positive looks up.
+    /*! View pitch in degrees, positive looks up. */
     float headPitch = 0.0f;
-    // Head turned against the body in degrees, positive to the entity's right (the character
-    // preview's gaze; 0 in the world, where the body follows the view).
+    /*! Head turned against the body in degrees, positive to the entity's right (the character
+        preview's gaze; 0 in the world, where the body follows the view). */
     float headYaw = 0.0f;
+    /*! Walks with the arms stretched forward (zombies, QcMobDefinition::armsForward). */
     bool armsForward = false;
 };

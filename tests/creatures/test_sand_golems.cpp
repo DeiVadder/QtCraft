@@ -10,11 +10,11 @@
 #include "server/guardians/QcGuardians.h"
 
 #include <QDeadlineTimer>
-#include <QMutex>
 #include <QTemporaryDir>
 #include <QThread>
 
 #include <atomic>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -28,7 +28,7 @@ class GuardSiteList
 public:
     std::shared_ptr<const QList<QcGuardSite>> snapshot() const
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         return m_sites;
     }
 
@@ -38,7 +38,7 @@ public:
     template<typename Change>
     void edit(Change change)
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         auto changed = std::make_shared<QList<QcGuardSite>>(*m_sites);
         change(*changed);
         m_sites = std::move(changed);
@@ -51,12 +51,13 @@ public:
 
     void clear()
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         m_sites = std::make_shared<const QList<QcGuardSite>>();
     }
 
 private:
-    mutable QMutex m_mutex;
+    // The test's main thread hands new zone lists to the generation threads under this mutex.
+    mutable std::mutex m_mutex;
     std::shared_ptr<const QList<QcGuardSite>> m_sites = std::make_shared<const QList<QcGuardSite>>();
 };
 
@@ -139,7 +140,7 @@ private:
     // The cellar: a closed stone room east of the player, its floor zone 5 x 5.
     QcBlockPos m_cellar;
 
-    int golemType() const { return *m_content->mobIndex(u"qtcraft:sand_golem"_s); }
+    QcCreatureKindId golemType() const { return *m_content->mobKind(u"qtcraft:sand_golem"_s); }
     QcServerClient &player() { return *m_server->entities().clients().front(); }
     const QcGuardians &guardians() { return m_server->creatures().guardians(); }
 

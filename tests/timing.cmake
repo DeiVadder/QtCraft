@@ -25,7 +25,7 @@
 #   test_tcp_transport       closing a transport within 100 ms, linger times measured by the clock
 #   test_network_game        logins and messages over TCP, ticks paced by wall-time deadlines
 #   test_latency             delayed links: round trips and pending inputs bounded by wall time
-#   test_creative_client, test_void_client, test_ice_client, test_push_client
+#   test_creative_client, test_void_client, test_ice_client, test_push_client, test_draw_client
 #                            client and server host over a delayed link, waiting in real time
 #   test_survival_scenario   long scenario waiting in real time for the server host (smelting etc.)
 #   test_multiplayer_bots, test_creative_bots, test_signal_bots, test_minecart_bots, test_machine_bots, test_boat_bots
@@ -34,10 +34,11 @@
 #                            heavy server simulations that repeatedly failed only on their TIMEOUT
 #                            under parallel load (golem and minecart measurements time ticks too)
 #   app_offscreen_pad_inventory, app_offscreen_pad_radial, app_offscreen_pad_keyboard, app_offscreen_pad_menu,
-#   app_offscreen_pad_playstation, app_offscreen_pad_settings, app_offscreen_pad_lazy_menu
+#   app_offscreen_pad_playstation, app_offscreen_pad_settings, app_offscreen_pad_bind, app_offscreen_pad_lazy_menu,
+#                            app_offscreen_pad_lazy_advancements
 #                            the game with a scripted pad: its steps start at wall-clock times of the
 #                            startup script (after the world loaded); each waits for rendered frames
-#   app_offscreen_advancements_return
+#   app_offscreen_advancements_return, app_offscreen_subscreen_return
 #                            key presses at wall-clock times of the startup script, one screen apart
 #   test_gamepad_scenarios   the creative double tap is timed on the wall clock (E-541)
 #   test_session_tick, test_session_thread
@@ -50,10 +51,10 @@
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
     test_tcp_transport test_network_game test_latency test_pause_keepalive
-    test_creative_client test_void_client test_ice_client test_push_client test_survival_scenario
+    test_creative_client test_void_client test_ice_client test_push_client test_draw_client test_survival_scenario
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots
     test_shadewalker_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
-    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu app_offscreen_advancements_return test_gamepad_scenarios test_session_tick test_session_thread
+    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_bind app_offscreen_pad_lazy_menu app_offscreen_pad_lazy_advancements app_offscreen_advancements_return app_offscreen_subscreen_return test_gamepad_scenarios test_session_tick test_session_thread
     test_block_prediction test_block_prediction_measure test_audio_output)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

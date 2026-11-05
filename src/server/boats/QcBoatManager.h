@@ -15,52 +15,64 @@
 class QcBoxGrid;
 class QcServerWorld;
 
-// The boats of a world (decision E-920), the table of their kind in the entity register: adding,
-// finding and removing them within the world's limit, and the step of the boats nobody drives: they
-// push each other apart, living bodies push them, and each moves by the shared boat physics. A
-// driven boat is stepped with its driver's inputs instead (QcServerBoats::steer), so it moves as the
-// driver's client predicts; nothing but blocks stops it. A boat that came to rest, still on the
-// water or on the ground (QcBoat::Rest), is not stepped until something pushes or moves it, a
-// rider gets in or its blocks change.
+/*! \brief The boats of a world (decision E-920), the table of their kind in the entity register:
+    adding, finding and removing them within the world's limit, and the step of the boats nobody
+    drives: they push each other apart, living bodies push them, and each moves by the shared boat
+    physics.
+
+    A driven boat is stepped with its driver's inputs instead (QcServerBoats::steer), so it moves
+    as the driver's client predicts; nothing but blocks stops it. A boat that came to rest, still
+    on the water or on the ground (QcBoat::Rest), is not stepped until something pushes or moves
+    it, a rider gets in or its blocks change. */
 class QcBoatManager
 {
 public:
-    // Boats in the world by default (QcServerLimits::maxBoats).
+    /*! Boats in the world by default (QcServerLimits::maxBoats). */
     static constexpr int maxBoats = static_cast<int>(QcServerLimits{}.maxBoats);
-    // How fast an overlapping boat or body pushes a boat nobody drives out of a full overlap (m/s
-    // added per tick, less for a smaller overlap).
+    /*! How fast an overlapping boat or body pushes a boat nobody drives out of a full overlap
+        (m/s added per tick, less for a smaller overlap). */
     static constexpr double pushPerTick = 0.3;
-    // A boat nobody drives, floating or on the ground, comes to rest below this speed (m/s) and turn
-    // (degrees per tick); what is left of both would carry it less than a millimetre.
+    /*! A boat nobody drives, floating or on the ground, comes to rest below this speed (m/s) and
+        turn (degrees per tick); what is left of both would carry it less than a millimetre.
+        \qcshared */
     static constexpr double restSpeed = 1e-3;
     static constexpr double restSpin = 1e-3;
 
+    /*! Returns the box of the body of \a boat. */
     static QcAabb bodyOf(const QcBoat &boat);
 
+    /*! Returns every boat. */
     const QList<QcBoat> &all() const { return m_boats; }
-    // For moving boats from outside (pistons, riders); never add or remove through it.
+    /*! Returns the boats for moving them from outside (pistons, riders); never add or remove
+        through it. */
     QList<QcBoat> &editableAll() { return m_boats; }
+    /*! Returns the boat with entity \a id, or null when there is none. */
     QcBoat *find(quint32 id);
+    /*! Returns the boat with entity \a id, or null when there is none. */
     const QcBoat *find(quint32 id) const;
-    // The boat the player (entity id) drives; null for none.
+    /*! Returns the boat the \a player (entity id) drives; null for none. */
     QcBoat *drivenBy(quint32 player);
+    /*! Returns the boat the \a player (entity id) drives; null for none. */
     const QcBoat *drivenBy(quint32 player) const;
-    // The boat the creature (entity id) sits in; null for none.
+    /*! Returns the boat the \a creature (entity id) sits in; null for none. */
     const QcBoat *carrying(quint32 creature) const;
-    // False when the limit is reached.
+    /*! Adds \a boat. Returns \c false when the limit is reached. */
     bool add(const QcBoat &boat);
+    /*! Removes the boat with entity \a id. Returns it, or nothing when there is none. */
     std::optional<QcBoat> remove(quint32 id);
+    /*! Returns the number of boats the world may hold. */
     qsizetype limit() const { return m_maxBoats; }
+    /*! Sets the number of boats the world may hold to \a limit. */
     void setLimit(qsizetype limit) { m_maxBoats = limit; }
-    // Adds the boats of a chunk that came back (decision E-374); returns how many were left out at
-    // the limit.
+    /*! Adds the \a boats of a chunk that came back (decision E-374); returns how many were left out
+        at the limit. */
     qsizetype adopt(const QList<QcBoat> &boats);
 
-    // Pushes between boats and from `bodies` (boxes of living bodies that sit in no boat) on the
-    // boats nobody drives, then steps each of them one tick. Boats whose chunk is not loaded
-    // (dormant) and boats at rest wait.
+    /*! Pushes between boats and from \a bodies (boxes of living bodies that sit in no boat) on
+        the boats nobody drives, then steps each of them one tick in \a world. Boats whose chunk
+        is not loaded (dormant) and boats at rest wait. */
     void tick(const QcServerWorld &world, const QList<QcAabb> &bodies);
-    // How many boats the latest tick stepped (neither driven, dormant nor at rest).
+    /*! Returns how many boats the latest tick stepped (neither driven, dormant nor at rest). */
     qsizetype lastStepped() const { return m_stepped; }
 
 private:

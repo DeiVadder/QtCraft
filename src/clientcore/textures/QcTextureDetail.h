@@ -8,34 +8,51 @@
 #include <QImage>
 #include <QJsonObject>
 
-// Renders a procedural texture above 16 x 16 (decision E-299): the pattern's 16 x 16 picture is
-// enlarged in steps of two with an edge-aware pixel-art filter (Scale2x on similar colours, so
-// diagonals and round shapes get finer steps instead of blurring), then gains detail that only the
-// higher resolution can show: a fine grain on the surface and a bevel along strong edges (lit at
-// the top and left, shaded at the bottom and right, also towards transparent pixels). How much of
-// each a pattern gets is a table per pattern; a texture definition may change it with "detail".
+/*! \brief Renders a procedural texture above 16 x 16 (decision E-299): the pattern's 16 x 16
+    picture is enlarged in steps of two with an edge-aware pixel-art filter (Scale2x on similar
+    colours, so diagonals and round shapes get finer steps instead of blurring), then gains detail
+    that only the higher resolution can show: a fine grain on the surface and a bevel along strong
+    edges (lit at the top and left, shaded at the bottom and right, also towards transparent
+    pixels). The outlines of the enlarged picture follow its coverage alone, so the pixel variation
+    of a thin shape cannot notch or pinch it; tools and weapons take the outline of strokes between
+    the pixels instead (QcTextureOutline, decision E-1000).
+
+    How much of each a pattern gets is a table per pattern; a texture definition may change it
+    with "detail". */
 namespace QcTextureDetail {
 
+/*! \brief How much detail a pattern gains above 16 x 16. */
 struct Params
 {
-    // Strength of the fine grain (share of the colour, 0..1).
+    /*! Strength of the fine grain (share of the colour, 0..1). */
     double grain = 0.0;
-    // Strength of the bevel along edges (share of the colour, 0..1).
+    /*! Strength of the bevel along edges (share of the colour, 0..1). */
     double bevel = 0.0;
-    // Smooth diagonal and round outlines while enlarging; off for patterns of straight lines.
+    /*! Smooth diagonal and round outlines while enlarging; off for patterns of straight lines. */
     bool smooth = false;
+    /*! Bevel only the outline (edges towards transparent pixels), not edges towards darker
+        pixels inside the picture; on for cut-out shapes (decision E-1000). A texture definition's
+        "detail" does not change it. */
+    bool rimOnly = false;
+    /*! With smooth: the outline follows strokes between the pixels of the 16 x 16 picture
+        (QcTextureOutline) instead of Scale2x; on for tools and weapons (decision E-1000), which
+        are icons that never repeat, so the pixels beyond their border count as clear. A texture
+        definition's "detail" does not change it. */
+    bool strokes = false;
 
     friend bool operator==(const Params &, const Params &) = default;
 };
 
-// The defaults of a pattern.
+/*! Returns the defaults of \a pattern. */
 Params forPattern(QcTextureSpec::Pattern pattern);
-// The pattern's defaults changed by the fields of a texture definition's "detail" object.
+/*! Returns the pattern's defaults \a params changed by the fields of \a detail, a texture
+    definition's "detail" object. */
 Params withOverrides(Params params, const QJsonObject &detail);
 
-// Enlarges `base` (16 x 16) to `resolution` (a power of two from 32 to 512) and adds the detail.
-// Deterministic: the same input gives the same image. Partially transparent pixels keep their
-// alpha, the other pixels stay fully opaque or fully transparent.
+/*! Returns \a base (16 x 16) to \a resolution (a power of two from 32 to 512) with the detail of \a
+    params added; \a seed varies the grain. Deterministic: the same input gives the same image.
+    Partially transparent pixels keep their alpha, the other pixels stay fully opaque or fully
+    transparent. */
 QImage enlarge(const QImage &base, int resolution, const Params &params, quint32 seed);
 
 } // namespace QcTextureDetail

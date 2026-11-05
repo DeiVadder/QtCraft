@@ -549,7 +549,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
         QcBlockSerializer::writeBlock(out, block, content.shapeOf(block));
     });
     writeList(stream, content.items(), QcItemSerializer::write);
-    writeList(stream, content.mobs(), QcMobSerializer::writeMob);
+    writeList(stream, content.mobs().list(), QcMobSerializer::writeMob);
     writeList(stream, content.recipes(), writeRecipe);
     writeList(stream, content.assets().textures(), [](QDataStream &out, const QcTextureDefinition &texture) {
         out << texture.name << QJsonDocument(texture.procedural).toJson(QJsonDocument::Compact) << texture.png;

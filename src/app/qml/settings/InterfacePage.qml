@@ -15,9 +15,8 @@ SettingsPage {
     // The lists show the stored values whenever the screen opens.
     function refresh() {
         languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
-        // Auto (older settings files) is 100 %.
-        const scale = game.settings.uiScale === UiScaling.Step.Auto ? UiScaling.Step.Percent100 : game.settings.uiScale;
-        uiScaleBox.currentIndex = uiScaleBox.indexOfValue(scale);
+        // Auto (older settings files) is loaded as 100 % (GameSettings).
+        uiScaleBox.currentIndex = uiScaleBox.indexOfValue(game.settings.uiScale);
         cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
     }
 

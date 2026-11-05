@@ -72,7 +72,7 @@ private:
     quint32 spawnMob(const char *kind, int dx, int dz)
     {
         const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
-        return m_server->mobs().spawn(*m_content->mobIndex(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
+        return m_server->mobs().spawn(*m_content->mobKind(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
     }
 
     // The base content with two advancements for uses on creatures: a bone and wheat.
@@ -151,7 +151,7 @@ private slots:
     void killingAMonsterCounts()
     {
         hold("qtcraft:diamond_sword");
-        const quint32 zombie = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 500);
+        const quint32 zombie = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 500);
         for (int blow = 0; blow < 10 && m_server->mobs().find(zombie); ++blow) {
             send(QcMsg::AttackEntity{zombie});
             ticks(20);
@@ -279,11 +279,13 @@ private slots:
         data.motion.position = {0.5, 70.0, 0.5};
         data.experience = QcExperience(5, 0);
         QVERIFY(data.advancements.grant(u"qtcraft:iron"_s, u"iron"_s));
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 9);
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 10);
         QVERIFY(payload);
 
-        // The advancements are the last field: a byte array whose criteria count is forged.
-        QByteArray damaged = payload->bytes.chopped(static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
+        // The advancements are the last field of version 9 (version 10 adds the air after them): a
+        // byte array whose criteria count is forged.
+        const auto air = static_cast<qsizetype>(sizeof(qint32));
+        QByteArray damaged = payload->bytes.chopped(air + static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
         QDataStream out(&damaged, QIODevice::Append);
         out.setVersion(QcSaveFile::streamVersion);
         out << QByteArray::fromHex("0001" "00000001" "00000002" "0078" "fffffff0");

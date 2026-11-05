@@ -3,9 +3,11 @@
 
 #include "server/projectiles/QcPlayerFishing.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/projectiles/QcPlayerLaunchers.h"
 
@@ -50,22 +52,13 @@ int QcPlayerFishing::waitTicks(const QcFishingDefinition &rod, bool raining, QRa
 
 const QcFishingLoot *QcPlayerFishing::draw(const QcFishingDefinition &rod, QRandomGenerator &random)
 {
-    int total = 0;
-    for (const QcFishingLoot &entry : rod.loot) {
-        total += entry.weight;
-    }
+    const int total = qcWeightTotal(rod.loot, &QcFishingLoot::weight);
     if (total <= 0) {
         return nullptr;
     }
 
-    int roll = static_cast<int>(random.bounded(static_cast<quint32>(total)));
-    for (const QcFishingLoot &entry : rod.loot) {
-        roll -= entry.weight;
-        if (roll < 0) {
-            return &entry;
-        }
-    }
-    return nullptr;
+    const auto chosen = qcWeightedFind(rod.loot, static_cast<int>(random.bounded(static_cast<quint32>(total))), &QcFishingLoot::weight);
+    return chosen != rod.loot.end() ? &*chosen : nullptr;
 }
 
 bool QcPlayerFishing::use(QcServerClient &client)
@@ -97,7 +90,7 @@ bool QcPlayerFishing::rainsAt(QcBlockPos pos) const
 
 bool QcPlayerFishing::cast(QcServerClient &client, const QcFishingDefinition &rod)
 {
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = QcLineOfSight::eyeOf(client);
     const QcVec3 direction = QcProjectileFlight::direction(client.yaw, client.pitch);
     const QcProjectileManager::Launch shot{.shooter = client.id,
                                            .type = rod.bobber,

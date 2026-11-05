@@ -15,19 +15,19 @@ Item {
 
     required property GameController game
 
-    readonly property int level: overlay.game.hud.debug.level
+    readonly property DebugHud debug: overlay.game.hud.debug
+    readonly property int level: overlay.debug.level
 
     HudLabel {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: Ui.hudPx(8)
         visible: overlay.level > 0
-        text: overlay.game.hud.debug.generalText
+        text: overlay.debug.generalText
         font.pixelSize: Ui.hudPx(overlay.level === 2 ? 13 : 14)
     }
 
     Column {
-        objectName: "debugTimings"
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.rightMargin: Ui.hudPx(8)
@@ -37,8 +37,8 @@ Item {
 
         HudLabel {
             anchors.right: parent.right
-            text: overlay.game.hud.debug.timingsText
-            font: overlay.game.hud.debug.monoFont
+            text: overlay.debug.timingsText
+            font: overlay.debug.monoFont
         }
 
         DebugGraphPanel {
@@ -46,23 +46,26 @@ Item {
 
             title: (framePanel.limitShown ? qsTr("Frame interval, 0–%1 ms, line: 60 FPS") : qsTr("Frame interval, 0–%1 ms, limit off scale"))
                    .arg(Math.round(framePanel.scaleTop))
-            values: overlay.game.hud.debug.frameGraph
-            maxValue: 33.3
-            limit: 16.7
+            values: overlay.debug.frameGraph
+            scaleTop: overlay.debug.frameScaleMs
+            limit: overlay.debug.frameBudgetMs
             lineColor: Theme.graphFrame
         }
 
-        // Ticks usually take far less than their 50 ms: the scale follows the longest one shown.
+        // Ticks usually take far less than their length: the scale follows the longest one shown
+        // (DebugHud.tickScaleMs).
         DebugGraphPanel {
             id: tickPanel
 
-            // The 50 ms budget is only drawn once the scale reaches it (short titles: the panel is narrow).
-            title: (tickPanel.limitShown ? qsTr("Server tick, 0–%1 ms, line: 50 ms") : qsTr("Server tick, 0–%1 ms, limit off scale"))
-                   .arg(tickPanel.scaleTop.toFixed(tickPanel.scaleTop < 10 ? 1 : 0))
-            values: overlay.game.hud.debug.tickGraph
-            maxValue: 100
-            autoScale: true
-            limit: 50
+            readonly property string scaleText: scaleTop.toFixed(scaleTop < 10 ? 1 : 0)
+
+            // The tick length is only drawn once the scale reaches it (short titles: the panel is
+            // narrow).
+            title: tickPanel.limitShown ? qsTr("Server tick, 0–%1 ms, line: %2 ms").arg(tickPanel.scaleText).arg(overlay.debug.tickBudgetMs)
+                                        : qsTr("Server tick, 0–%1 ms, limit off scale").arg(tickPanel.scaleText)
+            values: overlay.debug.tickGraph
+            scaleTop: overlay.debug.tickScaleMs
+            limit: overlay.debug.tickBudgetMs
             lineColor: Theme.graphTick
         }
     }
@@ -72,12 +75,10 @@ Item {
 
         property string title
         property list<real> values
-        property real maxValue
-        // Scale to 1.5 times the highest value (at least 2 ms, at most maxValue).
-        property bool autoScale
+        // The top of the scale in milliseconds.
+        property real scaleTop
         property real limit
         property color lineColor
-        readonly property real scaleTop: autoScale ? Math.min(maxValue, Math.max(2, 1.5 * Math.max(0, ...values))) : maxValue
         readonly property bool limitShown: graph.limitShown
 
         anchors.right: parent.right

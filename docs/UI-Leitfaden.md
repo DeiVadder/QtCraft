@@ -204,7 +204,7 @@ Kleines Liniendiagramm eines Werts über die Zeit (Übersicht von „Server verw
 
 ## 8 Reihenfolge und Gliederung der Einstellungen
 
-Umgesetzt in `src/app/qml/settings/` (`SettingsScreen.qml` mit `enum Page`, eine Ebene tiefer in der Seitenleiste, Abschnitt 8b; je Kategorie eine Seite: `GraphicsPage`, `AudioPage`, `ControlsPage`, `GamepadPage`, `InterfacePage`, `TexturePacksPage`, `AdvancedPage`). Die Overlays des Test-Hooks `--overlay` öffnen die Seiten: `settings` und `display` Grafik, `audio`, `controls`, `gamepad`, `interface`, `texturepacks`, `debug` Erweitert (`SettingsScreen.pageOfOverlay`).
+Umgesetzt in `src/app/qml/settings/` (`SettingsScreen.qml`, Seiten nach `GameController.SettingsPage` (`QcScreenState::SettingsPage`), eine Ebene tiefer in der Seitenleiste, Abschnitt 8b; je Kategorie eine Seite: `GraphicsPage`, `AudioPage`, `ControlsPage`, `GamepadPage`, `InterfacePage`, `TexturePacksPage`, `AdvancedPage`). Die Overlays des Test-Hooks `--overlay` öffnen die Seiten: `settings` und `display` Grafik, `audio`, `controls`, `gamepad`, `interface`, `texturepacks`, `debug` Erweitert (`QcScreenState::settingsPage`, E-953).
 
 Kategorien (Seitenleiste), in dieser Reihenfolge; in jeder Kategorie die Gruppen von häufig nach selten:
 

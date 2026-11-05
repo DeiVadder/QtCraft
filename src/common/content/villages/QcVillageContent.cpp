@@ -43,7 +43,7 @@ struct Workstations
 // Whether `mob` names a creature kind that is a villager.
 bool isVillager(const QcContentRegistry &registry, const QString &mob)
 {
-    const std::optional<int> type = registry.mobIndex(mob);
+    const std::optional<QcCreatureKindId> type = registry.mobKind(mob);
     return type && registry.mobs()[*type].villager;
 }
 
@@ -121,7 +121,7 @@ struct StyleOwners
         warnings.append(u"village style '%1': 'villager' names no villager creature: '%2'"_s.arg(style.name, style.villager));
     }
     for (const QcVillageResident &resident : style.residents) {
-        if (!registry.mobIndex(resident.mob)) {
+        if (!registry.mobKind(resident.mob)) {
             warnings.append(u"village style '%1': unknown resident '%2'"_s.arg(style.name, resident.mob));
         }
     }

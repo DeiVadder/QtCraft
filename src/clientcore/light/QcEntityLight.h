@@ -3,10 +3,13 @@
 
 #pragma once
 
-// Light of an entity: sky light (scaled by daylight in the shader) and block light, both 0..1.
+/*! \brief Light of an entity: sky light (scaled by daylight in the shader) and block light, both
+    0..1. */
 struct QcEntityLight
 {
+    /*! Sky light in [0, 1]. */
     float sky = 1.0f;
+    /*! Block light in [0, 1]. */
     float block = 0.0f;
 
     constexpr QcEntityLight() = default;

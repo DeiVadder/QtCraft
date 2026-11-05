@@ -43,7 +43,9 @@ private:
     QString label(const QString &key) const { return m_text.label(key); }
     void addFact(const QString &key, const QString &value, const QList<Link> &links = {})
     {
-        m_entry.facts.append({label(u"fact."_s + key), value, links});
+        // The content id, the states and the sound are technical (folded on the game's screen).
+        const bool technical = key == u"id"_s || key == u"states"_s || key == u"sound"_s;
+        m_entry.facts.append({label(u"fact."_s + key), value, links, technical});
     }
     void addFlag(bool set, const QString &key)
     {
@@ -216,7 +218,7 @@ void BlockPage::addDropFacts()
         addFact(u"withoutTool"_s, label(u"value.nothing"_s));
     }
     // An infested block lets its creature out (decision E-453).
-    const std::optional<int> creature = m_block.infestsMob.isEmpty() ? std::nullopt : m_content.mobIndex(m_block.infestsMob);
+    const std::optional<QcCreatureKindId> creature = m_block.infestsMob.isEmpty() ? std::nullopt : m_content.mobKind(m_block.infestsMob);
     if (creature) {
         addFact(u"releases"_s, {}, {m_links.mobLink(m_content.mobs()[*creature])});
     }

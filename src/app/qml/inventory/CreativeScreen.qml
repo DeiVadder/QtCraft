@@ -9,96 +9,65 @@ import QtQuick.Layouts
 import QtCraft
 
 // The creative inventory (SlotScreen, decision E-286): every item of the content, mods included,
-// in tabs and with a search on the left, the player's inventory, a bin and the way to crafting and
-// armour on the right. Taking from the catalogue never runs out; the server checks the mode.
+// in categories (a list as in the handbook) and with a search on the left, the player's inventory
+// with a bin above it on the right, and the switch to crafting and armour in the head. The search
+// takes the keys only once clicked, so the inventory key still closes the screen. Taking from the catalogue never runs out; the server checks the mode.
 SlotScreen {
     id: screen
 
     readonly property var catalogue: game.player.creativeItems
 
-    // The search takes the keys only once clicked, so the inventory key still closes the screen.
-    panelContent: content
+    // Columns of the catalogue: fewer in small windows, so the frame keeps its margin.
+    readonly property int catalogueColumns: width < Ui.screen.narrowWindow ? 5 : 7
 
-    // A click on the catalogue: left takes a full stack, right one item, shift-click puts a full
-    // stack straight into the inventory. With a slot's stack picked up, it goes into the bin.
-    function catalogueClicked(itemName, maxStack, button, quick) {
-        if (pickedSlot >= 0) {
-            game.player.clearSlot(pickedSlot);
-            pickedSlot = -1;
-            return;
+    title: qsTr("Creative items")
+    creativeSwitch: true
+    keyHints: [
+        { keys: [qsTr("Click")], text: qsTr("a full stack") },
+        { keys: [qsTr("Right click")], text: qsTr("one") },
+        { keys: [qsTr("Shift-click")], text: qsTr("into the inventory") }
+    ]
+
+    // The pad's shoulders switch the catalogue's categories (decision E-583).
+    function gamepadCommand(command: int): bool {
+        return categories.takeCommand(command);
+    }
+
+    startColumn: RowLayout {
+        Layout.fillHeight: true
+        spacing: Ui.space.s
+
+        // The catalogue's categories, named as in the handbook (IV-7 of docs/Menue-Pruefung.md).
+        NavList {
+            id: categories
+
+            objectName: "creativeTabs"
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredWidth: Ui.size.creativeCategories
+            entryName: "creativeTab"
+            model: screen.catalogue.categoryNames
+            // A click or the pad moves the list; the catalogue follows it.
+            onCurrentIndexChanged: screen.catalogue.category = currentIndex
         }
-        if (quick) {
-            game.player.putCreativeItem(-1, itemName, maxStack);
-            return;
+        // The list shows the catalogue's category, also when it changes from elsewhere (a Binding:
+        // the list's own writes would break a plain binding).
+        Binding {
+            target: categories
+            property: "currentIndex"
+            value: screen.catalogue.category
         }
-        carriedItem = itemName;
-        carriedCount = button === Qt.RightButton ? 1 : maxStack;
-    }
-
-    // The pad's shoulders switch the catalogue's tabs (decision E-583).
-    function gamepadCommand(command: string): bool {
-        if (command !== "tabPrevious" && command !== "tabNext")
-            return false;
-        const count = catalogue.categoryNames.length;
-        if (count > 0)
-            catalogue.category = (catalogue.category + (command === "tabNext" ? 1 : -1) + count) % count;
-        return true;
-    }
-
-    function binClicked() {
-        if (pickedSlot >= 0)
-            game.player.clearSlot(pickedSlot);
-        pickedSlot = -1;
-        carriedItem = "";
-    }
-
-    RowLayout {
-        id: content
-
-        anchors.centerIn: parent
-        spacing: Ui.px(24)
 
         ColumnLayout {
-            Layout.alignment: Qt.AlignTop
-            Layout.preferredWidth: Ui.px(8 * 54)
-            spacing: Ui.px(8)
+            Layout.fillHeight: true
+            spacing: Ui.space.s
 
-            Label {
-                text: qsTr("Creative items")
-                color: Theme.text
-                font.pixelSize: Ui.px(24)
-                font.bold: true
-            }
-
-            Flow {
-                objectName: "creativeTabs"
-                Layout.fillWidth: true
-                spacing: Ui.px(4)
-
-                Repeater {
-                    model: screen.catalogue.categoryNames
-
-                    Button {
-                        required property string modelData
-                        required property int index
-
-                        text: modelData
-                        checkable: true
-                        checked: screen.catalogue.category === index
-                        highlighted: checked
-                        onClicked: screen.catalogue.category = index
-                    }
-                }
-            }
-
-            TextField {
+            GameTextField {
                 id: search
 
                 objectName: "creativeSearch"
                 Accessible.name: qsTr("Search items")
                 Layout.fillWidth: true
                 placeholderText: qsTr("Search items (name or id) …")
-                selectByMouse: true
                 onTextChanged: screen.catalogue.query = text
                 Component.onCompleted: text = screen.catalogue.query
             }
@@ -108,11 +77,12 @@ SlotScreen {
 
                 objectName: "creativeItems"
                 Accessible.name: qsTr("Items")
-                // Eight columns and a gutter for the scroll bar.
-                Layout.preferredWidth: Ui.px(8 * 54 + 12)
-                Layout.preferredHeight: Ui.px(6 * 54)
-                cellWidth: Ui.px(54)
-                cellHeight: Ui.px(54)
+                // The columns and a gutter for the scroll bar.
+                Layout.preferredWidth: screen.catalogueColumns * Ui.size.slotCell + Ui.size.scrollBar
+                Layout.preferredHeight: 5 * Ui.size.slotCell
+                Layout.fillHeight: true
+                cellWidth: Ui.size.slotCell
+                cellHeight: Ui.size.slotCell
                 clip: true
                 model: screen.catalogue
                 boundsBehavior: Flickable.StopAtBounds
@@ -127,7 +97,7 @@ SlotScreen {
                     required property int maxStack
 
                     infoItem: itemName
-                    infoEnabled: screen.pickedSlot < 0 && screen.carriedItem.length === 0
+                    infoEnabled: !screen.cursor.holding
                     onInfoRequested: item => screen.game.handbook.open(item)
                     slotIcon: icon
                     slotLabel: label
@@ -135,7 +105,7 @@ SlotScreen {
                     highlighted: hover.hovered
 
                     ThemedToolTip {
-                        shown: hover.hovered && screen.pickedSlot < 0 && screen.carriedItem.length === 0
+                        shown: hover.hovered && !screen.cursor.holding
                         text: entry.label
                     }
 
@@ -148,13 +118,13 @@ SlotScreen {
                     TapHandler {
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
                         acceptedModifiers: Qt.NoModifier
-                        onTapped: (eventPoint, button) => screen.catalogueClicked(entry.itemName, entry.maxStack, button, false)
+                        onTapped: (eventPoint, button) => screen.cursor.takeFromCatalogue(entry.itemName, entry.maxStack, button, false)
                     }
 
                     TapHandler {
                         acceptedButtons: Qt.LeftButton
                         acceptedModifiers: Qt.ShiftModifier
-                        onTapped: (eventPoint, button) => screen.catalogueClicked(entry.itemName, entry.maxStack, button, true)
+                        onTapped: (eventPoint, button) => screen.cursor.takeFromCatalogue(entry.itemName, entry.maxStack, button, true)
                     }
                 }
 
@@ -163,76 +133,55 @@ SlotScreen {
                     visible: items.count === 0
                     text: qsTr("No item matches the search.")
                     color: Theme.textMuted
+                    font.pixelSize: Ui.type.help
                 }
             }
 
             Label {
-                objectName: "creativeCount"
                 text: qsTr("Items shown: %1").arg(screen.catalogue.count)
                 color: Theme.textSecondary
+                font.pixelSize: Ui.type.help
             }
         }
+    }
 
-        ColumnLayout {
-            Layout.alignment: Qt.AlignTop
-            spacing: Ui.px(12)
+    // The bin: a picked-up stack or the carried item disappears.
+    RowLayout {
+        Layout.alignment: Qt.AlignRight
+        spacing: Ui.space.s
 
-            RowLayout {
-                spacing: Ui.px(12)
+        Label {
+            text: qsTr("Bin")
+            color: Theme.textMuted
+            font.pixelSize: Ui.type.help
+        }
 
-                Button {
-                    objectName: "creativeCrafting"
-                    text: qsTr("Crafting and armour")
-                    onClicked: screen.game.overlay = GameController.Overlay.Inventory
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                }
-
-                // The bin: a picked-up stack or the carried item disappears.
-                ItemSlot {
-                    objectName: "creativeBin"
-                    Accessible.name: qsTr("Bin")
-                    Accessible.description: qsTr("Bin: drop a stack here to delete it")
-                    slotEmpty: true
-                    highlighted: binHover.hovered
-                    infoEnabled: false
-
-                    Label {
-                        anchors.centerIn: parent
-                        text: "✕"
-                        color: Theme.textSecondary
-                        font.pixelSize: Ui.px(22)
-                    }
-
-                    ThemedToolTip {
-                        shown: binHover.hovered
-                        text: qsTr("Bin: drop a stack here to delete it")
-                    }
-
-                    HoverHandler {
-                        id: binHover
-                    }
-
-                    TapHandler {
-                        onTapped: screen.binClicked()
-                    }
-                }
-            }
-
-            PlayerSlots {
-                owner: screen
-            }
+        ItemSlot {
+            objectName: "creativeBin"
+            Accessible.name: qsTr("Bin")
+            Accessible.description: qsTr("Bin: drop a stack here to delete it")
+            slotEmpty: true
+            highlighted: binHover.hovered
+            infoEnabled: false
 
             Label {
-                Layout.maximumWidth: Ui.px(9 * 54)
-                wrapMode: Text.Wrap
-                text: screen.game.gamepad.active ? qsTr("%1 on an item: a full stack, %2: one, %3: straight into the inventory. %1 on a slot puts it there. %4/%5 switch the tabs, %6 closes.")
-                        .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north)
-                        .arg(screen.game.gamepad.pads.texts.leftShoulder).arg(screen.game.gamepad.pads.texts.rightShoulder).arg(screen.game.gamepad.pads.texts.east)
-                      : qsTr("Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).").arg(screen.game.settings.keys.labels.inventory)
+                anchors.centerIn: parent
+                text: "✕"
                 color: Theme.textSecondary
+                font.pixelSize: Ui.type.title
+            }
+
+            ThemedToolTip {
+                shown: binHover.hovered
+                text: qsTr("Bin: drop a stack here to delete it")
+            }
+
+            HoverHandler {
+                id: binHover
+            }
+
+            TapHandler {
+                onTapped: screen.cursor.bin()
             }
         }
     }

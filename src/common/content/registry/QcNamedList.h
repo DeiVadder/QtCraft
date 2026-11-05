@@ -15,7 +15,7 @@
 
 /*! \brief Definitions of one kind in registration order, found by their \c {name}: registering a
     name again replaces the earlier definition in its place, so a later pack overrides an earlier
-    one. */
+    one. \a Definition is the type of the definitions. */
 template<typename Definition>
 class QcNamedList
 {

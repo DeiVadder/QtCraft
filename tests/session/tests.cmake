@@ -9,6 +9,9 @@
 qc_add_test(test_client_maps SOURCES session/test_client_maps.cpp LIBRARIES qc_clientcore)
 # The threads between Kjuts and their children (decision E-839).
 qc_add_test(test_kjut_threads SOURCES session/test_kjut_threads.cpp LIBRARIES qc_base_content qc_clientcore)
+# The animations' clock (decision E-962): smoke and runes run without the daylight cycle, stand
+# while the server stands and do not depend on the frame rate.
+qc_add_test(test_world_effects SOURCES session/test_world_effects.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_weather_client SOURCES session/test_weather_client.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 # The prediction of the local player on its own (decision E-530): reconciliation, pending inputs, riding.
 # The client session's tick thread (decision E-560): pacer and core on a fake clock, long frames of
@@ -18,6 +21,8 @@ qc_add_test(test_session_tick SOURCES session/test_session_tick.cpp fixtures/QcR
 # death and respawn, riding, the same walk as with the timer in the session's thread.
 qc_add_test(test_session_thread SOURCES session/test_session_thread.cpp fixtures/QcRecordingTransport.h fixtures/QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_prediction SOURCES session/test_prediction.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
+# Hit feedback on the client (decision E-971): the flash with the shown knockback, the tilt of the view.
+qc_add_test(test_hit_feedback_client SOURCES session/test_hit_feedback_client.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_push_bodies SOURCES session/test_push_bodies.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_debug_report SOURCES session/test_debug_report.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_reconciliation SOURCES session/test_reconciliation.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)

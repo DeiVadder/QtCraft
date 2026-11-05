@@ -3,8 +3,9 @@
 
 #include "app/models/QcTexturePackPreviewProvider.h"
 
-#include <QMutexLocker>
 #include <QUrl>
+
+#include <mutex>
 
 QcTexturePackPreviewProvider::QcTexturePackPreviewProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
@@ -13,7 +14,7 @@ QcTexturePackPreviewProvider::QcTexturePackPreviewProvider()
 
 void QcTexturePackPreviewProvider::setPreviews(QHash<QString, QImage> previews)
 {
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     m_previews = std::move(previews);
 }
 
@@ -21,7 +22,7 @@ QImage QcTexturePackPreviewProvider::requestImage(const QString &id, QSize *size
 {
     QImage preview;
     {
-        const QMutexLocker locker(&m_mutex);
+        const std::scoped_lock locker(m_mutex);
         // The id may carry "?<generation>" so QML reloads a changed preview.
         preview = m_previews.value(QUrl::fromPercentEncoding(id.section(u'?', 0, 0).toUtf8()));
     }

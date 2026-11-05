@@ -3,13 +3,12 @@
 
 #include "app/controllers/QcHudState.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/player/QcDials.h"
 #include "clientcore/session/QcClientEntity.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
 
 #include <cmath>
@@ -45,6 +44,26 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     , m_labels(new QcWorldLabelModel(this))
     , m_debug(new QcDebugHud(parts, settings, this))
 {
+}
+
+bool QcHudState::viewShown() const
+{
+    return hudShown() == QcScreenState::HudShown::All || hudShown() == QcScreenState::HudShown::AllButHint;
+}
+
+bool QcHudState::hintShown() const
+{
+    return hudShown() == QcScreenState::HudShown::All;
+}
+
+void QcHudState::setHudShown(QcScreenState::HudShown shown)
+{
+    if (shown == hudShown()) {
+        return;
+    }
+
+    m_hudShown = shown;
+    emit shownChanged();
 }
 
 QcHudState::EntityTarget QcHudState::entityTarget(const QcContentRegistry &content, const QcClientEntity &entity, const QString &language)
@@ -87,16 +106,16 @@ void QcHudState::updateTarget()
     const std::optional<QcRaycastHit> &target = session.hand().target();
     const std::optional<quint32> targetEntity = session.hand().targetEntity();
     QString targetLabel;
-    m_targetName.clear();
+    setTargetName({});
     if (targetEntity) {
         const EntityTarget entity = entityTarget(content, session.entities().value(*targetEntity), m_settings.contentLanguage());
         targetLabel = entity.label;
-        m_targetName = entity.name;
+        setTargetName(entity.name);
     } else if (target) {
         if (const std::optional<QcBlockId> block = session.world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = content.block(*block);
             targetLabel = content.translations().translate(definition.translationKey, m_settings.contentLanguage());
-            m_targetName = definition.name;
+            setTargetName(definition.name);
         }
     }
 
@@ -109,7 +128,7 @@ void QcHudState::updateTarget()
 
 void QcHudState::updateTimeOfDay(double alpha)
 {
-    const double time = m_parts.session->worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
+    const double time = m_parts.session->worldMirror().timeAt(alpha);
     const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
@@ -123,7 +142,7 @@ void QcHudState::updateDial(double alpha)
     const QcContentRegistry *content = session.content().get();
     const QcItemStack held = session.inventory().slot(session.inventory().selectedHotbarSlot());
     const QcItemDial kind = content && content->isValidItem(held.item) ? content->item(held.item).dial : QcItemDial::None;
-    const double time = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
+    const double time = session.worldMirror().timeAt(alpha);
 
     Dial dial = Dial::None;
     double angle = 0.0;

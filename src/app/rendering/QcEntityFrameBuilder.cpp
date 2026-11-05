@@ -3,8 +3,8 @@
 
 #include "app/rendering/QcEntityFrameBuilder.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/entitymeshes/QcBoatModel.h"
 #include "clientcore/entitymeshes/QcEnchantingMesher.h"
@@ -14,16 +14,17 @@
 #include "clientcore/entitymeshes/QcProjectileMesher.h"
 #include "clientcore/entitymeshes/QcTetherMesher.h"
 #include "clientcore/figures/QcFigureLook.h"
+#include "clientcore/figures/QcSwimmerPose.h"
 #include "clientcore/maps/QcMapColors.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
-#include "clientcore/session/QcExplosionEffects.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/world/QcLightVolume.h"
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -63,14 +64,10 @@ float QcEntityFrameBuilder::blockLightAt(QcBlockPos pos) const
     return static_cast<float>(m_parts.meshes->blockLight(pos)) / static_cast<float>(QcLightVolume::maxLevel);
 }
 
-std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item) const
+std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item, double drawProgress) const
 {
     const auto content = m_parts.session->content();
-    std::optional<QcEntityMesher::ItemLook> look = content ? QcFigureLook::held(*content, item) : std::nullopt;
-    if (look && !look->cube) {
-        look->shape = m_spriteShapes.shape(m_atlas, look->sprite);
-    }
-    return look;
+    return content ? QcFigureLook::heldAtDraw(*content, item, drawProgress, m_spriteShapes, m_atlas) : std::nullopt;
 }
 
 QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &appearance) const
@@ -78,67 +75,15 @@ QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &a
     return QcFigureLook::player(*m_parts.session->content(), appearance);
 }
 
-std::optional<double> QcEntityFrameBuilder::forcedWalk() const
-{
-    if (!m_forcedPose.startsWith(u"walk:"_s)) {
-        return std::nullopt;
-    }
-    bool ok = false;
-    const double walked = m_forcedPose.section(u':', 1).toDouble(&ok);
-    return ok ? std::optional(walked) : std::nullopt;
-}
-
 QcEntityPose QcEntityFrameBuilder::creaturePose(const QcClientEntity &entity, double alpha) const
 {
-    QcEntityPose pose = QcLocalAnimation::poseOf(entity, alpha);
-    // Screenshot hook (decision E-888): every creature a fixed moment of its walk at full swing.
-    if (const std::optional<double> walked = forcedWalk()) {
-        pose.walkDistance = *walked;
-        pose.speed = std::max(QcAnimator::fullSwingSpeed, QcPhysics::walkSpeed);
-        pose.onGround = true;
-    }
-    return pose;
+    return m_forcedPose.creature(QcLocalAnimation::poseOf(entity, alpha, m_parts.session->content().get()));
 }
 
 QcEntityPose QcEntityFrameBuilder::localPose(double alpha) const
 {
-    QcEntityPose pose = m_parts.session->localPose(alpha);
-    if (m_forcedPose.isEmpty()) {
-        return pose;
-    }
-
     // Screenshot hook: a fixed moment of an animation, independent of the real movement.
-    pose.onGround = true;
-    if (m_forcedPose == u"walk"_s || forcedWalk()) {
-        pose.speed = QcPhysics::walkSpeed;
-        pose.walkDistance = forcedWalk().value_or(0.3);
-    } else if (m_forcedPose == u"sprint"_s) {
-        pose.speed = QcPhysics::sprintSpeed;
-        pose.sprinting = true;
-        pose.walkDistance = 0.3;
-    } else if (m_forcedPose.startsWith(u"swing"_s)) {
-        // "swing:0.3" freezes that moment of the swing (screenshot series).
-        bool ok = false;
-        const double progress = m_forcedPose.section(u':', 1).toDouble(&ok);
-        pose.swingProgress = ok ? std::clamp(progress, 0.0, 1.0) : 0.45;
-    } else if (m_forcedPose == u"fly"_s || m_forcedPose == u"flysprint"_s) {
-        // Creative flight (decision E-284), with sprint the widest view.
-        pose.onGround = false;
-        pose.flying = true;
-        pose.sprinting = m_forcedPose == u"flysprint"_s;
-        pose.speed = pose.sprinting ? QcPhysics::flySprintSpeed : QcPhysics::flySpeed;
-    } else if (m_forcedPose == u"swim"_s) {
-        pose.onGround = false;
-        pose.inWater = true;
-        pose.speed = QcPhysics::swimSpeed;
-    } else if (m_forcedPose == u"jump"_s || m_forcedPose == u"fall"_s) {
-        pose.onGround = false;
-    } else if (m_forcedPose == u"sneak"_s) {
-        pose.sneaking = true;
-    } else if (m_forcedPose == u"death"_s) {
-        pose.deathProgress = 0.7;
-    }
-    return pose;
+    return m_forcedPose.local(m_parts.session->localPose(alpha));
 }
 
 float QcEntityFrameBuilder::skyExposure(const QcClientWorld &world, QcBlockPos pos)
@@ -167,19 +112,10 @@ QcCapeDrive QcEntityFrameBuilder::localCapeDrive(const QcEntityPose &pose) const
 {
     const QcClientSession &session = *m_parts.session;
     const double yaw = static_cast<double>(session.intent().yaw);
-    if (m_forcedPose.isEmpty()) {
+    if (!m_forcedPose.isSet()) {
         return QcCapeDrive::from(session.playerMotion().velocity, yaw, pose);
     }
-
-    // The forced pose's movement: forwards at its speed, rising after a jump, falling fast.
-    QcCapeDrive drive = QcCapeDrive::from({}, yaw, pose);
-    drive.forwardSpeed = pose.speed;
-    if (m_forcedPose == u"jump"_s) {
-        drive.verticalSpeed = QcPhysics::jumpVelocity / 2.0;
-    } else if (m_forcedPose == u"fall"_s) {
-        drive.verticalSpeed = -QcPhysics::jumpVelocity * 2.0;
-    }
-    return drive;
+    return m_forcedPose.capeDrive(pose, yaw);
 }
 
 double QcEntityFrameBuilder::capeFrameSeconds()
@@ -195,8 +131,9 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
 {
     const QcMobDefinition *creature = entity.creature(frame.content);
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
+    // Red while hurt and while dying, as in the reference (decision E-971).
     QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, frame.alpha), entityLight(frame.world, position),
-                                        entity.hurtTicks > 0};
+                                        entity.hurtTicks > 0 || entity.deathTicks >= 0};
     placement.scale = scale;
     if ((entity.flags & QcMsg::Young) != 0) {
         placement.scale *= QcMsg::youngScale;
@@ -239,14 +176,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         look = playerLook(entity.appearance);
     }
     if (!look.isValid()) {
-        // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
-        const bool ownParts = creature && !creature->parts.isEmpty();
-        const QList<QcMobPart> &boxes = ownParts ? creature->parts : QcEntityMesher::playerParts();
-        const bool sitting = QcMsg::poseOf(entity.flags) == QcPose::Sitting;
-        // A rider (cart, boat) keeps its legs still; the legs are looked up only while it walks.
-        const double speed = pose.riding ? 0.0 : pose.speed;
-        const QcBoxLegs *legs = !sitting && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
-        QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs});
+        appendBoxCreature(mesh, entity, placement, frame, pose);
         return;
     }
 
@@ -258,9 +188,26 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         body.capeLift = cape.lift;
         body.capeSway = cape.sway;
     }
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held, pose.drawProgress);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
+}
+
+void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
+                                             const EntityFrame &frame, const QcEntityPose &pose)
+{
+    // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
+    const QcMobDefinition *creature = entity.creature(frame.content);
+    const bool ownParts = creature && !creature->parts.isEmpty();
+    const QList<QcMobPart> &boxes = ownParts ? creature->parts : QcEntityMesher::playerParts();
+    const bool sitting = QcMsg::poseOf(entity.flags) == QcPose::Sitting;
+    // A rider (cart, boat) keeps its legs still; the legs are looked up only while it walks. A
+    // creature that swims in pulses moves its tentacles instead (decision E-974).
+    const double speed = pose.riding ? 0.0 : pose.speed;
+    const bool pulses = ownParts && creature->pulse;
+    const QcBoxLegs *legs = !sitting && !pulses && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
+    const QcSwimmerPose::Look swum = pulses ? QcSwimmerPose::of(*creature, entity, frame.alpha, frame.seconds, m_forcedPose.pulse()) : QcSwimmerPose::Look{};
+    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread});
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
@@ -292,23 +239,6 @@ void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientE
     QcEntityMesher::appendBlock(mesh, look, placement, light, frame.uv);
 }
 
-void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks)
-{
-    QcEntityMesher::ItemLook flash;
-    flash.cube = true;
-    flash.faces.fill(QString::fromLatin1(QcExplosionEffects::flashTexture));
-    QcEntityMesher::ItemLook smoke;
-    smoke.cube = true;
-    smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
-
-    for (const QcExplosionEffects::Puff &puff : m_parts.session->worldMirror().extras().explosions().puffs()) {
-        if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
-            const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->position);
-            QcEntityMesher::appendBlock(mesh, look->flash ? flash : smoke, {look->position, look->size}, light, frame.uv);
-        }
-    }
-}
-
 void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     // Only spawners this near are drawn: the creature is small, and a world may hold many.
@@ -323,15 +253,16 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
     for (auto it = spawners.cbegin(); it != spawners.cend(); ++it) {
         const QcBlockPos pos = it.key();
         const QcVec3 feet{pos.x + 0.5, pos.y + 0.18, pos.z + 0.5};
-        if (it.value() < 0 || it.value() >= frame.content.mobs().size() || (feet - viewer).length() > drawDistance) {
+        const QcCreatureKindId type{it.value()};
+        if (!frame.content.mobs().contains(type) || (feet - viewer).length() > drawDistance) {
             continue;
         }
-        const QcMobDefinition &kind = frame.content.mobs()[it.value()];
+        const QcMobDefinition &kind = frame.content.mobs()[type];
         QcClientEntity shown;
         // An id no entity of the server has (the capes follow entities by id).
         shown.id = 0xff000000u | (static_cast<quint32>(qHash(pos)) & 0x00ffffffu);
         shown.kind = QcEntityKind::Creature;
-        shown.creatureType = it.value();
+        shown.creatureType = type;
         shown.position = feet;
         shown.previousPosition = feet;
         shown.yaw = static_cast<float>(std::fmod(frame.seconds * turnSpeed + (pos.x * 37 + pos.z * 11) % 360, 360.0));
@@ -402,9 +333,9 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
     smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
     m_smoke.refresh(frame.world, viewer, session.tickCount());
     for (const QcBlockPos &campfire : m_smoke.campfires()) {
-        const QList<QcCampfireSmoke::Puff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);
-        for (const QcCampfireSmoke::Puff &puff : puffs) {
-            QcEntityMesher::appendBlock(mesh, smoke, {puff.position, puff.size}, entityLight(frame.world, puff.position), frame.uv);
+        const QList<QcEffectPuff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);
+        for (const QcEffectPuff &puff : puffs) {
+            appendPuff(mesh, smoke, puff, entityLight(frame.world, puff.position), frame.uv);
         }
     }
 }
@@ -464,9 +395,9 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
 {
     const QcClientSession &session = *m_parts.session;
     const QcItemStack &selected = session.inventory().selectedStack();
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
     QcEntityPose pose = localPose(frame.alpha);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item, pose.drawProgress);
+    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
     QcVec3 feet = lerp(session.prediction().previousMotion().position, session.playerMotion().position, frame.alpha);
     double yaw = static_cast<double>(session.intent().yaw);
     if (const std::optional<QcBoatRiders::Drawn> boat = ownBoat(session.prediction().riding().vehicle(), frame.alpha, frame.seconds)) {
@@ -481,7 +412,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
     if (dressed.look.cape) {
         const QcCapeDrive drive = localCapeDrive(pose);
         QcCapeSwing::Angles cape = m_capes.advance(QcCapeTracker::localPlayer, drive);
-        if (!m_forcedPose.isEmpty()) {
+        if (m_forcedPose.isSet()) {
             // Screenshots show the cape at rest on its target for the forced movement.
             cape = QcCapeSwing::target(drive, frame.seconds);
         }
@@ -489,7 +420,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeSway = cape.sway;
     }
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
-                                {feet, yaw, entityLight(frame.world, feet), false}, frame.uv);
+                                {feet, yaw, entityLight(frame.world, feet), pose.hurtProgress >= 0.0}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
     }
@@ -524,7 +455,7 @@ void QcEntityFrameBuilder::appendBoat(QcEntityMesh &mesh, const QcClientEntity &
 
     const QcEntityMesher::Turn turn(boat.yaw);
     const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(boat.rowPhase);
-    for (const int side : {1, -1}) {
+    for (const QcBoatModel::Side side : QcBoatModel::sides) {
         const auto place = [&](const QcVec3 &corner) { return boat.position + turn(QcBoatModel::partPoint(side, paddle, corner)); };
         QcEntityMesher::appendPlacedParts(mesh, QcBoatModel::paddleParts(planks, side), place, light, frame.uv);
     }
@@ -542,7 +473,7 @@ void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity
     const double alpha = frame.alpha;
     const QcEntityMesher::UvLookup &uv = frame.uv;
     if (entity.isItem()) {
-        QcEntityMesher::appendItem(mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
+        QcEntityMesher::appendItem(mesh, entity, QcFigureLook::dropped(frame.content, entity.item.item, m_spriteShapes, m_atlas),
                                    {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
     } else if (entity.isExperienceOrb()) {
         QcEntityMesher::appendOrb(mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
@@ -588,7 +519,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     mesh->indices.reserve(m_entityMeshSize.second);
     const QcClientSession &session = *m_parts.session;
     const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
-    const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration};
+    const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().animationSeconds(alpha)};
     m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
     m_boatSeats = QcBoatRiders::seats(session.entities(), alpha, frame.seconds);
     if (m_mapColoursStale) {
@@ -620,6 +551,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendCampfires(*mesh, frame);
     appendEnchantingTables(*mesh, frame, planes);
     appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
+    appendInk(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).
     if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {
         appendLocalPlayer(*mesh, frame);
@@ -684,12 +616,17 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     mesh->origin = QcRenderOrigin::blockNear(eye);
     const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
     const QcItemStack &selected = session.inventory().selectedStack();
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
+    const QcEntityPose pose = localPose(alpha);
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item, pose.drawProgress);
     QcHandTimers timers = session.handTimers(alpha);
     // Screenshot hook: a frozen "swing" is a moment of the mining swing.
-    timers.mining = timers.mining || m_forcedPose.startsWith(u"swing"_s);
-    const double seconds = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
-    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers);
+    timers.mining = timers.mining || m_forcedPose.swings();
+    // A frozen draw holds the hand at the drawn placement (decision E-984).
+    if (m_forcedPose.draw()) {
+        timers.aim = 1.0;
+    }
+    const double seconds = session.worldMirror().animationSeconds(alpha);
+    const QcAnimator::HandPose hand = QcAnimator::animateHand(pose, seconds, timers);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
     const QcBlockPos head{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     const QcEntityLight light(skyExposure(*session.world(), head), blockLightAt(head));

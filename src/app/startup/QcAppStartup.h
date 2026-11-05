@@ -18,7 +18,8 @@ public:
     // comma-separated pack ids, highest priority first, or "none" (decision E-304), set before the
     // settings load them.
     static void loadSettings(QcGameController &game);
-    // Worlds, mods and the scripted parts of the run; screenshots come from the offscreen renderer
-    // when there is one.
+    // Worlds, mods and the scripted parts of the run, once the window has drawn the start screen
+    // (decision E-943; GameController.starting ends then); screenshots come from the offscreen
+    // renderer when there is one.
     static void startGame(QcGameController &game, const QcAppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender);
 };

@@ -14,89 +14,123 @@
 
 struct QcSkyState;
 
-// The light that casts the shadows of a frame (decision E-903): the sun by day, the moon (weaker)
-// by night, faded out near the horizon and under clouds so that the switch between them is never
-// seen.
+/*! \brief The light that casts the shadows of a frame (decision E-903): the sun by day, the moon
+    (weaker) by night, faded out near the horizon and under clouds so that the switch between
+    them is never seen. */
 struct QcShadowLight
 {
-    // Unit vector towards the light (x east, y up, z south).
+    /*! Unit vector towards the light (x east, y up, z south) in steps (QcShadowCascades::stepped,
+        decision E-960): the direction of the shadow map and of its lookups. */
     QVector3D toLight{0.0f, 1.0f, 0.0f};
-    // How much the shadows darken: 0 none (the classic brightness everywhere), 1 a shadowed surface
-    // keeps shadowFloor of its sky light.
+    /*! Unit vector towards the light without steps: how surfaces turn to it (facing, relief,
+        highlights, the water's glint). */
+    QVector3D sun{0.0f, 1.0f, 0.0f};
+    /*! How much the shadows darken: 0 none (the classic brightness everywhere), 1 a shadowed
+        surface keeps shadowFloor of its sky light. */
     float strength = 0.0f;
-    // The colour of the sky light on lit surfaces (warm at sunset) and in the shadows (bluish sky
-    // fill), each blended towards white by the strength.
+    /*! The colour of the sky light on lit surfaces (warm at sunset) and in the shadows (bluish
+        sky fill), each blended towards white by the strength. \qcshared */
     QVector3D litTint{1.0f, 1.0f, 1.0f};
     QVector3D shadowTint{1.0f, 1.0f, 1.0f};
 };
 
-// One cascade of the shadow map: a square box in the light's space around a sphere near the camera.
+/*! \brief One cascade of the shadow map: a square box in the light's space around a sphere near
+    the camera. */
 struct QcShadowCascade
 {
-    // Positions relative to the camera (decision E-883) into the light's clip space, in the
-    // OpenGL convention (x, y, z in -1..1; z -1 towards the light).
+    /*! Positions relative to the camera (decision E-883) into the light's clip space, in the
+        OpenGL convention (x, y, z in -1..1; z -1 towards the light). */
     QMatrix4x4 lightViewProjection;
-    // Half the box's side and the side of one texel, in blocks.
+    /*! Half the box's side and the side of one texel, in blocks. \qcshared */
     float radius = 0.0f;
     float texelSize = 0.0f;
 };
 
-// The pure parts of the sun shadows (decision E-903): which light casts them, how far each cascade
-// reaches, the light's axes and a box per cascade whose texels stay on a fixed grid of the world
-// (texel snapping), so shadow edges do not crawl while the camera moves.
+/*! \brief The pure parts of the sun shadows (decision E-903): which light casts them, how far
+    each cascade reaches, the light's axes and a box per cascade whose texels stay on a fixed
+    grid of the world (texel snapping), so shadow edges do not crawl while the camera moves. */
 namespace QcShadowCascades {
 
-// Each cascade reaches this share of the next one's radius.
+/*! Each cascade reaches this share of the next one's radius. */
 inline constexpr float splitRatio = 1.0f / 3.0f;
-// The box's middle lies this share of its radius ahead of the camera: more of the map covers what
-// the camera looks at, and the box still reaches behind it.
+/*! The box's middle lies this share of its radius ahead of the camera: more of the map covers
+    what the camera looks at, and the box still reaches behind it. */
 inline constexpr float forwardShift = 0.25f;
-// Blocks beyond a box towards the light that still cast into it (trees and cliffs above the box).
+/*! Blocks beyond a box towards the light that still cast into it (trees and cliffs above the
+    box). */
 inline constexpr float casterReach = 128.0f;
-// Below this height of the light above the horizon (sine of its elevation) there are no shadows; at
-// fullHeight they have their full strength.
+/*! Below this height of the light above the horizon (sine of its elevation) there are no
+    shadows; at fullHeight they have their full strength. \qcshared */
 inline constexpr float lowestHeight = 0.03f;
 inline constexpr float fullHeight = 0.2f;
-// The moon's shadows have this share of the sun's strength.
+/*! The moon's shadows have this share of the sun's strength. */
 inline constexpr float moonShare = 0.4f;
-// The colours of the light on lit surfaces with the sun at the horizon, and of the sky fill in the
-// shadows.
+/*! The colours of the light on lit surfaces with the sun at the horizon, and of the sky fill in
+    the shadows. \qcshared */
 inline constexpr QVector3D sunsetTint{1.0f, 0.78f, 0.56f};
 inline constexpr QVector3D skyFillTint{0.84f, 0.92f, 1.08f};
+/*! The colour of the moonlight on lit surfaces. */
 inline constexpr QVector3D moonTint{0.86f, 0.92f, 1.06f};
+/*! The shadows turn with the sun and the moon in this many steps per turn (a tenth of a degree,
+    every 0.17 s of a 600 s day, decision E-960): between two steps the shadow map stays the same,
+    so its edges stand still instead of being rasterised anew at a slightly different angle every
+    frame, and a step moves them little. */
+inline constexpr int lightSteps = 3600;
+/*! The tilt of the light towards z is rounded to this many steps per unit, so that every
+    direction within one step gives the same vector bit for bit. */
+inline constexpr int tiltSteps = 4096;
 
-// The radius of each of `count` cascades, nearest first, the last one `distance`, in the first
-// `count` entries (the others 0); all 0 for a count outside 1..maxShadowCascades or a distance that
-// is not positive and finite.
+/*! The radii of the cascades in blocks, nearest first; unused entries are 0. */
 using Radii = std::array<float, QcRenderOptions::maxShadowCascades>;
+/*! Returns the radius of each of \a count cascades, nearest first, the last one \a distance, in
+    the first \a count entries (the others 0); all 0 for a count outside 1..maxShadowCascades or
+    a distance that is not positive and finite. */
 [[nodiscard]] Radii radii(int count, float distance);
 
-// The light's axes: `right` and `up` span the shadow map, `toLight` points to the light. `right`
-// lies in the plane y-x the sun and moon cross (perpendicular to z), so the map turns only about
-// that axis as the day goes on. Nothing for a zero, NaN or infinite direction.
+/*! \brief The light's axes: \c {right} and \c {up} span the shadow map, \c {toLight} points to the
+    light.
+
+    \c {right} lies in the plane y-x the sun and moon cross (perpendicular to z), so the map
+    turns only about that axis as the day goes on. */
 struct Basis
 {
+    /*! Spans the shadow map, perpendicular to z. */
     QVector3D right;
+    /*! Spans the shadow map, perpendicular to right and toLight. */
     QVector3D up;
+    /*! Unit vector towards the light. */
     QVector3D toLight;
 };
+/*! Returns the light's axes for the direction \a toLight; nothing for a zero, NaN or infinite
+    direction. */
 [[nodiscard]] std::optional<Basis> basis(QVector3D toLight);
 
-// `value` rounded to the nearest multiple of `step` (step > 0).
+/*! Returns the unit direction of \a toLight turned about the z axis (the axis of the sun's and the
+    moon's path) to the nearest of the lightSteps steps, its z rounded to tiltSteps: every
+    direction within one step gives the same vector bit for bit. Returns \a toLight itself when
+    it is zero or not finite. */
+[[nodiscard]] QVector3D stepped(QVector3D toLight);
+
+/*! Returns \a value rounded to the nearest multiple of \a step (step > 0). */
 [[nodiscard]] double snapped(double value, double step);
 
-// The cascade of `radius` for a camera at `camera` (world) looking along `forward`, rendered into
-// a tile of `resolution` texels: its middle is moved onto the texel grid of the world, in double
-// precision (the camera may be far out, decision E-883).
+/*! Returns the cascade of \a radius along the light's \a axes for a camera at \a camera (world)
+    looking along \a forward, rendered into a tile of \a resolution texels: its middle is moved
+    onto the texel grid of the world along all three axes, in double precision (the camera may be
+    far out, decision E-883), so a point of the world keeps its texel and its depth in the map
+    while the camera moves (decision E-960). */
 [[nodiscard]] QcShadowCascade fit(const Basis &axes, const QcVec3 &camera, QVector3D forward, float radius, int resolution);
 
-// Maps the backend's clip space of a shadow pass (after QRhi::clipSpaceCorrMatrix()) to texture
-// coordinates of its depth texture: x, y in 0..1 over the tile, z the stored depth. `mirrorY` when
-// the texture's v runs against clip y (QRhi::isYUpInFramebuffer() != QRhi::isYUpInNDC(): Metal,
-// Direct3D); `depthZeroToOne` when the clip depth runs from 0 to 1.
+/*! Returns the matrix that maps the backend's clip space of a shadow pass (after
+    QRhi::clipSpaceCorrMatrix()) to texture coordinates of its depth texture: x, y in 0..1 over
+    the tile, z the stored depth. \a mirrorY when the texture's v runs against clip y
+    (QRhi::isYUpInFramebuffer() != QRhi::isYUpInNDC(): Metal, Direct3D); \a depthZeroToOne when
+    the clip depth runs from 0 to 1. */
 [[nodiscard]] QMatrix4x4 textureMatrix(bool mirrorY, bool depthZeroToOne);
 
-// The light of the moment `sky`: the sun while it stands above the horizon, else the moon.
+/*! Returns the light of the moment \a sky: the sun while it stands above the horizon, else the
+    moon, its direction stepped(); the strength and the tint follow the light's height without
+    steps. */
 [[nodiscard]] QcShadowLight light(const QcSkyState &sky);
 
 } // namespace QcShadowCascades

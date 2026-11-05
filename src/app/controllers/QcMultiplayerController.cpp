@@ -3,8 +3,6 @@
 
 #include "app/controllers/QcMultiplayerController.h"
 
-#include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/multiplayer/QcLanAddresses.h"
@@ -12,6 +10,8 @@
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldStarter.h"
+#include "app/settings/QcCharacterSettings.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/network/QcKnownServers.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
@@ -47,9 +47,10 @@ QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const Qc
     // E-872); joining and hosting report the reason again.
     // ensure() logs a failure itself.
     [[maybe_unused]] const QcStatus tls = QcTlsBackend::ensure();
-    connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) {
-        qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(reason);
-        emit joinFailed(reason);
+    // QcNetworkClient logged the details (address, addresses tried, steps).
+    connect(m_client, &QcNetworkClient::failed, this, [this](const QcJoinFailure &failure) {
+        qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(failure.reason);
+        failJoin(failure);
     });
 }
 
@@ -88,7 +89,7 @@ bool QcMultiplayerController::forgetCertificate(const QString &address)
     const QcResult<QcServerAddress> parsed = QcServerAddress::parse(address.trimmed());
     if (!parsed) {
         qCWarning(lcGame).noquote() << u"Not forgetting the certificate of \"%1\": not an address"_s.arg(address);
-        emit joinFailed(tr("Invalid address: %1").arg(address));
+        failJoin(tr("Invalid address: %1").arg(address));
         return false;
     }
     QcKnownServers known(QcKnownServers::defaultPath());
@@ -97,12 +98,53 @@ bool QcMultiplayerController::forgetCertificate(const QString &address)
         forgotten = known.forget(*parsed);
     }
     if (!forgotten) {
-        emit joinFailed(forgotten.error());
+        failJoin(forgotten.error());
         return false;
     }
     qCInfo(lcGame).noquote() << u"Forgot the pinned certificate of %1"_s.arg(parsed->toString());
     setCertificateChangedAddress({});
     return true;
+}
+
+void QcMultiplayerController::setJoinFailure(const QcJoinFailure &failure)
+{
+    if (failure.logText() == m_joinFailure.logText()) {
+        return;
+    }
+    m_joinFailure = failure;
+    emit failureChanged();
+}
+
+void QcMultiplayerController::setLanFailure(const QString &reason)
+{
+    if (reason == m_lanFailure) {
+        return;
+    }
+    m_lanFailure = reason;
+    emit failureChanged();
+}
+
+void QcMultiplayerController::failJoin(const QString &reason)
+{
+    failJoin(QcJoinFailure{.kind = QcJoinFailure::Kind::Other, .address = {}, .tried = {}, .reason = reason, .detail = {}, .steps = {}});
+}
+
+void QcMultiplayerController::failJoin(const QcJoinFailure &failure)
+{
+    setJoinFailure(failure);
+    emit joinFailed(failure.reason);
+}
+
+void QcMultiplayerController::failLan(const QString &reason)
+{
+    setLanFailure(reason);
+    emit lanFailed(reason);
+}
+
+void QcMultiplayerController::clearFailures()
+{
+    setJoinFailure({});
+    setLanFailure({});
 }
 
 void QcMultiplayerController::setNetworkGame(bool networkGame)
@@ -125,19 +167,23 @@ QcNetworkClient::Stage QcMultiplayerController::joinStage() const
 
 void QcMultiplayerController::join(const QString &address, const QString &playerName, const QString &password)
 {
+    setJoinFailure({});
     const QString name = m_settings->cleanName(playerName);
     if (name.isEmpty()) {
-        emit joinFailed(tr("Enter a player name"));
+        qCWarning(lcGame) << "Join refused: no player name in" << playerName;
+        failJoin(tr("Enter a player name"));
         return;
     }
     // The server refuses them as well (QcServerLogin::hello).
     if (QcProfileValidation::hasMarkup(name)) {
-        emit joinFailed(tr("Player names may not contain <, > or &"));
+        qCWarning(lcGame) << "Join refused: the player name" << name << "contains markup";
+        failJoin(tr("Player names may not contain <, > or &"));
         return;
     }
     const QcResult<QcServerAddress> parsed = QcServerAddress::parse(address.trimmed());
     if (!parsed) {
-        emit joinFailed(tr("Invalid address: %1").arg(address));
+        qCWarning(lcGame).noquote() << u"Join refused: \"%1\" is no address (%2)"_s.arg(address, parsed.error());
+        failJoin(tr("Invalid address: %1").arg(address));
         return;
     }
     m_settings->setPlayerName(name);
@@ -147,14 +193,14 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     setCertificateChangedAddress({});
     const QcResult<QByteArray> key = QcPlayerKey::loadOrCreate(QcPlayerKey::defaultPath());
     if (!key) {
-        emit joinFailed(key.error());
+        failJoin(key.error());
         return;
     }
 
     // The server compares its content with the mods this game would load.
     const QcResult<QList<QcPackFingerprint>> packs = contentPacks();
     if (!packs) {
-        emit joinFailed(tr("Cannot load game content: %1").arg(packs.error()));
+        failJoin(tr("Cannot load game content: %1").arg(packs.error()));
         return;
     }
 
@@ -166,6 +212,11 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     request.credentials = {*key, password, *packs, m_gameSettings.viewDistance() + 1};
     request.knownServersFile = QcKnownServers::defaultPath();
     m_client->join(request);
+}
+
+bool QcMultiplayerController::canJoin(const QString &address, const QString &playerName)
+{
+    return !address.trimmed().isEmpty() && !playerName.trimmed().isEmpty();
 }
 
 QcResult<QList<QcPackFingerprint>> QcMultiplayerController::contentPacks()
@@ -212,8 +263,9 @@ void QcMultiplayerController::onJoined()
 
 int QcMultiplayerController::openToLan(int port, const QString &password, int maxPlayers, bool ipv6)
 {
+    setLanFailure({});
     if (!m_parts.server || !m_parts.session || !m_parts.session->content()) {
-        emit lanFailed(tr("Only a running single-player world can be opened to the network"));
+        failLan(tr("Only a running single-player world can be opened to the network"));
         return -1;
     }
 
@@ -228,7 +280,7 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     // The certificate of this installation (decision E-872), made the first time a world is opened.
     QcResult<QcTlsCredentials> tls = QcTlsCredentials::loadOrCreate(QcDataRoot::path());
     if (!tls) {
-        emit lanFailed(tls.error());
+        failLan(tls.error());
         return -1;
     }
     network.tls = std::move(*tls);
@@ -240,7 +292,7 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     login.contentPacks = QcContentFingerprint::of(*m_parts.session->content(), m_worlds.loadedMods());
     const QcResult<quint16> listening = m_parts.server->listen(network, login);
     if (!listening) {
-        emit lanFailed(listening.error());
+        failLan(listening.error());
         return -1;
     }
 
@@ -248,6 +300,28 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     m_settings->rememberHost(port, login.maxPlayers);
     emit lanPortChanged();
     return m_lanPort;
+}
+
+std::optional<int> QcMultiplayerController::portOf(const QString &text)
+{
+    const QString trimmed = text.trimmed();
+    if (trimmed.isEmpty()) {
+        return 0;
+    }
+    bool ok = false;
+    const int port = trimmed.toInt(&ok);
+    return ok && port >= 0 && port <= 65535 ? std::optional<int>(port) : std::nullopt;
+}
+
+int QcMultiplayerController::openToLanAt(const QString &port, const QString &password, int maxPlayers, bool ipv6)
+{
+    const std::optional<int> number = portOf(port);
+    if (!number) {
+        qCWarning(lcGame) << "Opening to the network refused: no port in" << port;
+        failLan(tr("Invalid port: %1 (a number from 0 to 65535)").arg(port));
+        return -1;
+    }
+    return openToLan(*number, password, maxPlayers, ipv6);
 }
 
 void QcMultiplayerController::closeLan()

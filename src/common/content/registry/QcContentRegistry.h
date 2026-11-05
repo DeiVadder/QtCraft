@@ -54,8 +54,9 @@ public:
         renumbers the states of later blocks. Fails for an invalid name, for air, for an invalid
         state or light opacity, and when the state table or its box budget would overflow. */
     [[nodiscard]] QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
-    /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Fails when the
-        shape has too many boxes or its blocks would exceed the state table's budget. */
+    /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Returns an
+        error when the name is not "namespace:path", the shape has too many boxes or its blocks
+        would exceed the state table's budget. */
     [[nodiscard]] QcStatus registerShape(QcShapeDefinition shape);
     /*! Returns the named shapes in registration order. */
     const QList<QcShapeDefinition> &shapes() const { return m_shapes; }
@@ -64,7 +65,7 @@ public:
     /*! Returns the shape \a block uses: its named shape when registered, else its inline shape. */
     const QcShapeDefinition &shapeOf(const QcBlockDefinition &block) const;
 
-    /*! Number of block definitions; runtime ids range over stateCount() states. */
+    /*! Returns the number of block definitions; runtime ids range over stateCount() states. */
     qsizetype blockCount() const { return m_blocks.size(); }
     /*! Returns the number of block states, the range of runtime block ids. */
     qsizetype stateCount() const { return m_states.size(); }
@@ -123,8 +124,8 @@ public:
         generated stonecutting recipes, and resolves what definitions name of each other (anvil
         swaps, villagers, archers, held items, creature traits, spawners, projectiles, village
         styles, outfits, advancements), leaving out or switching off what names nothing. Returns
-        the warnings. */
-    QStringList finish();
+        the warnings, in English like all content loading messages (decision E-973). */
+    [[nodiscard]] QStringList finish();
 
     /*! Registers or replaces the building part \a family (server side; the parts finish()
         generates are ordinary content). */
@@ -154,10 +155,11 @@ public:
 
     /*! Registers or replaces the mob type \a definition; mob type ids are indices into mobs(). */
     void registerMob(QcMobDefinition definition);
-    /*! Returns the mob types in registration order. */
-    const QList<QcMobDefinition> &mobs() const { return m_mobs.items(); }
-    /*! Returns the mob type id of the creature kind named \a name; none for an unknown name. */
-    [[nodiscard]] std::optional<int> mobIndex(const QString &name) const;
+    /*! Returns the mob types in registration order, indexed by their creature kind (decision
+        E-952). */
+    [[nodiscard]] QcMobKinds mobs() const { return QcMobKinds(m_mobs.items()); }
+    /*! Returns the creature kind named \a name; none for an unknown name. */
+    [[nodiscard]] std::optional<QcCreatureKindId> mobKind(const QString &name) const;
 
     /*! Registers or replaces the crafting recipe \a definition by name. */
     void registerRecipe(QcRecipeDefinition definition);
@@ -218,10 +220,10 @@ public:
     const QcVillageCatalog &villageCatalog() const { return m_villages; }
     /*! Returns the creature kind living in villages of \a style (its own or the settings'), when
         it is a villager (decision E-421). */
-    std::optional<int> villagerOfStyle(const QString &style) const;
-    /*! Returns the settings of the creature kind \a mobType (QcMobDefinition::villagerSettings,
+    std::optional<QcCreatureKindId> villagerOfStyle(const QString &style) const;
+    /*! Returns the settings of the creature kind \a kind (QcMobDefinition::villagerSettings,
         by the index finish() keeps on the creature); empty settings for a kind without them. */
-    const QcVillagerSettings &villagerSettingsOf(int mobType) const;
+    const QcVillagerSettings &villagerSettingsOf(QcCreatureKindId kind) const;
 
     /*! Registers the \a projectile kind (decision E-425, server side only), replacing one of the
         same name. */

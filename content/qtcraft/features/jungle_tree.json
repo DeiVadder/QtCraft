@@ -1,5 +1,6 @@
 {
     "name": "jungle_tree",
+    "icon": "jungle_sapling",
     "type": "tree",
     "trunk": "jungle_log",
     "leaves": "jungle_leaves",

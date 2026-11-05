@@ -16,6 +16,7 @@
 #include <memory>
 
 class QcContentRegistry;
+class QcNewWorldDraft;
 class QcWorldLibraryController;
 
 // The world generation options of the menu's new world (GameController.worldOptions, decision
@@ -39,8 +40,16 @@ class QcWorldOptionsController : public QObject
     Q_PROPERTY(QString preset READ preset NOTIFY valuesChanged FINAL)
     // How many options differ from their defaults.
     Q_PROPERTY(int changedCount READ changedCount NOTIFY valuesChanged FINAL)
+    // The entry of the preset list for the chosen values: 0 for the defaults, 1 + the index into
+    // presets for a preset, -1 for values of one's own.
+    Q_PROPERTY(int presetIndex READ presetIndex NOTIFY summaryChanged FINAL)
+    // The values in a line for the new world's form: every option at its default, the preset, or
+    // how many options differ.
+    Q_PROPERTY(QString summary READ summary NOTIFY summaryChanged FINAL)
     // The map preview of the world these options make (decision E-921).
     Q_PROPERTY(QcWorldMapPreview *preview READ preview CONSTANT FINAL)
+    // The rest of the new world's form: name, type, seed, game mode (decision E-956).
+    Q_PROPERTY(QcNewWorldDraft *draft READ draft CONSTANT FINAL)
 
 public:
     // How a number reads: as it is, in blocks, in percent of 0..1, or as a factor.
@@ -57,7 +66,10 @@ public:
     QVariantMap values() const { return chosen().toVariantMap(); }
     QString preset() const;
     int changedCount() const;
+    int presetIndex() const;
+    QString summary() const;
     QcWorldMapPreview *preview() const { return m_preview.get(); }
+    QcNewWorldDraft *draft() const { return m_draft.get(); }
 
     // Takes the options of the current content (base game and enabled mods), each at its default.
     Q_INVOKABLE void reset();
@@ -75,6 +87,8 @@ public:
 signals:
     void optionsChanged();
     void valuesChanged();
+    // presetIndex or summary may differ: the values or the presets changed.
+    void summaryChanged();
 
 private:
     // The options of the content, loaded when first needed or when the library's content changed.
@@ -99,4 +113,5 @@ private:
     QJsonObject m_values;
     // Follows the content and the values.
     std::unique_ptr<QcWorldMapPreview> m_preview;
+    std::unique_ptr<QcNewWorldDraft> m_draft;
 };

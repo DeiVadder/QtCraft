@@ -72,7 +72,7 @@ struct CampfireDisplay
 };
 
 /*! \brief Server -> client: the block at \c {pos} is now \c {block}. */
-struct BlockUpdate
+struct BlockUpdate // NOLINT(qc-duplicate-struct): protocol message, its own type
 {
     /*! The block's position. */
     QcBlockPos pos;

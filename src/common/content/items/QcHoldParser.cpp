@@ -25,16 +25,9 @@ void warnUnknownKeys(const QJsonObject &json, const QStringList &known, const QS
     }
 }
 
-// The bounds one value of a vector must keep.
-struct Range
-{
-    double low;
-    double high;
-};
-
 // [x, y, z] at `key` with every value within `range`; a single number stands for all three when
 // `uniform` allows it.
-std::optional<QcVec3> vectorAt(QcJsonFieldReader &reader, const QString &key, Range range, bool uniform)
+std::optional<QcVec3> vectorAt(QcJsonFieldReader &reader, const QString &key, QcHoldParser::Range range, bool uniform)
 {
     const QJsonValue value = reader.json.value(key);
     if (value.isUndefined()) {
@@ -61,7 +54,8 @@ std::optional<QcVec3> vectorAt(QcJsonFieldReader &reader, const QString &key, Ra
     return vector;
 }
 
-// A placement; "scale" only where `withScale` (not in "swing", which keeps the item's size).
+// A placement; "scale" only where `withScale` (not in "swing", "drawn" and "thirdPersonDrawn", which
+// keep the item's size).
 QcHoldTransform transformOf(const QJsonObject &json, QcJsonFieldReader &reader, bool withScale)
 {
     QStringList known{u"translate"_s, u"rotate"_s};
@@ -83,7 +77,7 @@ QcHoldTransform transformOf(const QJsonObject &json, QcJsonFieldReader &reader, 
 // A hold object; "category" only where `withCategory`.
 QcHoldDisplay displayOf(const QJsonObject &json, QcJsonFieldReader &reader, bool withCategory)
 {
-    QStringList known{u"grip"_s, u"firstPerson"_s, u"thirdPerson"_s, u"swing"_s};
+    QStringList known{u"grip"_s, u"firstPerson"_s, u"thirdPerson"_s, u"swing"_s, u"drawn"_s, u"thirdPersonDrawn"_s};
     if (withCategory) {
         known.append(u"category"_s);
     }
@@ -112,6 +106,12 @@ QcHoldDisplay displayOf(const QJsonObject &json, QcJsonFieldReader &reader, bool
     });
     reader.nestedObject(u"swing"_s, [&display](const QJsonObject &object, QcJsonFieldReader &nested) {
         display.swing = transformOf(object, nested, false);
+    });
+    reader.nestedObject(u"drawn"_s, [&display](const QJsonObject &object, QcJsonFieldReader &nested) {
+        display.drawn = transformOf(object, nested, false);
+    });
+    reader.nestedObject(u"thirdPersonDrawn"_s, [&display](const QJsonObject &object, QcJsonFieldReader &nested) {
+        display.thirdPersonDrawn = transformOf(object, nested, false);
     });
     return display;
 }

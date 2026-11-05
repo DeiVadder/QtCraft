@@ -51,7 +51,7 @@ private:
 
     static QList<QcChunkPos> chunksOf(const QcCoastalTowerPlan &plan)
     {
-        const QcCoastalTowerPlan::Footprint footprint = plan.footprint().grown(1);
+        const QcXzRect footprint = plan.footprint().grown(1);
         QList<QcChunkPos> chunks;
         for (int cx = QcBlockPos{footprint.minX, 0, 0}.chunk().x; cx <= QcBlockPos{footprint.maxX, 0, 0}.chunk().x; ++cx) {
             for (int cz = QcBlockPos{0, 0, footprint.minZ}.chunk().z; cz <= QcBlockPos{0, 0, footprint.maxZ}.chunk().z; ++cz) {
@@ -163,16 +163,16 @@ private:
 
     // The footprints of every surface structure planned within `reach` blocks of the origin, counted
     // by kind in `copies`.
-    static QList<QcCoastalTowerPlan::Footprint> surfaceFootprints(const QcTerrainGenerator &terrain, int reach, QHash<QString, qsizetype> &copies)
+    static QList<QcXzRect> surfaceFootprints(const QcTerrainGenerator &terrain, int reach, QHash<QString, qsizetype> &copies)
     {
-        QList<QcCoastalTowerPlan::Footprint> structures;
+        QList<QcXzRect> structures;
         const QcSurfaceStructures &surface = terrain.surfaceStructures();
-        for (qsizetype kind = 0; kind < surface.planner().kinds().size(); ++kind) {
+        for (const QcSurfacePlanner::KindId kind : surface.planner().kinds().ids()) {
             const QcSurfacePlanner::Kind &rule = surface.planner().kinds()[kind];
             const int ruleRegions = reach / rule.rule.spacing + 1;
             for (int rz = -ruleRegions; rz <= ruleRegions; ++rz) {
                 for (int rx = -ruleRegions; rx <= ruleRegions; ++rx) {
-                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(static_cast<int>(kind), rx, rz)) {
+                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(kind, rx, rz)) {
                         structures.append(QcCoastalTowerPlan::footprintOf(*copy));
                         ++copies[rule.name];
                     }
@@ -206,7 +206,7 @@ private slots:
             QCOMPARE(a.placement.turns(), b.placement.turns());
             QCOMPARE(a.placement.structure().name(), b.placement.structure().name());
             QCOMPARE(a.ocean, b.ocean);
-            const QcCoastalTowerPlan::Footprint footprint = a.footprint();
+            const QcXzRect footprint = a.footprint();
             QVERIFY(footprint.minX >= a.regionX * size && footprint.maxX < (a.regionX + 1) * size);
             QVERIFY(footprint.minZ >= a.regionZ * size && footprint.maxZ < (a.regionZ + 1) * size);
         }
@@ -224,7 +224,7 @@ private slots:
         const QcCoastalTowerSettings &settings = planner.settings();
         const int sea = m_terrain->seaLevel();
         for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : std::as_const(m_plans)) {
-            const QcCoastalTowerPlan::Footprint footprint = plan->footprint();
+            const QcXzRect footprint = plan->footprint();
             for (int z = footprint.minZ; z <= footprint.maxZ; ++z) {
                 for (int x = footprint.minX; x <= footprint.maxX; ++x) {
                     const int top = m_terrain->column(x, z).height - 1;
@@ -270,7 +270,7 @@ private slots:
                 }
             }
 
-            const QcCoastalTowerPlan::Footprint footprint = plan.footprint();
+            const QcXzRect footprint = plan.footprint();
             const int floor = placement.origin().y;
             for (int z = footprint.minZ; z <= footprint.maxZ; ++z) {
                 for (int x = footprint.minX; x <= footprint.maxX; ++x) {
@@ -303,7 +303,7 @@ private slots:
 
         const Chunks chunks = generate(*m_terrain, chunksOf(plan));
         QCOMPARE(nameOf(at(chunks, chest)), u"qtcraft:chest"_s);
-        const QcCoastalTowerPlan::Footprint footprint = plan.footprint();
+        const QcXzRect footprint = plan.footprint();
         const int floor = placement.origin().y;
         checkTrap(chunks, {footprint.minX, floor, footprint.minZ}, {footprint.maxX, floor + placement.structure().sizeY() - 1, footprint.maxZ});
 
@@ -395,7 +395,7 @@ private slots:
         QHash<QString, qsizetype> copies;
         for (const qint64 each : {seed, qint64{51}, qint64{7}, QcTestUtil::randomSeed()}) {
             const QcTerrainGenerator terrain(m_content, each);
-            const QList<QcCoastalTowerPlan::Footprint> structures = surfaceFootprints(terrain, reach, copies);
+            const QList<QcXzRect> structures = surfaceFootprints(terrain, reach, copies);
             QList<std::pair<int, int>> centres;
             for (int rz = -towerRegions; rz <= towerRegions; ++rz) {
                 for (int rx = -towerRegions; rx <= towerRegions; ++rx) {
@@ -404,16 +404,16 @@ private slots:
                         continue;
                     }
                     ++towers;
-                    const QcCoastalTowerPlan::Footprint footprint = tower->footprint();
+                    const QcXzRect footprint = tower->footprint();
                     const std::pair centre{footprint.minX + footprint.maxX, footprint.minZ + footprint.maxZ};
                     for (const auto &[x, z] : std::as_const(centres)) {
                         nearest = std::min(nearest, std::hypot(x - centre.first, z - centre.second) / 2.0);
                     }
                     centres.append(centre);
-                    const QcCoastalTowerPlan::Footprint around = tower->footprint().grown(clearance);
-                    for (const QcCoastalTowerPlan::Footprint &structure : std::as_const(structures)) {
-                        QVERIFY2(!around.touches(structure), qPrintable(u"seed %1 tower at %2 %3"_s.arg(each).arg(around.minX).arg(around.minZ)));
-                        near += around.grown(64).touches(structure) ? 1 : 0;
+                    const QcXzRect around = tower->footprint().grown(clearance);
+                    for (const QcXzRect &structure : std::as_const(structures)) {
+                        QVERIFY2(!around.intersects(structure), qPrintable(u"seed %1 tower at %2 %3"_s.arg(each).arg(around.minX).arg(around.minZ)));
+                        near += around.grown(64).intersects(structure) ? 1 : 0;
                     }
                 }
             }

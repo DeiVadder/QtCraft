@@ -14,10 +14,12 @@
 class QcServer;
 class QcTlsListener;
 
-// Accepts TCP connections for a QcServer in the server's thread (decision E-251): every accepted
-// socket becomes a QcTcpTransport and a remote client of the server, which logs it in; no data is
-// shared with another thread, so the game state needs no locks. New connections pass the
-// QcConnectionLimiter first, then the TLS handshake begins (decision E-872).
+/*! \brief Accepts TCP connections for a QcServer in the server's thread (decision E-251): every
+    accepted socket becomes a QcTcpTransport and a remote client of the server, which logs it in; no
+    data is shared with another thread, so the game state needs no locks.
+
+    New connections pass the QcConnectionLimiter first, then the TLS handshake begins (decision
+    E-872). */
 class QcNetworkServer : public QObject
 {
     Q_OBJECT
@@ -27,11 +29,14 @@ public:
     ~QcNetworkServer() override;
     Q_DISABLE_COPY_MOVE(QcNetworkServer)
 
-    // Starts listening; the port in use (the configured one, or a free one for port 0).
+    /*! Starts listening. Returns the port in use (the configured one, or a free one for port 0)
+        or why listening failed. */
     [[nodiscard]] QcResult<quint16> listen();
+    /*! Returns the port the listener listens on. */
     quint16 port() const;
+    /*! Returns the number of open connections. */
     int openConnections() const { return m_limiter.open(); }
-    // Connections refused by the limits since the start.
+    /*! Returns the connections refused by the limits since the start. */
     quint64 refusedConnections() const { return m_refused; }
 
 private:

@@ -5,6 +5,7 @@
 
 #include "app/controllers/QcChatFeed.h"
 #include "app/controllers/QcHeldMap.h"
+#include "app/controllers/QcScreenState.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/models/QcWorldLabelModel.h"
 #include "common/core/QcChunkPos.h"
@@ -46,6 +47,12 @@ class QcHudState : public QObject
     Q_PROPERTY(QcWorldLabelModel *labels READ labels CONSTANT FINAL)
     // The debug display (decision E-225).
     Q_PROPERTY(QcDebugHud *debug READ debug CONSTANT FINAL)
+    // What shows behind the open screen (decision E-927, GameController.hudShown): the view's parts
+    // (crosshair, the name of the block in view and of a newly selected item, the world labels, the
+    // chat lines, a held map, the advancement toast) only while the view is free (no screen, or
+    // the chat line); the world hint only without any screen.
+    Q_PROPERTY(bool viewShown READ viewShown NOTIFY shownChanged FINAL)
+    Q_PROPERTY(bool hintShown READ hintShown NOTIFY shownChanged FINAL)
 
 public:
     // HudState.Dial in QML: what the held item shows.
@@ -64,6 +71,11 @@ public:
     QcHeldMap *heldMap() const { return m_heldMap; }
     QcWorldLabelModel *labels() const { return m_labels; }
     QcDebugHud *debug() const { return m_debug; }
+    QcScreenState::HudShown hudShown() const { return m_hudShown; }
+    bool viewShown() const;
+    bool hintShown() const;
+    // How much of the HUD shows (QcScreenState::hudShown, kept by QcGameController).
+    void setHudShown(QcScreenState::HudShown shown);
     // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for the handbook key.
     QString targetName() const { return m_targetName; }
 
@@ -89,8 +101,11 @@ public:
 signals:
     void frameStateChanged();
     void dialChanged();
+    void shownChanged();
 
 private:
+    // Without a signal: updateTarget() notifies with the label.
+    void setTargetName(const QString &name) { m_targetName = name; }
     // Names of armour stands that show them, as labels above their heads.
     QList<QcWorldLabel> standLabels() const;
     // The session's world labels (while shown) and the stand names; without stand names no copy.
@@ -113,4 +128,6 @@ private:
     QList<QcWorldLabel> m_standLabels;
     QHash<QcChunkPos, QList<QcWorldLabel>> m_mergedLabels;
     QcDebugHud *m_debug = nullptr;
+    // Nothing is open at the start: the whole HUD (decision E-927).
+    QcScreenState::HudShown m_hudShown = QcScreenState::HudShown::All;
 };

@@ -208,7 +208,7 @@ private slots:
         double x = 0.5;
         const auto step = [&](quint8 flags, bool hurt) {
             x += 0.2;
-            return QcMsg::EntityMove{bob, {x, 64.0, 3.5}, 0.0f, 20.0, hurt, 0.0f, flags, qcNoItem};
+            return QcMsg::EntityMove{bob, {x, 64.0, 3.5}, 0.0f, 20.0, hurt, false, 0.0f, flags, qcNoItem};
         };
         for (int i = 0; i < 20; ++i) {
             if (i % 2 == 0) {
@@ -229,12 +229,59 @@ private slots:
             session.tick();
         }
         QCOMPARE(pose().swingProgress, -1.0);
+        // The flash lasts the hurt time, longer than a swing (decision E-971).
+        QVERIFY(pose().hurtProgress >= 0.0);
+        for (int i = QcLocalAnimation::swingTicks; i < QcClientEntities::hurtFlashTicks; ++i) {
+            session.tick();
+        }
         QCOMPARE(pose().hurtProgress, -1.0);
 
         // Dying, then spawned again while the death animation plays.
         spawn.position = {5.5, 64.0, 5.5};
         verifyDeathOutlivesRespawn(server, session, spawn);
         QCOMPARE(pose().deathProgress, -1.0);
+    }
+
+    // The count of a remote draw follows the server's speed (decision E-987).
+    void remoteDrawsRunWithTheServer()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        FakeServer server(std::move(serverEnd));
+        QcClientSession session(std::move(clientEnd), u"Tester"_s);
+        session.start(QcClientSession::TickMode::Manual);
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
+
+        constexpr quint32 archer = 7;
+        QcMsg::EntitySpawn spawn;
+        spawn.id = archer;
+        spawn.flags = QcMsg::Drawing;
+        server.send(spawn);
+        QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(archer), timeoutMs);
+        const auto counted = [&] { return session.entities().value(archer).drawTicks; };
+        session.tick();
+        QCOMPARE(counted(), 0.0);
+
+        const auto atSpeed = [&](double speed) {
+            server.send(QcMsg::WorldTime{0.0, 1200.0, true, speed});
+            QTRY_COMPARE_WITH_TIMEOUT(session.worldMirror().timeSpeed(), speed, timeoutMs);
+        };
+        atSpeed(2.0);
+        session.tick();
+        QCOMPARE(counted(), 2.0);
+        atSpeed(0.0);
+        session.tick();
+        QCOMPARE(counted(), 2.0);
+
+        // Behind the pause menu it stands still whatever the speed says.
+        atSpeed(1.0);
+        server.send(QcMsg::ServerPause{true});
+        QTRY_VERIFY_WITH_TIMEOUT(session.serverPaused(), timeoutMs);
+        session.tick();
+        QCOMPARE(counted(), 2.0);
+        server.send(QcMsg::ServerPause{false});
+        QTRY_VERIFY_WITH_TIMEOUT(!session.serverPaused(), timeoutMs);
+        session.tick();
+        QCOMPARE(counted(), 3.0);
     }
 
     void lookChangedWhileConnectingReachesTheServer()

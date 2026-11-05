@@ -80,7 +80,7 @@ void QcBlockCommands::setBlock(const QcCommandContext &context)
             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Only a spawner takes a creature"));
             return;
         }
-        const std::optional<int> type = m_state.content().mobIndex(*mob);
+        const std::optional<QcCreatureKindId> type = m_state.content().mobKind(*mob);
         if (!type) {
             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown creature: %1"), {context.args[4]});
             return;

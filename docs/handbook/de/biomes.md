@@ -38,7 +38,7 @@ Heller Wald aus Birken.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-flower_valley"></a>Blumental
 
@@ -73,7 +73,7 @@ Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwisc
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-jungle"></a>Dschungel
 
@@ -107,7 +107,7 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-jungle_edge"></a>Dschungelrand
 
@@ -141,7 +141,7 @@ Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäum
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-plains"></a>Ebene
 
@@ -175,7 +175,7 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-river"></a>Fluss
 
@@ -196,7 +196,7 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-delta"></a>Flussdelta
 
@@ -225,7 +225,7 @@ Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in fla
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-mountains"></a>Gebirge
 
@@ -261,7 +261,7 @@ Hohe Felsgipfel mit Schnee darauf.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-frozen_delta"></a>Gefrorenes Flussdelta
 
@@ -287,7 +287,7 @@ Ein Flussdelta in kaltem Land (Tundra, verschneite Taiga, Taiga): kahle Inseln a
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-swamp"></a>Sumpf
 
@@ -321,7 +321,7 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 **Wesen**
 
-[Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -353,7 +353,7 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -380,7 +380,7 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-lush_delta"></a>Üppiges Flussdelta
 
@@ -413,7 +413,7 @@ Ein Flussdelta in warmem, feuchtem Land (Dschungel, Dschungelrand, Sumpf): grün
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Verschneite Taiga
 
@@ -441,7 +441,7 @@ Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere B�
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest"></a>Wald
 
@@ -475,7 +475,7 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest_steppe"></a>Waldsteppe
 
@@ -509,7 +509,7 @@ Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelte
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-desert"></a>Wüste
 
@@ -536,7 +536,7 @@ Sand und Sandstein mit Kakteen und wenig sonst.
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-frozen_river"></a>Zugefrorener Fluss
 
@@ -558,4 +558,4 @@ Ein Fluss durch kaltes Land (Tundra, verschneite Taiga, Taiga): Eis bedeckt ihn,
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)

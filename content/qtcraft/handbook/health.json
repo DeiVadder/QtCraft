@@ -1,9 +1,10 @@
 {
     "name": "health",
     "order": 80,
-    "icon": "iron_sword",
+    "icon": "healing_potion",
     "sections": [
         "health",
+        "air",
         "fighting",
         "effects"
     ],
@@ -11,6 +12,7 @@
         "iron_sword",
         "zombie",
         "lava",
+        "drowned",
         "spider_eye"
     ]
 }

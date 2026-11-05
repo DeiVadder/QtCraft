@@ -300,7 +300,7 @@ private slots:
     void bobberHarmsNoCreature()
     {
         joinWithRod();
-        const int cow = *m_content->mobIndex(u"qtcraft:cow"_s);
+        const QcCreatureKindId cow = *m_content->mobKind(u"qtcraft:cow"_s);
         const QcVec3 at{m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};
         const quint32 id = m_server->entities().creatures().spawn(cow, at, m_server->entities().newId(), false, true);
         const double health = m_server->entities().creatures().find(id)->health;

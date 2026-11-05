@@ -1,7 +1,7 @@
 {
     "name": "spectator",
     "order": 116,
-    "icon": "glass",
+    "icon": "spider_eye",
     "sections": [
         "flying",
         "unseen",

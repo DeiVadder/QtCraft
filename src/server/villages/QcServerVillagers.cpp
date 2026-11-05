@@ -19,7 +19,7 @@ QcServerVillagers::QcServerVillagers(QcServerState &state, QcServerSounds &sound
     , m_blocks(blocks)
 {
     const QcContentRegistry &content = m_state.content();
-    for (int type = 0; type < content.mobs().size(); ++type) {
+    for (const QcCreatureKindId type : content.mobs().ids()) {
         const QcVillagerSettings &species = content.villagerSettingsOf(type);
         QHash<QcItemId, int> &worth = m_worth[type];
         for (auto it = species.breeding.foods.cbegin(); it != species.breeding.foods.cend(); ++it) {

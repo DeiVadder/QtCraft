@@ -50,12 +50,12 @@ set(qc_concurrency_tests
     test_texture_atlas test_material_maps test_texture_pack_controller test_mesh_scheduler test_reconciliation
     test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_frame_driver test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
-    test_tcp_transport test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause test_sign_controller
+    test_tcp_transport test_join_failure test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause test_sign_controller test_player_hud
     test_message_log test_crash_report
-    test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_draw_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
-    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
+    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
     test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_web_handbook)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
@@ -79,9 +79,12 @@ set_tests_properties(test_dedicated_server test_server_log test_headless_cli PRO
 # QtTest's limit per test function follows the test's limit (qc_add_test).
 set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
+set_tests_properties(test_dedicated_server PROPERTIES COST 70)
 set_tests_properties(test_light_engine PROPERTIES COST 150)
+set_tests_properties(test_generator_versions PROPERTIES COST 170)
 set_tests_properties(test_weather test_fire PROPERTIES COST 140)
 set_tests_properties(test_tick_control test_terrain_liquids PROPERTIES COST 70)
+set_tests_properties(test_door_steering PROPERTIES COST 90)
 set_tests_properties(test_scenarios test_mods test_signal_network test_server_light PROPERTIES COST 80)
 set_tests_properties(test_shadewalkers test_jungle_temples test_temple_entrances test_world_map_preview PROPERTIES COST 60)
 set_tests_properties(test_shadewalker_rules PROPERTIES COST 80)
@@ -98,6 +101,7 @@ set_tests_properties(test_flower_valley PROPERTIES COST 120)
 set_tests_properties(test_cold_edges test_sand_golems PROPERTIES COST 80)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
 set_tests_properties(test_signal_showcase test_golem_measure test_village_plan_hash PROPERTIES COST 60)
+set_tests_properties(test_fish_paths PROPERTIES COST 15)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency
     test_creative_client test_multiplayer_bots test_push_client PROPERTIES COST 30)
 
@@ -105,11 +109,12 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # CPU time is under a quarter of their wall time, and TSan slows them 1.2-3.5 x instead of 7-10 x.
 # The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
 # with a smaller factor. A new test that mostly waits belongs here.
-set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client test_push_client
+set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client test_push_client test_draw_client
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
-    app_offscreen_pad_settings app_offscreen_pad_lazy_menu app_offscreen_advancements_return APPEND PROPERTY LABELS realtime)
+    app_offscreen_pad_settings app_offscreen_pad_bind app_offscreen_pad_lazy_menu app_offscreen_pad_lazy_advancements app_offscreen_advancements_return
+    app_offscreen_subscreen_return test_pause_keepalive APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
@@ -118,12 +123,15 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
     test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(test_web_handbook PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${PROJECT_SOURCE_DIR}/web/handbook/search.js")
+if(APPLE)
+    set_tests_properties(test_water_refraction_edge PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft>" PROCESSORS 2)
+endif()
 set_tests_properties(scenario_headless_admin_channel PROPERTIES
     REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/admin-channel.jsonl")
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 set_tests_properties(test_content_pack PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/common/content/loader/QcContentPackLoader.cpp")
-set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/frames/LazyScreen.qml")
+set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/frames/LazyScreen.qml;${PROJECT_SOURCE_DIR}/src/app/qml/frames/KeepAlive.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
 set_tests_properties(test_generator_versions PROPERTIES REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
@@ -139,6 +147,9 @@ if(NOT WIN32)
     endif()
     set_tests_properties(script_move_classes PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/fix-includes.py;${PROJECT_SOURCE_DIR}/scripts/check-cmake-lists.py")
     set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+    set_tests_properties(script_check_duplicates script_check_qml script_check_ast PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+    set_tests_properties(script_check_duplicates script_check_duplicate_structs script_check_qml PROPERTIES REQUIRED_FILES
+        "${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py;${PROJECT_SOURCE_DIR}/scripts/qc_ratchet.py")
     set_tests_properties(script_convert_doc_comments script_api_docs_stage script_code_map PROPERTIES REQUIRED_FILES
         "${PROJECT_SOURCE_DIR}/scripts/qc_doc_comments.py;${PROJECT_SOURCE_DIR}/scripts/qc_doc_format.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()

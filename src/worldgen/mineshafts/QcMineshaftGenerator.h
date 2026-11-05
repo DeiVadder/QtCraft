@@ -9,9 +9,9 @@
 #include "worldgen/mineshafts/QcMineshaftPlanner.h"
 
 #include <QHash>
-#include <QMutex>
 
 #include <memory>
+#include <mutex>
 
 /*! \brief Builds the mine shafts of the terrain generator into its chunks (decision E-570): each
     chunk writes its own cells of the mine shaft of every region it overlaps (a mine shaft stays
@@ -52,6 +52,8 @@ private:
     QcMineshaftPlanner m_planner;
     QcMineshaftBuilder m_builder;
     quint64 m_seed = 0;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools) hands the plans to the others under this mutex.
+    mutable std::mutex m_mutex;
     mutable QHash<qint64, std::shared_ptr<const QcMineshaftPlan>> m_plans;
 };

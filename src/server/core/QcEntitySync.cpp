@@ -36,8 +36,11 @@ QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature
     const quint16 breeding = static_cast<quint16>((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
                                      | QcMsg::poseFlags(creature.pose));
     now.yaw = creature.yaw;
+    // A creature that swims in pulses tilts along its way (decision E-974); others send no pitch.
+    now.pitch = creature.tilt;
     now.health = creature.health;
-    now.hurt = creature.hurtThisTick;
+    now.hurt = creature.hurtUnsent;
+    now.struck = creature.struckUnsent;
     now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
     now.held = heldBy(creature, kind);
     if (creature.archer.has() && creature.archer->drawing()) {
@@ -123,7 +126,7 @@ void QcEntitySync::sync(QcServerClient &client)
 
 QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
 {
-    QcMsg::EntityMove now{entity.id, entity.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem};
+    QcMsg::EntityMove now{.id = entity.id, .position = entity.motion.position};
     switch (entity.kind) {
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();

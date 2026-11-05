@@ -28,9 +28,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// New identities are written at most this often (decision E-273).
-constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
-
 // Keeps the local player's wish to pause (decision E-877) and returns true. A network client's wish
 // never pauses the server: it is dropped (false), and the log says so once per connection.
 bool notePauseRequest(QcServerClient &client, bool paused)
@@ -104,6 +101,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_chunkLoading(m_state, m_blocks, m_blockUpdates)
     , m_chunkStreaming(m_state, m_chunkLoading)
     , m_persistence(m_state, m_blocks, m_blockUpdates, m_chunkLoading)
+    , m_saving(m_state, m_persistence)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
                            {m_inventory, m_health, m_stands, m_gameModes, m_vehicles.minecarts(), m_vehicles.boats(), [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
@@ -159,7 +157,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
 QcServer::~QcServer()
 {
     // A server destroyed without stop() (tests, a failed start) keeps its registrations too.
-    flushIdentities();
+    m_saving.flushIdentities();
 }
 
 void QcServer::start()
@@ -186,25 +184,8 @@ QcStatus QcServer::openWorld()
 
 QcStatus QcServer::save()
 {
-    flushIdentities();
+    m_saving.flushIdentities();
     return m_persistence.save();
-}
-
-void QcServer::flushIdentitiesWhenDue()
-{
-    // New identities are written at most once a second, not with every login (decision E-273).
-    const qint64 now = m_state.clock().playerTimeNs();
-    const bool due = !m_lastIdentityFlushNs || now - *m_lastIdentityFlushNs >= identityFlushIntervalNs;
-    if (m_state.identities().hasUnsavedChanges() && due) {
-        flushIdentities();
-    }
-}
-
-void QcServer::flushIdentities()
-{
-    m_lastIdentityFlushNs = m_state.clock().playerTimeNs();
-    // Failures are logged by the store; the registrations count until the restart.
-    [[maybe_unused]] const QcStatus flushed = m_state.identities().flush();
 }
 
 QcStatus QcServer::stop()
@@ -392,7 +373,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
         m_health.respawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
-        m_commands.chat(client, chat->text.left(256));
+        m_commands.chat(client, chat->text);
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
         client.connection->close();
     } else if (const auto *sign = std::get_if<QcMsg::EditSign>(&message)) {
@@ -559,6 +540,9 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.yaw = std::fmod(input.yaw, 360.0f);
     // The speed follows the player's effects as the server knows them, never the client's word.
     input.speedFactor = static_cast<float>(client.effects.speedFactor(m_state.content()));
+    // A draw slows the player (decision E-986). The client's word counts only as a slowdown, so
+    // an input predicted as drawing moves alike here, also when the draw was refused meanwhile.
+    input.usingItem = input.usingItem || m_projectiles.launchers().draws(client);
 
     // A rider does not move: the cart carries the player (decision E-382); a driver's input moves the
     // boat (decision E-920).
@@ -581,8 +565,9 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     client.pitch = input.pitch;
     // Sneak also moves a flying player down; it still counts for using blocks (placing against a
     // chest), only the figure does not crouch for it (QcEntitySync).
+    client.sneakedBefore = client.sneaking;
     client.sneaking = input.sneak;
-    client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
+    client.sprinting = input.sprints() && !input.sneak;
 
     const bool jumped = input.jump && wasOnGround && !client.motion.onGround && client.motion.velocity.y > 0.0;
     const double distance = walkedDistance(previous, client.motion.position, input.push);

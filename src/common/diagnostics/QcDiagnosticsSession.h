@@ -36,16 +36,17 @@ public:
     ~QcDiagnosticsSession();
     Q_DISABLE_COPY_MOVE(QcDiagnosticsSession)
 
-    /*! <data>/logs. */
+    /*! Returns <data>/logs. */
     QString logDirectory() const { return m_logDirectory; }
     /*! Returns the log written now; empty when none. */
     QString logPath() const { return m_logPath; }
-    /*! This run's crash report (written only on a crash). */
+    /*! Returns this run's crash report (written only on a crash). */
     QString crashReportPath() const { return m_crashReport; }
     /*! Returns the crash report the previous session of this program left (renamed by
         QcLogFiles::markSeen); empty when it ended normally or an earlier start named it already. */
     QString previousCrashReport() const { return m_previousCrash; }
-    /*! Seconds between health lines: --health-log, else the default while a log file is written. */
+    /*! Returns the seconds between health lines: --health-log, else the default while a log file
+        is written. */
     int healthSeconds() const { return m_healthSeconds; }
     /*! Runs --crash-test when it was given (does not return then). */
     void runCrashTest() const;

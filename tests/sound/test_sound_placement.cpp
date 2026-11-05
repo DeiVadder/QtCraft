@@ -214,7 +214,7 @@ private slots:
         QcVec3 position = spawn.position;
         for (int tick = 0; tick < 5; ++tick) {
             position.x += 0.5;
-            entities.moves(QcMsg::EntityMoves{{QcMsg::EntityMove{5, position, 0.0f, 20.0, false, 0.0f, QcMsg::OnGround, qcNoItem}}, static_cast<qint64>(tick) * 50});
+            entities.moves(QcMsg::EntityMoves{{QcMsg::EntityMove{5, position, 0.0f, 20.0, false, false, 0.0f, QcMsg::OnGround, qcNoItem}}, static_cast<qint64>(tick) * 50});
             entities.tick();
             entities.stepSounds(world, [&cues](const QcSoundCue &cue) { cues.append(cue); });
         }

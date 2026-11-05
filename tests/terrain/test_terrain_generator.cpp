@@ -479,10 +479,10 @@ private slots:
         // Trees keep a margin from surface structures; every chunk a tree reaches must see the same
         // structures, or one side places the tree and the other does not.
         const QcTerrainGenerator generator(m_base, 12345);
-        std::optional<QcSurfacePlanner::Rect> footprint;
+        std::optional<QcXzRect> footprint;
         for (int cz = -64; cz <= 64 && !footprint; cz += 2) {
             for (int cx = -64; cx <= 64 && !footprint; cx += 2) {
-                const QList<QcSurfacePlanner::Rect> near = generator.surfaceStructures().footprintsNear({cx, cz}, 0);
+                const QList<QcXzRect> near = generator.surfaceStructures().footprintsNear({cx, cz}, 0);
                 if (!near.isEmpty()) {
                     footprint = near.first();
                 }
@@ -497,8 +497,8 @@ private slots:
                            {log, m_base->withProperty(log, u"axis"_s, u"x"_s), m_base->withProperty(log, u"axis"_s, u"z"_s)});
         }
         // The chunks of the footprint and one ring around it.
-        const QcChunkPos first = QcBlockPos{footprint->x0, 0, footprint->z0}.chunk();
-        const QcChunkPos last = QcBlockPos{footprint->x1, 0, footprint->z1}.chunk();
+        const QcChunkPos first = QcBlockPos{footprint->minX, 0, footprint->minZ}.chunk();
+        const QcChunkPos last = QcBlockPos{footprint->maxX, 0, footprint->maxZ}.chunk();
         int checked = 0;
         for (int cz = first.z - 1; cz <= last.z + 1; ++cz) {
             for (int cx = first.x - 1; cx <= last.x + 1; ++cx) {

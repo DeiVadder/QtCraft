@@ -64,8 +64,8 @@ SidebarScreen {
     }
 
     // The pad's shoulders switch the section, its B leaves the screen.
-    function gamepadCommand(command: string): bool {
-        if (command === "back") {
+    function gamepadCommand(command: int): bool {
+        if (command === GamepadMenuInput.Command.Back) {
             leave();
             return true;
         }
@@ -81,7 +81,7 @@ SidebarScreen {
     shownPage: pages.children[pages.currentIndex] ?? null
     onBackRequested: leave()
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape)
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.leave();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -133,7 +133,6 @@ SidebarScreen {
             spacing: Ui.space.s
 
             Hint {
-                objectName: "adminNotice"
                 Layout.fillWidth: true
                 kind: screen.admin.noticeKind === AdminController.Notice.Refused ? Hint.Error : Hint.Info
                 text: screen.admin.notice

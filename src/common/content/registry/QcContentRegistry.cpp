@@ -101,6 +101,9 @@ void QcContentRegistry::rebuildStates()
 QcStatus QcContentRegistry::registerShape(QcShapeDefinition shape)
 {
     const QString name = shape.name;
+    if (!QcContentNames::isValidQualified(name)) {
+        return qcError(u"Invalid shape name '%1'"_s.arg(name));
+    }
     if (shape.boxCount() > QcShapeDefinition::maxBoxes) {
         return qcError(u"Shape '%1': more than %2 boxes"_s.arg(name).arg(QcShapeDefinition::maxBoxes));
     }
@@ -125,8 +128,10 @@ QcStatus QcContentRegistry::registerShape(QcShapeDefinition shape)
     }
 
     for (qsizetype type = 0; type < m_blocks.size(); ++type) {
-        if (m_blocks[type].shapeName == name) {
-            m_states.update(static_cast<quint32>(type), m_blocks[type], shapeOf(m_blocks[type]));
+        // Read through a const reference: a shared list is not copied for the comparison.
+        const QcBlockDefinition &definition = std::as_const(m_blocks)[type];
+        if (definition.shapeName == name) {
+            m_states.update(static_cast<quint32>(type), definition, shapeOf(definition));
         }
     }
 
@@ -511,7 +516,7 @@ QStringList QcContentRegistry::resolveProjectiles()
                 warnings.append(u"projectile '%1': unknown onHit type '%2' left out"_s.arg(kind.name, effect.type));
             }
             const bool named = (!effect.is(QcHitEffect::effect) || this->effect(effect.subject))
-                               && (!effect.is(QcHitEffect::spawn) || mobIndex(effect.subject));
+                               && (!effect.is(QcHitEffect::spawn) || mobKind(effect.subject));
             if (known && !named) {
                 warnings.append(u"projectile '%1': onHit %2 names no known '%3'; left out"_s.arg(kind.name, effect.type, effect.subject));
             }
@@ -526,10 +531,10 @@ void QcContentRegistry::registerMob(QcMobDefinition definition)
     m_mobs.set(std::move(definition));
 }
 
-std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
+std::optional<QcCreatureKindId> QcContentRegistry::mobKind(const QString &name) const
 {
     const std::optional<qsizetype> index = m_mobs.indexOf(name);
-    return index ? std::optional<int>(static_cast<int>(*index)) : std::nullopt;
+    return index ? std::optional(QcCreatureKindId{static_cast<int>(*index)}) : std::nullopt;
 }
 
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
@@ -570,22 +575,22 @@ void QcContentRegistry::registerHandbookChapter(QcHandbookChapter chapter)
     m_handbookChapters.set(std::move(chapter));
 }
 
-std::optional<int> QcContentRegistry::villagerOfStyle(const QString &style) const
+std::optional<QcCreatureKindId> QcContentRegistry::villagerOfStyle(const QString &style) const
 {
     const QcVillageStyleDefinition *definition = m_villages.style(style);
-    const std::optional<int> type = mobIndex(definition && !definition->villager.isEmpty() ? definition->villager : m_villages.settings().villager);
-    return type && m_mobs.items()[*type].villager ? type : std::nullopt;
+    const std::optional<QcCreatureKindId> kind = mobKind(definition && !definition->villager.isEmpty() ? definition->villager : m_villages.settings().villager);
+    return kind && mobs()[*kind].villager ? kind : std::nullopt;
 }
 
-const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) const
+const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(QcCreatureKindId kind) const
 {
     static const QcVillagerSettings none;
-    if (mobType < 0 || mobType >= m_mobs.items().size()) {
+    if (!mobs().contains(kind)) {
         return none;
     }
 
     // The index finish() keeps, while it still names these settings; else by name.
-    const QcMobDefinition &mob = m_mobs.items()[mobType];
+    const QcMobDefinition &mob = mobs()[kind];
     const QList<QcVillagerSettings> &all = m_villages.villagerSpecies();
     const qsizetype index = mob.villagerSettingsIndex;
     if (index >= 0 && index < all.size() && all[index].name == mob.villagerSettings) {

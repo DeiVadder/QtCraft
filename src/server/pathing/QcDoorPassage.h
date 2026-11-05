@@ -14,42 +14,51 @@
 class QcContentRegistry;
 struct QcCreature;
 
-// How creatures that open doors (QcPathRules::opensDoors, decision E-423) go through them: they open
-// the closed wooden door on their path ahead (QcMobNavigator::Navigation::door) and close the one
-// they opened once they are through, and they take turns at a door, one at a time (decision E-411).
-// The door a creature opened is its own state (`opened`, a villager's QcVillager::openedDoor); what
-// it does to the world comes back as Moves for the caller to carry out.
+/*! \brief How creatures that open doors (QcPathRules::opensDoors, decision E-423) go through them:
+    they open the closed wooden door on their path ahead (QcMobNavigator::Navigation::door) and
+    close the one they opened once they are through, and they take turns at a door, one at a time
+    (decision E-411).
+
+    The door a creature opened is its own state (\c {opened}, a villager's QcVillager::openedDoor);
+    what it does to the world comes back as Moves for the caller to carry out. */
 class QcDoorPassage
 {
 public:
-    // How close a creature comes to a door to open it.
+    /*! How close a creature comes to a door to open it. */
     static constexpr double reach = 1.6;
-    // A door counts as passed once the creature is this far from its cell (horizontally).
+    /*! A door counts as passed once the creature is this far from its cell (horizontally). */
     static constexpr double passed = 1.5;
-    // Creatures this close to a door on their way take turns at it; one that waits steps back to
-    // this distance.
+    /*! Creatures this close to a door on their way take turns at it; one that waits steps back
+        to this distance. \qcshared */
     static constexpr double queue = 2.5;
     static constexpr double stepBack = 1.8;
 
-    // Doors to close and to open, in this order, and the door the creature holds open afterwards.
+    /*! \brief Doors to close and to open, in this order, and the door the creature holds open
+        afterwards. */
     struct Moves
     {
+        /*! The door to close. */
         std::optional<QcBlockPos> close;
+        /*! The door to open. */
         std::optional<QcBlockPos> open;
+        /*! The door it holds open afterwards. */
         std::optional<QcBlockPos> opened;
     };
 
     explicit QcDoorPassage(const QcContentRegistry &content);
 
-    // A new tick: the turns of the last one decide.
+    /*! A new tick: the turns of the last one decide. */
     void startTick();
-    // One door, one creature at a time: of the creatures in a doorway or within `queue` of a door on
-    // their next waypoint, one goes through (the one in the doorway, else the one already going,
-    // else the nearest, as of the last tick); the others wait, stepping back out of the doorway
-    // where the ground allows. The steering of one that waits; none for one that goes or has no
-    // door ahead (or flees).
+    /*! Lets \a mob, following \a navigation on \a ground, take its turn at a door.
+
+        One door, one creature at a time: of the creatures in a doorway or within \c {queue} of a
+        door on their next waypoint, one goes through (the one in the doorway, else the one
+        already going, else the nearest, as of the last tick); the others wait, stepping back out
+        of the doorway where the ground allows. Returns the steering of one that waits; none for
+        one that goes or has no door ahead (or flees). */
     std::optional<QcPhysics::Steering> waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcPathGround &ground);
-    // Opens the door on the path ahead and closes the one it went through (`opened`, the door it held open).
+    /*! Returns the door moves of \a mob following \a navigation: it opens the door on the path
+        ahead and closes the one it went through (\a opened, the door it held open). */
     [[nodiscard]] static Moves use(const QcCreature &mob, std::optional<QcBlockPos> opened, const QcMobNavigator::Navigation &navigation);
 
 private:

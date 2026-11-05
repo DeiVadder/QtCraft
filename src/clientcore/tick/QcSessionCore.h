@@ -25,59 +25,69 @@ class QcTransport;
 class QThread;
 class QTimer;
 
-// The part of a client session that keeps time (decision E-560): the connection to the server, the
-// ticks on the 50 ms grid (QcTickPacer) and the local player's prediction with what it needs, its
-// own mirror of the blocks (sharing the immutable chunks, with the player's predicted blocks,
-// decision E-853) and of the creatures that push him (QcPushBodies, decision E-882), the game
-// mode's wish to fly and whether the player is dead. Every tick it predicts and sends the input;
-// every message it receives it applies to that state and passes on, with the ticks and
-// reconciliations, as one ordered stream of QcSessionEvent to its sink. Lives in the session's tick
-// thread (QcSessionLink) or, without one, in the session's thread; every member is used in that
-// thread only, except pacer().timing(), linkStats() and latency().
+/*! \brief The part of a client session that keeps time (decision E-560): the connection to the
+    server, the ticks on the 50 ms grid (QcTickPacer) and the local player's prediction with what it
+    needs, its own mirror of the blocks (sharing the immutable chunks, with the player's predicted
+    blocks, decision E-853) and of the creatures that push them (QcPushBodies, decision E-882), the
+    game mode's wish to fly and whether the player is dead.
+
+    Every tick it predicts and sends the input; every message it receives it applies to that
+    state and passes on, with the ticks and reconciliations, as one ordered stream of
+    QcSessionEvent to its sink. Lives in the session's tick thread (QcSessionLink) or, without
+    one, in the session's thread; every member is used in that thread only, except
+    pacer().timing(), linkStats() and latency(). */
 class QcSessionCore : public QObject
 {
     Q_OBJECT
 
 public:
+    /*! Takes the core's events in order. */
     using Sink = std::function<void(QcSessionEvent &&event)>;
-    // Nanoseconds on a steady clock; the ticks are paced on it.
+    /*! Nanoseconds on a steady clock; the ticks are paced on it. */
     using Clock = std::function<qint64()>;
 
-    // Without a transport the core waits for attach() before it starts.
+    /*! Without a transport the core waits for attach() before it starts. */
     QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink);
-    // Shuts down (shutdown()) if that did not happen yet.
+    /*! Shuts down (shutdown()) if that did not happen yet. */
     ~QcSessionCore() override;
     Q_DISABLE_COPY_MOVE(QcSessionCore)
 
-    // Takes the connection's transport, in the core's thread; once, before Start, when the core was
-    // made without one (a TLS transport made in the core's thread, decision E-872).
+    /*! Takes the connection's \a transport, in the core's thread; once, before Start, when the core
+        was made without one (a TLS transport made in the core's thread, decision E-872). */
     void attach(std::unique_ptr<QcTransport> transport);
-    // Moves the core with its connection and transport to `thread`; called in the core's thread
-    // (or before the thread runs). Never with a transport that keeps its thread.
+    /*! Moves the core with its connection and transport to \a thread; called in the core's
+        thread (or before the thread runs). Never with a transport that keeps its thread. */
     void moveAllToThread(QThread *thread);
-    // Whether the connection's transport must stay in the thread it was made in
-    // (QcTransport::keepsItsThread).
+    /*! Returns whether the connection's transport must stay in the thread it was made in
+        (QcTransport::keepsItsThread). */
     bool transportKeepsItsThread() const;
-    // Replaces the steady clock (tests); before Start.
+    /*! Replaces the steady clock with \a clock (tests); before Start. */
     void setClock(Clock clock) { m_now = std::move(clock); }
+    /*! Carries out the session's \a command. */
     void apply(const QcSessionCommand &command);
-    // One tick of the local player; false while the world does not play yet or after the close.
+    /*! Runs one tick of the local player. Returns false while the world does not play yet or
+        after the close. */
     bool tick();
-    // Runs the ticks due on the clock (QcTickPacer::take) and returns how many ran; the timer calls
-    // it after Start. Until the world plays, the grid starts anew instead: no tick is due then.
+    /*! Runs the ticks due on the clock (QcTickPacer::take) and returns how many ran; the timer
+        calls it after Start. Until the world plays, the grid starts anew instead: no tick is due
+        then. */
     int runDueTicks();
-    // The due times of the timer-driven ticks and their punctuality.
+    /*! Returns the due times of the timer-driven ticks and their punctuality. */
     const QcTickPacer &pacer() const { return m_pacer; }
+    /*! Returns the due times of the timer-driven ticks and their punctuality, writable. */
     QcTickPacer &pacer() { return m_pacer; }
-    // Round trip of the inputs and bytes of the connection (health line, decision E-834).
+    /*! Returns the round trip of the inputs and bytes of the connection (health line, decision
+        E-834). */
     QcLinkStats &linkStats() { return m_linkStats; }
-    // The round trip to the server, measured with probes from the ticks (decision E-886).
+    /*! Returns the round trip to the server, measured with probes from the ticks (decision
+        E-886). */
     QcLatencyProbe &latency() { return m_latency; }
+    /*! Returns the round trip to the server, read-only. */
     const QcLatencyProbe &latency() const { return m_latency; }
-    // Stops ticking and taking messages; the connection stays (it may leave the thread with the
-    // core and close there, so that a TCP socket lingers in a thread that goes on).
+    /*! Stops ticking and taking messages; the connection stays (it may leave the thread with the
+        core and close there, so that a TCP socket lingers in a thread that goes on). */
     void stop();
-    // Stops and closes and destroys the connection.
+    /*! Stops and closes and destroys the connection. */
     void shutdown();
 
 private:

@@ -1,7 +1,7 @@
 {
     "name": "world",
     "order": 110,
-    "icon": "water_bucket",
+    "icon": "clock",
     "sections": [
         "time",
         "options",

@@ -4,7 +4,10 @@
 #include "app/startup/QcAppWindow.h"
 
 #include "app/controllers/QcGameController.h"
+#include "app/controllers/QcNewWorldDraft.h"
+#include "app/controllers/QcWorldOptionsController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/hooks/QcMenuPreselect.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcControlPalette.h"
@@ -12,8 +15,6 @@
 #include "clientcore/settings/QcScreenChoice.h"
 #include "clientcore/settings/QcUiPalette.h"
 #include "common/diagnostics/QcCrashHandler.h"
-#include "common/gameplay/QcGameMode.h"
-#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QGuiApplication>
 #include <QIcon>
@@ -22,6 +23,9 @@
 #include <rhi/qrhi.h>
 #include <QScreen>
 #include <QStyleHints>
+
+#include <atomic>
+#include <memory>
 
 using namespace Qt::StringLiterals;
 
@@ -34,40 +38,48 @@ bool systemColorScheme()
     return qEnvironmentVariable("QTCRAFT_COLOR_SCHEME") == u"system"_s;
 }
 
+// Which description of the window's QRhi the log still owes: none, the first one or one made anew
+// after a lost device.
+enum class DeviceLog { None, Created, Recreated };
+
+// The graphics API Qt Quick draws with, for the log.
+QString graphicsApiName()
+{
+    switch (QQuickWindow::graphicsApi()) {
+    case QSGRendererInterface::Direct3D11:
+        return u"Direct3D 11"_s;
+    case QSGRendererInterface::Direct3D12:
+        return u"Direct3D 12"_s;
+    case QSGRendererInterface::Vulkan:
+        return u"Vulkan"_s;
+    case QSGRendererInterface::Metal:
+        return u"Metal"_s;
+    case QSGRendererInterface::OpenGL:
+        return u"OpenGL"_s;
+    case QSGRendererInterface::Software:
+        return u"software rendering"_s;
+    default:
+        return u"graphics API %1"_s.arg(static_cast<int>(QQuickWindow::graphicsApi()));
+    }
+}
+
+// Logs the backend and GPU of `rhi`, made at the start or anew after a lost device.
+void describeDevice(const QRhi &rhi, DeviceLog log)
+{
+    const QRhiDriverInfo driver = rhi.driverInfo();
+    const QString prefix = log == DeviceLog::Recreated ? u"Graphics: QRhi recreated: "_s : u"Graphics: "_s;
+    qCInfo(lcStartup).noquote() << prefix
+                                       + u"%1 on %2 (device id 0x%3, vendor id 0x%4)"_s.arg(QString::fromLatin1(rhi.backendName()),
+                                                                                           QString::fromUtf8(driver.deviceName))
+                                             .arg(driver.deviceId, 0, 16)
+                                             .arg(driver.vendorId, 0, 16);
+}
+
 // Popups, dialogs and tooltips take their colours from their window (E-279).
 void applyControlPalette(QQuickWindow &window)
 {
     if (!systemColorScheme() && !QcControlPalette::applyTo(window)) {
         qCWarning(lcStartup, "The window offers no control palette; controls keep the system colours");
-    }
-}
-
-// QTCRAFT_MENU_WORLD_TYPE=flat|void|showcase is a test hook that preselects the world type of the
-// menu's new world, so that screenshots show the fields of that type; the page starts with it
-// whenever it opens (NewWorldPage.startWorldType, startGameMode).
-void preselectWorldType(const QQuickWindow &window)
-{
-    const qsizetype index = QcWorldGenerators::types().indexOf(qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"));
-    QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
-    QObject *page = window.findChild<QObject *>(u"newWorldPage"_s);
-    if (index >= 0 && choice) {
-        choice->setProperty("currentIndex", static_cast<int>(index));
-    }
-    if (index >= 0 && page) {
-        page->setProperty("startWorldType", static_cast<int>(index));
-    }
-
-    // QTCRAFT_MENU_GAME_MODE=creative (or another mode) preselects the game mode the same way.
-    QObject *mode = window.findChild<QObject *>(u"gameModeChoice"_s);
-    const std::optional<QcGameMode> wanted = QcGameModes::parse(qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
-    int modeIndex = -1;
-    if (mode && wanted
-        && QMetaObject::invokeMethod(mode, "indexOfValue", Q_RETURN_ARG(int, modeIndex), Q_ARG(QVariant, QString(QcGameModes::name(*wanted))))
-        && modeIndex >= 0) {
-        mode->setProperty("currentIndex", modeIndex);
-        if (page) {
-            page->setProperty("startGameMode", modeIndex);
-        }
     }
 }
 
@@ -168,7 +180,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
     applyWindowSize(window);
     applyControlPalette(window);
     placeWindow(&window, options.screen);
-    preselectWorldType(window);
+    QcMenuPreselect::newWorld(*game.worldOptions()->draft(), qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"), qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
 
     if (!offscreen) {
         // The player's window mode, screen and frame limits (decision E-835), unless a scripted run
@@ -196,22 +208,43 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
 
 void QcAppWindow::watchRenderThread(QQuickWindow &window)
 {
-    // Emitted in the render thread; the window and its QRhi are valid there. The render thread gets
-    // its alternate signal stack for crash reports here, its first moment in QtCraft's hands.
+    // All on the render thread. While the window lives, Qt Quick invalidates its scene graph and
+    // initialises it again only when the graphics device was lost or reset: then the window's QRhi
+    // is made anew, and it may be set only by the first frame after sceneGraphInitialized.
+    const auto invalidated = std::make_shared<std::atomic_bool>(false);
+    const auto undescribed = std::make_shared<std::atomic<DeviceLog>>(DeviceLog::None);
+    QObject::connect(&window, &QQuickWindow::sceneGraphInvalidated, &window, [invalidated] { invalidated->store(true); }, Qt::DirectConnection);
+    // The render thread gets its alternate signal stack for crash reports here, its first moment
+    // in QtCraft's hands.
     QObject::connect(
         &window, &QQuickWindow::sceneGraphInitialized, &window,
-        [&window] {
+        [&window, invalidated, undescribed] {
             QcCrashHandler::prepareThread();
-            const QRhi *rhi = window.rhi();
-            if (!rhi) {
+            const DeviceLog log = invalidated->exchange(false) ? DeviceLog::Recreated : DeviceLog::Created;
+            if (log == DeviceLog::Recreated) {
+                qCWarning(lcStartup).noquote() << u"Graphics: the device was lost or reset; recreating the QRhi on %1"_s.arg(graphicsApiName());
+            }
+            if (const QRhi *rhi = window.rhi()) {
+                describeDevice(*rhi, log);
+            } else if (QQuickWindow::graphicsApi() == QSGRendererInterface::Software) {
                 qCInfo(lcStartup, "Graphics: no QRhi (software rendering)");
+            } else {
+                undescribed->store(log);
+            }
+        },
+        Qt::DirectConnection);
+    QObject::connect(
+        &window, &QQuickWindow::beforeRendering, &window,
+        [&window, undescribed] {
+            const DeviceLog log = undescribed->exchange(DeviceLog::None);
+            if (log == DeviceLog::None) {
                 return;
             }
-            const QRhiDriverInfo driver = rhi->driverInfo();
-            qCInfo(lcStartup).noquote() << u"Graphics: %1 on %2 (device id 0x%3, vendor id 0x%4)"_s.arg(QString::fromLatin1(rhi->backendName()),
-                                                                                                      QString::fromUtf8(driver.deviceName))
-                                                .arg(driver.deviceId, 0, 16)
-                                                .arg(driver.vendorId, 0, 16);
+            if (const QRhi *rhi = window.rhi()) {
+                describeDevice(*rhi, log);
+            } else {
+                qCWarning(lcStartup).noquote() << u"Graphics: no QRhi on %1"_s.arg(graphicsApiName());
+            }
         },
         Qt::DirectConnection);
 }

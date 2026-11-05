@@ -73,6 +73,22 @@ void QcWorldMapPreview::setSeedText(const QString &text)
     requestUpdate();
 }
 
+void QcWorldMapPreview::setGeneratorVersion(int version)
+{
+    if (!QcGeneratorVersion::isKnown(version)) {
+        qCWarning(lcPreview) << "Map preview: refused the world generator version" << version;
+        return;
+    }
+    if (version == m_generatorVersion) {
+        return;
+    }
+    m_generatorVersion = version;
+    emit generatorVersionChanged();
+    // Another world: its villages and structures may lie elsewhere.
+    setSiteList({});
+    requestUpdate();
+}
+
 void QcWorldMapPreview::setActive(bool active)
 {
     if (active == this->active()) {
@@ -251,7 +267,7 @@ void QcWorldMapPreview::start(QcWorldMapRequest::Passes passes)
     const int sitesPass = showSites() ? 1 : 0;
     setPasses(passes == QcWorldMapRequest::Passes::All ? 0 : mapPasses, mapPasses + sitesPass);
 
-    const QcWorldMapRequest request{content(), values(), QcWorldLibrary::seedFromText(m_seedText), view(), showSites(), passes};
+    const QcWorldMapRequest request{content(), values(), QcWorldLibrary::seedFromText(m_seedText), view(), showSites(), passes, generatorVersion()};
     pool().submit([this, worker = m_worker, request, build, hook = m_resultHook] {
         bool stopped = false;
         const auto cancelled = [this, build, &stopped] {
@@ -442,3 +458,7 @@ void QcWorldMapPreview::stopAndForget()
     pool().submit([worker = m_worker] { worker->forget(); });
 }
 
+void QcWorldMapPreview::setProvider(QcWorldMapImageProvider *provider)
+{
+    m_provider = provider;
+}

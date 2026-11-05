@@ -20,13 +20,13 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 {
     const QcPlayerInput &in = m.input;
-    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch;
+    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch << in.usingItem;
 }
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
 {
     stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying
-           << m.vehicle << m.boat.has_value();
+           << m.vehicle << m.usingItem << m.boat.has_value();
     if (const std::optional<QcBoatState> &boat = m.boat) {
         stream << boat->motion.position << boat->motion.velocity << boat->motion.onGround << boat->motion.inWater << boat->yaw << boat->spin;
     }
@@ -79,6 +79,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerHealth &m)
 {
     stream << m.health << m.maxHealth << m.dead << m.burning;
     QcStatusEffects::write(stream, m.effects);
+    stream << m.hurt << m.hurtFrom.has_value() << m.hurtFrom.value_or(0.0f);
 }
 
 void encode(QDataStream &, QcMsg::Respawn) {}
@@ -96,6 +97,11 @@ void encode(QDataStream &stream, QcMsg::DropItem m)
 void encode(QDataStream &stream, QcMsg::PlayerFood m)
 {
     stream << m.food << m.maxFood;
+}
+
+void encode(QDataStream &stream, QcMsg::PlayerAir m)
+{
+    stream << m.air << m.maxAir << m.submerged;
 }
 
 void encode(QDataStream &stream, QcMsg::PlayerExperience m)
@@ -128,7 +134,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
-    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch;
+    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch >> in.usingItem;
     if (!std::isfinite(in.forward) || !std::isfinite(in.strafe) || !std::isfinite(in.yaw) || !std::isfinite(in.pitch)) {
         return qcError(u"Non-finite player input"_s);
     }
@@ -143,7 +149,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     QcMsg::PlayerState m;
     bool driving = false;
     stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying
-        >> m.vehicle >> driving;
+        >> m.vehicle >> m.usingItem >> driving;
     if (!isFinite(m.motion.position) || !isFinite(m.motion.velocity)) {
         return qcError(u"Non-finite player state"_s);
     }
@@ -187,13 +193,13 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
 {
     QcMsg::InventoryState m;
-    std::optional<QList<QcItemStack>> stacks = readStacks(stream);
+    std::optional<QList<QcItemStack>> stacks = readStacks(stream, QcInventory::slotCount);
     if (!stacks) {
         return qcError(u"Corrupt inventory"_s);
     }
     m.stacks = std::move(*stacks);
     stream >> m.selected;
-    std::optional<QList<QcItemStack>> craftingGrid = readStacks(stream);
+    std::optional<QList<QcItemStack>> craftingGrid = readStacks(stream, QcMsg::InventoryState::craftingCells);
     if (!craftingGrid) {
         return qcError(u"Corrupt crafting grid"_s);
     }
@@ -250,6 +256,15 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
         return qcError(u"Damaged status effects"_s);
     }
     m.effects = std::move(*effects);
+    bool directed = false;
+    float from = 0.0f;
+    stream >> m.hurt >> directed >> from;
+    if (!std::isfinite(from)) {
+        return qcError(u"Non-finite hurt direction"_s);
+    }
+    if (directed) {
+        m.hurtFrom = qcWrappedYaw(from);
+    }
     return m;
 }
 
@@ -282,6 +297,16 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     stream >> m.food >> m.maxFood;
     if (m.maxFood < 0 || m.maxFood > 1000 || m.food < 0 || m.food > m.maxFood) {
         return qcError(u"Invalid food value"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerAir>, QDataStream &stream)
+{
+    QcMsg::PlayerAir m;
+    stream >> m.air >> m.maxAir >> m.submerged;
+    if (m.maxAir <= 0 || m.maxAir > 100000 || m.air < 0 || m.air > m.maxAir) {
+        return qcError(u"Invalid air value"_s);
     }
     return m;
 }

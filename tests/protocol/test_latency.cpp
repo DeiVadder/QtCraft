@@ -203,7 +203,7 @@ private slots:
         QFETCH(int, jitterMs);
         QFETCH(bool, prediction);
         start(delayMs, jitterMs);
-        m_session->setBlockPrediction(prediction);
+        m_session->blockPrediction().setOn(prediction);
         const int roundTripMs = 2 * (delayMs + jitterMs);
         const auto settled = [this] { return m_session->worldMirror().blocks().predictedCount() == 0; };
 

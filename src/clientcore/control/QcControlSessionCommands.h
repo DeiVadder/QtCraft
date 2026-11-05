@@ -9,13 +9,15 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands about the player and the session: status, view mode, respawn, chat, sounds, loaded
-// packs, the advancements, the debug data, the players on the server and the own look.
+/*! \brief Control commands about the player and the session: status, view mode, respawn, chat,
+    sounds, loaded packs, the advancements, the debug data, the players on the server and the own
+    look. */
 class QcControlSessionCommands
 {
 public:
     explicit QcControlSessionCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:
