@@ -176,6 +176,8 @@ Höchstens drei Agenten zugleich (Regel des Menschen).
 
 Etappe 83 ist die riskante: die Umstellung auf mehrere Welten berührt Server-Zustand, Tick, Speichern, Netz und Client. 83.1a beginnt mit einer kurzen Karte der Stellen, die heute „die Welt“ voraussetzen (rund 73 Dateien nennen `QcServerWorld`), und teilt bei Bedarf weiter.
 
+**Entscheidungen des Menschen 2026-11-05:** Frage 1 entschieden (1.1 parallel zur Release-Vorbereitung, 1.0.0 ist draußen). Frage 2: Verweiltränke erst mit dem Ende (Drachenatem), 85.3 nur getränkte Pfeile aus vorhandenen Tränken ohne Verweiltrank-Weg bis dahin. Frage 3: ja, eine neue Oberwelt-Generator-Version 3 legt echten Netherrack in die Portal-Ruinen (Version 1 und 2 sind eingefroren und behalten Terrakotta). Frage 4: eigene kleine Wesen-Pakete für Kugelfisch, Kaninchen, Schildkröte und Phantom, die Tränke kommen mit ihnen. Frage 5: ja, eigene Spielregel `witherGriefing`. Frage 7: Nether-Texturen für das HD-Paket und den realistischen Modus am Ende gesammelt in einem eigenen Texturpaket. Frage 8: Ring-Breite bei `blend` im Menü einstellbar (Vorschlag 6 Chunks als Standard). Offen bleibt nur Frage 6 (misst 84.2).
+
 ## Offene Fragen
 
 1. **Einordnung gegen die übrigen Arbeiten nach dem Release** (72.5–72.12c QDoc, 79.47/79.48/79.49 Aufräumen, offene Nebenfunde 79.x): vorher, verschränkt oder danach? Entscheidet der Mensch mit der koordinierenden Sitzung.
