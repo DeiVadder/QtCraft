@@ -362,6 +362,11 @@ target_sources(qc_server PRIVATE
     tick/QcTimerResolution.h tick/QcTimerResolution.cpp
 )
 target_sources(qc_server PRIVATE
+    versions/QcExploredArea.h versions/QcExploredArea.cpp
+    versions/QcGeneratorSwitch.h versions/QcGeneratorSwitch.cpp
+    versions/QcVersionMapFile.h versions/QcVersionMapFile.cpp
+)
+target_sources(qc_server PRIVATE
     villages/QcServerTrading.h villages/QcServerTrading.cpp
     villages/QcServerVillagers.h villages/QcServerVillagers.cpp
     villages/QcVillage.h villages/QcVillage.cpp

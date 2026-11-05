@@ -159,6 +159,8 @@ Beschlossen vom Menschen am 2026-10-30; gehört in den Etappen-Plan der koordini
 | 87.2 | Umstieg `hard` und Vorab-Umwandlung: Rückfrage beim Öffnen (Behalten / hart / mit Übergang), Sicherung vorher, Fortschrittsanzeige, Abbruch ohne Änderung, `world.json` mit neuer Version und Versionskarte; Bauwerke über die Grenze behalten ihren alten Plan; `--convert-generator` in `qtcraft-headless`; Handbuch „Welt auf neuen Generator umstellen“ | 87.1 | M |
 | 87.3 | Umstieg `blend`: Ring von N Chunks aus beiden Versionen erzeugen und überblenden (Höhe/Dichte, Oberfläche, Biom-Blöcke, Wasser, Höhlen und Erze, Bauwerke nur alt), Ring fest speichern; Bilder vorher/nachher zur Freigabe durch den Menschen; Messung der Umwandlungszeit headless (Ziel: ein Ring um eine typische Welt in unter 1–2 min) | 87.2 | L |
 
+**Aus dem Review von 87.1 für 87.2 (Koordinator 2026-11-05):** (a) Die Suchen nach dem Nächsten (`nearestVillage`, `nearestStructure`, `locate`) in `QcVersionedGenerator` verwerfen einen Treffer der Basis, der in alten Chunks liegt, und finden dann keinen weiter entfernten gültigen Treffer der Basis; mit den Regeln für Bauwerke über die Grenze neu fassen. (b) Tests der Weiterleitung für `structureSitesNear`, `plannedStructureSitesNear`, `nearestStructure` und `locate` fehlen. (c) `QcGeneratedChunks::parse` lässt seit 87.1 leere Regionen fallen (früher behalten; kein Format-Unterschied, nur der Speicher).
+
 Zum Prüfen braucht 87 eine zweite Oberwelt-Version. Gibt es bis dahin keine echte, bekommt der Test eine Testversion (ein kleiner, absichtlicher Unterschied nur in Tests), damit der Umstieg ohne geänderten Spielinhalt geprüft werden kann.
 
 ## Reihenfolge und Parallelität

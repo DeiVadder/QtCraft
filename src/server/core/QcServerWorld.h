@@ -23,6 +23,7 @@
 #include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/villages/QcVillages.h"
+#include "worldgen/generators/QcVersionedGenerator.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 
 #include <QHash>
@@ -220,8 +221,16 @@ public:
         (QcBlockEntities::placed); spilled contents wait in blockEntities(). */
     bool setBlock(QcBlockPos pos, QcBlockId block);
 
-    /*! Returns the world generator. */
+    /*! Returns the world generator: the one the world was made with, following the version map
+        of its dimension (QcVersionedGenerator, decision E-1012). */
     const QcWorldGenerator &generator() const { return *m_generator; }
+    /*! Generates the chunks \a map names with generators of their versions made by \a create
+        (QcVersionedGenerator::setVersionMap): only before the first chunk is generated. Returns
+        an error then or for a version \a create cannot make. */
+    [[nodiscard]] QcStatus setGeneratorVersionMap(const QcGeneratorVersionMap &map, const QcVersionedGenerator::Factory &create)
+    {
+        return m_generator->setVersionMap(map, create);
+    }
 
     /*! Puts \a chunks into the world as changed (tests). */
     void adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<QcChunk>> &chunks);
@@ -242,7 +251,7 @@ private:
     void generateInBackground(QcChunkPos pos, Arrival kept);
 
     std::shared_ptr<const QcContentRegistry> m_content;
-    std::unique_ptr<QcWorldGenerator> m_generator;
+    std::unique_ptr<QcVersionedGenerator> m_generator;
     QcSectionMarks m_marks;
     QcBlockIndex m_hoppers;
     // NOLINT(qc-member-access): the sensors' index, built in the constructor, kept by noteSections, forgetSections and setBlock, read only through daylightSensors().

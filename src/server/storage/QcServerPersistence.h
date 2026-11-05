@@ -104,6 +104,10 @@ private:
     // block updates, villages and dimension.json; a dimension opened for the first time gets the
     // one-time setup of its generator (decision E-988).
     [[nodiscard]] QcStatus openDimension(QcServerDimension &dimension);
+    // Lets `dimension` generate the chunks its version map in `directory` names with their versions
+    // (QcVersionMapFile, decision E-1012); an error for a damaged map or a version this game does not
+    // generate.
+    [[nodiscard]] QcStatus applyVersionMap(QcServerDimension &dimension, const QString &directory);
     // The current dimension's whole files of a save: blockupdates.qce, and villages.json when its
     // change count is not `villagesSaved` any more.
     [[nodiscard]] QcResult<QList<QcChunkStore::WholeFile>> dimensionFiles(std::optional<quint64> villagesSaved) const;

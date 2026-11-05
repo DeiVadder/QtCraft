@@ -332,10 +332,12 @@ target_sources(qc_common PRIVATE
     world/QcBoatBody.h
     world/QcChunk.h world/QcChunk.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
+    world/QcChunkSet.h world/QcChunkSet.cpp
     world/QcDamagedFile.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
     world/QcGeneratorVersion.h
+    world/QcGeneratorVersionMap.h world/QcGeneratorVersionMap.cpp
     world/QcLightPassage.h
     world/QcLightVolume.h world/QcLightVolume.cpp
     world/QcMinecartBody.h

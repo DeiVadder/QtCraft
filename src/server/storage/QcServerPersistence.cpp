@@ -18,6 +18,7 @@
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcSaveFile.h"
+#include "server/versions/QcVersionMapFile.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
@@ -136,6 +137,9 @@ QcStatus QcServerPersistence::open()
         return qcError(warnings.error());
     }
     noteWarnings(*warnings);
+    if (const QcStatus mapped = applyVersionMap(m_state.dimensions().overworld(), m_state.config().worldDirectory); !mapped) {
+        return mapped;
+    }
 
     // A save writes world.json, the chunks and their entities as one (decision E-373): a world whose
     // setup is not done has nothing of it stored, so the setup simply runs.
@@ -235,6 +239,10 @@ QcStatus QcServerPersistence::openDimension(QcServerDimension &dimension)
             return qcError(u"The dimension '%1' cannot be read: %2"_s.arg(dimension.name(), stored.error()));
         }
         setupDone = stored->setupDone;
+        if (const QcStatus mapped = applyVersionMap(dimension, directory); !mapped) {
+            dimension.world().setStorage(nullptr, {});
+            return qcError(u"The dimension '%1' cannot be read: %2"_s.arg(dimension.name(), mapped.error()));
+        }
         dimension.world().loaders().restore(stored->chunkLoaders);
         if (const QcStatus read = readBlockUpdates(storage); !read) {
             dimension.world().setStorage(nullptr, {});
@@ -247,6 +255,35 @@ QcStatus QcServerPersistence::openDimension(QcServerDimension &dimension)
     if (!setupDone) {
         QcServerSetup::applyContents(m_state, m_updates, dimension.world().generator().setup());
     }
+    return {};
+}
+
+QcStatus QcServerPersistence::applyVersionMap(QcServerDimension &dimension, const QString &directory)
+{
+    const QcResult<QcGeneratorVersionMap> map = QcVersionMapFile::read(directory);
+    if (!map) {
+        return qcError(u"%1; without it the chunks generated before a generator switch would change"_s.arg(map.error()));
+    }
+    if (map->isEmpty()) {
+        return {};
+    }
+
+    // The chunks of other versions are generated like the dimension's own chunks, only older.
+    const QcDimensionDefinition &definition = dimension.definition();
+    const QString type = QcDimensions::generatorTypeIn(m_state.info(), definition);
+    const QString options = definition.isOverworld() ? m_state.info().generatorOptions : definition.generatorOptions;
+    const auto create = [content = m_state.contentPointer(), seed = m_state.config().seed, type, options](int version) {
+        return QcWorldGenerators::create(type, content, seed, options, version);
+    };
+    const QStringList before = dimension.world().generator().warnings();
+    if (const QcStatus set = dimension.world().setGeneratorVersionMap(*map, create); !set) {
+        return set;
+    }
+    // What the generators of the older versions could not resolve (the base's was reported when
+    // it was made).
+    QStringList added = dimension.world().generator().warnings();
+    added.removeIf([&before](const QString &warning) { return before.contains(warning); });
+    noteWarnings(added);
     return {};
 }
 

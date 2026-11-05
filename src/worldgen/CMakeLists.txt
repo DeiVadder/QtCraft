@@ -20,6 +20,7 @@ target_sources(qc_worldgen PRIVATE
     generators/QcLocatedPlace.h
     generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
+    generators/QcVersionedGenerator.h generators/QcVersionedGenerator.cpp
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
     generators/QcWorldGenerator.h
     generators/QcWorldGenerators.h generators/QcWorldGenerators.cpp

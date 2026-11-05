@@ -13,7 +13,7 @@
 
 QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator)
     : m_content(std::move(content))
-    , m_generator(std::move(generator))
+    , m_generator(std::make_unique<QcVersionedGenerator>(std::move(generator)))
     , m_links(*m_content)
     , m_loaders(*m_content)
     , m_villages(std::make_unique<QcVillages>(*m_content, *m_generator))
@@ -71,7 +71,7 @@ void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
     kept.request = m_pending.value(pos);
     m_generationPool.submit([this, pos, kept = std::move(kept)]() mutable {
         kept.pos = pos;
-        kept.blocks = m_generator->generate(pos);
+        kept.blocks = generator().generate(pos);
         kept.generated = true;
         kept.light = m_light.prepare(*kept.blocks);
         m_generated.push(std::move(kept));
@@ -85,7 +85,7 @@ void QcServerWorld::planStructureSitesInBackground(QcBlockPos from, int reach)
     }
     m_generationPool.submit([this, from, reach, planning = m_planningSites]() {
         // Only for its plans, which the generator keeps.
-        m_generator->structureSitesNear(from, reach);
+        generator().structureSitesNear(from, reach);
         planning->store(false);
     });
 }
@@ -193,7 +193,7 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     m_villages->noteChunk(chunk);
     // The generator's beds and workstations outside its villages count as placed (decision E-490);
     // one broken since is air and counts no more, one listed already stays as it is.
-    const QList<QcBlockPos> points = m_generator->pointsOfInterestIn(pos);
+    const QList<QcBlockPos> points = generator().pointsOfInterestIn(pos);
     for (const QcBlockPos &point : points) {
         m_villages->notePointOfInterest(point, chunk.block(point.localX(), point.y, point.localZ()));
     }
@@ -239,7 +239,7 @@ QcServerWorld::Arrival QcServerWorld::produceNow(QcChunkPos pos)
     }
     arrival.pos = pos;
     if (!arrival.blocks) {
-        arrival.blocks = m_generator->generate(pos);
+        arrival.blocks = generator().generate(pos);
         arrival.generated = true;
     }
     // A background request of the same chunk is superseded; its result is dropped when it comes.
@@ -310,7 +310,7 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
     }
 
     m_light.removeChunk(pos);
-    *it = m_generator->generate(pos);
+    *it = generator().generate(pos);
     m_light.addChunk(**it);
     forgetSections(pos);
     m_blockEntities.forgetChunk(pos);

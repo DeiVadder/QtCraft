@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/core/QcWorldConstants.h"
+#include "fixtures/QcTestTerrainServer.h"
 #include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerConfig.h"
@@ -87,16 +88,7 @@ private:
 
     std::unique_ptr<QcServer> server(const QString &directory) const
     {
-        QcServerConfig config;
-        config.worldName = u"Indexed"_s;
-        config.seed = 7;
-        config.worldDirectory = directory;
-        config.keepChunksLoaded = true;
-        auto server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
-        if (!server->openWorld()) {
-            QcTestUtil::failCase(u"The world in %1 does not open"_s.arg(directory));
-        }
-        return server;
+        return QcTestUtil::openTestTerrainWorld(directory, m_content, u"Indexed"_s, 7);
     }
 
     // Loads the chunks from `from` to `to` (inclusive) into `server`.

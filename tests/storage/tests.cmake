@@ -17,4 +17,6 @@ target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAK
 qc_add_test(test_entity_components SOURCES storage/test_entity_components.cpp LIBRARIES qc_server)
 qc_add_test(test_chunk_store SOURCES storage/test_chunk_store.cpp LIBRARIES qc_server)
 qc_add_test(test_generated_chunks SOURCES storage/test_generated_chunks.cpp LIBRARIES qc_server)
+qc_add_test(test_version_map SOURCES storage/test_version_map.cpp LIBRARIES qc_server)
+qc_add_test(test_generator_switch SOURCES storage/test_generator_switch.cpp LIBRARIES qc_server)
 qc_add_test(test_world_details SOURCES storage/test_world_details.cpp fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
