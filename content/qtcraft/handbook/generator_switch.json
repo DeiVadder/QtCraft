@@ -1,0 +1,11 @@
+{
+    "name": "generator_switch",
+    "order": 112,
+    "icon": "map",
+    "sections": [
+        "question",
+        "kept",
+        "borders",
+        "server"
+    ]
+}

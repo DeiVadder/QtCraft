@@ -338,6 +338,7 @@ target_sources(qc_common PRIVATE
     world/QcChunk.h world/QcChunk.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
     world/QcChunkSet.h world/QcChunkSet.cpp
+    world/QcConversionControl.h
     world/QcDamagedFile.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp

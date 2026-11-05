@@ -20,6 +20,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcChatFeed.h controllers/QcChatFeed.cpp
     controllers/QcChatInputHistory.h controllers/QcChatInputHistory.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcGeneratorUpgradeController.h controllers/QcGeneratorUpgradeController.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
@@ -324,6 +325,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/DeathScreen.qml
         qml/menus/DeleteWorldDialog.qml
         qml/menus/DisconnectScreen.qml
+        qml/menus/GeneratorUpgradeDialog.qml
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/LeaveGameButton.qml

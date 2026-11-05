@@ -31,8 +31,14 @@ public:
     /*! Returns the plan of the region \a regionX, \a regionZ, planned once (null without a
         dungeon). */
     [[nodiscard]] std::shared_ptr<const QcDungeonPlan> planOf(int regionX, int regionZ) const;
-    /*! Returns the dungeons whose cells may lie in the chunk \a pos. */
+    /*! Returns planOf() of the region \a regionX, \a regionZ when the terrain builds it
+        (QcWorldGenerator::buildsStructure with its bounds), else null: what the chunks, their
+        furnishing and /locate see. */
+    [[nodiscard]] std::shared_ptr<const QcDungeonPlan> builtPlanOf(int regionX, int regionZ) const;
+    /*! Returns the dungeons whose cells may lie in the chunk \a pos, built or not (planning). */
     QList<std::shared_ptr<const QcDungeonPlan>> plansTouching(QcChunkPos pos) const;
+    /*! Returns the plans of plansTouching() for \a pos that the terrain builds (builtPlanOf()). */
+    QList<std::shared_ptr<const QcDungeonPlan>> builtPlansTouching(QcChunkPos pos) const;
     /*! Writes the cells of the dungeons touching \a chunk into it. */
     void build(QcChunk &chunk) const;
     /*! Returns the spawners (with their creature) and the chests (with the loot table and a
@@ -46,6 +52,7 @@ private:
     // A wall block at `pos`: moss with the settings' share (twice that on the floor).
     QcBlockId wallAt(QcBlockPos pos, bool floor) const;
 
+    const QcTerrainGenerator &m_terrain;
     QcDungeonPlanner m_planner;
     quint64 m_seed = 0;
     QString m_lootTable;

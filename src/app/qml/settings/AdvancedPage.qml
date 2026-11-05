@@ -8,7 +8,8 @@ import QtCraft
 
 // The advanced page of the settings (decisions E-225 and E-845, like Factorio's F4): the level of
 // the debug display and the visualisations drawn into the world, each on its own (SettingCheck: a
-// multiple choice within one group), then the log and crash reports. The debug options key opens
+// multiple choice within one group), the world generator questions (decision E-1014), then the log
+// and crash reports. The debug options key opens
 // this page in the world directly. Stored with the settings.
 SettingsPage {
     id: page
@@ -68,6 +69,30 @@ SettingsPage {
             Layout.bottomMargin: Ui.space.xs
             text: qsTr("%1 opens these options in the world.")
                       .arg(page.game.settings.keys.labels.debugOptions)
+        }
+    }
+
+    SettingGroup {
+        title: qsTr("Worlds")
+
+        SettingRow {
+            label: qsTr("World generator")
+            help: qsTr("Asks again in worlds answered with “Don't ask again”")
+
+            GameButton {
+                objectName: "askGeneratorAgain"
+                text: qsTr("Show world generator questions again")
+                onClicked: page.game.library.upgrade.askAgain()
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+        }
+        Hint {
+            Layout.fillWidth: true
+            Layout.bottomMargin: Ui.space.xs
+            visible: page.game.library.upgrade.askedAgain >= 0
+            text: qsTr("The question comes back in %n world(s).", "", page.game.library.upgrade.askedAgain)
         }
     }
 

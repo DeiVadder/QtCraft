@@ -104,7 +104,7 @@ QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
     furnishing.add(m_mineshafts->furnishingIn(pos));
     furnishing.add(m_coastalTowers->furnishingIn(pos));
     furnishing.add(m_surface->furnishingIn(pos));
-    if (const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos)) {
+    if (const std::shared_ptr<const QcVillagePlan> village = m_villages->builtPlanFor(pos)) {
         furnishing.add(QcVillageGenerator::furnishingIn(pos, *village));
     }
     return furnishing;
@@ -153,7 +153,7 @@ void QcTerrainGenerator::setVersion(int version)
 
 std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::villageFor(QcChunkPos pos) const
 {
-    return m_villages->planFor(pos);
+    return m_villages->builtPlanFor(pos);
 }
 
 std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::nearestVillage(QcBlockPos from, int reach) const
@@ -725,7 +725,8 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     m_coastalTowers->build(*chunk);
     // Surface structures over the terrain (no features or pools near them), never near a village.
     m_surface->build(*chunk);
-    if (village) {
+    // The features keep off a village that is not built (a generator switch, decision E-1013).
+    if (village && m_villages->built(village)) {
         m_villages->build(*chunk, *village);
     }
 

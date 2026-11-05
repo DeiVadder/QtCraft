@@ -1620,5 +1620,30 @@
     "The newest terrain. A world keeps its version for good.": "Das neueste Gelände. Eine Welt behält ihre Version für immer.",
     "Makes the same worlds as the release that brought this version.": "Erzeugt dieselben Welten wie das Release, das diese Version brachte.",
     "Current (%1)": "Aktuell (%1)",
-    "Version %1": "Version %1"
+    "Version %1": "Version %1",
+    "Cancelling …": "Wird abgebrochen …",
+    "Backing up the world …": "Die Welt wird gesichert …",
+    "Surveying the explored land and its structures …": "Das erkundete Land und seine Bauwerke werden vermessen …",
+    "Writing the new version …": "Die neue Version wird geschrieben …",
+    "Preview": "Vorschau",
+    "Switching the world generator": "Der Weltgenerator wird umgestellt",
+    "Newer world generator": "Neuerer Weltgenerator",
+    "%1: version %2 → %3": "%1: Version %2 → %3",
+    "Switch with transition": "Mit Übergang umstellen",
+    "Switch": "Umstellen",
+    "Keep version %1": "Version %1 behalten",
+    "Keep versions": "Versionen behalten",
+    "“%1” comes from an older world generator (%2).": "„%1“ stammt von einem älteren Weltgenerator (%2).",
+    "Everything you have explored stays as it is. Only new land comes from the new generator. An edge may appear at the border.": "Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. An der Grenze kann eine Kante entstehen.",
+    "A backup is made first.": "Vorher wird eine Sicherung angelegt.",
+    "Don't ask again": "Nicht mehr fragen",
+    "Comes with a later version": "Kommt in einer späteren Version",
+    "Worlds": "Welten",
+    "World generator": "Weltgenerator",
+    "Asks again in worlds answered with “Don't ask again”": "Fragt wieder in Welten, die mit „Nicht mehr fragen“ beantwortet wurden",
+    "Show world generator questions again": "Rückfragen zum Weltgenerator wieder anzeigen",
+    "The question comes back in %n world(s).": [
+        "Die Frage kommt in %n Welt wieder.",
+        "Die Frage kommt in %n Welten wieder."
+    ]
 }

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -810,6 +810,24 @@ A filled map with empty maps in the crafting grid gives one copy per empty map. 
 **Maps on the wall**
 
 Put a filled map into an **item frame** and it covers the whole face of the frame, drawn flat on the wall. Each right click turns it a quarter turn. Maps in frames side by side meet without a gap, so four maps of neighbouring squares make a large wall map. Players near a framed map see it change as others explore, and every map shows the frames it hangs in as green arrows.
+
+### <a id="chapter-qtcraft-generator_switch"></a>Switching a world to a new generator
+
+**The question when a world opens**
+
+A world keeps the generator version it was made with, so land made after an update fits the land made before. When a newer version of QtCraft brings a newer world generator, opening an older world asks what to do. “Keep version” is the default and changes nothing; the world plays as before, and you are asked again the next time you start the game. With “Don't ask again” ticked, the world asks only when an even newer generator comes; “Show world generator questions again” in the advanced settings brings the question back. “Switch” first copies the whole world into the folder backups next to the worlds (named “before-generator” with the new version), then works out which land stays as it is, shows the progress, and opens the world. “Cancel” stops the switch at once and leaves the world exactly as it was. “Switch with transition”, which blends a ring of chunks from the old into the new land, comes with a later version.
+
+**What stays as it was**
+
+Every chunk the world has ever generated, stored or shown on a map keeps the old generator, block for block, also when you break and build there later. Structures keep their shape too: a village, mine shaft, dungeon, coastal tower, temple or ruin that reaches out of the explored land keeps its old plan, so the chunks it reaches stay with the old generator as well. Only land never generated before comes from the new generator, and the new generator places no structure that would reach into the old land. Each dimension switches on its own; the question names the ones that are older.
+
+**Hard borders**
+
+Where old and new land meet, they meet along chunk borders: a hill may end in a cliff, a river may stop at a wall of stone, a beach may turn into forest from one block to the next. These edges are part of the switch and stay. Explore far from them, or keep the old version for a world whose look you care about.
+
+**On a dedicated server**
+
+A dedicated server never switches by itself. Stop it and run `qtcraft-headless --convert-generator <world> --to <version> --mode hard`, with `--dimension <name>` for a dimension other than the overworld; the world is a folder in the worlds of the data directory or a path to a world folder. The command makes the same backup, prints its progress and refuses a world that is open.
 
 ### <a id="chapter-qtcraft-backpack"></a>Backpack
 

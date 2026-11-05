@@ -22,10 +22,14 @@
     go to the generator of its version; searches over regions (villages, structures, guardian
     zones, /locate) ask every generator with chunks near the place and keep what each finds in
     its own chunks (a village by its centre, a structure by its origin, a zone or spawn area by
-    its lowest corner), the nearest one for searches. The spawn point is that of the origin's
-    generator. The rest (the one-time setup, the platform and the words of /locate) is the
-    base's. version() is the base's: the
-    dimension's version in world.json. Safe to call from several threads once the map is set. */
+    its lowest corner), the nearest one for searches. Each generator builds only the structures
+    whose reach lies wholly in its own chunks (decision E-1013,
+    QcWorldGenerator::setStructureFilter): a structure is built whole by one version or not at
+    all, and the searches of each generator skip the others' (so a nearer one in foreign chunks
+    never hides a farther own one). The spawn point is that of the origin's generator. The rest
+    (the one-time setup, the platform and the words of /locate) is the base's. version() is the
+    base's: the dimension's version in world.json. Safe to call from several threads once the map
+    is set. */
 class QcVersionedGenerator final : public QcWorldGenerator
 {
 public:
@@ -37,9 +41,9 @@ public:
     explicit QcVersionedGenerator(std::unique_ptr<QcWorldGenerator> own);
 
     /*! Generates the chunks \a map names with generators of their versions, made by \a create
-        (the base for its own version). Only before the first chunk is generated: returns an
-        error then, and when \a create makes no generator for a version; the map stays as it was
-        on error. */
+        (the base for its own version), each building only the structures wholly in its chunks.
+        Only before the first chunk is generated: returns an error then, and when \a create
+        makes no generator for a version; the map stays as it was on error. */
     [[nodiscard]] QcStatus setVersionMap(const QcGeneratorVersionMap &map, const Factory &create);
     /*! Returns the version map the generator follows (empty: everything is the base's). */
     const QcGeneratorVersionMap &versionMap() const { return m_map; }
@@ -64,6 +68,8 @@ public:
     QStringList locatableNames() const override { return base().locatableNames(); }
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return generatorAt(pos).labelsIn(pos); }
+    /*! Returns the structures the generator of the chunk \a pos builds into it. */
+    [[nodiscard]] QList<QcXzRect> structuresTouching(QcChunkPos pos) const override { return generatorAt(pos).structuresTouching(pos); }
     void setVersion(int version) override;
 
 private:
@@ -84,6 +90,8 @@ private:
     bool generates(const QcWorldGenerator &generator, QcBlockPos pos) const { return &generatorAt(pos.chunk()) == &generator; }
     // The generators with chunks within `reach` blocks of `from`: the base first.
     std::vector<const QcWorldGenerator *> generatorsNear(QcBlockPos from, int reach) const;
+    // Lets each generator build only the structures wholly in its own chunks.
+    void filterStructures();
     // What `generator` found of `sites` in its own chunks.
     QcStructureSites ownSites(const QcWorldGenerator &generator, const QcStructureSites &sites) const;
 

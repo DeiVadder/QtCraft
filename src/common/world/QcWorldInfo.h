@@ -94,6 +94,10 @@ struct QcWorldInfo
         dimensions this game does not know (a removed mod) stay as they are. The overworld's is
         generatorVersion. */
     QMap<QString, int> dimensionGeneratorVersions;
+    /*! The newest generator version the player declined with "don't ask again" (decision E-1014,
+        world.json "keepGeneratorVersion"): the question before the world opens comes back only
+        for a newer version. 0: not declined. */
+    int keepGeneratorVersion = 0;
     /*! Whether the generator's one-time setup of the world has run. */
     bool setupDone = true;
     /*! Game mode of players who join the world for the first time (decision E-282), chosen when

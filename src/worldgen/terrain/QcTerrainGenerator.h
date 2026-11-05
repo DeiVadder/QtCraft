@@ -110,6 +110,9 @@ public:
         shafts by their central room and entrance, dungeons by their room's middle, coastal
         towers by their doorstep (QcTerrainLocate.cpp). */
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
+    /*! Returns the reach of every built dungeon, mine shaft, coastal tower, surface structure and
+        village in the chunk \a pos (decision E-1013, QcTerrainLocate.cpp). */
+    [[nodiscard]] QList<QcXzRect> structuresTouching(QcChunkPos pos) const override;
 
     /*! Returns the shape and biome of the column \a x, \a z. Near a biome border its ground
         biome is left \c {unresolvedGround} (a second climate evaluation): withGround() or

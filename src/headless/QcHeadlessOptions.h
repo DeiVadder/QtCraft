@@ -79,6 +79,14 @@ struct Options
                                 u"Game mode of players who join for the first time: survival, creative, adventure or spectator (with --server it overrides "
                                 u"server.json and is the default of a world it creates)."_s,
                                 u"mode"_s};
+    QCommandLineOption convertGenerator{u"convert-generator"_s,
+                                        u"Switch the saved world (a folder of <data>/worlds or a path) to a newer world generator and exit "
+                                        u"(decision E-1014): explored chunks and structures they started keep their version, a backup comes first."_s,
+                                        u"world"_s};
+    QCommandLineOption convertTo{u"to"_s, u"Generator version of --convert-generator (default: the newest)."_s, u"version"_s};
+    QCommandLineOption convertMode{u"mode"_s, u"Border of --convert-generator: hard (blend comes later)."_s, u"mode"_s, u"hard"_s};
+    QCommandLineOption convertDimension{u"dimension"_s, u"Dimension of --convert-generator (default: qtcraft:overworld)."_s, u"id"_s,
+                                        u"qtcraft:overworld"_s};
     QCommandLineOption tour{u"showcase-tour"_s,
                             u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
     QCommandLineOption statsLog{u"stats"_s,
@@ -147,6 +155,7 @@ struct Options
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
+        parser.addOptions({convertGenerator, convertTo, convertMode, convertDimension});
         parser.addOptions(diagnostics.all());
         parser.addOption(writeDiagnostics);
     }

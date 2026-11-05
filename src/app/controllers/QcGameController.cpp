@@ -5,6 +5,7 @@
 
 #include "app/controllers/QcChatFeed.h"
 #include "app/controllers/QcChatInputHistory.h"
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
@@ -102,7 +103,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
-    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get()))
+    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor(), *m_library->upgrade()}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_admin(std::make_unique<QcAdminController>())
     , m_pause(std::make_unique<QcWorldPause>(m_parts, m_screens, *m_settings))
@@ -125,6 +126,9 @@ QcGameController::QcGameController(QObject *parent)
     connect(m_input.get(), &QcGameInput::handbookRequested, this, [this] { m_handbook->open(m_hud->targetName()); });
     connectPhotoMode();
     connectFrameLimit();
+    // A world made with an older generator opens once its question is answered (decision E-1014).
+    m_library->upgrade()->setLanguage([this] { return m_settings->contentLanguage(); });
+    connect(m_library->upgrade(), &QcGeneratorUpgradeController::playRequested, this, &QcGameController::playWorld);
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
     m_gamepad.setSettings(m_settings->gamepad());
@@ -450,6 +454,10 @@ void QcGameController::playWorld(const QString &folder)
     const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
     if (it == entries.end() || !it->error.isEmpty()) {
         setPhase(Phase::Error, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
+        return;
+    }
+    // Made with an older world generator: the player chooses first (decision E-1014).
+    if (m_library->upgrade()->offer(folder, it->directory, it->info)) {
         return;
     }
 

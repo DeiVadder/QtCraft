@@ -18,6 +18,7 @@ target_sources(qc_worldgen PRIVATE
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
     generators/QcLocatedPlace.h
+    generators/QcStructureClosure.h generators/QcStructureClosure.cpp
     generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
     generators/QcVersionedGenerator.h generators/QcVersionedGenerator.cpp

@@ -30,8 +30,14 @@ public:
     /*! Returns the plan of the region \a regionX, \a regionZ, planned once (null without a mine
         shaft). */
     [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> planOf(int regionX, int regionZ) const;
-    /*! Returns the mine shafts whose cells may lie in the chunk \a pos. */
+    /*! Returns planOf() of the region \a regionX, \a regionZ when the terrain builds it
+        (QcWorldGenerator::buildsStructure with its bounds), else null: what the chunks, their
+        furnishing and /locate see. */
+    [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> builtPlanOf(int regionX, int regionZ) const;
+    /*! Returns the mine shafts whose cells may lie in the chunk \a pos, built or not (planning). */
     QList<std::shared_ptr<const QcMineshaftPlan>> plansTouching(QcChunkPos pos) const;
+    /*! Returns the plans of plansTouching() for \a pos that the terrain builds (builtPlanOf()). */
+    QList<std::shared_ptr<const QcMineshaftPlan>> builtPlansTouching(QcChunkPos pos) const;
     /*! Writes the cells of the mine shafts touching \a chunk into it, without their entrances
         (QcMineshaftBuilder::build). */
     void build(QcChunk &chunk) const;
@@ -49,6 +55,7 @@ private:
     // The chests, spawners and carts of a room from a structure in the chunk.
     [[nodiscard]] static QcChunkFurnishing roomFurnishing(QcChunkPos pos, const QcMineshaftPlan::Room &room, quint64 seed);
 
+    const QcTerrainGenerator &m_terrain;
     QcMineshaftPlanner m_planner;
     QcMineshaftBuilder m_builder;
     quint64 m_seed = 0;

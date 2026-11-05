@@ -3,6 +3,7 @@
 
 #include "app/controllers/QcWorldLibraryController.h"
 
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcGameMode.h"
@@ -65,6 +66,11 @@ struct ModState
 
 QcWorldLibraryController::QcWorldLibraryController(QObject *parent)
     : QObject(parent)
+    , m_upgrade(std::make_unique<QcGeneratorUpgradeController>([this] {
+        // Loads it on demand.
+        [[maybe_unused]] const QcContentRegistry &loaded = content();
+        return loadedContent();
+    }))
 {
 }
 

@@ -4,6 +4,7 @@
 #include "worldgen/towers/QcCoastalTowerGenerator.h"
 
 #include "worldgen/terrain/QcNoise.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <algorithm>
 #include <cmath>
@@ -23,7 +24,8 @@ int floorDiv(int value, int divisor)
 } // namespace
 
 QcCoastalTowerGenerator::QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
-    : m_planner(terrain, content, seed)
+    : m_terrain(terrain)
+    , m_planner(terrain, content, seed)
     , m_seed(qcMixSeed(seed, 0x5102))
 {
     m_ground.resize(static_cast<std::size_t>(content.stateCount()));
@@ -110,6 +112,19 @@ QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::plansT
     return plansNear(pos, 1);
 }
 
+QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::builtPlansTouching(QcChunkPos pos) const
+{
+    QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansTouching(pos);
+    plans.removeIf([this](const std::shared_ptr<const QcCoastalTowerPlan> &plan) { return !m_terrain.buildsStructure(reachOf(*plan)); });
+    return plans;
+}
+
+std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerGenerator::builtPlanOf(int regionX, int regionZ) const
+{
+    const std::shared_ptr<const QcCoastalTowerPlan> plan = planOf(regionX, regionZ);
+    return plan && m_terrain.buildsStructure(reachOf(*plan)) ? plan : nullptr;
+}
+
 QList<QcXzRect> QcCoastalTowerGenerator::footprintsNear(QcChunkPos pos, int margin) const
 {
     QList<QcXzRect> footprints;
@@ -144,7 +159,7 @@ QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::plansN
 
 void QcCoastalTowerGenerator::build(QcChunk &chunk) const
 {
-    const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansTouching(chunk.pos());
+    const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = builtPlansTouching(chunk.pos());
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : plans) {
         build(chunk, *plan);
     }
@@ -194,7 +209,7 @@ void QcCoastalTowerGenerator::prepareColumn(QcChunk &chunk, const QcCoastalTower
 QcChunkFurnishing QcCoastalTowerGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing;
-    const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansTouching(pos);
+    const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = builtPlansTouching(pos);
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : plans) {
         const QcStructurePlacement &placement = plan->placement;
         const quint64 seed = qcMixSeed(m_seed, static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, plan->regionX, 0, plan->regionZ) * 4294967296.0));

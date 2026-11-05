@@ -871,69 +871,97 @@ Als Nächstes: %3</translation>
 <context>
     <name>AdvancedPage</name>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="18"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="19"/>
         <source>Advanced</source>
         <translation>Erweitert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="21"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="22"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="25"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="26"/>
         <source>Debug display</source>
         <translation>Debug-Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="27"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="28"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="27"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="28"/>
         <source>Compact: frame rate and frame time</source>
         <translation>Kompakt: Bildrate und Frame-Zeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="27"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="28"/>
         <source>Full: position, light, target, time breakdown</source>
         <translation>Voll: Position, Licht, Ziel, Zeitaufteilung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="35"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="36"/>
         <source>Shown in the world</source>
         <translation>In der Welt anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="41"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="42"/>
         <source>Chunk and section borders</source>
         <translation>Chunk- und Sektionsgrenzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="46"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="47"/>
         <source>Hitboxes of creatures, players and items</source>
         <translation>Hitboxen von Wesen, Spielern und Items</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="51"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="52"/>
         <source>Light values around the target (sky, block)</source>
         <translation>Lichtwerte um das Ziel (Himmel, Block)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="56"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="57"/>
         <source>Where creatures are heading</source>
         <translation>Wohin Wesen wollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="62"/>
         <source>Flash sections when they are meshed again</source>
         <translation>Neu vernetzte Sektionen aufblitzen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="69"/>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="70"/>
         <source>%1 opens these options in the world.</source>
         <translation>%1 öffnet diese Optionen in der Welt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="76"/>
+        <source>Worlds</source>
+        <translation>Welten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="79"/>
+        <source>World generator</source>
+        <translation>Weltgenerator</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="80"/>
+        <source>Asks again in worlds answered with “Don&apos;t ask again”</source>
+        <translation>Fragt wieder in Welten, die mit „Nicht mehr fragen“ beantwortet wurden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="84"/>
+        <source>Show world generator questions again</source>
+        <translation>Rückfragen zum Weltgenerator wieder anzeigen</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="95"/>
+        <source>The question comes back in %n world(s).</source>
+        <translation>
+            <numerusform>Die Frage kommt in %n Welt wieder.</numerusform>
+            <numerusform>Die Frage kommt in %n Welten wieder.</numerusform>
+        </translation>
     </message>
     <message>
         <source>%1 opens these options in the world. Measured values also go to the log with --stats &lt;ms&gt;.</source>
@@ -2427,6 +2455,74 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>GeneratorUpgradeDialog</name>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="45"/>
+        <source>Switching the world generator</source>
+        <translation>Der Weltgenerator wird umgestellt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="45"/>
+        <source>Newer world generator</source>
+        <translation>Neuerer Weltgenerator</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="61"/>
+        <source>“%1” comes from an older world generator (%2).</source>
+        <translation>„%1“ stammt von einem älteren Weltgenerator (%2).</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="68"/>
+        <source>Everything you have explored stays as it is. Only new land comes from the new generator. An edge may appear at the border.</source>
+        <translation>Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. An der Grenze kann eine Kante entstehen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="75"/>
+        <source>A backup is made first.</source>
+        <translation>Vorher wird eine Sicherung angelegt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="82"/>
+        <source>Don&apos;t ask again</source>
+        <translation>Nicht mehr fragen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="125"/>
+        <source>Switch with transition</source>
+        <translation>Mit Übergang umstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="132"/>
+        <source>Comes with a later version</source>
+        <translation>Kommt in einer späteren Version</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="139"/>
+        <source>Switch</source>
+        <translation>Umstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="150"/>
+        <source>Keep version %1</source>
+        <translation>Version %1 behalten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="150"/>
+        <source>Keep versions</source>
+        <translation>Versionen behalten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="162"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="172"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+</context>
+<context>
     <name>GraphicsPage</name>
     <message>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="25"/>
@@ -3410,77 +3506,77 @@ Als Nächstes: %3</translation>
 <context>
     <name>LoadingScreen</name>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="37"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="38"/>
         <source>%1 / %2</source>
         <translation>%1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="89"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="90"/>
         <source>Joining the server</source>
         <translation>Beitritt zum Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="89"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="90"/>
         <source>Creating the world</source>
         <translation>Welt wird erstellt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="89"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="90"/>
         <source>Loading the world</source>
         <translation>Welt wird geladen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="44"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="45"/>
         <source>Loading the game content</source>
         <translation>Spielinhalte laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="46"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="47"/>
         <source>Opening the world</source>
         <translation>Welt öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="46"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="47"/>
         <source>Setting up the world</source>
         <translation>Welt einrichten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="48"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="49"/>
         <source>Waiting for the server</source>
         <translation>Auf den Server warten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="48"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="49"/>
         <source>Placing the player</source>
         <translation>Spieler platzieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="48"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="49"/>
         <source>Travelling</source>
         <translation>Unterwegs</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="50"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="51"/>
         <source>Generating the terrain</source>
         <translation>Gelände erzeugen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="50"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="51"/>
         <source>Loading the terrain</source>
         <translation>Gelände laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="52"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="53"/>
         <source>Building the view</source>
         <translation>Ansicht aufbauen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="89"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="90"/>
         <source>Entering %1</source>
         <translation>Betreten: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="137"/>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="138"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -5866,25 +5962,25 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="376"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="426"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="382"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="432"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="391"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="397"/>
         <source>Cannot create the world: unknown world type or game mode</source>
         <translation>Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="401"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="411"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="421"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="431"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="417"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="427"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="437"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5893,12 +5989,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="450"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="456"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="450"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="456"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -5955,7 +6051,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="663"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="673"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -6212,6 +6308,39 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/input/QcGamepadRoster.cpp" line="172"/>
         <source>Controller in use: %1</source>
         <translation>Controller in Benutzung: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QcGeneratorUpgradeController</name>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="53"/>
+        <source>%1: version %2 → %3</source>
+        <translation>%1: Version %2 → %3</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="61"/>
+        <source>Cancelling …</source>
+        <translation>Wird abgebrochen …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="65"/>
+        <source>Backing up the world …</source>
+        <translation>Die Welt wird gesichert …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="67"/>
+        <source>Surveying the explored land and its structures …</source>
+        <translation>Das erkundete Land und seine Bauwerke werden vermessen …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="69"/>
+        <source>Writing the new version …</source>
+        <translation>Die neue Version wird geschrieben …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="168"/>
+        <source>Preview</source>
+        <translation>Vorschau</translation>
     </message>
 </context>
 <context>
@@ -8336,22 +8465,22 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="227"/>
+        <location filename="../src/server/core/QcServer.cpp" line="229"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="489"/>
+        <location filename="../src/server/core/QcServer.cpp" line="491"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="520"/>
+        <location filename="../src/server/core/QcServer.cpp" line="522"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="334"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="338"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -8412,18 +8541,18 @@ Jetzt: %2</translation>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="289"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="290"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="297"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="298"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="303"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="304"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -8875,7 +9004,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="271"/>
+        <location filename="../src/server/core/QcServer.cpp" line="273"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="99"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -9655,17 +9784,17 @@ Jetzt: %2</translation>
 <context>
     <name>QcWorldLibraryController</name>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="88"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="94"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="152"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="158"/>
         <source>Today, %1</source>
         <translation>Heute, %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="155"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="161"/>
         <source>Yesterday, %1</source>
         <translation>Gestern, %1</translation>
     </message>

@@ -217,6 +217,13 @@ void QcScreenshotHook::logItems() const
         if (placeholder.isValid()) {
             textPart += u" placeholder \"%1\""_s.arg(placeholder.toString());
         }
+        // Where the focus starts and what cannot be used (decision E-1014).
+        if (item->hasActiveFocus()) {
+            textPart += u" focused"_s;
+        }
+        if (!item->isEnabled()) {
+            textPart += u" disabled"_s;
+        }
         qCInfo(lcScreenshot).noquote() << u"Item %1: x %2 y %3 width %4 height %5 in the window %6x%7 visible %8%9"_s.arg(name)
                                               .arg(rect.x())
                                               .arg(rect.y())

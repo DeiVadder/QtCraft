@@ -305,6 +305,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         return qcError(dimensionVersions.error());
     }
     info.dimensionGeneratorVersions = std::move(*dimensionVersions);
+    // Optional (decision E-1014): a value out of range only asks again.
+    info.keepGeneratorVersion = std::clamp(json.value(u"keepGeneratorVersion"_s).toInt(0), 0, QcGeneratorVersion::maxStored);
     // A mode this version does not know (a newer one) plays as survival and keeps its name.
     const QString gameMode = json.value(u"defaultGameMode"_s).toString();
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
@@ -366,6 +368,9 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
     json.insert(u"weather"_s, QcWeatherCycle::toJson(info.weather));
     if (!info.limits.isEmpty()) {
         json.insert(u"limits"_s, info.limits);
+    }
+    if (info.keepGeneratorVersion > 0) {
+        json.insert(u"keepGeneratorVersion"_s, info.keepGeneratorVersion);
     }
     if (!info.adventure.isEmpty()) {
         json.insert(u"adventure"_s, info.adventure.toJson());

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -810,6 +810,24 @@ Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Kart
 **Karten an der Wand**
 
 Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile.
+
+### <a id="chapter-qtcraft-generator_switch"></a>Welt auf neuen Generator umstellen
+
+**Die Frage beim Öffnen einer Welt**
+
+Eine Welt behält die Generator-Version, mit der sie entstanden ist, damit Land nach einem Update zum Land davor passt. Bringt eine neuere Version von QtCraft einen neueren Weltgenerator, fragt das Spiel beim Öffnen einer älteren Welt, was geschehen soll. „Version behalten“ ist voreingestellt und ändert nichts; die Welt spielt wie bisher, und beim nächsten Start des Spiels kommt die Frage wieder. Mit Haken bei „Nicht mehr fragen“ fragt die Welt erst wieder, wenn ein noch neuerer Generator kommt; „Rückfragen zum Weltgenerator wieder anzeigen“ in den erweiterten Einstellungen holt die Frage zurück. „Umstellen“ kopiert zuerst die ganze Welt in den Ordner backups neben den Welten (benannt „before-generator“ mit der neuen Version), ermittelt dann, welches Land bleibt, wie es ist, zeigt den Fortschritt und öffnet die Welt. „Abbrechen“ hält die Umstellung sofort an und lässt die Welt genau so, wie sie war. „Mit Übergang umstellen“, das einen Ring von Chunks vom alten ins neue Land überblendet, kommt mit einer späteren Version.
+
+**Was bleibt, wie es war**
+
+Jeder Chunk, den die Welt je erzeugt, gespeichert oder auf einer Karte gezeigt hat, behält den alten Generator, Block für Block, auch wenn du dort später abbaust und baust. Auch Bauwerke behalten ihre Form: Ein Dorf, ein Minenschacht, ein Verlies, ein Küstenturm, ein Tempel oder eine Ruine, die aus dem erkundeten Land hinausreicht, behält ihren alten Plan, und die Chunks, in die sie reicht, bleiben ebenfalls beim alten Generator. Nur Land, das noch nie erzeugt wurde, kommt vom neuen Generator, und der neue Generator setzt kein Bauwerk, das ins alte Land reichen würde. Jede Dimension wird für sich umgestellt; die Frage nennt die älteren.
+
+**Harte Grenzen**
+
+Wo altes und neues Land aufeinandertreffen, treffen sie sich an Chunk-Grenzen: Ein Hügel kann in einer Klippe enden, ein Fluss an einer Wand aus Stein aufhören, ein Strand von einem Block zum nächsten in Wald übergehen. Diese Kanten gehören zur Umstellung und bleiben. Erkunde weit weg von ihnen, oder behalte die alte Version für eine Welt, deren Aussehen dir wichtig ist.
+
+**Auf einem eigenen Server**
+
+Ein eigener Server stellt nie von selbst um. Halte ihn an und führe `qtcraft-headless --convert-generator <welt> --to <version> --mode hard` aus, mit `--dimension <name>` für eine andere Dimension als die Oberwelt; die Welt ist ein Ordner in den Welten des Datenverzeichnisses oder ein Pfad zu einem Weltordner. Der Befehl macht dieselbe Sicherung, zeigt seinen Fortschritt und lehnt eine geöffnete Welt ab.
 
 ### <a id="chapter-qtcraft-backpack"></a>Rucksack
 

@@ -4,6 +4,7 @@
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 
 #include "worldgen/terrain/QcNoise.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QSet>
 
@@ -23,7 +24,8 @@ int floorDiv(int value, int divisor)
 } // namespace
 
 QcDungeonGenerator::QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
-    : m_planner(terrain, content, seed)
+    : m_terrain(terrain)
+    , m_planner(terrain, content, seed)
     , m_seed(qcMixSeed(seed, 0x3802))
     , m_lootTable(content.worldgen().terrainSettings().dungeons.lootTable)
 {
@@ -53,6 +55,12 @@ std::shared_ptr<const QcDungeonPlan> QcDungeonGenerator::planOf(int regionX, int
     return *m_plans.insert(key, plan);
 }
 
+std::shared_ptr<const QcDungeonPlan> QcDungeonGenerator::builtPlanOf(int regionX, int regionZ) const
+{
+    const std::shared_ptr<const QcDungeonPlan> plan = planOf(regionX, regionZ);
+    return plan && m_terrain.buildsStructure(plan->bounds()) ? plan : nullptr;
+}
+
 QList<std::shared_ptr<const QcDungeonPlan>> QcDungeonGenerator::plansTouching(QcChunkPos pos) const
 {
     QList<std::shared_ptr<const QcDungeonPlan>> plans;
@@ -75,9 +83,16 @@ QList<std::shared_ptr<const QcDungeonPlan>> QcDungeonGenerator::plansTouching(Qc
     return plans;
 }
 
+QList<std::shared_ptr<const QcDungeonPlan>> QcDungeonGenerator::builtPlansTouching(QcChunkPos pos) const
+{
+    QList<std::shared_ptr<const QcDungeonPlan>> plans = plansTouching(pos);
+    plans.removeIf([this](const std::shared_ptr<const QcDungeonPlan> &plan) { return !m_terrain.buildsStructure(plan->bounds()); });
+    return plans;
+}
+
 void QcDungeonGenerator::build(QcChunk &chunk) const
 {
-    const QList<std::shared_ptr<const QcDungeonPlan>> plans = plansTouching(chunk.pos());
+    const QList<std::shared_ptr<const QcDungeonPlan>> plans = builtPlansTouching(chunk.pos());
     for (const std::shared_ptr<const QcDungeonPlan> &plan : plans) {
         build(chunk, *plan);
     }
@@ -174,7 +189,7 @@ QcChunkFurnishing QcDungeonGenerator::furnishingIn(QcChunkPos pos) const
     QList<std::shared_ptr<const QcDungeonPlan>> plans;
     for (int rz = floorDiv(z0, region); rz <= floorDiv(z0 + QcWorld::chunkSize - 1, region); ++rz) {
         for (int rx = floorDiv(x0, region); rx <= floorDiv(x0 + QcWorld::chunkSize - 1, region); ++rx) {
-            if (std::shared_ptr<const QcDungeonPlan> plan = planOf(rx, rz)) {
+            if (std::shared_ptr<const QcDungeonPlan> plan = builtPlanOf(rx, rz)) {
                 plans.append(std::move(plan));
             }
         }

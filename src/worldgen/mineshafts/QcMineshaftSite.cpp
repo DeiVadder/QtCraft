@@ -6,6 +6,7 @@
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
 #include <algorithm>
@@ -89,7 +90,7 @@ bool QcMineshaftSite::clearOfDungeons(QcBlockPos low, QcBlockPos high) const
 bool QcMineshaftSite::awayFromSettlements(int x, int z, int margin) const
 {
     const QcChunkPos chunk = QcBlockPos{x, 0, z}.chunk();
-    const std::shared_ptr<const QcVillagePlan> village = m_terrain.villageFor(chunk);
+    const std::shared_ptr<const QcVillagePlan> village = m_terrain.villages().planFor(chunk);
     if (village && village->covers(x, z, margin)) {
         return false;
     }

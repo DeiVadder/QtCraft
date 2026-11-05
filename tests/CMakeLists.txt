@@ -55,7 +55,7 @@ set(qc_concurrency_tests
     test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_draw_client test_effects_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
-    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_chunk_unloading test_chunk_tools
+    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_generator_upgrade test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
     test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_web_handbook)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
@@ -68,7 +68,7 @@ set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Tests that depend on wall time or load (test_tick_scheduler, test_interpolation and others) run in
 # a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES PROCESSORS 3)
-set_tests_properties(test_dedicated_server test_server_log test_headless_cli PROPERTIES PROCESSORS 2)
+set_tests_properties(test_dedicated_server test_server_log test_headless_cli test_generator_upgrade PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
 # together (known costs first), or where the next stage builds beside the run: test_light_engine
@@ -121,7 +121,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
 # tests that read sources compare against the folder. Runtime data (content, translations, mods,
 # test data) selects every test anyway.
-set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
+set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots test_generator_upgrade
     test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(test_web_handbook PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${PROJECT_SOURCE_DIR}/web/handbook/search.js")
 if(APPLE)

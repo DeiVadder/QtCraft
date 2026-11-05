@@ -16,6 +16,7 @@
 #include "common/handbook/QcHandbookJson.h"
 #include "common/protocol/QcTransport.h"
 #include "headless/QcDedicatedServer.h"
+#include "headless/QcHeadlessConversion.h"
 #include "headless/QcHeadlessDiagnostics.h"
 #include "headless/QcHeadlessJoin.h"
 #include "headless/QcHeadlessOptions.h"
@@ -70,6 +71,26 @@ using QcHeadlessTools::exitSoon;
         return qcError(u"'generatorVersion' must be a whole number from %1 to %2"_s.arg(QcGeneratorVersion::oldest).arg(QcGeneratorVersion::current));
     }
     return version;
+}
+
+// `config` with the world options of --world-options, its --generator-options checked; nothing
+// (after printing why) when either is invalid.
+[[nodiscard]] std::optional<QcServerConfig> withWorldOptions(const QCommandLineParser &parser, QcServerConfig config, const QcContentRegistry &content)
+{
+    const Options options;
+    if (const QcStatus checked = QcWorldGenerators::checkOptions(config.generator, config.generatorOptions, content); !checked) {
+        printError(u"Invalid --generator-options: "_s + checked.error());
+        return std::nullopt;
+    }
+    // The world tools draw terrain worlds whatever --generator says.
+    const QString optionsType = QcHeadlessTools::wantsWorldTool(parser, options) ? QString::fromLatin1(QcWorldGenerators::terrain) : config.generator;
+    const QcResult<QJsonObject> worldOptions = QcHeadlessOptions::worldOptionsOf(parser.value(options.worldOptions), optionsType, content);
+    if (!worldOptions) {
+        printError(u"Invalid --world-options: "_s + worldOptions.error());
+        return std::nullopt;
+    }
+    config.worldOptions = *worldOptions;
+    return config;
 }
 
 } // namespace
@@ -130,13 +151,17 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"Invalid numeric option or world type"_s);
         return false;
     }
-    QcServerConfig config = run->server;
+    const QcServerConfig &config = run->server;
     const int timeLimit = run->timeLimit;
     const std::optional<QcModLoader::Result> loaded = QcHeadlessOptions::loadContent(parser, options);
     if (!loaded) {
         return false;
     }
     const std::shared_ptr<const QcContentRegistry> shared = loaded->content;
+    if (parser.isSet(options.convertGenerator)) {
+        exitSoon(QcHeadlessConversion::run(parser, options, shared));
+        return true;
+    }
     if (parser.isSet(options.server)) {
         return startDedicated(parser, *loaded);
     }
@@ -144,22 +169,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return startJoin(parser, *loaded, config.viewDistance, timeLimit);
     }
 
-    if (const QcStatus checked = QcWorldGenerators::checkOptions(config.generator, config.generatorOptions, *shared); !checked) {
-        printError(u"Invalid --generator-options: "_s + checked.error());
+    const std::optional<QcServerConfig> checked = withWorldOptions(parser, config, *shared);
+    if (!checked) {
         return false;
     }
-    // The world tools draw terrain worlds whatever --generator says.
-    const QString optionsType = QcHeadlessTools::wantsWorldTool(parser, options) ? QString::fromLatin1(QcWorldGenerators::terrain) : config.generator;
-    const QcResult<QJsonObject> worldOptions = QcHeadlessOptions::worldOptionsOf(parser.value(options.worldOptions), optionsType, *shared);
-    if (!worldOptions) {
-        printError(u"Invalid --world-options: "_s + worldOptions.error());
-        return false;
-    }
-    config.worldOptions = *worldOptions;
-    if (QcHeadlessTools::run(parser, options, config, shared)) {
+    if (QcHeadlessTools::run(parser, options, *checked, shared)) {
         return true;
     }
-    return startLocal(parser, config, timeLimit, shared);
+    return startLocal(parser, *checked, timeLimit, shared);
 }
 
 bool QcHeadlessGame::startLocal(const QCommandLineParser &parser, const QcServerConfig &config, int timeLimit,

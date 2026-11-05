@@ -58,9 +58,46 @@ QcStatus QcVersionedGenerator::setVersionMap(const QcGeneratorVersionMap &map, c
     }
     m_map = map;
     setOlder(std::move(found));
+    filterStructures();
     warnings.removeDuplicates();
     m_warnings = warnings;
     return {};
+}
+
+namespace {
+
+// Whether every chunk of `columns` has the version `builds` in `map`, chunks without one counting
+// as `own` (the version of the world).
+bool ownsAll(const QcGeneratorVersionMap &map, QcXzRect columns, int own, int builds)
+{
+    const QcChunkPos low = QcBlockPos{columns.minX, 0, columns.minZ}.chunk();
+    const QcChunkPos high = QcBlockPos{columns.maxX, 0, columns.maxZ}.chunk();
+    for (int z = low.z; z <= high.z; ++z) {
+        for (int x = low.x; x <= high.x; ++x) {
+            if (map.versionOr(QcChunkPos{x, z}, own) != builds) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+} // namespace
+
+void QcVersionedGenerator::filterStructures()
+{
+    if (older().empty()) {
+        return;
+    }
+    // A structure is built by the version whose chunks hold all of its reach (decision E-1013).
+    const auto map = std::make_shared<const QcGeneratorVersionMap>(versionMap());
+    const auto builder = [map, own = version()](int builds) {
+        return [map, own, builds](QcXzRect columns) { return ownsAll(*map, columns, own, builds); };
+    };
+    m_base->setStructureFilter(builder(version()));
+    for (const Older &entry : older()) {
+        entry.generator->setStructureFilter(builder(entry.version));
+    }
 }
 
 void QcVersionedGenerator::setVersion(int version)

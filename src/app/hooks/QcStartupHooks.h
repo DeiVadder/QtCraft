@@ -21,6 +21,7 @@
 
 class QcBenchmarkRun;
 class QcGameInput;
+class QcGeneratorUpgradeController;
 class QcLoadingProgress;
 class QcHandbookController;
 class QcMultiplayerController;
@@ -48,6 +49,8 @@ public:
         QcLoadingProgress &loading;
         // The hand on the slot screens (--overlay pick:<row>).
         QcSlotCursor &slotCursor;
+        // The question before a world with an older generator opens (--overlay upgrade:...).
+        QcGeneratorUpgradeController &upgrade;
     };
 
     QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
@@ -169,6 +172,11 @@ private:
     // "loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]]": the loading screen in that state,
     // without a start (QcLoadingProgress::parseShow; screenshots for the sign-off, decision E-943).
     void showLoading(QStringView spec) const;
+    // --overlay upgrade:<stage>,<share>: the progress of a generator switch (decision E-1014).
+    void showUpgrade(QStringView spec) const;
+    // The steps "message:", "starting", "loading:" and "upgrade:", which show a screen of a state of
+    // the program; false for other steps.
+    bool showStateScreen(const QString &step) const;
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
     [[nodiscard]] bool setText(const QString &assignment) const;
     [[nodiscard]] bool openPopup(const QString &objectName) const;

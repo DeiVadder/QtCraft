@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcPlayerController.h"
@@ -105,7 +106,7 @@ private slots:
         m_hud = std::make_unique<QcHudState>(m_parts, *m_settings);
         m_player = std::make_unique<QcPlayerController>(m_parts, *m_settings);
         m_benchmark = std::make_unique<QcBenchmarkRun>(*m_screens, m_parts, *m_input, *m_settings);
-        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get());
+        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor(), *m_library->upgrade()}, m_parts, m_benchmark.get());
         m_driver = std::make_unique<QcFrameDriver>(m_parts,
                                                    QcFrameDriver::Targets{*m_settings, *m_input, m_gamepad, *m_preview, *m_render, *m_hud,
                                                                           *m_benchmark, *m_startup},

@@ -13,6 +13,17 @@
     </message>
 </context>
 <context>
+    <name>AdvancedPage</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/settings/AdvancedPage.qml" line="95"/>
+        <source>The question comes back in %n world(s).</source>
+        <translation>
+            <numerusform>The question comes back in %n world.</numerusform>
+            <numerusform>The question comes back in %n worlds.</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>AdvancementToast</name>
     <message numerus="yes">
         <source>+%n more</source>

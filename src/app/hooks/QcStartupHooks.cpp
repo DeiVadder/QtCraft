@@ -3,6 +3,7 @@
 
 #include "app/hooks/QcStartupHooks.h"
 
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcAppLogging.h"
@@ -61,7 +62,7 @@ namespace {
 {
     return step.startsWith(u"open:"_s) || step.startsWith(u"click:"_s) || step.startsWith(u"hover:"_s)
            || step.startsWith(u"pad:"_s) || step.startsWith(u"focus:"_s) || step.startsWith(u"text:"_s)
-           || step.startsWith(u"message:"_s) || step.startsWith(u"loading:"_s) || step == u"starting"_s;
+           || step.startsWith(u"message:"_s) || step.startsWith(u"loading:"_s) || step.startsWith(u"upgrade:"_s) || step == u"starting"_s;
 }
 
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
@@ -326,6 +327,9 @@ void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
 
 void QcStartupHooks::runOverlayStep(const QString &step)
 {
+    if (showStateScreen(step)) {
+        return;
+    }
     if (step.startsWith(u"pad:"_s)) {
         // Held until the step is reported (QcScriptedPad::stepReported).
         if (m_scriptedPad && m_scriptedPad->run(QStringView(step).mid(4))) {
@@ -336,14 +340,6 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         runOnLoadedScreen(step, 0);
     } else if (step.startsWith(u"hover:"_s)) {
         hoverAt(QStringView(step).mid(6));
-    } else if (step.startsWith(u"message:"_s)) {
-        // The message screen as after a world that could not start, with its way back.
-        m_screens.state.setPhase(QcScreenState::Phase::Error, step.mid(8));
-    } else if (step == u"starting"_s) {
-        // The start screen again, as while the program starts (decision E-943).
-        m_screens.state.setStarting(true);
-    } else if (step.startsWith(u"loading:"_s)) {
-        showLoading(QStringView(step).mid(8));
     } else if (step == u"handbook"_s) {
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {
@@ -470,6 +466,39 @@ bool QcStartupHooks::pickInOpenScreen(int row) const
         m_screens.slotCursor.pick(row);
     }
     return shown;
+}
+
+bool QcStartupHooks::showStateScreen(const QString &step) const
+{
+    if (step.startsWith(u"message:"_s)) {
+        // The message screen as after a world that could not start, with its way back.
+        m_screens.state.setPhase(QcScreenState::Phase::Error, step.mid(8));
+    } else if (step == u"starting"_s) {
+        // The start screen again, as while the program starts (decision E-943).
+        m_screens.state.setStarting(true);
+    } else if (step.startsWith(u"loading:"_s)) {
+        showLoading(QStringView(step).mid(8));
+    } else if (step.startsWith(u"upgrade:"_s)) {
+        showUpgrade(QStringView(step).mid(8));
+    } else {
+        return false;
+    }
+    return true;
+}
+
+void QcStartupHooks::showUpgrade(QStringView spec) const
+{
+    // "<stage>,<share>": stage 0 backup, 1 survey, 2 write; share 0 to 1, or -1 for a running bar.
+    const QList<QStringView> parts = spec.split(u',');
+    bool stageOk = false;
+    bool shareOk = false;
+    const int stage = parts.size() == 2 ? parts.at(0).toInt(&stageOk) : -1;
+    const double share = parts.size() == 2 ? parts.at(1).toDouble(&shareOk) : 0.0;
+    if (!stageOk || !shareOk || stage < 0 || stage > 2) {
+        qCWarning(lcStartup).noquote() << u"--overlay upgrade:%1: expected '<stage 0-2>,<share>'"_s.arg(spec);
+        return;
+    }
+    m_screens.upgrade.preview(static_cast<QcGeneratorUpgradeController::Stage>(stage), share);
 }
 
 void QcStartupHooks::showLoading(QStringView spec) const

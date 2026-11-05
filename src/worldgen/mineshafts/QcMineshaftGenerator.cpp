@@ -4,6 +4,7 @@
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 
 #include "worldgen/terrain/QcNoise.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <cmath>
 
@@ -20,7 +21,8 @@ int floorDiv(int value, int divisor)
 } // namespace
 
 QcMineshaftGenerator::QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
-    : m_planner(terrain, content, seed)
+    : m_terrain(terrain)
+    , m_planner(terrain, content, seed)
     , m_builder(m_planner.blocks(), m_planner.settings().maxPillar)
     , m_seed(qcMixSeed(seed, 0x3804))
 {
@@ -41,6 +43,12 @@ std::shared_ptr<const QcMineshaftPlan> QcMineshaftGenerator::planOf(int regionX,
         m_plans.clear();
     }
     return *m_plans.insert(key, plan);
+}
+
+std::shared_ptr<const QcMineshaftPlan> QcMineshaftGenerator::builtPlanOf(int regionX, int regionZ) const
+{
+    const std::shared_ptr<const QcMineshaftPlan> plan = planOf(regionX, regionZ);
+    return plan && m_terrain.buildsStructure(plan->bounds()) ? plan : nullptr;
 }
 
 QList<std::shared_ptr<const QcMineshaftPlan>> QcMineshaftGenerator::plansTouching(QcChunkPos pos) const
@@ -65,9 +73,16 @@ QList<std::shared_ptr<const QcMineshaftPlan>> QcMineshaftGenerator::plansTouchin
     return plans;
 }
 
+QList<std::shared_ptr<const QcMineshaftPlan>> QcMineshaftGenerator::builtPlansTouching(QcChunkPos pos) const
+{
+    QList<std::shared_ptr<const QcMineshaftPlan>> plans = plansTouching(pos);
+    plans.removeIf([this](const std::shared_ptr<const QcMineshaftPlan> &plan) { return !m_terrain.buildsStructure(plan->bounds()); });
+    return plans;
+}
+
 void QcMineshaftGenerator::build(QcChunk &chunk) const
 {
-    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = plansTouching(chunk.pos());
+    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = builtPlansTouching(chunk.pos());
     for (const std::shared_ptr<const QcMineshaftPlan> &plan : plans) {
         m_builder.build(chunk, *plan);
     }
@@ -75,7 +90,7 @@ void QcMineshaftGenerator::build(QcChunk &chunk) const
 
 void QcMineshaftGenerator::buildEntrances(QcChunk &chunk) const
 {
-    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = plansTouching(chunk.pos());
+    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = builtPlansTouching(chunk.pos());
     for (const std::shared_ptr<const QcMineshaftPlan> &plan : plans) {
         if (plan->entrance) {
             m_builder.buildEntrance(chunk, *plan->entrance);
@@ -92,7 +107,7 @@ QcChunkFurnishing QcMineshaftGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing;
     const QcMineshaftSettings &settings = m_planner.settings();
-    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = plansTouching(pos);
+    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = builtPlansTouching(pos);
     for (const std::shared_ptr<const QcMineshaftPlan> &plan : plans) {
         for (const QcMineshaftPlan::Spawner &spawner : plan->spawners) {
             if (spawner.at.chunk() == pos) {

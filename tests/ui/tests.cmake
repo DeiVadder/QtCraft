@@ -159,6 +159,12 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_pause_screens)
     set_tests_properties(app_offscreen_pause_screens PROPERTIES TIMEOUT 900 COST 60 PROCESSORS 2 LABELS realtime
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_pause_screens.sh")
+    # The question before a world of an older generator version opens, the switch from it and the
+    # progress screen (decisions E-1013, E-1014). It waits for the menu and the world in real time.
+    add_test(NAME app_offscreen_generator_upgrade COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_generator_upgrade_dialog.sh
+        $<TARGET_FILE:qtcraft> $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_generator_upgrade)
+    set_tests_properties(app_offscreen_generator_upgrade PROPERTIES TIMEOUT 600 COST 30 LABELS realtime
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_generator_upgrade_dialog.sh")
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900;
     # behind screens, full-screen screens, the handbook and the chat line only the parts decision
