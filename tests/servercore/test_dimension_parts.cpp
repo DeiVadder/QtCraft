@@ -2,8 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/worldgen/QcDimensionParser.h"
+#include "common/maps/QcMapPixel.h"
 #include "common/world/QcDayCycle.h"
 #include "fixtures/QcServerTestFixture.h"
+#include "server/maps/QcMapStore.h"
+#include "server/maps/QcMapSurvey.h"
+#include "server/maps/QcServerMaps.h"
 
 #include <QJsonObject>
 
@@ -315,16 +319,18 @@ private slots:
         QCOMPARE(soundCount(*m_client, u"qtcraft:block.chest.open"_s), 0);
     }
 
-    void aPlayerForgetsTheChunksHeLeaves()
+    void aPlayerIsToldTheDimensionHeEnters()
     {
         start();
         const QList<QcChunkPos> before = m_client->chunks;
         QVERIFY(!before.isEmpty());
         QVERIFY(m_client->unloaded.isEmpty());
+        QCOMPARE(m_client->dimensions, QStringList{QString::fromLatin1(QcDimensionDefinition::overworldName)});
         goElsewhere();
-        for (const QcChunkPos &chunk : before) {
-            QVERIFY(m_client->unloaded.contains(chunk));
-        }
+        // One message says the dimension; the client forgets every chunk on it (decision E-1002).
+        QCOMPARE(m_client->dimensions.size(), 2);
+        QCOMPARE(m_client->dimensions.last(), QString::fromLatin1(emptyName));
+        QVERIFY(m_client->unloaded.isEmpty());
     }
 
     void theSamePositionInTwoDimensionsIsTwoPlaces()
@@ -447,6 +453,42 @@ private slots:
         send(QcMsg::EditSign{sign, QcSignText::Lines{u"Hacked"_s}});
         ticks(1);
         QVERIFY(!m_elsewhere->world().signs().at(sign));
+    }
+
+    void aMapOnlyDrawsAndMarksInItsOwnDimension()
+    {
+        // Made on the stone platform of the test dimension, the map is one of that dimension
+        // (decision E-1005) and shows the stone and its holder there.
+        start();
+        goElsewhere();
+        chat(u"/give map 1"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:map"))});
+        send(QcMsg::ConsumeItem{});
+        const int slot = slotOf(item("qtcraft:filled_map"));
+        QVERIFY(slot >= 0);
+        send(QcMsg::SelectHotbarSlot{slot});
+        const quint32 mapId = m_client->stacks.value(slot).mapId();
+        const QcMapData *map = m_server->maps().find(mapId);
+        QVERIFY(map);
+        QCOMPARE(map->dimension(), QString::fromLatin1(emptyName));
+        ticks(QcMapSurvey::sweep + 1);
+        const std::optional<QPoint> origin = map->pixelAt(0, 0);
+        QVERIFY(origin);
+        QCOMPARE(QcMapPixel::blockOf(map->at(*origin)), std::optional<quint32>(m_content->state(id("qtcraft:stone")).type));
+        ticks(QcServerMaps::markerInterval + 1);
+        QVERIFY(!m_client->mapUpdates.isEmpty());
+        QCOMPARE(m_client->mapUpdates.last().markers.size(), 1);
+
+        // Held at the same place in the overworld it neither draws the grass nor marks him.
+        chat(u"/tp 0.5 %1 0.5 in %2"_s.arg(m_feet.y).arg(QString::fromLatin1(QcDimensionDefinition::overworldName)));
+        ticks(3);
+        send(QcMsg::SelectHotbarSlot{slot});
+        m_client->mapUpdates.clear();
+        ticks(QcMapSurvey::sweep + QcServerMaps::markerInterval + 1);
+        QCOMPARE(QcMapPixel::blockOf(m_server->maps().find(mapId)->at(*origin)), std::optional<quint32>(m_content->state(id("qtcraft:stone")).type));
+        for (const QcMsg::MapUpdate &update : std::as_const(m_client->mapUpdates)) {
+            QVERIFY(update.markers.isEmpty());
+        }
     }
 };
 

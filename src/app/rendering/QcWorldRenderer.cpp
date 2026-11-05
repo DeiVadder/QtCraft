@@ -159,7 +159,8 @@ QcPostProcess::Composite QcWorldRenderer::composite(const QMatrix4x4 &viewProjec
     composite.fogBase = static_cast<float>(QcWorld::seaLevel) + QcPostProcess::fogBaseAboveSea;
     composite.fogDistance = m_frame.fogEnd;
     composite.sunDirection = sky.sunDirection;
-    composite.sunGlow = QcPostProcess::fogSunGlow * static_cast<float>(std::clamp(sky.daylight, 0.0, 1.0));
+    // No sun, no glow in the fog towards it (decision E-1003).
+    composite.sunGlow = sky.celestial ? QcPostProcess::fogSunGlow * static_cast<float>(std::clamp(sky.daylight, 0.0, 1.0)) : 0.0f;
     composite.exposure = static_cast<float>(m_frame.render.exposure);
     composite.underwater = m_frame.underwater;
     composite.waterColour = QcWaterLook::underwaterColour(sky.daylight);
@@ -293,7 +294,8 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.extra[0] = m_device.rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
     uniforms.extra[1] = static_cast<float>(outputSize.width());
     uniforms.extra[2] = static_cast<float>(outputSize.height());
-    uniforms.extra[3] = skyLightFloor;
+    // Without sky light the open sky does not even light the moonless floor (decision E-1003).
+    uniforms.extra[3] = m_frame.sky.skyLight ? skyLightFloor : 0.0f;
     uniforms.atlas[0] = static_cast<float>(m_device.atlasGrid.width());
     uniforms.atlas[1] = static_cast<float>(m_device.atlasGrid.height());
     uniforms.atlas[2] = m_device.atlasCellPixels;

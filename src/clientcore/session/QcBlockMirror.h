@@ -40,14 +40,17 @@ public:
         std::optional<QcChunkPos> loaded;
         /*! The chunk that left, if the message was a ChunkUnload. */
         std::optional<QcChunkPos> unloaded;
+        /*! Whether the message was a DimensionChange: every chunk and prediction is gone
+            (decision E-1002). */
+        bool dimensionChanged = false;
         /*! The blocks the server set. */
         QList<Changed> blocks;
         /*! The cells an acknowledgement rolled back to the server's block. */
         QList<Changed> rolledBack;
     };
 
-    /*! Returns the change \a message made when it is a content, chunk, block or acknowledgement
-        message; none for other messages. */
+    /*! Returns the change \a message made when it is a content, chunk, block, acknowledgement or
+        dimension message; none for other messages. */
     [[nodiscard]] std::optional<Change> handle(const QcMessage &message);
     /*! Shows the \a blocks the action numbered \a sequence is expected to set (cells of chunks that
         are not loaded are left out) and returns the cells that changed. */
@@ -79,6 +82,7 @@ private:
     [[nodiscard]] Change onContentSync(const QcMsg::ContentSync &sync);
     [[nodiscard]] Change onChunkData(const QcMsg::ChunkData &chunkData);
     [[nodiscard]] Change onChunkUnload(QcChunkPos pos);
+    [[nodiscard]] Change onDimensionChange();
     // The server's blocks: those of predicted cells are remembered, the others shown.
     [[nodiscard]] Change onServerBlocks(const QList<QcMsg::BlockUpdate> &updates);
     [[nodiscard]] Change onAck(quint32 sequence);

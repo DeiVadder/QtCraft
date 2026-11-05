@@ -102,7 +102,7 @@ QByteArray write(const QcMapData &map, const QcContentRegistry &content)
     QByteArray payload;
     QDataStream out(&payload, QIODevice::WriteOnly);
     out.setVersion(QcSaveFile::streamVersion);
-    out << overworld.toString() << static_cast<quint8>(map.scale()) << static_cast<qint32>(map.centre().x())
+    out << map.dimension() << static_cast<quint8>(map.scale()) << static_cast<qint32>(map.centre().x())
         << static_cast<qint32>(map.centre().y()) << static_cast<quint32>(palette.names.size());
     for (const QString &name : palette.names) {
         out << name;
@@ -128,7 +128,9 @@ QcResult<QcMapData> read(const QByteArray &file, const QString &path, const QcCo
     qint32 z = 0;
     quint32 count = 0;
     in >> world >> scale >> x >> z >> count;
-    if (in.status() != QDataStream::Ok || world != overworld || count > QcMapPixel::maxBlock + 1) {
+    // A qualified name like the parser's (decision E-1005), or the overworld of older files.
+    const bool named = world == overworld || (world.contains(u':') && world.size() <= QcDimensionDefinition::maxNameLength && !world.contains(u'/'));
+    if (in.status() != QDataStream::Ok || !named || count > QcMapPixel::maxBlock + 1) {
         return qcError(u"%1 is not a valid map"_s.arg(path));
     }
     QStringList names;
@@ -152,6 +154,7 @@ QcResult<QcMapData> read(const QByteArray &file, const QString &path, const QcCo
     if (!map) {
         return qcError(u"%1 is not a valid map"_s.arg(path));
     }
+    map->setDimension(world == overworld ? QString::fromLatin1(QcDimensionDefinition::overworldName) : world);
     return std::move(*map);
 }
 

@@ -30,6 +30,9 @@ void QcPushBodies::apply(const QcMessage &message)
         }
     } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
         m_creatures.remove(removed->id);
+    } else if (std::holds_alternative<QcMsg::DimensionChange>(message)) {
+        // The creatures of the old dimension stay there (decision E-1002).
+        m_creatures.clear();
     }
 }
 

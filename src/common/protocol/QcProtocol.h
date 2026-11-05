@@ -42,8 +42,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     (QcHoldDisplay::drawn and thirdPersonDrawn, decision E-984), 88 usingItem in PlayerInput and
     PlayerState (decision E-986), 89 the moving count of status effects in PlayerInput and
     PlayerHealth, absorption in PlayerHealth, the Invisible flag and more fields of effects in the
-    content (decision E-992). */
-inline constexpr quint32 version = 89;
+    content (decision E-992), 90 the dimension the player is in (DimensionChange, decision
+    E-1002). */
+inline constexpr quint32 version = 90;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

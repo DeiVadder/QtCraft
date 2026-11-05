@@ -32,6 +32,9 @@ struct QcDimensionDefinition
     /*! The longest qualified name of a dimension, as the parser, world.json and player files
         accept it. */
     static constexpr qsizetype maxNameLength = 128;
+    /*! The longest translation key of a dimension (\c {"translation"}), as the parser and the
+        protocol accept it. */
+    static constexpr qsizetype maxTranslationKey = 256;
     /*! The largest coordinate scale against the overworld (\c {"coordinateScale"}). */
     static constexpr double maxCoordinateScale = 128.0;
     /*! The largest damage per second of the void below a dimension without floor. */

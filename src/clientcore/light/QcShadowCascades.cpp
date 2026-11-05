@@ -123,6 +123,10 @@ QMatrix4x4 textureMatrix(bool mirrorY, bool depthZeroToOne)
 QcShadowLight light(const QcSkyState &sky)
 {
     QcShadowLight result;
+    // A sky without sun and moon casts no shadows (decision E-1003).
+    if (!sky.celestial) {
+        return result;
+    }
     const bool day = sky.sunDirection.y() > 0.0f;
     const QVector3D direction = day ? sky.sunDirection : sky.moonDirection;
     if (!isFinite(direction) || direction.lengthSquared() < 1e-12f) {

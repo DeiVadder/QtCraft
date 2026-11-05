@@ -30,6 +30,11 @@ class QcLoadingProgress : public QObject
     QML_UNCREATABLE("Provided by GameController.loading")
     Q_PROPERTY(Stage stage READ stage NOTIFY changed FINAL)
     Q_PROPERTY(Kind kind READ kind NOTIFY changed FINAL)
+    // The display name of the dimension a Dimension start goes to; empty for the other kinds.
+    Q_PROPERTY(QString destination READ destination NOTIFY changed FINAL)
+    // Only joining a network server can be cancelled (cancelling leaves the game); entering another
+    // dimension cannot, its longest wait ends it anyway.
+    Q_PROPERTY(bool cancellable READ cancellable NOTIFY changed FINAL)
     Q_PROPERTY(int chunksArrived READ chunksArrived NOTIFY changed FINAL)
     Q_PROPERTY(int chunksMeshed READ chunksMeshed NOTIFY changed FINAL)
     Q_PROPERTY(int chunksNeeded READ chunksNeeded NOTIFY changed FINAL)
@@ -44,8 +49,9 @@ public:
     enum class Stage { Idle, Content, World, Joining, Chunks, Meshes, Ready };
     Q_ENUM(Stage)
     // What is started: a world made just now (its terrain is generated while it loads), a saved
-    // world, or a network server's world.
-    enum class Kind { NewWorld, SavedWorld, Network };
+    // world, a network server's world, or another dimension of the world played (decision
+    // E-1002; destination() names it).
+    enum class Kind { NewWorld, SavedWorld, Network, Dimension };
     Q_ENUM(Kind)
 
     // The spawn area: chunks in it (inside the bound of the world), those that arrived, and those
@@ -76,6 +82,8 @@ public:
 
     Stage stage() const { return m_stage; }
     Kind kind() const { return m_kind; }
+    const QString &destination() const { return m_destination; }
+    bool cancellable() const { return m_kind == Kind::Network; }
     const Area &area() const { return m_area; }
     int chunksArrived() const { return area().arrived; }
     int chunksMeshed() const { return area().meshed; }
@@ -84,8 +92,9 @@ public:
     // A start is running (not idle and not ready, and not a state the test hook only shows).
     bool active() const { return m_stage != Stage::Idle && m_stage != Stage::Ready && !shownOnly(); }
 
-    // A start of `kind` begins: the content stage, or for a network game the joining stage.
-    void begin(Kind kind);
+    // A start of `kind` begins: the content stage, or for a network game and another dimension the
+    // joining stage; `destination` names the dimension of a Dimension start.
+    void begin(Kind kind, const QString &destination = {});
     // The step before `next` is done: World after Content, Joining after World. Any other step is
     // refused with a warning.
     void advance(Stage next);
@@ -139,6 +148,7 @@ private:
 
     Stage m_stage = Stage::Idle;
     Kind m_kind = Kind::NewWorld;
+    QString m_destination;
     Area m_area;
     int m_maxWaitMs = defaultMaxWaitMs;
     // The state comes from show() (test hook), not from a start.

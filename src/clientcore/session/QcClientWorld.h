@@ -48,6 +48,8 @@ public:
     void setChunk(const std::shared_ptr<const QcChunk> &chunk);
     /*! Forgets the chunk at \a pos. */
     void removeChunk(QcChunkPos pos);
+    /*! Forgets every chunk (another dimension, decision E-1002). */
+    void clear() { m_chunks.clear(); }
     /*! Sets the cell at \a pos to \a block in a copy of its chunk. Returns false outside the world
         height or a loaded chunk. */
     bool setBlock(QcBlockPos pos, QcBlockId block);

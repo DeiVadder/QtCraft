@@ -141,8 +141,9 @@ public:
     const QcServerDimension::Clients &clients() const { return current().clients(); }
     /*! Returns the clients of every dimension. */
     const std::vector<std::unique_ptr<QcServerClient>> &allClients() const { return m_clients; }
-    /*! Moves \a client from his dimension to \a dimension: its parts see him from now on, and he
-        is told to forget the chunks he was sent. QcPlayerTravel moves a player who plays. */
+    /*! Moves \a client from his dimension to \a dimension: its parts see him from now on, and a
+        client who joined is told the new dimension (QcMsg::DimensionChange), so it forgets the
+        chunks, creatures and weather it was sent. QcPlayerTravel moves a player who plays. */
     void moveClient(QcServerClient &client, QcServerDimension &dimension);
     /*! Returns the open dimension \a client is in. */
     QcServerDimension &dimensionOf(const QcServerClient &client);

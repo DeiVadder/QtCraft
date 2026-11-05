@@ -37,6 +37,7 @@ void QcSessionWiring::connectWorld()
     connect(session, &QcClientSession::contentReady, this, &QcSessionWiring::onContentReady);
     connect(session, &QcClientSession::chunkLoaded, this, [this](QcChunkPos pos) { m_parts.meshes->chunkLoaded(*m_parts.session->world(), pos); });
     connect(session, &QcClientSession::chunkUnloaded, m_parts.meshes.get(), &QcMeshScheduler::chunkUnloaded);
+    connect(session, &QcClientSession::dimensionChanged, this, &QcSessionWiring::onDimensionChanged);
     connect(session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
         m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous);
     });
@@ -61,6 +62,17 @@ void QcSessionWiring::connectWorld()
             m_parts.view->removeMesh(key);
         }
     });
+}
+
+void QcSessionWiring::onDimensionChanged()
+{
+    // The meshes and light of the old dimension go with its chunks (decision E-1002); waiting jobs
+    // are dropped, the results of running ones are discarded when they arrive.
+    m_parts.meshes->clear();
+    if (m_parts.view) {
+        m_parts.view->clearMeshes();
+    }
+    emit dimensionChanged();
 }
 
 void QcSessionWiring::connectPlayer()

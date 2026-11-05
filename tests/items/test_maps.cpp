@@ -517,6 +517,29 @@ private slots:
         QCOMPARE(m_server->maps().nextId(), quint32(4));
     }
 
+    void aMapKeepsItsDimension()
+    {
+        // Saved with its dimension (decision E-1005); a map of a world from before dimensions
+        // (written with "overworld") reads as one of the overworld.
+        QcMapData map = *QcMapData::fromParts(0, {64, 64}, QList<quint16>(QcMapData::pixelCount, 0));
+        QCOMPARE(map.dimension(), QString::fromLatin1(QcDimensionDefinition::overworldName));
+        map.setDimension(u"qtcraft:nether"_s);
+        const QcResult<QcMapData> back = QcMapSaveCodec::read(QcMapSaveCodec::write(map, *m_content), u"map"_s, *m_content);
+        QVERIFY(back);
+        QCOMPARE(back->dimension(), u"qtcraft:nether"_s);
+
+        QcMapData old = map;
+        old.setDimension(QcMapSaveCodec::overworld.toString());
+        const QcResult<QcMapData> older = QcMapSaveCodec::read(QcMapSaveCodec::write(old, *m_content), u"map"_s, *m_content);
+        QVERIFY(older);
+        QCOMPARE(older->dimension(), QString::fromLatin1(QcDimensionDefinition::overworldName));
+
+        // A name that could point out of anything is damaged data.
+        QcMapData bad = map;
+        bad.setDimension(u"../nether"_s);
+        QVERIFY(!QcMapSaveCodec::read(QcMapSaveCodec::write(bad, *m_content), u"map"_s, *m_content));
+    }
+
     void clientsRefuseBadMapUpdates()
     {
         const auto decoded = [](const QByteArray &bytes) { return QcProtocol::decode(bytes, QcProtocol::Peer::Server).has_value(); };

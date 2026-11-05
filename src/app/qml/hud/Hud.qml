@@ -343,6 +343,8 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: Ui.hudPx(8)
+        // Empty in a dimension without day cycle (decision E-1003).
+        visible: text.length > 0
         text: hud.hudState.timeOfDay
     }
 

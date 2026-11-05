@@ -289,7 +289,7 @@ target_sources(qc_common PRIVATE
     physics/QcSpawnGround.h physics/QcSpawnGround.cpp
 )
 target_sources(qc_common PRIVATE
-    protocol/QcAdminCodec.cpp
+    protocol/QcAdminCodec.h protocol/QcAdminCodec.cpp
     protocol/QcAdminMessages.h
     protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
     protocol/QcAdvancementCodec.cpp
@@ -299,6 +299,8 @@ target_sources(qc_common PRIVATE
     protocol/QcConnection.h protocol/QcConnection.cpp
     protocol/QcDebugCodec.cpp
     protocol/QcDebugMessages.h
+    protocol/QcDimensionCodec.cpp
+    protocol/QcDimensionMessages.h
     protocol/QcEntityCodec.cpp
     protocol/QcEntityMessages.h
     protocol/QcFrameReader.h protocol/QcFrameReader.cpp

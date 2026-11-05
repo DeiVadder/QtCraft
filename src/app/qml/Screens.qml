@@ -185,8 +185,8 @@ Item {
         screen: LoadingScreen {
             progress: screens.game.loading
             keys: screens.game.settings.keys
-            // Loading a network server's world can be cancelled.
-            canCancel: screens.game.multiplayer.networkGame
+            // Joining a network server can be cancelled, entering another dimension cannot.
+            canCancel: screens.game.loading.cancellable
             onCancelRequested: screens.game.leaveGame()
         }
     }

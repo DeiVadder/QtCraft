@@ -122,13 +122,19 @@ void QcServerState::moveClient(QcServerClient &client, QcServerDimension &dimens
     dimension.addClient(&client);
     client.dimension = dimension.name();
 
-    // Nothing he was sent of the old dimension stands in the new one; the entities he knew go with
-    // the next sync, as they are not there.
-    for (const QcChunkPos &chunk : std::as_const(client.view.sentChunks)) {
-        client.connection->send(QcMsg::ChunkUnload{chunk});
+    // Before he joined, the Welcome brings the dimension (QcPlayerJoin). Afterwards the client
+    // forgets all it knew of the old dimension on this message (decision E-1002): chunks,
+    // creatures and weather of the new one are sent again from nothing.
+    if (client.joined) {
+        client.connection->send(QcMsg::DimensionChange{dimension.definition()});
+        // The client's tick pauses until the next PlayerState: one must follow every move.
+        client.stateDirty = true;
     }
     client.view.sentChunks.clear();
     ++client.view.sentChanges;
+    client.view.known.clear();
+    client.view.stale.clear();
+    client.sentWeather.reset();
 }
 
 QcPermission QcServerState::permissionOf(const QcServerClient &client) const

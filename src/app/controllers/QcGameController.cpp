@@ -196,6 +196,21 @@ void QcGameController::connectLoading()
     // The world shows once its spawn area is meshed (decision E-943); a start that ends otherwise
     // (error, cancel, disconnect) leaves the progress idle.
     connect(&m_wiring, &QcSessionWiring::playing, this, &QcGameController::updateLoading);
+    connect(&m_wiring, &QcSessionWiring::dimensionChanged, this, [this] {
+        // The dimension the player joined in comes while the world start still loads; a second
+        // change during a dimension load starts that load again under the new name.
+        const bool travelling = loading()->active() && loading()->kind() == QcLoadingProgress::Kind::Dimension;
+        if (!travelling && (loading()->active() || m_screens.phase() != Phase::Playing)) {
+            return;
+        }
+        // Another dimension shows behind the loading screen once its place is meshed (decision E-1002).
+        const QcDimensionDefinition &dimension = m_parts.session->worldMirror().dimension();
+        const std::shared_ptr<const QcContentRegistry> content = m_parts.session->content();
+        const QString name = content ? content->translations().translate(dimension.translationKey, m_settings->contentLanguage()) : dimension.name;
+        setOverlay(QcScreenState::Overlay::None);
+        loading()->begin(QcLoadingProgress::Kind::Dimension, name);
+        setPhase(Phase::Loading);
+    });
     connect(loading(), &QcLoadingProgress::ready, this, &QcGameController::onWorldReady);
     connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
         if (m_screens.phase() != Phase::Loading && m_screens.phase() != Phase::Playing) {
@@ -539,7 +554,10 @@ void QcGameController::finishStartup()
 void QcGameController::onWorldReady()
 {
     setPhase(Phase::Playing);
-    m_startup->worldPlaying();
+    // The test hooks plan their steps once per world start, not again after a dimension.
+    if (loading()->kind() != QcLoadingProgress::Kind::Dimension) {
+        m_startup->worldPlaying();
+    }
 }
 
 void QcGameController::beginSession()

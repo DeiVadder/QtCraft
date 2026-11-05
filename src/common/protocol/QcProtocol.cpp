@@ -3,7 +3,7 @@
 
 #include "common/protocol/QcProtocol.h"
 
-#include "common/protocol/QcProtocolCodec.h"
+#include "common/protocol/QcAdminCodec.h"
 
 #include <QDataStream>
 #include <QIODevice>

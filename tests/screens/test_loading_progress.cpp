@@ -170,6 +170,30 @@ private slots:
         QCOMPARE(progress.chunksNeeded(), 0);
     }
 
+    // Entering another dimension starts at joining, names where it goes, cannot be cancelled
+    // (cancelling leaves the game) and ends at its longest wait like any start (decision E-1002).
+    void aDimensionStartCannotBeCancelled()
+    {
+        QcLoadingProgress progress;
+        progress.begin(Kind::Network);
+        QVERIFY(progress.cancellable());
+        QVERIFY(progress.destination().isEmpty());
+
+        QSignalSpy ready(&progress, &QcLoadingProgress::ready);
+        progress.setMaxWaitMs(0);
+        progress.begin(Kind::Dimension, u"the Nether"_s);
+        QCOMPARE(progress.stage(), Stage::Joining);
+        QCOMPARE(progress.destination(), u"the Nether"_s);
+        QVERIFY(!progress.cancellable());
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"is not meshed after 0 ms"_s));
+        progress.observe({.needed = 49, .arrived = 3, .meshed = 0}, true);
+        QCOMPARE(progress.stage(), Stage::Ready);
+        QCOMPARE(ready.count(), 1);
+
+        progress.begin(Kind::SavedWorld);
+        QVERIFY(!progress.cancellable());
+    }
+
     // The spawn area fits inside what the server streams: its outer ring is never meshed.
     void spawnRadiusFitsTheStreamedChunks()
     {

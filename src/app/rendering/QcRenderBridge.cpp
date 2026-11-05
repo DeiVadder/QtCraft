@@ -101,8 +101,13 @@ void QcRenderBridge::updateSky(double alpha)
     const QcClientWeather &weather = session.worldMirror().weather();
     // Sun, moon and colours follow the time of day (decision E-960), the clouds the animation
     // clock, so they drift without a daylight cycle and stand while paused (decision E-968).
-    QcSkyState sky = QcSky::withCloudDrift(QcSky::at(session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
-    sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
+    // The dimension sets the kind of sky, its fog, sky light and ambient light (decision E-1003); one
+    // without weather has none even before the server's clear weather arrives.
+    const QcDimensionDefinition &dimension = session.worldMirror().dimension();
+    QcSkyState sky = QcSky::withCloudDrift(QcSky::forDimension(dimension, session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
+    if (dimension.weather) {
+        sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
+    }
     const QcVec3 &eye = m_parts.view->camera().position;
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.
     const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);

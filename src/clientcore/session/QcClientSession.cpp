@@ -222,6 +222,11 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         emit chunkLoaded(*change->loaded);
     } else if (change->unloaded) {
         emit chunkUnloaded(*change->unloaded);
+    } else if (change->dimensionChanged) {
+        // Nothing of the old dimension is seen or aimed at any more (decision E-1002).
+        m_entities.clear();
+        m_hand.setMining(false);
+        emit dimensionChanged();
     }
     for (const auto &[pos, previous] : change->blocks) {
         emit blockChanged(pos, previous);

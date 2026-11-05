@@ -12,7 +12,8 @@
 class QcContentRegistry;
 
 /*! \brief One map in the world folder (decision E-799), maps/<id>.qcmap in the save file container
-    (QcSaveFile): its scale, centre and world ("overworld", the only one so far), the names of the
+    (QcSaveFile): its scale, centre and dimension (its qualified name, decision E-1005; files from
+    before dimensions say "overworld"), the names of the
     blocks it shows and its pixels as indices into that list with their shades, compressed.
 
     Blocks a later content no longer knows read as blank pixels. Every value is checked when
@@ -21,7 +22,7 @@ namespace QcMapSaveCodec {
 
 /*! The container's magic of a map file. */
 inline constexpr QByteArrayView magic = "QCMP";
-/*! The name of the world a map shows (the only one so far). */
+/*! The name files from before dimensions give the world a map shows: the overworld. */
 inline constexpr QStringView overworld = u"overworld";
 /*! The longest file a map may have (a map of noise compresses to about 40 KiB). */
 inline constexpr qsizetype maxBytes = qsizetype{256} * 1024;

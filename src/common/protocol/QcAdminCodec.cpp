@@ -4,7 +4,7 @@
 // Payloads of the admin channel (QcAdminMessages.h, decision E-848). Every count and text is
 // bounded (QcMsg::AdminLimits); a decoder that finds more fails the message.
 
-#include "common/protocol/QcProtocolCodec.h"
+#include "common/protocol/QcAdminCodec.h"
 
 #include "common/core/QcCommandCategory.h"
 #include "common/protocol/QcStreamLimits.h"

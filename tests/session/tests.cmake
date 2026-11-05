@@ -27,6 +27,9 @@ qc_add_test(test_push_bodies SOURCES session/test_push_bodies.cpp LIBRARIES qc_b
 qc_add_test(test_debug_report SOURCES session/test_debug_report.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_reconciliation SOURCES session/test_reconciliation.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_interpolation SOURCES session/test_interpolation.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
+# The client side of dimensions (decisions E-1002 to E-1004): the message, the world forgotten on a
+# move, sky and dials of a dimension, players in different dimensions.
+qc_add_test(test_dimension_client SOURCES session/test_dimension_client.cpp fixtures/QcTestUtil.h LIBRARIES qc_base_content qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_block_mirror SOURCES session/test_block_mirror.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_prediction SOURCES session/test_block_prediction.cpp fixtures/QcPredictionFixture.h fixtures/QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 150)

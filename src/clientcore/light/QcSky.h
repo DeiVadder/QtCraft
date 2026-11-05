@@ -3,7 +3,11 @@
 
 #pragma once
 
+#include "common/world/QcDayCycle.h"
+
 #include <QVector3D>
+
+struct QcDimensionDefinition;
 
 /*! \brief Look of the sky at a moment of the day, as a pure function of the world time: colours of
     the dome, where sun and moon stand, the moon's phase and how visible the stars are; how far the
@@ -35,9 +39,16 @@ struct QcSkyState
     /*! Sky light factor of the block shaders (QcDayCycle::daylight, less in rain, more in a
         flash). */
     double daylight = 1.0;
-    /*! Light an explosion's flash adds to the shaders' floor for a moment, also where no sky
-        light reaches (0 most of the time, decision E-879). */
+    /*! Light the shaders add to their floor, also where no sky light reaches: an explosion's flash
+        for a moment (decision E-879), night vision (decision E-992) and the ambient light of a
+        dimension (decision E-1003); 0 most of the time in the overworld. */
     double flashLight = 0.0;
+    /*! Whether sun, moon, stars and clouds show and the sun casts shadows: the overworld's sky,
+        not the fog of the nether or the vault of the end (decision E-1003). */
+    bool celestial = true;
+    /*! Whether sky light lights the world at all; without it not even the floor of the moonless
+        night reaches the open sky (a dimension without sky light, decision E-1003). */
+    bool skyLight = true;
     /*! How much of the sky the clouds cover beyond the fair-weather clouds: 0 clear, 1 overcast. */
     double overcast = 0.0;
     /*! Factor on the fog's distances: 1 clear, smaller in rain (the fog comes closer). */
@@ -61,6 +72,15 @@ inline constexpr double cloudSpeed = 1.2;
 /*! Returns the sky at \a worldTime (seconds, QcDayCycle), without weather and with the clouds
     where they start (no drift). */
 QcSkyState at(double worldTime);
+/*! The time of day a dimension without day cycle shows under an overworld sky: noon. */
+inline constexpr double fixedNoon = QcDayCycle::dayLength * 0.25;
+
+/*! Returns the sky of \a dimension at \a worldTime without weather (decision E-1003): the
+    overworld's sky follows the time of day (at() at worldTime, or at fixedNoon without day cycle);
+    the nether's is a close fog of the dimension's colour, the end's a dark vault, both without
+    sun, moon, stars and clouds. Without sky light the daylight is 0; the ambient light (0..15)
+    lifts the shaders' floor; a fog colour replaces the horizon. */
+QcSkyState forDimension(const QcDimensionDefinition &dimension, double worldTime);
 /*! Returns \a sky with its clouds drifted for \a seconds of the world's animation clock
     (QcWorldMirror::animationSeconds, decision E-968): they drift whether the time of day runs or
     not and stand while the server pauses or is frozen. */

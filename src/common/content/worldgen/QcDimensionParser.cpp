@@ -152,6 +152,10 @@ QcResult<QcDimensionDefinition> parseDimension(const QJsonObject &json, const QS
     }
     reader.context = u"dimension '%1'"_s.arg(dimension.name);
     dimension.translationKey = reader.string(u"translation"_s, QcContentFields::translationKey(u"dimension"_s, dimension.name));
+    // The key travels to every client (QcMsg::DimensionChange); a longer one would disconnect them.
+    if (dimension.translationKey.size() > Definition::maxTranslationKey) {
+        return qcError(u"dimension '%1': the translation key is too long, at most %2 characters"_s.arg(dimension.name).arg(Definition::maxTranslationKey));
+    }
     Generator generator = generatorOf(reader, dimension);
     dimension.generatorType = std::move(generator.type);
     dimension.generatorOptions = std::move(generator.options);

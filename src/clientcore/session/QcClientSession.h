@@ -3,6 +3,10 @@
 
 #pragma once
 
+// NOLINT(qc-file-length): the session is the client's facade (E-717); one line over with the
+// dimension signal (E-1002); moving the screen parts behind an owner of their own is noted as a
+// follow-up of package 83.2.
+
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/figures/QcEntityPose.h"
@@ -292,6 +296,9 @@ signals:
     void chunkLoaded(QcChunkPos pos);
     /*! The server unloaded the chunk at \a pos. */
     void chunkUnloaded(QcChunkPos pos);
+    /*! The player entered another dimension, or the one he joined in (decision E-1002): the
+        chunks, creatures and labels are gone; worldMirror().dimension() is the new one. */
+    void dimensionChanged();
     /*! The server changed the block at \a pos; \a previous is the block before. */
     void blockChanged(QcBlockPos pos, QcBlockId previous);
     /*! Emitted when the block at \a pos changed from \a previous because the local player's

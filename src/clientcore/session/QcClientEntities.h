@@ -59,6 +59,14 @@ public:
     /*! Removes the entity \a removed names; one that died plays its death animation first,
         except items, experience orbs and projectiles, which vanish at once. */
     void remove(QcMsg::EntityRemove removed);
+    /*! Forgets every entity, the dying ones and their snapshots (another dimension, decision
+        E-1002). */
+    void clear()
+    {
+        m_entities.clear();
+        m_dying.clear();
+        m_tracks.clear();
+    }
     /*! Moves every entity to its pose one tick after the shown moment, advances the animation
         timers and drops finished death animations. */
     void tick() { tick(m_localClock.elapsed()); }

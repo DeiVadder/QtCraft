@@ -213,6 +213,10 @@ private slots:
         QTest::newRow("liquid values") << QJsonObject{{u"name"_s, u"x"_s}, {u"liquids"_s, QJsonObject{{u"lava"_s, QJsonObject{{u"ticks"_s, 0}}}}}}
                                        << u"ticks"_s;
         QTest::newRow("arrival") << QJsonObject{{u"name"_s, u"x"_s}, {u"arrival"_s, QJsonObject{{u"y"_s, 400}}}} << u"arrival"_s;
+        // Every client refuses a longer key in QcMsg::DimensionChange.
+        QTest::newRow("translation key too long")
+            << QJsonObject{{u"name"_s, u"x"_s}, {u"translation"_s, QString(QcDimensionDefinition::maxTranslationKey + 1, u'k')}}
+            << u"translation key is too long"_s;
     }
 
     void wrongFieldsAreRefused()
@@ -235,6 +239,10 @@ private slots:
         QCOMPARE(longest.name, name);
         const QString overLimit = parseError({{u"name"_s, QString(name + u'x')}, {u"generator"_s, QJsonObject{{u"type"_s, u"void"_s}}}});
         QVERIFY2(overLimit.contains(u"too long"_s), qPrintable(overLimit));
+
+        // The longest translation key loads (the protocol takes the same limit).
+        const QString key(QcDimensionDefinition::maxTranslationKey, u'k');
+        QCOMPARE(parsed({{u"name"_s, u"x"_s}, {u"translation"_s, key}, {u"generator"_s, QJsonObject{{u"type"_s, u"void"_s}}}}).translationKey, key);
 
         QTemporaryDir dir;
         const QcTestWorldFiles storage(dir.path(), contentWithTestDimensions());

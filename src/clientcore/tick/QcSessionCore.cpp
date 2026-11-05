@@ -187,6 +187,10 @@ void QcSessionCore::onMessage(QcMessage &&message)
         intent.yaw = welcome->yaw;
         intent.pitch = welcome->pitch;
         m_prediction.setIntent(intent);
+    } else if (std::holds_alternative<QcMsg::DimensionChange>(message) && m_playing) {
+        // No step into a world without chunks: the ticks wait for the place in the new dimension
+        // (PlayerState, decision E-1002).
+        m_playing = false;
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
     } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {

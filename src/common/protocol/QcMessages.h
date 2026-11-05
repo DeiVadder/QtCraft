@@ -6,6 +6,7 @@
 #include "common/protocol/QcAdminMessages.h"
 #include "common/protocol/QcAdvancementMessages.h"
 #include "common/protocol/QcDebugMessages.h"
+#include "common/protocol/QcDimensionMessages.h"
 #include "common/protocol/QcEntityMessages.h"
 #include "common/protocol/QcLoginMessages.h"
 #include "common/protocol/QcMachineMessages.h"
@@ -45,4 +46,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::OpenEnchanting, QcMsg::EnchantingState, QcMsg::ChooseEnchantment, QcMsg::CloseEnchanting,
                                QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil,
                                QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho,
-                               QcMsg::AdvancementProgress, QcMsg::PlayerAir>;
+                               QcMsg::AdvancementProgress, QcMsg::PlayerAir, QcMsg::DimensionChange>;

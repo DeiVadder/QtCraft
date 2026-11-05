@@ -14,8 +14,9 @@
 
     They are grouped by topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp,
     QcEntityCodec.cpp, QcMachineCodec.cpp, QcTradeCodec.cpp, QcAdvancementCodec.cpp,
-    QcDebugCodec.cpp, QcLoginCodec.cpp, QcSignCodec.cpp, QcMapCodec.cpp and QcAdminCodec.cpp;
-    QcProtocol.cpp dispatches on the type tag. Internal to the protocol. */
+    QcDebugCodec.cpp, QcLoginCodec.cpp, QcSignCodec.cpp, QcMapCodec.cpp, QcDimensionCodec.cpp and
+    QcAdminCodec.cpp (declared in QcAdminCodec.h); QcProtocol.cpp dispatches on the type tag.
+    Internal to the protocol. */
 namespace QcProtocolCodec {
 
 // Shared field codecs.
@@ -447,51 +448,11 @@ void encode(QDataStream &stream, const QcMsg::MapUpdate &m);
 /*! Returns the QcMsg::MapUpdate read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MapUpdate>, QDataStream &stream);
 
-// Admin channel (QcAdminCodec.cpp)
+// Dimensions (QcDimensionCodec.cpp)
 
-/*! Writes the payload of \a m (QcMsg::AdminSubscribe) to \a stream. */
-void encode(QDataStream &stream, QcMsg::AdminSubscribe m);
-/*! Writes the payload of \a m (QcMsg::AdminRequest) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminRequest &m);
-/*! Writes the payload of \a m (QcMsg::AdminResult) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminResult &m);
-/*! Writes the payload of \a m (QcMsg::AdminStatus) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminStatus &m);
-/*! Writes the payload of \a m (QcMsg::AdminHistory) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminHistory &m);
-/*! Writes the payload of \a m (QcMsg::AdminPlayers) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminPlayers &m);
-/*! Writes the payload of \a m (QcMsg::AdminChat) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminChat &m);
-/*! Writes the payload of \a m (QcMsg::AdminCatalogue) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminCatalogue &m);
-/*! Writes the payload of \a m (QcMsg::AdminLists) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminLists &m);
-/*! Writes the payload of \a m (QcMsg::AdminSettings) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminSettings &m);
-/*! Writes the payload of \a m (QcMsg::AdminLog) to \a stream. */
-void encode(QDataStream &stream, const QcMsg::AdminLog &m);
-/*! Returns the QcMsg::AdminSubscribe read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminSubscribe>, QDataStream &stream);
-/*! Returns the QcMsg::AdminRequest read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminRequest>, QDataStream &stream);
-/*! Returns the QcMsg::AdminResult read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminResult>, QDataStream &stream);
-/*! Returns the QcMsg::AdminStatus read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminStatus>, QDataStream &stream);
-/*! Returns the QcMsg::AdminHistory read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminHistory>, QDataStream &stream);
-/*! Returns the QcMsg::AdminPlayers read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminPlayers>, QDataStream &stream);
-/*! Returns the QcMsg::AdminChat read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminChat>, QDataStream &stream);
-/*! Returns the QcMsg::AdminCatalogue read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminCatalogue>, QDataStream &stream);
-/*! Returns the QcMsg::AdminLists read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminLists>, QDataStream &stream);
-/*! Returns the QcMsg::AdminSettings read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminSettings>, QDataStream &stream);
-/*! Returns the QcMsg::AdminLog read from \a stream, or why it is invalid. */
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminLog>, QDataStream &stream);
+/*! Writes the payload of \a m (QcMsg::DimensionChange) to \a stream. */
+void encode(QDataStream &stream, const QcMsg::DimensionChange &m);
+/*! Returns the QcMsg::DimensionChange read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DimensionChange>, QDataStream &stream);
 
 } // namespace QcProtocolCodec

@@ -7,11 +7,12 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The loading screen of a world start (decision E-943): shown in the frame after the click, over
-// the menu's background, until the spawn area is meshed. The title says what is started, the bar the
-// share of the whole start, the steps below which one runs (with the chunks of the spawn area as
-// counts); everything comes from GameController.loading, nothing is timed here. Needs no input; a
-// network game can be cancelled ("Cancel", Escape, the pad's B).
+// The loading screen of a world start (decision E-943) and of entering another dimension (decision
+// E-1002): shown in the frame after the click, over the menu's background, until the spawn area is
+// meshed. The title says what is started, the bar the share of the whole start, the steps below
+// which one runs (with the chunks of the spawn area as counts); everything comes from
+// GameController.loading, nothing is timed here. Needs no input; joining a network game can be
+// cancelled ("Cancel", Escape, the pad's B), entering another dimension cannot.
 LoadingBackdrop {
     id: screen
 
@@ -21,6 +22,8 @@ LoadingBackdrop {
     property bool canCancel: false
     readonly property bool network: progress.kind === LoadingProgress.Network
     readonly property bool newWorld: progress.kind === LoadingProgress.NewWorld
+    // Another dimension of the world played (decision E-1002): the server places the player first.
+    readonly property bool travel: progress.kind === LoadingProgress.Dimension
 
     signal cancelRequested
 
@@ -43,7 +46,7 @@ LoadingBackdrop {
         case LoadingProgress.World:
             return screen.newWorld ? qsTr("Setting up the world") : qsTr("Opening the world");
         case LoadingProgress.Joining:
-            return screen.network ? qsTr("Waiting for the server") : qsTr("Placing the player");
+            return screen.network ? qsTr("Waiting for the server") : screen.travel ? qsTr("Travelling") : qsTr("Placing the player");
         case LoadingProgress.Chunks:
             return screen.newWorld ? qsTr("Generating the terrain") : qsTr("Loading the terrain");
         }
@@ -84,7 +87,7 @@ LoadingBackdrop {
                 Label {
                     objectName: "loadingTitle"
                     Layout.fillWidth: true
-                    text: screen.network ? qsTr("Joining the server") : screen.newWorld ? qsTr("Creating the world") : qsTr("Loading the world")
+                    text: screen.travel ? qsTr("Entering %1").arg(screen.progress.destination) : screen.network ? qsTr("Joining the server") : screen.newWorld ? qsTr("Creating the world") : qsTr("Loading the world")
                     color: Theme.heading
                     font.pixelSize: Ui.type.title
                     elide: Text.ElideRight
@@ -105,7 +108,7 @@ LoadingBackdrop {
                     spacing: Ui.space.s
 
                     // One row per stage from Content to Meshes (the enum's order); a network game
-                    // starts at Joining.
+                    // and another dimension start at Joining.
                     Repeater {
                         model: LoadingProgress.Meshes - LoadingProgress.Content + 1
 
@@ -115,7 +118,7 @@ LoadingBackdrop {
                             required property int index
 
                             objectName: "loadingStep" + row.stage
-                            visible: !screen.network || row.stage >= LoadingProgress.Joining
+                            visible: !(screen.network || screen.travel) || row.stage >= LoadingProgress.Joining
                             stage: LoadingProgress.Content + row.index
                             current: screen.progress.stage
                             text: screen.stepText(row.stage)

@@ -135,6 +135,7 @@ void QcPlayerJoin::sendWelcome(QcServerClient &client, bool rejoined)
                                            std::clamp(client.view.distance, 0, QcMsg::Welcome::maxViewDistance),
                                            m_state.spawnPoint().column().x, m_state.spawnPoint().column().z});
     client.connection->send(QcMsg::ContentSync{m_state.contentPointer()});
+    client.connection->send(QcMsg::DimensionChange{m_state.dimensionOf(client).definition()});
     QcServerGameModes::send(client, m_state.info().adventure);
     m_parts.inventory.send(client);
     m_parts.health.sendHealth(client);

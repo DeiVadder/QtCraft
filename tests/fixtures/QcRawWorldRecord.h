@@ -41,6 +41,8 @@ struct QcRawWorldRecord
             chunks.append(chunk->chunk->pos());
         } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
             unloaded.append(unload->pos);
+        } else if (const auto *dimension = std::get_if<QcMsg::DimensionChange>(&message)) {
+            dimensions.append(dimension->dimension.name);
         } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
             chunkLabels.insert(labels->pos, labels->labels);
         } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
@@ -87,6 +89,8 @@ struct QcRawWorldRecord
     QList<QcChunkPos> chunks;
     // The chunks the client was told to forget.
     QList<QcChunkPos> unloaded;
+    // The dimensions the server put the player in (decision E-1002), oldest first.
+    QStringList dimensions;
     // The kind of each entity the client knows.
     QHash<quint32, QcEntityKind> entities;
     // Item entities the client was told about, with their latest stack.

@@ -129,7 +129,9 @@ void QcHudState::updateTarget()
 void QcHudState::updateTimeOfDay(double alpha)
 {
     const double time = m_parts.session->worldMirror().timeAt(alpha);
-    const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
+    // A dimension without day cycle has no day and no night to show (decision E-1003).
+    const bool shown = m_parts.session->worldMirror().dimension().dayCycle;
+    const QString label = !shown ? QString() : QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
         emit frameStateChanged();
@@ -147,15 +149,19 @@ void QcHudState::updateDial(double alpha)
     Dial dial = Dial::None;
     double angle = 0.0;
     QString clock;
+    // Where they cannot point, needle and hand spin and the clock tells no time (decision E-1004).
+    const bool spin = session.worldMirror().dimension().compassesSpin;
+    const double seconds = session.worldMirror().animationSeconds(alpha);
     if (kind == QcItemDial::Compass) {
         dial = Dial::Compass;
         const QcMsg::Welcome &welcome = session.welcome();
-        angle = QcDials::compassAngle(session.playerMotion().position, session.intent().yaw, welcome.spawnX, welcome.spawnZ);
+        angle = spin ? QcDials::spinAngle(seconds, QcDials::Dial::Compass)
+                     : QcDials::compassAngle(session.playerMotion().position, session.intent().yaw, welcome.spawnX, welcome.spawnZ);
     } else if (kind == QcItemDial::Clock) {
         dial = Dial::Clock;
-        angle = QcDials::clockAngle(time);
+        angle = spin ? QcDials::spinAngle(seconds, QcDials::Dial::Clock) : QcDials::clockAngle(time);
         const QcDials::ClockTime shown = QcDials::clockTime(time);
-        clock = u"%1:%2"_s.arg(shown.hours).arg(shown.minutes, 2, 10, QChar(u'0'));
+        clock = spin ? u"--:--"_s : u"%1:%2"_s.arg(shown.hours).arg(shown.minutes, 2, 10, QChar(u'0'));
     }
 
     // Small turns are not worth a repaint of the HUD.

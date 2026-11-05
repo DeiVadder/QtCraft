@@ -131,9 +131,13 @@ void main()
 {
     vec3 dir = normalize(vRay.xyz / vRay.w);
     vec3 color = dome(dir);
-    color = addStars(color, dir);
-    color = addMoon(color, dir);
-    color = addSun(color, dir);
-    color = addClouds(color, dir);
+    // glow.w: 0 for a sky without sun, moon, stars and clouds (the nether's fog, the end's vault;
+    // decision E-1003).
+    if (sky.glow.w > 0.5) {
+        color = addStars(color, dir);
+        color = addMoon(color, dir);
+        color = addSun(color, dir);
+        color = addClouds(color, dir);
+    }
     fragColor = vec4(color, 1.0);
 }

@@ -33,6 +33,9 @@ std::optional<QcBlockMirror::Change> QcBlockMirror::handle(const QcMessage &mess
     if (const auto *ack = std::get_if<QcMsg::BlockAck>(&message)) {
         return onAck(ack->sequence);
     }
+    if (std::holds_alternative<QcMsg::DimensionChange>(message)) {
+        return onDimensionChange();
+    }
     return std::nullopt;
 }
 
@@ -89,6 +92,18 @@ QcBlockMirror::Change QcBlockMirror::onChunkUnload(QcChunkPos pos)
     m_world->removeChunk(pos);
     m_pending.removeIf([pos](QHash<QcBlockPos, Pending>::iterator entry) { return entry.key().chunk() == pos; });
     change.unloaded = pos;
+    return change;
+}
+
+QcBlockMirror::Change QcBlockMirror::onDimensionChange()
+{
+    // Nothing of the old dimension stands in the new one, predictions neither (decision E-1002).
+    if (m_world) {
+        m_world->clear();
+    }
+    m_pending.clear();
+    Change change;
+    change.dimensionChanged = true;
     return change;
 }
 

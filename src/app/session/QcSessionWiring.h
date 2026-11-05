@@ -62,6 +62,9 @@ signals:
     void disconnected(const QString &reason);
     // The session ran a tick.
     void ticked();
+    // The player is in another dimension, or in the one he joined in (decision E-1002); the meshes
+    // of the old one are gone.
+    void dimensionChanged();
 
 private:
     void connectWorld();
@@ -74,6 +77,7 @@ private:
     void connectAnvil();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
+    void onDimensionChanged();
     void onMachineOpened();
     void onMachineClosed();
     void onTradeOpened();

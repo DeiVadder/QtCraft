@@ -1,0 +1,13 @@
+{
+    "name": "nether",
+    "generator": {"type": "flat", "options": "bedrock,3*netherrack"},
+    "ceiling": 0,
+    "coordinateScale": 8,
+    "sky": "nether",
+    "ambientLight": 7,
+    "skyLight": false,
+    "dayCycle": false,
+    "weather": false,
+    "compassesSpin": true,
+    "bedsExplode": true
+}
