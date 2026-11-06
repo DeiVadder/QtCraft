@@ -3,8 +3,7 @@
 
 #include "common/content/mobs/QcMobSerializer.h"
 #include "common/physics/QcBodyFit.h"
-#include "fixtures/QcServerTestFixture.h"
-#include "server/core/QcServerWorld.h"
+#include "mobs/QcMobStageFixture.h"
 #include "server/mobbrains/QcMobSteering.h"
 #include "server/projectiles/QcProjectileFlight.h"
 #include "server/projectiles/QcProjectileManager.h"
@@ -16,49 +15,11 @@ using namespace Qt::StringLiterals;
 // The creatures of the nether (decisions E-1052 to E-1055): the Rottusk's pack, the magma slime that
 // hops and falls apart, the wailer's fire that a strike sends back, and the lava wader that walks on
 // lava and carries a saddle and a rider. Ticks are stepped by hand.
-class TestNetherMobs : public QcServerTestFixture
+class TestNetherMobs : public QcMobStageFixture
 {
     Q_OBJECT
 
 private:
-    QcCreatureKindId kind(const QString &name) const { return *m_content->mobKind(u"qtcraft:"_s + name); }
-    QcServerClient &player() { return *m_server->entities().clients().front(); }
-
-    void joinStage(const QString &mode = u"survival"_s)
-    {
-        join();
-        loadAround(m_feet, 2);
-        chat(u"/gamemode "_s + mode);
-        m_server->mobs().setNaturalSpawning(false);
-        m_server->mobs().removeAll();
-    }
-
-    quint32 spawn(const QString &name, double dx, double dz, double dy = 0.0)
-    {
-        const QcVec3 at{m_feet.x + dx + 0.5, m_feet.y + dy, m_feet.z + dz + 0.5};
-        return m_server->mobs().spawn(kind(name), at, m_server->entities().newId());
-    }
-
-    // A pool of lava below the feet level, `size` blocks to every side, open above.
-    void lavaPool(int size)
-    {
-        for (int dx = -size; dx <= size; ++dx) {
-            for (int dz = -size; dz <= size; ++dz) {
-                m_server->world().setBlock(m_feet.offset(dx, -1, dz), id("qtcraft:lava"));
-                for (int dy = 0; dy <= 4; ++dy) {
-                    m_server->world().setBlock(m_feet.offset(dx, dy, dz), qcAirBlockId);
-                }
-            }
-        }
-    }
-
-    void hold(const char *name)
-    {
-        chat(u"/give "_s + QString::fromLatin1(name).section(u':', -1));
-        send(QcMsg::SelectHotbarSlot{slotOf(item(name))});
-        ticks(1);
-    }
-
     void input(float yaw, float pitch, bool sneak = false)
     {
         QcPlayerInput wish;
@@ -86,34 +47,6 @@ private:
         send(QcMsg::UseEntity{wader});
         ticks(1);
         return wader;
-    }
-
-    static QcServerConfig configIn(const QString &directory)
-    {
-        QcServerConfig config;
-        config.worldName = u"Nether"_s;
-        config.seed = 4711;
-        config.worldDirectory = directory;
-        return config;
-    }
-
-    // Opens the world of `directory` again and joins it as the same player.
-    void reopen(const QString &directory)
-    {
-        m_client.reset();
-        m_server.reset();
-        QcServerConfig config = configIn(directory);
-        config.viewDistance = m_viewDistance;
-        config.keepChunksLoaded = true;
-        config.operators = {u"Raw"_s};
-        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
-        QVERIFY(m_server->openWorld().has_value());
-        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
-        m_server->addClient(std::move(serverEnd), m_origin);
-        m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->hello(u"Raw"_s);
-        QcTestUtil::pump();
-        ticks(1);
     }
 
     // A fireball of `shooter` straight down at the stage, two blocks east of the player, with a pig
@@ -175,7 +108,7 @@ private slots:
     void fireImmuneCreaturesStandInLava()
     {
         joinStage();
-        lavaPool(1);
+        floorOf("qtcraft:lava", 1);
         const quint32 tusk = spawn(u"rottusk"_s, 0, 0, -1.0);
         const quint32 slime = spawn(u"magma_slime"_s, 1, 0, -1.0);
         const quint32 zombie = spawn(u"zombie"_s, -1, 0, -1.0);
@@ -370,7 +303,7 @@ private slots:
     void aWaderWalksOnLavaUnhurt()
     {
         joinStage();
-        lavaPool(3);
+        floorOf("qtcraft:lava", 3);
         const quint32 wader = spawn(u"lava_wader"_s, 1, 0);
         const double surface = m_feet.y;
         double travelled = 0.0;
@@ -400,7 +333,7 @@ private slots:
     void aSaddledWaderCarriesAndFollowsItsRider()
     {
         joinStage();
-        lavaPool(6);
+        floorOf("qtcraft:lava", 6);
         player().motion.position = QcVec3{m_feet.x + 0.5, m_feet.y + 0.2, m_feet.z + 0.5};
         const quint32 wader = spawn(u"lava_wader"_s, 1, 0);
         m_server->mobs().find(wader)->noAi = false;
@@ -488,7 +421,7 @@ private slots:
         m_server->mobs().setNaturalSpawning(false);
         m_server->mobs().removeAll();
         chat(u"/gamemode creative"_s);
-        lavaPool(3);
+        floorOf("qtcraft:lava", 3);
         const quint32 wader = ridden();
         QCOMPARE(m_server->mobs().find(wader)->rider, player().id);
         if (logsOut) {

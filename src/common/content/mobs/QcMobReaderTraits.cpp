@@ -165,7 +165,62 @@ QcDrinkHealDefinition parseDrinks(QcJsonFieldReader &reader, const QString &pack
     return drinks;
 }
 
+// Bartering for gold (decision E-1081): the object "barter".
+QcBarterDefinition parseBarter(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcBarterDefinition barter;
+    barter.sparedBy = QcContentFields::parseNames(u"sparedBy"_s, packNamespace, reader);
+    barter.loves = QcContentFields::parseNames(u"loves"_s, packNamespace, reader);
+    barter.currency = reader.name(u"currency"_s, packNamespace);
+    barter.table = reader.name(u"table"_s, packNamespace);
+    barter.guards = QcContentFields::parseNames(u"guards"_s, packNamespace, reader);
+    barter.admireSeconds = reader.number(u"admireSeconds"_s, barter.admireSeconds, 0.5, 60.0);
+    barter.alarmRange = reader.number(u"alarmRange"_s, barter.alarmRange, 0.0, 64.0);
+    barter.seekRange = reader.number(u"seekRange"_s, barter.seekRange, 0.0, 32.0);
+    barter.hoardSize = reader.integer(u"hoardSize"_s, barter.hoardSize, 0, 36);
+    if (reader.ok() && !barter.currency.isEmpty() && !barter.loves.contains(barter.currency)) {
+        barter.loves.append(barter.currency);
+    }
+    if (reader.ok() && !barter.currency.isEmpty() && barter.table.isEmpty()) {
+        reader.fail(u"a 'currency' needs the loot 'table' it is bartered for"_s);
+    }
+    return barter;
+}
+
+// Blocks it keeps away from (decision E-1082): the object "repelledBy".
+QcRepellentDefinition parseRepellents(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcRepellentDefinition repellents;
+    repellents.blocks = QcContentFields::parseNames(u"blocks"_s, packNamespace, reader);
+    repellents.range = reader.integer(u"range"_s, repellents.range, 1, 16);
+    repellents.height = reader.integer(u"height"_s, repellents.height, 0, 8);
+    if (reader.ok() && repellents.blocks.isEmpty()) {
+        reader.fail(u"needs the 'blocks' it keeps away from"_s);
+    }
+    return repellents;
+}
+
 } // namespace
+
+// Gold, fear of blocks, anger and young ones of the nether folk (decisions E-1081 to E-1083).
+void QcMobReader::parseGoldFolkTraits()
+{
+    m_reader.nestedObject(u"barter"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.barter = parseBarter(nested, m_namespace); });
+    m_reader.nestedObject(u"repelledBy"_s,
+                          [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.repellents = parseRepellents(nested, m_namespace); });
+    m_mob.angerSeconds = m_reader.number(u"angerSeconds"_s, m_mob.angerSeconds, 1.0, 600.0);
+    m_reader.nestedObject(u"young"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.youngChance = nested.number(u"chance"_s, 0.0, 0.0, 1.0);
+        m_mob.staysYoung = nested.boolean(u"staysYoung"_s, false);
+    });
+    if (m_reader.ok() && m_mob.barter && m_mob.ai != QcMobDefinition::Ai::Neutral) {
+        m_reader.fail(u"'barter' goes with the neutral AI"_s);
+    }
+    // Only the passive brain looks for such blocks, and the hostile one that builds on it.
+    if (m_reader.ok() && m_mob.repellents && m_mob.ai != QcMobDefinition::Ai::Passive && m_mob.ai != QcMobDefinition::Ai::Hostile) {
+        m_reader.fail(u"'repelledBy' goes with the passive or hostile AI"_s);
+    }
+}
 
 // Drifting, riding, falling apart and the weakness to a projectile (decisions E-1053 to E-1055).
 void QcMobReader::parseNetherTraits()
@@ -207,6 +262,7 @@ void QcMobReader::parseCompanions()
     m_mob.fireImmune = m_reader.boolean(u"fireImmune"_s, false);
     m_mob.hops = m_reader.boolean(u"hops"_s, false);
     parseNetherTraits();
+    parseGoldFolkTraits();
     m_mob.frightens = m_reader.boolean(u"frightens"_s, false);
     m_mob.scaredOfCats = m_reader.boolean(u"scaredOfCats"_s, false);
 

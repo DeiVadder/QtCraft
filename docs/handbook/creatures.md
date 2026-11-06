@@ -2,9 +2,38 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-bristleboar"></a>Bristleboar
+
+A heavy tusked beast of the crimson forests with a pale crest of bristles. It charges anyone it sees. Crimson fungus makes two of them breed, and they keep well away from warped fungus and from portals. It gives raw pork and leather.
+
+| | |
+|---|---|
+| ID | `qtcraft:bristleboar` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 40 health points |
+| Size | 1.3 m wide, 1.4 m tall |
+| Speed | 1.2 m/s walking, 3.6 m/s chasing |
+| Attack | 6 damage within 1.8 m, every 2 s |
+| Sees players within | 16 m |
+| Appears | day and night |
+| Group size | up to 4 |
+| Spawn weight | 9 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Breeds when fed | [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) |
+| Breeding | again after 5 min, young grow up in 20 min |
+| Drops | [Raw porkchop](food.md#item-qtcraft-raw_porkchop) (2–4×), [Leather](items.md#item-qtcraft-leather) (50 %) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-caped_mannequin"></a>Caped mannequin
 
@@ -805,6 +834,40 @@ Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 **Appears in biomes**
 
 [Tundra](biomes.md#biome-qtcraft-tundra)
+
+### <a id="mob-qtcraft-tuskling"></a>Tuskling
+
+The living boar folk of the wastes and the crimson forests, with a broad snout, tusks that curve upwards and gold on their arms. A Tuskling attacks anyone who wears no gold, but leaves you alone in a single golden piece of armour. Hand it a Gold Ingot, or drop one: it looks at the gold for a few seconds and throws you something in exchange. Breaking gold blocks or ore near it, or opening a chest it sees, makes every Tuskling around turn on you. Young ones stay young and only play.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling` |
+| Behaviour | neutral: leaves players alone until one hurts it, then chases and attacks them |
+| Health | 16 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.4 m/s walking, 4.2 m/s chasing |
+| Attack | 5 damage within 1.6 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | day and night |
+| Group size | up to 4 |
+| Spawn weight | 15 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Golden sword](tools.md#item-qtcraft-golden_sword) (8.5 %) |
+| Pack | strike one and the others within 16 m chase you too |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+[Nether Wastes](biomes.md#biome-qtcraft-nether_wastes)
+
+**Also appears**
+
+day and night
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-villager"></a>Villager
 

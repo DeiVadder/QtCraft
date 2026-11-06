@@ -53,7 +53,8 @@ struct Resolved
     ignored with a warning) and warns of unknown taming, healing and dye items, and leaves out
     crumbling and drinking that name unknown blocks or items, and a family whose child is no
     creature, flies, lives in water or has a family of its own (decision E-839); unknown items
-    among the family's pop drops are warned of. */
+    among the family's pop drops are warned of, and so is every name of \c {barter} and
+    \c {repelledBy} the content does not have (decisions E-1081, E-1082). */
 [[nodiscard]] Resolved resolve(const QcContentRegistry &content, const QcMobDefinition &mob);
 /*! Returns the taming part of resolve() for the creature \a mob in \a content (decision
     E-480). */

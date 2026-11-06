@@ -2948,3 +2948,22 @@ Mit den fünf Biomen (84.3, E-1049; Rechner unter Last durch parallele Pakete, L
 - **Planen:** 16 Regionen (448 Blöcke) im Schnitt 0,23–0,27 ms je Region, mit und ohne Festung; ein Plan wird je Region einmal gemacht (Cache von 256 Plänen).
 - **Chunks in einer Festung** (6 × 6 Chunks um ihre Mitte) kosten nicht mehr als gewöhnliche Nether-Chunks: Die Höhlen dort sind offen, das Gelände ist billiger, und das Schreiben der Festung fällt nicht auf. Der Vergleich mit 84.3 (0,54–0,56 ms bei Last 12) ist unter dieser Last nicht belastbar; eine verschränkte A/B-Messung gegen 84.3 steht aus und braucht einen ruhigen Rechner.
 - **Test:** `test_nether_fortress` von etwa 305 s auf 17–24 s Debug-Zeit (die Tests, die Blöcke lesen, teilen sich 9 erzeugte Festungen statt jede Festung jedes Seeds neu; die Prüfungen auf Reihenfolge und vier Threads erzeugen je 3×3 Chunks frisch, das Abtasten der Pfeiler unter den Spawn-Kästen kostet Planungszeit, Erzeugungskosten nicht neu gemessen), `TIMEOUT` 600 → 450 (≥ 15 × Debug-Zeit; `tests/structures/tests.cmake`; die übrigen Struktur-Tests behalten ihre Grenzen).
+
+## Paket 84.6a: Hauerling und Borstenkeiler (2026-11-06)
+
+Release-Build, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 9 bis 17). `test_nether_spawns::tickCostOfACrowd`: je Art 40 Wesen im Nether, nur `QcMobManager::tick`. Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,047 | 0,051 | 0,048 |
+| Hauerling | 0,051 | 0,047 | 0,056 |
+| Borstenkeiler | 0,262 | 0,266 | 0,271 |
+
+`test_gold_folk::tickCostOfBartering`: ganzer Server-Tick mit `QcServerBarter`, 40 Wesen, 100 Stapel Stein liegen herum, die kein Wesen nimmt (jeder Blick prüft also alle), Spieler mit Goldhelm. Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,138 | 0,141 | 0,135 |
+| Hauerling | 0,139 | 0,148 | 0,135 |
+
+- **Bewertung:** Der Hauerling kostet im Rahmen der Streuung so viel wie ein Zombie, auch mit dem Suchen nach Gold. Der Borstenkeiler kostet rund das Fünfeinhalbfache (0,0066 ms je Wesen und Tick): jeder Blick prüft 17 × 17 × 9 Blöcke auf Wirrpilz und Portal (`repelledBy`). 40 Keiler nehmen 0,5 % des Budgets von 50 ms; ein Zwischenspeicher lohnt sich erst, wenn Messungen im echten Spiel es verlangen.

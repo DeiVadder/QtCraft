@@ -1,0 +1,26 @@
+{
+    "name": "mob.bristleboar.hurt",
+    "volume": 0.9,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.25,
+            "frequency": 180,
+            "endFrequency": 80,
+            "attack": 0.02,
+            "curve": 2,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.2,
+            "attack": 0.02,
+            "curve": 2,
+            "highpass": 500,
+            "gain": 0.2
+        }
+    ]
+}

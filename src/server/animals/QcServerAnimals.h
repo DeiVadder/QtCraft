@@ -7,6 +7,7 @@
 #include "common/core/QcCreatureKindId.h"
 #include "server/animals/QcMobBreeding.h"
 #include "server/animals/QcPetCare.h"
+#include "server/animals/QcServerBarter.h"
 
 class QcServerInventory;
 class QcServerSounds;
@@ -38,6 +39,8 @@ public:
     /*! Taming, sitting, healing and collars of the tameable creature \a mobId by the player of
         \a client (QcPetCare, decision E-480); returns false when the use is none of these. */
     bool tend(QcServerClient &client, quint32 mobId) { return m_pets.use(client, mobId); }
+    /*! Returns the bartering of creatures that love gold (decision E-1081). */
+    QcServerBarter &barter() { return m_barter; }
     /*! Milks the grown creature \a mobId with the milking item held by the player of \a client
         (a cow and a bucket, decision E-500): one of the items becomes QcMobDefinition::milkItem.
         Returns false when the held item does not milk it. */
@@ -74,4 +77,5 @@ private:
     QcServerInventory &m_inventory;
     QcMobBreeding m_breeding;
     QcPetCare m_pets;
+    QcServerBarter m_barter;
 };

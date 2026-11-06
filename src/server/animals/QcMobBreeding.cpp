@@ -51,7 +51,10 @@ QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMo
         if (!mob.dormant) {
             mob.love = std::max(0.0, mob.love - dt);
             mob.breedCooldown = std::max(0.0, mob.breedCooldown - dt);
-            mob.growUp = std::max(0.0, mob.growUp - dt);
+            // A young one of a kind that stays young never grows up (decision E-1083).
+            if (!m_content->mobs()[mob.type].staysYoung) {
+                mob.growUp = std::max(0.0, mob.growUp - dt);
+            }
         }
     }
 
@@ -82,9 +85,10 @@ QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMo
 void QcMobBreeding::approachPartners(QList<QcCreature> &mobs) const
 {
     // Animals in love walk towards the nearest other one of their kind in love (as the goal of their
-    // wandering, QcMobBehaviour, which keeps it until its timer runs out).
+    // wandering, QcMobBehaviour, which keeps it until its timer runs out). One that chases a player
+    // has no use for that goal: it goes on hunting.
     for (QcCreature &mob : mobs) {
-        if (mob.dormant || mob.love <= 0.0 || mob.fleeTimer > 0.0) {
+        if (mob.dormant || mob.love <= 0.0 || mob.fleeTimer > 0.0 || mob.chasing != 0) {
             continue;
         }
 

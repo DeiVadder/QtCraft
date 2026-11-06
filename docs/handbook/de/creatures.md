@@ -2,9 +2,38 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hauerling](#mob-qtcraft-tuskling) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-bristleboar"></a>Borstenkeiler
+
+Ein schweres Hauertier der Karmesinwälder mit einem hellen Kamm aus Borsten. Es stürmt auf jeden los, den es sieht. Mit Karmesinpilzen vermehren sich zwei von ihnen, und von Wirrpilzen und Portalen halten sie sich fern. Es gibt rohes Schweinefleisch und Leder.
+
+| | |
+|---|---|
+| ID | `qtcraft:bristleboar` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 40 Lebenspunkte |
+| Größe | 1,3 m breit, 1,4 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,6 m/s beim Verfolgen |
+| Angriff | 6 Schaden bis 1,8 m, alle 2 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 9 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Vermehrt sich mit | [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Beute | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) (2–4×), [Leder](items.md#item-qtcraft-leather) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-villager"></a>Dorfbewohner
 
@@ -163,6 +192,40 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 **Erscheint in Biomen**
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-tuskling"></a>Hauerling
+
+Das lebende Keilervolk der Wüsten und Karmesinwälder, mit breitem Rüssel, nach oben gebogenen Hauern und Gold an den Armen. Ein Hauerling greift jeden an, der kein Gold trägt, lässt dich aber schon mit einem einzigen goldenen Rüstungsteil in Ruhe. Gib ihm einen Goldbarren oder wirf ihn hin: Er betrachtet das Gold ein paar Sekunden und wirft dir etwas dafür zu. Wer in seiner Nähe Goldblöcke oder Golderz abbaut oder vor seinen Augen eine Truhe öffnet, hat bald jeden Hauerling ringsum gegen sich. Junge bleiben jung und spielen nur.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 4,2 m/s beim Verfolgen |
+| Angriff | 5 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 15 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Goldschwert](tools.md#item-qtcraft-golden_sword) (8,5 %) |
+| Rudel | schlägst du einen, jagen dich auch die anderen im Umkreis von 16 m |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-witch"></a>Hexe
 

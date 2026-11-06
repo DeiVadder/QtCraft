@@ -1301,7 +1301,7 @@ Tough hide for books; for now it can only be pieced together from scraps.
 
 **Dropped by**
 
-[Cow](creatures.md#mob-qtcraft-cow) (50 %)
+[Bristleboar](creatures.md#mob-qtcraft-bristleboar) (50 %), [Cow](creatures.md#mob-qtcraft-cow) (50 %)
 
 ### <a id="item-qtcraft-leather_scrap"></a>Leather scrap
 

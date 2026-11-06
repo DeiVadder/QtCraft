@@ -132,7 +132,7 @@ private slots:
         const QHash<QString, QList<QcVec3>> seen = census(*world, QcDayCycle::dayLength * 0.25);
         qInfo() << "came:" << seen.keys();
         const QSet<QString> nativeKinds{u"qtcraft:rottusk"_s, u"qtcraft:magma_slime"_s, u"qtcraft:wailer"_s, u"qtcraft:lava_wader"_s,
-                                        u"qtcraft:skeleton"_s, u"qtcraft:shadewalker"_s};
+                                        u"qtcraft:skeleton"_s, u"qtcraft:shadewalker"_s, u"qtcraft:tuskling"_s, u"qtcraft:bristleboar"_s};
         QVERIFY(!seen.isEmpty());
         for (auto it = seen.cbegin(); it != seen.cend(); ++it) {
             QVERIFY2(nativeKinds.contains(it.key()), qPrintable(it.key()));
@@ -198,6 +198,9 @@ private slots:
                                  .arg(cost({u"qtcraft:zombie"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:rottusk"_s}, 40), 0, 'f', 3)
                                  .arg(cost({u"qtcraft:magma_slime"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:wailer"_s}, 40), 0, 'f', 3)
                                  .arg(cost({u"qtcraft:lava_wader"_s}, 40), 0, 'f', 3);
+        // The gold folk (decision E-1086): with a player who wears no gold, so tusklings hunt him.
+        qInfo().noquote() << u"ms per tick: 40 zombies %1, 40 tusklings %2, 40 bristleboars %3"_s.arg(cost({u"qtcraft:zombie"_s}, 40), 0, 'f', 3)
+                                 .arg(cost({u"qtcraft:tuskling"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:bristleboar"_s}, 40), 0, 'f', 3);
     }
 
     void rottusksDoNotCrowdTheWastes_data()
@@ -255,6 +258,34 @@ private slots:
         }
         qInfo() << "fortress kinds in its parts:" << inside << "others outside:" << outside << seen.keys();
         QVERIFY(inside > 0);
+    }
+
+    // Natural spawns come young by `young.chance` (decision E-1083): both kinds of the crimson forest
+    // and the wastes, a fifth of them. Spawned creatures are removed at once, so the cap never fills.
+    void aFifthOfTheGoldFolkComesYoung()
+    {
+        const std::unique_ptr<QcServerWorld> world = makeWorld();
+        QcMobManager mobs(m_content, 9);
+        mobs.setDimension(nether());
+        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = {8.5, 64.0, 8.5}}};
+        const QcCreatureKindId kinds[] = {*m_content->mobKind(u"qtcraft:tuskling"_s), *m_content->mobKind(u"qtcraft:bristleboar"_s)};
+        m_nextId = 1;
+        int seen = 0;
+        int young = 0;
+        for (int tick = 0; tick < 20 * seconds * QcPhysics::tickRate && seen < 400; ++tick) {
+            mobs.tick(*world, players, 0.0, QcPhysics::tickDuration, [this] { return m_nextId++; });
+            for (const QcCreature &mob : mobs.mobs()) {
+                if (std::ranges::find(kinds, mob.type) != std::end(kinds)) {
+                    ++seen;
+                    young += mob.isYoung() ? 1 : 0;
+                }
+            }
+            mobs.removeAll();
+        }
+        qInfo() << "young" << young << "of" << seen;
+        QVERIFY2(seen >= 200, qPrintable(QString::number(seen)));
+        const double share = static_cast<double>(young) / seen;
+        QVERIFY2(std::abs(share - 0.2) < 0.08, qPrintable(QString::number(share)));
     }
 
     void theTimeOfDayDoesNotReachTheNether()

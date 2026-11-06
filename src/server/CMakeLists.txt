@@ -16,12 +16,14 @@ target_sources(qc_server PRIVATE
     advancements/QcServerAdvancements.h advancements/QcServerAdvancements.cpp
 )
 target_sources(qc_server PRIVATE
+    animals/QcBarterState.h
     animals/QcMobBreeding.h animals/QcMobBreeding.cpp
     animals/QcMobFamilies.h animals/QcMobFamilies.cpp
     animals/QcMobLaying.h animals/QcMobLaying.cpp
     animals/QcPetCare.h animals/QcPetCare.cpp
     animals/QcPetOwners.h animals/QcPetOwners.cpp
     animals/QcServerAnimals.h animals/QcServerAnimals.cpp
+    animals/QcServerBarter.h animals/QcServerBarter.cpp
 )
 target_sources(qc_server PRIVATE
     backup/QcBackupRunner.h backup/QcBackupRunner.cpp
@@ -232,6 +234,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     mobbrains/QcArcherBrain.h mobbrains/QcArcherBrain.cpp
     mobbrains/QcArcherState.h
+    mobbrains/QcBarterSight.h mobbrains/QcBarterSight.cpp
     mobbrains/QcCreatureBrains.h mobbrains/QcCreatureBrains.cpp
     mobbrains/QcDrifterBrain.h mobbrains/QcDrifterBrain.cpp
     mobbrains/QcDrifterState.h
@@ -331,6 +334,7 @@ target_sources(qc_server PRIVATE
     spawning/QcSpawnLight.h spawning/QcSpawnLight.cpp
 )
 target_sources(qc_server PRIVATE
+    storage/QcBarterCodec.h storage/QcBarterCodec.cpp
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp

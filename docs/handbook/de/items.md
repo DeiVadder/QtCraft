@@ -1169,7 +1169,7 @@ Zähe Haut für Bücher; vorerst nur aus Fetzen zusammengesetzt.
 
 **Droppt aus**
 
-[Kuh](creatures.md#mob-qtcraft-cow) (50 %)
+[Borstenkeiler](creatures.md#mob-qtcraft-bristleboar) (50 %), [Kuh](creatures.md#mob-qtcraft-cow) (50 %)
 
 ### <a id="item-qtcraft-leather_scrap"></a>Lederfetzen
 

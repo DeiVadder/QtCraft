@@ -19,6 +19,18 @@
 
 namespace {
 
+// The items of the armour `client` wears.
+QList<QcItemId> wornBy(const QcServerClient &client)
+{
+    QList<QcItemId> worn;
+    for (const QcItemStack &stack : client.equipment.stacks) {
+        if (!stack.isEmpty()) {
+            worn.append(stack.item);
+        }
+    }
+    return worn;
+}
+
 // The pieces of armour `client` wears.
 int armourPieces(const QcServerClient &client)
 {
@@ -62,6 +74,7 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .hurtBy = fresh(client->foes.hurtBy, client->foes.hurtTick),
                             .struck = fresh(client->foes.struck, client->foes.struckTick),
                             .held = held.isEmpty() ? qcNoItem : held.item,
+                            .worn = wornBy(*client),
                             .effects = &client->effects,
                             .speed = std::hypot(velocity.x, velocity.z),
                             .hurtTick = client->foes.hurtTick,

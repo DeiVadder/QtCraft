@@ -1,0 +1,43 @@
+{
+    "name": "tuskling",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "tuskling_hide",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "tuskling_face",
+            "tint": "none"
+        },
+        "nose": {
+            "texture": "tuskling_snout",
+            "tint": "none"
+        },
+        "hat": {
+            "texture": "tuskling_gold",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "tuskling_tunic",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "tuskling_hide",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "tuskling_hide",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "tuskling_breeches",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "tuskling_hoof",
+            "tint": "none"
+        }
+    }
+}

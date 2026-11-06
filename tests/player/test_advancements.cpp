@@ -75,11 +75,11 @@ private:
         return m_server->mobs().spawn(*m_content->mobKind(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
     }
 
-    // The base content with two advancements for uses on creatures: a bone and wheat.
+    // The base content with advancements for uses on creatures: a bone, wheat and a gold ingot.
     static std::shared_ptr<const QcContentRegistry> contentWithUses()
     {
         auto content = std::make_shared<QcContentRegistry>(*QcTestUtil::loadContent());
-        for (const char *item : {"bone", "wheat"}) {
+        for (const char *item : {"bone", "wheat", "gold_ingot"}) {
             QcAdvancementDefinition use;
             use.name = u"test:%1_on_creature"_s.arg(QString::fromLatin1(item));
             use.icon = u"qtcraft:stick"_s;
@@ -269,6 +269,24 @@ private slots:
         QVERIFY(m_server->mobs().find(wolf)->isTame());
         QVERIFY(done("qtcraft:tame"));
         QVERIFY(!done("test:bone_on_creature"));
+    }
+
+    // An ingot a creature refuses is no use on it, one it takes is (decision E-1081).
+    void aRefusedGiftIsNoUse()
+    {
+        cleanup();
+        m_content = contentWithUses();
+        join();
+        const quint32 tuskling = spawnMob("qtcraft:tuskling", 2, 0);
+        hold("qtcraft:gold_ingot");
+        m_server->mobs().find(tuskling)->growUp = 100.0;
+        send(QcMsg::UseEntity{tuskling});
+        QVERIFY(!m_server->mobs().find(tuskling)->barter->admires());
+        QVERIFY(!done("test:gold_ingot_on_creature"));
+        m_server->mobs().find(tuskling)->growUp = 0.0;
+        send(QcMsg::UseEntity{tuskling});
+        QVERIFY(m_server->mobs().find(tuskling)->barter->admires());
+        QVERIFY(done("test:gold_ingot_on_creature"));
     }
 
     void damagedAdvancementsCostOnlyTheProgress()

@@ -79,6 +79,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         disarmCutWire();
         m_parts.blocks.breakBlock(pos, false);
         m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
+        m_parts.animals.barter().alarm(client, definition.name, false);
         return;
     }
 
@@ -101,6 +102,8 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     disarmCutWire();
     m_parts.blocks.breakBlock(pos, QcMining::canHarvest(definition, held));
     m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
+    // Gold and containers the creatures that barter guard (decision E-1081).
+    m_parts.animals.barter().alarm(client, definition.name, false);
     client.hunger.exhaust(QcHunger::mineBlock);
 
     if (held && held->durability > 0) {
@@ -189,6 +192,9 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 
     if (clickedBlock && (m_state.machineRules().machineOf(*clickedBlock) || storage) && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         m_parts.screens.open(client, target);
+        if (storage) {
+            m_parts.animals.barter().alarm(client, m_state.content().block(*clickedBlock).name, true);
+        }
         return true;
     }
 
@@ -467,6 +473,14 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
         return;
     }
     const UseOnEntity use = useOnEntity(client, entityId);
+    // A creature that barters takes its currency from the hand (decision E-1081). The currency is
+    // never used otherwise on it, even when it refuses now.
+    if (const QcServerBarter::Giving giving = m_parts.animals.barter().give(client, entityId); giving != QcServerBarter::Giving::NotTheCurrency) {
+        if (giving == QcServerBarter::Giving::Given) {
+            noteUse(client, use);
+        }
+        return;
+    }
     // A cow takes the bucket before anything else is done with it (decision E-500).
     if (m_parts.animals.milk(client, entityId)) {
         noteUse(client, use);

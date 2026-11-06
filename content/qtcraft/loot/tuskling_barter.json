@@ -1,0 +1,102 @@
+{
+    "name": "tuskling_barter",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "item": "water_bottle",
+                    "weight": 10
+                },
+                {
+                    "item": "iron_nugget",
+                    "weight": 10,
+                    "count": [
+                        10,
+                        36
+                    ]
+                },
+                {
+                    "item": "shade_pearl",
+                    "weight": 10,
+                    "count": [
+                        2,
+                        4
+                    ]
+                },
+                {
+                    "item": "string",
+                    "weight": 20,
+                    "count": [
+                        3,
+                        9
+                    ]
+                },
+                {
+                    "item": "quartz",
+                    "weight": 20,
+                    "count": [
+                        5,
+                        12
+                    ]
+                },
+                {
+                    "item": "obsidian",
+                    "weight": 40
+                },
+                {
+                    "item": "crying_obsidian",
+                    "weight": 40,
+                    "count": [
+                        1,
+                        3
+                    ]
+                },
+                {
+                    "item": "fireball",
+                    "weight": 40
+                },
+                {
+                    "item": "leather",
+                    "weight": 40,
+                    "count": [
+                        2,
+                        4
+                    ]
+                },
+                {
+                    "item": "soul_sand",
+                    "weight": 40,
+                    "count": [
+                        2,
+                        8
+                    ]
+                },
+                {
+                    "item": "nether_brick",
+                    "weight": 40,
+                    "count": [
+                        2,
+                        8
+                    ]
+                },
+                {
+                    "item": "gravel",
+                    "weight": 40,
+                    "count": [
+                        8,
+                        16
+                    ]
+                },
+                {
+                    "item": "blackstone",
+                    "weight": 40,
+                    "count": [
+                        8,
+                        16
+                    ]
+                }
+            ]
+        }
+    ]
+}

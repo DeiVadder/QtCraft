@@ -82,6 +82,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     content/mobs/QcAppearance.h
     content/mobs/QcAppearanceDefinition.h
+    content/mobs/QcBarterDefinition.h
     content/mobs/QcMobDefinition.h
     content/mobs/QcMobParser.h content/mobs/QcMobParser.cpp
     content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderTraits.cpp

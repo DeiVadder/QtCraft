@@ -200,7 +200,8 @@ private:
         const std::optional<QcCreatureKindId> type = m_content.mobKind(header.type);
         // Without its creature component it is a grown creature at full health.
         stored.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
-        std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored));
+        QcStackReader stacks(m_content, m_path, m_warnings);
+        std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored), stacks);
         if (!read) {
             return false;
         }

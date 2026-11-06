@@ -7,6 +7,7 @@ class QcBodyBurning;
 class QcFireIgnition;
 class QcLightningStrike;
 class QcPlayerHealth;
+class QcServerAnimals;
 class QcServerCircuits;
 class QcServerExperience;
 class QcServerExplosions;
@@ -22,7 +23,7 @@ class QcSnowfall;
 
 /*! \brief The gameplay systems of a server: each runs its own part of the tick on the world and its
     bodies (fire, weather, health, minecarts, boats, experience, projectiles, circuits, explosions,
-    the players' mining and using, portals).
+    the players' mining and using, portals, the care of animals).
 
     QcServer owns them and hands them out together through QcServer::systems(), for the headless
     game, tools and tests that drive or inspect one of them directly. */
@@ -60,4 +61,6 @@ struct QcServerSystems
     QcServerAdvancements &advancements;
     /*! Portals and the journeys through them (decision E-1020). */
     QcServerPortals &portals;
+    /*! Feeding, breeding, pets and bartering (decisions E-293, E-1081). */
+    QcServerAnimals &animals;
 };

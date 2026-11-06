@@ -10,6 +10,7 @@
 #include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPose.h"
+#include "server/animals/QcBarterState.h"
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
 #include "server/entities/QcHurtWindow.h"
@@ -156,6 +157,9 @@ struct QcCreature : QcEntity
     quint32 vehicle = 0;
     /*! The heading and charge of a drifter (QcMobDefinition::Ai::Drifter, decision E-1053). */
     QcComponent<QcDrifterState> drifter;
+    /*! What a creature that barters holds and looks at (QcMobDefinition::barter, decision
+        E-1081): a component only creatures of such a kind have. */
+    QcComponent<QcBarterState> barter;
     /*! The player (entity id) riding it, 0 for none (decision E-1054); not saved. */
     quint32 rider = 0;
     /*! Wears a saddle (decision E-1054), saved with it. */

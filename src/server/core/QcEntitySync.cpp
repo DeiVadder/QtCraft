@@ -21,12 +21,16 @@ quint16 flagsOf(const QcEntity &entity, bool swung, bool sneaking, bool sprintin
                    | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0) | (entity.burnTicks > 0 ? QcMsg::Burning : 0));
 }
 
-// What a creature holds: a drink to heal while it drinks (decision E-623), else the block a
-// shadewalker carries (decision E-460), else its kind's item (an archer's bow, decision E-426).
+// What a creature holds: a drink to heal while it drinks (decision E-623), else what one that
+// barters looks at (E-1081), else the block a shadewalker carries (decision E-460), else its kind's
+// item (an archer's bow, decision E-426).
 QcItemId heldBy(const QcCreature &creature, const QcMobDefinition &kind)
 {
     if (kind.drinks && creature.archer.has() && creature.archer->drinking()) {
         return kind.drinks->itemId;
+    }
+    if (creature.barter && creature.barter->admires()) {
+        return creature.barter->admiring.item;
     }
     return creature.carriedItem != qcNoItem ? creature.carriedItem : kind.heldItemId;
 }

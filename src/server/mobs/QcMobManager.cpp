@@ -140,6 +140,9 @@ quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint
     if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Golem) {
         mob.golem.emplace();
     }
+    if (m_content->mobs()[type].barter) {
+        mob.barter.emplace();
+    }
     // Only creatures that are saved have a persistent id (decision E-420).
     if (mob.persistent) {
         mob.uid = (*m_nextUid)++;
@@ -602,6 +605,9 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.parentUid = mob.parentUid;
     stored.parentChunk = mob.parentChunk;
     stored.name = mob.name;
+    if (mob.barter && mob.barter->holds()) {
+        stored.barter = mob.barter->saved();
+    }
     return stored;
 }
 
@@ -666,6 +672,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         }
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Golem) {
             mob.golem.emplace().playerBuilt = stored.playerBuilt;
+        }
+        if (m_content->mobs()[stored.type].barter) {
+            mob.barter.emplace(stored.barter.value_or(QcBarterState{}));
         }
         if (m_content->mobs()[stored.type].villager) {
             static_cast<QcVillagerRecord &>(mob.villager.emplace()) = stored.villager.value_or(QcVillagerRecord{});

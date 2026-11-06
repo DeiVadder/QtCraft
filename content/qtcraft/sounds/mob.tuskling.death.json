@@ -1,0 +1,26 @@
+{
+    "name": "mob.tuskling.death",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.7,
+            "frequency": 240,
+            "endFrequency": 70,
+            "attack": 0.02,
+            "curve": 2,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.5599999999999999,
+            "attack": 0.02,
+            "curve": 2,
+            "highpass": 600,
+            "gain": 0.2
+        }
+    ]
+}

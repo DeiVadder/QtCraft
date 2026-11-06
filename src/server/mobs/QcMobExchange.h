@@ -10,6 +10,7 @@
 #include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
+#include "server/animals/QcBarterState.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/mobbrains/QcTameState.h"
 #include "server/villages/QcVillager.h"
@@ -75,6 +76,9 @@ struct Stored
     std::optional<QcChunkPos> parentChunk = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! The name a name tag gave it (QcCreature::name, decision E-866). */
     QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! What it holds and looks at when it barters (QcCreature::barter, decision E-1081); none
+        when it holds nothing. */
+    std::optional<QcBarterState> barter = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const Stored &) const = default;
 };
@@ -106,6 +110,9 @@ struct PlayerView
     quint32 struck = 0;
     /*! The item in the player's hand (shy creatures). */
     QcItemId held = qcNoItem;
+    /*! The armour the player wears, one item per piece (creatures that spare who wears gold,
+        QcBarterDefinition::sparedBy, decision E-1081). */
+    QList<QcItemId> worn = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! Its status effects (an archer's choice of projectile, decision E-623); null for none
         known. */
     const QcStatusEffects *effects = nullptr;

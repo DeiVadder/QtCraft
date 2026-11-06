@@ -6166,3 +6166,73 @@ Protokoll 89. Geprüft in `test_effect_rules` (eine Prüfung je Regel, über `/e
 - **Was:** Ein Kreuz in der Akzentfarbe (`SpawnMarker`, anders als alle Orts-Markierungen, kein Spoiler, also immer an, auch auf der kleinen Karte) mit Legendenzeile „Welt-Spawn“. In einer anderen Dimension zeigt sie, was ein Portal am Spawn tut, wie `QcPortalLinks` es entscheidet (`QcPortalDefinition::arrivalIn`, beide nehmen dieselbe Regel): führt ein Portal der Oberwelt skaliert hin, „Portal vom Welt-Spawn“ an Spawn × Maßstab der Oberwelt ÷ Maßstab der Dimension; führt es nur fest hin, „Ankunft des Portals“ an deren `arrival` (kostet nichts, keine Suche); führt keins von der Oberwelt hin, keine Markierung. Liegt die Stelle außerhalb des Ausschnitts, fehlen Markierung und Zeile.
 - **Ehrlich durch dieselbe Suche:** Der Spawn ist beim Anlegen nicht billig bekannt; der Worker ruft darum die eigene Suche des Generators auf (`QcWorldGenerator::spawnPoint`, wie `QcSpawnPoint::column` im Server), keine Näherung. Sie erzeugt Chunks und kostet im Debug-Build rund 0,8 s, darum ist sie ein eigener Schritt nach dem feinen Durchgang (`QcWorldMapResult::Pass::Spawn`, zählt nicht im Fortschritt und nicht in den Zeiten der Durchgänge): die feine Karte wartet nicht auf sie, und eine Änderung bis dahin spart sie (Prüfung von `cancelled` davor). Sie läuft einmal je Welt (Cache im Worker, auch über einen Wechsel der Dimension; außerhalb der Oberwelt entsteht für die Suche kurz der Oberwelt-Generator). Die Suche selbst fragt keinen Abbruch ab; eine Änderung während der Suche wartet deren Ende ab, ihr Ergebnis fällt weg.
 - **Grenze:** Der Spieler erscheint auf natürlichem Boden nahe dieser Spalte (`QcSpawnPoint::position`), in der Regel genau dort.
+
+## E-1080 Eigene Namen und Modelle: Hauerling und Borstenkeiler (Paket 84.6a)
+
+- **Namen (Marken-Regel E-894):** „Piglin“ und „Hoglin“ sind Wortschöpfungen des Vorbilds. Das lebende Keilervolk heißt **Hauerling / Tuskling** (`qtcraft:tuskling`, wie in E-1052 als Gegenstück zum untoten Moderhauer vorgeschlagen), das Hauertier **Borstenkeiler / Bristleboar** (`qtcraft:bristleboar`; „Keiler“ und „boar“ sind beschreibende Wörter). Klänge `mob.tuskling.*`, `mob.bristleboar.*`, Texturen `tuskling_*`, `bristleboar_*`, Beutetabelle `tuskling_barter`.
+- **Modelle:** eigene Entwürfe aus Quadern, keine Nachbildung. Der Hauerling ist ein Skelett-Modell (`models/tuskling.json`) mit breitem Kopf, flachem Rüssel, nach oben gebogenen Hauern, langen Ohren, Goldreif am Arm, Gürtel und Ohrring (Slot `hat` mit der Textur `tuskling_gold`), rosige Haut, Kittel und dunkle Hose. Der Borstenkeiler ist ein Kasten-Modell wie das Schwein: massiger Rumpf, tief hängender Kopf, steigende Hauer, ein heller Borstenkamm über dem Rücken. Texturen prozedural (`speckle`, `noise`, `face`), feste Seeds 7301–7315.
+- **Gehege:** die Vorführwelt baut für jedes Wesen der Inhalte ein Gehege mit Schild (`QcShowcaseCreatureArea`), beide kommen damit ohne eigenen Code dazu.
+- **Arme und Kollision:** Die Arme des Hauerlings reichen 0,46 m seitwärts, sein Körper (`width` 0,6) nur 0,30 m. An einer Wand ragt ein Arm also durch die Blockfläche, wie bei den anderen Figuren; an Glas wird der Teil davor über dem Rahmen gezeichnet und die Schnittlinie sieht wie ein Dreieck aus (altes Gehege-Bild). Kein Modellfehler, alle Teile sind Quader.
+
+## E-1081 Gold und Tauschhandel: `barter` (Paket 84.6a)
+
+- **Was:** Feld `barter` für Wesen der neutralen KI (`QcBarterDefinition`), Zustand `QcBarterState` als Komponente (`QcCreature::barter`), Ablauf in `QcServerBarter` (Teil von `QcServerAnimals`, im Takt der Tiere). Alles auf dem Server: Rüstung, Abbau und Öffnen prüft der Server, der Client sieht nur das gehaltene Item (`EntityMove::held`, vorhanden) und die Jugend (`QcMsg::Young`, vorhanden). **Kein Protokollwechsel**, keine neue Nachricht.
+- **Feind ohne Gold:** Wer keines der `sparedBy`-Items trägt (`PlayerView::worn`, neu), ist Ziel, solange der Hauerling ihn sieht (`QcBarterSight::foe`: beim Blick im Takt von `sightCheckTicks` der nächste sichtbare in `sightRange`, dazwischen der verfolgte, solange er ungeschützt und in Reichweite bleibt). Das ist kein Zorn: wer Gold anzieht, ist sofort kein Ziel mehr, wie im Vorbild.
+- **Zorn:** Abbau eines `guards`-Blocks (Gold, Golderz, Nethergolderz, Rohgoldblock, golddurchzogener Schwarzstein, Truhe, Falle, Fass) reizt jeden erwachsenen Hauerling in `alarmRange` 16 um den Spieler, ohne Sichtprüfung; Öffnen eines dieser Blöcke nur die, die den Spieler sehen (`QcServerBarter::alarm`, aufgerufen in `QcServerInteraction::finishMining` und `useClickedBlock`). Der Reiz läuft über `struckBy` wie ein Schlag, die neutrale KI macht daraus `provokedBy` und `angerTimer`; Goldrüstung schützt davor nicht. Gruppenzorn bei einem Schlag über das vorhandene `packRange` (E-480), hier 16. Zornzeit je Art: neues Feld `angerSeconds` (Standard 20 wie bisher fest in `QcNeutralBrain`, Hauerling 30).
+- **Tausch:** Aus der Hand nimmt er nur die `currency` (Goldbarren), wie im Vorbild, und nur eines (`QcServerBarter::give`, vor Melken und Füttern in `useEntity`; andere geliebte Items in der Hand gehen den normalen Weg). Eine Weigerung (jung, schaut schon, zornig, zu weit, außer Sicht) kostet nichts und zählt nicht als Benutzen (`Giving::Refused`, kein `ItemUsedOnEntity`). Liegt ein geliebtes Item in `seekRange` 8, geht er hin (Ziel seines Wanderns, wie die Partnersuche der Zucht), auch weg von einem Feind, und nimmt es bei 1,2 m auf, eines je Mal. Nur Zorn hält ihn davon ab (`provokedBy`, im Vorbild: ein Schlag sperrt das Betrachten), die Jagd auf einen Feind ohne Gold nicht. Erreicht er ein Item in 10 s nicht, lässt er es 10 s liegen (`seekLimitTicks`, `ignoreTicks`, Vorbild 200 und 200 Ticks, ziemlich sicher; die Sperre gilt bei uns je Item, nicht für alles Gold, damit er ein erreichbares daneben holt); der Stand der Suche wird nicht gespeichert. Er betrachtet es `admireSeconds` 6 lang, steht dabei und hält es in der Hand. Danach: `currency` → ein Zug aus der Beutetabelle `table` (`QcLootTables::draw` mit einem Seed aus dem Zufall des Servers), zum Geber geworfen; jedes andere geliebte Item kommt in den Hort (höchstens `hoardSize` 8 Stapel). Alles bleibt der ganze Stapel, der es war (Haltbarkeit, Daten, Verzauberung, Name; `stack.withCount(1)`): ein abgenutztes Werkzeug kommt abgenutzt zurück, Reparatur durch Hinwerfen und Schlagen gibt es nicht. Hort und betrachtetes Item fallen bei jedem Tod (`QcServerBarter::dropHeld` an `Departure::Died`), auch bei Berührung und Ersticken, wo die Art selbst keine Beute gibt; in Lava verbrennen sie wie jedes Item dort. Wer etwas nimmt, bleibt in der Welt (`keep`), wie im Vorbild. Wird er beim Betrachten zornig, fällt das Item zu Boden, kein Tausch (Vorbild: nicht sicher, bescheidene Wahl).
+- **Wiederverwendet:** neutrale KI mit Gruppenzorn (`packRange`, `struckBy`/`provokedBy`, E-460/E-480), Spawn-Regeln je Nether-Biom (E-1050), Beutetabellen der Truhen (E-521, `QcLootTables::draw`), Zuchtzeit und Jung-Flag (E-293), gehaltenes Item der Wesen (E-426/E-460), Komponenten-Rahmen des Speicherns (E-420). Eine Item-Aufnahme durch Wesen gab es nicht (nur Spieler und Trichter), sie ist neu und klein. Der Handel der Dorfbewohner (Angebote, Bildschirm) passt nicht zum Vorbild (kein Bildschirm, ein Zufallszug), also nicht verwendet.
+- **Speichern:** Komponente `Barter` (24, `QcBarterCodec`) mit betrachtetem Stapel, Restzeit und Hort, Stapel im selben Format wie überall (`QcSaveFile::writeStack`, `QcStackReader`); unbekannte Items fallen beim Laden mit Warnung weg. Weltformat bleibt.
+- **Laden:** Namen in `sparedBy`, `loves`, `guards`, `currency`, `table` und `repelledBy.blocks`, die der Inhalt nicht kennt, melden eine Warnung (`QcMobTraitsContent::resolve`).
+- **Nicht umgesetzt:** Armbrust-Hauerlinge (keine Armbrust), Jagd auf junge Borstenkeiler, Flucht vor Gruppen, Verwandlung in Moderhauer in der Oberwelt (Vorbild nach 15 s), Hauerlinge, die Gold-Items anziehen oder Schweinefleisch aufnehmen, Klang beim Betrachten.
+
+## E-1082 Borstenkeiler: Zucht trotz Feindschaft, Furcht vor Blöcken (Paket 84.6a)
+
+- **Zucht:** `breeding` war nur friedlichen Tieren am Boden erlaubt; jetzt auch feindlichen (Prüfung in `parseBreeding` ohne `hostile`). Der Borstenkeiler frisst Karmesinpilz, Werte wie bei allen Tieren (30 s verliebt, 300 s bis zur nächsten Zucht, 1200 s bis erwachsen; im Vorbild ebenso 5 und 20 min). Gezüchtete bleiben in der Welt, ebenso jedes Tier, das ein Spieler gefüttert hat (`QcServerAnimals::feed`), wie im Vorbild. Wer einen Spieler jagt, geht nicht zum Partner (`QcMobBreeding::approachPartners`): die Jagd geht vor, die Liebe läuft weiter.
+- **Furcht:** Feld `repelledBy` (`QcRepellentDefinition`: Blöcke, `range` 8 seitwärts, `height` 4 hoch und tief, wie der Sensor des Vorbilds). Beim Blick (alle 10 Ticks, gestaffelt) sucht `QcMobFear::repelledFrom` den nächsten solchen Block, dann flieht das Wesen `fleeSeconds` lang über die Fluchtwege des passiven Gehirns statt zu jagen. Blöcke: Wirrpilz und Netherportal (Seelenanker gibt es noch nicht, 84.7b). Kosten: höchstens 17 × 9 × 17 Blockabfragen je Wesen und Blick. Nur das passive Gehirn und das feindliche darauf schauen nach solchen Blöcken: bei anderer KI lehnt der Leser `repelledBy` ab (`parseGoldFolkTraits`).
+- **Nicht umgesetzt:** der Wurf nach oben beim Angriff und der Rückstoß-Widerstand 0,6 (kein Feld dafür), Verwandlung in der Oberwelt, Angriffe junger Borstenkeiler mit weniger Schaden (Junge greifen bei uns an wie Erwachsene).
+
+## E-1083 Junge beim Spawnen, die jung bleiben (Paket 84.6a)
+
+- **Was:** `young.chance` (Anteil der natürlichen Spawns, die jung kommen, Wurf in `QcNaturalSpawner::spawnWalker`, nur für Arten mit Wert über 0, die Spawn-Folge der übrigen bleibt gleich) und `young.staysYoung` (die Zuchtuhr läuft nicht ab, `QcMobBreeding::tick`). Junge Hauerlinge sind nie zornig, nie Feind und tauschen nicht; sie halten (Schönheitsfehler) dasselbe goldene Schwert wie die Großen, weil das gehaltene Item je Art gilt.
+
+## E-1084 Werte nach dem Vorbild (Paket 84.6a, Mensch: Verhalten und Spawnen wie im Vorbild)
+
+Alt: beide Wesen sind neu, „alt“ ist der Standardwert, den die Daten ohne Eintrag hätten. „Sicher“ heißt: Wert des Vorbilds (Java-Ausgabe) aus verlässlicher Erinnerung; „unsicher“: bescheidene eigene Wahl.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Hauerling Gesundheit | 10 | 16 | Vorbild, sicher |
+| Hauerling Gehen / Jagen (m/s) | 1,5 / 3,5 | 1,4 / 4,2 | unsicher: Vorbild 0,35 gegen Zombie 0,23 ergäbe 4,9 m/s bei unserem Zombie 3,2; bescheidener gewählt |
+| Hauerling Schaden / Abstand der Schläge | 2 / 1 s | 5 / 1 s | Vorbild 5 (wie Moderhauer E-1052), Takt 20 Ticks, sicher |
+| Hauerling Sicht, Feind ohne Gold | 16 | 16 | Vorbild (Folgeweite 16), sicher |
+| Zornzeit | 20 s | 30 s | Vorbild 600 Ticks, ziemlich sicher |
+| Gruppenzorn (`packRange`), Alarm bei Gold/Truhe | – | 16 / 16 | Vorbild 16 Blöcke, sicher; Abbau ohne, Öffnen mit Sichtprüfung: ziemlich sicher |
+| Betrachten | – | 6 s | Vorbild 120 Ticks, sicher |
+| Suche nach Gold am Boden | – | 8 m | unsicher (Vorbild-Sensor nicht verlässlich bekannt) |
+| Aufgeben der Suche, dann Pause | – | 10 s / 10 s | Vorbild 200 / 200 Ticks, ziemlich sicher; Pause je Item statt für alles (E-1081) |
+| Aus der Hand | – | nur Goldbarren | Vorbild, sicher |
+| Geliebte Items | – | Gold in allen Formen, Werkzeuge, Rüstung, Uhr, Glocke | Vorbild-Liste, soweit es die Items gibt |
+| Spawn Netherwüste | – | Gewicht 15, Gruppe 4 | Vorbild, sicher |
+| Spawn Karmesinwald | – | Gewicht 5, Gruppe 3–4 → 4 | Vorbild; unsere Gruppe gilt je Wesen, Höchstwert 4 |
+| Licht beim Spawnen | – | jede Helligkeit, ohne Dunkel-Test | Vorbild ohne Lichtregel; nicht auf Netherwarzenblock: fehlt (Liste `blocks` erlaubt nur, verbietet nicht) |
+| Junge | – | 20 %, bleiben jung | Vorbild 20 %, ziemlich sicher; jung bleiben sicher |
+| Beute Hauerling | – | goldenes Schwert 8,5 % | Vorbild Ausrüstungs-Chance 8,5 %, sicher |
+| Erfahrung | – | 5 / 5 | Vorbild, sicher |
+| Borstenkeiler Gesundheit | 10 | 40 | Vorbild, sicher |
+| Borstenkeiler Gehen / Jagen (m/s) | 1,5 / 3,5 | 1,2 / 3,6 | unsicher (Vorbild 0,3) |
+| Borstenkeiler Schaden / Abstand | 2 / 1 s | 6 / 2 s | Schaden Vorbild 6 sicher; 40 Ticks Abstand unsicher |
+| Borstenkeiler Spawn Karmesinwald | – | Gewicht 9, Gruppe 3–4 → 4 | Vorbild, sicher |
+| Furcht vor Wirrpilz, Portal | – | 8 seitwärts, 4 hoch | Vorbild-Sensor, ziemlich sicher |
+| Zucht | – | Karmesinpilz, 30 s / 5 min / 20 min | Vorbild, sicher |
+| Beute Borstenkeiler | – | rohes Schweinefleisch 2–4, Leder 50 % | Vorbild 2–4 und 0–1, sicher |
+| Junge Borstenkeiler | – | 20 % | Vorbild, ziemlich sicher |
+| Größe Hauerling / Borstenkeiler | – | 0,6 × 1,95 / 1,3 × 1,4 | Vorbild, sicher |
+
+## E-1085 Tauschtabelle und was fehlt (Paket 84.6a)
+
+- **Tabelle** `loot/tuskling_barter.json` mit den Gewichten des Vorbilds (Summe dort 459): Wasserflasche 10, Eisennuggets 10 (10–36), Schattenperle 10 (2–4, für die Enderperle, E-894), Faden 20 (3–9), Netherquarz 20 (5–12), Obsidian 40, Weinender Obsidian 40 (1–3), Feuerkugel 40 (als Feuerkugel-Item aus 84.4), Leder 40 (2–4), Seelensand 40 (2–8), Netherziegel 40 (2–8), Kies 40 (8–16), Schwarzstein 40 (8–16). Summe bei uns 390.
+- **Ausgelassen, mit eigenem Paket:** Trank der Feuerresistenz und Wurftrank davon (je 8, Tränke kommen mit 85.2), verzauberte Eisenstiefel mit Seelenläufer (8) und Buch mit Seelenläufer (5) (die Verzauberung Seelenläufer fehlt, eigenes kleines Paket), Spektralpfeile (40, 6–12; brauchen den Effekt „Leuchten“ mit Umriss, eigenes Paket). Nach diesen Paketen kommen die Einträge mit ihren Gewichten in die Tabelle; bis dahin liegen die übrigen Anteile höher (Obsidian 40/390 statt 40/459).
+
+## E-1086 Tick-Kosten von Hauerling und Borstenkeiler (Paket 84.6a)
+
+Gemessen im Release-Build, drei Läufe, je 40 Wesen (Tabellen in `docs/Performance-Verlauf.md`, „Paket 84.6a“). `QcMobManager::tick`: Zombie 0,047–0,051 ms, Hauerling 0,047–0,056 ms, Borstenkeiler 0,262–0,271 ms. Ganzer Server-Tick mit `QcServerBarter` und 100 liegenden Stapeln: Zombie 0,135–0,141 ms, Hauerling 0,135–0,148 ms. Der Tausch und das Suchen nach Gold kosten also nichts, was über die Streuung hinausgeht. Der Keiler kostet das Fünfeinhalbfache, weil jeder Blick (zweimal je Sekunde) 17 × 17 × 9 Blöcke prüft; das bleibt bei 0,5 % des Tick-Budgets, deshalb kein Zwischenspeicher. Die Prüfung bricht nicht beim ersten Fund ab, weil der nächste Block die Fluchtrichtung bestimmt.

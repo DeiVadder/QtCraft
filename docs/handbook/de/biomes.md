@@ -335,7 +335,7 @@ Rote Geflechte auf den Böden, große Pilze mit hohlen Kuppeln, Warzen an den De
 
 **Monster (Anteil an der Monsterliste)**
 
-[Moderhauer](creatures.md#mob-qtcraft-rottusk) (100 %)
+[Borstenkeiler](creatures.md#mob-qtcraft-bristleboar) (60 %), [Hauerling](creatures.md#mob-qtcraft-tuskling) (33,33 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (6,67 %)
 
 **Wesen**
 
@@ -357,7 +357,7 @@ Nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Klagegeist](creatures.md#mob-qtcraft-wailer) (32,68 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (1,31 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (65,36 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (0,65 %)
+[Hauerling](creatures.md#mob-qtcraft-tuskling) (8,93 %), [Klagegeist](creatures.md#mob-qtcraft-wailer) (29,76 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (1,19 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (59,52 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (0,6 %)
 
 **Wesen**
 

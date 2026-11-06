@@ -149,6 +149,43 @@ namespace {
     return result;
 }
 
+// Warnings for the names in `names` that `known` does not find: `what` says where they stand.
+QStringList unknownNames(const QcMobDefinition &mob, const QStringList &names, const QString &what, const auto &known)
+{
+    QStringList warnings;
+    for (const QString &name : names) {
+        if (!known(name)) {
+            warnings.append(u"mob '%1': %2 names nothing known as '%3'"_s.arg(mob.name, what, name));
+        }
+    }
+    return warnings;
+}
+
+// Bartering and fear of blocks work on names at run time (decisions E-1081, E-1082): a typo would
+// quietly do nothing, so it is told here.
+QStringList checkGoldFolk(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    const auto isItem = [&content](const QString &name) { return content.itemId(name).has_value(); };
+    const auto isBlock = [&content](const QString &name) { return content.blockId(name).has_value(); };
+    QStringList warnings;
+    if (mob.barter) {
+        const QcBarterDefinition &barter = *mob.barter;
+        warnings.append(unknownNames(mob, barter.sparedBy, u"'sparedBy'"_s, isItem));
+        warnings.append(unknownNames(mob, barter.loves, u"'loves'"_s, isItem));
+        warnings.append(unknownNames(mob, barter.guards, u"'guards'"_s, isBlock));
+        if (!barter.currency.isEmpty() && !isItem(barter.currency)) {
+            warnings.append(u"mob '%1': no item '%2' as its 'currency'; it does not barter"_s.arg(mob.name, barter.currency));
+        }
+        if (!barter.table.isEmpty() && !content.lootTables().find(barter.table)) {
+            warnings.append(u"mob '%1': no loot table '%2' to barter from; a barter gives nothing"_s.arg(mob.name, barter.table));
+        }
+    }
+    if (mob.repellents) {
+        warnings.append(unknownNames(mob, mob.repellents->blocks, u"'repelledBy'"_s, isBlock));
+    }
+    return warnings;
+}
+
 } // namespace
 
 namespace QcMobTraitsContent {
@@ -161,7 +198,7 @@ Resolved resolve(const QcContentRegistry &content, const QcMobDefinition &mob)
     Part<QcCarryDefinition> carries = resolveCarries(content, mob);
     Part<QcFamilyDefinition> family = resolveFamily(content, mob);
     return {std::move(tame.value), std::move(crumbles.value), std::move(drinks.value), std::move(carries.value), std::move(family.value),
-            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings + family.warnings};
+            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings + family.warnings + checkGoldFolk(content, mob)};
 }
 
 } // namespace QcMobTraitsContent

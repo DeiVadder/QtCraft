@@ -46,6 +46,7 @@ private:
     void parseCreatureTraits();
     void parseCompanions();
     void parseNetherTraits();
+    void parseGoldFolkTraits();
     void parseWaterAndMilk();
     void parseGuardian();
 

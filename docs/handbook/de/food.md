@@ -423,7 +423,7 @@ Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.
 
 **Droppt aus**
 
-[Schwein](creatures.md#mob-qtcraft-pig) (2×)
+[Borstenkeiler](creatures.md#mob-qtcraft-bristleboar) (2–4×), [Schwein](creatures.md#mob-qtcraft-pig) (2×)
 
 ### <a id="item-qtcraft-cooked_beef"></a>Steak
 

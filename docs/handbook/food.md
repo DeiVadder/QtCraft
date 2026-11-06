@@ -397,7 +397,7 @@ Food from pigs; cook it in the furnace for more.
 
 **Dropped by**
 
-[Pig](creatures.md#mob-qtcraft-pig) (2×)
+[Bristleboar](creatures.md#mob-qtcraft-bristleboar) (2–4×), [Pig](creatures.md#mob-qtcraft-pig) (2×)
 
 ### <a id="item-qtcraft-raw_salmon"></a>Raw salmon
 

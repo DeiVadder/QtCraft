@@ -246,7 +246,8 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     return rule;
 }
 
-// How a creature breeds; `mob` (read so far) must be a peaceful animal on the ground.
+// How a creature breeds; `mob` (read so far) must live on the ground (hostile ones too, the
+// bristleboar, decision E-1082).
 [[nodiscard]] QcBreedingDefinition parseBreeding(const QcMobDefinition &mob, QcJsonFieldReader &breedingReader,
                                                  const QString &packNamespace)
 {
@@ -260,8 +261,8 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     if (breedingReader.ok() && breeding.food.isEmpty()) {
         breedingReader.fail(u"needs 'food'"_s);
     }
-    if (breedingReader.ok() && (mob.hostile || mob.ambient || mob.flying)) {
-        breedingReader.fail(u"only peaceful animals on the ground breed"_s);
+    if (breedingReader.ok() && (mob.ambient || mob.flying)) {
+        breedingReader.fail(u"only creatures on the ground breed"_s);
     }
     return breeding;
 }

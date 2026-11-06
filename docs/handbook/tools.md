@@ -436,7 +436,7 @@ Soft gold: hits like a wooden sword and breaks soon.
 
 **Dropped by**
 
-[Rottusk](creatures.md#mob-qtcraft-rottusk) (4 %)
+[Rottusk](creatures.md#mob-qtcraft-rottusk) (4 %), [Tuskling](creatures.md#mob-qtcraft-tuskling) (8.5 %)
 
 ### <a id="item-qtcraft-iron_axe"></a>Iron axe
 

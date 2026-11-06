@@ -86,7 +86,7 @@ Red mats on the floors, huge fungi with hollow domes, wart hanging from the roof
 
 **Monsters (share of the monster list)**
 
-[Rottusk](creatures.md#mob-qtcraft-rottusk) (100 %)
+[Bristleboar](creatures.md#mob-qtcraft-bristleboar) (60 %), [Rottusk](creatures.md#mob-qtcraft-rottusk) (6.67 %), [Tuskling](creatures.md#mob-qtcraft-tuskling) (33.33 %)
 
 **Creatures**
 
@@ -423,7 +423,7 @@ Bare netherrack, with banks of gravel and soul sand along the lava.
 
 **Monsters (share of the monster list)**
 
-[Magma Slime](creatures.md#mob-qtcraft-magma_slime) (1.31 %), [Rottusk](creatures.md#mob-qtcraft-rottusk) (65.36 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (0.65 %), [Wailer](creatures.md#mob-qtcraft-wailer) (32.68 %)
+[Magma Slime](creatures.md#mob-qtcraft-magma_slime) (1.19 %), [Rottusk](creatures.md#mob-qtcraft-rottusk) (59.52 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (0.6 %), [Tuskling](creatures.md#mob-qtcraft-tuskling) (8.93 %), [Wailer](creatures.md#mob-qtcraft-wailer) (29.76 %)
 
 **Creatures**
 

@@ -9,7 +9,9 @@ struct QcGazeDefinition;
 
 /*! \brief The brain of neutral creatures (QcMobDefinition::Ai::Neutral, decision E-460; the
     shadewalker): they wander like passive ones until a player provokes them, then chase that player
-    like hostile ones for angerSeconds, renewed while they see them.
+    like hostile ones for QcMobDefinition::angerSeconds, renewed while they see them. One that
+    barters (decision E-1081) also chases who wears none of what spares him while it sees him and
+    no loved item draws it away, stands while it looks at an item and is never angry while young.
 
     A player provokes one by hurting it (the player who struck or shot it; damage without a
     player provokes nobody) or, with a \c {gaze}, by looking at its head (gazedAt). One with
@@ -21,8 +23,6 @@ struct QcGazeDefinition;
 class QcNeutralBrain : public QcPassiveBrain
 {
 public:
-    /*! Seconds a provoked creature stays angry after it last saw its target. */
-    static constexpr double angerSeconds = 20.0;
     /*! A target farther than this (metres) may make an angry teleporter jump next to it. */
     static constexpr double farTarget = 12.0;
 

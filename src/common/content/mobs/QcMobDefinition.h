@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
 #include "common/content/mobs/QcAppearanceDefinition.h"
+#include "common/content/mobs/QcBarterDefinition.h"
 #include "common/content/mobs/QcMobTraits.h"
 #include "common/core/QcCreatureKindId.h"
 #include "common/core/QcIdList.h"
@@ -187,6 +188,19 @@ struct QcMobDefinition
     std::optional<QcSplitDefinition> splits;
     /*! Jumps whenever it moves, like a slime (\c {hops}, decision E-1055). Server side only. */
     bool hops = false;
+    /*! Loves gold and barters (\c {barter}, decision E-1081; the neutral AI). Server side only. */
+    std::optional<QcBarterDefinition> barter;
+    /*! Blocks it keeps away from (\c {repelledBy}, decision E-1082). Server side only. */
+    std::optional<QcRepellentDefinition> repellents;
+    /*! Seconds a provoked neutral creature stays angry after it last saw its target
+        (\c {"angerSeconds"}, 1..600; decision E-1081). Server side only. */
+    double angerSeconds = 20.0;
+    /*! Share of its natural spawns that come young (\c {"young": {"chance"}}, 0..1; decision
+        E-1083). Server side only. */
+    double youngChance = 0.0;
+    /*! A young one never grows up (\c {"young": {"staysYoung"}}, decision E-1083; young tusklings).
+        Server side only. */
+    bool staysYoung = false;
     /*! A hit by this projectile sent back by a player takes \c {deflectedDamage} health instead
         of its own damage (\c {"weakTo": {"projectile", "damage"}}, decision E-1053; the wailer's
         own fire). Empty for none. Server side only. \qcshared */

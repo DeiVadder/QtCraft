@@ -699,6 +699,10 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
     m_mobs.spawn(chosen.type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, nextEntityId(), covered, QcChunkSpawns::isAnimal(definition));
     // Spawned by a night-only rule (swamp slimes): goes with the daylight like night creatures.
     m_mobs.editableMobs().last().nightRule = chosen.rule->time == QcMobDefinition::SpawnTime::Night;
+    // Some of a kind come young (decision E-1083); one that stays young keeps its timer for ever.
+    if (definition.youngChance > 0.0 && m_draws->generateDouble() < definition.youngChance) {
+        m_mobs.editableMobs().last().growUp = definition.breeding.growUpSeconds;
+    }
     return true;
 }
 
