@@ -23,7 +23,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
         }
 
         features.insert(feature.name, params);
-        if (feature.type == QcFeatureDefinition::Type::Tree && params.leaves != qcAirBlockId) {
+        if (feature.type == QcFeatureDefinition::Type::Tree && params.leaves != qcAirBlockId && !params.fungus()) {
             // The trunk keeps its leaves also lying or stripped (decisions E-751, E-753).
             addTrunk(params.trunk);
             if (const std::optional<QcBlockId> stripped = m_content->blockId(m_content->block(params.trunk).strippedInto)) {
@@ -169,6 +169,11 @@ QcPlantManager::Support QcPlantManager::rowSupport(QcBlockPos centre, const QcBl
 
 bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock)
 {
+    // A fungus grows on its own ground only, though it stands on others (decision E-1045).
+    if (m_content->block(block).sapling.boneMealOnly && !canPlant(block, world.blockAt(sapling.offset(0, -1, 0)))) {
+        return false;
+    }
+
     // Four saplings in a square grow into the giant tree together (decision E-822).
     const auto giant = m_giantTrees.constFind(block);
     if (giant != m_giantTrees.constEnd()) {
@@ -307,7 +312,9 @@ void QcPlantManager::growSaplings(const QcBlockAccess &world, QcBlockEntities &e
             return Step::Remove;
         }
 
-        sapling.remaining -= dt;
+        if (!m_content->block(*block).sapling.boneMealOnly) {
+            sapling.remaining -= dt;
+        }
         if (sapling.remaining > 0.0) {
             return Step::Keep;
         }

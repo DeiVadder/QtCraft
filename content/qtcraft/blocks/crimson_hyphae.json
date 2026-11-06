@@ -1,0 +1,21 @@
+{
+    "name": "crimson_hyphae",
+    "tags": [
+        "logs"
+    ],
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "all": "crimson_stem"
+    },
+    "strippedInto": "stripped_crimson_hyphae"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "warped_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "warped_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "warped_sign",
+        "count": 3
+    }
+}

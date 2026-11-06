@@ -1,0 +1,11 @@
+{
+    "name": "warped_planks",
+    "type": "shapeless",
+    "ingredients": [
+        "warped_stem"
+    ],
+    "result": {
+        "item": "warped_planks",
+        "count": 4
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "name": "crimson_forest",
+    "dimension": "nether",
+    "icon": "crimson_fungus",
+    "mapColour": "#8c2436",
+    "temperature": 0.36,
+    "humidity": 0.36,
+    "surface": "crimson_nylium",
+    "subsurface": "netherrack",
+    "subsurfaceDepth": 0,
+    "features": [
+        {
+            "feature": "huge_crimson_fungus",
+            "density": 0.008
+        },
+        {
+            "feature": "weeping_vines",
+            "density": 0.035
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.22,
+            "plants": [
+                {
+                    "block": "crimson_roots",
+                    "weight": 7
+                },
+                {
+                    "block": "crimson_fungus",
+                    "weight": 2
+                },
+                {
+                    "block": "warped_fungus",
+                    "weight": 1
+                },
+                {
+                    "block": "nether_sprouts",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

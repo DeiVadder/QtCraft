@@ -17,21 +17,131 @@
         "solidity": -0.06
     },
     "shores": [
-        { "block": "gravel", "scale": 14, "threshold": 0.22, "height": 3, "depth": 3 },
-        { "block": "soul_sand", "scale": 18, "threshold": 0.3, "height": 4, "depth": 2 }
+        {
+            "block": "gravel",
+            "scale": 14,
+            "threshold": 0.22,
+            "height": 3,
+            "depth": 3
+        },
+        {
+            "block": "soul_sand",
+            "scale": 18,
+            "threshold": 0.3,
+            "height": 4,
+            "depth": 2
+        }
     ],
     "clusters": [
-        { "block": "glowstone", "on": "netherrack", "tries": 6, "minY": 40, "maxY": 124, "size": 40, "radius": 4, "depth": 9 }
+        {
+            "block": "glowstone",
+            "on": "netherrack",
+            "tries": 6,
+            "minY": 40,
+            "maxY": 124,
+            "size": 40,
+            "radius": 4,
+            "depth": 9
+        },
+        {
+            "block": "nether_wart_block",
+            "on": "netherrack",
+            "biomes": [
+                "crimson_forest"
+            ],
+            "tries": 10,
+            "minY": 40,
+            "maxY": 124,
+            "size": 26,
+            "radius": 5,
+            "depth": 4
+        },
+        {
+            "block": "warped_wart_block",
+            "on": "netherrack",
+            "biomes": [
+                "warped_forest"
+            ],
+            "tries": 10,
+            "minY": 40,
+            "maxY": 124,
+            "size": 26,
+            "radius": 5,
+            "depth": 4
+        },
+        {
+            "block": "shroomlight",
+            "on": "netherrack",
+            "biomes": [
+                "crimson_forest",
+                "warped_forest"
+            ],
+            "tries": 2,
+            "minY": 40,
+            "maxY": 124,
+            "size": 3,
+            "radius": 2,
+            "depth": 2
+        }
     ],
     "springs": [
-        { "block": "lava", "in": "netherrack", "tries": 96, "minY": 36, "maxY": 120 }
+        {
+            "block": "lava",
+            "in": "netherrack",
+            "tries": 96,
+            "minY": 36,
+            "maxY": 120
+        }
     ],
     "fires": [
-        { "block": "fire", "on": ["netherrack"], "tries": 3 },
-        { "block": "soul_fire", "on": ["soul_sand", "soul_soil"], "tries": 3 }
+        {
+            "block": "fire",
+            "on": [
+                "netherrack"
+            ],
+            "tries": 3
+        },
+        {
+            "block": "soul_fire",
+            "on": [
+                "soul_sand",
+                "soul_soil"
+            ],
+            "tries": 3
+        }
     ],
     "structures": [
-        { "structure": "ruined_portal_nether", "spacing": 320, "chance": 0.5 }
+        {
+            "structure": "ruined_portal_nether",
+            "spacing": 320,
+            "chance": 0.5
+        }
     ],
-    "station": { "structure": "nether_arrival", "portal": "portal_station" }
+    "station": {
+        "structure": "nether_arrival",
+        "portal": "portal_station"
+    },
+    "pillars": [
+        {
+            "block": "basalt",
+            "biomes": [
+                "basalt_deltas"
+            ],
+            "scale": 17,
+            "threshold": 0.3,
+            "height": 16
+        }
+    ],
+    "pools": [
+        {
+            "block": "lava",
+            "rim": "magma_block",
+            "biomes": [
+                "basalt_deltas"
+            ],
+            "scale": 10,
+            "threshold": 0.12,
+            "rimBand": 0.05
+        }
+    ]
 }

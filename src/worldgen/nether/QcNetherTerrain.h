@@ -8,6 +8,7 @@
 #include "worldgen/terrain/QcNoise.h"
 
 #include <array>
+#include <bitset>
 #include <optional>
 
 /*! \brief The rock and the lava of the nether (decision E-1030): a 3D noise on a coarse grid,
@@ -30,6 +31,10 @@ public:
     void fill(QcChunk &chunk) const;
     /*! Returns whether rock or bedrock fills the cell \a x, \a y, \a z. */
     [[nodiscard]] bool isSolid(int x, int y, int z) const;
+    /*! Returns which cells of the column \a x, \a z from the sea up hold rock or bedrock: the same
+        answers as isSolid() at a fraction of its price for a whole column (the cells at and below
+        the sea stay unset). */
+    [[nodiscard]] std::bitset<QcWorld::worldHeight> solidColumn(int x, int z) const;
     /*! Returns the index in the definitions' biomes of the column \a x, \a z. */
     [[nodiscard]] int biomeAt(int x, int z) const;
     /*! Returns the lowest height from \a from up at the column \a x, \a z on which \a room free

@@ -16,7 +16,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Birch slab](parts.md#block-qtcraft-birch_slab), [Jungle slab](parts.md#block-qtcraft-jungle_slab), [Oak slab](parts.md#block-qtcraft-oak_slab), [Spruce slab](parts.md#block-qtcraft-spruce_slab)
+[Birch slab](parts.md#block-qtcraft-birch_slab), [Crimson slab](parts.md#block-qtcraft-crimson_slab), [Jungle slab](parts.md#block-qtcraft-jungle_slab), [Oak slab](parts.md#block-qtcraft-oak_slab), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Warped slab](parts.md#block-qtcraft-warped_slab)
 
 **Used in**
 
@@ -96,7 +96,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood), [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log), [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood), [Stripped jungle log](blocks.md#block-qtcraft-stripped_jungle_log), [Stripped jungle wood](blocks.md#block-qtcraft-stripped_jungle_wood), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood), [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log), [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood)
+[Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Crimson hyphae](blocks.md#block-qtcraft-crimson_hyphae), [Crimson stem](blocks.md#block-qtcraft-crimson_stem), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood), [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log), [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood), [Stripped crimson hyphae](blocks.md#block-qtcraft-stripped_crimson_hyphae), [Stripped crimson stem](blocks.md#block-qtcraft-stripped_crimson_stem), [Stripped jungle log](blocks.md#block-qtcraft-stripped_jungle_log), [Stripped jungle wood](blocks.md#block-qtcraft-stripped_jungle_wood), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood), [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log), [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood), [Stripped warped hyphae](blocks.md#block-qtcraft-stripped_warped_hyphae), [Stripped warped stem](blocks.md#block-qtcraft-stripped_warped_stem), [Warped hyphae](blocks.md#block-qtcraft-warped_hyphae), [Warped stem](blocks.md#block-qtcraft-warped_stem)
 
 **Used in**
 
@@ -112,7 +112,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Birch planks](blocks.md#block-qtcraft-birch_planks), [Jungle planks](blocks.md#block-qtcraft-jungle_planks), [Oak planks](blocks.md#block-qtcraft-oak_planks), [Spruce planks](blocks.md#block-qtcraft-spruce_planks)
+[Birch planks](blocks.md#block-qtcraft-birch_planks), [Crimson planks](blocks.md#block-qtcraft-crimson_planks), [Jungle planks](blocks.md#block-qtcraft-jungle_planks), [Oak planks](blocks.md#block-qtcraft-oak_planks), [Spruce planks](blocks.md#block-qtcraft-spruce_planks), [Warped planks](blocks.md#block-qtcraft-warped_planks)
 
 **Used in**
 

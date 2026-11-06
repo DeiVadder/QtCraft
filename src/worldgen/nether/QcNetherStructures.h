@@ -53,7 +53,13 @@ public:
 private:
     // The copies of `kind` in the regions touching the block area `area`.
     [[nodiscard]] QList<QcStructurePlacement> plansIn(const QcNetherDefinitions::Structure &kind, QcXzRect area) const;
-    [[nodiscard]] QList<QcStructurePlacement> plansTouching(QcChunkPos pos) const;
+    // The plans within `margin` blocks of the chunk at `pos`.
+    [[nodiscard]] QList<QcStructurePlacement> plansTouching(QcChunkPos pos, int margin = 0) const;
+    // Turns pool cells around and over the footprint of `plan` in `chunk` into their rim, so that
+    // what the footprint clears opens no pool (decision E-1047).
+    void sealPools(QcChunk &chunk, const QcStructurePlacement &plan) const;
+    // Turns `cell` of `chunk` into the rim of its pool, if it is one.
+    void sealCell(QcChunk &chunk, QcBlockPos cell) const;
     // Empties the footprint of `plan` in `chunk` and fills the ground below it.
     void prepare(QcChunk &chunk, const QcStructurePlacement &plan) const;
 

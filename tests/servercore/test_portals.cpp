@@ -304,14 +304,15 @@ private slots:
         idle(12);
         QVERIFY(inNether());
 
-        // He arrives in a new portal on netherrack, a quarter of a block from its middle.
+        // He arrives in a new portal on the ground of the biome, a quarter of a block from its middle.
         QcServerDimension &arrived = netherDimension();
         const QcBlockPos feet = cellOf(m_client->motion.position);
         const std::optional<QcBlockId> block = arrived.world().blockAt(feet);
         QVERIFY(block);
         QCOMPARE(m_content->block(*block).name, u"qtcraft:nether_portal"_s);
         QCOMPARE(arrived.world().blockAt(feet.offset(0, -1, 0)), id("qtcraft:obsidian"));
-        QCOMPARE(arrived.world().blockAt(feet.offset(0, -2, 0)), id("qtcraft:netherrack"));
+        const std::optional<QcBlockId> ground = arrived.world().blockAt(feet.offset(0, -2, 0));
+        QVERIFY(ground && m_content->block(*ground).solid);
         QCOMPARE(arrived.portals().entries().size(), 1);
         QVERIFY(std::abs(m_client->motion.position.x - m_feet.x / 8.0) < 18.0);
     }

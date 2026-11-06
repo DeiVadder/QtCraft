@@ -110,7 +110,13 @@ private:
     bool isGround(QcBlockPos pos) const
     {
         const std::optional<QcBlockId> block = m_world.blockAt(pos);
-        return block && m_content.isValidBlock(*block) && m_content.block(*block).solid && !m_content.block(*block).liquid;
+        if (!block || !m_content.isValidBlock(*block)) {
+            return false;
+        }
+
+        // Not on what hurts, such as the magma around the pools of the deltas.
+        const QcBlockDefinition &definition = m_content.block(*block);
+        return definition.solid && !definition.liquid && !definition.keepsSpawnsAway();
     }
 
     // Ground under the frame and room for it; with `m_depth` 1 also under and above the cells one

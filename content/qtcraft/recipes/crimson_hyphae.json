@@ -1,0 +1,15 @@
+{
+    "name": "crimson_hyphae",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "crimson_stem"
+    },
+    "result": {
+        "item": "crimson_hyphae",
+        "count": 3
+    }
+}

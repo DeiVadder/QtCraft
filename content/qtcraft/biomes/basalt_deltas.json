@@ -1,0 +1,20 @@
+{
+    "name": "basalt_deltas",
+    "dimension": "nether",
+    "icon": "basalt",
+    "mapColour": "#4a4a54",
+    "temperature": 0.66,
+    "humidity": 0.66,
+    "surface": "basalt",
+    "subsurface": "basalt",
+    "subsurfaceDepth": 3,
+    "rock": "basalt",
+    "rockBand": "blackstone",
+    "patchScale": 9,
+    "surfacePatches": [
+        {
+            "block": "blackstone",
+            "share": 0.32
+        }
+    ]
+}

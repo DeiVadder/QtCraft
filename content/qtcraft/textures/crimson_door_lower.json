@@ -1,0 +1,8 @@
+{
+    "name": "crimson_door_lower",
+    "pattern": "door_lower",
+    "primary": "#7d3048",
+    "secondary": "#4a1a2a",
+    "variation": 0.08,
+    "seed": 8520
+}

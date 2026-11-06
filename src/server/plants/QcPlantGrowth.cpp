@@ -95,9 +95,11 @@ std::optional<QcBlockPos> QcPlantGrowth::growthTarget(const QcBlockAccess &world
         return std::nullopt;
     }
 
-    // Only the top block grows; the column counts every block of the same kind below it.
-    const QcBlockPos above = pos.offset(0, 1, 0);
-    if (world.blockAt(above) != qcAirBlockId || !above.isInsideWorldHeight()) {
+    // Only the tip grows, the lowest block of a hanging plant; the column counts every block of
+    // the same kind behind it.
+    const int step = m_content->block(*block).support == QcBlockSupport::Above ? -1 : 1;
+    const QcBlockPos tip = pos.offset(0, step, 0);
+    if (world.blockAt(tip) != qcAirBlockId || !tip.isInsideWorldHeight()) {
         return std::nullopt;
     }
     const auto samePlant = [&](QcBlockPos at) {
@@ -106,16 +108,16 @@ std::optional<QcBlockPos> QcPlantGrowth::growthTarget(const QcBlockAccess &world
     };
     QcBlockPos base = pos;
     int height = 1;
-    while (samePlant(base.offset(0, -1, 0))) {
-        base = base.offset(0, -1, 0);
+    while (samePlant(base.offset(0, -step, 0))) {
+        base = base.offset(0, -step, 0);
         ++height;
     }
 
-    const bool rooted = QcBlockRules::isSupported(world, base, *block) && world.blockAt(base.offset(0, -1, 0)).has_value();
+    const bool rooted = QcBlockRules::isSupported(world, base, *block) && world.blockAt(base.offset(0, -step, 0)).has_value();
     if (height >= m_content->block(*block).growth.maxHeight || !rooted) {
         return std::nullopt;
     }
-    return above;
+    return tip;
 }
 
 double QcPlantGrowth::growthChance(QcBlockId block) const

@@ -68,8 +68,11 @@ QcNetherDecorator::QcNetherDecorator(const QcNetherDefinitions &definitions, con
 {
 }
 
-double QcNetherDecorator::patchRoll(int x, int z) const
+double QcNetherDecorator::patchRoll(const QcNetherDefinitions::Biome &biome, int x, int z) const
 {
+    if (biome.patchScale > 0.0) {
+        return std::clamp(0.5 + 1.1 * m_definitions.patchNoise.fractal2(x / biome.patchScale, z / biome.patchScale, 2), 0.0, 0.999);
+    }
     return qcPositionRandom(m_definitions.patchSeed, x, 0, z);
 }
 
@@ -83,7 +86,7 @@ void QcNetherDecorator::groundColumn(QcChunk &chunk, int localX, int localZ) con
     }
 
     QcBlockId top = biome.surface;
-    double roll = patchRoll(worldX, worldZ);
+    double roll = patchRoll(biome, worldX, worldZ);
     for (const auto &[block, share] : biome.patches) {
         if (roll < share) {
             top = block;
@@ -147,6 +150,12 @@ void QcNetherDecorator::placeCluster(QcChunk &chunk, const QcNetherDefinitions::
     if (chunk.block(x, y, z) != cluster.on || chunk.block(x, y - 1, z) != qcAirBlockId) {
         return;
     }
+    if (!cluster.biomes.isEmpty()) {
+        const int biome = m_terrain.biomeAt(pos.x * QcWorld::chunkSize + x, pos.z * QcWorld::chunkSize + z);
+        if (!cluster.biomes.contains(m_definitions.biomes[biome].name)) {
+            return;
+        }
+    }
 
     // Each block touches exactly one before it, so the cluster branches like a bunch of grapes.
     const QcBlockPos root{x, y - 1, z};
@@ -183,7 +192,7 @@ bool QcNetherDecorator::fallsIntoTheSea(const QcChunk &chunk, QcBlockPos cell) c
     while (y > 0 && chunk.block(cell.x, y, cell.z) == qcAirBlockId) {
         --y;
     }
-    return chunk.block(cell.x, y, cell.z) == m_definitions.liquid;
+    return y <= m_definitions.settings.liquidLevel && chunk.block(cell.x, y, cell.z) == m_definitions.liquid;
 }
 
 void QcNetherDecorator::placeSpring(QcChunk &chunk, const QcNetherDefinitions::Spring &spring, int attempt) const
@@ -248,7 +257,14 @@ std::optional<QcBlockPos> QcNetherDecorator::springOf(const QcChunk &chunk, cons
     while (isInner(cell) && chunk.block(cell.x, cell.y, cell.z) == spring.in) {
         cell = cell.offset(side.x, 0, side.z);
     }
-    if (chunk.block(cell.x, cell.y, cell.z) != spring.block) {
+    // A spring stands inside the chunk, and only there the opening beside it is in the chunk too.
+    if (!isInner(cell)) {
+        return std::nullopt;
+    }
+
+    // A pool of the deltas holds the same liquid, but rock on all sides.
+    const QcBlockPos opening = cell.offset(side.x, 0, side.z);
+    if (chunk.block(cell.x, cell.y, cell.z) != spring.block || chunk.block(opening.x, opening.y, opening.z) != qcAirBlockId) {
         return std::nullopt;
     }
     return QcBlockPos{chunk.pos().x * QcWorld::chunkSize + cell.x, cell.y, chunk.pos().z * QcWorld::chunkSize + cell.z};

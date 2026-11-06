@@ -21,7 +21,8 @@ constexpr int crownRoom = 4;
 
 bool isTree(const QcFeatureDefinition &feature)
 {
-    return feature.type == QcFeatureDefinition::Type::Tree || feature.type == QcFeatureDefinition::Type::Column;
+    // What hangs from a roof has nothing to hang from on a plot.
+    return (feature.type == QcFeatureDefinition::Type::Tree || feature.type == QcFeatureDefinition::Type::Column) && !feature.fromRoof;
 }
 
 QcBlockId firstKnown(const QcContentRegistry &content, const QList<QString> &names, QcBlockId fallback)

@@ -1,0 +1,23 @@
+{
+    "name": "warped_stem",
+    "tags": [
+        "logs"
+    ],
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "warped_stem_top",
+        "bottom": "warped_stem_top",
+        "side": "warped_stem"
+    },
+    "strippedInto": "stripped_warped_stem"
+}

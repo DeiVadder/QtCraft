@@ -487,6 +487,11 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
             return !side || (content.isValidBlock(*side) && content.block(*side).name == definition.groundLiquid);
         });
     }
+    case QcBlockSupport::Above: {
+        const QcBlockPos above = pos.offset(0, 1, 0);
+        const std::optional<QcBlockId> holder = world.blockAt(above);
+        return !holder || (content.isValidBlock(*holder) && content.isSameBlock(*holder, id)) || holdsOnFace(world, above, QcBlockFace::Down, id);
+    }
     case QcBlockSupport::Attached: {
         const std::optional<QcBlockFace> towards = faceFromName(content.property(id, u"attach"_s));
         if (!towards) {

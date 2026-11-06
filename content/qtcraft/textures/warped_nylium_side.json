@@ -1,0 +1,8 @@
+{
+    "name": "warped_nylium_side",
+    "pattern": "mat_edge",
+    "primary": "#1f8a78",
+    "secondary": "#6a2a26",
+    "variation": 0.08,
+    "seed": 8607
+}

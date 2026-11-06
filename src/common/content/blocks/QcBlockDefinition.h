@@ -54,6 +54,8 @@ enum class QcBlockSupport : quint8 {
     /*! The frame of a portal it fills, or more of itself, in the plane of the frame
         (QcPortalShapes::isHeld, decision E-1021). */
     Portal,
+    /*! A full solid bottom face above, or more of itself (hanging plants, decision E-1044). */
+    Above,
 };
 
 /*! \brief How a placed block's \c {facing} follows the player's horizontal view direction. */
@@ -350,6 +352,12 @@ struct QcBlockDefinition
     /*! Bone meal used on it grows grass and flowers of the biome around it (a grass block,
         decision E-814). Server side only. */
     bool growsVegetation = false;
+    /*! The biome whose vegetation bone meal grows on this block wherever it lies; empty for the
+        biome it lies in. */
+    QString vegetationBiome;
+    /*! Bone meal on this block with air above turns it into one of these blocks, if one touches it
+        (\c {"overgrownBy"}: netherrack next to nylium, decision E-1044). Server side only. */
+    QList<QString> overgrownBy;
     /*! Block it turns into when an item that \c {carves} (shears) is used on it, facing the
         clicked side, dropping \c {carveDropCount} of the item \c {carveDrop} (a pumpkin carved
         into a head, decision E-472); empty for none. Server side only. */

@@ -31,7 +31,9 @@ namespace {
 constexpr std::array patterns{"fused_rock", "hollow_sand", "crusted_soil", "column_side", "column_top",
                               "polished_columns", "flow_bands", "glassy_stone", "polished_glass", "gilded_stone",
                               "ashlar", "cracked_ashlar", "carved_ashlar", "fired_bricks", "cracked_fired_bricks",
-                              "carved_fired_bricks", "quartz_ore", "gold_vein_ore", "magma_crust", "glow_cluster"};
+                              "carved_fired_bricks", "quartz_ore", "gold_vein_ore", "magma_crust", "glow_cluster",
+                              "fungal_felt", "moss_cushions", "rope_stem", "pored_stem", "stem_section", "peeled_fibre",
+                              "fibre_boards", "pitted_boards", "wart_lumps", "wart_folds", "glow_lobes", "mat_edge"};
 
 QJsonObject definition(const QString &pattern, int seed = 8401)
 {
@@ -213,11 +215,33 @@ private slots:
         for (quint32 seed = 0; seed < 24; ++seed) {
             spec.seed = seed * 977u + 11u;
             for (const bool vertical : {true, false}) {
+                // A mat's edge lies on the rock below it, so only its sides join.
+                if (!vertical && pattern == u"mat_edge"_s) {
+                    continue;
+                }
                 const int inside = jumpsAcross(spec, 8.0, vertical);
                 const int edge = jumpsAcross(spec, 0.0, vertical);
                 QVERIFY2(edge <= inside + 2, qPrintable(u"%1 seed %2 vertical %3: %4 jumps at the edge, %5 inside"_s.arg(pattern).arg(spec.seed).arg(vertical).arg(edge).arg(inside)));
             }
         }
+    }
+
+    // The foot of a mat's edge is rock like the rows above it, without a dark line.
+    void aMatEdgeHasNoDarkFoot()
+    {
+        QcTextureSpec spec;
+        spec.pattern = *qcTexturePatternFromName(u"mat_edge"_s);
+        spec.primary = QColor(122, 80, 64);
+        spec.secondary = QColor(32, 24, 16);
+        const QImage image = QcTextureRelief::paint(spec, 16);
+        const auto rowBrightness = [&image](int y) {
+            int sum = 0;
+            for (int x = 0; x < image.width(); ++x) {
+                sum += image.pixelColor(x, y).value();
+            }
+            return sum;
+        };
+        QVERIFY(rowBrightness(15) * 10 > rowBrightness(12) * 8);
     }
 
     void aPaintedTextureIsNotAnEnlargedOne()

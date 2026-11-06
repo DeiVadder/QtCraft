@@ -1,0 +1,21 @@
+{
+    "name": "warped_hyphae",
+    "tags": [
+        "logs"
+    ],
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "all": "warped_stem"
+    },
+    "strippedInto": "stripped_warped_hyphae"
+}

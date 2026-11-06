@@ -1,0 +1,15 @@
+{
+    "name": "huge_crimson_fungus",
+    "type": "tree",
+    "trunk": "crimson_stem",
+    "leaves": "nether_wart_block",
+    "glow": "shroomlight",
+    "hanging": "weeping_vines",
+    "icon": "crimson_fungus",
+    "shape": "fungus_dome",
+    "minHeight": 5,
+    "maxHeight": 14,
+    "ground": [
+        "crimson_nylium"
+    ]
+}

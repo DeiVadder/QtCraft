@@ -1,0 +1,16 @@
+{
+    "name": "warped_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "warped_planks"
+    },
+    "result": {
+        "item": "warped_door",
+        "count": 3
+    }
+}

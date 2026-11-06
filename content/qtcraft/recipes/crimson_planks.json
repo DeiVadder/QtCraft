@@ -1,0 +1,11 @@
+{
+    "name": "crimson_planks",
+    "type": "shapeless",
+    "ingredients": [
+        "crimson_stem"
+    ],
+    "result": {
+        "item": "crimson_planks",
+        "count": 4
+    }
+}

@@ -38,6 +38,7 @@ qc_add_test(test_world_types SOURCES terrain/test_world_types.cpp fixtures/QcRaw
 # end of tests/CMakeLists.txt).
 qc_add_test(test_world_options SOURCES terrain/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 480)
 target_compile_definitions(test_world_options PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+qc_add_test(test_nether_forests SOURCES terrain/test_nether_forests.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 240)
 qc_add_test(test_nether_generator SOURCES terrain/test_nether_generator.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 210)
 qc_add_test(test_generator_versions SOURCES terrain/test_generator_versions.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)
 target_compile_definitions(test_generator_versions PRIVATE QTCRAFT_GENERATOR_REFERENCE="${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")

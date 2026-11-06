@@ -1,0 +1,50 @@
+{
+    "name": "warped_door",
+    "hold": {
+        "firstPerson": {
+            "scale": 0.3
+        },
+        "thirdPerson": {
+            "scale": 0.4
+        }
+    },
+    "sound": "wood",
+    "shape": "door",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 3.0,
+    "tool": "axe",
+    "door": true,
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ],
+        "hinge": [
+            "left",
+            "right"
+        ]
+    },
+    "itemTexture": "warped_door_item",
+    "textures": {
+        "all": "warped_door_lower",
+        "slots": {
+            "lower": "warped_door_lower",
+            "upper": "warped_door_upper"
+        }
+    },
+    "signal": {
+        "type": "opener"
+    }
+}

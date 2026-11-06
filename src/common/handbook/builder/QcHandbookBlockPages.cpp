@@ -23,6 +23,19 @@ using Section = QcHandbookEntry::Section;
 
 namespace {
 
+// The label naming what a block with `support` needs.
+QString supportValue(QcBlockSupport support)
+{
+    switch (support) {
+    case QcBlockSupport::Below:
+        return u"value.supportBelow"_s;
+    case QcBlockSupport::Above:
+        return u"value.supportAbove"_s;
+    default:
+        return u"value.supportAttached"_s;
+    }
+}
+
 // Builds the page of one block: facts in a fixed order, then the sections.
 class BlockPage
 {
@@ -385,7 +398,7 @@ void BlockPage::addSupportFacts()
             support.links.append(m_links.blockLink(ground));
         }
     } else {
-        support.value = label(block.support == QcBlockSupport::Below ? u"value.supportBelow"_s : u"value.supportAttached"_s);
+        support.value = label(supportValue(block.support));
     }
     m_entry.facts.append(std::move(support));
 }

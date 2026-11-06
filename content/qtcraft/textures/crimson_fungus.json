@@ -1,0 +1,31 @@
+{
+    "name": "crimson_fungus",
+    "pattern": "icon",
+    "primary": "#b02a3a",
+    "variation": 0.0,
+    "seed": 8710,
+    "palette": {
+        "C": "#b02a3a",
+        "D": "#6e1424",
+        "S": "#d8b8a0",
+        "G": "#f2c060"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "       CC",
+        "     DCCDGC",
+        "    DCGDCCDC",
+        "   DCCDCCDGCD",
+        "  DCCGCCDCCDCC",
+        "  D D   S D  D",
+        "  D D   S D  D",
+        "  D    SS    D",
+        "       SS    D",
+        "       SS",
+        "       SS",
+        "       SS",
+        "      SSSS"
+    ]
+}

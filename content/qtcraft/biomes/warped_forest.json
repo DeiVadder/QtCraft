@@ -1,0 +1,44 @@
+{
+    "name": "warped_forest",
+    "dimension": "nether",
+    "icon": "warped_fungus",
+    "mapColour": "#1a7a6c",
+    "temperature": 0.34,
+    "humidity": 0.66,
+    "surface": "warped_nylium",
+    "subsurface": "netherrack",
+    "subsurfaceDepth": 0,
+    "features": [
+        {
+            "feature": "huge_warped_fungus",
+            "density": 0.008
+        },
+        {
+            "feature": "twisting_vines",
+            "density": 0.03
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.24,
+            "plants": [
+                {
+                    "block": "warped_roots",
+                    "weight": 5
+                },
+                {
+                    "block": "nether_sprouts",
+                    "weight": 5
+                },
+                {
+                    "block": "warped_fungus",
+                    "weight": 2
+                },
+                {
+                    "block": "crimson_fungus",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

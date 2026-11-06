@@ -339,6 +339,32 @@ struct QcTextureSpec
         MagmaCrust,
         /*! Glowing lumps (primary, white in their middle) with dim gaps between them (secondary). */
         GlowCluster,
+        /*! The nether forests (decision E-1048). A mat of crossing threads (primary, secondary in
+            the furrows) with fleshy knobs. */
+        FungalFelt,
+        /*! Round cushions of fine tufts (primary) with crevices (secondary). */
+        MossCushions,
+        /*! A mat (primary) hanging over rock (secondary) in uneven tongues; does not repeat
+            downwards, like the side of a grass block. */
+        MatEdge,
+        /*! Twisted ropes of fibre (primary) with furrows (secondary). */
+        RopeStem,
+        /*! Dark upright ribs (primary) with shining pores (secondary). */
+        PoredStem,
+        /*! The cut through a stem: tube walls (primary) around hollows (secondary). */
+        StemSection,
+        /*! Bare fibre (primary) with a few dark flecks (secondary). */
+        PeeledFibre,
+        /*! Long boards across the tile (primary) with seams and butt joints (secondary). */
+        FibreBoards,
+        /*! Upright boards of unequal width (primary), their fibre full of pits (secondary). */
+        PittedBoards,
+        /*! Flesh in lumps with small warts (primary), dark gaps (secondary). */
+        WartLumps,
+        /*! Flesh in winding folds (primary) with dark grooves (secondary). */
+        WartFolds,
+        /*! Glowing lobes (primary, pale in their middle) in a thin skin (secondary). */
+        GlowLobes,
     };
 
     /*! Emblem and Icon only: up to 16 rows of up to 16 characters, top row first. \qcshared */

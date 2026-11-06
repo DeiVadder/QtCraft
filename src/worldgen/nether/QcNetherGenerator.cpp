@@ -28,6 +28,8 @@ QcNetherGenerator::QcNetherGenerator(const std::shared_ptr<const QcContentRegist
     : m_definitions(*content, netherSeed(seed))
     , m_terrain(m_definitions, netherSeed(seed))
     , m_decorator(m_definitions, m_terrain)
+    , m_deltas(m_definitions, m_terrain)
+    , m_growth(m_definitions, m_terrain)
     , m_structures(m_definitions, m_terrain, content)
 {
     m_warnings = m_definitions.warnings;
@@ -41,6 +43,8 @@ std::shared_ptr<QcChunk> QcNetherGenerator::generate(QcChunkPos pos) const
     auto chunk = std::make_shared<QcChunk>(pos);
     terrain().fill(*chunk);
     m_decorator.decorate(*chunk);
+    m_deltas.shape(*chunk);
+    m_growth.grow(*chunk);
     structures().build(*chunk);
     m_decorator.placeSprings(*chunk);
     return chunk;

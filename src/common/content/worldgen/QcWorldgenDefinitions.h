@@ -155,6 +155,14 @@ struct QcBiomeDefinition
     /*! Monster kinds weighted differently here than by their spawn rules (\c {monsters},
         decision E-838; QcSpawnWeights). Server side only. */
     QList<QcSpawnWeight> monsterWeights;
+    /*! Biomes of the nether: the rock of the biome's columns instead of the filler (\c {"rock"},
+        decision E-1047), with bands of \c {rockBand} through it (\c {"rockBand"}); empty keeps
+        the filler. \qcshared */
+    QString rockBlock;
+    QString rockBandBlock;
+    /*! Biomes of the nether: the size in blocks of the patches of \c {surfacePatches}
+        (\c {"patchScale"}, decision E-1047); 0 chooses column by column. */
+    double patchScale = 0.0;
     /*! The features the biome places, with their densities (\c {"features"}, at most 64). */
     QList<QcFeaturePlacement> features;
     /*! Grass and flowers (decision E-814): placed after the listed features, used by bone meal. */
@@ -193,12 +201,20 @@ struct QcFeatureDefinition
         \c {"maxHeight"}, 1 to 32). \qcshared */
     int minHeight = 4;
     int maxHeight = 6;
-    /*! Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", or the giant trees on a 2×2
-        trunk "giant_cone" and "giant_round" (decision E-822). */
+    /*! Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", the giant trees on a 2×2
+        trunk "giant_cone" and "giant_round" (decision E-822), or the huge fungi "fungus_dome" and
+        "fungus_canopy" (decision E-1045). */
     QString shape = QStringLiteral("round");
     /*! Vines hung on the trunk and lowest leaves of trees (a block with the state \c {attach});
         empty for none. */
     QString vinesBlock;
+    /*! Huge fungi: the glowing block in the cap (\c {"glow"}) and the plant hanging from its rim
+        (\c {"hanging"}, a block growing downwards); empty for none. \qcshared */
+    QString glowBlock;
+    QString hangingBlock;
+    /*! Columns in the nether: hangs from a roof instead of standing on a floor (\c {"fromRoof"},
+        decision E-1046). */
+    bool fromRoof = false;
     /*! Blocks the feature may stand on; empty allows any solid block. */
     QList<QString> groundBlocks;
     /*! Only on ground at sea level with water right next to it (sugar cane on a shore). */

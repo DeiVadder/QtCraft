@@ -2,9 +2,31 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Netherwüste](#biome-qtcraft-nether_wastes) · [Seelensandtal](#biome-qtcraft-soul_sand_valley) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
+**QtCraft:** [Basaltdeltas](#biome-qtcraft-basalt_deltas) · [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Karmesinwald](#biome-qtcraft-crimson_forest) · [Netherwüste](#biome-qtcraft-nether_wastes) · [Seelensandtal](#biome-qtcraft-soul_sand_valley) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wirrwald](#biome-qtcraft-warped_forest) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
 
 ## QtCraft
+
+### <a id="biome-qtcraft-basalt_deltas"></a>Basaltdeltas
+
+Dunkles Gestein in Bändern aus Basalt und Schwarzstein, Steinpfosten auf den Böden und unter den Decken, und stille Lavabecken mit Magmarändern. Hier fällt keine Lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:basalt_deltas` |
+| Klima | Temperatur 0,66, Feuchte 0,66, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Unter der Oberfläche | [Basalt](blocks.md#block-qtcraft-basalt) (3 Blöcke) |
+| Unter Wasser | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Strände | [Basalt](blocks.md#block-qtcraft-basalt) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-birch_forest"></a>Birkenwald
 
@@ -184,7 +206,7 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 | | |
 |---|---|
 | ID | `qtcraft:river` |
-| Flüsse in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Flüsse in | [Basaltdeltas](#biome-qtcraft-basalt_deltas), [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Karmesinwald](#biome-qtcraft-crimson_forest), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wirrwald](#biome-qtcraft-warped_forest), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Sand](blocks.md#block-qtcraft-sand) |
 | Unter der Oberfläche | [Sand](blocks.md#block-qtcraft-sand) (3 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Kies](blocks.md#block-qtcraft-gravel) (35 %), [Ton](blocks.md#block-qtcraft-clay) (10 %) |
@@ -205,7 +227,7 @@ Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in fla
 | | |
 |---|---|
 | ID | `qtcraft:delta` |
-| Deltas in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Deltas in | [Basaltdeltas](#biome-qtcraft-basalt_deltas), [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Karmesinwald](#biome-qtcraft-crimson_forest), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wirrwald](#biome-qtcraft-warped_forest), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (2 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Schlamm](blocks.md#block-qtcraft-mud) (30 %), [Ton](blocks.md#block-qtcraft-clay) (10 %), [Kies](blocks.md#block-qtcraft-gravel) (10 %) |
@@ -289,6 +311,36 @@ Ein Flussdelta in kaltem Land (Tundra, verschneite Taiga, Taiga): kahle Inseln a
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
+### <a id="biome-qtcraft-crimson_forest"></a>Karmesinwald
+
+Rote Geflechte auf den Böden, große Pilze mit hohlen Kuppeln, Warzen an den Decken und überall Trauerranken.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_forest` |
+| Klima | Temperatur 0,36, Feuchte 0,36, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Karmesin-Nylium](blocks.md#block-qtcraft-crimson_nylium) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Karmesin-Nylium](blocks.md#block-qtcraft-crimson_nylium) |
+
+**Pflanzen und Bäume**
+
+[Großer karmesinpilz](worldgen.md#feature-qtcraft-huge_crimson_fungus) (0,8 % der Säulen), [Trauerranken](worldgen.md#feature-qtcraft-weeping_vines) (3,5 % der Säulen)
+
+**Gräser**
+
+[Karmesinwurzeln](blocks.md#block-qtcraft-crimson_roots) (63,64 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (18,18 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (9,09 %), [Nethersprossen](blocks.md#block-qtcraft-nether_sprouts) (9,09 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
 ### <a id="biome-qtcraft-nether_wastes"></a>Netherwüste
 
 Nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava.
@@ -318,7 +370,7 @@ Böden aus Seelensand und Seelenerde, auf denen Feuer blau brennt.
 | | |
 |---|---|
 | ID | `qtcraft:soul_sand_valley` |
-| Klima | Temperatur 0,74, Feuchte 0,3, Zerklüftung 0,2 |
+| Klima | Temperatur 0,66, Feuchte 0,36, Zerklüftung 0,2 |
 | Geländehöhe | um y 68, ± 6 |
 | Oberfläche | [Seelensand](blocks.md#block-qtcraft-soul_sand) |
 | Unter der Oberfläche | [Seelenerde](blocks.md#block-qtcraft-soul_soil) (2 Blöcke) |
@@ -546,6 +598,36 @@ Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelte
 **Blumen**
 
 [Löwenzahn](blocks.md#block-qtcraft-dandelion) (75 %), [Mohn](blocks.md#block-qtcraft-poppy) (25 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
+### <a id="biome-qtcraft-warped_forest"></a>Wirrwald
+
+Blaugrüne Polster auf den Böden, große Pilze mit flachen Schirmen und dazwischen aufsteigende Zwirbelranken.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_forest` |
+| Klima | Temperatur 0,34, Feuchte 0,66, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+
+**Pflanzen und Bäume**
+
+[Großer wirrpilz](worldgen.md#feature-qtcraft-huge_warped_fungus) (0,8 % der Säulen), [Zwirbelranken](worldgen.md#feature-qtcraft-twisting_vines) (3 % der Säulen)
+
+**Gräser**
+
+[Wirrwurzeln](blocks.md#block-qtcraft-warped_roots) (38,46 %), [Nethersprossen](blocks.md#block-qtcraft-nether_sprouts) (38,46 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (15,38 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (7,69 %)
 
 **Monster (Anteil an der Monsterliste)**
 

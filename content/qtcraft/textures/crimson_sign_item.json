@@ -1,0 +1,30 @@
+{
+    "name": "crimson_sign_item",
+    "pattern": "icon",
+    "primary": "#7d3048",
+    "variation": 0.0,
+    "seed": 8530,
+    "palette": {
+        "B": "#7d3048",
+        "D": "#4a1a2a",
+        "T": "#1c0c10"
+    },
+    "bitmap": [
+        "",
+        "",
+        " DDDDDDDDDDDDDD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTBTTBBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTTBTTBTTTBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTTBTBBD",
+        " DBBBBBBBBBBBBD",
+        " DDDDDDDDDDDDDD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD"
+    ]
+}

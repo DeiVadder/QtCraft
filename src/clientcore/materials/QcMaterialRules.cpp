@@ -51,7 +51,7 @@ constexpr std::array<Surface, 21> surfaces{{
 
 // The relief patterns (decision E-1043) say their finish themselves; words of the texture's name
 // do not change it.
-constexpr std::array<Surface, 20> reliefSurfaces{{
+constexpr std::array<Surface, 32> reliefSurfaces{{
     {"fused_rock", 0.14f, 10, 1.4f, 0.45f},
     {"quartz_ore", 0.14f, 10, 1.4f, 0.45f},
     {"gold_vein_ore", 0.14f, 10, 1.4f, 0.45f},
@@ -72,6 +72,18 @@ constexpr std::array<Surface, 20> reliefSurfaces{{
     {"carved_fired_bricks", 0.22f, 10, 1.4f, 0.4f},
     {"magma_crust", 0.25f, 10, 1.0f, 0.0f},
     {"glow_cluster", 0.5f, 10, 0.7f, 0.0f},
+    {"fungal_felt", 0.1f, 10, 1.3f, 0.65f},
+    {"moss_cushions", 0.08f, 10, 1.3f, 0.7f},
+    {"mat_edge", 0.1f, 10, 1.2f, 0.6f},
+    {"rope_stem", 0.2f, 10, 1.3f, 0.4f},
+    {"pored_stem", 0.24f, 10, 1.2f, 0.4f},
+    {"stem_section", 0.22f, 10, 1.0f, 0.4f},
+    {"peeled_fibre", 0.3f, 10, 0.9f, 0.3f},
+    {"fibre_boards", 0.3f, 10, 1.0f, 0.3f},
+    {"pitted_boards", 0.3f, 10, 1.0f, 0.3f},
+    {"wart_lumps", 0.36f, 10, 1.4f, 0.55f},
+    {"wart_folds", 0.36f, 10, 1.4f, 0.55f},
+    {"glow_lobes", 0.5f, 10, 0.6f, 0.0f},
 }};
 
 // The metal a name speaks of, Iron for metal parts without one (bars, rails, lanterns).
@@ -194,7 +206,7 @@ QcMaterialParams QcMaterialRules::forTexture(const QString &name, const QJsonObj
         // the fine cracks would cover the plates.
         params.emission = 0.5f;
         params.emissionTexels = 0.15f;
-    } else if (pattern == "glow_cluster"_L1) {
+    } else if (pattern == "glow_cluster"_L1 || pattern == "glow_lobes"_L1) {
         // Its colours are nearly white already; at full strength the bloom hides the lumps.
         params.emission = 0.4f;
     } else if (emitsLight || pattern == "fire"_L1) {

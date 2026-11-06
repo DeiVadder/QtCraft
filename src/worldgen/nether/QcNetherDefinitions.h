@@ -4,9 +4,11 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcVegetationTable.h"
 #include "worldgen/structures/QcStructure.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainDefinitions.h"
+#include "worldgen/terrain/QcTreeShape.h"
 
 #include <QList>
 #include <QStringList>
@@ -20,6 +22,36 @@
     Unknown names fall back to the filler, or leave their entry out, with a warning. */
 struct QcNetherDefinitions
 {
+    /*! \brief A plant growing in a column from a floor or a roof (a feature of \c {column} type,
+        decision E-1046). */
+    struct Strand
+    {
+        /*! The block of the column. */
+        QcBlockId block = qcAirBlockId;
+        /*! The floors it grows on; empty for any. Roofs need none. */
+        QList<QcBlockId> ground;
+        /*! The lowest and highest column. \qcshared */
+        int minHeight = 1;
+        int maxHeight = 1;
+        /*! It hangs from a roof. */
+        bool fromRoof = false;
+        /*! The share of the floors or roofs with one. */
+        double density = 0.0;
+        /*! The seed of its places. */
+        quint64 seed = 0;
+    };
+
+    /*! \brief A huge fungus of a biome (a feature of \c {tree} type, decision E-1045). */
+    struct Fungus
+    {
+        /*! Its shape. */
+        QcTreeShape::Params params;
+        /*! The share of the columns with one. */
+        double density = 0.0;
+        /*! The seed of its places. */
+        quint64 seed = 0;
+    };
+
     /*! \brief A biome: its point on the map of two noises, in 0 to 1, and its ground. */
     struct Biome
     {
@@ -35,6 +67,18 @@ struct QcNetherDefinitions
         int depth = 3;
         /*! Other top blocks with their share of the columns. */
         QList<std::pair<QcBlockId, double>> patches;
+        /*! The size of the patches in blocks; 0 chooses them column by column. */
+        double patchScale = 0.0;
+        /*! The rock instead of the filler and its bands; air keeps the filler. \qcshared */
+        QcBlockId rock = qcAirBlockId;
+        QcBlockId rockBand = qcAirBlockId;
+        /*! The plants of its floors and the share of the floors with one. \qcshared */
+        QcVegetationTable plants;
+        double plantDensity = 0.0;
+        /*! Its columns of plants. */
+        QList<Strand> strands;
+        /*! Its huge fungi. */
+        QList<Fungus> fungi;
     };
 
     /*! \brief A bank along the lava with its noise (QcNetherSettings::Shore). */
@@ -64,6 +108,37 @@ struct QcNetherDefinitions
         int depth = 0;
         /*! The seed of its places. */
         quint64 seed = 0;
+        /*! The names of the biomes it grows in; empty for all. */
+        QStringList biomes;
+    };
+
+    /*! \brief Posts with their noise (QcNetherSettings::Pillar). */
+    struct Pillar
+    {
+        /*! The noise of the posts. */
+        QcNoise noise;
+        /*! The settings. \qcshared */
+        QcBlockId block = qcAirBlockId;
+        QStringList biomes;
+        double scale = 18.0;
+        double threshold = 0.1;
+        int height = 12;
+        /*! The seed of the height of each post. */
+        quint64 seed = 0;
+    };
+
+    /*! \brief Pools with their noise (QcNetherSettings::Pool). */
+    struct Pool
+    {
+        /*! The noise of the pools. */
+        QcNoise noise;
+        /*! The settings. \qcshared */
+        QcBlockId block = qcAirBlockId;
+        QcBlockId rim = qcAirBlockId;
+        QStringList biomes;
+        double scale = 12.0;
+        double threshold = 0.2;
+        double rimBand = 0.08;
     };
 
     /*! \brief A spring with its blocks and seed (QcNetherSettings::Spring). */
@@ -126,6 +201,10 @@ struct QcNetherDefinitions
     QList<Spring> springs;
     /*! The natural fires. */
     QList<Fire> fires;
+    /*! The stone posts. */
+    QList<Pillar> pillars;
+    /*! The still pools. */
+    QList<Pool> pools;
     /*! The structures. */
     QList<Structure> structures;
     /*! The arrival station of a demonstration world; null without one. */
@@ -134,6 +213,9 @@ struct QcNetherDefinitions
     QStringList warnings;
     /*! The seed of the patches of the ground. */
     quint64 patchSeed = 0;
+    /*! The noise of the patches in \c {patchScale} and of the rock bands. \qcshared */
+    QcNoise patchNoise;
+    QcNoise bandNoise;
 
     /*! Returns whether \a block is part of the generated ground: the rock, the ground of a biome,
         the banks, ores and clusters. */

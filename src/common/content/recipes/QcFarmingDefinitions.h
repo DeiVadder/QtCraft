@@ -133,6 +133,9 @@ struct QcSaplingDefinition
     /*! The giant tree feature that four of these saplings in a 2×2 square grow into together;
         empty when they only grow alone (decision E-822). Server side only, not sent to clients. */
     QString giantFeature;
+    /*! It waits for bone meal and never grows by itself (fungi, decision E-1044). Server side
+        only, not sent to clients. */
+    bool boneMealOnly = false;
 
     /*! Returns whether the block is a sapling (\c {feature} is set). */
     bool isSapling() const { return !feature.isEmpty(); }
@@ -148,7 +151,9 @@ struct QcGrowthDefinition
     int maxHeight = 0;
     /*! Average seconds between two growth steps of one column. */
     double averageSeconds = 600.0;
+    /*! Bone meal adds a few blocks at the end of the column (\c {"boneMeal"}, decision E-1044). */
+    bool boneMeal = false;
 
-    /*! Returns whether the block grows upwards (\c {maxHeight} above 0). */
+    /*! Returns whether the block grows in a column (\c {maxHeight} above 0). */
     bool grows() const { return maxHeight > 0; }
 };

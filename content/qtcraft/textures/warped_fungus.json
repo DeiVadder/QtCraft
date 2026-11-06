@@ -1,0 +1,31 @@
+{
+    "name": "warped_fungus",
+    "pattern": "icon",
+    "primary": "#17907c",
+    "variation": 0.0,
+    "seed": 8711,
+    "palette": {
+        "C": "#17907c",
+        "D": "#0c4a4c",
+        "S": "#e0b090",
+        "G": "#f09040"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "       CC",
+        "     DGCDCC",
+        "    DCCDCCDC",
+        "   DCCDCGDCCD",
+        "  DDCDCCDCCDDC",
+        "  G  G  G  G",
+        "        S",
+        "       SS",
+        "       SS",
+        "       SS",
+        "       SS",
+        "       SS",
+        "      SSSS"
+    ]
+}

@@ -13,7 +13,25 @@
         "f": "fire",
         "F": "soul_fire",
         "L": "lava",
-        "B": "nether_bricks"
+        "B": "nether_bricks",
+        "C": "crimson_nylium",
+        "W": "warped_nylium",
+        "c": "crimson_fungus",
+        "w": "warped_fungus",
+        "r": "crimson_roots",
+        "R": "warped_roots",
+        "p": "nether_sprouts",
+        "S": "crimson_stem",
+        "T": "warped_stem",
+        "h": "warped_hyphae",
+        "t": "stripped_warped_stem",
+        "K": "nether_wart_block",
+        "Z": "warped_wart_block",
+        "l": "shroomlight",
+        "v": "weeping_vines",
+        "V": "twisting_vines",
+        "b": "basalt",
+        "k": "blackstone"
     },
     "layers": [
         [
@@ -22,17 +40,17 @@
             "NNNNNNNNNNNNNNNNNNNNN",
             "NNNNNNNNNNNNNNNNNNNNN",
             "NNNNNNNNNNNNNNNNNNNNN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
             "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
-            "NNNNNNNNNNNNNNNNNNNNN",
+            "NbmmmmkNNNNNNNNNNNNNN",
+            "NbmLLmbNNNNNNNNNNNNNN",
+            "NkmLLmbNNNNNNNNNNNNNN",
+            "NbmmmmkNNNNNNNNNNNNNN",
             "NNNNNNNNNBBBBBNNNNNNN",
             "NNNNNNNNNBLLLBNNNNNNN",
             "NNNNNNoNNBLLLBNNmNNNN",
@@ -46,16 +64,16 @@
             "                     ",
             "                     ",
             "                     ",
+            "  c r p        w R V ",
             "                     ",
             "                     ",
+            " S    S        T t h ",
             "                     ",
             "                     ",
+            " b    k              ",
             "                     ",
             "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
+            "      b              ",
             "                     ",
             "                     ",
             "  f   F              ",
@@ -69,10 +87,56 @@
             "                     ",
             "                     ",
             "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv   S        Z Z Z ",
+            "                     ",
+            "                     ",
+            " b                   ",
+            "                     ",
+            "                     ",
+            "      b              ",
             "                     ",
             "                     ",
             "                     ",
             "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv  vS              ",
+            "                     ",
+            "                     ",
+            " b                   ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv  vS              ",
             "                     ",
             "                     ",
             "                     ",
@@ -95,53 +159,7 @@
             "                     ",
             "                     ",
             "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     "
-        ],
-        [
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     "
-        ],
-        [
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
+            " KKlKKK              ",
             "                     ",
             "                     ",
             "                     ",
@@ -335,6 +353,118 @@
                 18.5
             ],
             "text": "block.qtcraft.magma_block"
+        },
+        {
+            "at": [
+                2.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.crimson_fungus"
+        },
+        {
+            "at": [
+                4.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.crimson_roots"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.nether_sprouts"
+        },
+        {
+            "at": [
+                3.5,
+                6.6,
+                9.5
+            ],
+            "text": "block.qtcraft.nether_wart_block"
+        },
+        {
+            "at": [
+                1.5,
+                6.6,
+                9.5
+            ],
+            "text": "block.qtcraft.crimson_stem"
+        },
+        {
+            "at": [
+                5.5,
+                1.6,
+                9.5
+            ],
+            "text": "block.qtcraft.weeping_vines"
+        },
+        {
+            "at": [
+                15.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.warped_fungus"
+        },
+        {
+            "at": [
+                17.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.warped_roots"
+        },
+        {
+            "at": [
+                19.5,
+                5.6,
+                6.5
+            ],
+            "text": "block.qtcraft.twisting_vines"
+        },
+        {
+            "at": [
+                15.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.warped_stem"
+        },
+        {
+            "at": [
+                17.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.stripped_warped_stem"
+        },
+        {
+            "at": [
+                19.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.warped_hyphae"
+        },
+        {
+            "at": [
+                1.5,
+                4.6,
+                12.5
+            ],
+            "text": "block.qtcraft.basalt"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                12.5
+            ],
+            "text": "block.qtcraft.blackstone"
         }
     ]
 }

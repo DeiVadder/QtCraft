@@ -1,0 +1,30 @@
+{
+    "name": "warped_roots",
+    "pattern": "icon",
+    "primary": "#157a6c",
+    "variation": 0.0,
+    "seed": 8713,
+    "palette": {
+        "A": "#157a6c",
+        "B": "#1fa890",
+        "T": "#60e8c0"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "",
+        "      BB    B",
+        "      BBB  BBB",
+        "  B   B T  B T",
+        " BBB  AB   ABB",
+        " T B  BBB  BBB",
+        "   A  T B  T B",
+        "   A  A A  A A",
+        "   A  A A  A A",
+        "   A  A A  A A",
+        "   A  A A  A A",
+        "   A  A A  A A",
+        "   A  A A  A A"
+    ]
+}

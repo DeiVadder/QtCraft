@@ -50,7 +50,8 @@ struct QcNetherSettings
     /*! \brief Clusters that hang from the roof of a cave (\c {"clusters"}): glowstone. \c {tries}
         columns per chunk look for a roof of \c {on} between \c {minY} and \c {maxY}; each cluster
         grows to at most \c {size} blocks, each touching exactly one before it, within
-        \c {radius} columns and \c {depth} blocks below its start. \qcfields */
+        \c {radius} columns and \c {depth} blocks below its start; only in \c {biomes} (empty: in
+        all). \qcfields */
     struct Cluster
     {
         QString block;
@@ -61,6 +62,33 @@ struct QcNetherSettings
         int size = 40;
         int radius = 4;
         int depth = 9;
+        QStringList biomes;
+    };
+
+    /*! \brief Stone posts rising from the floors and hanging from the roofs (\c {"pillars"},
+        decision E-1047): where a noise of \c {scale} lies above \c {threshold}, two blocks wide
+        and up to \c {height} tall, in \c {biomes}. \qcfields */
+    struct Pillar
+    {
+        QString block;
+        QStringList biomes;
+        double scale = 18.0;
+        double threshold = 0.1;
+        int height = 12;
+    };
+
+    /*! \brief Still pools sunk one block into the floors (\c {"pools"}, decision E-1047): where
+        a noise of \c {scale} lies above \c {threshold}, in a cell with rock on all four sides;
+        \c {rim} covers the floor around them, down to \c {rimBand} below the threshold, in
+        \c {biomes}. \qcfields */
+    struct Pool
+    {
+        QString block;
+        QString rim;
+        QStringList biomes;
+        double scale = 12.0;
+        double threshold = 0.2;
+        double rimBand = 0.08;
     };
 
     /*! \brief Springs of a liquid in the rock (\c {"springs"}): \c {tries} cells per chunk between
@@ -126,6 +154,10 @@ struct QcNetherSettings
     QList<Cluster> clusters;
     /*! The springs. */
     QList<Spring> springs;
+    /*! The posts of the biomes that have them. */
+    QList<Pillar> pillars;
+    /*! The pools of the biomes that have them. */
+    QList<Pool> pools;
     /*! The natural fires. */
     QList<Fire> fires;
     /*! The structures. */

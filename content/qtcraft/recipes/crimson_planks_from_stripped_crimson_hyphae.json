@@ -1,0 +1,11 @@
+{
+    "name": "crimson_planks_from_stripped_crimson_hyphae",
+    "type": "shapeless",
+    "ingredients": [
+        "stripped_crimson_hyphae"
+    ],
+    "result": {
+        "item": "crimson_planks",
+        "count": 4
+    }
+}

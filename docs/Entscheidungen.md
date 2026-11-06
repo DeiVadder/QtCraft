@@ -5977,3 +5977,48 @@ Protokoll 89. Geprüft in `test_effect_rules` (eine Prüfung je Regel, über `/e
 - **Folgen:** Texturen sind Sache des Clients, keine Generator-Version, kein Protokoll. Die Hashes von `test_texture_base_hash` und von `stillTexturesAreUnchanged` (Magmablock, jetzt `magma_crust`) sind neu aufgenommen. Eine Mod kann die Muster wie alle anderen benutzen; von `detail` wirkt bei ihnen nur `grain`.
 - **Tests:** `test_texture_relief`: Felder kacheln, jedes Muster in 16/32/64, gleicher Seed gleiches Bild, keine Naht an beiden Kachelkanten (auf Ebene der Oberfläche, mehrere Seeds, gegen eine Kontrolllinie im Inneren), die Nether-Materialien unterscheiden sich in der phasenfreien Autokorrelation, ein gemaltes Bild ist kein vergrößertes, Regeln der Materialien.
 - **Verworfen:** Mehr Farben oder höhere Kontraste in den alten Mustern (ändert die Farbe, nicht die Struktur; genau das war der Mangel). Pixelmuster mit dem Vergrößern von E-299 (Risse werden in den HD-Paketen breite Treppen). Eine gemeinsame Musterfamilie für alle Steine des Spiels: die Oberwelt-Texturen bleiben unverändert, das Paket betrifft nur den Nether.
+
+
+## E-1044 Pflanzen, die hängen, und Knochenmehl im Nether (Paket 84.3) — `QcBlockSupport::Above`, `QcGrowthDefinition::boneMeal`, `QcBlockDefinition::overgrownBy`, `QcServerPlants::growColumn`, `QcServerPlants::overgrow`
+
+- **Was:** `"support": "above"` hält einen Block an einer vollen Fläche über ihm oder an mehr von sich selbst (Trauerranken). `growth` gilt nun in beide Richtungen: mit `above` wächst die Spitze nach unten, die Säule zählt nach oben. `growth.boneMeal` lässt Knochenmehl ein bis drei Blöcke an der Spitze anfügen, egal wo die Säule getroffen wird. `overgrownBy` (`netherrack`: beide Nylium-Arten): Knochenmehl macht den Block zu einem der Blöcke, die ihn berühren (3 × 3 × 3, je mehr von einer Art, desto wahrscheinlicher), wenn Luft darüber ist.
+- **Pflanzen auf Nylium:** `vegetationBiome` am Block nennt das Biom, dessen Tabelle Knochenmehl dort nutzt, egal wo der Block liegt; Nylium wächst also überall gleich, Wirr-Nylium im Karmesinwald bleibt Wirr. Wächst nichts (Biom ohne Tabelle), bleibt das Knochenmehl in der Hand; ebenso auf einem Pilz auf fremdem Nylium.
+- **Enum am Ende:** `Above` steht hinter `Portal`, die Werte im Inhaltsformat bleiben; `QcBlockSerializer` prüft die neue Obergrenze. Felder nur auf dem Server, das Protokoll bleibt.
+- **Nylium ohne Seidenhand:** Das Spiel kennt keine Seidenhand; Nylium gibt Netherrack und wird nur über Knochenmehl vermehrt. Das Bewachsen ist darum der einzige Weg zu einer Pilzzucht.
+- **Verworfen:** ein eigener Block für die Spitze wie im Vorbild (zweite ID je Ranke, nur für ein etwas anderes Bild); Knochenmehl-Wachstum für alle `growth`-Blöcke (Zuckerrohr nimmt im Vorbild keines).
+
+## E-1045 Große Pilze über Chunk-Grenzen (Paket 84.3) — `QcFungusCrown`, `QcNetherGrowth`, `QcNetherTerrain::solidColumn`, `QcSaplingDefinition::boneMealOnly`
+
+- **Was:** Zwei Hüte als `shape` eines Baum-Features: `fungus_dome` (Karmesin: hohle, höckrige Kuppel, Ranken am Rand) und `fungus_canopy` (Wirr: flacher, welliger Schirm mit hängendem Rand, ab Stammhöhe 9 ein zweiter Teller darunter). `glow` (Pilzlicht im Hut) und `hanging` sind Felder des Features. Generator und Knochenmehl nutzen denselben Bau (`QcTreeShape::build`).
+- **Über die Chunk-Grenze:** Ein Pilz reicht bis 6 Blöcke zur Seite. Die Spalten mit Pilz stehen fest (`density` je Spalte, nur Hash), jeder Chunk fragt alle Spalten seines Rands, ob dort ein Pilz steht, und schreibt seinen Teil. Den Boden nennt `QcNetherTerrain::solidColumn`: eine ganze Spalte aus den vier Ecksäulen des Gitters, rund 56 statt tausender Rauschwerte, dieselben Antworten wie `isSolid`. Ohne Plan-Cache, thread-sicher.
+- **Hüte verfallen nicht:** `QcTreeShape::Params::fungus` hält Warzenblöcke aus dem Laubverfall von `QcPlantManager`; ein Hut reicht weiter vom Stamm als `leafReach`, und gesetzte Warzenblöcke sollen bleiben.
+- **Fungi wachsen nur mit Knochenmehl** (`boneMealOnly`, wie im Vorbild) und nur auf ihrem eigenen Nylium (`plantOn`), obwohl sie auch auf dem anderen stehen; der Zeitgeber läuft nicht, Knochenmehl setzt ihn auf 0.
+- **Verworfen:** Pilze ganz im Chunk (Streifen ohne Stämme an jeder Chunk-Grenze, Raster von oben sichtbar); Nachbar-Chunks mitrechnen (neunfache Kosten).
+
+## E-1046 Pflanzen auf Böden und an Decken (Paket 84.3) — `QcNetherGrowth`, `QcFeatureDefinition::fromRoof`
+
+- **Was:** Die Wälder nutzen die gewöhnlichen Wege der Biome: `vegetation.grass` (Wurzeln, Pilze, Sprossen; auch das, was Knochenmehl auf Nylium wachsen lässt) und `features`. Ein `column`-Feature ist im Nether eine Pflanzensäule, mit `fromRoof` von der Decke. Im Gegensatz zur Oberwelt gibt es je Spalte mehrere Böden; `density` gilt je Boden oder Decke. Warzen an den Decken sind `clusters` mit neuem Feld `biomes`.
+- **Spawn-Suche (84.7b):** Die Wälder liegen in jeder geprüften Welt nah am Ursprung (`forestsLieNearTheOrigin`); `QcNetherGenerator::biomeAt` reicht der Suche.
+
+## E-1047 Basaltdeltas: Gestein, Becken und Pfosten (Paket 84.3) — `QcNetherDeltas`, `QcBiomeDefinition::rockBlock`, `QcNetherSettings::Pillar`, `QcNetherSettings::Pool`
+
+- **Gestein:** `rock` ersetzt in den Spalten des Bioms das Füllgestein, `rockBand` läuft in welligen Bändern hindurch (Basalt und Schwarzstein). Ausgetauscht wird nach Erzen und Clustern, die bleiben also.
+- **Lava:** Springs brauchen Netherrack in der Wand, die Deltas haben also **keine Fälle**. Ihre Lava liegt still: `pools` sind Becken einen Block tief, nur in Zellen mit Fels an allen vier Seiten und darunter (am Chunk-Rand fragt `isSolid` den Nachbarn), mit Magma darum. Die Quellblöcke planen keine Schritte (E-1035). `fallsIntoTheSea` zählt nur noch das Meer, nicht ein Becken.
+- **Becken an Strukturen:** Ein Bauwerk räumt nach den Becken Luft frei. `QcNetherStructures::sealPools` macht darum vor dem Bauen die Beckenzellen rund um die Grundfläche (ein Block Rand) und direkt über ihr zu Magma; `plansTouching` mit Rand 1 findet dafür auch Bauwerke im Nachbar-Chunk. So bleibt jede Beckenzelle ohne Abfluss (Seeds 152 und 170 in `poolsHoldTheirLava`). Quellen stehen nur auf inneren Zellen, `springOf` schaut nie über den Chunk hinaus (Seed 2, Chunk (-127, 111)).
+- **Pfosten:** Je Spalte aus einem Rauschen und einem Hash je Quadrat von 2 × 2, also ohne Chunk-Übergriff; Stufen zwischen den Spalten; unter Decken halb so lang. Schwelle 0,3: bei 0,02 stand fast die Hälfte der Fläche voll, das Biom war ein Gang zwischen Wänden ohne Blick auf die Becken.
+- **`patchScale`:** `surfacePatches` als Rauschflecken statt Spalte für Spalte (Schwarzstein auf Basalt).
+- **Verworfen:** Lava im Netherrack der Deltas als Fälle (widerspricht E-1039); flaches Gelände je Biom (ändert `QcNetherTerrain`, Sprünge an den Biomgrenzen).
+
+## E-1048 Relief-Muster der Wälder (Paket 84.3) — `QcTextureFungalPatterns`
+
+- **Was:** Zwölf Muster nach E-1043, vom Stoff her, je Art eine andere Struktur statt einer anderen Farbe: `fungal_felt` (Karmesin-Nylium: sich kreuzende Fäden mit Knubbeln) gegen `moss_cushions` (Wirr: runde Polster); `rope_stem` (gedrehte Stränge) gegen `pored_stem` (Rippen mit leuchtenden Poren); `fibre_boards` (lange Bretter quer mit Stößen) gegen `pitted_boards` (ungleich breite Bretter hochkant, Poren); `wart_lumps` gegen `wart_folds`; dazu `stem_section`, `peeled_fibre`, `mat_edge`, `glow_lobes`.
+- **Wiederholung:** Keine einzelne große Form je Kachel; alle Muster haben viele kleine Zellen oder Wellen mit ganzen Perioden, die Helligkeit wechselt je Zelle, nicht je Kachel.
+- **Pflanzen** (Pilze, Wurzeln, Sprossen, Ranken) sind 16 × 16-Zeichnungen (`icon`, Bitmap), weil Relief-Muster keine Transparenz kennen. Türen, Falltüren und Schilder nutzen die vorhandenen Muster mit eigenen Farben.
+- **Material-Karten:** `QcMaterialRules` kennt alle zwölf; `glow_lobes` leuchtet wie `glow_cluster` mit 0,4.
+
+## E-1049 Kosten der Wälder und Deltas (Paket 84.3) — `QcNetherGrowth`, `QcNetherDeltas`
+
+- **Generierung** (`generationCost`, Release, Seed 42, drei Läufe, Rechner unter Last durch parallele Pakete): Nether 0,54–0,56 ms je Chunk (E-1035: 0,42), in Chunks ganz im Biom Karmesinwald 0,65, Wirrwald 0,60–0,64, Basaltdeltas 0,60–0,63; Oberwelt 2,46. Der Nether bleibt bei rund einem Viertel der Oberwelt.
+- **Tick** (`lavaCost`, Release, Radius 8, 3000 Ticks von Hand): Schnitt 0,125 ms unter Last; verschränkte A/B-Messung 84.2 gegen 84.3 (4 Runden, Lastmittel 5,7): 0,060–0,064 ms gegen 0,097–0,119 ms, der Anstieg ist also echt. 99. Perzentil 0,35–0,40 ms gegen 0,44–0,48 ms, Plan höchstens 46 statt 58 Schritte, 0 verworfen: die Lava kostet nichts mehr.
+- **Ursache sind Zufalls-Ticks:** Ranken sind die ersten `growth`-Blöcke im Nether, `marks.isEmpty(RandomTicks)` kehrt dort nicht mehr früh zurück; 158 von 196 Stichproben liegen in `QcPlantGrowth::tick` und `mayHoldPlants`. Rund 0,05 ms bei 289 Chunks, linear in geladenen Wald-Chunks, gegen 50 ms je Tick unerheblich. Ein billiger Fix fehlt (die Ticks selbst sind die Arbeit, nicht die Palette allein), es bleibt so.
+- **Prüfsummen:** Nether-Version 1 ist offen, die Reihe `nether` ist für darwin-arm64 neu aufgenommen; für linux-arm64 und winnt-x86_64 steht das vor dem nächsten Push aus.

@@ -27,7 +27,7 @@ QString renderName(QcRenderLayer layer)
 
 bool isPlant(const QcBlockDefinition &block)
 {
-    return block.support == QcBlockSupport::Below || !block.groundBlocks.isEmpty() || block.sapling.isSapling()
+    return block.support == QcBlockSupport::Below || block.support == QcBlockSupport::Above || !block.groundBlocks.isEmpty() || block.sapling.isSapling()
            || block.shapeName == u"cross"_s;
 }
 

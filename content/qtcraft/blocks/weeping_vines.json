@@ -1,0 +1,25 @@
+{
+    "name": "weeping_vines",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "climbable": true,
+    "support": "above",
+    "washable": true,
+    "drops": [
+        {
+            "item": "weeping_vines",
+            "chance": 0.33
+        }
+    ],
+    "growth": {
+        "maxHeight": 26,
+        "averageSeconds": 1800,
+        "boneMeal": true
+    },
+    "textures": {
+        "all": "weeping_vines"
+    }
+}

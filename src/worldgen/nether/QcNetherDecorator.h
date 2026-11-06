@@ -31,8 +31,9 @@ public:
     /*! Returns the springs of the generated \a chunk: the cells the server gives a block update,
         so their liquid starts to flow when the chunk arrives (world coordinates). */
     [[nodiscard]] QList<QcBlockPos> springsIn(const QcChunk &chunk) const;
-    /*! Returns the roll in 0 to 1 that picks the patch of the ground at the column \a x, \a z. */
-    [[nodiscard]] double patchRoll(int x, int z) const;
+    /*! Returns the roll in 0 to 1 that picks the patch of the ground of \a biome at the column
+        \a x, \a z: by hash, or by noise for a biome with \c {patchScale}. */
+    [[nodiscard]] double patchRoll(const QcNetherDefinitions::Biome &biome, int x, int z) const;
 
 private:
     // The ground of the biomes and the banks of the column `localX`, `localZ`.

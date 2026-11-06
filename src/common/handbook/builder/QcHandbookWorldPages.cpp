@@ -290,7 +290,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     facts.append({text.label(u"fact.featureType"_s), text.label(u"value.feature."_s + kind), {}});
 
     Fact blocks{text.label(u"fact.blocks"_s), {}, {}};
-    for (const QString &block : {feature.trunkBlock, feature.leavesBlock, feature.rimBlock}) {
+    for (const QString &block : {feature.trunkBlock, feature.leavesBlock, feature.glowBlock, feature.hangingBlock, feature.rimBlock}) {
         if (!block.isEmpty()) {
             blocks.links.append(context.links.blockLink(block));
         }

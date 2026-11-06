@@ -1,0 +1,9 @@
+{
+    "name": "warped_wart_block",
+    "sound": "grass",
+    "hardness": 1.0,
+    "tool": "hoe",
+    "textures": {
+        "all": "warped_wart_block"
+    }
+}

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Anvil](#block-qtcraft-anvil) · [Backpack](#block-qtcraft-backpack) · [Barrel](#block-qtcraft-barrel) · [Basalt](#block-qtcraft-basalt) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch Sign](#block-qtcraft-birch_sign) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black bed](#block-qtcraft-black_bed) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black glazed terracotta](#block-qtcraft-black_glazed_terracotta) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Blackstone](#block-qtcraft-blackstone) · [Blast furnace](#block-qtcraft-blast_furnace) · [Block of coal](#block-qtcraft-coal_block) · [Block of copper](#block-qtcraft-copper_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Block of quartz](#block-qtcraft-quartz_block) · [Block of raw copper](#block-qtcraft-raw_copper_block) · [Block of raw gold](#block-qtcraft-raw_gold_block) · [Block of raw iron](#block-qtcraft-raw_iron_block) · [Block of Signal Dust](#block-qtcraft-signal_dust_block) · [Blue bed](#block-qtcraft-blue_bed) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue glazed terracotta](#block-qtcraft-blue_glazed_terracotta) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bone block](#block-qtcraft-bone_block) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown bed](#block-qtcraft-brown_bed) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown glazed terracotta](#block-qtcraft-brown_glazed_terracotta) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Cake](#block-qtcraft-cake) · [Campfire](#block-qtcraft-campfire) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chain](#block-qtcraft-chain) · [Chest](#block-qtcraft-chest) · [Chipped Anvil](#block-qtcraft-chipped_anvil) · [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) · [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) · [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) · [Chiseled stone bricks](#block-qtcraft-chiseled_stone_bricks) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Coarse dirt](#block-qtcraft-coarse_dirt) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Copper bars](#block-qtcraft-copper_bars) · [Copper chain](#block-qtcraft-copper_chain) · [Copper door](#block-qtcraft-copper_door) · [Copper lantern](#block-qtcraft-copper_lantern) · [Copper ore](#block-qtcraft-copper_ore) · [Copper trapdoor](#block-qtcraft-copper_trapdoor) · [Cornflower](#block-qtcraft-cornflower) · [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) · [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) · [Cracked stone bricks](#block-qtcraft-cracked_stone_bricks) · [Crafting table](#block-qtcraft-crafting_table) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan bed](#block-qtcraft-cyan_bed) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan glazed terracotta](#block-qtcraft-cyan_glazed_terracotta) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Damaged Anvil](#block-qtcraft-damaged_anvil) · [Dandelion](#block-qtcraft-dandelion) · [Daylight Sensor](#block-qtcraft-daylight_sensor) · [Dead bush](#block-qtcraft-dead_bush) · [Decoupled Signal Dispenser](#block-qtcraft-decoupled_signal_dispenser) · [Decoupled Signal Dropper](#block-qtcraft-decoupled_signal_dropper) · [Decoupled Signal Piston](#block-qtcraft-decoupled_signal_piston) · [Decoupled Sticky Signal Piston](#block-qtcraft-decoupled_sticky_signal_piston) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Enchanting Table](#block-qtcraft-enchanting_table) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Gilded blackstone](#block-qtcraft-gilded_blackstone) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Glowstone](#block-qtcraft-glowstone) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray bed](#block-qtcraft-gray_bed) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray glazed terracotta](#block-qtcraft-gray_glazed_terracotta) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green bed](#block-qtcraft-green_bed) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green glazed terracotta](#block-qtcraft-green_glazed_terracotta) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Jack o'lantern](#block-qtcraft-jack_o_lantern) · [Jungle door](#block-qtcraft-jungle_door) · [Jungle leaves](#block-qtcraft-jungle_leaves) · [Jungle log](#block-qtcraft-jungle_log) · [Jungle planks](#block-qtcraft-jungle_planks) · [Jungle sapling](#block-qtcraft-jungle_sapling) · [Jungle sign](#block-qtcraft-jungle_sign) · [Jungle trapdoor](#block-qtcraft-jungle_trapdoor) · [Jungle wood](#block-qtcraft-jungle_wood) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue bed](#block-qtcraft-light_blue_bed) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue glazed terracotta](#block-qtcraft-light_blue_glazed_terracotta) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray bed](#block-qtcraft-light_gray_bed) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray glazed terracotta](#block-qtcraft-light_gray_glazed_terracotta) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lily pad](#block-qtcraft-lily_pad) · [Lime bed](#block-qtcraft-lime_bed) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime glazed terracotta](#block-qtcraft-lime_glazed_terracotta) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta bed](#block-qtcraft-magenta_bed) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta glazed terracotta](#block-qtcraft-magenta_glazed_terracotta) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Nether brick fence](#block-qtcraft-nether_brick_fence) · [Nether bricks](#block-qtcraft-nether_bricks) · [Nether gold ore](#block-qtcraft-nether_gold_ore) · [Nether portal](#block-qtcraft-nether_portal) · [Nether quartz ore](#block-qtcraft-nether_quartz_ore) · [Nether wart (plant)](#block-qtcraft-nether_wart_crop) · [Netherrack](#block-qtcraft-netherrack) · [Note Block](#block-qtcraft-note_block) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak Sign](#block-qtcraft-oak_sign) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange bed](#block-qtcraft-orange_bed) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange glazed terracotta](#block-qtcraft-orange_glazed_terracotta) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange tulip](#block-qtcraft-orange_tulip) · [Orange wool](#block-qtcraft-orange_wool) · [Oxeye daisy](#block-qtcraft-oxeye_daisy) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink bed](#block-qtcraft-pink_bed) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink glazed terracotta](#block-qtcraft-pink_glazed_terracotta) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink tulip](#block-qtcraft-pink_tulip) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished basalt](#block-qtcraft-polished_basalt) · [Polished blackstone](#block-qtcraft-polished_blackstone) · [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple bed](#block-qtcraft-purple_bed) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple glazed terracotta](#block-qtcraft-purple_glazed_terracotta) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Quartz bricks](#block-qtcraft-quartz_bricks) · [Quartz pillar](#block-qtcraft-quartz_pillar) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red glazed terracotta](#block-qtcraft-red_glazed_terracotta) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red nether bricks](#block-qtcraft-red_nether_bricks) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Reeds](#block-qtcraft-reeds) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Indicator Light](#block-qtcraft-signal_indicator_light) · [Signal Indicator Light (lit)](#block-qtcraft-signal_indicator_light_lit) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small jack o'lantern](#block-qtcraft-small_jack_o_lantern) · [Small Signal Torch](#block-qtcraft-small_signal_torch) · [Small Signal Torch (off)](#block-qtcraft-small_signal_torch_off) · [Small torch](#block-qtcraft-small_torch) · [Smoker](#block-qtcraft-smoker) · [Smooth basalt](#block-qtcraft-smooth_basalt) · [Smooth quartz block](#block-qtcraft-smooth_quartz) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Smooth stone](#block-qtcraft-smooth_stone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Soul fire](#block-qtcraft-soul_fire) · [Soul lantern](#block-qtcraft-soul_lantern) · [Soul sand](#block-qtcraft-soul_sand) · [Soul soil](#block-qtcraft-soul_soil) · [Soul torch](#block-qtcraft-soul_torch) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce Sign](#block-qtcraft-spruce_sign) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Stonecutter](#block-qtcraft-stonecutter) · [Stripped birch log](#block-qtcraft-stripped_birch_log) · [Stripped birch wood](#block-qtcraft-stripped_birch_wood) · [Stripped jungle log](#block-qtcraft-stripped_jungle_log) · [Stripped jungle wood](#block-qtcraft-stripped_jungle_wood) · [Stripped oak log](#block-qtcraft-stripped_oak_log) · [Stripped oak wood](#block-qtcraft-stripped_oak_wood) · [Stripped spruce log](#block-qtcraft-stripped_spruce_log) · [Stripped spruce wood](#block-qtcraft-stripped_spruce_wood) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Target](#block-qtcraft-target) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Trapped chest](#block-qtcraft-trapped_chest) · [Tripwire](#block-qtcraft-tripwire) · [Tripwire hook](#block-qtcraft-tripwire_hook) · [Unlit campfire](#block-qtcraft-unlit_campfire) · [Vines](#block-qtcraft-vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White bed](#block-qtcraft-white_bed) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White glazed terracotta](#block-qtcraft-white_glazed_terracotta) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow bed](#block-qtcraft-yellow_bed) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow glazed terracotta](#block-qtcraft-yellow_glazed_terracotta) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Anvil](#block-qtcraft-anvil) · [Backpack](#block-qtcraft-backpack) · [Barrel](#block-qtcraft-barrel) · [Basalt](#block-qtcraft-basalt) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch Sign](#block-qtcraft-birch_sign) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black bed](#block-qtcraft-black_bed) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black glazed terracotta](#block-qtcraft-black_glazed_terracotta) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Blackstone](#block-qtcraft-blackstone) · [Blast furnace](#block-qtcraft-blast_furnace) · [Block of coal](#block-qtcraft-coal_block) · [Block of copper](#block-qtcraft-copper_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Block of quartz](#block-qtcraft-quartz_block) · [Block of raw copper](#block-qtcraft-raw_copper_block) · [Block of raw gold](#block-qtcraft-raw_gold_block) · [Block of raw iron](#block-qtcraft-raw_iron_block) · [Block of Signal Dust](#block-qtcraft-signal_dust_block) · [Blue bed](#block-qtcraft-blue_bed) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue glazed terracotta](#block-qtcraft-blue_glazed_terracotta) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bone block](#block-qtcraft-bone_block) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown bed](#block-qtcraft-brown_bed) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown glazed terracotta](#block-qtcraft-brown_glazed_terracotta) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Cake](#block-qtcraft-cake) · [Campfire](#block-qtcraft-campfire) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chain](#block-qtcraft-chain) · [Chest](#block-qtcraft-chest) · [Chipped Anvil](#block-qtcraft-chipped_anvil) · [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) · [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) · [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) · [Chiseled stone bricks](#block-qtcraft-chiseled_stone_bricks) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Coarse dirt](#block-qtcraft-coarse_dirt) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Copper bars](#block-qtcraft-copper_bars) · [Copper chain](#block-qtcraft-copper_chain) · [Copper door](#block-qtcraft-copper_door) · [Copper lantern](#block-qtcraft-copper_lantern) · [Copper ore](#block-qtcraft-copper_ore) · [Copper trapdoor](#block-qtcraft-copper_trapdoor) · [Cornflower](#block-qtcraft-cornflower) · [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) · [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) · [Cracked stone bricks](#block-qtcraft-cracked_stone_bricks) · [Crafting table](#block-qtcraft-crafting_table) · [Crimson door](#block-qtcraft-crimson_door) · [Crimson fungus](#block-qtcraft-crimson_fungus) · [Crimson hyphae](#block-qtcraft-crimson_hyphae) · [Crimson nylium](#block-qtcraft-crimson_nylium) · [Crimson planks](#block-qtcraft-crimson_planks) · [Crimson roots](#block-qtcraft-crimson_roots) · [Crimson sign](#block-qtcraft-crimson_sign) · [Crimson stem](#block-qtcraft-crimson_stem) · [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan bed](#block-qtcraft-cyan_bed) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan glazed terracotta](#block-qtcraft-cyan_glazed_terracotta) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Damaged Anvil](#block-qtcraft-damaged_anvil) · [Dandelion](#block-qtcraft-dandelion) · [Daylight Sensor](#block-qtcraft-daylight_sensor) · [Dead bush](#block-qtcraft-dead_bush) · [Decoupled Signal Dispenser](#block-qtcraft-decoupled_signal_dispenser) · [Decoupled Signal Dropper](#block-qtcraft-decoupled_signal_dropper) · [Decoupled Signal Piston](#block-qtcraft-decoupled_signal_piston) · [Decoupled Sticky Signal Piston](#block-qtcraft-decoupled_sticky_signal_piston) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Enchanting Table](#block-qtcraft-enchanting_table) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Gilded blackstone](#block-qtcraft-gilded_blackstone) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Glowstone](#block-qtcraft-glowstone) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray bed](#block-qtcraft-gray_bed) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray glazed terracotta](#block-qtcraft-gray_glazed_terracotta) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green bed](#block-qtcraft-green_bed) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green glazed terracotta](#block-qtcraft-green_glazed_terracotta) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Jack o'lantern](#block-qtcraft-jack_o_lantern) · [Jungle door](#block-qtcraft-jungle_door) · [Jungle leaves](#block-qtcraft-jungle_leaves) · [Jungle log](#block-qtcraft-jungle_log) · [Jungle planks](#block-qtcraft-jungle_planks) · [Jungle sapling](#block-qtcraft-jungle_sapling) · [Jungle sign](#block-qtcraft-jungle_sign) · [Jungle trapdoor](#block-qtcraft-jungle_trapdoor) · [Jungle wood](#block-qtcraft-jungle_wood) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue bed](#block-qtcraft-light_blue_bed) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue glazed terracotta](#block-qtcraft-light_blue_glazed_terracotta) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray bed](#block-qtcraft-light_gray_bed) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray glazed terracotta](#block-qtcraft-light_gray_glazed_terracotta) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lily pad](#block-qtcraft-lily_pad) · [Lime bed](#block-qtcraft-lime_bed) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime glazed terracotta](#block-qtcraft-lime_glazed_terracotta) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta bed](#block-qtcraft-magenta_bed) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta glazed terracotta](#block-qtcraft-magenta_glazed_terracotta) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Nether brick fence](#block-qtcraft-nether_brick_fence) · [Nether bricks](#block-qtcraft-nether_bricks) · [Nether gold ore](#block-qtcraft-nether_gold_ore) · [Nether portal](#block-qtcraft-nether_portal) · [Nether quartz ore](#block-qtcraft-nether_quartz_ore) · [Nether sprouts](#block-qtcraft-nether_sprouts) · [Nether wart (plant)](#block-qtcraft-nether_wart_crop) · [Nether wart block](#block-qtcraft-nether_wart_block) · [Netherrack](#block-qtcraft-netherrack) · [Note Block](#block-qtcraft-note_block) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak Sign](#block-qtcraft-oak_sign) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange bed](#block-qtcraft-orange_bed) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange glazed terracotta](#block-qtcraft-orange_glazed_terracotta) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange tulip](#block-qtcraft-orange_tulip) · [Orange wool](#block-qtcraft-orange_wool) · [Oxeye daisy](#block-qtcraft-oxeye_daisy) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink bed](#block-qtcraft-pink_bed) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink glazed terracotta](#block-qtcraft-pink_glazed_terracotta) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink tulip](#block-qtcraft-pink_tulip) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished basalt](#block-qtcraft-polished_basalt) · [Polished blackstone](#block-qtcraft-polished_blackstone) · [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple bed](#block-qtcraft-purple_bed) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple glazed terracotta](#block-qtcraft-purple_glazed_terracotta) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Quartz bricks](#block-qtcraft-quartz_bricks) · [Quartz pillar](#block-qtcraft-quartz_pillar) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red glazed terracotta](#block-qtcraft-red_glazed_terracotta) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red nether bricks](#block-qtcraft-red_nether_bricks) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Reeds](#block-qtcraft-reeds) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Shroomlight](#block-qtcraft-shroomlight) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Indicator Light](#block-qtcraft-signal_indicator_light) · [Signal Indicator Light (lit)](#block-qtcraft-signal_indicator_light_lit) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small jack o'lantern](#block-qtcraft-small_jack_o_lantern) · [Small Signal Torch](#block-qtcraft-small_signal_torch) · [Small Signal Torch (off)](#block-qtcraft-small_signal_torch_off) · [Small torch](#block-qtcraft-small_torch) · [Smoker](#block-qtcraft-smoker) · [Smooth basalt](#block-qtcraft-smooth_basalt) · [Smooth quartz block](#block-qtcraft-smooth_quartz) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Smooth stone](#block-qtcraft-smooth_stone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Soul fire](#block-qtcraft-soul_fire) · [Soul lantern](#block-qtcraft-soul_lantern) · [Soul sand](#block-qtcraft-soul_sand) · [Soul soil](#block-qtcraft-soul_soil) · [Soul torch](#block-qtcraft-soul_torch) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce Sign](#block-qtcraft-spruce_sign) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Stonecutter](#block-qtcraft-stonecutter) · [Stripped birch log](#block-qtcraft-stripped_birch_log) · [Stripped birch wood](#block-qtcraft-stripped_birch_wood) · [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) · [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) · [Stripped jungle log](#block-qtcraft-stripped_jungle_log) · [Stripped jungle wood](#block-qtcraft-stripped_jungle_wood) · [Stripped oak log](#block-qtcraft-stripped_oak_log) · [Stripped oak wood](#block-qtcraft-stripped_oak_wood) · [Stripped spruce log](#block-qtcraft-stripped_spruce_log) · [Stripped spruce wood](#block-qtcraft-stripped_spruce_wood) · [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) · [Stripped warped stem](#block-qtcraft-stripped_warped_stem) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Target](#block-qtcraft-target) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Trapped chest](#block-qtcraft-trapped_chest) · [Tripwire](#block-qtcraft-tripwire) · [Tripwire hook](#block-qtcraft-tripwire_hook) · [Twisting vines](#block-qtcraft-twisting_vines) · [Unlit campfire](#block-qtcraft-unlit_campfire) · [Vines](#block-qtcraft-vines) · [Warped door](#block-qtcraft-warped_door) · [Warped fungus](#block-qtcraft-warped_fungus) · [Warped hyphae](#block-qtcraft-warped_hyphae) · [Warped nylium](#block-qtcraft-warped_nylium) · [Warped planks](#block-qtcraft-warped_planks) · [Warped roots](#block-qtcraft-warped_roots) · [Warped sign](#block-qtcraft-warped_sign) · [Warped stem](#block-qtcraft-warped_stem) · [Warped trapdoor](#block-qtcraft-warped_trapdoor) · [Warped wart block](#block-qtcraft-warped_wart_block) · [Weeping vines](#block-qtcraft-weeping_vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White bed](#block-qtcraft-white_bed) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White glazed terracotta](#block-qtcraft-white_glazed_terracotta) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow bed](#block-qtcraft-yellow_bed) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow glazed terracotta](#block-qtcraft-yellow_glazed_terracotta) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
 
@@ -197,6 +197,10 @@ Grey volcanic rock in columns. Placed like a log, it lies along the clicked axis
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Basalt deltas](biomes.md#biome-qtcraft-basalt_deltas) (Surface, Below the surface, Under water, Beaches)
 
 ### <a id="block-qtcraft-bed"></a>Bed
 
@@ -3259,6 +3263,282 @@ Opens the 3 × 3 crafting grid that bigger recipes need.
 |---|---|---|
 | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Crafting table](#block-qtcraft-crafting_table) |
 | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-crimson_door"></a>Crimson door
+
+Two blocks tall; open and close it with the use button. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson door](#block-qtcraft-crimson_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 3 × [Crimson door](#block-qtcraft-crimson_door) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-crimson_fungus"></a>Crimson fungus
+
+Bone meal grows it into a huge fungus, but only on crimson nylium; it never grows by itself.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fungus` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Crimson fungus](#block-qtcraft-crimson_fungus) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Grows into | 120–300 s: [Huge crimson fungus](worldgen.md#feature-qtcraft-huge_crimson_fungus) |
+| Can be planted on | [Crimson nylium](#block-qtcraft-crimson_nylium) |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-crimson_hyphae"></a>Crimson hyphae
+
+A stem with skin on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson hyphae](#block-qtcraft-crimson_hyphae) |
+| Axe makes | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Crimson stem](#block-qtcraft-crimson_stem) | [Crimson stem](#block-qtcraft-crimson_stem) | 3 × [Crimson hyphae](#block-qtcraft-crimson_hyphae) |
+| [Crimson stem](#block-qtcraft-crimson_stem) | [Crimson stem](#block-qtcraft-crimson_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-crimson_nylium"></a>Crimson nylium
+
+Netherrack overgrown by a crimson mat. Bone meal grows the plants of the forest on it; bone meal on bare netherrack next to it spreads the mat. It breaks into netherrack.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_nylium` |
+| Hardness | 0.4 |
+| Breaking by hand | 2 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Netherrack](#block-qtcraft-netherrack) |
+| Drops without the right tool | nothing |
+| Sound | Netherrack |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Surface, Beaches)
+
+### <a id="block-qtcraft-crimson_planks"></a>Crimson planks
+
+Building wood of the nether; any planks fit recipes that ask for planks. It neither burns nor heats a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_planks` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson planks](#block-qtcraft-crimson_planks) |
+| Sound | wood |
+| Groups | [Any planks](tags.md#tag-qtcraft-planks) |
+
+**Building parts**
+
+[Crimson button](parts.md#block-qtcraft-crimson_button), [Crimson fence](parts.md#block-qtcraft-crimson_fence), [Crimson fence gate](parts.md#block-qtcraft-crimson_fence_gate), [Crimson pressure plate](parts.md#block-qtcraft-crimson_pressure_plate), [Crimson slab](parts.md#block-qtcraft-crimson_slab), [Crimson stairs](parts.md#block-qtcraft-crimson_stairs), [Crimson vertical slab](parts.md#block-qtcraft-crimson_vertical_slab)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Crimson stem](#block-qtcraft-crimson_stem) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Crimson hyphae](#block-qtcraft-crimson_hyphae) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+**Used in**
+
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Crimson button](parts.md#block-qtcraft-crimson_button), [Crimson door](#block-qtcraft-crimson_door), [Crimson fence](parts.md#block-qtcraft-crimson_fence), [Crimson fence gate](parts.md#block-qtcraft-crimson_fence_gate), [Crimson pressure plate](parts.md#block-qtcraft-crimson_pressure_plate), [Crimson sign](#block-qtcraft-crimson_sign), [Crimson slab](parts.md#block-qtcraft-crimson_slab), [Crimson stairs](parts.md#block-qtcraft-crimson_stairs), [Crimson trapdoor](#block-qtcraft-crimson_trapdoor), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-crimson_roots"></a>Crimson roots
+
+Low growth on the floors of the nether forests.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_roots` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Crimson roots](#block-qtcraft-crimson_roots) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses)
+
+### <a id="block-qtcraft-crimson_sign"></a>Crimson sign
+
+A sign of crimson wood. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_sign` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson sign](#block-qtcraft-crimson_sign) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | wood |
+| States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 3 × [Crimson sign](#block-qtcraft-crimson_sign) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+| · | [Stick](items.md#item-qtcraft-stick) | · |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-crimson_stem"></a>Crimson stem
+
+The stem of a huge crimson fungus. Four planks each. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson stem](#block-qtcraft-crimson_stem) |
+| Axe makes | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson hyphae](#block-qtcraft-crimson_hyphae), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Huge crimson fungus)
+
+### <a id="block-qtcraft-crimson_trapdoor"></a>Crimson trapdoor
+
+A hatch that opens upwards; sits high or low in its block. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 2 × [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
 
 **Faster with**
 
@@ -7509,6 +7789,27 @@ Netherrack with white quartz crystals. Gives nether quartz and experience.
 
 [Nether quartz ore veins](worldgen.md#ore-qtcraft-nether_quartz) (y 10–117)
 
+### <a id="block-qtcraft-nether_sprouts"></a>Nether sprouts
+
+Tiny growth on the floors of the nether; it leaves nothing behind.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_sprouts` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
 ### <a id="block-qtcraft-nether_wart_crop"></a>Nether wart (plant)
 
 Nether wart grows in four stages, only on soul sand and even in the dark. Ripe it gives two to four nether wart, before that one.
@@ -7527,6 +7828,38 @@ Nether wart grows in four stages, only on soul sand and even in the dark. Ripe i
 | Needs light | 0 of 15 |
 | Sound | grass and plants |
 | States | age (0, 1, 2, 3) |
+
+### <a id="block-qtcraft-nether_wart_block"></a>Nether wart block
+
+The flesh of a crimson cap, or nine nether warts pressed together.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wart_block` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Nether wart block](#block-qtcraft-nether_wart_block) |
+| Sound | grass and plants |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart block](#block-qtcraft-nether_wart_block) |
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) |  |
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) |  |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Huge crimson fungus)
 
 ### <a id="block-qtcraft-netherrack"></a>Netherrack
 
@@ -7556,13 +7889,17 @@ The soft red rock of the Nether. Fire lit on top of it burns forever. Smelted, i
 
 [Fuels](tables.md#table-fuels)
 
+**Dropped by**
+
+[Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Found in**
 
-[Nether Wastes](biomes.md#biome-qtcraft-nether_wastes) (Surface, Below the surface, Under water, Beaches)
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Below the surface, Under water), [Nether Wastes](biomes.md#biome-qtcraft-nether_wastes) (Surface, Below the surface, Under water, Beaches), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Below the surface, Under water)
 
 ### <a id="block-qtcraft-note_block"></a>Note Block
 
@@ -9918,6 +10255,25 @@ Pressed sand, found under deserts.
 
 [Desert](biomes.md#biome-qtcraft-desert) (Steep slopes)
 
+### <a id="block-qtcraft-shroomlight"></a>Shroomlight
+
+A glowing lobe from the cap of a huge fungus, as bright as glowstone.
+
+| | |
+|---|---|
+| ID | `qtcraft:shroomlight` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Shroomlight](#block-qtcraft-shroomlight) |
+| Light | 15 of 15 |
+| Sound | grass and plants |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
+
 ### <a id="block-qtcraft-signal_comparator"></a>Signal Comparator
 
 Puts out the strength from its back, or what it reads from a container (how full it is) or another readable block behind it, also through one block. In compare mode a stronger side input switches it off, in subtract mode it is taken off (use it to change the mode).
@@ -11709,6 +12065,63 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 [Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
+### <a id="block-qtcraft-stripped_crimson_hyphae"></a>Stripped crimson hyphae
+
+Hyphae without their skin: use an axe on hyphae, or put four stripped stems together.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_crimson_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | 3 × [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-stripped_crimson_stem"></a>Stripped crimson stem
+
+A stem without its skin: use an axe on a stem. It gives planks like the stem.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_crimson_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
 ### <a id="block-qtcraft-stripped_jungle_log"></a>Stripped jungle log
 
 A log without its bark: use an axe on a log. It lies along the clicked face and gives planks like the log.
@@ -11964,6 +12377,63 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 [Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
+### <a id="block-qtcraft-stripped_warped_hyphae"></a>Stripped warped hyphae
+
+Hyphae without their skin: use an axe on hyphae, or put four stripped stems together.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_warped_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | 3 × [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-stripped_warped_stem"></a>Stripped warped stem
+
+A stem without its skin: use an axe on a stem. It gives planks like the stem.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_warped_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
 ### <a id="block-qtcraft-sugar_cane"></a>Sugar cane
 
 Grows on sand or earth right next to water.
@@ -12195,6 +12665,28 @@ Hangs on the side of a block. Two hooks facing each other with tripwire between 
 
 [Trapped chest](#block-qtcraft-trapped_chest)
 
+### <a id="block-qtcraft-twisting_vines"></a>Twisting vines
+
+Rises from the floor of the warped forest and grows upwards. You can climb it. Bone meal adds a few blocks; it drops itself only now and then.
+
+| | |
+|---|---|
+| ID | `qtcraft:twisting_vines` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Twisting vines](#block-qtcraft-twisting_vines) (33 %) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Twisting vines](#block-qtcraft-twisting_vines), [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Netherrack](#block-qtcraft-netherrack), [Soul soil](#block-qtcraft-soul_soil), [Soul sand](#block-qtcraft-soul_sand), [Basalt](#block-qtcraft-basalt), [Blackstone](#block-qtcraft-blackstone), [Nether wart block](#block-qtcraft-nether_wart_block), [Warped wart block](#block-qtcraft-warped_wart_block) |
+| Grows by itself | up to 26 blocks tall, one block about every 30 min |
+| Washed away by liquids | yes |
+| Climbable | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Twisting vines)
+
 ### <a id="block-qtcraft-unlit_campfire"></a>Unlit campfire
 
 A campfire that was put out: no light, no heat. Flint and steel lights it again.
@@ -12235,6 +12727,326 @@ Hangs on walls, the overgrowth of jungle temples. Climb it like a ladder; it has
 **Used in**
 
 [Mossy cobblestone](#block-qtcraft-mossy_cobblestone), [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks)
+
+### <a id="block-qtcraft-warped_door"></a>Warped door
+
+Two blocks tall; open and close it with the use button. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped door](#block-qtcraft-warped_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 3 × [Warped door](#block-qtcraft-warped_door) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-warped_fungus"></a>Warped fungus
+
+Bone meal grows it into a huge fungus, but only on warped nylium; it never grows by itself.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fungus` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Warped fungus](#block-qtcraft-warped_fungus) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Grows into | 120–300 s: [Huge warped fungus](worldgen.md#feature-qtcraft-huge_warped_fungus) |
+| Can be planted on | [Warped nylium](#block-qtcraft-warped_nylium) |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-warped_hyphae"></a>Warped hyphae
+
+A stem with skin on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped hyphae](#block-qtcraft-warped_hyphae) |
+| Axe makes | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Warped stem](#block-qtcraft-warped_stem) | [Warped stem](#block-qtcraft-warped_stem) | 3 × [Warped hyphae](#block-qtcraft-warped_hyphae) |
+| [Warped stem](#block-qtcraft-warped_stem) | [Warped stem](#block-qtcraft-warped_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-warped_nylium"></a>Warped nylium
+
+Netherrack overgrown by a warped mat. Bone meal grows the plants of the forest on it; bone meal on bare netherrack next to it spreads the mat. It breaks into netherrack.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_nylium` |
+| Hardness | 0.4 |
+| Breaking by hand | 2 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Netherrack](#block-qtcraft-netherrack) |
+| Drops without the right tool | nothing |
+| Sound | Netherrack |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Surface, Beaches)
+
+### <a id="block-qtcraft-warped_planks"></a>Warped planks
+
+Building wood of the nether; any planks fit recipes that ask for planks. It neither burns nor heats a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_planks` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped planks](#block-qtcraft-warped_planks) |
+| Sound | wood |
+| Groups | [Any planks](tags.md#tag-qtcraft-planks) |
+
+**Building parts**
+
+[Warped button](parts.md#block-qtcraft-warped_button), [Warped fence](parts.md#block-qtcraft-warped_fence), [Warped fence gate](parts.md#block-qtcraft-warped_fence_gate), [Warped pressure plate](parts.md#block-qtcraft-warped_pressure_plate), [Warped slab](parts.md#block-qtcraft-warped_slab), [Warped stairs](parts.md#block-qtcraft-warped_stairs), [Warped vertical slab](parts.md#block-qtcraft-warped_vertical_slab)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Warped stem](#block-qtcraft-warped_stem) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Warped hyphae](#block-qtcraft-warped_hyphae) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+**Used in**
+
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [Warped button](parts.md#block-qtcraft-warped_button), [Warped door](#block-qtcraft-warped_door), [Warped fence](parts.md#block-qtcraft-warped_fence), [Warped fence gate](parts.md#block-qtcraft-warped_fence_gate), [Warped pressure plate](parts.md#block-qtcraft-warped_pressure_plate), [Warped sign](#block-qtcraft-warped_sign), [Warped slab](parts.md#block-qtcraft-warped_slab), [Warped stairs](parts.md#block-qtcraft-warped_stairs), [Warped trapdoor](#block-qtcraft-warped_trapdoor), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-warped_roots"></a>Warped roots
+
+Low growth on the floors of the nether forests.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_roots` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Warped roots](#block-qtcraft-warped_roots) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-warped_sign"></a>Warped sign
+
+A sign of warped wood. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_sign` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped sign](#block-qtcraft-warped_sign) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | wood |
+| States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 3 × [Warped sign](#block-qtcraft-warped_sign) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+| · | [Stick](items.md#item-qtcraft-stick) | · |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-warped_stem"></a>Warped stem
+
+The stem of a huge warped fungus. Four planks each. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped stem](#block-qtcraft-warped_stem) |
+| Axe makes | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
+| Sound | wood |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped hyphae](#block-qtcraft-warped_hyphae), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Huge warped fungus)
+
+### <a id="block-qtcraft-warped_trapdoor"></a>Warped trapdoor
+
+A hatch that opens upwards; sits high or low in its block. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped trapdoor](#block-qtcraft-warped_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 2 × [Warped trapdoor](#block-qtcraft-warped_trapdoor) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-warped_wart_block"></a>Warped wart block
+
+The flesh of a warped cap, in winding folds.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_wart_block` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Warped wart block](#block-qtcraft-warped_wart_block) |
+| Sound | grass and plants |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Huge warped fungus)
+
+### <a id="block-qtcraft-weeping_vines"></a>Weeping vines
+
+Hangs from roofs and from the caps of crimson fungi and grows downwards. You can climb it. Bone meal adds a few blocks; it drops itself only now and then.
+
+| | |
+|---|---|
+| ID | `qtcraft:weeping_vines` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Weeping vines](#block-qtcraft-weeping_vines) (33 %) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid block above |
+| Grows by itself | up to 26 blocks tall, one block about every 30 min |
+| Washed away by liquids | yes |
+| Climbable | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Weeping vines)
 
 ### <a id="block-qtcraft-wheat_crop"></a>Wheat crop
 

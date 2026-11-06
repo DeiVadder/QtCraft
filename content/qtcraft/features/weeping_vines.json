@@ -1,0 +1,8 @@
+{
+    "name": "weeping_vines",
+    "type": "column",
+    "trunk": "weeping_vines",
+    "minHeight": 2,
+    "maxHeight": 10,
+    "fromRoof": true
+}

@@ -25,7 +25,9 @@ enum class Crown : quint8 {
     Cone, // Rings shrinking towards the top, from two blocks above the ground.
     Bush, // Leaves around and over the logs.
     GiantCone, // A tall spruce on a 2×2 trunk with a layered cone.
-    GiantRound // A jungle giant on a 2×2 trunk with branches and a wide flat crown.
+    GiantRound, // A jungle giant on a 2×2 trunk with branches and a wide flat crown.
+    FungusDome, // A huge fungus with a hollow, lumpy dome (decision E-1045).
+    FungusCanopy // A huge fungus with a flat, wavy canopy and a drooping rim.
 };
 
 /*! \brief The shape of one feature with its blocks resolved, as paramsOf() reads it from a
@@ -51,10 +53,16 @@ struct Params
     /*! Vines hung on the trunk and the lowest leaves, one state per side the vine holds on to
         (north, east, south, west); air when the tree has none. */
     std::array<QcBlockId, 4> vines{};
+    /*! The glowing block in the cap of a huge fungus and the plant hanging from its rim; air for
+        none. \qcshared */
+    QcBlockId glow = qcAirBlockId;
+    QcBlockId hanging = qcAirBlockId;
 
     /*! Returns whether the crown is a giant one. Giant trees stand on four trunk blocks:
         \c {base} and the blocks east, south and south-east of it. */
     bool giant() const { return crown == Crown::GiantCone || crown == Crown::GiantRound; }
+    /*! Returns whether this is a huge fungus, whose cap stays when the stem goes. */
+    bool fungus() const { return crown == Crown::FungusDome || crown == Crown::FungusCanopy; }
 };
 
 /*! Receives every block of the feature; \c {onlyIntoAir} marks blocks (leaves, vines) that may
@@ -69,7 +77,7 @@ using Put = std::function<bool(QcBlockPos pos, QcBlockId block, bool onlyIntoAir
 [[nodiscard]] bool mayReplace(const Params &params, QcBlockId existing, QcBlockId block, bool onlyIntoAir);
 
 /*! Returns the crown named by a feature's \a shape ("round", "cone", "bush", "giant_cone",
-    "giant_round"). */
+    "giant_round", "fungus_dome", "fungus_canopy"). */
 std::optional<Crown> crownOf(const QString &shape);
 /*! Returns the shape of \a feature with the blocks of \a content (air for unknown blocks). */
 Params paramsOf(const QcContentRegistry &content, const QcFeatureDefinition &feature);

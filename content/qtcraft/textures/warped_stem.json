@@ -1,0 +1,8 @@
+{
+    "name": "warped_stem",
+    "pattern": "pored_stem",
+    "primary": "#2c3f58",
+    "secondary": "#35d0b0",
+    "variation": 0.08,
+    "seed": 8601
+}

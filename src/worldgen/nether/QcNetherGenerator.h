@@ -7,6 +7,8 @@
 #include "worldgen/generators/QcWorldGenerator.h"
 #include "worldgen/nether/QcNetherDecorator.h"
 #include "worldgen/nether/QcNetherDefinitions.h"
+#include "worldgen/nether/QcNetherDeltas.h"
+#include "worldgen/nether/QcNetherGrowth.h"
 #include "worldgen/nether/QcNetherStructures.h"
 #include "worldgen/nether/QcNetherTerrain.h"
 
@@ -48,5 +50,7 @@ private:
     QcNetherDefinitions m_definitions;
     QcNetherTerrain m_terrain;
     QcNetherDecorator m_decorator;
+    QcNetherDeltas m_deltas;
+    QcNetherGrowth m_growth;
     QcNetherStructures m_structures;
 };

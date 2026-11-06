@@ -213,9 +213,10 @@ private slots:
     {
         const std::unique_ptr<QcNetherGenerator> one = generator(42);
         const std::unique_ptr<QcNetherGenerator> other = generator(43);
+        const QcNetherDefinitions::Biome &biome = one->definitions().biomes.first();
         int differences = 0;
         for (int x = 0; x < 64; ++x) {
-            differences += one->decorator().patchRoll(x, 3) != other->decorator().patchRoll(x, 3) ? 1 : 0;
+            differences += one->decorator().patchRoll(biome, x, 3) != other->decorator().patchRoll(biome, x, 3) ? 1 : 0;
         }
         QVERIFY(differences > 32);
     }
@@ -242,7 +243,7 @@ private slots:
         QVERIFY(differences > 1000);
     }
 
-    // Both biomes lie on the map in fair shares, with the soul valley's own ground.
+    // The biomes lie on the map, the soul valley in a fair share, with the soul valley's own ground.
     void theBiomesShareTheMap_data() { seeds_data(); }
     void theBiomesShareTheMap()
     {
@@ -255,7 +256,7 @@ private slots:
                 ++columns[nether->biomeAt((x - side / 2) * 32, (z - side / 2) * 32)];
             }
         }
-        QCOMPARE(columns.size(), 2);
+        QCOMPARE(columns.size(), 5);
         const double valley = static_cast<double>(columns.value(u"qtcraft:soul_sand_valley"_s)) / (side * side);
         qInfo("soul sand valley: %.3f of the map", valley);
         QVERIFY2(valley > 0.08 && valley < 0.5, qPrintable(QString::number(valley)));
@@ -408,17 +409,20 @@ private slots:
     {
         const std::unique_ptr<QcNetherGenerator> nether = generator(42);
         const QcTerrainGenerator terrain(m_content, 42);
-        const auto timed = [](const QcWorldGenerator &world) {
+        const auto timed = [](const QcWorldGenerator &world, int firstX, int firstZ) {
             QElapsedTimer timer;
             timer.start();
             for (int z = 0; z < 6; ++z) {
                 for (int x = 0; x < 6; ++x) {
-                    Q_UNUSED(world.generate({x + 100, z + 100}));
+                    Q_UNUSED(world.generate({x + firstX, z + firstZ}));
                 }
             }
             return static_cast<double>(timer.nsecsElapsed()) / 36.0e6;
         };
-        qInfo("ms per chunk: nether %.2f, overworld %.2f", timed(*nether), timed(terrain));
+        qInfo("ms per chunk: nether %.2f, overworld %.2f", timed(*nether, 100, 100), timed(terrain, 100, 100));
+
+        // Chunks inside each of the biomes with the most to build (seed 42).
+        qInfo("ms per chunk: crimson forest %.2f, warped forest %.2f, basalt deltas %.2f", timed(*nether, -70, -77), timed(*nether, -49, -69), timed(*nether, -60, -103));
     }
 };
 

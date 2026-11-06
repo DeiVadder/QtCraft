@@ -208,12 +208,14 @@ void BlockReader::readPlacementFields()
     const QString support = m_reader.string(u"support"_s, isCross(m_block) ? u"below"_s : u"none"_s);
     if (support == u"below"_s) {
         m_block.support = QcBlockSupport::Below;
+    } else if (support == u"above"_s) {
+        m_block.support = QcBlockSupport::Above;
     } else if (support == u"attached"_s) {
         m_block.support = QcBlockSupport::Attached;
     } else if (support == u"portal"_s) {
         m_block.support = QcBlockSupport::Portal;
     } else if (support != u"none"_s) {
-        m_reader.fail(u"'support' must be none, below, attached or portal"_s);
+        m_reader.fail(u"'support' must be none, below, above, attached or portal"_s);
     }
 }
 
@@ -368,6 +370,7 @@ void BlockReader::readSapling(const QJsonObject &saplingJson, QcJsonFieldReader 
     QcSaplingDefinition sapling;
     sapling.feature = saplingReader.name(u"feature"_s, m_namespace);
     sapling.giantFeature = saplingReader.name(u"giantFeature"_s, m_namespace);
+    sapling.boneMealOnly = saplingReader.boolean(u"boneMealOnly"_s, false);
     sapling.minSeconds = saplingReader.number(u"minSeconds"_s, 120.0, 1.0, 86400.0);
     sapling.maxSeconds = saplingReader.number(u"maxSeconds"_s, std::max(300.0, sapling.minSeconds), sapling.minSeconds, 86400.0);
     sapling.plantChance = saplingReader.number(u"plantChance"_s, 0.0, 0.0, 1.0);
@@ -521,8 +524,9 @@ void BlockReader::readGrowth(QcJsonFieldReader &growthReader)
 {
     m_block.growth.maxHeight = growthReader.integer(u"maxHeight"_s, 3, 2, 64);
     m_block.growth.averageSeconds = growthReader.number(u"averageSeconds"_s, 600.0, 1.0, 86400.0);
-    if (growthReader.ok() && m_block.support != QcBlockSupport::Below) {
-        growthReader.fail(u"growing blocks need 'support': \"below\""_s);
+    m_block.growth.boneMeal = growthReader.boolean(u"boneMeal"_s, false);
+    if (growthReader.ok() && m_block.support != QcBlockSupport::Below && m_block.support != QcBlockSupport::Above) {
+        growthReader.fail(u"growing blocks need 'support': \"below\" or \"above\""_s);
     }
 }
 
@@ -537,6 +541,8 @@ void BlockReader::readFarming()
     m_block.tillsInto = m_reader.name(u"tillsInto"_s, m_namespace);
     m_block.flattensInto = m_reader.name(u"flattensInto"_s, m_namespace);
     m_block.growsVegetation = m_reader.boolean(u"growsVegetation"_s, false);
+    m_block.vegetationBiome = m_reader.name(u"vegetationBiome"_s, m_namespace);
+    m_block.overgrownBy = QcContentFields::parseNames(u"overgrownBy"_s, m_namespace, m_reader);
     m_block.coveredInto = m_reader.name(u"coveredInto"_s, m_namespace);
     m_block.strippedInto = m_reader.name(u"strippedInto"_s, m_namespace);
     m_block.dyeProperty = m_reader.string(u"dyeProperty"_s);

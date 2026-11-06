@@ -1,0 +1,17 @@
+{
+    "name": "crimson_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "crimson_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "crimson_sign",
+        "count": 3
+    }
+}

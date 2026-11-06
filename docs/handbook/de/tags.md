@@ -16,7 +16,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Birkenstufe](parts.md#block-qtcraft-birch_slab), [Dschungelstufe](parts.md#block-qtcraft-jungle_slab), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab)
+[Birkenstufe](parts.md#block-qtcraft-birch_slab), [Dschungelstufe](parts.md#block-qtcraft-jungle_slab), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Karmesinstufe](parts.md#block-qtcraft-crimson_slab), [Wirrstufe](parts.md#block-qtcraft-warped_slab)
 
 **Wird verwendet für**
 
@@ -32,7 +32,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Birkenbretter](blocks.md#block-qtcraft-birch_planks), [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks), [Eichenbretter](blocks.md#block-qtcraft-oak_planks), [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks)
+[Birkenbretter](blocks.md#block-qtcraft-birch_planks), [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks), [Eichenbretter](blocks.md#block-qtcraft-oak_planks), [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks), [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks), [Wirrbretter](blocks.md#block-qtcraft-warped_planks)
 
 **Wird verwendet für**
 
@@ -124,7 +124,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Birkenholz](blocks.md#block-qtcraft-birch_wood), [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log), [Entrindeter Dschungelstamm](blocks.md#block-qtcraft-stripped_jungle_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log), [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood), [Entrindetes Dschungelholz](blocks.md#block-qtcraft-stripped_jungle_wood), [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood), [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log)
+[Birkenholz](blocks.md#block-qtcraft-birch_wood), [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindete karmesinhyphen](blocks.md#block-qtcraft-stripped_crimson_hyphae), [Entrindete wirrhyphen](blocks.md#block-qtcraft-stripped_warped_hyphae), [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log), [Entrindeter Dschungelstamm](blocks.md#block-qtcraft-stripped_jungle_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log), [Entrindeter karmesinstamm](blocks.md#block-qtcraft-stripped_crimson_stem), [Entrindeter wirrstamm](blocks.md#block-qtcraft-stripped_warped_stem), [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood), [Entrindetes Dschungelholz](blocks.md#block-qtcraft-stripped_jungle_wood), [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood), [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Karmesinhyphen](blocks.md#block-qtcraft-crimson_hyphae), [Karmesinstamm](blocks.md#block-qtcraft-crimson_stem), [Wirrhyphen](blocks.md#block-qtcraft-warped_hyphae), [Wirrstamm](blocks.md#block-qtcraft-warped_stem)
 
 **Wird verwendet für**
 

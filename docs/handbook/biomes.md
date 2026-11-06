@@ -2,9 +2,31 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Frozen River](#biome-qtcraft-frozen_river) · [Frozen River Delta](#biome-qtcraft-frozen_delta) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Lush River Delta](#biome-qtcraft-lush_delta) · [Mountains](#biome-qtcraft-mountains) · [Nether Wastes](#biome-qtcraft-nether_wastes) · [Plains](#biome-qtcraft-plains) · [River](#biome-qtcraft-river) · [River Delta](#biome-qtcraft-delta) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Soul Sand Valley](#biome-qtcraft-soul_sand_valley) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Basalt deltas](#biome-qtcraft-basalt_deltas) · [Birch Forest](#biome-qtcraft-birch_forest) · [Crimson forest](#biome-qtcraft-crimson_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Frozen River](#biome-qtcraft-frozen_river) · [Frozen River Delta](#biome-qtcraft-frozen_delta) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Lush River Delta](#biome-qtcraft-lush_delta) · [Mountains](#biome-qtcraft-mountains) · [Nether Wastes](#biome-qtcraft-nether_wastes) · [Plains](#biome-qtcraft-plains) · [River](#biome-qtcraft-river) · [River Delta](#biome-qtcraft-delta) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Soul Sand Valley](#biome-qtcraft-soul_sand_valley) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Warped forest](#biome-qtcraft-warped_forest)
 
 ## QtCraft
+
+### <a id="biome-qtcraft-basalt_deltas"></a>Basalt deltas
+
+Dark rock in bands of basalt and blackstone, stone posts on floors and under roofs, and still pools of lava rimmed with magma. No lava falls here.
+
+| | |
+|---|---|
+| ID | `qtcraft:basalt_deltas` |
+| Climate | temperature 0.66, humidity 0.66, ruggedness 0.2 |
+| Terrain height | around y 68, ± 6 |
+| Surface | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Below the surface | [Basalt](blocks.md#block-qtcraft-basalt) (3 blocks) |
+| Under water | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Beaches | [Basalt](blocks.md#block-qtcraft-basalt) |
+
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
+**Creatures**
+
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-birch_forest"></a>Birch Forest
 
@@ -39,6 +61,36 @@ Light forest of birches.
 **Creatures**
 
 [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
+
+### <a id="biome-qtcraft-crimson_forest"></a>Crimson forest
+
+Red mats on the floors, huge fungi with hollow domes, wart hanging from the roofs and weeping vines everywhere.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_forest` |
+| Climate | temperature 0.36, humidity 0.36, ruggedness 0.2 |
+| Terrain height | around y 68, ± 6 |
+| Surface | [Crimson nylium](blocks.md#block-qtcraft-crimson_nylium) |
+| Below the surface | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 blocks) |
+| Under water | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Beaches | [Crimson nylium](blocks.md#block-qtcraft-crimson_nylium) |
+
+**Plants and trees**
+
+[Huge crimson fungus](worldgen.md#feature-qtcraft-huge_crimson_fungus) (0.8 % of columns), [Weeping vines](worldgen.md#feature-qtcraft-weeping_vines) (3.5 % of columns)
+
+**Grasses**
+
+[Crimson roots](blocks.md#block-qtcraft-crimson_roots) (63.64 %), [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) (18.18 %), [Warped fungus](blocks.md#block-qtcraft-warped_fungus) (9.09 %), [Nether sprouts](blocks.md#block-qtcraft-nether_sprouts) (9.09 %)
+
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
+**Creatures**
+
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -418,7 +470,7 @@ The water of the winding rivers that run through the land down to the sea or int
 | | |
 |---|---|
 | ID | `qtcraft:river` |
-| Rivers of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Jungle](#biome-qtcraft-jungle), [Jungle Edge](#biome-qtcraft-jungle_edge), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley), [Swamp](#biome-qtcraft-swamp) |
+| Rivers of | [Basalt deltas](#biome-qtcraft-basalt_deltas), [Birch Forest](#biome-qtcraft-birch_forest), [Crimson forest](#biome-qtcraft-crimson_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Jungle](#biome-qtcraft-jungle), [Jungle Edge](#biome-qtcraft-jungle_edge), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley), [Swamp](#biome-qtcraft-swamp), [Warped forest](#biome-qtcraft-warped_forest) |
 | Surface | [Sand](blocks.md#block-qtcraft-sand) |
 | Below the surface | [Sand](blocks.md#block-qtcraft-sand) (3 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand), [Gravel](blocks.md#block-qtcraft-gravel) (35 %), [Clay](blocks.md#block-qtcraft-clay) (10 %) |
@@ -439,7 +491,7 @@ Where a wide river runs through flat land into the sea, it spreads into a fan of
 | | |
 |---|---|
 | ID | `qtcraft:delta` |
-| Deltas of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley) |
+| Deltas of | [Basalt deltas](#biome-qtcraft-basalt_deltas), [Birch Forest](#biome-qtcraft-birch_forest), [Crimson forest](#biome-qtcraft-crimson_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley), [Warped forest](#biome-qtcraft-warped_forest) |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (2 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand), [Mud](blocks.md#block-qtcraft-mud) (30 %), [Clay](blocks.md#block-qtcraft-clay) (10 %), [Gravel](blocks.md#block-qtcraft-gravel) (10 %) |
@@ -496,7 +548,7 @@ Floors of soul sand and soul soil, where fires burn blue.
 | | |
 |---|---|
 | ID | `qtcraft:soul_sand_valley` |
-| Climate | temperature 0.74, humidity 0.3, ruggedness 0.2 |
+| Climate | temperature 0.66, humidity 0.36, ruggedness 0.2 |
 | Terrain height | around y 68, ± 6 |
 | Surface | [Soul sand](blocks.md#block-qtcraft-soul_sand) |
 | Below the surface | [Soul soil](blocks.md#block-qtcraft-soul_soil) (2 blocks) |
@@ -603,3 +655,33 @@ Cold flat land under snow; its water freezes.
 **Creatures**
 
 [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
+
+### <a id="biome-qtcraft-warped_forest"></a>Warped forest
+
+Blue-green cushions on the floors, huge fungi with flat canopies and twisting vines rising between them.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_forest` |
+| Climate | temperature 0.34, humidity 0.66, ruggedness 0.2 |
+| Terrain height | around y 68, ± 6 |
+| Surface | [Warped nylium](blocks.md#block-qtcraft-warped_nylium) |
+| Below the surface | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 blocks) |
+| Under water | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Beaches | [Warped nylium](blocks.md#block-qtcraft-warped_nylium) |
+
+**Plants and trees**
+
+[Huge warped fungus](worldgen.md#feature-qtcraft-huge_warped_fungus) (0.8 % of columns), [Twisting vines](worldgen.md#feature-qtcraft-twisting_vines) (3 % of columns)
+
+**Grasses**
+
+[Warped roots](blocks.md#block-qtcraft-warped_roots) (38.46 %), [Nether sprouts](blocks.md#block-qtcraft-nether_sprouts) (38.46 %), [Warped fungus](blocks.md#block-qtcraft-warped_fungus) (15.38 %), [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) (7.69 %)
+
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
+**Creatures**
+
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)

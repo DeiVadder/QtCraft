@@ -88,17 +88,22 @@ QList<QcStructurePlacement> QcNetherStructures::plansIn(const QcNetherDefinition
     return plans;
 }
 
-QList<QcStructurePlacement> QcNetherStructures::plansTouching(QcChunkPos pos) const
+QList<QcStructurePlacement> QcNetherStructures::plansTouching(QcChunkPos pos, int margin) const
 {
     QList<QcStructurePlacement> plans;
-    const int x = pos.x * QcWorld::chunkSize;
-    const int z = pos.z * QcWorld::chunkSize;
-    const QcXzRect chunk{x, z, x + QcWorld::chunkSize - 1, z + QcWorld::chunkSize - 1};
+    const int x = pos.x * QcWorld::chunkSize - margin;
+    const int z = pos.z * QcWorld::chunkSize - margin;
+    const int size = QcWorld::chunkSize + 2 * margin;
+    const QcXzRect area{x, z, x + size - 1, z + size - 1};
+    const auto touches = [&](const QcStructurePlacement &plan) {
+        const QcBlockPos origin = plan.origin();
+        return origin.x < x + size && origin.x + plan.sizeX() > x && origin.z < z + size && origin.z + plan.sizeZ() > z;
+    };
     for (const QcNetherDefinitions::Structure &kind : m_definitions.structures) {
-        const QList<QcStructurePlacement> candidates = plansIn(kind, chunk);
-        std::ranges::copy_if(candidates, std::back_inserter(plans), [pos](const QcStructurePlacement &plan) { return plan.overlaps(pos); });
+        const QList<QcStructurePlacement> candidates = plansIn(kind, area);
+        std::ranges::copy_if(candidates, std::back_inserter(plans), touches);
     }
-    if (station() && station()->overlaps(pos)) {
+    if (station() && touches(*station())) {
         plans.append(*station());
     }
     return plans;
@@ -128,8 +133,42 @@ void QcNetherStructures::prepare(QcChunk &chunk, const QcStructurePlacement &pla
     }
 }
 
+void QcNetherStructures::sealPools(QcChunk &chunk, const QcStructurePlacement &plan) const
+{
+    const QcBlockPos origin = plan.origin();
+    const int floor = origin.y + plan.structure().groundLayer;
+    const int lowest = std::max(floor, m_definitions.settings.liquidLevel + 2);
+    const int top = std::min(origin.y + plan.structure().sizeY() + 1, m_definitions.settings.roof - 1);
+    for (int z = 0; z < QcWorld::chunkSize; ++z) {
+        for (int x = 0; x < QcWorld::chunkSize; ++x) {
+            const int worldX = chunk.pos().x * QcWorld::chunkSize + x;
+            const int worldZ = chunk.pos().z * QcWorld::chunkSize + z;
+            if (worldX < origin.x - 1 || worldX > origin.x + plan.sizeX() || worldZ < origin.z - 1 || worldZ > origin.z + plan.sizeZ()) {
+                continue;
+            }
+            for (int y = lowest; y <= top; ++y) {
+                sealCell(chunk, {x, y, z});
+            }
+        }
+    }
+}
+
+void QcNetherStructures::sealCell(QcChunk &chunk, QcBlockPos cell) const
+{
+    const auto pool = std::ranges::find(m_definitions.pools, chunk.block(cell.x, cell.y, cell.z), &QcNetherDefinitions::Pool::block);
+    if (pool != m_definitions.pools.end()) {
+        chunk.setBlock(cell.x, cell.y, cell.z, pool->rim);
+    }
+}
+
 void QcNetherStructures::build(QcChunk &chunk) const
 {
+    // All pools first: a structure may hold the same liquid.
+    const QList<QcStructurePlacement> near = plansTouching(chunk.pos(), 1);
+    for (const QcStructurePlacement &plan : near) {
+        sealPools(chunk, plan);
+    }
+
     const QList<QcStructurePlacement> plans = plansTouching(chunk.pos());
     for (const QcStructurePlacement &plan : plans) {
         prepare(chunk, plan);

@@ -92,6 +92,30 @@ bool QcNetherTerrain::isSolid(int x, int y, int z) const
     return trilinear(corner, gridX.part, gridY.part, gridZ.part) > 0.0;
 }
 
+std::bitset<QcWorld::worldHeight> QcNetherTerrain::solidColumn(int x, int z) const
+{
+    const QcNetherSettings &settings = m_definitions.settings;
+    const GridPoint gridX = gridPoint(x, cellWidth);
+    const GridPoint gridZ = gridPoint(z, cellWidth);
+
+    // The value on each row of the grid, between its four corners.
+    std::array<double, static_cast<std::size_t>(QcWorld::worldHeight / cellHeight + 2)> rows{};
+    const int firstRow = settings.liquidLevel / cellHeight;
+    const int lastRow = settings.roof / cellHeight + 1;
+    for (int row = firstRow; row <= lastRow; ++row) {
+        const auto corner = [&](int dx, int dz) { return density((gridX.cell + dx) * cellWidth, row * cellHeight, (gridZ.cell + dz) * cellWidth); };
+        rows[static_cast<std::size_t>(row)] = mix(mix(corner(0, 0), corner(1, 0), gridX.part), mix(corner(0, 1), corner(1, 1), gridX.part), gridZ.part);
+    }
+
+    std::bitset<QcWorld::worldHeight> column;
+    for (int y = settings.liquidLevel + 1; y <= settings.roof; ++y) {
+        const GridPoint gridY = gridPoint(y, cellHeight);
+        const double value = mix(rows[static_cast<std::size_t>(gridY.cell)], rows[static_cast<std::size_t>(gridY.cell) + 1], gridY.part);
+        column[static_cast<std::size_t>(y)] = isBedrock(x, y, z) || value > 0.0;
+    }
+    return column;
+}
+
 void QcNetherTerrain::fillColumn(QcChunk &chunk, const Corners &corners, int localX, int localZ) const
 {
     const QcNetherSettings &settings = m_definitions.settings;

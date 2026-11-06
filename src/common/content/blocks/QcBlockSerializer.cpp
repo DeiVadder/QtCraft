@@ -319,7 +319,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 
     block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
-        || facingRule > static_cast<quint8>(QcFacingRule::Against) || support > static_cast<quint8>(QcBlockSupport::Portal) || containerSlots < 0
+        || facingRule > static_cast<quint8>(QcFacingRule::Against) || support > static_cast<quint8>(QcBlockSupport::Above) || containerSlots < 0
         || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || biteFood < 0 || biteFood > QcItemDefinition::maxFood
         || campfireSlots < 0 || campfireSlots > QcCampfireDefinition::maxSlots || !QcBlockStateTable::problem(block).isEmpty()) {

@@ -77,9 +77,33 @@ template <typename Entry, typename Read>
     return shore;
 }
 
+[[nodiscard]] QcNetherSettings::Pillar pillarOf(QcJsonFieldReader &reader, const QString &pack)
+{
+    QcNetherSettings::Pillar pillar;
+    pillar.block = requiredBlock(reader, u"block"_s, pack);
+    pillar.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
+    pillar.scale = reader.number(u"scale"_s, pillar.scale, 1.0, 512.0);
+    pillar.threshold = reader.number(u"threshold"_s, pillar.threshold, -1.0, 1.0);
+    pillar.height = reader.integer(u"height"_s, pillar.height, 1, 64);
+    return pillar;
+}
+
+[[nodiscard]] QcNetherSettings::Pool poolOf(QcJsonFieldReader &reader, const QString &pack)
+{
+    QcNetherSettings::Pool pool;
+    pool.block = requiredBlock(reader, u"block"_s, pack);
+    pool.rim = requiredBlock(reader, u"rim"_s, pack);
+    pool.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
+    pool.scale = reader.number(u"scale"_s, pool.scale, 1.0, 512.0);
+    pool.threshold = reader.number(u"threshold"_s, pool.threshold, -1.0, 1.0);
+    pool.rimBand = reader.number(u"rimBand"_s, pool.rimBand, 0.0, 1.0);
+    return pool;
+}
+
 [[nodiscard]] QcNetherSettings::Cluster clusterOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Cluster cluster;
+    cluster.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
     cluster.block = requiredBlock(reader, u"block"_s, pack);
     cluster.on = requiredBlock(reader, u"on"_s, pack);
     cluster.tries = reader.integer(u"tries"_s, cluster.tries, 0, 64);
@@ -142,6 +166,8 @@ QcResult<QcNetherSettings> parse(const QJsonObject &json, const QString &packNam
     nether.shores = listOf<QcNetherSettings::Shore>(json, u"shores"_s, reader, [&](QcJsonFieldReader &entry) { return shoreOf(entry, packNamespace); });
     nether.clusters = listOf<QcNetherSettings::Cluster>(json, u"clusters"_s, reader, [&](QcJsonFieldReader &entry) { return clusterOf(entry, packNamespace); });
     nether.springs = listOf<QcNetherSettings::Spring>(json, u"springs"_s, reader, [&](QcJsonFieldReader &entry) { return springOf(entry, packNamespace); });
+    nether.pillars = listOf<QcNetherSettings::Pillar>(json, u"pillars"_s, reader, [&](QcJsonFieldReader &entry) { return pillarOf(entry, packNamespace); });
+    nether.pools = listOf<QcNetherSettings::Pool>(json, u"pools"_s, reader, [&](QcJsonFieldReader &entry) { return poolOf(entry, packNamespace); });
     nether.fires = listOf<QcNetherSettings::Fire>(json, u"fires"_s, reader, [&](QcJsonFieldReader &entry) { return fireOf(entry.json, entry, packNamespace); });
     nether.structures = listOf<QcNetherSettings::Structure>(json, u"structures"_s, reader, [&](QcJsonFieldReader &entry) { return structureOf(entry, packNamespace); });
     reader.nestedObject(u"station"_s, [&nether, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {

@@ -254,6 +254,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureField.h textures/QcTextureField.cpp
+    textures/QcTextureFungalPatterns.h textures/QcTextureFungalPatterns.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
     textures/QcTextureMasonryPatterns.h textures/QcTextureMasonryPatterns.cpp
     textures/QcTextureOutline.h textures/QcTextureOutline.cpp

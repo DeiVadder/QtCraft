@@ -33,12 +33,50 @@ public:
         return fallback;
     }
 
+    // Notes `warning` with the others of the nether.
+    void warn(const QString &warning) { m_warnings.append(warning); }
+
 private:
     const QcContentRegistry &m_content;
     QStringList &m_warnings;
 };
 
-[[nodiscard]] QcNetherDefinitions::Biome biomeOf(const QcBiomeDefinition &definition, Blocks &blocks, QcBlockId filler)
+// A column of plants `placement` puts into a biome.
+[[nodiscard]] QcNetherDefinitions::Strand strandOf(const QcFeatureDefinition &feature, const QcFeaturePlacement &placement, Blocks &blocks, quint64 seed)
+{
+    QcNetherDefinitions::Strand strand;
+    strand.block = blocks.of(feature.trunkBlock, qcAirBlockId);
+    for (const QString &ground : feature.groundBlocks) {
+        strand.ground.append(blocks.of(ground, qcAirBlockId));
+    }
+    strand.minHeight = feature.minHeight;
+    strand.maxHeight = feature.maxHeight;
+    strand.fromRoof = feature.fromRoof;
+    strand.density = placement.density;
+    strand.seed = qcMixSeed(seed, qcNameSalt(feature.name));
+    return strand;
+}
+
+// What the features of `definition` add to `biome`; pools and single plants have no place here.
+[[nodiscard]] QcNetherDefinitions::Biome withFeatures(QcNetherDefinitions::Biome biome, const QcBiomeDefinition &definition, const QcContentRegistry &content, Blocks &blocks, quint64 seed)
+{
+    for (const QcFeaturePlacement &placement : definition.features) {
+        const QList<QcFeatureDefinition> &features = content.worldgen().features();
+        const auto feature = std::ranges::find(features, placement.feature, &QcFeatureDefinition::name);
+        if (feature == features.end()) {
+            blocks.warn(u"The nether biome %1 names the unknown feature %2"_s.arg(definition.name, placement.feature));
+            continue;
+        }
+        if (feature->type == QcFeatureDefinition::Type::Column) {
+            biome.strands.append(strandOf(*feature, placement, blocks, seed));
+        } else if (feature->type == QcFeatureDefinition::Type::Tree) {
+            biome.fungi.append({QcTreeShape::paramsOf(content, *feature), placement.density, qcMixSeed(seed, qcNameSalt(feature->name))});
+        }
+    }
+    return biome;
+}
+
+[[nodiscard]] QcNetherDefinitions::Biome biomeOf(const QcBiomeDefinition &definition, const QcContentRegistry &content, Blocks &blocks, QcBlockId filler, quint64 seed)
 {
     QcNetherDefinitions::Biome biome;
     biome.name = definition.name;
@@ -50,15 +88,22 @@ private:
     for (const QcBlockShare &patch : definition.surfacePatches) {
         biome.patches.append({blocks.of(patch.block, filler), patch.share});
     }
-    return biome;
+    biome.patchScale = definition.patchScale;
+    if (!definition.rockBlock.isEmpty()) {
+        biome.rock = blocks.of(definition.rockBlock, filler);
+        biome.rockBand = definition.rockBandBlock.isEmpty() ? biome.rock : blocks.of(definition.rockBandBlock, filler);
+    }
+    biome.plants = QcVegetationTable::resolve(content, definition.vegetation.grass).table;
+    biome.plantDensity = definition.vegetation.grass.density;
+    return withFeatures(std::move(biome), definition, content, blocks, seed);
 }
 
-[[nodiscard]] QList<QcNetherDefinitions::Biome> biomesOf(const QcContentRegistry &content, Blocks &blocks, QcBlockId filler)
+[[nodiscard]] QList<QcNetherDefinitions::Biome> biomesOf(const QcContentRegistry &content, Blocks &blocks, QcBlockId filler, quint64 seed)
 {
     QList<QcNetherDefinitions::Biome> biomes;
     for (const QcBiomeDefinition &definition : content.worldgen().biomes()) {
         if (definition.dimension == netherName) {
-            biomes.append(biomeOf(definition, blocks, filler));
+            biomes.append(biomeOf(definition, content, blocks, filler, seed));
         }
     }
     if (biomes.isEmpty()) {
@@ -68,6 +113,18 @@ private:
         biomes.append(fallback);
     }
     return biomes;
+}
+
+// The names in `names` that are no biome of `biomes`, each as a warning about `user`.
+[[nodiscard]] QStringList unknownBiomes(const QStringList &names, const QList<QcNetherDefinitions::Biome> &biomes, const QString &user)
+{
+    QStringList warnings;
+    for (const QString &name : names) {
+        if (!std::ranges::contains(biomes, name, &QcNetherDefinitions::Biome::name)) {
+            warnings.append(u"%1 of the nether names the unknown biome %2"_s.arg(user, name));
+        }
+    }
+    return warnings;
 }
 
 [[nodiscard]] QList<QcTerrainDefinitions::Ore> oresOf(const QcContentRegistry &content, Blocks &blocks, QcBlockId filler, quint64 seed)
@@ -110,7 +167,7 @@ bool QcNetherDefinitions::isGround(QcBlockId block) const
 {
     const auto inBiome = [block](const Biome &biome) {
         return block == biome.surface || block == biome.subsurface
-               || std::ranges::contains(biome.patches, block, &std::pair<QcBlockId, double>::first);
+               || (biome.rock != qcAirBlockId && (block == biome.rock || block == biome.rockBand)) || std::ranges::contains(biome.patches, block, &std::pair<QcBlockId, double>::first);
     };
     return block == filler || std::ranges::any_of(biomes, inBiome) || std::ranges::contains(ores, block, &QcTerrainDefinitions::Ore::block)
            || std::ranges::contains(shores, block, &Shore::block) || std::ranges::contains(clusters, block, &Cluster::block);
@@ -119,12 +176,14 @@ bool QcNetherDefinitions::isGround(QcBlockId block) const
 QcNetherDefinitions::QcNetherDefinitions(const QcContentRegistry &content, quint64 seed)
     : settings(content.worldgen().nether())
     , patchSeed(qcMixSeed(seed, qcNameSalt(u"qtcraft:nether_patches"_s)))
+    , patchNoise(qcMixSeed(seed, qcNameSalt(u"qtcraft:nether_patches"_s) + 1))
+    , bandNoise(qcMixSeed(seed, qcNameSalt(u"qtcraft:nether_bands"_s)))
 {
     Blocks blocks(content, warnings);
     filler = blocks.of(settings.filler, content.blockId(u"qtcraft:stone"_s).value_or(qcAirBlockId));
     bedrock = blocks.of(settings.bedrock, filler);
     liquid = blocks.of(settings.liquid, qcAirBlockId);
-    biomes = biomesOf(content, blocks, filler);
+    biomes = biomesOf(content, blocks, filler, seed);
     ores = oresOf(content, blocks, filler, seed);
 
     for (const QcNetherSettings::Shore &shore : std::as_const(settings.shores)) {
@@ -132,8 +191,18 @@ QcNetherDefinitions::QcNetherDefinitions(const QcContentRegistry &content, quint
         shores.append({QcNoise(own), blocks.of(shore.block, filler), shore.scale, shore.threshold, shore.height, shore.depth});
     }
     for (const QcNetherSettings::Cluster &cluster : std::as_const(settings.clusters)) {
+        warnings.append(unknownBiomes(cluster.biomes, biomes, u"The cluster of %1"_s.arg(cluster.block)));
         clusters.append({blocks.of(cluster.block, filler), blocks.of(cluster.on, filler), cluster.tries, cluster.minY, cluster.maxY, cluster.size,
-                         cluster.radius, cluster.depth, qcMixSeed(seed, qcNameSalt(cluster.block) + 2)});
+                         cluster.radius, cluster.depth, qcMixSeed(seed, qcNameSalt(cluster.block) + 2), cluster.biomes});
+    }
+    for (const QcNetherSettings::Pillar &pillar : std::as_const(settings.pillars)) {
+        warnings.append(unknownBiomes(pillar.biomes, biomes, u"The pillar of %1"_s.arg(pillar.block)));
+        const quint64 own = qcMixSeed(seed, qcNameSalt(pillar.block) + 6);
+        pillars.append({QcNoise(own), blocks.of(pillar.block, filler), pillar.biomes, pillar.scale, pillar.threshold, pillar.height, own + 1});
+    }
+    for (const QcNetherSettings::Pool &pool : std::as_const(settings.pools)) {
+        warnings.append(unknownBiomes(pool.biomes, biomes, u"The pool of %1"_s.arg(pool.block)));
+        pools.append({QcNoise(qcMixSeed(seed, qcNameSalt(pool.block) + 7)), blocks.of(pool.block, liquid), blocks.of(pool.rim, filler), pool.biomes, pool.scale, pool.threshold, pool.rimBand});
     }
     for (const QcNetherSettings::Spring &spring : std::as_const(settings.springs)) {
         springs.append({blocks.of(spring.block, filler), blocks.of(spring.in, filler), spring.tries, spring.minY, spring.maxY,

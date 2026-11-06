@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Dschungelbusch](#feature-qtcraft-jungle_bush) · [Eiche](#feature-qtcraft-oak_tree) · [Eichenbusch](#feature-qtcraft-oak_bush) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Nethergolderz-Vorkommen](#ore-qtcraft-nether_gold) · [Netherquarzerz-Vorkommen](#ore-qtcraft-nether_quartz) · [Reeds](#feature-qtcraft-reeds) · [Riesenfichte](#feature-qtcraft-giant_spruce_tree) · [Riesiger Dschungelbaum](#feature-qtcraft-giant_jungle_tree) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Trockenes Gestrüpp](#feature-qtcraft-dry_shrub) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Dschungelbusch](#feature-qtcraft-jungle_bush) · [Eiche](#feature-qtcraft-oak_tree) · [Eichenbusch](#feature-qtcraft-oak_bush) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Großer karmesinpilz](#feature-qtcraft-huge_crimson_fungus) · [Großer wirrpilz](#feature-qtcraft-huge_warped_fungus) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Nethergolderz-Vorkommen](#ore-qtcraft-nether_gold) · [Netherquarzerz-Vorkommen](#ore-qtcraft-nether_quartz) · [Reeds](#feature-qtcraft-reeds) · [Riesenfichte](#feature-qtcraft-giant_spruce_tree) · [Riesiger Dschungelbaum](#feature-qtcraft-giant_jungle_tree) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Trauerranken](#feature-qtcraft-weeping_vines) · [Trockenes Gestrüpp](#feature-qtcraft-dry_shrub) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane) · [Zwirbelranken](#feature-qtcraft-twisting_vines)
 
 ## QtCraft
 
@@ -166,7 +166,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Biome**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas), [Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Karmesinwald](biomes.md#biome-qtcraft-crimson_forest), [Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wirrwald](biomes.md#biome-qtcraft-warped_forest), [Wüste](biomes.md#biome-qtcraft-desert), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
 
 ### <a id="ore-qtcraft-gold"></a>Golderz-Vorkommen
 
@@ -177,6 +177,36 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 | Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
 | Höhen | y 5–32 |
 | Adern | 2 pro Chunk, je bis 7 Blöcke |
+
+### <a id="feature-qtcraft-huge_crimson_fungus"></a>Großer karmesinpilz
+
+| | |
+|---|---|
+| ID | `qtcraft:huge_crimson_fungus` |
+| Art | Baum |
+| Blöcke | [Karmesinstamm](blocks.md#block-qtcraft-crimson_stem), [Netherwarzenblock](blocks.md#block-qtcraft-nether_wart_block), [Pilzlicht](blocks.md#block-qtcraft-shroomlight), [Trauerranken](blocks.md#block-qtcraft-weeping_vines) |
+| Größe | 5–14 Blöcke |
+| Wächst auf | [Karmesin-Nylium](blocks.md#block-qtcraft-crimson_nylium) |
+| Wächst aus | [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) |
+
+**In Biomen**
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest) (0,8 % der Säulen)
+
+### <a id="feature-qtcraft-huge_warped_fungus"></a>Großer wirrpilz
+
+| | |
+|---|---|
+| ID | `qtcraft:huge_warped_fungus` |
+| Art | Baum |
+| Blöcke | [Wirrstamm](blocks.md#block-qtcraft-warped_stem), [Wirrwarzenblock](blocks.md#block-qtcraft-warped_wart_block), [Pilzlicht](blocks.md#block-qtcraft-shroomlight) |
+| Größe | 5–14 Blöcke |
+| Wächst auf | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+| Wächst aus | [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) |
+
+**In Biomen**
+
+[Wirrwald](biomes.md#biome-qtcraft-warped_forest) (0,8 % der Säulen)
 
 ### <a id="feature-qtcraft-cactus"></a>Kaktus
 
@@ -461,6 +491,19 @@ Je Quadrat aus Chunks geplant, wo die Mittelspalte in einem dieser Biome liegt.
 
 [Wüste](biomes.md#biome-qtcraft-desert) (2 % der Säulen)
 
+### <a id="feature-qtcraft-weeping_vines"></a>Trauerranken
+
+| | |
+|---|---|
+| ID | `qtcraft:weeping_vines` |
+| Art | Säule |
+| Blöcke | [Trauerranken](blocks.md#block-qtcraft-weeping_vines) |
+| Größe | 2–10 Blöcke |
+
+**In Biomen**
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest) (3,5 % der Säulen)
+
 ### <a id="feature-qtcraft-dry_shrub"></a>Trockenes Gestrüpp
 
 | | |
@@ -509,3 +552,17 @@ Je Quadrat aus Chunks geplant, wo die Mittelspalte in einem dieser Biome liegt.
 **In Biomen**
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (15 % der Säulen), [Blumental](biomes.md#biome-qtcraft-flower_valley) (20 % der Säulen), [Dschungel](biomes.md#biome-qtcraft-jungle) (20 % der Säulen), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (20 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (15 % der Säulen), [Flussdelta](biomes.md#biome-qtcraft-delta) (12 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (30 % der Säulen), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta) (30 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (10 % der Säulen), [Wüste](biomes.md#biome-qtcraft-desert) (20 % der Säulen)
+
+### <a id="feature-qtcraft-twisting_vines"></a>Zwirbelranken
+
+| | |
+|---|---|
+| ID | `qtcraft:twisting_vines` |
+| Art | Säule |
+| Blöcke | [Zwirbelranken](blocks.md#block-qtcraft-twisting_vines) |
+| Größe | 2–9 Blöcke |
+| Wächst auf | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+
+**In Biomen**
+
+[Wirrwald](biomes.md#biome-qtcraft-warped_forest) (3 % der Säulen)
