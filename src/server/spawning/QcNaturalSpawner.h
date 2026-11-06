@@ -184,6 +184,8 @@ private:
         // Whether the cell above the floor passes the monsters' light test (QcSpawnLight), with
         // the draws of the place, drawn once.
         bool darkEnough(const QcServerWorld &world, Sky sky, int maxBlockLight, QRandomGenerator &random);
+        // Whether the block light above the floor is within what `rule` allows.
+        bool lightAllows(const QcServerWorld &world, const SpawnRule &rule);
     };
 
     // A kind that may spawn at a place, with the first of its rules that allows it.
@@ -193,6 +195,8 @@ private:
         const SpawnRule *rule = nullptr;
         // Drawn in a spawn area: the area is the place, so no biome is asked for in any dimension.
         bool inArea = false;
+        // The size of its group, drawn by the area; 0 for the kind's own draw.
+        int groupSize = 0;
     };
 
     // Ticks at least between two counts of the loaded chunks while the areas stay (currentMonsterCap).
@@ -212,8 +216,8 @@ private:
     void spawnMonsters(QcServerWorld &world, const QList<PlayerView> &players, Sky sky, const NextId &nextEntityId);
     // A group of monsters at the place, at most `room`; returns how many spawned.
     int spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky sky, int room, const NextId &nextEntityId);
-    // One monster of the area's kinds at the place, drawn alike, by its area rule; how many spawned.
-    int spawnInArea(QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area, const NextId &nextEntityId);
+    // A kind of the area drawn for the place with the size of its group, if its rule allows it there.
+    std::optional<SpawnCandidate> kindOfArea(const QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area);
     // Awake creatures within `radius` of `centre`, by category and kind.
     NearbyCounts countNear(const QcVec3 &centre, double radius) const;
     // A random place around `centre`; consumes the random numbers of one spawn attempt.

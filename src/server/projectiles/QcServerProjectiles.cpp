@@ -4,6 +4,7 @@
 #include "server/projectiles/QcServerProjectiles.h"
 
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcPetOwners.h"
 #include "server/animals/QcServerAnimals.h"
@@ -104,13 +105,8 @@ void QcServerProjectiles::tick()
             }
             if (const QcHitEffect *blast = definition.effect(QcHitEffect::explode)) {
                 // Goes off after the pass: an explosion reaches the bodies the pass is walking past.
-                // Only a player who is there sets the rule aside: a shooter that is gone (after a
-                // load) counts as the creature it most likely was.
-                const bool byPlayer = std::ranges::any_of(m_state.clients(), [&](const auto &client) {
-                    return client->id == projectile.shooter && isPresent(*client);
-                });
                 m_blasts.append({projectile.motion.position, blast->number,
-                                 m_explosions.breaksBlocks() && (byPlayer || m_state.info().mobGriefing),
+                                 m_explosions.breaksBlocks() && (byPresentPlayer(projectile.shooter) || m_state.info().mobGriefing),
                                  definition.effect(QcHitEffect::ignite) != nullptr});
             }
         },
@@ -121,6 +117,16 @@ void QcServerProjectiles::tick()
     for (const QcServerExplosions::Blast &blast : blasts) {
         m_explosions.explode(blast);
     }
+}
+
+bool QcServerProjectiles::byPresentPlayer(quint32 shooter) const
+{
+    return std::ranges::any_of(m_state.clients(), [&](const auto &client) { return client->id == shooter && isPresent(*client); });
+}
+
+bool QcServerProjectiles::mayKindle(quint32 shooter) const
+{
+    return m_state.info().mobGriefing || shooter == 0 || byPresentPlayer(shooter);
 }
 
 bool QcServerProjectiles::deflect(QcServerClient &client, quint32 id)
@@ -187,6 +193,10 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
         took = hitCreature(hit, impact, along);
     } else {
         for (const auto &client : m_state.clients()) {
+            // A shot whose harm is its fire is no hit on a fire-proof body (decision E-1058).
+            if (client->id == hit.body && hit.definition.effect(QcHitEffect::kindle) && QcEffectRules::fireProof(m_state.content(), client->effects.all())) {
+                return false;
+            }
             if (client->id == hit.body && isPresent(*client) && client->hurt.wouldTake(impact.damage) != QcHurtWindow::Take::Ignored
                 && !client->rules().invulnerable) {
                 // A killing shot names the shooter when it is a creature (decision E-873).
@@ -219,6 +229,12 @@ bool QcServerProjectiles::hitCreature(const QcProjectileManager::Hit &hit, const
     }
     if (definition.teleport && definition.teleport->dodgesProjectiles) {
         m_state.entities().creatures().teleport(hit.body, m_state.world());
+        return false;
+    }
+    // A shot whose harm is its fire is no hit on a fire-proof body: no hurt, no anger, and a fire it
+    // already has burns on as it did (decision E-1058).
+    const bool fireProof = definition.fireImmune || (target->effects && QcEffectRules::fireProof(m_state.content(), target->effects->all()));
+    if (fireProof && hit.definition.effect(QcHitEffect::kindle)) {
         return false;
     }
     const bool byPlayer = noteShot(projectile.shooter, hit.body);

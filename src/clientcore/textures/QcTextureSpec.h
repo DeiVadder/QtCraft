@@ -299,6 +299,9 @@ struct QcTextureSpec
         /*! A creature's coat (QcTextureCoatPatterns, decision E-880): a few large smooth-edged
             patches (secondary) on the primary colour, like a Holstein cow; the seed places them. */
         Patches,
+        /*! The front of a skull (QcTextureCoatPatterns): bone (primary) with two eye sockets and a
+            nose hole (secondary), a faint glow deep in the sockets, and a row of teeth. */
+        Skull,
         /*! The relief patterns (QcTextureRelief, decision E-1043), painted at each resolution.
             Porous fused rock: crooked lumps (primary) with seams and pores (secondary). */
         FusedRock,

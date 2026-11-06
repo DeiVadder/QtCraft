@@ -176,7 +176,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch)
+[Fackel](blocks.md#block-qtcraft-torch), [Feuerkugel](items.md#item-qtcraft-fireball), [Kohlestück](items.md#item-qtcraft-coal_chunk), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch)
 
 ### <a id="tag-qtcraft-soul_blocks"></a>Seelensand oder Seelenerde
 

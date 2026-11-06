@@ -345,7 +345,8 @@ void QcMobBehaviour::hover(QcCreature &mob, const QcMobDefinition &definition, c
         return;
     }
     const double seconds = static_cast<double>(m_tick) * QcPhysics::tickDuration;
-    QcMobHover::Course course{steering, std::nullopt};
+    // A drifter that rises to its target keeps the height its brain gave (decision E-1056).
+    QcMobHover::Course course{steering, mob.drifter ? mob.drifter->feetY : std::nullopt};
     // Only a child that chases nobody looks for its parent among the creatures.
     if (mob.parent != 0 && mob.chasing == 0) {
         const auto parent = std::ranges::find(context.mobs, mob.parent, &QcCreature::id);

@@ -3,6 +3,7 @@
 
 #include "clientcore/textures/QcTextureCoatPatterns.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace {
@@ -83,9 +84,37 @@ QColor paintPatches(const QcTextureSpec &spec, int x, int y, QColor color)
     return field > patchThreshold ? varied(spec, spec.secondary, x, y, 3) : color;
 }
 
+// The faint glow deep in the eye sockets of a skull.
+constexpr QRgb skullGlow = 0x6e2c12;
+
+// The front of a skull, the same on both sides: a bare brow over two round sockets (secondary), a
+// nose hole, and a row of teeth above and below a dark bite in a jaw narrower than the head.
+QColor paintSkull(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const int side = std::min(x, 15 - x);
+    const bool corner = (y == 5 || y == 8) && (side == 2 || side == 6);
+    const bool socket = y >= 5 && y <= 8 && side >= 2 && side <= 6 && !corner;
+    const bool nose = (y == 9 && side == 7) || (y == 10 && side >= 6);
+    const bool outsideJaw = y >= 12 && side < 2;
+    const bool bite = y == 13 || (y >= 12 && side % 2 == 1);
+    if (socket && y == 7 && (side == 4 || side == 5)) {
+        return QColor(skullGlow);
+    }
+    if (socket || nose || outsideJaw) {
+        return varied(spec, spec.secondary, x, y, 2);
+    }
+    if (y >= 12) {
+        return bite ? varied(spec, spec.secondary, x, y, 2) : scaled(color, 1.7);
+    }
+    return y == 4 && side >= 2 && side <= 6 ? scaled(color, 1.3) : color;
+}
+
 } // namespace
 
 QcTexturePaint::Painter qcCoatPatternPainter(QcTextureSpec::Pattern pattern)
 {
+    if (pattern == Pattern::Skull) {
+        return paintSkull;
+    }
     return pattern == Pattern::Patches ? paintPatches : nullptr;
 }

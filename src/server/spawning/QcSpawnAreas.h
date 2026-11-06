@@ -34,13 +34,16 @@ public:
     /*! How far from a player areas are looked for: the edge of its monster area (QcMonsterCap). */
     static constexpr int reach = (QcMonsterCap::reach + 1) * QcWorld::chunkSize;
 
-    /*! \brief A monster kind of an area with its weight and the rule it spawns by there.
-        \qcfields */
+    /*! \brief A monster kind of an area with its weight, the rule it spawns by there and the
+        size of its groups (at most QcChunkSpawns::groupOffsets stand, the original game's limit of
+        four to a cluster, decision E-1060). \qcfields */
     struct Kind
     {
         QcCreatureKindId type;
         int weight = 1;
         QcMobDefinition::SpawnRule rule;
+        int minGroup = 1;
+        int maxGroup = 1;
     };
 
     /*! \brief An area with its kinds; kinds that are no monsters are left out. */

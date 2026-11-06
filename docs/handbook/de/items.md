@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Glutrute](#item-qtcraft-ember_rod) · [Glutstaub](#item-qtcraft-ember_dust) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -324,12 +324,22 @@ Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird
 
 ### <a id="item-qtcraft-fireball"></a>Feuerkugel
 
-Der brennende Schuss eines Klagegeists. Im Flug getroffen, fliegt er in die Richtung des Schlags zurück.
+Eine Kugel aus Feuer. Auf einen Block benutzt, entzündet sie die Stelle davor und ist damit verbraucht; aus einem Signalspender fliegt sie als kleiner brennender Schuss. Klagegeister speien große: Im Flug getroffen, fliegen diese in die Richtung des Schlags zurück.
 
 | | |
 |---|---|
 | ID | `qtcraft:fireball` |
 | Stapelgröße | 64 |
+| Entzündet | [Feuer](blocks.md#block-qtcraft-fire) |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Schwarzpulver](#item-qtcraft-gunpowder) | [Glutstaub](#item-qtcraft-ember_dust) | 3 × [Feuerkugel](#item-qtcraft-fireball) |
+| [Kohle oder Holzkohle](tags.md#tag-qtcraft-coals) | · |  |
 
 ### <a id="item-qtcraft-flint"></a>Feuerstein
 
@@ -512,6 +522,45 @@ Ein gefangenes Glühwürmchen. Es bringt die Minenlampe zum Leuchten.
 **Gefangen aus**
 
 [Glühwürmchen](creatures.md#mob-qtcraft-firefly) (Glasflasche)
+
+### <a id="item-qtcraft-ember_rod"></a>Glutrute
+
+Der heiße Kern eines Glutgeists, nur von einem, den ein Spieler besiegt. Im Ofen brennt er länger als alles andere dieser Größe, und zerrieben gibt er Glutstaub.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_rod` |
+| Stapelgröße | 64 |
+| Brennt als Brennstoff | 120 s: [Brennstoffe](tables.md#table-fuels) |
+
+**Wird verwendet für**
+
+[Glutstaub](#item-qtcraft-ember_dust)
+
+**Droppt aus**
+
+[Glutgeist](creatures.md#mob-qtcraft-ember_wraith) (50 %, nur wenn ein Spieler tötet)
+
+### <a id="item-qtcraft-ember_dust"></a>Glutstaub
+
+Aus einer Glutrute werden zwei Portionen. Mit Schwarzpulver und Kohle oder Holzkohle gibt er Feuerkugeln.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_dust` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Glutrute](#item-qtcraft-ember_rod) | 2 × [Glutstaub](#item-qtcraft-ember_dust) |
+
+**Wird verwendet für**
+
+[Feuerkugel](#item-qtcraft-fireball)
 
 ### <a id="item-qtcraft-gold_ingot"></a>Goldbarren
 
@@ -833,7 +882,7 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle), [Seelenfackel](blocks.md#block-qtcraft-soul_torch) (Kohle oder Holzkohle)
+[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Feuerkugel](#item-qtcraft-fireball) (Kohle oder Holzkohle), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle), [Seelenfackel](blocks.md#block-qtcraft-soul_torch) (Kohle oder Holzkohle)
 
 **Droppt aus**
 
@@ -891,7 +940,7 @@ Lassen Skelette fallen. Daraus wird Knochenmehl.
 
 **Droppt aus**
 
-[Eiswanderer](creatures.md#mob-qtcraft-stray) (50 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
+[Eiswanderer](creatures.md#mob-qtcraft-stray) (50 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %), [Verkohltes Skelett](creatures.md#mob-qtcraft-charred_skeleton) (0–2×)
 
 ### <a id="item-qtcraft-bone_meal"></a>Knochenmehl
 
@@ -953,11 +1002,11 @@ Brennstoff für den Ofen und Teil von Fackeln.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle), [Schwarzpulver](#item-qtcraft-gunpowder), [Seelenfackel](blocks.md#block-qtcraft-soul_torch) (Kohle oder Holzkohle)
+[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Feuerkugel](#item-qtcraft-fireball) (Kohle oder Holzkohle), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle), [Schwarzpulver](#item-qtcraft-gunpowder), [Seelenfackel](blocks.md#block-qtcraft-soul_torch) (Kohle oder Holzkohle)
 
 **Droppt aus**
 
-[Steinkohle](blocks.md#block-qtcraft-coal_ore)
+[Steinkohle](blocks.md#block-qtcraft-coal_ore), [Verkohltes Skelett](creatures.md#mob-qtcraft-charred_skeleton) (33,33 %)
 
 ### <a id="item-qtcraft-coal_chunk"></a>Kohlestück
 
@@ -1848,7 +1897,7 @@ Aus Kohle und Feuerstein, ergiebiger aus Funkengel und Kohle. Auch verpuffende k
 
 **Wird verwendet für**
 
-[Sprengstoff](blocks.md#block-qtcraft-explosive)
+[Feuerkugel](#item-qtcraft-fireball), [Sprengstoff](blocks.md#block-qtcraft-explosive)
 
 **Droppt aus**
 

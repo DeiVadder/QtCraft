@@ -146,7 +146,7 @@ private slots:
         QVERIFY(content.has_value());
         const QcContentRegistry &registry = *content->registry;
         const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
-        const QSet<QString> seeThrough{u"qtcraft:skeleton_ribs"_s, u"qtcraft:kjut_eye_ring"_s};
+        const QSet<QString> seeThrough{u"qtcraft:skeleton_ribs"_s, u"qtcraft:charred_ribs"_s, u"qtcraft:kjut_eye_ring"_s};
 
         QList<std::pair<QString, QString>> uses;
         for (const QcMobDefinition &mob : registry.mobs()) {

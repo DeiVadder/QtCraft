@@ -122,7 +122,7 @@ private slots:
         orb.health = 37.0;
         QCOMPARE(roundTrip(orb).kind, QcEntityKind::ExperienceOrb);
         QCOMPARE(roundTrip(orb).health, 37.0);
-        QCOMPARE(QcProtocol::version, 91u);
+        QCOMPARE(QcProtocol::version, 92u);
     }
 
     void blockEntitiesCarryTheirBlock()

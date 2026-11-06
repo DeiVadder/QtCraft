@@ -1,0 +1,13 @@
+{
+    "name": "fireball",
+    "type": "shapeless",
+    "ingredients": [
+        "gunpowder",
+        "ember_dust",
+        "#coals"
+    ],
+    "result": {
+        "item": "fireball",
+        "count": 3
+    }
+}

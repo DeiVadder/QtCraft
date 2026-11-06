@@ -275,6 +275,17 @@ struct QcArcherDefinition
     /*! Played where it starts to draw, \c {drawSeconds} before the shot (\c {warnSound}; the
         wailer's cry, decision E-1053); empty for none. Only drifters play it. */
     QString warnSound;
+    /*! Shots of one charge (\c {volley}, 1..8; the ember wraith's three, decision E-1056), the
+        later ones \c {volleySeconds} after the one before; \c {cooldownSeconds} counts from the
+        last. Only drifters fire volleys. \qcshared */
+    int volley = 1;
+    double volleySeconds = 0.3;
+    /*! Above 0 the aim sideways is off by a normal draw of this many metres per square root of
+        the distance, instead of \c {spreadDegrees} (\c {scatter}; only drifters). */
+    double scatter = 0.0;
+    /*! It shows flames on its body from the start of a charge to the last shot of the volley
+        (\c {flares}; only drifters). */
+    bool flares = false;
 
     bool operator==(const QcArcherDefinition &) const = default;
 };
@@ -346,11 +357,18 @@ struct QcFamilyDefinition
 /*! \brief A creature that drifts without paths (decision E-1053; the wailer, the lava wader),
     from its data (\c {drift}; the drifter AI, with \c {hover}): it holds a heading for about
     \c {seconds} and turns at a wall. With \c {keepsToLava} it picks headings that lead over lava
-    where it can. \qcfields */
+    where it can, with \c {keepsToGround} it stops at a drop of more than dropReach blocks and
+    takes another heading (decision E-1056); with \c {restSeconds} it stays about that long
+    after each heading. \qcfields */
 struct QcDriftDefinition
 {
+    /*! The deepest drop a creature that keeps to the ground walks off. */
+    static constexpr int dropReach = 3;
+
     double seconds = 4.0;
     bool keepsToLava = false;
+    bool keepsToGround = false;
+    double restSeconds = 0.0;
 
     bool operator==(const QcDriftDefinition &) const = default;
 };
@@ -390,7 +408,8 @@ struct QcSplitDefinition
     way and turns to face where it goes at no more than \c {turnSpeed} degrees a second, rising and
     sinking at no more than \c {climbSpeed} metres a second (the wailer's slow drift, decision
     E-1053). With \c {sinksInWater} only lava carries it, not water (the lava wader, decision
-    E-1054).
+    E-1054). With \c {risesToTarget} a drifter with a target stops and keeps its eyes about level
+    with the target's instead of its hover height (the ember wraith, decision E-1056).
 
     Server side only. \qcfields */
 struct QcHoverDefinition
@@ -405,6 +424,7 @@ struct QcHoverDefinition
     double turnSpeed = 120.0;
     double climbSpeed = 3.0;
     bool sinksInWater = false;
+    bool risesToTarget = false;
 
     bool operator==(const QcHoverDefinition &) const = default;
 };

@@ -6091,6 +6091,83 @@ Protokoll 89. Geprüft in `test_effect_rules` (eine Prüfung je Regel, über `/e
 
 - **Was:** `hops` (jede Bewegung ein Sprung) und `splits` (beim Tod `min`–`max` Wesen der Art `into`, `QcMobFamilies::takeRemains`, nächster Tick). Der Magmaschleim hat zwei Stufen: groß und klein. Der Schleim der Oberwelt bleibt, wie er ist.
 
+## E-1056 Glutgeist: treibt, steigt zum Ziel, feuert in Salven (Paket 84.5b, Protokoll 92)
+
+- **Namen (Marken-Regel E-894):** „Blaze“ mit seinen Dingen trägt im Spiel eigene Namen: **Glutgeist / Ember Wraith** (`ember_wraith`), **Glutrute / Ember Rod** (`ember_rod`), **Glutstaub / Ember Dust** (`ember_dust`); „Lohe“, „Lohenrute“ und „Lohenstaub“ aus dem Plan sind die deutschen Namen des Vorbilds und kommen im Spiel nicht vor. Das Modell ist ein eigener Entwurf aus Quadern: Stapel aus glühender Kohle, Maske, drei Dornen und drei Ringe flacher Platten, keine Stäbe um einen Kopf.
+- **Was:** KI `drifter` wie der Klagegeist (E-1053), kein neues Gehirn. `QcDrifterBrain` kann jetzt Salven (`archer.volley`, `volleySeconds`), Streuung des Vorbilds (`archer.scatter`: seitlich eine Normalverteilung mit 0,5 × √Entfernung Metern; Formel aus dem Gedächtnis des Vorbilds), Flammen während des Ladens (`archer.flares`, zeigt `QcMsg::Burning`, kein neues Bit) und `hover.risesToTarget`: Mit Ziel bleibt er stehen, seine Augen halten sich `0,5 + N(0, 3)` Meter unter den Augen des Ziels (neu gewürfelt alle 5 s; `QcDrifterState::feetY`, über `QcMobHover::Course::feetY`), in 2 m Nähe drückt er nach und schlägt, ohne zu laden; Schläge und Salven teilen `attackCooldown` wie im Vorbild den `attackTime`. Ohne Ziel steht und wandert er am Boden: `hover.height` 0, `drift.restSeconds`, `drift.keepsToGround` (kein Schritt über eine Kante von mehr als 3 Blöcken).
+- **Takt wie im Vorbild:** 60 Ticks Laden, Schüsse nach 0, 6, 12 Ticks, dann 6 + 100 Ticks Pause: `drawSeconds` 3,0, `volleySeconds` 0,3, `cooldownSeconds` 5,3 (`test_fortress_folk::anEmberWraithFiresVolleysOnTheRoleModelsBeat`: 6, 6, 166 Ticks). `QcDrifterBrain::charge` zählt jetzt mit einer Schranke von 1e-9, weil eine Summe von Tick-Längen den Wert sonst um einen Tick verfehlen kann.
+- **Protokoll 92:** `QcMobPart::spin` (Grad je Sekunde um die Hochachse durch die Füße, `"spin"`), die Ringe drehen sich gegeneinander. Sonst ändert sich am Entity-Sync nichts; das Bit `Burning` kommt für Treiber nun auch aus `QcDrifterState::flares`.
+- **Vereinfachungen:** Ein Ziel außer Sicht lässt ihn stehen; die 5 Ticks Nachrücken des Vorbilds fehlen (rund 0,6 m). Verliert er während einer Salve die Sicht, beginnt das Laden neu; im Vorbild läuft die Salve weiter, sobald er wieder sieht. Schweben über Lava: Lava trägt ihn (`QcMobHover`), er sinkt nicht hinein.
+- **Verworfen:** ein eigenes Gehirn (dasselbe wie der Treiber, nur mit anderem Zielverhalten); Wegesuche am Boden wie beim Skelett (kein Fliegen zum Ziel, und über Lava findet sie nichts).
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Gesundheit | – | 20 | Vorbild, sicher |
+| Größe | – | 0,6 × 1,8 | Vorbild, sicher |
+| Tempo | – | 2,3 m/s (`walkSpeed`, `chaseSpeed`) | Attribut 0,23, abgeleitet über (Attribut)² / 0,1 × 4,317 m/s, wie Zombie und Skelett |
+| Steigen und Sinken | – | 2,2 m/s | abgeleitet aus Formel des Vorbilds (Impuls 0,3, Schwerkraft, Faktor 0,6 beim Fallen), unsicher |
+| Schlag | – | 6 alle 1,0 s ab 2 m | Vorbild, sicher |
+| Sichtweite | – | 48 | Vorbild, sicher |
+| Salve | – | 3 Schüsse, Takt siehe oben | Vorbild, sicher |
+| Höhe zum Ziel | – | 0,5 + N(0, 3), alle 5 s | Vorbild, aus dem Gedächtnis des Codes |
+| Wasser | – | 1 alle 0,5 s (`waterDamage`, Takt von `QcBodyBurning`) | Vorbild: 1 je Treffer mit Unverwundbarkeit, ähnlich dem Schattenwandler |
+| Schneeball | – | 3 (`weakTo`, nur vom Spieler) | Vorbild, sicher; im Vorbild auch von anderen Werfern |
+| Beute | – | Glutrute 50 %, nur Tod durch Spieler | Vorbild, sicher (0–1 gleichverteilt) |
+| Erfahrung | – | 10 | Vorbild, sicher |
+| Wandern | – | 4 s Kurs, 6 s Rast | Vorbild: Rast im Mittel 120 Ticks; Länge eines Kurses unsicher |
+
+## E-1057 Verkohltes Skelett (Paket 84.5b)
+
+- **Namen (E-894):** „Wither Skeleton“ heißt **Verkohltes Skelett / Charred Skeleton** (`charred_skeleton`), sein Schädel **Verkohlter Schädel / Charred Skull** (`charred_skull`); beschreibende Wörter. Modell eigen (`models/charred_skeleton.json`: höher und kräftiger, Glut hinter den Rippen, Lumpen an der Hüfte, Knochenkamm), Erscheinung und Klänge eigen.
+- **Was:** reine Daten: KI `hostile`, `heldItem` `stone_sword`, `blowEffects` mit dem Effekt `wither` aus 85.1, `immuneTo` mit `wither`, `fireImmune`, `undead`. Sonne brennt es nicht, wie im Vorbild.
+- **Schädel:** ein Block (Form `charred_skull`, vier Richtungen, schaut den Setzenden an), damit 86.1 ihn aufstellen kann. Wandbefestigung, 16 Richtungen und das Tragen als Helm fehlen; erst nötig, wenn ein Paket sie braucht.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Gesundheit | – | 20 | Vorbild, sicher |
+| Größe | – | 0,7 × 2,4 | Vorbild, sicher |
+| Schlag | – | 8 (Attribut 4 + Steinschwert 4), 1,0 s | Vorbild auf Normal; unser Spiel kennt keine Schwierigkeit |
+| Wither | – | Stufe I, 10 s | Vorbild, sicher (200 Ticks) |
+| Jagd-Tempo | – | 3,9 m/s | Attribut 0,25 × Nahkampf 1,2, abgeleitet wie in E-1056, unsicher |
+| Wandern | – | 1,4 m/s | wie das Skelett dieses Spiels (gleiches Attribut) |
+| Sichtweite | – | 16 | Vorbild, sicher |
+| Kohle | – | 1/3 | Vorbild, sicher |
+| Knochen | – | 0–2 gleichverteilt | Vorbild, sicher |
+| Schädel | – | 2,5 %, nur Tod durch Spieler | Vorbild, sicher |
+| Steinschwert | – | 8,5 %, nur Tod durch Spieler, unbeschädigt | Vorbild 8,5 %, dort abgenutzt |
+| Erfahrung | – | 5 | Vorbild, sicher |
+
+- **Nicht übernommen:** Es greift keine Piglins an (84.6a; im Vorbild jagt es sie, in einem späteren Paket zu ergänzen). Es meidet keine Wölfe und jagt keine Eisengolems.
+
+## E-1058 Kleine Feuerkugel und Feuerkugel als Item (Paket 84.5b)
+
+- **Projektil `small_fireball`:** 5 Schaden (`amount` 6,25 bei 16 m/s), 5 s Brennen, keine Explosion, nicht zurückschlagbar. Trefferwirkung `kindle`: Ein feuerfester Körper (`fireImmune`, Effekt `fireProof`) wird gar nicht getroffen: kein Schaden, kein Treffer-Ton, kein Aufblitzen, kein Zorn, und ein Feuer, das er schon hat, brennt mit seiner alten Dauer weiter (im Vorbild stellt der Schuss die alte Brennzeit wieder her, wenn der Treffer nicht zählt); die Kugel zerbricht trotzdem; an einem Block entzündet sie die Zelle vor der getroffenen Seite (`QcServerFire::ignite`), der Schuss eines Wesens nur mit `mobGriefing` (`QcServerProjectiles::mayKindle`; ein Schütze, der fort ist, zählt wie bei Explosionen als Wesen, ohne Schützen, also aus dem Spender, gilt die Regel nicht).
+- **Tempo:** Das Vorbild beschleunigt von 0 auf bis zu 2 Blöcke je Tick; hier gibt es keine Beschleunigung, also konstant 16 m/s, das Mittel der ersten 16 Blöcke (abgeleitet, unsicher).
+- **Item `fireball`:** Das vorhandene Item des Klagegeists wird benutzbar (E-1052: „Feuerkugel“ bleibt, Item-Name unverändert). Rezept wie im Vorbild: Schwarzpulver + Glutstaub + Kohle oder Holzkohle (`#coals`) → 3. `ignites` ohne `durability` verbraucht je Feuer eins, im Kreativmodus keins. Im Signalspender fliegt sie als `small_fireball` geradeaus (22 m/s wie jeder Schuss, darum 7 statt 5 Schaden; im Vorbild streut sie). Ton beim Benutzen: der des Feuerzeugs, nicht der eigene des Vorbilds.
+- **Glutrute und Glutstaub:** Rute brennt 120 s (Vorbild 2400 Ticks), 1 Rute → 2 Staub.
+
+## E-1059 Beute nur vom Spieler (Paket 84.5b)
+
+- **Was:** `QcItemDrop::byPlayer` (`"byPlayer": true`, nur Wesen): `QcServerCombat::dropLoot` lässt solche Einträge aus, wenn kein Spieler den tödlichen Schlag führte (`blow.attacker`, auch sein Schuss). `count` 0 ist erlaubt, damit „0 bis 2“ gleichverteilt geht.
+- **Abweichung:** Das Vorbild zählt auch Tode bis 5 s nach einem Treffer des Spielers (Feuer, Sturz) und Tode durch zahme Wölfe; hier nur der letzte Schlag, wie bei der Erfahrung (E-398). So bleibt `QcMobManager` unberührt. Ebenso zählen hier nicht: Tode durch Spritzflaschen (`QcServerProjectiles::splashCreatures` und die Sofortwirkung nennen keinen `attacker`, auch wenn ein Spieler warf; im Vorbild zählen sie) und Dornen (die gibt es in diesem Spiel noch nicht; mit ihrem Paket ist zu entscheiden, ob sie `attacker` setzen).
+
+## E-1060 Festung: Liste des Vorbilds, Gruppen und Spawner (Paket 84.5b)
+
+- **Platzhalter aus E-1073 und E-1074 ersetzt:** Spawner `ember_wraith`; `fortress.monsters` nach dem Vorbild (Java-Edition), Werte aus dem Gedächtnis seiner Daten, nicht nachgelesen:
+
+| Art | Gewicht alt | Gewicht neu | Licht | Gruppe alt | Gruppe neu |
+|-----|-------------|-------------|-------|------------|------------|
+| Glutgeist (Lohe) | – | 10 | jedes | – | 2–3 |
+| Moderhauer (Zombifizierter Piglin) | 5 | 5 | jedes | 1 | 4 |
+| Verkohltes Skelett (Witherskelett) | – | 8 | ≤ 7 | – | 5 |
+| Skelett | 2 | 2 | ≤ 7 | 1 | 5 |
+| Magmaschleim (Magmawürfel) | 3 | 3 | jedes | 1 | 4 |
+
+- **Gruppen:** `minGroup`/`maxGroup` je Art (E-1074, offener Punkt 2). `QcNaturalSpawner::spawnInArea` zieht die Größe; es stehen höchstens vier (`QcChunkSpawns::groupOffsets`), wie die Grenze von vier je Cluster im Vorbild. Jedes Mitglied besteht in der Zelle, in der es steht, das Blocklicht der Regel; die Größe bleibt unter dem Platz, den die Obergrenze lässt. Die Mitglieder stehen auf benachbarten Zellen derselben Höhe; im Vorbild streuen sie bis 5 Blöcke weit.
+- **Spawner:** die Regeln des Blocks gelten unverändert (Licht ≤ 11 wie im Vorbild, 4 Versuche, 10–40 s, höchstens 6 in der Nähe).
+- **Generator-Version:** Der Spawner ändert seine Art, die Nether-Reihe ist offen (E-1033).
+- **Offen für den Menschen (E-1074, Punkt 1):** Die zweite Regel der Java-Edition (Liste auch auf Netherziegeln im Rahmen der ganzen Festung) bleibt draußen. Im Spiel ändert sie fast nichts, weil Ziegel fast nur in den Teilen liegen; sie zählt für Farmen auf selbst gelegten Ziegeln.
+
 ## E-1070 Netherfestung: Plan und chunkweises Schreiben (Paket 84.5a)
 
 - **Was:** Eine Festung ist ein Plan (`QcFortressPlan`: Räume, gerade Gänge, Truhen, Spawner, Pfeiler, Umriss) aus Seed, Region und Rausch-Funktion des Geländes allein; jeder Chunk schreibt nur seine eigenen Zellen (`QcFortressCanvas`) und liest nur seine eigenen Blöcke, darum kommt ein Chunk in jeder Reihenfolge gleich heraus (Test `aChunkComesOutTheSameInAnyOrder`). Abgenutzte Ziegel folgen aus der Zelle (Hash), nicht aus einer Zufallsfolge.

@@ -203,12 +203,15 @@ struct QcStructureDefinition
     {
         /*! \brief A kind of a spawn area: \c {mob}, drawn by \c {weight} among the area's kinds,
             with its own light test unless \c {maxLight} gives the brightest block light at the
-            feet (the fortress's kinds, decision E-1074). \qcfields */
+            feet (the fortress's kinds, decision E-1074); it comes in groups of \c {minGroup} to
+            \c {maxGroup} (decision E-1060). \qcfields */
         struct Monster
         {
             QString mob;
             int weight = 1;
             std::optional<int> maxLight;
+            int minGroup = 1;
+            int maxGroup = 1;
 
             bool operator==(const Monster &) const = default;
         };

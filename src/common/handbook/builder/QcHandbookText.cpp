@@ -111,6 +111,9 @@ QString QcHandbookText::dropNote(const QcItemDrop &drop) const
     if (drop.chance < 1.0) {
         parts.append(percent(drop.chance));
     }
+    if (drop.byPlayer) {
+        parts.append(label(u"value.byPlayer"_s));
+    }
     return parts.join(u", "_s);
 }
 

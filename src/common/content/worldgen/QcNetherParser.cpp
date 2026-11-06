@@ -157,7 +157,8 @@ constexpr qsizetype maxFortressMonsters = 8;
 constexpr int fortressMargin = 12;
 constexpr int leastFortressRoom = 16;
 
-// A kind of the fortress's spawn area: a creature with its weight and, when given, its light.
+// A kind of the fortress's spawn area: a creature with its weight, its group and, when given, its
+// light.
 [[nodiscard]] QcStructureDefinition::SpawnArea::Monster fortressMonsterOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcStructureDefinition::SpawnArea::Monster monster;
@@ -166,6 +167,8 @@ constexpr int leastFortressRoom = 16;
     if (reader.json.contains(u"maxLight"_s)) {
         monster.maxLight = reader.integer(u"maxLight"_s, 15, 0, 15);
     }
+    monster.minGroup = reader.integer(u"minGroup"_s, monster.minGroup, 1, 8);
+    monster.maxGroup = reader.integer(u"maxGroup"_s, monster.minGroup, monster.minGroup, 8);
     return monster;
 }
 

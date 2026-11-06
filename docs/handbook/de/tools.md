@@ -968,6 +968,10 @@ Eine Waffe: richtet mehr Schaden an Wesen an.
 | [Bruchstein oder Schwarzstein](tags.md#tag-qtcraft-stone_crafting_materials) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Droppt aus**
+
+[Verkohltes Skelett](creatures.md#mob-qtcraft-charred_skeleton) (8,5 %, nur wenn ein Spieler tötet)
+
 ### <a id="item-qtcraft-stone_pickaxe"></a>Steinspitzhacke
 
 Baut Stein und Erze ab.

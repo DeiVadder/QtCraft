@@ -72,14 +72,17 @@ public:
 
     /*! \brief A projectile met a block (a target reads where, decision E-768).
 
-        \qcfields The \c {block} and its \c {face} it met, the \c {point} of contact, and
-        \c {stuck} for one that sticks there (an arrow), else it breaks or goes. */
+        \qcfields The \c {block} and its \c {face} it met, the \c {point} of contact,
+        \c {stuck} for one that sticks there (an arrow), else it breaks or goes, \c {kindles}
+        for a shot that lights fire (QcHitEffect::kindle) and its \c {shooter}. */
     struct BlockHit
     {
         QcBlockPos block;
         QcBlockFace face = QcBlockFace::Up;
         QcVec3 point;
         bool stuck = false;
+        bool kindles = false;
+        quint32 shooter = 0;
     };
 
     /*! \brief What the tick reports to the server.

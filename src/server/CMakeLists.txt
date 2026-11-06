@@ -330,6 +330,7 @@ target_sources(qc_server PRIVATE
     spawning/QcChunkSpawns.h spawning/QcChunkSpawns.cpp
     spawning/QcMonsterCap.h spawning/QcMonsterCap.cpp
     spawning/QcNaturalSpawner.h spawning/QcNaturalSpawner.cpp
+    spawning/QcNaturalSpawnPlace.cpp
     spawning/QcSpawnAreas.h spawning/QcSpawnAreas.cpp
     spawning/QcSpawnLight.h spawning/QcSpawnLight.cpp
 )

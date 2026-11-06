@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Birch Boat](#item-qtcraft-birch_boat) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fireball](#item-qtcraft-fireball) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Fungus on a Stick](#item-qtcraft-fungus_on_a_stick) · [Glass bottle](#item-qtcraft-glass_bottle) · [Glowstone dust](#item-qtcraft-glowstone_dust) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Ink sac](#item-qtcraft-ink_sac) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Jungle Boat](#item-qtcraft-jungle_boat) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Magma Cream](#item-qtcraft-magma_cream) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Nether brick](#item-qtcraft-nether_brick) · [Nether quartz](#item-qtcraft-quartz) · [Nether wart](#item-qtcraft-nether_wart) · [Oak Boat](#item-qtcraft-oak_boat) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Saddle](#item-qtcraft-saddle) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Spruce Boat](#item-qtcraft-spruce_boat) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Wailer Tear](#item-qtcraft-wailer_tear) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Birch Boat](#item-qtcraft-birch_boat) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Ember Dust](#item-qtcraft-ember_dust) · [Ember Rod](#item-qtcraft-ember_rod) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fireball](#item-qtcraft-fireball) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Fungus on a Stick](#item-qtcraft-fungus_on_a_stick) · [Glass bottle](#item-qtcraft-glass_bottle) · [Glowstone dust](#item-qtcraft-glowstone_dust) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Ink sac](#item-qtcraft-ink_sac) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Jungle Boat](#item-qtcraft-jungle_boat) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Magma Cream](#item-qtcraft-magma_cream) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Nether brick](#item-qtcraft-nether_brick) · [Nether quartz](#item-qtcraft-quartz) · [Nether wart](#item-qtcraft-nether_wart) · [Oak Boat](#item-qtcraft-oak_boat) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Saddle](#item-qtcraft-saddle) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Spruce Boat](#item-qtcraft-spruce_boat) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Wailer Tear](#item-qtcraft-wailer_tear) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -139,7 +139,7 @@ Dropped by skeletons. Crafted into bone meal.
 
 **Dropped by**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
+[Charred Skeleton](creatures.md#mob-qtcraft-charred_skeleton) (0–2×), [Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
 
 ### <a id="item-qtcraft-bone_meal"></a>Bone meal
 
@@ -450,7 +450,7 @@ Burnt wood: fuel as good as coal and part of torches.
 
 **Used in**
 
-[Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Soul torch](blocks.md#block-qtcraft-soul_torch) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Fireball](#item-qtcraft-fireball) (Coal or charcoal), [Soul torch](blocks.md#block-qtcraft-soul_torch) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
 
 **Dropped by**
 
@@ -533,11 +533,11 @@ Fuel for the furnace and part of torches.
 
 **Used in**
 
-[Block of coal](blocks.md#block-qtcraft-coal_block), [Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Gunpowder](#item-qtcraft-gunpowder), [Soul torch](blocks.md#block-qtcraft-soul_torch) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Block of coal](blocks.md#block-qtcraft-coal_block), [Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Fireball](#item-qtcraft-fireball) (Coal or charcoal), [Gunpowder](#item-qtcraft-gunpowder), [Soul torch](blocks.md#block-qtcraft-soul_torch) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
 
 **Dropped by**
 
-[Coal ore](blocks.md#block-qtcraft-coal_ore)
+[Charred Skeleton](creatures.md#mob-qtcraft-charred_skeleton) (33.33 %), [Coal ore](blocks.md#block-qtcraft-coal_ore)
 
 ### <a id="item-qtcraft-coal_chunk"></a>Coal chunk
 
@@ -710,6 +710,45 @@ Laid by chickens. Thrown with the use button, it bursts where it lands; one egg 
 
 [Cake](blocks.md#block-qtcraft-cake)
 
+### <a id="item-qtcraft-ember_dust"></a>Ember Dust
+
+Two portions come from an Ember Rod. With gunpowder and coal or charcoal it makes fireballs.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_dust` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Ember Rod](#item-qtcraft-ember_rod) | 2 × [Ember Dust](#item-qtcraft-ember_dust) |
+
+**Used in**
+
+[Fireball](#item-qtcraft-fireball)
+
+### <a id="item-qtcraft-ember_rod"></a>Ember Rod
+
+The hot core of an ember wraith, dropped only when a player brings it down. It burns in a furnace longer than anything else of its size, and it grinds into Ember Dust.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_rod` |
+| Stack size | 64 |
+| Burns as fuel | 120 s: [Fuels](tables.md#table-fuels) |
+
+**Used in**
+
+[Ember Dust](#item-qtcraft-ember_dust)
+
+**Dropped by**
+
+[Ember Wraith](creatures.md#mob-qtcraft-ember_wraith) (50 %, player kills only)
+
 ### <a id="item-qtcraft-emerald"></a>Emerald
 
 A green gem and the money of the villagers: they pay in emeralds for what they buy and ask for them for what they sell.
@@ -782,12 +821,22 @@ Light and soft. Chickens drop them. With flint and a stick it makes arrows.
 
 ### <a id="item-qtcraft-fireball"></a>Fireball
 
-The burning shot of a wailer. Struck in flight it flies back the way you hit it.
+A ball of fire. Used on a block it lights the place in front of it, and it is gone with that; in a Signal Dispenser it flies out as a small burning shot. Wailers spit large ones: struck in flight those fly back the way you hit them.
 
 | | |
 |---|---|
 | ID | `qtcraft:fireball` |
 | Stack size | 64 |
+| Lights | [Fire](blocks.md#block-qtcraft-fire) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Gunpowder](#item-qtcraft-gunpowder) | [Ember Dust](#item-qtcraft-ember_dust) | 3 × [Fireball](#item-qtcraft-fireball) |
+| [Coal or charcoal](tags.md#tag-qtcraft-coals) | · |  |
 
 ### <a id="item-qtcraft-fired_lamp_shell"></a>Fired lamp shell
 
@@ -1112,7 +1161,7 @@ Made from coal and flint, or richer from spark gel and coal. Popping little Kjut
 
 **Used in**
 
-[Explosive](blocks.md#block-qtcraft-explosive)
+[Explosive](blocks.md#block-qtcraft-explosive), [Fireball](#item-qtcraft-fireball)
 
 **Dropped by**
 

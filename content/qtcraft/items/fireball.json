@@ -1,3 +1,6 @@
 {
-    "name": "fireball"
+    "name": "fireball",
+    "ignites": true,
+    "projectile": "small_fireball",
+    "dispense": "shoot"
 }

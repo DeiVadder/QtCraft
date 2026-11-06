@@ -228,6 +228,8 @@ void QcMobReader::parseNetherTraits()
     m_reader.nestedObject(u"drift"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_mob.drift.seconds = nested.number(u"seconds"_s, 4.0, 0.5, 60.0);
         m_mob.drift.keepsToLava = nested.boolean(u"keepsToLava"_s, false);
+        m_mob.drift.keepsToGround = nested.boolean(u"keepsToGround"_s, false);
+        m_mob.drift.restSeconds = nested.number(u"restSeconds"_s, 0.0, 0.0, 60.0);
     });
     m_reader.nestedObject(u"ride"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         QcRideDefinition ride;

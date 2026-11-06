@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Charred Skeleton](#mob-qtcraft-charred_skeleton) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Ember Wraith](#mob-qtcraft-ember_wraith) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -87,6 +87,22 @@ A small, blue spider of caves and mine shafts, where spawners bring it forth. It
 | Sees players within | 16 m |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | [String](items.md#item-qtcraft-string), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
+
+### <a id="mob-qtcraft-charred_skeleton"></a>Charred Skeleton
+
+A tall skeleton blackened by fire, with an ember behind its ribs and a stone sword. It comes for you faster than you would think, and its blows wither: the hearts go dark and drain, even at the last. Fire does nothing to it. It leaves coal and bones, seldom its sword or, for whoever brings it down, its skull.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_skeleton` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 20 health points |
+| Size | 0.7 m wide, 2.4 m tall |
+| Speed | 1.4 m/s walking, 3.9 m/s chasing |
+| Attack | 8 damage within 1.6 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | [Coal](items.md#item-qtcraft-coal) (33.33 %), [Bone](items.md#item-qtcraft-bone) (0–2×), [Charred Skull](blocks.md#block-qtcraft-charred_skull) (2.5 %, player kills only), [Stone sword](tools.md#item-qtcraft-stone_sword) (8.5 %, player kills only) |
 
 ### <a id="mob-qtcraft-chicken"></a>Chicken
 
@@ -231,6 +247,23 @@ All biomes.
 day and night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); also in caves at any time; block light up to 0
 
 [River Delta](biomes.md#biome-qtcraft-delta), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [River](biomes.md#biome-qtcraft-river)
+
+### <a id="mob-qtcraft-ember_wraith"></a>Ember Wraith
+
+A stack of glowing coal behind a mask, ringed by plates that turn on their own. It rests on the floor of a fortress and rises to meet whoever it sees. It flares up, then fires three small fireballs in quick succession and waits; close by it strikes with its burning body. Water hurts it, and so do snowballs. Only those you bring down yourself leave an Ember Rod.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_wraith` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.8 m tall |
+| Speed | 2.3 m/s |
+| Attack | 6 damage within 2 m, every 1 s |
+| Sees players within | 48 m |
+| Appears | never by itself (/summon, showcase world) |
+| Glows | 15 of 15 |
+| Drops | [Ember Rod](items.md#item-qtcraft-ember_rod) (50 %, player kills only) |
 
 ### <a id="mob-qtcraft-firefly"></a>Firefly
 

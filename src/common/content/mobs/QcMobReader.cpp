@@ -19,7 +19,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The tint and the sitting offset of a model part (decision E-480): "tint" none or collar,
-// "sitOffset" three numbers within 1 m; "tentacle" (decision E-974).
+// "sitOffset" three numbers within 1 m; "tentacle" (decision E-974); "spin" (decision E-1056).
 [[nodiscard]] std::optional<QcMobPart> partLook(QcMobPart part, const QJsonObject &json, QcJsonFieldReader &reader)
 {
     const QString tint = json.value(u"tint"_s).toString(u"none"_s);
@@ -39,6 +39,11 @@ namespace {
     // A tentacle of a creature that swims in pulses (decision E-974).
     part.tentacle = json.value(u"tentacle"_s).toBool(false);
     part.saddled = json.value(u"saddled"_s).toBool(false);
+    part.spin = json.value(u"spin"_s).toDouble(0.0);
+    if (std::abs(part.spin) > QcMobPart::maxSpin) {
+        reader.fail(u"a model part's 'spin' must lie within %1 degrees a second"_s.arg(QcMobPart::maxSpin));
+        return std::nullopt;
+    }
     return part;
 }
 
@@ -58,9 +63,10 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
         const QcItemDrop drop{.item = dropReader.name(u"item"_s, packNamespace),
-                              .count = dropReader.integer(u"count"_s, 1, 1, 64),
+                              .count = dropReader.integer(u"count"_s, 1, 0, 64),
                               .chance = dropReader.number(u"chance"_s, 1.0, 0.0, 1.0),
-                              .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64)};
+                              .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64),
+                              .byPlayer = dropReader.boolean(u"byPlayer"_s, false)};
         if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
             // A problem inside the entry comes first; it names the place itself.
             reader.adopt(dropReader);
@@ -117,6 +123,10 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     archer.minDistance = reader.number(u"minDistance"_s, archer.minDistance, 0.0, 32.0);
     archer.keepDistance = reader.number(u"keepDistance"_s, archer.keepDistance, 1.0, 64.0);
     archer.warnSound = reader.name(u"warnSound"_s, packNamespace);
+    archer.volley = reader.integer(u"volley"_s, archer.volley, 1, 8);
+    archer.volleySeconds = reader.number(u"volleySeconds"_s, archer.volleySeconds, 0.05, 5.0);
+    archer.scatter = reader.number(u"scatter"_s, archer.scatter, 0.0, 4.0);
+    archer.flares = reader.boolean(u"flares"_s, false);
     if (archer.projectile.isEmpty()) {
         reader.fail(u"needs a 'projectile'"_s);
     } else if (archer.minDistance >= archer.keepDistance || archer.keepDistance > archer.range) {
@@ -598,6 +608,7 @@ void QcMobReader::parseFamily()
         hover.turnSpeed = nested.number(u"turnSpeed"_s, hover.turnSpeed, 1.0, 3600.0);
         hover.climbSpeed = nested.number(u"climbSpeed"_s, hover.climbSpeed, 0.1, 10.0);
         hover.sinksInWater = nested.boolean(u"sinksInWater"_s, false);
+        hover.risesToTarget = nested.boolean(u"risesToTarget"_s, false);
     });
     m_reader.nestedObject(u"family"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         QcFamilyDefinition &family = m_mob.family.emplace();

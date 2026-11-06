@@ -258,7 +258,7 @@ Params forPattern(Pattern pattern)
         return {0.0, 0.1, false};
     }
     // Woven or soft surfaces of figures: a little grain, hardly any bevel.
-    if (among(pattern, {Pattern::Limb, Pattern::Sleeve, Pattern::ArmourLeather, Pattern::Emblem, Pattern::Face, Pattern::Paper, Pattern::Patches,
+    if (among(pattern, {Pattern::Limb, Pattern::Sleeve, Pattern::ArmourLeather, Pattern::Emblem, Pattern::Face, Pattern::Paper, Pattern::Patches, Pattern::Skull,
                         Pattern::BackpackSide, Pattern::BackpackFront, Pattern::BackpackTop})) {
         return {0.04, 0.06, true};
     }

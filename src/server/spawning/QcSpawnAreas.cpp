@@ -131,7 +131,7 @@ QcSpawnAreas::Area QcSpawnAreas::resolve(const QcSpawnArea &site) const
         // Unknown kinds and kinds that are no monsters were reported when the content was loaded.
         const std::optional<QcCreatureKindId> type = content().mobKind(monster.mob);
         if (type && content().mobs()[*type].isMonster()) {
-            area.kinds.append({*type, monster.weight, ruleOf(content().mobs()[*type], monster)});
+            area.kinds.append({*type, monster.weight, ruleOf(content().mobs()[*type], monster), monster.minGroup, monster.maxGroup});
         }
     }
     return area;

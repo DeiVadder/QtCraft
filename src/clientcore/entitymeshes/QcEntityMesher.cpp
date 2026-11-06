@@ -531,7 +531,10 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
         }
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
         const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light};
-        if (walking && index < look.legs->swings().size()) {
+        if (part.spin != 0.0) {
+            const Turn spin(static_cast<float>(std::fmod(part.spin * look.seconds, 360.0)));
+            emitBox(mesh, {part.from + offset, part.to + offset}, [&](const QcVec3 &p) { return place(spin(p)); }, surface);
+        } else if (walking && index < look.legs->swings().size()) {
             const QcBoxLegs::Swing &leg = look.legs->swings().at(index);
             emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(leg.apply(p, swing) + offset); }, surface);
         } else if (swimming) {

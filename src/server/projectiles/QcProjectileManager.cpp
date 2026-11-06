@@ -156,7 +156,8 @@ bool QcProjectileManager::fly(QcProjectile &projectile, const QcProjectileDefini
     }
 
     if (pass.handlers.blockHit) {
-        pass.handlers.blockHit({step.block, step.face, step.point, definition.sticks && !definition.breaks()});
+        pass.handlers.blockHit({step.block, step.face, step.point, definition.sticks && !definition.breaks(),
+                                definition.effect(QcHitEffect::kindle) != nullptr, projectile.shooter});
     }
 
     if (definition.breaks()) {

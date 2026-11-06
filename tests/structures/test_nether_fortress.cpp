@@ -581,6 +581,7 @@ private slots:
         const auto kind = std::ranges::find(here.spawners, spawner, &QcStructureDefinition::Spawner::at);
         QVERIFY(kind != here.spawners.end());
         QCOMPARE(kind->mob, settings.spawnerMob);
+        QVERIFY(kind->mob.endsWith(u"ember_wraith"_s));
         QVERIFY(m_content->mobKind(kind->mob).has_value());
 
         for (const Plan::Chest &chest : plan.chests) {

@@ -333,6 +333,29 @@ private slots:
         QCOMPARE(everywhere("qtcraft:flint_and_steel"), 1);
     }
 
+    void dispenserShootsAFireball()
+    {
+        buildArea();
+        put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
+        put(4, 0, 6, u"lever[attach=floor]"_s);
+        put(8, 0, 5, u"stone"_s);
+        fill(4, 0, 5, {stack("qtcraft:fireball", 2)});
+        ticks(2);
+
+        // The charge flies out of the front instead of lighting the cell before it, and only one
+        // leaves. Nobody shot it, so the wall it strikes gets fire on its near side.
+        flip(4, 0, 6);
+        for (int tick = 0; tick < 10 && m_server->entities().projectiles().all().isEmpty(); ++tick) {
+            ticks(1);
+        }
+        QVERIFY(!isFire(at(5, 0, 5)));
+        QCOMPARE(m_server->entities().projectiles().all().size(), 1);
+        QCOMPARE(m_server->entities().projectiles().all().front().type, u"qtcraft:small_fireball"_s);
+        QCOMPARE(slotsAt(4, 0, 5).value(0).count, 1);
+        ticks(40);
+        QVERIFY(isFire(at(7, 0, 5)));
+    }
+
     void lavaLightsOnlyRightNextToItAndRarely()
     {
         const QcBlockPos lava = lavaBesidePlanks();

@@ -2949,6 +2949,19 @@ Mit den fünf Biomen (84.3, E-1049; Rechner unter Last durch parallele Pakete, L
 - **Chunks in einer Festung** (6 × 6 Chunks um ihre Mitte) kosten nicht mehr als gewöhnliche Nether-Chunks: Die Höhlen dort sind offen, das Gelände ist billiger, und das Schreiben der Festung fällt nicht auf. Der Vergleich mit 84.3 (0,54–0,56 ms bei Last 12) ist unter dieser Last nicht belastbar; eine verschränkte A/B-Messung gegen 84.3 steht aus und braucht einen ruhigen Rechner.
 - **Test:** `test_nether_fortress` von etwa 305 s auf 17–24 s Debug-Zeit (die Tests, die Blöcke lesen, teilen sich 9 erzeugte Festungen statt jede Festung jedes Seeds neu; die Prüfungen auf Reihenfolge und vier Threads erzeugen je 3×3 Chunks frisch, das Abtasten der Pfeiler unter den Spawn-Kästen kostet Planungszeit, Erzeugungskosten nicht neu gemessen), `TIMEOUT` 600 → 450 (≥ 15 × Debug-Zeit; `tests/structures/tests.cmake`; die übrigen Struktur-Tests behalten ihre Grenzen).
 
+## Paket 84.5b: Wesen der Festung (2026-11-06)
+
+`test_nether_spawns::tickCostOfACrowd` im Release-Build, je Art 40 Wesen im Nether, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 13). Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,048 | 0,050 | 0,051 |
+| Klagegeist (Vergleich) | 0,143 | 0,148 | 0,158 |
+| Glutgeist | 0,041 | 0,043 | 0,041 |
+| Verkohltes Skelett | 0,055 | 0,057 | 0,055 |
+
+- **Bewertung:** Beide Arten kosten so viel wie Zombies, das Budget von 50 ms bleibt weit entfernt. Der Glutgeist kostet trotz desselben Gehirns weit weniger als der Klagegeist, weil sein Körper klein ist (0,6 × 1,8 statt 3 Meter breit, also weniger Zellen je Kollisionsprüfung), er nahe am Boden schwebt und meist still steht oder rastet (begründet, nicht mit dem Profiler gemessen).
+
 ## Paket 84.6a: Hauerling und Borstenkeiler (2026-11-06)
 
 Release-Build, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 9 bis 17). `test_nether_spawns::tickCostOfACrowd`: je Art 40 Wesen im Nether, nur `QcMobManager::tick`. Millisekunden je Tick:

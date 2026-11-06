@@ -160,7 +160,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Campfire](blocks.md#block-qtcraft-campfire), [Coal chunk](items.md#item-qtcraft-coal_chunk), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Torch](blocks.md#block-qtcraft-torch)
+[Campfire](blocks.md#block-qtcraft-campfire), [Coal chunk](items.md#item-qtcraft-coal_chunk), [Fireball](items.md#item-qtcraft-fireball), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Torch](blocks.md#block-qtcraft-torch)
 
 ### <a id="tag-qtcraft-stone_crafting_materials"></a>Cobblestone or blackstone
 

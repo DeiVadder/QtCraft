@@ -248,7 +248,8 @@ int QcNaturalSpawner::spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky
 {
     // In a spawn area of a structure only its kinds come (decisions E-871, E-1074).
     if (const QcSpawnAreas::Area *area = m_areas.at({place.x, place.floorY + 1, place.z})) {
-        return spawnInArea(world, place, sky, *area, nextEntityId);
+        const std::optional<SpawnCandidate> kind = kindOfArea(world, place, sky, *area);
+        return kind ? spawnGroup(world, place, *kind, std::min(kind->groupSize, room), nextEntityId) : 0;
     }
 
     // Most places fail the light test: the kinds are checked first, without counts.
@@ -279,19 +280,21 @@ int QcNaturalSpawner::spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky
     return spawnGroup(world, place, *chosen, std::min(room, kindRoom), nextEntityId);
 }
 
-int QcNaturalSpawner::spawnInArea(QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area, const NextId &nextEntityId)
+std::optional<QcNaturalSpawner::SpawnCandidate> QcNaturalSpawner::kindOfArea(const QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area)
 {
     if (area.kinds.isEmpty()) {
-        return 0;
+        return std::nullopt;
     }
-    // As in the original game: a kind of the area by weight, one at a time, and the light test,
-    // the ground and the room for the body as anywhere else (the caller checked distance and cap).
+    // As in the original game: a kind of the area by weight, a group of it (decision E-1060), and
+    // the light test, the ground and the room for the body as anywhere else (the caller checked
+    // distance and cap).
     const QcSpawnAreas::Kind &kind = area.kindAt(m_draws->bounded(area.totalWeight()));
-    const SpawnCandidate chosen{kind.type, &kind.rule, true};
+    const int size = kind.minGroup + m_draws->bounded(kind.maxGroup - kind.minGroup + 1);
+    const SpawnCandidate chosen{kind.type, &kind.rule, true, size};
     if (!ruleAllows(world, place, chosen, sky)) {
-        return 0;
+        return std::nullopt;
     }
-    return spawnGroup(world, place, chosen, 1, nextEntityId);
+    return chosen;
 }
 
 QcNaturalSpawner::NearbyCounts QcNaturalSpawner::countNear(const QcVec3 &centre, double radius) const
@@ -518,7 +521,7 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     // The monsters' light test, or the block light only, for mobs that shun it: two light lookups,
     // before the chunk hash, the cells above and the biome.
     const bool lightOk = rule.darkness ? place.darkEnough(world, sky, rule.maxLight, *m_draws)
-                                       : rule.maxLight >= QcLightEngine::maxLevel || place.lightIn(world) <= rule.maxLight;
+                                       : place.lightAllows(world, rule);
     // The index of the kind's rule matters only for a share of chunks (rules of spawn areas have none).
     const int ruleIndex = rule.chunkChance < 1.0 ? static_cast<int>(candidate.rule - m_rules.at(candidate.type.index()).constData()) : 0;
     // Husks and strays only under the open sky, like the reference's test of the sky light.
@@ -532,38 +535,6 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     // Beyond the overworld a kind comes only where it names the biome (decision E-1050), but in a
     // spawn area anywhere (decision E-1074).
     return candidate.inArea || (rule.biomes.isEmpty() ? m_overworld : rule.biomes.contains(place.biomeIn(world)));
-}
-
-const QString &QcNaturalSpawner::SpawnPlace::biomeIn(const QcServerWorld &world)
-{
-    if (!biome) {
-        biome = world.generator().biomeAt(x, z);
-    }
-    return *biome;
-}
-
-int QcNaturalSpawner::SpawnPlace::lightIn(const QcServerWorld &world)
-{
-    if (!light) {
-        light = world.blockLight({x, floorY + 1, z});
-    }
-    return *light;
-}
-
-int QcNaturalSpawner::SpawnPlace::skyLightIn(const QcServerWorld &world)
-{
-    if (!skyLight) {
-        skyLight = world.skyLight({x, floorY + 1, z});
-    }
-    return *skyLight;
-}
-
-bool QcNaturalSpawner::SpawnPlace::darkEnough(const QcServerWorld &world, Sky sky, int maxBlockLight, QRandomGenerator &random)
-{
-    if (!draws) {
-        draws = QcSpawnLight::draw(random);
-    }
-    return QcSpawnLight::darkEnough({skyLightIn(world), lightIn(world), sky.darkening, maxBlockLight}, draws.value_or(QcSpawnLight::Draws{}));
 }
 
 QcNaturalSpawner::SpawnCandidate QcNaturalSpawner::pick(const QList<SpawnCandidate> &candidates)
@@ -589,7 +560,7 @@ std::optional<QcNaturalSpawner::SpawnCandidate> QcNaturalSpawner::pickOfBiome(co
 int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, const SpawnCandidate &chosen, int room, const NextId &nextEntityId)
 {
     const QcMobDefinition &definition = m_content->mobs()[chosen.type];
-    const int group = 1 + m_draws->bounded(definition.maxGroup);
+    const int group = chosen.groupSize > 0 ? chosen.groupSize : 1 + m_draws->bounded(definition.maxGroup);
 
     // The group stands on neighbouring blocks of the same height, never inside walls. Monsters stay
     // on their side of the edge of a spawn area (decision E-871): its kinds inside, the others out.
@@ -598,6 +569,14 @@ int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, 
     for (int i = 0; i < group && i < std::ssize(QcChunkSpawns::groupOffsets) && spawned < room; ++i) {
         const auto [dx, dz] = QcChunkSpawns::groupOffsets[static_cast<std::size_t>(i)];
         if (isMonster(definition) && m_areas.at({place.x + dx, place.floorY + 1, place.z + dz}) != area) {
+            continue;
+        }
+        // In a spawn area each member passes the block light of the area's rule (decision E-1060).
+        SpawnPlace cell = place;
+        cell.x += dx;
+        cell.z += dz;
+        cell.light.reset();
+        if (chosen.inArea && !chosen.rule->darkness && !cell.lightAllows(world, *chosen.rule)) {
             continue;
         }
         const bool member = definition.aquatic    ? spawnSwimmer(world, place, i, chosen, nextEntityId)

@@ -24,8 +24,9 @@ namespace {
         QcMobPart part;
         quint8 tint = 0;
         stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
-            >> part.sitOffset.y >> part.sitOffset.z >> part.tentacle >> part.saddled;
-        if (tint != static_cast<quint8>(QcTint::None) && tint != static_cast<quint8>(QcTint::Collar)) {
+            >> part.sitOffset.y >> part.sitOffset.z >> part.tentacle >> part.saddled >> part.spin;
+        const bool tinted = tint == static_cast<quint8>(QcTint::None) || tint == static_cast<quint8>(QcTint::Collar);
+        if (!tinted || !(std::abs(part.spin) <= QcMobPart::maxSpin)) {
             return std::nullopt;
         }
         part.tint = static_cast<QcTint>(tint);
@@ -75,7 +76,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
            << static_cast<quint32>(mob.parts.size());
     for (const QcMobPart &part : mob.parts) {
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture << static_cast<quint8>(part.tint)
-               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z << part.tentacle << part.saddled;
+               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z << part.tentacle << part.saddled << part.spin;
     }
     stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.villager << mob.ambientSound << mob.hurtSound << mob.deathSound
            << mob.flying << static_cast<qint32>(mob.glow) << mob.catchWith << mob.catchItem << static_cast<quint32>(mob.breeding.food.size());

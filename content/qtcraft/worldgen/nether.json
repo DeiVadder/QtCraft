@@ -142,23 +142,43 @@
         "crop": "nether_wart_crop",
         "chest": "chest",
         "spawner": "spawner",
-        "spawnerMob": "magma_slime",
+        "spawnerMob": "ember_wraith",
         "lootTable": "fortress_chest",
         "monsters": [
             {
-                "mob": "skeleton",
-                "weight": 2,
-                "maxLight": 7
+                "mob": "ember_wraith",
+                "weight": 10,
+                "maxLight": 15,
+                "minGroup": 2,
+                "maxGroup": 3
             },
             {
                 "mob": "rottusk",
                 "weight": 5,
-                "maxLight": 15
+                "maxLight": 15,
+                "minGroup": 4,
+                "maxGroup": 4
+            },
+            {
+                "mob": "charred_skeleton",
+                "weight": 8,
+                "maxLight": 7,
+                "minGroup": 5,
+                "maxGroup": 5
+            },
+            {
+                "mob": "skeleton",
+                "weight": 2,
+                "maxLight": 7,
+                "minGroup": 5,
+                "maxGroup": 5
             },
             {
                 "mob": "magma_slime",
                 "weight": 3,
-                "maxLight": 15
+                "maxLight": 15,
+                "minGroup": 4,
+                "maxGroup": 4
             }
         ]
     },

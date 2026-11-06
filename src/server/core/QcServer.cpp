@@ -135,6 +135,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_circuits.setLight(light);
     m_projectiles.setBlockHit([this](const QcProjectileManager::BlockHit &hit) {
         m_circuits.hitTarget(hit.block, QcServerCircuits::targetStrength(hit.block, hit.face, hit.point), hit.stuck);
+        if (hit.kindles && m_projectiles.mayKindle(hit.shooter)) {
+            m_fire.ignite(qcNeighbour(hit.block, hit.face));
+        }
     });
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 

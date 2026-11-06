@@ -50,6 +50,14 @@ public:
     /*! Sets \a blockHit, what a projectile meeting a block does to it (a target block gives a
         signal; the server wires QcServerCircuits::hitTarget). */
     void setBlockHit(std::function<void(const QcProjectileManager::BlockHit &)> blockHit) { m_blockHit = std::move(blockHit); }
+    /*! Returns whether a shot of \a shooter lights the fire of QcHitEffect::kindle: a creature's
+        only under the rule \c {mobGriefing}; a shooter that is gone counts as a creature, none
+        (0, a dispenser) as no creature. */
+    [[nodiscard]] bool mayKindle(quint32 shooter) const;
+    /*! Returns whether \a shooter is a player who is there. Only such a one sets a rule against
+        creatures aside: a shooter that is gone (after a load) counts as the creature it most
+        likely was. */
+    [[nodiscard]] bool byPresentPlayer(quint32 shooter) const;
 
     /*! \a client strikes the entity \a id: a flying projectile that can be deflected flies on
         where he looks, as his shot (decision E-1053). Returns \c false when \a id is no

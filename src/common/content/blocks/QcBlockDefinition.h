@@ -109,6 +109,9 @@ struct QcItemDrop
         4 to 9, a squid 1 to 3 ink sacs); 0 for exactly \c {count}. A later fortune enchantment
         raises it. */
     int maxCount = 0;
+    /*! Creature drops only: it drops only when a player dealt the killing blow (\c {"byPlayer"},
+        decision E-1059). Server side only. */
+    bool byPlayer = false;
 
     /*! Returns the most items this drop gives. */
     int mostCount() const { return std::max(count, maxCount); }

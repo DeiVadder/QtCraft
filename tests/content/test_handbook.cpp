@@ -416,15 +416,17 @@ private slots:
         QVERIFY(stickLink != usedIn->links.end());
         QCOMPARE(stickLink->note, u"Any planks"_s);
 
-        // Fuels, longest first: lava bucket 1000 s, block of coal 720 s, then coal and charcoal 80 s.
+        // Fuels, longest first: lava bucket 1000 s, block of coal 720 s, ember rod 120 s, then coal and charcoal 80 s.
         const QList<Link> &fuels = m_english.entry(u"table:fuels"_s)->sections.first().links;
         QCOMPARE(fuels.first().target, u"item:qtcraft:lava_bucket"_s);
         QCOMPARE(fuels.first().note, u"1000 s"_s);
         QCOMPARE(fuels[1].target, u"block:qtcraft:coal_block"_s);
         QCOMPARE(fuels[1].note, u"720 s"_s);
-        QCOMPARE(fuels[2].target, u"item:qtcraft:charcoal"_s);
-        QCOMPARE(fuels[3].target, u"item:qtcraft:coal"_s);
-        QCOMPARE(fuels[3].note, u"80 s"_s);
+        QCOMPARE(fuels[2].target, u"item:qtcraft:ember_rod"_s);
+        QCOMPARE(fuels[2].note, u"120 s"_s);
+        QCOMPARE(fuels[3].target, u"item:qtcraft:charcoal"_s);
+        QCOMPARE(fuels[4].target, u"item:qtcraft:coal"_s);
+        QCOMPARE(fuels[4].note, u"80 s"_s);
         QCOMPARE(fact(*m_english.entry(u"block:qtcraft:oak_planks"_s), u"Burns as fuel"_s)->value, u"15 s"_s);
 
         // The furnace processes every smelting recipe of the base game.

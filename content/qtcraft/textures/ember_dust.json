@@ -1,0 +1,8 @@
+{
+    "name": "ember_dust",
+    "pattern": "dust",
+    "primary": "#ffa02a",
+    "secondary": "#d0521a",
+    "variation": 0.15,
+    "seed": 8407
+}

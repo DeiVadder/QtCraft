@@ -194,13 +194,63 @@ private slots:
             }
             return static_cast<double>(spent) / (ticks - 100) / 1e6;
         };
-        qInfo().noquote() << u"ms per tick: 40 zombies %1, 40 rottusks %2, 40 magma slimes %3, 40 wailers %4, 40 waders %5"_s
+        qInfo().noquote() << u"ms per tick: 40 zombies %1, 40 rottusks %2, 40 magma slimes %3, 40 wailers %4, 40 waders %5, 40 ember wraiths %6, 40 charred skeletons %7"_s
                                  .arg(cost({u"qtcraft:zombie"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:rottusk"_s}, 40), 0, 'f', 3)
                                  .arg(cost({u"qtcraft:magma_slime"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:wailer"_s}, 40), 0, 'f', 3)
-                                 .arg(cost({u"qtcraft:lava_wader"_s}, 40), 0, 'f', 3);
+                                 .arg(cost({u"qtcraft:lava_wader"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:ember_wraith"_s}, 40), 0, 'f', 3)
+                                 .arg(cost({u"qtcraft:charred_skeleton"_s}, 40), 0, 'f', 3);
         // The gold folk (decision E-1086): with a player who wears no gold, so tusklings hunt him.
         qInfo().noquote() << u"ms per tick: 40 zombies %1, 40 tusklings %2, 40 bristleboars %3"_s.arg(cost({u"qtcraft:zombie"_s}, 40), 0, 'f', 3)
                                  .arg(cost({u"qtcraft:tuskling"_s}, 40), 0, 'f', 3).arg(cost({u"qtcraft:bristleboar"_s}, 40), 0, 'f', 3);
+    }
+
+    // The kinds of a fortress come in groups, and a group never goes past the room under the cap.
+    void fortressGroupsComeTogetherAndKeepTheCap()
+    {
+        const qint64 seed = 42;
+        const QcNetherGenerator probe(m_content, seed);
+        std::shared_ptr<const QcFortressPlan> plan;
+        for (int i = 0; i < 16 && !plan; ++i) {
+            plan = probe.fortress().planOf(i % 4 - 2, i / 4 - 2);
+        }
+        QVERIFY(plan);
+        const QcBlockPos middle = plan->middle();
+        const std::unique_ptr<QcServerWorld> world = makeWorld(seed, QcMonsterCap::reach, middle.chunk());
+        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = {middle.x + 0.5, middle.y + 0.0, middle.z + 0.5}}};
+        const auto inFortress = [&plan](const QcCreature &mob) {
+            const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
+            return std::ranges::any_of(plan->parts, [feet](const QcBlockBox &part) { return part.contains(feet); });
+        };
+        // What came in one tick: all monsters, and the most of one kind side by side in the fortress.
+        // Every tick starts empty, so the room under the cap is the whole cap each time.
+        struct Most
+        {
+            qsizetype monsters = 0;
+            qsizetype together = 0;
+        };
+        const auto run = [&](int cap) {
+            QcMobManager mobs(m_content, 9);
+            mobs.setDimension(nether());
+            mobs.spawner().setCaps(cap, 0, 0);
+            Most most;
+            for (int tick = 0; tick < 60 * QcPhysics::tickRate; ++tick) {
+                mobs.tick(*world, players, 0.0, QcPhysics::tickDuration, [this] { return m_nextId++; });
+                const auto monster = [this](const QcCreature &mob) { return m_content->mobs()[mob.type].isMonster(); };
+                most.monsters = std::max<qsizetype>(most.monsters, std::ranges::count_if(mobs.mobs(), monster));
+                for (const QcCreature &mob : mobs.mobs()) {
+                    const auto beside = [&](const QcCreature &other) {
+                        return other.type == mob.type && inFortress(other) && (other.motion.position - mob.motion.position).length() < 4.0;
+                    };
+                    most.together = std::max<qsizetype>(most.together, inFortress(mob) ? std::ranges::count_if(mobs.mobs(), beside) : 0);
+                }
+                mobs.removeAll();
+            }
+            return most;
+        };
+        const qsizetype together = run(QcNaturalSpawner::monsterCapPer289Chunks).together;
+        qInfo() << "most side by side" << together;
+        QVERIFY2(together >= 2, qPrintable(QString::number(together)));
+        QCOMPARE(run(1).monsters, qsizetype{1});
     }
 
     void rottusksDoNotCrowdTheWastes_data()
@@ -240,7 +290,8 @@ private slots:
         const std::unique_ptr<QcServerWorld> world = makeWorld(seed, radius, middle.chunk());
         QCOMPARE(world->generator().structureSitesNear(middle, QcSpawnAreas::reach).spawnAreas.size(), qsizetype{1});
         const QHash<QString, QList<QcVec3>> seen = census(*world, 0.0, {middle.x + 0.5, middle.y + 0.0, middle.z + 0.5}, true);
-        const QSet<QString> fortressKinds{u"qtcraft:skeleton"_s, u"qtcraft:rottusk"_s, u"qtcraft:magma_slime"_s};
+        const QSet<QString> fortressKinds{u"qtcraft:ember_wraith"_s, u"qtcraft:rottusk"_s, u"qtcraft:charred_skeleton"_s, u"qtcraft:skeleton"_s,
+                                          u"qtcraft:magma_slime"_s};
         int inside = 0;
         int outside = 0;
         for (auto it = seen.cbegin(); it != seen.cend(); ++it) {
@@ -253,11 +304,14 @@ private slots:
                 QVERIFY2(!inPart || !monster || fortressKinds.contains(it.key()), qPrintable(u"%1 at %2 %3 %4"_s.arg(it.key()).arg(feet.x).arg(feet.y).arg(feet.z)));
                 inside += inPart && monster ? 1 : 0;
                 outside += inPart ? 0 : 1;
-                QVERIFY2(!inPart || it.key() != u"qtcraft:skeleton"_s || world->blockLight(feet) <= 7, qPrintable(u"skeleton at %1 %2 %3"_s.arg(feet.x).arg(feet.y).arg(feet.z)));
+                const bool dark = it.key() == u"qtcraft:skeleton"_s || it.key() == u"qtcraft:charred_skeleton"_s;
+                QVERIFY2(!inPart || !dark || world->blockLight(feet) <= 7, qPrintable(u"%1 at %2 %3 %4"_s.arg(it.key()).arg(feet.x).arg(feet.y).arg(feet.z)));
             }
         }
         qInfo() << "fortress kinds in its parts:" << inside << "others outside:" << outside << seen.keys();
         QVERIFY(inside > 0);
+        QVERIFY(seen.contains(u"qtcraft:ember_wraith"_s));
+        QVERIFY(seen.contains(u"qtcraft:charred_skeleton"_s));
     }
 
     // Natural spawns come young by `young.chance` (decision E-1083): both kinds of the crimson forest

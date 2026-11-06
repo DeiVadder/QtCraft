@@ -104,7 +104,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     if (drops) {
         // Like block drops (decision E-028) the loot falls where the mob died; only a grown
         // creature a player killed gives experience (decisions E-398, E-399).
-        dropLoot(state, *drops, lootPosition);
+        dropLoot(state, *drops, lootPosition, blow.attacker != 0);
         if (!young && blow.attacker != 0) {
             QcServerExperience::drop(state, QcServerExperience::roll(state, definition.experience), lootPosition);
         }
@@ -150,16 +150,17 @@ void QcServerCombat::woundCreature(QcServerState &state, QcServerSounds &sounds,
     }
 }
 
-void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)
+void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position, bool byPlayer)
 {
     for (const QcItemDrop &drop : drops) {
-        if (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance) {
+        if ((drop.byPlayer && !byPlayer) || (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance)) {
             continue;
         }
         // A drop with a maxCount gives between count and maxCount items, chosen evenly.
         const int extra = drop.mostCount() > drop.count
             ? static_cast<int>(state.random().bounded(static_cast<quint32>(drop.mostCount() - drop.count + 1))) : 0;
-        if (const std::optional<QcItemId> item = state.content().itemId(drop.item)) {
+        const std::optional<QcItemId> item = state.content().itemId(drop.item);
+        if (item && drop.count + extra > 0) {
             state.entities().items().spawnScattered({*item, drop.count + extra, 0}, position, state.entities().newId());
         }
     }

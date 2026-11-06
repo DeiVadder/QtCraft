@@ -10,6 +10,7 @@
 #include <functional>
 
 class QcServerFire;
+struct QcItemDefinition;
 class QcServerInventory;
 class QcServerSounds;
 struct QcServerClient;
@@ -23,7 +24,8 @@ class QcServerState;
 
     \list
     \li Flint and steel (an item that \c {ignites}) used on a block face lights the cell in front of
-        the face; it wears by one per fire, except in creative mode. Dispensers use it the same way
+        the face; it wears by one per fire, except in creative mode, and one without durability
+        (a fireball, decision E-1058) is used up. Dispensers use flint and steel the same way
         (QcDispenserActions).
     \li A block with \c {sparks} (lava) lights, with that chance in 100 per block update of it, one
         air cell right next to it that touches a flammable block. The updates come anyway (something
@@ -63,6 +65,9 @@ public:
     const QcFireRules::Table &table() const { return m_table; }
 
 private:
+    // The price of a fire lit with the held item `held` of `client`.
+    void spendHeld(QcServerClient &client, const QcItemDefinition &held);
+
     QcServerState &m_state;
     QcServerFire &m_fire;
     QcServerSounds &m_sounds;

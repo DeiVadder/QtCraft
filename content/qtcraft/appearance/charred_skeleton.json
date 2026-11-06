@@ -1,0 +1,43 @@
+{
+    "name": "charred_skeleton",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "charred_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "charred_face",
+            "tint": "none"
+        },
+        "hat": {
+            "texture": "charred_ember",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "charred_ribs",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "charred_bone",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "charred_bone",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "charred_bone",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "charred_bone",
+            "tint": "none"
+        },
+        "legs_cloth": {
+            "texture": "charred_rags",
+            "tint": "none"
+        }
+    }
+}

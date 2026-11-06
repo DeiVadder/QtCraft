@@ -866,6 +866,10 @@ A weapon: deals more damage to creatures.
 | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Dropped by**
+
+[Charred Skeleton](creatures.md#mob-qtcraft-charred_skeleton) (8.5 %, player kills only)
+
 ### <a id="item-qtcraft-wooden_axe"></a>Wooden axe
 
 Chops wood faster.

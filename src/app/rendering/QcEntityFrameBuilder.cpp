@@ -213,7 +213,7 @@ void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientE
     const bool pulses = ownParts && creature->pulse;
     const QcBoxLegs *legs = !sitting && !pulses && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
     const QcSwimmerPose::Look swum = pulses ? QcSwimmerPose::of(*creature, entity, frame.alpha, frame.seconds, m_forcedPose.pulse()) : QcSwimmerPose::Look{};
-    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, (entity.flags & QcMsg::Saddled) != 0, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread});
+    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, (entity.flags & QcMsg::Saddled) != 0, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread, frame.seconds});
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)

@@ -46,7 +46,9 @@ QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature
     now.health = creature.health;
     now.hurt = creature.hurtUnsent;
     now.struck = creature.struckUnsent;
-    now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
+    // A drifter that flares shows the flames of a burning body (decision E-1056).
+    const quint16 flare = creature.drifter && creature.drifter->flares ? QcMsg::Burning : 0;
+    now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding | flare);
     now.held = heldBy(creature, kind);
     if (creature.archer.has() && creature.archer->drawing()) {
         now.flags = static_cast<quint16>(now.flags | QcMsg::Drawing);

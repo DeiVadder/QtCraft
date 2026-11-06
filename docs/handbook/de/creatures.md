@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hauerling](#mob-qtcraft-tuskling) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -192,6 +192,23 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 **Erscheint in Biomen**
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-ember_wraith"></a>Glutgeist
+
+Ein Stapel glühender Kohle hinter einer Maske, umringt von Platten, die sich von selbst drehen. Er ruht auf dem Boden einer Festung und steigt auf, sobald er jemanden sieht. Erst flammt er auf, dann feuert er drei kleine Feuerkugeln kurz nacheinander und wartet; aus der Nähe schlägt er mit seinem brennenden Körper zu. Wasser schadet ihm, Schneebälle auch. Nur wer ihn selbst besiegt, bekommt eine Glutrute.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_wraith` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,8 m hoch |
+| Geschwindigkeit | 2,3 m/s |
+| Angriff | 6 Schaden bis 2 m, alle 1 s |
+| Sieht Spieler bis | 48 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 15 von 15 |
+| Beute | [Glutrute](items.md#item-qtcraft-ember_rod) (50 %, nur wenn ein Spieler tötet) |
 
 ### <a id="mob-qtcraft-tuskling"></a>Hauerling
 
@@ -900,6 +917,22 @@ Ein harmloses Wesen der Flüsse, Seen und Meere unter dem Meeresspiegel. Es schw
 **Erscheint in Biomen**
 
 Alle Biome.
+
+### <a id="mob-qtcraft-charred_skeleton"></a>Verkohltes Skelett
+
+Ein hohes, vom Feuer geschwärztes Skelett mit einer Glut hinter den Rippen und einem Steinschwert. Es kommt schneller auf dich zu, als man denkt, und seine Schläge lassen verdorren: Die Herzen werden dunkel und schwinden, bis zum letzten. Feuer kann ihm nichts anhaben. Es hinterlässt Kohle und Knochen, selten sein Schwert und, wer es selbst besiegt, seinen Schädel.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_skeleton` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,7 m breit, 2,4 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 3,9 m/s beim Verfolgen |
+| Angriff | 8 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Kohle](items.md#item-qtcraft-coal) (33,33 %), [Knochen](items.md#item-qtcraft-bone) (0–2×), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull) (2,5 %, nur wenn ein Spieler tötet), [Steinschwert](tools.md#item-qtcraft-stone_sword) (8,5 %, nur wenn ein Spieler tötet) |
 
 ### <a id="mob-qtcraft-wolf"></a>Wolf
 

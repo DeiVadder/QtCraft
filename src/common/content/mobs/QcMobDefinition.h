@@ -42,6 +42,11 @@ struct QcMobPart
     /*! Shown only while the creature wears a saddle (\c {"saddled"}, QcMsg::Saddled, decision
         E-1054). */
     bool saddled = false;
+    /*! Degrees a second the box turns about the upright axis through the feet (\c {"spin"},
+        decision E-1056; negative: the other way), at most maxSpin either way. */
+    double spin = 0.0;
+    /*! The fastest \c {spin}. */
+    static constexpr double maxSpin = 720.0;
 };
 
 /*! \brief How a creature finds its way (decision E-423), from its data (\c {abilities}); the path

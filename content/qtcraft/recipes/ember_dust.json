@@ -1,0 +1,11 @@
+{
+    "name": "ember_dust",
+    "type": "shapeless",
+    "ingredients": [
+        "ember_rod"
+    ],
+    "result": {
+        "item": "ember_dust",
+        "count": 2
+    }
+}
