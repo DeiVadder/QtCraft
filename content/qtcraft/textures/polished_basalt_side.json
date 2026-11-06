@@ -1,13 +1,8 @@
 {
     "name": "polished_basalt_side",
-    "pattern": "log_side",
-    "primary": "#6a6a70",
-    "secondary": "#55555b",
-    "variation": 0.05,
-    "seed": 8421,
-    "material": {
-        "smoothness": 0.5,
-        "bump": 0.45,
-        "porosity": 0.1
-    }
+    "pattern": "polished_columns",
+    "primary": "#74747c",
+    "secondary": "#46464e",
+    "variation": 0.04,
+    "seed": 8421
 }

@@ -1,8 +1,8 @@
 {
     "name": "blackstone",
-    "pattern": "speckle",
-    "primary": "#2c2630",
-    "secondary": "#1c181e",
-    "variation": 0.16,
+    "pattern": "glassy_stone",
+    "primary": "#2a2432",
+    "secondary": "#8a7ea6",
+    "variation": 0.08,
     "seed": 8424
 }

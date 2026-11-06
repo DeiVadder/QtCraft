@@ -5,6 +5,7 @@
 
 #include "clientcore/textures/QcTextureDetail.h"
 #include "clientcore/textures/QcTextureEmblem.h"
+#include "clientcore/textures/QcTextureRelief.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <QJsonArray>
@@ -85,7 +86,8 @@ namespace QcProceduralTexture {
     const QcTextureAnimation animation = animationOf(definition);
     parsed->phase = static_cast<double>(std::clamp(frame, 0, animation.frames - 1)) / animation.frames;
     parsed->detailed = resolution > QcTextureSynthesizer::tileSize;
-    QImage base = QcTextureSynthesizer::synthesize(*parsed);
+    const bool painted = QcTextureRelief::isRelief(parsed->pattern) && resolution > QcTextureSynthesizer::tileSize;
+    QImage base = painted ? QcTextureRelief::paint(*parsed, resolution) : QcTextureSynthesizer::synthesize(*parsed);
     if (resolution <= QcTextureSynthesizer::tileSize) {
         return base;
     }

@@ -95,6 +95,16 @@ constexpr std::pair<QStringView, Pattern> patternNames[] = {
     {u"painting_sunset", Pattern::PaintingSunset}, {u"painting_rings", Pattern::PaintingRings},
     {u"ice", Pattern::Ice},           {u"packed_ice", Pattern::PackedIce},
     {u"slime", Pattern::Slime},       {u"patches", Pattern::Patches},
+    {u"fused_rock", Pattern::FusedRock}, {u"hollow_sand", Pattern::HollowSand},
+    {u"crusted_soil", Pattern::CrustedSoil}, {u"column_side", Pattern::ColumnSide},
+    {u"column_top", Pattern::ColumnTop}, {u"polished_columns", Pattern::PolishedColumns},
+    {u"flow_bands", Pattern::FlowBands}, {u"glassy_stone", Pattern::GlassyStone},
+    {u"polished_glass", Pattern::PolishedGlass}, {u"gilded_stone", Pattern::GildedStone},
+    {u"ashlar", Pattern::Ashlar}, {u"cracked_ashlar", Pattern::CrackedAshlar},
+    {u"carved_ashlar", Pattern::CarvedAshlar}, {u"fired_bricks", Pattern::FiredBricks},
+    {u"cracked_fired_bricks", Pattern::CrackedFiredBricks}, {u"carved_fired_bricks", Pattern::CarvedFiredBricks},
+    {u"quartz_ore", Pattern::QuartzOre}, {u"gold_vein_ore", Pattern::GoldVeinOre},
+    {u"magma_crust", Pattern::MagmaCrust}, {u"glow_cluster", Pattern::GlowCluster},
 };
 
 } // namespace

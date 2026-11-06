@@ -1,8 +1,8 @@
 {
     "name": "netherrack",
-    "pattern": "speckle",
-    "primary": "#6a2826",
-    "secondary": "#4a1818",
-    "variation": 0.16,
+    "pattern": "fused_rock",
+    "primary": "#6e2824",
+    "secondary": "#2c0e0e",
+    "variation": 0.08,
     "seed": 8401
 }

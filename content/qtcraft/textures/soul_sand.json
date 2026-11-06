@@ -1,8 +1,8 @@
 {
     "name": "soul_sand",
-    "pattern": "speckle",
-    "primary": "#54402e",
-    "secondary": "#3a2a1e",
-    "variation": 0.14,
+    "pattern": "hollow_sand",
+    "primary": "#665240",
+    "secondary": "#221812",
+    "variation": 0.08,
     "seed": 8402
 }

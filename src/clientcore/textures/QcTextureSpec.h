@@ -299,6 +299,46 @@ struct QcTextureSpec
         /*! A creature's coat (QcTextureCoatPatterns, decision E-880): a few large smooth-edged
             patches (secondary) on the primary colour, like a Holstein cow; the seed places them. */
         Patches,
+        /*! The relief patterns (QcTextureRelief, decision E-1043), painted at each resolution.
+            Porous fused rock: crooked lumps (primary) with seams and pores (secondary). */
+        FusedRock,
+        /*! Grainy sand (primary) with a few deep hollows (secondary). */
+        HollowSand,
+        /*! Dry soil: flat angular plates (primary) between cracks with pale grit (secondary). */
+        CrustedSoil,
+        /*! Standing stone columns (primary) with joints and fractures (secondary). */
+        ColumnSide,
+        /*! The cut through such columns: polygons (primary) with joints (secondary). */
+        ColumnTop,
+        /*! The columns ground flat: a smooth face (primary) with fine joints (secondary). */
+        PolishedColumns,
+        /*! Ground rock with wavering flow bands (primary, secondary). */
+        FlowBands,
+        /*! Dark stone (primary) breaking like glass: shell-shaped shards with glints (secondary). */
+        GlassyStone,
+        /*! That stone polished: dark clouded fields (primary to secondary) with pale veins. */
+        PolishedGlass,
+        /*! Glassy stone (primary) with gold (secondary) in its fractures. */
+        GildedStone,
+        /*! Large smooth blocks (primary) in courses of unequal height with thin joints
+            (secondary); cracked, and carved with a stepped diamond. */
+        Ashlar,
+        CrackedAshlar, // with cracks
+        CarvedAshlar, // with a carved panel
+        /*! Long fired bricks of unequal length (primary) in deep mortar (secondary), with scorch
+            marks; cracked, and carved with chevrons. */
+        FiredBricks,
+        CrackedFiredBricks, // with cracks
+        CarvedFiredBricks, // with a carved panel
+        /*! Fused rock (primary) with crystals standing out of it (secondary). */
+        QuartzOre,
+        /*! Fused rock (primary) with crooked strands and flakes of gold (secondary). */
+        GoldVeinOre,
+        /*! A dark crust (primary) broken into plates of different sizes over thin cracks of molten
+            rock (secondary). */
+        MagmaCrust,
+        /*! Glowing lumps (primary, white in their middle) with dim gaps between them (secondary). */
+        GlowCluster,
     };
 
     /*! Emblem and Icon only: up to 16 rows of up to 16 characters, top row first. \qcshared */

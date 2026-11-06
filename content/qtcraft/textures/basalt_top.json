@@ -1,13 +1,8 @@
 {
     "name": "basalt_top",
-    "pattern": "log_top",
-    "primary": "#64646a",
-    "secondary": "#45454b",
-    "variation": 0.1,
-    "seed": 8420,
-    "material": {
-        "smoothness": 0.16,
-        "bump": 0.9,
-        "porosity": 0.3
-    }
+    "pattern": "column_top",
+    "primary": "#6c6c74",
+    "secondary": "#202026",
+    "variation": 0.08,
+    "seed": 8420
 }

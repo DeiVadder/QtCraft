@@ -5,6 +5,7 @@
 
 #include "clientcore/textures/QcTextureOutline.h"
 #include "clientcore/textures/QcTexturePaint.h"
+#include "clientcore/textures/QcTextureRelief.h"
 
 #include <algorithm>
 #include <array>
@@ -223,6 +224,10 @@ bool among(Pattern pattern, std::initializer_list<Pattern> patterns)
 
 Params forPattern(Pattern pattern)
 {
+    // Relief patterns are painted at the resolution with their own light: a little grain, no more.
+    if (QcTextureRelief::isRelief(pattern)) {
+        return {0.03, 0.0, false};
+    }
     // Ground, stone and ore: grainy, round speckles, soft edges.
     if (among(pattern, {Pattern::Noise, Pattern::Speckle, Pattern::Ore, Pattern::Lump, Pattern::GrassSide, Pattern::Farmland, Pattern::Lava})) {
         return {0.08, 0.12, true};

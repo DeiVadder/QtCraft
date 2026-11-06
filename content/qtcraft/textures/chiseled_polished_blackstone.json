@@ -1,13 +1,8 @@
 {
     "name": "chiseled_polished_blackstone",
-    "pattern": "chiseled_bricks",
-    "primary": "#36303a",
-    "secondary": "#1e1a20",
-    "variation": 0.06,
-    "seed": 8429,
-    "material": {
-        "smoothness": 0.3,
-        "bump": 1.4,
-        "porosity": 0.2
-    }
+    "pattern": "carved_ashlar",
+    "primary": "#37303f",
+    "secondary": "#121016",
+    "variation": 0.04,
+    "seed": 8429
 }

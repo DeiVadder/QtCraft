@@ -1,8 +1,8 @@
 {
     "name": "nether_gold_ore",
-    "pattern": "ore",
-    "primary": "#6a2826",
-    "secondary": "#f2d040",
+    "pattern": "gold_vein_ore",
+    "primary": "#6e2824",
+    "secondary": "#e8c63a",
     "variation": 0.08,
     "seed": 8406
 }

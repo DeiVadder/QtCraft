@@ -13,6 +13,7 @@
 #include "clientcore/textures/QcTexturePaint.h"
 #include "clientcore/textures/QcTexturePaintingPatterns.h"
 #include "clientcore/textures/QcTextureRangedPatterns.h"
+#include "clientcore/textures/QcTextureRelief.h"
 #include "clientcore/textures/QcTextureSignalPatterns.h"
 #include "clientcore/textures/QcTextureToolPatterns.h"
 
@@ -647,6 +648,10 @@ void paint(QImage &image, const QcTextureSpec &spec)
 
 QImage QcTextureSynthesizer::synthesize(const QcTextureSpec &spec)
 {
+    if (QcTextureRelief::isRelief(spec.pattern)) {
+        return QcTextureRelief::paint(spec, tileSize);
+    }
+
     QImage image(tileSize, tileSize, QImage::Format_RGBA8888);
     image.fill(Qt::transparent);
     paint(image, spec);

@@ -1,13 +1,8 @@
 {
     "name": "basalt_side",
-    "pattern": "log_side",
-    "primary": "#58585e",
-    "secondary": "#3c3c42",
-    "variation": 0.12,
-    "seed": 8419,
-    "material": {
-        "smoothness": 0.16,
-        "bump": 1.0,
-        "porosity": 0.3
-    }
+    "pattern": "column_side",
+    "primary": "#62626a",
+    "secondary": "#25252b",
+    "variation": 0.08,
+    "seed": 8419
 }

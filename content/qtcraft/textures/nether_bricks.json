@@ -1,8 +1,8 @@
 {
     "name": "nether_bricks",
-    "pattern": "bricks",
-    "primary": "#46222a",
-    "secondary": "#24121a",
-    "variation": 0.1,
+    "pattern": "fired_bricks",
+    "primary": "#44202a",
+    "secondary": "#1c0c12",
+    "variation": 0.08,
     "seed": 8415
 }

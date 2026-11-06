@@ -1,13 +1,8 @@
 {
     "name": "polished_blackstone",
-    "pattern": "noise",
-    "primary": "#36303a",
-    "secondary": "#2e2832",
+    "pattern": "polished_glass",
+    "primary": "#2a2432",
+    "secondary": "#50465e",
     "variation": 0.04,
-    "seed": 8426,
-    "material": {
-        "smoothness": 0.5,
-        "bump": 0.45,
-        "porosity": 0.1
-    }
+    "seed": 8426
 }

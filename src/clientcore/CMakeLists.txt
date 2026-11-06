@@ -253,13 +253,18 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureDetail.h textures/QcTextureDetail.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
+    textures/QcTextureField.h textures/QcTextureField.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
+    textures/QcTextureMasonryPatterns.h textures/QcTextureMasonryPatterns.cpp
     textures/QcTextureOutline.h textures/QcTextureOutline.cpp
     textures/QcTexturePaint.h
     textures/QcTexturePaintingPatterns.h textures/QcTexturePaintingPatterns.cpp
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
+    textures/QcTextureRelief.h textures/QcTextureRelief.cpp
+    textures/QcTextureRockPatterns.h textures/QcTextureRockPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
+    textures/QcTextureStonePatterns.h textures/QcTextureStonePatterns.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
     textures/QcTextureToolPatterns.h textures/QcTextureToolPatterns.cpp
 )

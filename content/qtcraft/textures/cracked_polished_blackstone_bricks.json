@@ -1,13 +1,8 @@
 {
     "name": "cracked_polished_blackstone_bricks",
-    "pattern": "cracked_bricks",
-    "primary": "#36303a",
-    "secondary": "#1e1a20",
-    "variation": 0.06,
-    "seed": 8428,
-    "material": {
-        "smoothness": 0.24,
-        "bump": 1.6,
-        "porosity": 0.25
-    }
+    "pattern": "cracked_ashlar",
+    "primary": "#37303f",
+    "secondary": "#121016",
+    "variation": 0.04,
+    "seed": 8428
 }
