@@ -96,6 +96,7 @@ QcStartupHooks::QcStartupHooks(const Screens &screens, const QcSessionParts &par
     , m_parts(parts)
     , m_benchmark(benchmark)
 {
+    holdScreenshotDuringSwitch();
 }
 
 void QcStartupHooks::setInitialLook(float yaw, float pitch)
@@ -488,14 +489,14 @@ bool QcStartupHooks::showStateScreen(const QString &step) const
 
 void QcStartupHooks::showUpgrade(QStringView spec) const
 {
-    // "<stage>,<share>": stage 0 backup, 1 survey, 2 write; share 0 to 1, or -1 for a running bar.
+    // "<stage>,<share>": stage 0 backup, 1 survey, 2 blend, 3 write; share 0 to 1, or -1 for a running bar.
     const QList<QStringView> parts = spec.split(u',');
     bool stageOk = false;
     bool shareOk = false;
     const int stage = parts.size() == 2 ? parts.at(0).toInt(&stageOk) : -1;
     const double share = parts.size() == 2 ? parts.at(1).toDouble(&shareOk) : 0.0;
-    if (!stageOk || !shareOk || stage < 0 || stage > 2) {
-        qCWarning(lcStartup).noquote() << u"--overlay upgrade:%1: expected '<stage 0-2>,<share>'"_s.arg(spec);
+    if (!stageOk || !shareOk || stage < 0 || stage > 3) {
+        qCWarning(lcStartup).noquote() << u"--overlay upgrade:%1: expected '<stage 0-3>,<share>'"_s.arg(spec);
         return;
     }
     m_screens.upgrade.preview(static_cast<QcGeneratorUpgradeController::Stage>(stage), share);

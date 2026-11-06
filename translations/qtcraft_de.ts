@@ -2457,67 +2457,94 @@ Als Nächstes: %3</translation>
 <context>
     <name>GeneratorUpgradeDialog</name>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="45"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="51"/>
         <source>Switching the world generator</source>
         <translation>Der Weltgenerator wird umgestellt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="45"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="51"/>
         <source>Newer world generator</source>
         <translation>Neuerer Weltgenerator</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="61"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="67"/>
         <source>“%1” comes from an older world generator (%2).</source>
         <translation>„%1“ stammt von einem älteren Weltgenerator (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="68"/>
         <source>Everything you have explored stays as it is. Only new land comes from the new generator. An edge may appear at the border.</source>
-        <translation>Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. An der Grenze kann eine Kante entstehen.</translation>
+        <translation type="vanished">Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. An der Grenze kann eine Kante entstehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="75"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="74"/>
+        <source>Everything you have explored stays as it is. Only new land comes from the new generator. A plain switch may leave an edge at the border; a transition blends the land around it.</source>
+        <translation>Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. Beim einfachen Umstellen kann an der Grenze eine Kante entstehen; ein Übergang mischt das Land drumherum.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="81"/>
         <source>A backup is made first.</source>
         <translation>Vorher wird eine Sicherung angelegt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="82"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="87"/>
+        <source>Only the overworld gets a transition; the other dimensions get a plain border.</source>
+        <translation>Nur die Oberwelt bekommt einen Übergang; die anderen Dimensionen bekommen eine einfache Grenze.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="93"/>
+        <source>Width of the transition</source>
+        <translation>Breite des Übergangs</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="94"/>
+        <source>Land around the explored area that blends into the new generator</source>
+        <translation>Land um das erkundete Gebiet, das in den neuen Generator übergeht</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="101"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="102"/>
+        <source>%n chunk(s)</source>
+        <translation>
+            <numerusform>%n Chunk</numerusform>
+            <numerusform>%n Chunks</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="110"/>
         <source>Don&apos;t ask again</source>
         <translation>Nicht mehr fragen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="125"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="144"/>
         <source>Switch with transition</source>
         <translation>Mit Übergang umstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="132"/>
         <source>Comes with a later version</source>
-        <translation>Kommt in einer späteren Version</translation>
+        <translation type="vanished">Kommt in einer späteren Version</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="139"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="151"/>
         <source>Switch</source>
         <translation>Umstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="150"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="160"/>
         <source>Keep version %1</source>
         <translation>Version %1 behalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="150"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="160"/>
         <source>Keep versions</source>
         <translation>Versionen behalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="162"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="170"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="172"/>
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="178"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -6313,32 +6340,37 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGeneratorUpgradeController</name>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="53"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="56"/>
         <source>%1: version %2 → %3</source>
         <translation>%1: Version %2 → %3</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="61"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="64"/>
         <source>Cancelling …</source>
         <translation>Wird abgebrochen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="65"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="68"/>
         <source>Backing up the world …</source>
         <translation>Die Welt wird gesichert …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="67"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="70"/>
         <source>Surveying the explored land and its structures …</source>
         <translation>Das erkundete Land und seine Bauwerke werden vermessen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="69"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="72"/>
+        <source>Blending the land around it into the new version …</source>
+        <translation>Das Land rundherum wird in die neue Version überblendet …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="74"/>
         <source>Writing the new version …</source>
         <translation>Die neue Version wird geschrieben …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="168"/>
+        <location filename="../src/app/controllers/QcGeneratorUpgradeController.cpp" line="206"/>
         <source>Preview</source>
         <translation>Vorschau</translation>
     </message>

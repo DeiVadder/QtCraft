@@ -11,9 +11,10 @@
 
 class QcContentRegistry;
 
-/*! \brief \c {qtcraft-headless --convert-generator <world> [--to <version>] [--mode hard]
-    [--dimension <id>]} (decision E-1014): switches a saved world to a newer world generator
-    before it is played, for dedicated servers and tests, the same conversion as the menu's
+/*! \brief \c {qtcraft-headless --convert-generator <world> [--to <version>]
+    [--mode hard|blend] [--blend-chunks <n>] [--dimension <id>]} (decisions E-1014, E-1040):
+    switches a saved world to a newer world generator before it is played, for dedicated servers
+    and tests, the same conversion as the menu's
     (QcGeneratorUpgrade): a backup first, progress on standard output, the result and the backup's
     folder at the end. */
 namespace QcHeadlessConversion {

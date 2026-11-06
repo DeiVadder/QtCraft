@@ -7,6 +7,7 @@
 #include "common/content/worldgen/QcDimensionDefinition.h"
 #include "server/backup/QcWorldBackup.h"
 #include "server/dimensions/QcDimensions.h"
+#include "server/storage/QcChunkStore.h"
 #include "server/storage/QcServerPersistence.h"
 #include "server/storage/QcWorldStorage.h"
 #include "server/versions/QcGeneratorSwitch.h"
@@ -14,6 +15,7 @@
 #include "worlds/QcWorldsLogging.h"
 
 #include <QDir>
+#include <QFile>
 #include <QLockFile>
 
 #include <algorithm>
@@ -58,7 +60,7 @@ Converted cancelled(const QString &backup)
     if (!backup.isEmpty() && !QDir(backup).removeRecursively()) {
         qCWarning(lcWorlds) << "Could not remove the backup of a cancelled generator switch:" << backup;
     }
-    return Converted{{}, 0, {}, true};
+    return Converted{{}, 0, 0, {}, true};
 }
 
 // The backup of `request`'s world below its root, labelled after the newest version it gets.
@@ -90,13 +92,14 @@ QcResult<Converted> convertLocked(const QcGeneratorUpgrade::Request &request, co
     if (outcome->cancelled) {
         return cancelled(backup->directory);
     }
-    Converted converted{backup->directory, 0, {}, false};
+    Converted converted{backup->directory, 0, 0, {}, false};
     for (const QcGeneratorSwitch::Switched &switched : outcome->switched) {
         converted.keptChunks += switched.keptChunks;
+        converted.ringChunks += switched.ringChunks;
         converted.warnings.append(switched.warnings);
     }
-    qCInfo(lcWorlds) << "Switched the world generator of" << request.worldDirectory << "keeping" << converted.keptChunks << "chunks; backup"
-                     << converted.backup;
+    qCInfo(lcWorlds) << "Switched the world generator of" << request.worldDirectory << "keeping" << converted.keptChunks << "chunks and a ring of"
+                     << converted.ringChunks << "chunks; backup" << converted.backup;
     return converted;
 }
 
@@ -151,10 +154,16 @@ QList<Change> outdatedIn(const QcWorldInfo &info, const QcContentRegistry &conte
     return changes;
 }
 
+bool reachBeyondOverworld(const QList<Change> &changes)
+{
+    const QString overworld = QString::fromLatin1(QcDimensionDefinition::overworldName);
+    return std::ranges::any_of(changes, [&overworld](const Change &change) { return change.dimension != overworld; });
+}
+
 QcResult<Converted> convert(const Request &request, const std::shared_ptr<const QcContentRegistry> &content, const QcConversionControl &control)
 {
-    if (request.mode == Mode::Blend) {
-        return qcError(u"Switching with a transition (blend) comes with a later version of QtCraft; use the mode hard"_s);
+    if (request.mode == Mode::Blend && !QcBlendWidth::isValid(request.blendChunks)) {
+        return qcError(u"A transition is %1 to %2 chunks wide, not %3"_s.arg(QcBlendWidth::minChunks).arg(QcBlendWidth::maxChunks).arg(request.blendChunks));
     }
     if (request.changes.isEmpty()) {
         return qcError(u"Nothing to switch"_s);
@@ -165,7 +174,10 @@ QcResult<Converted> convert(const Request &request, const std::shared_ptr<const 
     }
     QList<QcGeneratorSwitch::Target> targets;
     for (const Change &change : request.changes) {
-        targets.append({change.dimension, change.to});
+        targets.append({change.dimension, change.to, request.mode == Mode::Blend ? request.blendChunks : 0});
+    }
+    if (const QcStatus finished = QcGeneratorSwitch::finishPendingSave(request.worldDirectory); !finished) {
+        return qcError(finished.error());
     }
     // Refused before the backup, which would be a copy for nothing.
     if (const QcStatus checked = QcGeneratorSwitch::check(request.worldDirectory, targets, content); !checked) {
@@ -175,6 +187,23 @@ QcResult<Converted> convert(const Request &request, const std::shared_ptr<const 
         return cancelled({});
     }
     return convertLocked(request, targets, content, control);
+}
+
+QcWorldInfo settledInfo(const QString &worldDirectory, const QcWorldInfo &info, const std::shared_ptr<const QcContentRegistry> &content)
+{
+    if (!QFile::exists(QDir(worldDirectory).filePath(QcChunkStore::journalName.toString()))) {
+        return info;
+    }
+    const std::unique_ptr<QLockFile> lock = lockWorld(worldDirectory);
+    if (!lock) {
+        return info;
+    }
+    if (const QcStatus finished = QcGeneratorSwitch::finishPendingSave(worldDirectory); !finished) {
+        qCWarning(lcWorlds) << "Cannot finish the save of" << worldDirectory << "that broke off:" << finished.error();
+        return info;
+    }
+    const QcResult<QcWorldInfo> settled = QcWorldStorage(worldDirectory, content).readInfo();
+    return settled ? *settled : info;
 }
 
 bool isDeclined(const QcWorldInfo &info, const QList<Change> &changes)

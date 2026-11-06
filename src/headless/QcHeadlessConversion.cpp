@@ -59,7 +59,7 @@ QcResult<QcGeneratorUpgrade::Change> changeOf(const QString &directory, const QC
 // The progress line of `step`.
 void printStep(const QcConversionControl::Step &step)
 {
-    static constexpr std::array names{"backup", "survey", "write"};
+    static constexpr std::array names{"backup", "survey", "blend", "write"};
     QcConsole::printLine(u"%1 %2/%3"_s.arg(QLatin1StringView(names.at(static_cast<std::size_t>(step.stage)))).arg(step.done).arg(step.total));
 }
 
@@ -85,8 +85,15 @@ int run(const QCommandLineParser &parser, const Options &options, const std::sha
         return 1;
     }
 
+    bool widthRead = true;
+    const int blendChunks = parser.value(options.convertBlendChunks).toInt(&widthRead);
+    if (!widthRead) {
+        printError(u"--blend-chunks needs a number"_s);
+        return 1;
+    }
+
     const QcConversionControl control{printStep, {}};
-    const QcResult<QcGeneratorUpgrade::Converted> converted = QcGeneratorUpgrade::convert({*directory, {*change}, *mode, {}}, content, control);
+    const QcResult<QcGeneratorUpgrade::Converted> converted = QcGeneratorUpgrade::convert({*directory, {*change}, *mode, blendChunks, {}}, content, control);
     if (!converted) {
         printError(converted.error());
         return 1;
@@ -94,10 +101,11 @@ int run(const QCommandLineParser &parser, const Options &options, const std::sha
     for (const QString &warning : converted->warnings) {
         printError(u"warning: "_s + warning);
     }
-    QcConsole::printLine(u"switched %1 from version %2 to %3, %4 chunks keep version %2; backup %5"_s.arg(change->dimension)
+    QcConsole::printLine(u"switched %1 from version %2 to %3, %4 chunks keep version %2, %5 chunks blend; backup %6"_s.arg(change->dimension)
                              .arg(change->from)
                              .arg(change->to)
                              .arg(converted->keptChunks)
+                             .arg(converted->ringChunks)
                              .arg(converted->backup));
     return 0;
 }

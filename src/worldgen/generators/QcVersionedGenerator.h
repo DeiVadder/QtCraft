@@ -56,6 +56,9 @@ public:
     QcBlockPos spawnPoint() const override { return generatorAt(QcChunkPos{0, 0}).spawnPoint(); }
     QString biomeAt(int x, int z) const override;
     bool isNaturalGround(QcBlockId block) const override { return base().isNaturalGround(block); }
+    [[nodiscard]] QcBlockId waterBlock() const override { return base().waterBlock(); }
+    [[nodiscard]] bool isWaterBlock(QcBlockId block) const override { return base().isWaterBlock(block); }
+    [[nodiscard]] int seaTop() const override { return base().seaTop(); }
     [[nodiscard]] std::optional<QcBlockId> platformBlock() const override { return base().platformBlock(); }
     QcWorldSetup setup() const override { return base().setup(); }
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override { return generatorAt(pos).villageFor(pos); }

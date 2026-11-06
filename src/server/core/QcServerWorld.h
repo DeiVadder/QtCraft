@@ -224,6 +224,8 @@ public:
     /*! Returns the world generator: the one the world was made with, following the version map
         of its dimension (QcVersionedGenerator, decision E-1012). */
     const QcWorldGenerator &generator() const { return *m_generator; }
+    /*! Returns whether the chunk \a pos has an entry in the generator's version map. */
+    [[nodiscard]] bool isVersionMapped(QcChunkPos pos) const { return m_generator->versionMap().versionAt(pos).has_value(); }
     /*! Generates the chunks \a map names with generators of their versions made by \a create
         (QcVersionedGenerator::setVersionMap): only before the first chunk is generated. Returns
         an error then or for a version \a create cannot make. */

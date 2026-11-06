@@ -51,6 +51,8 @@ public:
         /*! The blocks were generated for this arrival, not read (the generator's plans for the
             chunk are made, QcFurnishing asks only then). */
         bool generated = false;
+        /*! The chunk has a stored record of block entities. */
+        bool hasBlockEntityRecord = false;
         /*! What was kept of its block entities and entities. \qcshared */
         QcBlockEntityRecord blockEntities;
         QcEntityRecord entities;

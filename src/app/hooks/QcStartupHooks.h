@@ -88,6 +88,8 @@ public:
     // --join from the main menu: the screenshot waits until the running join of `multiplayer` has
     // ended, however long the system takes to report a refusal (seconds on Windows).
     void holdScreenshotDuringJoin(QcMultiplayerController &multiplayer);
+    // Holds the screenshot while a generator switch runs: a ring takes longer than its frames.
+    void holdScreenshotDuringSwitch();
     // A world start began (the loading screen shows): the screenshot waits until it plays or ends.
     void worldStarting();
     // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.

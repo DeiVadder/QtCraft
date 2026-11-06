@@ -10,9 +10,9 @@ import QtCraft
 
 // The question before a world made with an older world generator opens (decisions E-1013, E-1014):
 // which dimensions are older, what a switch keeps, that a backup comes first; "Keep version" (the
-// default, where the focus starts, with "Don't ask again"), "Switch" with hard borders and, greyed
-// with a tooltip, "Switch with transition" (a later version). While switching, the stage with its
-// bar and "Cancel" (focused; not while writing); after a failure, the reason and "Close".
+// default, where the focus starts, with "Don't ask again"), "Switch" with hard borders and "Switch
+// with transition" with the width of its ring (decision E-1040). While switching, the stage with
+// its bar and "Cancel" (focused; not while writing); after a failure, the reason and "Close".
 // Shown while GeneratorUpgrade.state is not Idle.
 ModalDialog {
     id: dialog
@@ -71,7 +71,7 @@ ModalDialog {
         Label {
             Layout.fillWidth: true
             wrapMode: Text.Wrap
-            text: qsTr("Everything you have explored stays as it is. Only new land comes from the new generator. An edge may appear at the border.")
+            text: qsTr("Everything you have explored stays as it is. Only new land comes from the new generator. A plain switch may leave an edge at the border; a transition blends the land around it.")
             font.pixelSize: Ui.type.body
             color: Theme.text
         }
@@ -79,6 +79,27 @@ ModalDialog {
             Layout.fillWidth: true
             visible: dialog.asking
             text: qsTr("A backup is made first.")
+        }
+        Hint {
+            Layout.fillWidth: true
+            visible: dialog.asking && dialog.upgrade.blendsOverworldOnly
+            text: qsTr("Only the overworld gets a transition; the other dimensions get a plain border.")
+        }
+        SettingSlider {
+            objectName: "generatorBlendChunks"
+            Layout.fillWidth: true
+            visible: dialog.asking
+            label: qsTr("Width of the transition")
+            help: qsTr("Land around the explored area that blends into the new generator")
+            from: dialog.upgrade.minBlendChunks
+            to: dialog.upgrade.maxBlendChunks
+            stepSize: 1
+            snapMode: Slider.SnapAlways
+            value: dialog.upgrade.blendChunks
+            defaultValue: dialog.upgrade.standardBlendChunks
+            defaultText: qsTr("%n chunk(s)", "", dialog.upgrade.standardBlendChunks)
+            valueText: qsTr("%n chunk(s)", "", Math.round(value))
+            onMoved: dialog.upgrade.blendChunks = Math.round(value)
         }
         SettingCheck {
             id: dontAsk
@@ -115,28 +136,12 @@ ModalDialog {
         Item {
             Layout.fillWidth: true
         }
-        // A disabled button takes no hover: the tooltip hangs on the item around it.
-        Item {
+        GameButton {
+            objectName: "generatorBlendButton"
             Layout.bottomMargin: Ui.space.xl
             visible: dialog.asking
-            implicitWidth: blendButton.implicitWidth
-            implicitHeight: blendButton.implicitHeight
-
-            GameButton {
-                id: blendButton
-
-                objectName: "generatorBlendButton"
-                anchors.fill: parent
-                enabled: dialog.upgrade.blendAvailable
-                text: qsTr("Switch with transition")
-            }
-            HoverHandler {
-                id: blendHover
-            }
-            ThemedToolTip {
-                shown: blendHover.hovered
-                text: qsTr("Comes with a later version")
-            }
+            text: qsTr("Switch with transition")
+            onClicked: dialog.upgrade.switchBlend()
         }
         GameButton {
             objectName: "generatorSwitchButton"

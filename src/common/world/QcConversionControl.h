@@ -20,7 +20,9 @@ struct QcConversionControl
         Backup,
         /*! The explored area and the structures reaching out of it are surveyed. */
         Survey,
-        /*! The version map and world.json are written; no stop any more. */
+        /*! The ring of a switch with a transition is generated and blended. */
+        Blend,
+        /*! The version map, the ring and world.json are written; no stop any more. */
         Write
     };
 

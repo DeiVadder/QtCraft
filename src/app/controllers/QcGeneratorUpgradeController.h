@@ -22,7 +22,7 @@ struct QcWorldInfo;
 
 // The question before a saved world made with an older world generator opens (decisions E-1013,
 // E-1014; GameController.library.upgrade): keep its version (the default, never switched by
-// itself), switch hard, or with a transition (87.3, shown but not offered yet); while switching,
+// itself), switch hard, or with a transition of the chosen width; while switching,
 // the backup's and the switch's progress with a way to cancel, then the world opens.
 class QcGeneratorUpgradeController : public QObject
 {
@@ -44,8 +44,13 @@ class QcGeneratorUpgradeController : public QObject
     Q_PROPERTY(bool cancelling READ cancelling NOTIFY progressChanged FINAL)
     // Why the switch failed (state Failed).
     Q_PROPERTY(QString error READ error NOTIFY stateChanged FINAL)
-    // Whether the switch with a transition can be chosen (87.3: not yet).
-    Q_PROPERTY(bool blendAvailable READ blendAvailable CONSTANT FINAL)
+    // The width of the ring of a switch with a transition, in chunks (QcBlendWidth).
+    Q_PROPERTY(int blendChunks READ blendChunks WRITE setBlendChunks NOTIFY blendChunksChanged FINAL)
+    Q_PROPERTY(int minBlendChunks READ minBlendChunks CONSTANT FINAL)
+    Q_PROPERTY(int maxBlendChunks READ maxBlendChunks CONSTANT FINAL)
+    Q_PROPERTY(int standardBlendChunks READ standardBlendChunks CONSTANT FINAL)
+    // A dimension other than the overworld is offered too: it gets a hard border.
+    Q_PROPERTY(bool blendsOverworldOnly READ blendsOverworldOnly NOTIFY stateChanged FINAL)
     // How many worlds askAgain() made ask again; -1 before it ran.
     Q_PROPERTY(int askedAgain READ askedAgain NOTIFY askedAgainChanged FINAL)
 
@@ -62,6 +67,7 @@ public:
     enum class Stage {
         Backup,
         Survey,
+        Blend,
         Write
     };
     Q_ENUM(Stage)
@@ -77,11 +83,17 @@ public:
     QVariantList changes() const;
     QString changesText() const;
     Stage stage() const { return m_stage; }
+    bool blendsOverworldOnly() const;
     QString stageText() const;
     double progress() const { return m_progress; }
     bool cancelling() const { return m_cancel.load(); }
     const QString &error() const { return m_error; }
-    static constexpr bool blendAvailable() { return false; }
+    int blendChunks() const { return m_blendChunks; }
+    // Takes `chunks` as the ring's width; a width QcBlendWidth does not allow is refused with a warning.
+    void setBlendChunks(int chunks);
+    static constexpr int minBlendChunks() { return QcBlendWidth::minChunks; }
+    static constexpr int maxBlendChunks() { return QcBlendWidth::maxChunks; }
+    static constexpr int standardBlendChunks() { return QcBlendWidth::standardChunks; }
     int askedAgain() const { return m_askedAgain; }
     // The language of the dimensions' names (the player's content language).
     void setLanguage(std::function<QString()> language) { m_language = std::move(language); }
@@ -99,6 +111,8 @@ public:
     Q_INVOKABLE void askAgain();
     // Switches with hard borders (QcGeneratorUpgrade::Mode::Hard), then opens the world.
     Q_INVOKABLE void switchHard();
+    // Switches with a ring of blendChunks chunks (QcGeneratorUpgrade::Mode::Blend), then opens the world.
+    Q_INVOKABLE void switchBlend();
     // Stops a running switch; the world stays as it was.
     Q_INVOKABLE void cancel();
     // Closes the message of a failed switch without opening the world.
@@ -111,11 +125,16 @@ signals:
     void stateChanged();
     void progressChanged();
     void askedAgainChanged();
+    void blendChunksChanged();
+    // A real switch began (not a preview).
+    void switchStarted();
     // The world `folder` is to open now (kept or switched).
     void playRequested(const QString &folder);
 
 private:
     void setState(State state);
+    // Runs the switch with `mode` on its thread.
+    void startSwitch(QcGeneratorUpgrade::Mode mode);
     // The progress of `step`, from the switching thread.
     void report(const QcConversionControl::Step &step);
     void setProgress(Stage stage, double progress);
@@ -138,6 +157,7 @@ private:
     double m_progress = 0.0;
     QString m_error;
     int m_askedAgain = -1;
+    int m_blendChunks = QcBlendWidth::standardChunks;
     std::atomic<bool> m_cancel{false};
     std::unique_ptr<QThread> m_thread;
 };

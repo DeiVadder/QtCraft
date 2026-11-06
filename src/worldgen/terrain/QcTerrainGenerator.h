@@ -65,6 +65,10 @@ public:
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
     bool isNaturalGround(QcBlockId block) const override { return m_definitions.naturalGround.contains(block); }
+    /*! Returns the block the sea and lakes are filled with. */
+    [[nodiscard]] QcBlockId waterBlock() const override { return m_definitions.water; }
+    [[nodiscard]] bool isWaterBlock(QcBlockId block) const override { return m_definitions.waterKinds.contains(block); }
+    [[nodiscard]] int seaTop() const override { return m_definitions.seaLevel - 1; }
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
     /*! Returns the villages of the terrain. */
@@ -193,8 +197,6 @@ public:
     /*! Returns the sea level: the sea is filled with water up to the block below it (the water
         surface, \c {seaLevel() - 1}), the first air above the sea. */
     int seaLevel() const { return m_definitions.seaLevel; }
-    /*! Returns the block the sea and lakes are filled with. */
-    QcBlockId waterBlock() const { return m_definitions.water; }
 
 private:
     // The top block of a column with the terrain data `base` (its height possibly moved).

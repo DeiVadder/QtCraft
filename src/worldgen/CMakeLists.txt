@@ -8,6 +8,13 @@ qt_add_library(qc_worldgen ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_worldgen PRIVATE
+    blending/QcBlendedChunk.h blending/QcBlendedChunk.cpp
+    blending/QcBlendField.h blending/QcBlendField.cpp
+    blending/QcBlendGrid.h blending/QcBlendGrid.cpp
+    blending/QcChunkShape.h blending/QcChunkShape.cpp
+    blending/QcRingBlender.h blending/QcRingBlender.cpp
+)
+target_sources(qc_worldgen PRIVATE
     dungeons/QcDungeonGenerator.h dungeons/QcDungeonGenerator.cpp
     dungeons/QcDungeonPlan.h
     dungeons/QcDungeonPlanner.h dungeons/QcDungeonPlanner.cpp

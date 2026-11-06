@@ -7,6 +7,7 @@
 #include "common/world/QcGeneratorVersion.h"
 #include "common/world/QcGeneratorVersionMap.h"
 #include "common/world/QcWorldInfo.h"
+#include "fixtures/QcDirectoryHashes.h"
 #include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerConfig.h"
@@ -20,9 +21,7 @@
 #include "worldgen/villages/QcVillageGenerator.h"
 #include "worlds/QcGeneratorUpgrade.h"
 
-#include <QCryptographicHash>
 #include <QDir>
-#include <QDirIterator>
 #include <QFile>
 #include <QProcess>
 #include <QTemporaryDir>
@@ -52,21 +51,6 @@ QList<QcChunkPos> chunksOf(QcXzRect rect)
         }
     }
     return chunks;
-}
-
-// Every file below `directory` with a hash of its bytes, by path.
-QMap<QString, QByteArray> filesOf(const QString &directory)
-{
-    QMap<QString, QByteArray> files;
-    QDirIterator it(directory, QDir::Files | QDir::Hidden, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        const QString path = it.next();
-        QFile file(path);
-        if (file.open(QIODevice::ReadOnly)) {
-            files.insert(QDir(directory).relativeFilePath(path), QCryptographicHash::hash(file.readAll(), QCryptographicHash::Sha1));
-        }
-    }
-    return files;
 }
 
 // The stages a conversion reported, in their order, each once.
@@ -155,7 +139,7 @@ private:
     // The conversion of the world in `directory` to version 2, its backup below `backups`.
     static QcGeneratorUpgrade::Request request(const QString &directory, const QString &backups)
     {
-        return {directory, {{overworldName, 1, 2}}, QcGeneratorUpgrade::Mode::Hard, backups};
+        return {directory, {{overworldName, 1, 2}}, QcGeneratorUpgrade::Mode::Hard, QcBlendWidth::standardChunks, backups};
     }
 
 private slots:
@@ -181,6 +165,16 @@ private slots:
     }
 
     // The overworld of a world older than the game's generator is offered, nothing else.
+    void onlyAnotherDimensionGetsAHardBorderWarning()
+    {
+        const QcGeneratorUpgrade::Change overworld{overworldName, 1, 2};
+        const QcGeneratorUpgrade::Change nether{QStringLiteral("qtcraft:nether"), 1, 2};
+        QVERIFY(!QcGeneratorUpgrade::reachBeyondOverworld({}));
+        QVERIFY(!QcGeneratorUpgrade::reachBeyondOverworld({overworld}));
+        QVERIFY(QcGeneratorUpgrade::reachBeyondOverworld({nether}));
+        QVERIFY(QcGeneratorUpgrade::reachBeyondOverworld({overworld, nether}));
+    }
+
     void theOfferNamesOutdatedDimensions()
     {
         QcWorldInfo info;
@@ -245,7 +239,7 @@ private slots:
         QTemporaryDir dir;
         QTemporaryDir backups;
         exploredWorld(dir.path(), m_started);
-        const QMap<QString, QByteArray> before = filesOf(dir.path());
+        const QMap<QString, QByteArray> before = QcTestUtil::filesOf(dir.path());
         Recorder recorder;
         const QcConversionControl control{[&recorder](const QcConversionControl::Step &step) { recorder.note(step); }, {}};
         const QcResult<QcGeneratorUpgrade::Converted> converted = QcGeneratorUpgrade::convert(request(dir.path(), backups.path()), m_content, control);
@@ -256,7 +250,7 @@ private slots:
 
         QVERIFY(converted->backup.startsWith(backups.path()));
         QVERIFY(converted->backup.endsWith(QcGeneratorUpgrade::backupLabel(2)));
-        QCOMPARE(filesOf(converted->backup), before);
+        QCOMPARE(QcTestUtil::filesOf(converted->backup), before);
         QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->generatorVersion, 2);
         QVERIFY(QFile::exists(QDir(dir.path()).filePath(QcVersionMapFile::fileName.toString())));
         QVERIFY(QcGeneratorUpgrade::outdatedIn(*QcWorldStorage(dir.path(), m_content).readInfo(), *m_content).isEmpty());
@@ -270,29 +264,30 @@ private slots:
             QTemporaryDir dir;
             QTemporaryDir backups;
             exploredWorld(dir.path(), m_started);
-            const QMap<QString, QByteArray> before = filesOf(dir.path());
+            const QMap<QString, QByteArray> before = QcTestUtil::filesOf(dir.path());
             bool stop = false;
             const QcConversionControl control{[&stop, at](const QcConversionControl::Step &step) { stop = stop || step.stage == at; },
                                               [&stop] { return stop; }};
             const QcResult<QcGeneratorUpgrade::Converted> converted = QcGeneratorUpgrade::convert(request(dir.path(), backups.path()), m_content, control);
             QVERIFY2(converted.has_value(), qcErrorText(converted).constData());
             QVERIFY(converted->cancelled);
-            QCOMPARE(filesOf(dir.path()), before);
+            QCOMPARE(QcTestUtil::filesOf(dir.path()), before);
             QVERIFY(QDir(backups.path()).entryList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden).isEmpty());
         }
     }
 
-    // An open world, the transition (until 87.3) and nothing to switch are refused with the world
+    // An open world, a ring of a width not allowed and nothing to switch are refused with the world
     // unchanged and no backup made.
     void refusalsChangeNothing()
     {
         QTemporaryDir dir;
         QTemporaryDir backups;
         exploredWorld(dir.path(), m_started);
-        const QMap<QString, QByteArray> before = filesOf(dir.path());
+        const QMap<QString, QByteArray> before = QcTestUtil::filesOf(dir.path());
         QcGeneratorUpgrade::Request blend = request(dir.path(), backups.path());
         blend.mode = QcGeneratorUpgrade::Mode::Blend;
-        QVERIFY(QcGeneratorUpgrade::convert(blend, m_content, {}).error().contains(u"later version"_s));
+        blend.blendChunks = QcBlendWidth::maxChunks + 1;
+        QVERIFY(QcGeneratorUpgrade::convert(blend, m_content, {}).error().contains(u"chunks wide"_s));
         QcGeneratorUpgrade::Request none = request(dir.path(), backups.path());
         none.changes.clear();
         QVERIFY(!QcGeneratorUpgrade::convert(none, m_content, {}).has_value());
@@ -301,7 +296,7 @@ private slots:
             QVERIFY(QcGeneratorUpgrade::convert(request(dir.path(), backups.path()), m_content, {}).error().contains(u"is open"_s));
             QVERIFY(world->save().has_value());
         }
-        QCOMPARE(filesOf(dir.path()).keys(), before.keys());
+        QCOMPARE(QcTestUtil::filesOf(dir.path()).keys(), before.keys());
         QVERIFY(QDir(backups.path()).entryList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden).isEmpty());
     }
 
@@ -407,8 +402,23 @@ private slots:
             qInfo().noquote() << process.readAllStandardOutput() << process.readAllStandardError();
             return process.exitStatus() == QProcess::NormalExit ? process.exitCode() : -1;
         };
-        QCOMPARE(run({u"--mode"_s, u"blend"_s}), 1);
+        QCOMPARE(run({u"--mode"_s, u"blend"_s, u"--blend-chunks"_s, u"1"_s}), 1);
         QCOMPARE(QcWorldStorage(directory, m_content).readInfo()->generatorVersion, 1);
+
+        // A transition in a world of its own: the ring is stored and the version switched.
+        QTemporaryDir blendData;
+        const QString blendedWorld = QDir(blendData.path()).filePath(u"worlds/Old"_s);
+        QVERIFY(QDir().mkpath(blendedWorld));
+        exploredWorld(blendedWorld, m_started);
+        QProcess blended;
+        blended.start(QStringLiteral(QTCRAFT_HEADLESS_PATH), {u"--data-dir"_s, blendData.path(), u"--no-mods"_s, u"--no-log-file"_s, u"--convert-generator"_s,
+                                                              u"Old"_s, u"--mode"_s, u"blend"_s, u"--blend-chunks"_s, u"2"_s});
+        QVERIFY(blended.waitForFinished(240000));
+        QCOMPARE(blended.exitCode(), 0);
+        QVERIFY(blended.readAllStandardOutput().contains("chunks blend"));
+        QCOMPARE(QcWorldStorage(blendedWorld, m_content).readInfo()->generatorVersion, 2);
+        QVERIFY(QDir(blendedWorld).exists(u"regions"_s));
+
         QCOMPARE(run({u"--to"_s, u"2"_s, u"--mode"_s, u"hard"_s}), 0);
         QCOMPARE(QcWorldStorage(directory, m_content).readInfo()->generatorVersion, 2);
         const QDir backups(QDir(data.path()).filePath(u"backups"_s));

@@ -55,7 +55,7 @@ set(qc_concurrency_tests
     test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_draw_client test_effects_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
-    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_generator_upgrade test_chunk_unloading test_chunk_tools
+    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_generator_upgrade test_generator_blend test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
     test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_web_handbook)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
@@ -69,6 +69,8 @@ set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_server_log test_headless_cli test_generator_upgrade PROPERTIES PROCESSORS 2)
+# Its conversions run on up to eight threads.
+set_tests_properties(test_generator_blend PROPERTIES PROCESSORS 8)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
 # together (known costs first), or where the next stage builds beside the run: test_light_engine
@@ -97,6 +99,7 @@ set_tests_properties(test_coastal_towers test_monster_spawning PROPERTIES COST 9
 set_tests_properties(test_biome_spawning PROPERTIES COST 80)
 set_tests_properties(test_rivers PROPERTIES COST 240)
 set_tests_properties(test_river_deltas PROPERTIES COST 250)
+set_tests_properties(test_generator_blend PROPERTIES COST 220)
 set_tests_properties(test_climate_order PROPERTIES COST 110)
 set_tests_properties(test_flower_valley PROPERTIES COST 120)
 set_tests_properties(test_cold_edges test_sand_golems PROPERTIES COST 80)

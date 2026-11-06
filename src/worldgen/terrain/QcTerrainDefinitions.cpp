@@ -396,6 +396,17 @@ QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes
     return ground;
 }
 
+// Water and what it freezes to in `biomes` and at their cold edges (`ice`).
+QSet<QcBlockId> waterKindsOf(const QList<QcTerrainDefinitions::Biome> &biomes, QcBlockId water, QcBlockId ice)
+{
+    QSet<QcBlockId> kinds{water, ice};
+    for (const QcTerrainDefinitions::Biome &biome : biomes) {
+        kinds.insert(biome.frozenWater);
+    }
+    kinds.remove(qcAirBlockId);
+    return kinds;
+}
+
 // The chance of any giant tree per cell of the biome.
 double giantChanceOf(const QcTerrainDefinitions::Biome &biome)
 {
@@ -503,6 +514,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     }
 
     naturalGround = naturalGroundOf(biomes, stone, water);
+    waterKinds = waterKindsOf(biomes, water, coldEdges.ice);
     loader.warnUnknownBiome(biomes, terrain.vegetationBiome);
 
     ores = oresOf(loader, content, stone, seed);

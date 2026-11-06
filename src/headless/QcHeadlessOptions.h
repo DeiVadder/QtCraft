@@ -84,7 +84,8 @@ struct Options
                                         u"(decision E-1014): explored chunks and structures they started keep their version, a backup comes first."_s,
                                         u"world"_s};
     QCommandLineOption convertTo{u"to"_s, u"Generator version of --convert-generator (default: the newest)."_s, u"version"_s};
-    QCommandLineOption convertMode{u"mode"_s, u"Border of --convert-generator: hard (blend comes later)."_s, u"mode"_s, u"hard"_s};
+    QCommandLineOption convertMode{u"mode"_s, u"Border of --convert-generator: hard or blend."_s, u"mode"_s, u"hard"_s};
+    QCommandLineOption convertBlendChunks{u"blend-chunks"_s, u"Width of the ring of --mode blend in chunks (2 to 16, default 6)."_s, u"chunks"_s, u"6"_s};
     QCommandLineOption convertDimension{u"dimension"_s, u"Dimension of --convert-generator (default: qtcraft:overworld)."_s, u"id"_s,
                                         u"qtcraft:overworld"_s};
     QCommandLineOption tour{u"showcase-tour"_s,
@@ -155,7 +156,7 @@ struct Options
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
-        parser.addOptions({convertGenerator, convertTo, convertMode, convertDimension});
+        parser.addOptions({convertGenerator, convertTo, convertMode, convertBlendChunks, convertDimension});
         parser.addOptions(diagnostics.all());
         parser.addOption(writeDiagnostics);
     }

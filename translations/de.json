@@ -1634,7 +1634,8 @@
     "Keep version %1": "Version %1 behalten",
     "Keep versions": "Versionen behalten",
     "“%1” comes from an older world generator (%2).": "„%1“ stammt von einem älteren Weltgenerator (%2).",
-    "Everything you have explored stays as it is. Only new land comes from the new generator. An edge may appear at the border.": "Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. An der Grenze kann eine Kante entstehen.",
+    "Everything you have explored stays as it is. Only new land comes from the new generator. A plain switch may leave an edge at the border; a transition blends the land around it.": "Alles, was du erkundet hast, bleibt, wie es ist. Nur neues Land kommt vom neuen Generator. Beim einfachen Umstellen kann an der Grenze eine Kante entstehen; ein Übergang mischt das Land drumherum.",
+    "Only the overworld gets a transition; the other dimensions get a plain border.": "Nur die Oberwelt bekommt einen Übergang; die anderen Dimensionen bekommen eine einfache Grenze.",
     "A backup is made first.": "Vorher wird eine Sicherung angelegt.",
     "Don't ask again": "Nicht mehr fragen",
     "Comes with a later version": "Kommt in einer späteren Version",
@@ -1645,5 +1646,8 @@
     "The question comes back in %n world(s).": [
         "Die Frage kommt in %n Welt wieder.",
         "Die Frage kommt in %n Welten wieder."
-    ]
+    ],
+    "Width of the transition": "Breite des Übergangs",
+    "Land around the explored area that blends into the new generator": "Land um das erkundete Gebiet, das in den neuen Generator übergeht",
+    "Blending the land around it into the new version …": "Das Land rundherum wird in die neue Version überblendet …"
 }

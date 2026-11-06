@@ -11,11 +11,13 @@
 
 #include <QVariantMap>
 
+
 using namespace Qt::StringLiterals;
 
 // The progress of the switching thread goes over by number.
 static_assert(static_cast<int>(QcGeneratorUpgradeController::Stage::Backup) == static_cast<int>(QcConversionControl::Stage::Backup));
 static_assert(static_cast<int>(QcGeneratorUpgradeController::Stage::Survey) == static_cast<int>(QcConversionControl::Stage::Survey));
+static_assert(static_cast<int>(QcGeneratorUpgradeController::Stage::Blend) == static_cast<int>(QcConversionControl::Stage::Blend));
 static_assert(static_cast<int>(QcGeneratorUpgradeController::Stage::Write) == static_cast<int>(QcConversionControl::Stage::Write));
 
 QcGeneratorUpgradeController::QcGeneratorUpgradeController(std::function<std::shared_ptr<const QcContentRegistry>()> content, QObject *parent)
@@ -65,10 +67,17 @@ QString QcGeneratorUpgradeController::stageText() const
         return tr("Backing up the world …");
     case Stage::Survey:
         return tr("Surveying the explored land and its structures …");
+    case Stage::Blend:
+        return tr("Blending the land around it into the new version …");
     case Stage::Write:
         return tr("Writing the new version …");
     }
     return {};
+}
+
+bool QcGeneratorUpgradeController::blendsOverworldOnly() const
+{
+    return QcGeneratorUpgrade::reachBeyondOverworld(m_changes);
 }
 
 bool QcGeneratorUpgradeController::offer(const QString &folder, const QString &directory, const QcWorldInfo &info)
@@ -81,8 +90,9 @@ bool QcGeneratorUpgradeController::offer(const QString &folder, const QString &d
         return false;
     }
     const std::shared_ptr<const QcContentRegistry> content = m_content();
-    QList<QcGeneratorUpgrade::Change> changes = QcGeneratorUpgrade::outdatedIn(info, *content);
-    if (changes.isEmpty() || QcGeneratorUpgrade::isDeclined(info, changes)) {
+    const QcWorldInfo settled = QcGeneratorUpgrade::settledInfo(directory, info, content);
+    QList<QcGeneratorUpgrade::Change> changes = QcGeneratorUpgrade::outdatedIn(settled, *content);
+    if (changes.isEmpty() || QcGeneratorUpgrade::isDeclined(settled, changes)) {
         return false;
     }
     m_folder = folder;
@@ -111,7 +121,32 @@ void QcGeneratorUpgradeController::keep(bool forGood)
     emit playRequested(m_folder);
 }
 
+void QcGeneratorUpgradeController::setBlendChunks(int chunks)
+{
+    if (!QcBlendWidth::isValid(chunks)) {
+        qCWarning(lcGame) << "Generator switch: a transition of" << chunks << "chunks refused; it takes" << QcBlendWidth::minChunks << "to"
+                          << QcBlendWidth::maxChunks;
+        return;
+    }
+    // The same width again changes nothing.
+    if (chunks == m_blendChunks) {
+        return;
+    }
+    m_blendChunks = chunks;
+    emit blendChunksChanged();
+}
+
 void QcGeneratorUpgradeController::switchHard()
+{
+    startSwitch(QcGeneratorUpgrade::Mode::Hard);
+}
+
+void QcGeneratorUpgradeController::switchBlend()
+{
+    startSwitch(QcGeneratorUpgrade::Mode::Blend);
+}
+
+void QcGeneratorUpgradeController::startSwitch(QcGeneratorUpgrade::Mode mode)
 {
     if (state() != State::Asking) {
         qCWarning(lcGame) << "Generator switch: switch ignored in state" << state();
@@ -122,7 +157,7 @@ void QcGeneratorUpgradeController::switchHard()
     setProgress(Stage::Backup, -1.0);
     setState(State::Converting);
 
-    const QcGeneratorUpgrade::Request request{m_directory, m_changes, QcGeneratorUpgrade::Mode::Hard, {}};
+    const QcGeneratorUpgrade::Request request{m_directory, m_changes, mode, blendChunks(), {}};
     const QcConversionControl control{[this](const QcConversionControl::Step &step) { report(step); }, [this] { return m_cancel.load(); }};
     m_thread.reset(QThread::create([this, request, control, content = m_content()] {
         const QcResult<QcGeneratorUpgrade::Converted> result = QcGeneratorUpgrade::convert(request, content, control);
@@ -130,6 +165,7 @@ void QcGeneratorUpgradeController::switchHard()
     }));
     m_thread->setObjectName(u"generator switch"_s);
     m_thread->start();
+    emit switchStarted();
 }
 
 void QcGeneratorUpgradeController::askAgain()

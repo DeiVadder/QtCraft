@@ -67,6 +67,7 @@ QcChunkIo::Arrival QcChunkIo::decodeChunk(QcChunkPos pos)
             return arrival;
         }
         arrival.blockEntities = std::move(*record);
+        arrival.hasBlockEntityRecord = true;
     }
     arrival.blockEntities.chunk = pos;
     if (const auto &entities = data[static_cast<std::size_t>(Kind::Entities)]) {

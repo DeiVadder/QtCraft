@@ -48,6 +48,17 @@ public:
         Q_UNUSED(block);
         return true;
     }
+    /*! Returns the block water consists of (decision E-1041); air for generators without water. */
+    [[nodiscard]] virtual QcBlockId waterBlock() const { return qcAirBlockId; }
+    /*! Returns whether \a block is water or ice on water (decision E-1041). */
+    [[nodiscard]] virtual bool isWaterBlock(QcBlockId block) const
+    {
+        Q_UNUSED(block);
+        return false;
+    }
+    /*! Returns the height of the highest water block of the sea (decision E-1041); -1 for
+        generators without a sea. */
+    [[nodiscard]] virtual int seaTop() const { return -1; }
     /*! Returns the block of the generator's own spawn platform; the server puts one under a
         spawn without any ground (decision E-288). Without one it takes stone. */
     [[nodiscard]] virtual std::optional<QcBlockId> platformBlock() const { return std::nullopt; }

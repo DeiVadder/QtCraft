@@ -244,6 +244,8 @@ struct QcTerrainDefinitions
     /*! Solid blocks the terrain itself is made of (stone and every biome's ground layers, no
         features, liquids or ice): where a player may spawn. */
     QSet<QcBlockId> naturalGround;
+    /*! Water and what it freezes to. */
+    QSet<QcBlockId> waterKinds;
     /*! Whether any biome uses ridges or terraces (their noise is skipped otherwise).
         \qcshared */
     bool anyRidges = false;

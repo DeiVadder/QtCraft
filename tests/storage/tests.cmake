@@ -23,4 +23,5 @@ qc_add_test(test_generator_switch SOURCES storage/test_generator_switch.cpp LIBR
 qc_add_test(test_generator_upgrade SOURCES storage/test_generator_upgrade.cpp LIBRARIES qc_server qc_worlds TIMEOUT 300)
 target_compile_definitions(test_generator_upgrade PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_generator_upgrade qtcraft-headless)
+qc_add_test(test_generator_blend SOURCES storage/test_generator_blend.cpp LIBRARIES qc_server qc_worlds TIMEOUT 900)
 qc_add_test(test_world_details SOURCES storage/test_world_details.cpp fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)

@@ -5,10 +5,10 @@
 # The question before a world of an older generator version opens (decisions E-1013, E-1014),
 # offscreen in German:
 # - continuing a world of version 1 asks instead of playing: "Keep version 1" (where the focus
-#   starts) and "Switch" shown, "Switch with transition" shown but disabled; the world does not
-#   start;
+#   starts), "Switch", "Switch with transition" and its width shown; the world does not start;
 # - "Keep version 1" with "Don't ask again" plays the world and stores the answer in world.json; the
 #   next start plays it without asking;
+# - "Switch with transition" stores a ring (E-1040) and plays the world;
 # - "Switch" backs the world up, switches it to the current version and plays it;
 # - the progress of a switch as its hook shows it (upgrade:<stage>,<share>), the focus on "Cancel";
 #   while writing "Cancel" is disabled.
@@ -28,7 +28,7 @@ run() {
     dir=$2
     shift 2
     QTCRAFT_WINDOW_SIZE=1280x720 QTCRAFT_LAYOUT_CHECK=1 QTCRAFT_OFFSCREEN=1 QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$dir" \
-        QTCRAFT_LOG_ITEMS=generatorKeepButton,generatorSwitchButton,generatorBlendButton,generatorCancelButton,generatorDontAsk \
+        QTCRAFT_LOG_ITEMS=generatorKeepButton,generatorSwitchButton,generatorBlendButton,generatorBlendChunks,generatorCancelButton,generatorDontAsk \
         QTCRAFT_SCREENSHOT="$DATA/$name.png" QTCRAFT_SCREENSHOT_FRAMES=40 \
         perl -e 'alarm shift; exec @ARGV or die' 120 "$APP" --no-audio --no-mods --screen builtin --background --language de "$@" \
         >"$DATA/$name.log" 2>&1
@@ -63,6 +63,20 @@ expect() {
     esac
 }
 
+# expect_switched <name> <data directory>: the overworld's version in world.json is 2 (the line of
+# the block "generator" itself, not those of its dimensions) and the version map is written.
+expect_switched() {
+    if ! sed -n '/"generator": {/,$p' "$2/worlds/Alt/world.json" | grep -q '^        "version": 2,\{0,1\}$'; then
+        echo "$1: the world was not switched:"
+        sed -n '/"generator": {/,/^    }/p' "$2/worlds/Alt/world.json"
+        failed=1
+    fi
+    if [ ! -s "$2/worlds/Alt/generatorversions.qcv" ]; then
+        echo "$1: the switched world has no version map"
+        failed=1
+    fi
+}
+
 # fresh <name>: a copy of the saved world of version 1 for one run.
 fresh() {
     rm -rf "$DATA/world-$1" && cp -R "$saved" "$DATA/world-$1" && echo "$DATA/world-$1"
@@ -84,7 +98,8 @@ fi
 if run prompt "$(fresh prompt)" --overlay "@300 click:continueButton"; then
     expect prompt generatorKeepButton 'visible yes text "Version 1 behalten" focused'
     expect prompt generatorSwitchButton 'visible yes'
-    expect prompt generatorBlendButton 'visible yes text "Mit Übergang umstellen" disabled'
+    expect prompt generatorBlendButton 'visible yes text "Mit Übergang umstellen"'
+    expect prompt generatorBlendChunks 'visible yes'
     expect prompt generatorDontAsk 'visible yes text "Nicht mehr fragen"'
     expect prompt generatorCancelButton 'visible no'
     if grep -q 'World start: playable after' "$DATA/prompt.log"; then
@@ -115,15 +130,25 @@ if run keep "$kept" --overlay "@300 click:continueButton" --overlay "@800 click:
     fi
 fi
 
+# "Switch with transition" stores a ring around the explored land and plays the world. The hook
+# holds the screenshot while a switch runs, then the world's start holds it.
+blended=$(fresh blend)
+if run blend "$blended" --overlay "@300 click:continueButton" --overlay "@800 click:generatorBlendButton" --overlay "@1000 "; then
+    expect_switched blend "$blended"
+    if [ -z "$(ls "$blended/worlds/Alt/regions" 2>/dev/null)" ]; then
+        echo "blend: no ring in the regions of the world"
+        failed=1
+    fi
+    if ! grep -q 'World start: playable after' "$DATA/blend.log"; then
+        echo "blend: the world did not start after the switch"
+        failed=1
+    fi
+fi
+
 # "Switch" switches the world, backs it up and plays it.
 switched=$(fresh switch)
 if run switch "$switched" --overlay "@300 click:continueButton" --overlay "@800 click:generatorSwitchButton" --overlay "@6000 "; then
-    # The version stands in the block "generator" of world.json.
-    if ! sed -n '/"generator": {/,/}/p' "$switched/worlds/Alt/world.json" | grep -q '"version": 2'; then
-        echo "switch: the world was not switched:"
-        sed -n '/"generator": {/,/}/p' "$switched/worlds/Alt/world.json"
-        failed=1
-    fi
+    expect_switched switch "$switched"
     if [ -z "$(ls "$switched/backups" 2>/dev/null | grep before-generator-2)" ]; then
         echo "switch: no backup before the switch:"
         ls "$switched/backups" 2>&1
@@ -142,7 +167,7 @@ if run progress "$(fresh progress)" --overlay "@300 upgrade:1,0.4"; then
     expect progress generatorKeepButton 'visible no'
 fi
 # While writing, the switch cannot be cancelled.
-if run writing "$(fresh writing)" --overlay "@300 upgrade:2,0.5"; then
+if run writing "$(fresh writing)" --overlay "@300 upgrade:3,0.5"; then
     expect writing generatorCancelButton 'visible yes text "Abbrechen" disabled'
 fi
 

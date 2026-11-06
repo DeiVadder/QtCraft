@@ -227,14 +227,17 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         // Spawners go on with their kinds and delays; a chunk not furnished yet whose blocks were just
         // generated gets the generator's chest loot and spawner kinds (decision E-520). Blocks read
         // from disk were generated and furnished when they first came; asking again would plan
-        // regions on the tick thread for nothing.
+        // regions on the tick thread for nothing. Only the chunks a generator switch stored in its
+        // ring (decision E-1042) come without ever having been furnished: blocks in the version
+        // map and no record of block entities. furnish() ends early where nothing could be put in.
         m_state.world().spawners().restore(arrival.blockEntities.spawners, *chunk);
         m_state.world().campfires().restore(arrival.blockEntities.campfires, *chunk);
         m_state.world().signs().restore(arrival.blockEntities.signs, *chunk);
         if (arrival.blockEntities.furnished) {
             m_state.world().blockEntityExtras().noteFurnished(pos);
         }
-        if (arrival.generated) {
+        const bool storedByASwitch = !arrival.hasBlockEntityRecord && m_state.world().isVersionMapped(pos);
+        if (arrival.generated || storedByASwitch) {
             QcFurnishing::furnish(m_state, pos);
         }
     }

@@ -18,6 +18,7 @@ qc_add_test(test_device_loss_policy SOURCES controls/test_device_loss_policy.cpp
 # The display settings with window modes, the fullscreen key and the frame limit on an offscreen
 # window (decision E-835).
 qc_add_test(test_display_settings SOURCES controls/test_display_settings.cpp LIBRARIES qc_app_core)
+qc_add_test(test_generator_upgrade_controller SOURCES controls/test_generator_upgrade_controller.cpp LIBRARIES qc_app_core)
 # The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
 # Enter switches, the arrow keys choose segments (decision E-845).
 qc_add_test(test_setting_controls SOURCES controls/test_setting_controls.cpp LIBRARIES qc_app_qml)

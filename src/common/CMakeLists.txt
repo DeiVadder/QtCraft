@@ -333,6 +333,7 @@ target_sources(qc_common PRIVATE
     protocol/QcWorldMessages.h
 )
 target_sources(qc_common PRIVATE
+    world/QcBlendWidth.h
     world/QcBlockAccess.h
     world/QcBoatBody.h
     world/QcChunk.h world/QcChunk.cpp
