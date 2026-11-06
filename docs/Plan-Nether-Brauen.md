@@ -125,6 +125,7 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 | 84.6b | Bastion-Ruine: Struktur in mehreren Formen (Brücke, Stallungen, Schatzkammer, Wohnbereich), Schwarzstein-Familie, Gold, Piglin-Rohlinge, Truhen-Beute (Netherite-Schrott optional nach 84.8, Schmiedevorlage), Lava-Brücken | 84.6a | L |
 | 84.7a | Erreichbarkeitsprüfung `test_progression_reachability` (Abschnitt oben): Graph aus Registry und Generator-Ausgabe, Ziele als Daten, Meldung des fehlenden Schritts; zunächst für die Oberwelt (muss heute schon grün sein) und den Nether | 84.6a | M |
 | 84.7b | Nether-Start: Weltoption `startDimension`, Spawn-Suche im Nether (Spawn-Hilfe), Respawn ohne Anker, Seelenanker (Weinender Obsidian + Glowstone, Laden mit Glowstone, explodiert in der Oberwelt), explodierende Betten in Dimensionen mit dem Feld; Erreichbarkeitsprüfung für den Nether-Start grün; Handbuch „Im Nether beginnen“; Fortschritte; `QcNetherGenerator::spawnPoint()` beachtet noch nicht, was auf dem Boden gebaut wurde (Review 84.3: von 300 Seeds ohne Station 3 auf Lava, 6 auf Magma, 2 im Feuer), die Spawn-Suche muss das prüfen; Schildtext: die Tinten kommen auf Karmesin- und Wirrholz schlecht heraus (Standard auf Karmesin 1,89:1, Magenta auf Wirr 1,03:1), Tinte je Holz ist Code, kein Datenwert, offen für später | 84.7a | M |
+| 84.7c | Kartenvorschau für den Nether (Mensch 2026-11-06): die Vorschau beim Anlegen einer Welt (`QcWorldMapPreview`, E-921) bekommt einen Umschalter Oberwelt/Nether. Der Nether hat eine Decke, also keine Draufsicht auf die Oberfläche: Karte der Nether-Biome je Zelle (wie die Oberwelt-Karte) und als Orte Festungen (84.5a) und später Bastionen (84.6b), mit dem Hinweis auf den Maßstab 1:8 zur Oberwelt; Texte übersetzt, Wahl bleibt beim Wechsel der Seeds erhalten; mit `startDimension` aus 84.7b zeigt sie zuerst die Startdimension | 84.5a | S |
 | 84.8 | Netherite: Antiker Schrott (tief, explosionsfest), Netherite-Schrott und -Barren, Schmiedetisch mit Schmiedevorlage (Diamant → Netherite für Werkzeuge und Rüstung), Netherite-Block (für 86.2), Items brennen nicht in Lava; Beute in Bastionen | 84.6b | M |
 | 84.9 | Atmosphäre: prozedurale Umgebungsgeräusche und Musik je Nether-Biom, Partikel (Asche, Sporen, Seelen, tropfende Lava und Tränen am Weinenden Obsidian), Nebel je Biom, Klänge der neuen Blöcke und Wesen nachziehen | 84.3, 84.4 | M |
 
@@ -173,7 +174,7 @@ Höchstens drei Agenten zugleich (Regel des Menschen).
 2. 83.1b, danach 83.2, danach 83.3. Parallel dazu 85.1 und 84.1 zu Ende.
 3. Nach 83.3: 84.2, dann 84.3 und 84.4 (parallel möglich, beide brauchen nur den Generator), 84.5a.
 4. 84.5b, dann 85.2 (Brauen hängt am Lohenstaub). Parallel: 84.6a.
-5. 84.7a, 84.7b (Nether-Start), parallel 85.3 und 84.6b.
+5. 84.7a, 84.7b (Nether-Start), 84.7c (Kartenvorschau, schon ab 84.5a möglich), parallel 85.3 und 84.6b.
 6. 85.4, 84.8, 84.9.
 7. 86.1, dann 86.2. Etappe 87 kann ab 83.1a parallel laufen (87.1 nach 83.1a, da beide Weltspeicher und Generator-Version anfassen; nicht gleichzeitig mit 83.1a).
 8. Meilenstein: Benchmark, dann voller Verify mit `--release`, Release 1.1.0; dabei `lastFrozen` des Nethers auf `current` setzen. Vorher kein Zwischen-Release: Pakete landen in `dev`, `main` bekommt erst 1.1.0.
