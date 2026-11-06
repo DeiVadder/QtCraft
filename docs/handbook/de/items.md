@@ -1284,7 +1284,7 @@ Frische Milch einer Kuh. Mit der Benutzen-Taste getrunken, beendet sie alle Stat
 
 ### <a id="item-qtcraft-name_tag"></a>Namensschild
 
-Nicht herstellbar; zu finden in Truhen von Verliesen, Minen und Tempeln oder bei Dorfbewohnern zu kaufen. Am Amboss beschriften und dann auf ein Wesen anwenden: der Name steht über ihm, und ein benanntes Wesen verschwindet nie. Ein benannter Sandgolem bewacht seinen Keller nicht mehr: er bleibt für immer in der Welt, und der Keller bekommt einen neuen Wächter.
+Nicht herstellbar; zu finden in Truhen von Verliesen, Minen, Tempeln und Dörfern oder bei Dorfbewohnern zu kaufen. Am Amboss beschriften und dann auf ein Wesen anwenden: der Name steht über ihm, und ein benanntes Wesen verschwindet nie. Ein benannter Sandgolem bewacht seinen Keller nicht mehr: er bleibt für immer in der Welt, und der Keller bekommt einen neuen Wächter.
 
 | | |
 |---|---|

@@ -29,5 +29,13 @@
         ["         ", "ZZZZZZZZZ", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "SSSSSSSSS", "         "],
         ["         ", "         ", "ZZZZZZZZZ", "CCCCCCCCC", "SSSSSSSSS", "         ", "         "],
         ["         ", "         ", "         ", "         ", "         ", "         ", "         "]
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [3, 1, 1], "table": "village_smith" }
+            ]
+        }
     ]
 }

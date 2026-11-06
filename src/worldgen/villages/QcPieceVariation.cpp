@@ -31,7 +31,7 @@ QcPieceVariation::Resolved QcPieceVariation::resolve(const QcStructureDefinition
     QcPieceVariation variation;
     variation.m_warnings = base->warnings();
     variation.m_base = std::make_shared<const QcStructure>(std::move(*base));
-    if (definition.choices.isEmpty() && definition.parts.isEmpty()) {
+    if (definition.choices.isEmpty() && definition.parts.isEmpty() && definition.generatorChanges.isEmpty()) {
         return variation;
     }
 
@@ -48,6 +48,9 @@ QcPieceVariation::Resolved QcPieceVariation::resolve(const QcStructureDefinition
             options.append(variation.resolveOption(definition, swaps, content));
         }
         variation.m_choices.append(std::move(options));
+    }
+    for (const QcStructureDefinition::VersionChange &change : definition.generatorChanges) {
+        variation.m_versions.append({change.version, variation.resolveOption(definition, change.swaps, content), change.loot});
     }
     variation.m_parts = definition.parts;
     return variation;
@@ -66,7 +69,7 @@ QcPieceVariation::Option QcPieceVariation::resolveOption(const QcStructureDefini
         if (const std::optional<QcBlockId> id = content.stateId(state)) {
             option.states.append({i, *id});
         } else {
-            m_warnings.append(u"structure '%1': unknown block '%2' in a choice"_s.arg(definition.name, state));
+            m_warnings.append(u"structure '%1': unknown block '%2' in a choice or generator change"_s.arg(definition.name, state));
         }
     }
     return option;
@@ -90,9 +93,10 @@ QList<double> QcPieceVariation::partChances() const
     return chances;
 }
 
-QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double()> &random) const
+QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double()> &random, int generatorVersion) const
 {
     Selection selection;
+    selection.generatorVersion = generatorVersion;
     for (const QList<Option> &options : choices()) {
         selection.options.append(std::min(static_cast<int>(options.size()) - 1, static_cast<int>(random() * static_cast<double>(options.size()))));
     }
@@ -102,12 +106,27 @@ QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double(
     return selection;
 }
 
-QcPieceVariation::Selection QcPieceVariation::everything() const
+QcPieceVariation::Selection QcPieceVariation::everything(int generatorVersion) const
 {
     Selection selection;
+    selection.generatorVersion = generatorVersion;
     selection.options.fill(0, choices().size());
     selection.parts.fill(true, parts().size());
     return selection;
+}
+
+QList<QcBlockId> QcPieceVariation::versionStates(int generatorVersion) const
+{
+    QList<QcBlockId> states = m_states;
+    for (const VersionOption &entry : versions()) {
+        if (generatorVersion < entry.version) {
+            continue;
+        }
+        for (const auto &[index, state] : entry.option.states) {
+            states[index] = state;
+        }
+    }
+    return states;
 }
 
 std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &selection) const
@@ -116,7 +135,7 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
         return m_base;
     }
 
-    QList<QcBlockId> states = m_states;
+    QList<QcBlockId> states = versionStates(selection.generatorVersion);
     QHash<QString, QString> mobSwaps;
     for (qsizetype c = 0; c < choices().size() && c < selection.options.size(); ++c) {
         const Option &option = choices()[c][selection.options[c]];
@@ -165,6 +184,11 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
     structure->boats = base.boats;
     structure->spawners = base.spawners;
     structure->loot = base.loot;
+    for (const VersionOption &entry : versions()) {
+        if (selection.generatorVersion >= entry.version) {
+            structure->loot.append(entry.loot);
+        }
+    }
     structure->signs = base.signs;
     structure->hangings = base.hangings;
     structure->guardians = base.guardians;

@@ -436,6 +436,9 @@ void StyleReader::readBuildings()
     if (reads(m_json, u"palette"_s, m_extending)) {
         m_style.palette = nameMap(m_json, u"palette"_s, m_namespace, QcVillageStyleDefinition::maxPaletteEntries, m_reader);
     }
+    if (reads(m_json, u"loot"_s, m_extending)) {
+        m_style.loot = nameMap(m_json, u"loot"_s, m_namespace, QcVillageStyleDefinition::maxPaletteEntries, m_reader);
+    }
     if (reads(m_json, u"look"_s, m_extending)) {
         m_style.look = QcVillagerParser::readLook(u"look"_s, m_namespace, m_reader);
     }

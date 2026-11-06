@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/world/QcGeneratorVersion.h"
 #include "fixtures/QcTestUtil.h"
 #include "villages/QcVillageTestUtil.h"
 #include "worldgen/terrain/QcNoise.h"
@@ -188,7 +189,7 @@ private slots:
         int next = 0;
         const auto random = [&next] { return qcPositionRandom(1234, 0, next++, 0); };
         for (int i = 0; i < draws; ++i) {
-            const QcPieceVariation::Selection selection = variation.choose(random);
+            const QcPieceVariation::Selection selection = variation.choose(random, QcGeneratorVersion::current);
             for (qsizetype p = 0; p < chances.size(); ++p) {
                 built[p] += selection.parts[p] ? 1 : 0;
             }

@@ -1487,7 +1487,7 @@ A minecart that carries a Signal Hopper: it pulls items from a container above i
 
 ### <a id="item-qtcraft-name_tag"></a>Name Tag
 
-Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns. A named sand golem no longer guards its cellar: it stays in the world for good, and the cellar gets a new guardian.
+Cannot be crafted; found in dungeon, mineshaft, temple and village chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns. A named sand golem no longer guards its cellar: it stays in the world for good, and the cellar gets a new guardian.
 
 | | |
 |---|---|

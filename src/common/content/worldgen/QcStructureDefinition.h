@@ -273,6 +273,18 @@ struct QcStructureDefinition
         QList<QHash<QString, QString>> options;
     };
 
+    /*! \brief What worlds of generator version \c {version} and newer build differently: blocks
+        of the palette in place of those as written (\c {swaps}) and further loot chests
+        (\c {loot}). A frozen version keeps the structure as written, and a later version changes
+        it without a copy (decision E-1016). Choices apply on top, keyed by the block as written.
+        \qcfields */
+    struct VersionChange
+    {
+        int version = 0;
+        QHash<QString, QString> swaps;
+        QList<Loot> loot;
+    };
+
     /*! \brief An optional part of the village planner (decision E-404): cells in the structure's
         palette written over its own cells with \c {chance} per placed copy (keep: the
         structure's own cell). */
@@ -330,6 +342,8 @@ struct QcStructureDefinition
         elsewhere it is placed as it is (\c {"choices"}, \c {"parts"}). \qcshared */
     QList<Choice> choices;
     QList<Part> parts;
+    /*! What later generator versions change (\c {"generatorChanges"}, decision E-1016). */
+    QList<VersionChange> generatorChanges;
     /*! Shown as a demo in the showcase world, in the order of \c {showcaseOrder} (then name):
         a \c {"showcase"} object with its \c {"order"}. \qcshared */
     bool showcase = false;

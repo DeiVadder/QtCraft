@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/world/QcGeneratorVersion.h"
 #include "fixtures/QcTestUtil.h"
 #include "villages/QcVillageTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
@@ -161,7 +162,7 @@ private slots:
         QVERIFY(taiga);
         // Every blueprint keeps the spruce look in every choice: the style's palette comes first.
         for (const QcVillageStyle::Blueprint &blueprint : taiga->pieces.front().blueprints) {
-            const std::shared_ptr<const QcStructure> built = blueprint.variation.build(blueprint.variation.everything());
+            const std::shared_ptr<const QcStructure> built = blueprint.variation.build(blueprint.variation.everything(QcGeneratorVersion::current));
             const QcStructure &house = *built;
             bool spruce = false;
             for (const QcBlockId state : house.palette()) {
@@ -314,7 +315,7 @@ private slots:
                     continue;
                 }
                 ++houses;
-                QcPieceVariation::Selection selection = blueprint.variation.everything();
+                QcPieceVariation::Selection selection = blueprint.variation.everything(QcGeneratorVersion::current);
                 const QList<int> counts = blueprint.variation.optionCounts();
                 for (int option = 0; option < 4; ++option) {
                     for (qsizetype c = 0; c < counts.size(); ++c) {
@@ -341,7 +342,7 @@ private slots:
             });
             QVERIFY(tower != style->pieces.cend());
             const QcPieceVariation &variation = tower->first().variation;
-            QcPieceVariation::Selection selection = variation.everything();
+            QcPieceVariation::Selection selection = variation.everything(QcGeneratorVersion::current);
             for (int option = 0; option < 2; ++option) {
                 selection.options[0] = option;
                 const std::shared_ptr<const QcStructure> structure = variation.build(selection);

@@ -94,7 +94,7 @@ private:
     // `floor`: none of them buried, so every opening at the floor leads out.
     [[nodiscard]] bool levelsBeside(QcXzRect rect, int floor, int blend) const;
     // The structure of the copy in the region: the kind's own, or its variation drawn from the region.
-    static std::shared_ptr<const QcStructure> structureOf(const Kind &kind, int regionX, int regionZ);
+    [[nodiscard]] std::shared_ptr<const QcStructure> structureOf(const Kind &kind, int regionX, int regionZ) const;
 
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;

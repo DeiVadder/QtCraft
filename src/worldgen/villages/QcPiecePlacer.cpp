@@ -405,7 +405,7 @@ const QcStructurePlacement &QcPiecePlacer::addPiece(QcVillageDraft &draft, const
     std::shared_ptr<const QcStructure> structure = blueprint.structure();
     QList<QcVillageSpot> spots = blueprint.spots;
     if (blueprint.variation.varies()) {
-        structure = blueprint.variation.build(blueprint.variation.choose([&draft] { return draft.variantRandom(); }));
+        structure = blueprint.variation.build(blueprint.variation.choose([&draft] { return draft.variantRandom(); }, m_terrain.version()));
         spots = m_styles.spotsOf(*structure).spots;
     }
     if (blueprint.fields && !draft.style->crops.isEmpty()) {

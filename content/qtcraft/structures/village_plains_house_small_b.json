@@ -64,5 +64,13 @@
                 ["rr rr"]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [3, 1, 4], "table": "village_house_plains" }
+            ]
+        }
     ]
 }

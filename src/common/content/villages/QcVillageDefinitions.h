@@ -275,6 +275,10 @@ struct QcVillageStyleDefinition
     /*! Block name -> block name, applied to every piece of the style (states keep their
         properties where the new block has them), so a mod can add a style from the same houses. */
     QHash<QString, QString> palette;
+    /*! Loot table name -> loot table name, applied to the chests a generator version adds to
+        the style's pieces (\c {"loot"}, decision E-1017), so that a style sharing the houses of
+        another one has its own finds. */
+    QHash<QString, QString> loot;
     /*! What its villagers wear (decision E-411); unset: the default look of their species. */
     QcVillagerLook look;
     /*! The creature kind living in its villages (a mob with "villager"); empty: the settings'. */

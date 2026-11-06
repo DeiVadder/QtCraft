@@ -1,0 +1,25 @@
+{
+    "name": "village_house_desert",
+    "pools": [
+        {
+            "rolls": [3, 6],
+            "entries": [
+                { "item": "bread", "weight": 25, "count": [1, 3] },
+                { "item": "wheat", "weight": 15, "count": [2, 5] },
+                { "item": "melon_slice", "weight": 15, "count": [1, 4] },
+                { "item": "cactus", "weight": 15, "count": [1, 3] },
+                { "item": "dead_bush", "weight": 10, "count": [1, 3] },
+                { "item": "sand", "weight": 10, "count": [2, 6] },
+                { "item": "clay_ball", "weight": 12, "count": [2, 5] },
+                { "item": "sugar", "weight": 10, "count": [1, 3] },
+                { "item": "torch", "weight": 15, "count": [2, 6] },
+                { "item": "coal", "weight": 8, "count": [1, 3] },
+                { "item": "green_dye", "weight": 6, "count": [1, 2] },
+                { "item": "gold_nugget", "weight": 6, "count": [1, 4] },
+                { "item": "glass_bottle", "weight": 3 },
+                { "item": "gold_ingot", "weight": 2 },
+                { "item": "emerald", "weight": 2 }
+            ]
+        }
+    ]
+}

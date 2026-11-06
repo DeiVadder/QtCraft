@@ -96,5 +96,6 @@
             "#3a3a3a",
             "#4a3a2a"
         ]
-    }
+    },
+    "loot": { "village_house_plains": "village_house_taiga" }
 }

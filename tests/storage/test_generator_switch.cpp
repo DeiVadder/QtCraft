@@ -249,7 +249,7 @@ private slots:
         // A world whose terrain dimension was made with version 1 (as one made before version 2).
         const QcWorldStorage storage(dir.path(), m_content);
         QcWorldInfo info = *storage.readInfo();
-        QCOMPARE(info.dimensionGeneratorVersions.value(terrainName), 2);
+        QCOMPARE(info.dimensionGeneratorVersions.value(terrainName), QcGeneratorVersion::current);
         info.dimensionGeneratorVersions.insert(terrainName, 1);
         QVERIFY(storage.writeInfo(info).has_value());
 

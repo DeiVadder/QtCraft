@@ -22,6 +22,7 @@ qc_add_test(test_village_limits_measure SOURCES villages/test_village_limits_mea
 qc_add_test(test_village_generation SOURCES villages/test_village_generation.cpp villages/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen)
 qc_add_test(test_village_plan_cache SOURCES villages/test_village_plan_cache.cpp villages/QcVillageTestUtil.h LIBRARIES qc_server)
 qc_add_test(test_village_variety SOURCES villages/test_village_variety.cpp villages/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
+qc_add_test(test_village_chests SOURCES villages/test_village_chests.cpp villages/QcVillageTestUtil.h villages/QcVillageFixture.h villages/QcVillageFixture.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_fields SOURCES villages/test_village_fields.cpp villages/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_layouts SOURCES villages/test_village_layouts.cpp villages/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_bounds SOURCES villages/test_village_bounds.cpp villages/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)

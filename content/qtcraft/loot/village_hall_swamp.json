@@ -1,0 +1,23 @@
+{
+    "name": "village_hall_swamp",
+    "pools": [
+        {
+            "rolls": [3, 6],
+            "entries": [
+                { "item": "bread", "weight": 20, "count": [1, 3] },
+                { "item": "cooked_cod", "weight": 20, "count": [1, 3] },
+                { "item": "mushroom_stew", "weight": 12 },
+                { "item": "paper", "weight": 15, "count": [1, 3] },
+                { "item": "torch", "weight": 15, "count": [2, 6] },
+                { "item": "lantern", "weight": 8 },
+                { "item": "string", "weight": 10, "count": [1, 3] },
+                { "item": "glass_bottle", "weight": 8, "count": [1, 2] },
+                { "item": "book", "weight": 6 },
+                { "item": "slimeball", "weight": 5, "count": [1, 2] },
+                { "item": "iron_nugget", "weight": 6, "count": [1, 4] },
+                { "item": "emerald", "weight": 4, "count": [1, 2] },
+                { "item": "name_tag", "weight": 1 }
+            ]
+        }
+    ]
+}

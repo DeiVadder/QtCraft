@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/world/QcGeneratorVersion.h"
 #include "villages/QcVillageFixture.h"
 
 #include "common/core/QcIntMath.h"
@@ -41,7 +42,7 @@ Building buildingOf(const QcVillageStyles &styles, const QcVillageStyle &style, 
                     const QcContentRegistry &content)
 {
     Building building;
-    building.structure = blueprint.variation.build(blueprint.variation.everything());
+    building.structure = blueprint.variation.build(blueprint.variation.everything(QcGeneratorVersion::current));
     QcVillageStyles::Spots spots = styles.spotsOf(*building.structure);
     building.spots = std::move(spots.spots);
     building.bell = spots.bell;

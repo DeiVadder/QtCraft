@@ -65,5 +65,13 @@
                 ["ww", "ww"]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [4, 1, 1], "table": "village_house_desert" }
+            ]
+        }
     ]
 }

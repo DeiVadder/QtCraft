@@ -136,10 +136,71 @@ private:
         return *chunk;
     }
 
-    // The conversion of the world in `directory` to version 2, its backup below `backups`.
+    // A chest of the first and of the last village with loot in the regions around the origin.
+    static QList<QcBlockPos> villageChests(const QcTerrainGenerator &generator)
+    {
+        QList<QcBlockPos> chests;
+        constexpr int rings = 6;
+        for (int rz = -rings; rz <= rings; ++rz) {
+            for (int rx = -rings; rx <= rings; ++rx) {
+                const std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz);
+                if (!plan || generator.villageFor(QcBlockPos{plan->centre.x, 0, plan->centre.z}.chunk()) != plan) {
+                    continue;
+                }
+                const auto house = std::ranges::find_if(plan->pieces, [](const QcStructurePlacement &piece) {
+                    return !piece.structure().loot.isEmpty() && piece.structure().loot.front().table.startsWith(u"qtcraft:village_"_s);
+                });
+                if (house != plan->pieces.end()) {
+                    chests.resize(std::min(chests.size(), qsizetype{1}));
+                    chests.append(house->toWorld(house->structure().loot.front().at));
+                }
+            }
+        }
+        return chests;
+    }
+
+    bool isChest(const QcChunk &chunk, QcBlockPos at) const
+    {
+        return m_content->block(chunk.block(at.localX(), at.y, at.localZ())).name == u"qtcraft:chest"_s;
+    }
+
+    // A village and a chest of it, by the plan of a generator.
+    struct RingVillage
+    {
+        QcXzRect bounds;
+        QcBlockPos chest;
+    };
+
+    // The narrowest village with a house chest near the origin, if one fits a ring of the widest
+    // kind from a chunk three chunks east of it.
+    static std::optional<RingVillage> smallVillage(const QcTerrainGenerator &generator)
+    {
+        std::optional<RingVillage> best;
+        constexpr int rings = 6;
+        constexpr int limit = (QcBlendWidth::maxChunks - 5) * QcWorld::chunkSize;
+        for (int rz = -rings; rz <= rings; ++rz) {
+            for (int rx = -rings; rx <= rings; ++rx) {
+                const std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz);
+                if (!plan || generator.villageFor(QcBlockPos{plan->centre.x, 0, plan->centre.z}.chunk()) != plan) {
+                    continue;
+                }
+                const QcXzRect bounds = plan->bounds();
+                const int size = std::max(bounds.maxX - bounds.minX, bounds.maxZ - bounds.minZ);
+                const auto house = std::ranges::find_if(plan->pieces, [](const QcStructurePlacement &piece) {
+                    return !piece.structure().loot.isEmpty() && piece.structure().loot.front().table.startsWith(u"qtcraft:village_"_s);
+                });
+                if (size <= limit && house != plan->pieces.end() && (!best || size < best->bounds.maxX - best->bounds.minX)) {
+                    best = RingVillage{bounds, house->toWorld(house->structure().loot.front().at)};
+                }
+            }
+        }
+        return best;
+    }
+
+    // The conversion of the world in `directory` from version 1 to the current one, its backup below `backups`.
     static QcGeneratorUpgrade::Request request(const QString &directory, const QString &backups)
     {
-        return {directory, {{overworldName, 1, 2}}, QcGeneratorUpgrade::Mode::Hard, QcBlendWidth::standardChunks, backups};
+        return {directory, {{overworldName, 1, QcGeneratorVersion::current}}, QcGeneratorUpgrade::Mode::Hard, QcBlendWidth::standardChunks, backups};
     }
 
 private slots:
@@ -186,12 +247,109 @@ private slots:
         QCOMPARE(changes.front().from, 1);
         QCOMPARE(changes.front().to, QcGeneratorVersion::current);
 
+        // A world of the newest frozen version gets the same offer.
+        info.generatorVersion = QcGeneratorVersion::lastFrozen;
+        const QList<QcGeneratorUpgrade::Change> frozen = QcGeneratorUpgrade::outdatedIn(info, *m_content);
+        QCOMPARE(frozen.constFirst().from, QcGeneratorVersion::lastFrozen);
+        QCOMPARE(frozen.constFirst().to, QcGeneratorVersion::current);
+
         info.generatorVersion = QcGeneratorVersion::current;
         QVERIFY(QcGeneratorUpgrade::outdatedIn(info, *m_content).isEmpty());
         // A showcase world always generates with the newest code.
         info.generator = QString::fromLatin1(QcWorldGenerators::showcase);
         info.generatorVersion = 1;
         QVERIFY(QcGeneratorUpgrade::outdatedIn(info, *m_content).isEmpty());
+    }
+
+    // A world of the newest frozen version takes the same way to the current one, hard and with a
+    // ring: the explored chunk stays as it was and its chests stay empty, a village beyond the old
+    // area and the ring has its loot (decision E-1015).
+    void aWorldOfTheFrozenVersionSwitches()
+    {
+        constexpr int frozen = QcGeneratorVersion::lastFrozen;
+        const std::unique_ptr<QcWorldGenerator> current = terrain(QcGeneratorVersion::current);
+        const QList<QcBlockPos> chests = villageChests(dynamic_cast<const QcTerrainGenerator &>(*current));
+        QVERIFY(chests.size() >= 2);
+        const QcChunkPos explored = chests.front().chunk();
+        const QcChunkPos beyond = chests.back().chunk();
+        QVERIFY(std::abs(explored.x - beyond.x) + std::abs(explored.z - beyond.z) > 16);
+
+        QHash<QcGeneratorUpgrade::Mode, qsizetype> kept;
+        for (const QcGeneratorUpgrade::Mode mode : {QcGeneratorUpgrade::Mode::Hard, QcGeneratorUpgrade::Mode::Blend}) {
+            QTemporaryDir dir;
+            QTemporaryDir backups;
+            const QcChunk before = [&] {
+                auto world = open(dir.path(), frozen);
+                const QcChunk chunk = *world->world().loadChunk(explored);
+                if (!world->save()) {
+                    QcTestUtil::failCase(u"The world of the frozen version does not save"_s);
+                }
+                return chunk;
+            }();
+
+            const QList<QcGeneratorUpgrade::Change> offer = QcGeneratorUpgrade::outdatedIn(*QcWorldStorage(dir.path(), m_content).readInfo(), *m_content);
+            QCOMPARE(offer.size(), qsizetype{1});
+            QCOMPARE(offer.front().from, frozen);
+            QCOMPARE(offer.front().to, QcGeneratorVersion::current);
+            const QcResult<QcGeneratorUpgrade::Converted> converted =
+                QcGeneratorUpgrade::convert({dir.path(), offer, mode, QcBlendWidth::standardChunks, backups.path()}, m_content, {});
+            QVERIFY2(converted.has_value(), qcErrorText(converted).constData());
+            QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->generatorVersion, QcGeneratorVersion::current);
+
+            const QcResult<QcGeneratorVersionMap> map = QcVersionMapFile::read(dir.path());
+            QVERIFY(map.has_value());
+            QCOMPARE(map->versionAt(explored), std::optional(frozen));
+            QVERIFY(!map->versionAt(beyond).has_value());
+            kept.insert(mode, map->chunksOf(frozen).size());
+
+            auto world = open(dir.path(), QcGeneratorVersion::current);
+            QVERIFY(QcTestUtil::sameBlocks(*world->world().loadChunk(explored), before));
+            const QcWorldGenerator &generator = world->world().generator();
+            QVERIFY(isChest(before, chests.front()));
+            QVERIFY(generator.villageFor(explored));
+            const auto isVillageTable = [](const QcChunkFurnishing::Chest &chest) { return chest.lootTable.startsWith(u"qtcraft:village_"_s); };
+            QVERIFY(std::ranges::none_of(generator.furnishingIn(explored).chests, isVillageTable));
+            const QcChunkFurnishing fresh = generator.furnishingIn(beyond);
+            QVERIFY(std::ranges::any_of(fresh.chests, [&](const QcChunkFurnishing::Chest &chest) { return chest.at == chests.back() && isVillageTable(chest); }));
+        }
+        QVERIFY(kept[QcGeneratorUpgrade::Mode::Blend] > kept[QcGeneratorUpgrade::Mode::Hard]);
+    }
+
+    // A village nobody has seen, wholly in the ring around an explored chunk beside it, is built and
+    // furnished by the old version (decision E-1040): its chest stands, without loot.
+    void aVillageInTheRingKeepsItsVersion()
+    {
+        constexpr int frozen = QcGeneratorVersion::lastFrozen;
+        const std::unique_ptr<QcWorldGenerator> current = terrain(QcGeneratorVersion::current);
+        const std::optional<RingVillage> village = smallVillage(dynamic_cast<const QcTerrainGenerator &>(*current));
+        QVERIFY(village.has_value());
+        const QcChunkPos beside = QcBlockPos{village->bounds.maxX + 3 * QcWorld::chunkSize, 0, (village->bounds.minZ + village->bounds.maxZ) / 2}.chunk();
+
+        QTemporaryDir dir;
+        QTemporaryDir backups;
+        {
+            auto world = open(dir.path(), frozen);
+            QVERIFY(world->world().loadChunk(beside));
+            QVERIFY(world->save().has_value());
+        }
+        const QList<QcGeneratorUpgrade::Change> offer = QcGeneratorUpgrade::outdatedIn(*QcWorldStorage(dir.path(), m_content).readInfo(), *m_content);
+        const QcResult<QcGeneratorUpgrade::Converted> converted =
+            QcGeneratorUpgrade::convert({dir.path(), offer, QcGeneratorUpgrade::Mode::Blend, QcBlendWidth::maxChunks, backups.path()}, m_content, {});
+        QVERIFY2(converted.has_value(), qcErrorText(converted).constData());
+
+        const QcResult<QcGeneratorVersionMap> map = QcVersionMapFile::read(dir.path());
+        QVERIFY(map.has_value());
+        const QList<QcChunkPos> covered = chunksOf(village->bounds);
+        for (const QcChunkPos chunk : covered) {
+            QCOMPARE(map->versionAt(chunk), std::optional(frozen));
+        }
+        auto world = open(dir.path(), QcGeneratorVersion::current);
+        const QcChunkPos pos = village->chest.chunk();
+        QVERIFY(isChest(*world->world().loadChunk(pos), village->chest));
+        const QcWorldGenerator &generator = world->world().generator();
+        QVERIFY(generator.villageFor(pos));
+        const QcChunkFurnishing furnishing = generator.furnishingIn(pos);
+        QVERIFY(std::ranges::none_of(furnishing.chests, [](const QcChunkFurnishing::Chest &chest) { return chest.lootTable.startsWith(u"qtcraft:village_"_s); }));
     }
 
     // A structure an explored chunk started keeps its old plan: every chunk it reaches stays at
@@ -211,7 +369,7 @@ private slots:
             QCOMPARE(map->versionAt(chunk), std::optional(1));
         }
 
-        auto world = open(dir.path(), 2);
+        auto world = open(dir.path(), QcGeneratorVersion::current);
         const QcWorldGenerator &generator = world->world().generator();
         QVERIFY(QcTestUtil::sameBlocks(*world->world().loadChunk(m_started), before));
         for (const QcChunkPos chunk : reached) {
@@ -249,9 +407,9 @@ private slots:
         QCOMPARE(recorder.stages, (QList{QcConversionControl::Stage::Backup, QcConversionControl::Stage::Survey, QcConversionControl::Stage::Write}));
 
         QVERIFY(converted->backup.startsWith(backups.path()));
-        QVERIFY(converted->backup.endsWith(QcGeneratorUpgrade::backupLabel(2)));
+        QVERIFY(converted->backup.endsWith(QcGeneratorUpgrade::backupLabel(QcGeneratorVersion::current)));
         QCOMPARE(QcTestUtil::filesOf(converted->backup), before);
-        QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->generatorVersion, 2);
+        QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->generatorVersion, QcGeneratorVersion::current);
         QVERIFY(QFile::exists(QDir(dir.path()).filePath(QcVersionMapFile::fileName.toString())));
         QVERIFY(QcGeneratorUpgrade::outdatedIn(*QcWorldStorage(dir.path(), m_content).readInfo(), *m_content).isEmpty());
     }
@@ -306,23 +464,23 @@ private slots:
     {
         QTemporaryDir dir;
         exploredWorld(dir.path(), m_started);
-        const QList<QcGeneratorUpgrade::Change> changes{{overworldName, 1, 2}};
+        const QList<QcGeneratorUpgrade::Change> changes{{overworldName, 1, QcGeneratorVersion::current}};
         QcWorldInfo info = *QcWorldStorage(dir.path(), m_content).readInfo();
         QVERIFY(!QcGeneratorUpgrade::isDeclined(info, changes));
 
         QVERIFY(QcGeneratorUpgrade::keepForGood(dir.path(), changes, m_content).has_value());
         info = *QcWorldStorage(dir.path(), m_content).readInfo();
-        QCOMPARE(info.keepGeneratorVersion, 2);
+        QCOMPARE(info.keepGeneratorVersion, QcGeneratorVersion::current);
         QCOMPARE(info.generatorVersion, 1);
         QVERIFY(QcGeneratorUpgrade::isDeclined(info, changes));
         // A newer generator asks again.
-        QVERIFY(!QcGeneratorUpgrade::isDeclined(info, {{overworldName, 1, 3}}));
+        QVERIFY(!QcGeneratorUpgrade::isDeclined(info, {{overworldName, 1, QcGeneratorVersion::current + 1}}));
         {
             // The server keeps the answer when it saves the world.
             auto world = open(dir.path(), 1);
             QVERIFY(world->save().has_value());
         }
-        QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->keepGeneratorVersion, 2);
+        QCOMPARE(QcWorldStorage(dir.path(), m_content).readInfo()->keepGeneratorVersion, QcGeneratorVersion::current);
 
         QTemporaryDir other;
         exploredWorld(other.path(), m_started);
@@ -416,18 +574,18 @@ private slots:
         QVERIFY(blended.waitForFinished(240000));
         QCOMPARE(blended.exitCode(), 0);
         QVERIFY(blended.readAllStandardOutput().contains("chunks blend"));
-        QCOMPARE(QcWorldStorage(blendedWorld, m_content).readInfo()->generatorVersion, 2);
+        QCOMPARE(QcWorldStorage(blendedWorld, m_content).readInfo()->generatorVersion, QcGeneratorVersion::current);
         QVERIFY(QDir(blendedWorld).exists(u"regions"_s));
 
-        QCOMPARE(run({u"--to"_s, u"2"_s, u"--mode"_s, u"hard"_s}), 0);
-        QCOMPARE(QcWorldStorage(directory, m_content).readInfo()->generatorVersion, 2);
+        QCOMPARE(run({u"--to"_s, QString::number(QcGeneratorVersion::current), u"--mode"_s, u"hard"_s}), 0);
+        QCOMPARE(QcWorldStorage(directory, m_content).readInfo()->generatorVersion, QcGeneratorVersion::current);
         const QDir backups(QDir(data.path()).filePath(u"backups"_s));
         QCOMPARE(backups.entryList(QDir::Dirs | QDir::NoDotAndDotDot).size(), qsizetype{1});
-        // Already at version 2: refused before a backup is made.
-        QCOMPARE(run({u"--to"_s, u"2"_s}), 1);
+        // Already at that version: refused before a backup is made.
+        QCOMPARE(run({u"--to"_s, QString::number(QcGeneratorVersion::current)}), 1);
         QCOMPARE(backups.entryList(QDir::Dirs | QDir::NoDotAndDotDot).size(), qsizetype{1});
 
-        auto world = open(directory, 2);
+        auto world = open(directory, QcGeneratorVersion::current);
         QVERIFY(QcTestUtil::sameBlocks(*world->world().loadChunk(m_started), before));
     }
 };

@@ -20,5 +20,13 @@
         ["       ", "  SSS  ", " S...S ", " S.l.S ", " S...S ", "  SSS  ", "  SSS  "],
         ["       ", "       ", "  SSS  ", "  SSS  ", "  SSS  ", "       ", "       "],
         ["       ", "       ", "       ", "       ", "       ", "       ", "       "]
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [5, 1, 2], "table": "village_house_snowy" }
+            ]
+        }
     ]
 }

@@ -3,6 +3,8 @@
 
 #include "worldgen/showcase/QcShowcaseVillageArea.h"
 
+#include "common/world/QcGeneratorVersion.h"
+
 #include "worldgen/showcase/QcShowcaseSettlement.h"
 #include "worldgen/villages/QcVillageFields.h"
 #include "worldgen/villages/QcVillagePlan.h"
@@ -27,13 +29,14 @@ constexpr int frontGap = QcVillagePlan::reach + 1;
 // kind with all its optional parts (decision E-404).
 QList<std::shared_ptr<const QcStructure>> piecesOf(const QcVillageStyle &style)
 {
-    QList<std::shared_ptr<const QcStructure>> pieces{style.centre.first().structure()};
+    const QcPieceVariation &centre = style.centre.first().variation;
+    QList<std::shared_ptr<const QcStructure>> pieces{centre.build(centre.everything(QcGeneratorVersion::current))};
     if (!style.lamp.blueprints.isEmpty()) {
         pieces.append(style.lamp.first().structure());
     }
     for (const QcVillageStyle::Piece &piece : style.pieces) {
         for (const QcVillageStyle::Blueprint &blueprint : piece.blueprints) {
-            pieces.append(blueprint.variation.build(blueprint.variation.everything()));
+            pieces.append(blueprint.variation.build(blueprint.variation.everything(QcGeneratorVersion::current)));
         }
     }
     return pieces;
@@ -166,6 +169,9 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         for (const std::shared_ptr<const QcStructure> &piece : pieces) {
             copyPiece(*area, *piece, x, road - 1);
             const QcBlockPos pieceOrigin = origin.offset(x, 0, road - piece->sizeZ());
+            for (const QcStructureDefinition::Loot &loot : piece->loot) {
+                area->loot.append({loot.at.offset(x, 0, road - piece->sizeZ()), loot.table});
+            }
             const QList<QcBlockPos> crops = QcVillageFields::cropCells(*piece, context.content);
             for (const QcBlockPos &cell : crops) {
                 plan->fields.insert(pieceOrigin.offset(cell.x, cell.y, cell.z));

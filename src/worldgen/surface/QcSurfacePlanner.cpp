@@ -86,14 +86,15 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(KindId kind, int regi
     return first;
 }
 
-std::shared_ptr<const QcStructure> QcSurfacePlanner::structureOf(const Kind &kind, int regionX, int regionZ)
+std::shared_ptr<const QcStructure> QcSurfacePlanner::structureOf(const Kind &kind, int regionX, int regionZ) const
 {
     if (!kind.variation.varies()) {
         return kind.structure();
     }
     // Drawn below the positions of the attempts (0 and up), so the place stays where it was.
     int draw = 0;
-    return kind.variation.build(kind.variation.choose([&] { return qcPositionRandom(kind.seed, regionX, -1 - draw++, regionZ); }));
+    const auto random = [&] { return qcPositionRandom(kind.seed, regionX, -1 - draw++, regionZ); };
+    return kind.variation.build(kind.variation.choose(random, m_terrain.version()));
 }
 
 std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, QcXzRect rect) const

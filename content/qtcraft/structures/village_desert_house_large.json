@@ -51,5 +51,13 @@
                 ["L   L", "     ", "     ", "L   L"]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [7, 1, 2], "table": "village_house_desert" }
+            ]
+        }
     ]
 }

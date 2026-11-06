@@ -4,6 +4,7 @@
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/content/villages/QcVillagerParser.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 #include "worldgen/structures/QcStructure.h"
@@ -334,6 +335,28 @@ private slots:
         QVERIFY(hairOf(R"(["short_hair", 3])").second.contains(u"'hair'"_s));
     }
 
+    void readsGeneratorChanges()
+    {
+        const auto parse = [](const QByteArray &changes) {
+            return QcContentParser::parseStructure(
+                QJsonDocument::fromJson("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"generatorChanges\": " + changes + "}").object(),
+                u"qtcraft"_s);
+        };
+        const QcResult<QcStructureDefinition> parsed = parse(R"([{"version": 3, "swaps": {"stone": "dirt"}, "loot": [{"at": [0, 0, 0], "table": "t"}]}])");
+        QVERIFY(parsed);
+        QCOMPARE(parsed->generatorChanges.size(), qsizetype{1});
+        QCOMPARE(parsed->generatorChanges.constFirst().version, 3);
+        QCOMPARE(parsed->generatorChanges.constFirst().swaps.value(u"qtcraft:stone"_s), u"qtcraft:dirt"_s);
+        QCOMPARE(parsed->generatorChanges.constFirst().loot.constFirst().table, u"qtcraft:t"_s);
+
+        // A chest outside the structure names the entry and what it says.
+        const QcResult<QcStructureDefinition> outside = parse(R"([{"version": 3}, {"version": 4, "loot": [{"at": [5, 0, 0], "table": "t"}]}])");
+        QVERIFY(!outside);
+        QVERIFY2(qcErrorText(outside).contains("entry 1") && qcErrorText(outside).contains("\"version\":4"), qcErrorText(outside).constData());
+        QVERIFY(!parse(R"([{"swaps": {}}])"));
+        QVERIFY(!parse(R"([{"version": 3, "swaps": 1}])"));
+    }
+
     void readsTheMapOfAFrame()
     {
         const QcResult<QcStructureDefinition> parsed = QcContentParser::parseStructure(
@@ -578,11 +601,11 @@ private slots:
         const QcPieceVariation::Resolved variation = QcPieceVariation::resolve(definition, content);
         QVERIFY(variation);
 
-        const std::shared_ptr<const QcStructure> built = variation->build(variation->everything());
+        const std::shared_ptr<const QcStructure> built = variation->build(variation->everything(QcGeneratorVersion::current));
         QCOMPARE(content.stateName(*built->block(1, 0, 0)), content.stateName(id(content, u"qtcraft:spruce_fence[north=false,east=true,south=false,west=true]"_s)));
         QCOMPARE(content.property(*built->block(0, 0, 0), u"east"_s), u"true"_s);
         // Without the part the two ends stand alone.
-        const std::shared_ptr<const QcStructure> open = variation->build({{0}, {false}});
+        const std::shared_ptr<const QcStructure> open = variation->build({{0}, {false}, QcGeneratorVersion::current});
         QCOMPARE(content.property(*open->block(0, 0, 0), u"east"_s), u"false"_s);
     }
 
@@ -599,7 +622,7 @@ private slots:
         const QcPieceVariation::Resolved variation = QcPieceVariation::resolve(definition, *m_content);
         QVERIFY(variation);
 
-        const std::shared_ptr<const QcStructure> built = variation->build({{}, {false}});
+        const std::shared_ptr<const QcStructure> built = variation->build({{}, {false}, QcGeneratorVersion::current});
         QCOMPARE(built->boats.size(), 1);
         QCOMPARE(built->boats.constFirst().item, expected.boats.constFirst().item);
         QCOMPARE(built->signs.constFirst().lines, expected.signs.constFirst().lines);
