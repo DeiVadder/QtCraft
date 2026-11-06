@@ -135,9 +135,15 @@ QcTcpGoodbye::QcTcpGoodbye(QTcpSocket &socket, int lingerMs, bool peerLeft)
     , m_endEarly(peerLeft || !isEncrypted(socket))
 {
     connect(&m_socket, &QIODevice::readyRead, this, &QcTcpGoodbye::discardReceived);
-    connect(&m_socket, &QIODevice::bytesWritten, this, &QcTcpGoodbye::step);
-    if (auto *secure = qobject_cast<QSslSocket *>(&m_socket)) {
-        connect(secure, &QSslSocket::encryptedBytesWritten, this, &QcTcpGoodbye::step);
+    // Qt's TLS socket tells of written bytes from inside its own work (the flush below encrypts and
+    // emits bytesWritten() before the encrypted bytes reach the system). A step there would count
+    // them as sent and could close the socket, freeing the TLS state that Qt goes on with: over TLS
+    // every step runs from the event loop (decision E-1076).
+    const bool overTls = isEncrypted(m_socket);
+    const Qt::ConnectionType stepping = overTls ? Qt::QueuedConnection : Qt::AutoConnection;
+    connect(&m_socket, &QIODevice::bytesWritten, this, &QcTcpGoodbye::step, stepping);
+    if (auto *secure = qobject_cast<QSslSocket *>(&m_socket); secure && overTls) {
+        connect(secure, &QSslSocket::encryptedBytesWritten, this, &QcTcpGoodbye::step, stepping);
     }
     // Queued: never inside Qt's own disconnect sequence or the socket's destructor.
     connect(
@@ -160,7 +166,11 @@ QcTcpGoodbye::QcTcpGoodbye(QTcpSocket &socket, int lingerMs, bool peerLeft)
     discardReceived();
     // Hands whatever the system takes now over without blocking.
     m_socket.flush();
-    step();
+    if (overTls) {
+        QMetaObject::invokeMethod(this, &QcTcpGoodbye::step, Qt::QueuedConnection);
+    } else {
+        step();
+    }
 }
 
 void QcTcpGoodbye::begin(QTcpSocket &socket, int lingerMs, bool peerLeft)

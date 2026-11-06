@@ -18,6 +18,8 @@ if(QC_TLS_ENABLED)
     target_compile_definitions(test_tls_credentials PRIVATE QC_TEST_OPENSSL_PREFIX="${QC_OPENSSL_ROOT_FOUND}")
 endif()
 qc_add_test(test_tcp_transport SOURCES protocol/test_tcp_transport.cpp fixtures/QcTestTls.h LIBRARIES qc_network Qt::Network)
+# The goodbye of a TLS connection steps from the event loop only (decision E-1076).
+qc_add_test(test_tls_goodbye SOURCES protocol/test_tls_goodbye.cpp fixtures/QcTestTls.h LIBRARIES qc_network Qt::Network)
 qc_add_test(test_latency SOURCES protocol/test_latency.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 270)
 # The admin channel (stage 77.1, decision E-848).
 qc_add_test(test_admin_protocol SOURCES protocol/test_admin_protocol.cpp LIBRARIES qc_common)
