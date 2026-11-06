@@ -55,19 +55,28 @@ public:
     /*! Returns whether the world \a info keeps the generator versions of its dimensions: every
         world but a showcase world, which always generates as the current version. */
     static bool isVersioned(const QcWorldInfo &info);
-    /*! Returns the generator versions of the new world \a info: what it has, and for the other
-        dimensions of \a content the current version of their series, up to
-        QcWorldInfo::maxDimensionVersions entries (a dimension left out is treated as a late one
-        and may be refused when it opens). A showcase world gets none. */
-    static QMap<QString, int> versionsForNewWorld(const QcContentRegistry &content, const QcWorldInfo &info);
+    /*! Returns the new world \a info with the dimensions of \a content that have no version in
+        it at the current version of their series, up to QcWorldInfo::maxDimensionVersions entries
+        (a dimension left out is treated as a late one and may be refused when it opens). A
+        showcase world gets none. */
+    [[nodiscard]] static QcWorldInfo withVersionsForNewWorld(const QcContentRegistry &content, QcWorldInfo info);
+    /*! Returns \a info with \a dimension at \a version of the series of its generator (decision
+        E-1033). */
+    [[nodiscard]] static QcWorldInfo withVersion(QcWorldInfo info, const QcDimensionDefinition &dimension, int version);
+    /*! Returns an error when the version \a info keeps for \a dimension counts in another series
+        than its generator's (decision E-1033): the number says nothing about this generator, and
+        the chunks saved so far came from another one, so the dimension does not open (the rest of
+        the world plays on). */
+    [[nodiscard]] static QcStatus seriesFits(const QcWorldInfo &info, const QcDimensionDefinition &dimension);
     /*! Returns what is wrong with the dimensions of \a content, for the log when a server starts
         (decision E-988): a generator type or options that cannot generate, a generator other
         than QcDimensionDefinition::worldGenerator for the overworld (the world's own plays) or
         that one for another dimension, unknown blocks of the arrival platform and the liquids. A
         dimension with a wrong generator cannot open; the server still starts. */
     [[nodiscard]] static QStringList definitionWarnings(const QcContentRegistry &content);
-    /*! Returns a warning for each dimension of \a content the world \a info cannot record any
-        more (QcWorldInfo::maxDimensionVersions), which will not open (decision E-988). */
+    /*! Returns a warning for each dimension of \a content that will not open: the world \a info
+        cannot record it any more (QcWorldInfo::maxDimensionVersions, decision E-988) or keeps its
+        version in another series (seriesFits()). */
     [[nodiscard]] static QStringList versionWarnings(const QcContentRegistry &content, const QcWorldInfo &info);
 
 private:

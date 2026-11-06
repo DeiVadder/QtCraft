@@ -134,6 +134,11 @@ std::vector<const QcWorldGenerator *> QcVersionedGenerator::generatorsNear(QcBlo
     return near;
 }
 
+QList<QcBlockPos> QcVersionedGenerator::liquidStartsIn(const QcChunk &chunk) const
+{
+    return generatorAt(chunk.pos()).liquidStartsIn(chunk);
+}
+
 std::shared_ptr<QcChunk> QcVersionedGenerator::generate(QcChunkPos pos) const
 {
     m_generated.store(true, std::memory_order_relaxed);

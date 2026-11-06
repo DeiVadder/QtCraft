@@ -68,6 +68,10 @@ struct QcBiomeDefinition
         biome closest to its local climate. \qcshared */
     double temperature = 0.5;
     double humidity = 0.5;
+    /*! The dimension whose generator uses the biome (\c {"dimension"}, decision E-1030): empty
+        for the overworld's terrain, which leaves out all others; the nether's map reads
+        \c {temperature} and \c {humidity} as a point between its own two noises. */
+    QString dimension;
     /*! Third climate coordinate in [0, 1]: how rugged the land is. The world's ruggedness is low
         almost everywhere and high along chains, so a biome with a high value forms mountain
         ranges across all climates. Counts twice as much as temperature and humidity. */
@@ -245,6 +249,9 @@ struct QcOreDefinition
     int veinsPerChunk = 8;
     /*! Blocks of a vein at most (\c {"veinSize"}, 1 to 64). */
     int veinSize = 6;
+    /*! The dimension whose generator places the ore (\c {"dimension"}, decision E-1030); empty for
+        the overworld's terrain, which leaves out all others. */
+    QString dimension;
     /*! Biomes a vein may lie in (the biome of the column where it starts); empty for all
         (decision E-453: infested stone only in the mountains). */
     QList<QString> biomes;

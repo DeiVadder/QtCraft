@@ -43,6 +43,9 @@ QcStatus checkSwitch(const QcWorldInfo &info, const QcDimensionDefinition &dimen
     if (!QcDimensions::isVersioned(info)) {
         return qcError(u"A showcase world always generates with the newest generator; it has no version to switch"_s);
     }
+    if (const QcStatus fits = QcDimensions::seriesFits(info, dimension); !fits) {
+        return fits;
+    }
     const QcGeneratorVersion::Series series = QcWorldGenerators::versionSeries(QcDimensions::generatorTypeIn(info, dimension));
     if (!series.isKnown(version)) {
         return qcError(u"The dimension '%1' cannot be generated as version %2; this game generates versions %3 to %4"_s.arg(dimension.name)
@@ -66,7 +69,7 @@ QcWorldInfo withVersion(QcWorldInfo info, const QcDimensionDefinition &dimension
     if (dimension.isOverworld()) {
         info.generatorVersion = version;
     } else {
-        info.dimensionGeneratorVersions.insert(dimension.name, version);
+        return QcDimensions::withVersion(std::move(info), dimension, version);
     }
     return info;
 }

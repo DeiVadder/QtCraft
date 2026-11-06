@@ -51,6 +51,7 @@ public:
     const QcWorldGenerator &base() const { return *m_base; }
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
+    [[nodiscard]] QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const override;
     /*! Returns the spawn point of the generator of the origin's chunk: a world's origin is always
         explored, so the spawn stays where it was after a switch (decision E-1012). */
     QcBlockPos spawnPoint() const override { return generatorAt(QcChunkPos{0, 0}).spawnPoint(); }

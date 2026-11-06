@@ -1,0 +1,10 @@
+{
+    "name": "nether_gold",
+    "dimension": "nether",
+    "replaces": "netherrack",
+    "block": "nether_gold_ore",
+    "minY": 10,
+    "maxY": 117,
+    "veinsPerChunk": 10,
+    "veinSize": 8
+}

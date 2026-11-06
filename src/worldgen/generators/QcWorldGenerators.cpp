@@ -6,12 +6,35 @@
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"
+#include "worldgen/nether/QcNetherGenerator.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// Where the portal of the showcase leads in the nether (decision E-1034): the arrival station's
+// middle, its floor one below the portal's; none without the station or the portal.
+std::optional<QcBlockPos> stationOf(const std::shared_ptr<const QcContentRegistry> &content)
+{
+    const QString portal = content->worldgen().nether().station.portal;
+    const QcDimensionDefinition *dimension = content->worldgen().dimension(u"qtcraft:nether"_s);
+    if (portal.isEmpty() || dimension == nullptr) {
+        return std::nullopt;
+    }
+    const QcShowcaseGenerator showcase(content);
+    for (const QcStructurePlacement &placement : showcase.plan().placements) {
+        if (placement.structure().name() == portal) {
+            const QcBlockPos at = placement.origin();
+            const double scale = dimension->coordinateScale;
+            return QcBlockPos{static_cast<int>(std::floor(at.x / scale)), at.y, static_cast<int>(std::floor(at.z / scale))};
+        }
+    }
+    return std::nullopt;
+}
 
 // A generator of `type`; nullptr for unknown types.
 std::unique_ptr<QcWorldGenerator> makeGenerator(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
@@ -29,6 +52,10 @@ std::unique_ptr<QcWorldGenerator> makeGenerator(const QString &type, std::shared
     }
     if (type == QLatin1StringView(showcase)) {
         return std::make_unique<QcShowcaseGenerator>(std::move(content));
+    }
+    if (type == QLatin1StringView(nether)) {
+        const std::optional<QcBlockPos> station = options == QLatin1StringView(netherStation) ? stationOf(content) : std::nullopt;
+        return std::make_unique<QcNetherGenerator>(std::move(content), seed, station);
     }
     return nullptr;
 }
@@ -49,7 +76,7 @@ bool isKnown(const QString &type)
 
 [[nodiscard]] QcStatus checkOptions(const QString &type, const QString &options, const QcContentRegistry &content)
 {
-    if (!isKnown(type)) {
+    if (!isKnown(type) && type != QLatin1StringView(nether)) {
         return qcError(u"Unknown world type '%1' (%2)"_s.arg(type, types().join(u", "_s)));
     }
     if (options.size() > maxOptionsLength) {
@@ -69,6 +96,9 @@ bool isKnown(const QString &type)
         if (const QcResult<QcVoidDefinition> platform = QcVoidGenerator::parseOptions(options, content); !platform) {
             return qcError(platform.error());
         }
+        return {};
+    }
+    if (type == QLatin1StringView(nether) && options == QLatin1StringView(netherStation)) {
         return {};
     }
     return qcError(u"The world type '%1' takes no options"_s.arg(type));
@@ -92,8 +122,7 @@ bool isKnown(const QString &type)
 QcGeneratorVersion::Series versionSeries(const QString &type)
 {
     // Terrain, flat, void and showcase share the overworld's numbers.
-    Q_UNUSED(type);
-    return QcGeneratorVersion::overworld;
+    return type == QLatin1StringView(nether) ? QcGeneratorVersion::nether : QcGeneratorVersion::overworld;
 }
 
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,

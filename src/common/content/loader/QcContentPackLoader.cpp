@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcTextureAnimation.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentParser.h"
+#include "common/content/worldgen/QcNetherParser.h"
 #include "common/content/worldgen/QcWorldOptionParser.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/protocol/QcStreamLimits.h"
@@ -517,6 +518,9 @@ void PackReader::loadWorldgenSettings()
     }
     if (auto empty = readSettingsFile(u"worldgen/void.json"_s, QcContentParser::parseVoid)) {
         m_registry.worldgen().setVoidWorld(std::move(*empty));
+    }
+    if (auto nether = readSettingsFile(u"worldgen/nether.json"_s, QcNetherParser::parse)) {
+        m_registry.worldgen().setNether(std::move(*nether));
     }
     // Each pack adds its options; one of the same name replaces an earlier pack's (decision E-917).
     if (auto options = readSettingsFile(u"worldgen/options.json"_s, QcWorldOptionParser::parseOptionSet)) {

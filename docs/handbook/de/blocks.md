@@ -1431,7 +1431,7 @@ Regale voller Bücher; abgebaut gibt es die drei Bücher zurück.
 
 ### <a id="block-qtcraft-chunk_loader"></a>Chunk-Lader
 
-Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen Chunks, die seine Schaltungen verbinden, sodass Farmen und Maschinen weiterlaufen. Jeder Spieler darf einige setzen (chunkLoadersPerPlayer, standardmäßig 4); in einer Welt arbeiten höchstens so viele (chunkLoaders, 64).
+Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen Chunks, die seine Schaltungen verbinden, sodass Farmen und Maschinen weiterlaufen. Jeder Spieler darf einige setzen (chunkLoadersPerPlayer, standardmäßig 4); in einer Welt arbeiten höchstens so viele (chunkLoaders, 64). Dieser Block lässt sich nicht herstellen: er kommt aus dem Kreativ-Katalog oder von `/give`, schon gesetzte Lader arbeiten weiter.
 
 | | |
 |---|---|
@@ -1445,16 +1445,6 @@ Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen C
 | Licht | 7 von 15 |
 | Klang | Stein |
 | Gruppen | [Beliebiger Chunk-Lader](tags.md#tag-qtcraft-chunk_loaders) |
-
-**Herstellung**
-
-*Werkbank (3 × 3)*
-
-| 1 | 2 | 3 | → |
-|---|---|---|---|
-| [Obsidian](#block-qtcraft-obsidian) | [Diamant](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) | [Chunk-Lader](#block-qtcraft-chunk_loader) |
-| [Signalstaub](#block-qtcraft-signal_dust) | [Signallampe](#block-qtcraft-signal_lamp) | [Signalstaub](#block-qtcraft-signal_dust) |  |
-| [Obsidian](#block-qtcraft-obsidian) | [Diamant](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) |  |
 
 **Abbaubar mit**
 
@@ -7142,6 +7132,10 @@ Netherrack mit Goldflecken. Abgebaut gibt es zwei bis sechs Goldnuggets, geschmo
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+**Kommt vor in**
+
+[Nethergolderz-Vorkommen](worldgen.md#ore-qtcraft-nether_gold) (y 10–117)
+
 ### <a id="block-qtcraft-nether_portal"></a>Netherportal
 
 Das leuchtende Innere eines entzündeten Obsidianrahmens. Wer darin steht, reist in den Nether und zurück. Es erlischt, wenn sein Rahmen bricht.
@@ -7188,6 +7182,10 @@ Netherrack mit weißen Quarzkristallen. Gibt Netherquarz und Erfahrung.
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+**Kommt vor in**
+
+[Netherquarzerz-Vorkommen](worldgen.md#ore-qtcraft-nether_quartz) (y 10–117)
+
 ### <a id="block-qtcraft-netherrack"></a>Netherrack
 
 Der weiche rote Stein des Nethers. Feuer darauf brennt ewig. Im Ofen wird daraus ein Netherziegelstein.
@@ -7219,6 +7217,10 @@ Der weiche rote Stein des Nethers. Feuer darauf brennt ewig. Im Ofen wird daraus
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
+**Kommt vor in**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
 ### <a id="block-qtcraft-nether_wart_crop"></a>Netherwarze (Pflanze)
 
@@ -7408,7 +7410,7 @@ Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhac
 
 **Wird verwendet für**
 
-[Chunk-Lader](#block-qtcraft-chunk_loader), [Zaubertisch](#block-qtcraft-enchanting_table)
+[Zaubertisch](#block-qtcraft-enchanting_table)
 
 **Abbaubar mit**
 
@@ -10411,6 +10413,10 @@ Fester Seelenboden, der niemanden bremst. Feuer darauf brennt als Seelenfeuer, u
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+**Kommt vor in**
+
+[Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley) (Unter der Oberfläche, Unter Wasser)
+
 ### <a id="block-qtcraft-soul_torch"></a>Seelenfackel
 
 Eine Fackel mit blauer Seelenflamme: Kohle auf einem Stock auf Seelensand oder Seelenerde. Dunkler als eine Fackel.
@@ -10520,6 +10526,10 @@ Körniger Sand mit Gesichtern darin. Wer darüber läuft, wird langsamer. Feuer 
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+**Kommt vor in**
+
+[Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley) (Oberfläche, Strände)
 
 ### <a id="block-qtcraft-lily_pad"></a>Seerose
 
@@ -10834,10 +10844,6 @@ Leuchtet sofort, solange sie versorgt ist, und erlischt einen Moment danach.
 | [Signalstaub](#block-qtcraft-signal_dust) | [Laterne](#block-qtcraft-lantern) | [Signalstaub](#block-qtcraft-signal_dust) |  |
 | · | [Signalstaub](#block-qtcraft-signal_dust) | · |  |
 
-**Wird verwendet für**
-
-[Chunk-Lader](#block-qtcraft-chunk_loader)
-
 **Droppt aus**
 
 [Signallampe (an)](#block-qtcraft-signal_lamp_lit)
@@ -10921,7 +10927,7 @@ Die Leitung jeder Schaltung. Sie trägt ein Signal der Stärke 15 von einer Quel
 
 **Wird verwendet für**
 
-[Antriebsschiene](#block-qtcraft-powered_rail), [Chunk-Lader](#block-qtcraft-chunk_loader), [Sensorschiene](#block-qtcraft-detector_rail), [Signal-Repeater](#block-qtcraft-signal_repeater), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalfackel](#block-qtcraft-signal_torch), [Signalkolben](#block-qtcraft-signal_piston), [Signallampe](#block-qtcraft-signal_lamp), [Signalspender](#block-qtcraft-signal_dispenser), [Signalstaubblock](#block-qtcraft-signal_dust_block), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalwerfer](#block-qtcraft-signal_dropper)
+[Antriebsschiene](#block-qtcraft-powered_rail), [Sensorschiene](#block-qtcraft-detector_rail), [Signal-Repeater](#block-qtcraft-signal_repeater), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalfackel](#block-qtcraft-signal_torch), [Signalkolben](#block-qtcraft-signal_piston), [Signallampe](#block-qtcraft-signal_lamp), [Signalspender](#block-qtcraft-signal_dispenser), [Signalstaubblock](#block-qtcraft-signal_dust_block), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalwerfer](#block-qtcraft-signal_dropper)
 
 **Droppt aus**
 

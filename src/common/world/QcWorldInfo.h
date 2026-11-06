@@ -94,6 +94,22 @@ struct QcWorldInfo
         dimensions this game does not know (a removed mod) stay as they are. The overworld's is
         generatorVersion. */
     QMap<QString, int> dimensionGeneratorVersions;
+    /*! The series of the dimensions' numbers by name (decision E-1033, world.json
+        "generator"/"dimensions"/"<name>"/"series"): a dimension without an entry counts in the
+        overworld's. */
+    QMap<QString, QString> dimensionGeneratorSeries;
+
+    /*! Sets the generator version of the dimension \a dimension to \a version of the series
+        \a series; empty for the overworld's (decision E-1033). */
+    void setDimensionVersion(const QString &dimension, int version, const QString &series)
+    {
+        dimensionGeneratorVersions.insert(dimension, version);
+        if (series.isEmpty()) {
+            dimensionGeneratorSeries.remove(dimension);
+        } else {
+            dimensionGeneratorSeries.insert(dimension, series);
+        }
+    }
     /*! The newest generator version the player declined with "don't ask again" (decision E-1014,
         world.json "keepGeneratorVersion"): the question before the world opens comes back only
         for a newer version. 0: not declined. */

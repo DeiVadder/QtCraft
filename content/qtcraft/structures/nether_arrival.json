@@ -1,0 +1,340 @@
+{
+    "name": "nether_arrival",
+    "groundLayer": 1,
+    "palette": {
+        "N": "netherrack",
+        "s": "soul_sand",
+        "o": "soul_soil",
+        "g": "gravel",
+        "G": "glowstone",
+        "q": "nether_quartz_ore",
+        "u": "nether_gold_ore",
+        "m": "magma_block",
+        "f": "fire",
+        "F": "soul_fire",
+        "L": "lava",
+        "B": "nether_bricks"
+    },
+    "layers": [
+        [
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNBBBBBNNNNNNN",
+            "NNNNNNNNNBLLLBNNNNNNN",
+            "NNNNNNoNNBLLLBNNmNNNN",
+            "NNNNNNNNNBLLLBNNNNNNN",
+            "NNNNNNNNNBBBBBNNNNNNN"
+        ],
+        [
+            "                     ",
+            "                     ",
+            " B  B  B  B  B  B  B ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "  f   F              ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            " N  s  o  g  G  q  u ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                1.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.netherrack"
+        },
+        {
+            "at": [
+                4.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.soul_sand"
+        },
+        {
+            "at": [
+                7.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.soul_soil"
+        },
+        {
+            "at": [
+                10.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.gravel"
+        },
+        {
+            "at": [
+                13.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.glowstone"
+        },
+        {
+            "at": [
+                16.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_quartz_ore"
+        },
+        {
+            "at": [
+                19.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_gold_ore"
+        },
+        {
+            "at": [
+                2.5,
+                2.6,
+                18.5
+            ],
+            "text": "block.qtcraft.fire"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                18.5
+            ],
+            "text": "block.qtcraft.soul_fire"
+        },
+        {
+            "at": [
+                11.5,
+                1.6,
+                18.5
+            ],
+            "text": "block.qtcraft.lava"
+        },
+        {
+            "at": [
+                16.5,
+                1.6,
+                18.5
+            ],
+            "text": "block.qtcraft.magma_block"
+        }
+    ]
+}

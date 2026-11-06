@@ -146,6 +146,8 @@ target_sources(qc_common PRIVATE
     content/worldgen/QcDimensionParser.h content/worldgen/QcDimensionParser.cpp
     content/worldgen/QcDungeonDefinition.h
     content/worldgen/QcMineshaftDefinition.h
+    content/worldgen/QcNetherDefinition.h
+    content/worldgen/QcNetherParser.h content/worldgen/QcNetherParser.cpp
     content/worldgen/QcPortalDefinition.h
     content/worldgen/QcPortalParser.h content/worldgen/QcPortalParser.cpp
     content/worldgen/QcShowcaseDefinition.h

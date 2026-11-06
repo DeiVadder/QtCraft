@@ -132,8 +132,12 @@ struct QcTerrainDefinitions
         /*! The patches of each vegetation layer (decision E-814). */
         std::array<VegetationPatches, VegetationLayers> patches;
 
-        /*! Returns whether the climate chooses this biome (not a river or delta biome). */
-        [[nodiscard]] bool byClimate() const { return !river && !delta; }
+        /*! Whether the biome belongs to another dimension's generator (decision E-1030). */
+        bool elsewhere = false;
+
+        /*! Returns whether the climate chooses this biome (not a river or delta biome, nor one
+            of another dimension). */
+        [[nodiscard]] bool byClimate() const { return !river && !delta && !elsewhere; }
     };
 
     /*! \brief A pool of liquid with its blocks resolved: sunk into a cave floor (QcPoolPlacer),

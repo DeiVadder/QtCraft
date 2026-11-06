@@ -2693,7 +2693,7 @@ A carved stone brick block from two stone brick slabs on top of each other.
 
 ### <a id="block-qtcraft-chunk_loader"></a>Chunk Loader
 
-Keeps its chunk loaded while no player is near, with every chunk its circuits connect to, so farms and machines go on working. Each player may place a few (chunkLoadersPerPlayer, 4 by default); only so many work in a world (chunkLoaders, 64).
+Keeps its chunk loaded while no player is near, with every chunk its circuits connect to, so farms and machines go on working. Each player may place a few (chunkLoadersPerPlayer, 4 by default); only so many work in a world (chunkLoaders, 64). This block cannot be crafted: it comes from the creative catalog or `/give`, and loaders already placed go on working.
 
 | | |
 |---|---|
@@ -2707,16 +2707,6 @@ Keeps its chunk loaded while no player is near, with every chunk its circuits co
 | Light | 7 of 15 |
 | Sound | stone |
 | Groups | [Any chunk loader](tags.md#tag-qtcraft-chunk_loaders) |
-
-**How to make it**
-
-*Crafting table (3 × 3)*
-
-| 1 | 2 | 3 | → |
-|---|---|---|---|
-| [Obsidian](#block-qtcraft-obsidian) | [Diamond](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) | [Chunk Loader](#block-qtcraft-chunk_loader) |
-| [Signal Dust](#block-qtcraft-signal_dust) | [Signal Lamp](#block-qtcraft-signal_lamp) | [Signal Dust](#block-qtcraft-signal_dust) |  |
-| [Obsidian](#block-qtcraft-obsidian) | [Diamond](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) |  |
 
 **Mined with**
 
@@ -7465,6 +7455,10 @@ Netherrack with flecks of gold. Mined, it gives two to six gold nuggets; smelted
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
+**Found in**
+
+[Nether gold ore veins](worldgen.md#ore-qtcraft-nether_gold) (y 10–117)
+
 ### <a id="block-qtcraft-nether_portal"></a>Nether portal
 
 The glowing inside of a lit obsidian frame. Stand in it to travel to the Nether and back. It goes out when its frame breaks.
@@ -7510,6 +7504,10 @@ Netherrack with white quartz crystals. Gives nether quartz and experience.
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Nether quartz ore veins](worldgen.md#ore-qtcraft-nether_quartz) (y 10–117)
 
 ### <a id="block-qtcraft-nether_wart_crop"></a>Nether wart (plant)
 
@@ -7561,6 +7559,10 @@ The soft red rock of the Nether. Fire lit on top of it burns forever. Smelted, i
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Nether Wastes](biomes.md#biome-qtcraft-nether_wastes) (Surface, Below the surface, Under water, Beaches)
 
 ### <a id="block-qtcraft-note_block"></a>Note Block
 
@@ -7939,7 +7941,7 @@ Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or 
 
 **Used in**
 
-[Chunk Loader](#block-qtcraft-chunk_loader), [Enchanting Table](#block-qtcraft-enchanting_table)
+[Enchanting Table](#block-qtcraft-enchanting_table)
 
 **Mined with**
 
@@ -10038,7 +10040,7 @@ The wire of every circuit. It carries a signal of strength 15 from a source and 
 
 **Used in**
 
-[Block of Signal Dust](#block-qtcraft-signal_dust_block), [Chunk Loader](#block-qtcraft-chunk_loader), [Detector Rail](#block-qtcraft-detector_rail), [Powered Rail](#block-qtcraft-powered_rail), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal Lamp](#block-qtcraft-signal_lamp), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Signal Repeater](#block-qtcraft-signal_repeater), [Signal Torch](#block-qtcraft-signal_torch)
+[Block of Signal Dust](#block-qtcraft-signal_dust_block), [Detector Rail](#block-qtcraft-detector_rail), [Powered Rail](#block-qtcraft-powered_rail), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal Lamp](#block-qtcraft-signal_lamp), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Signal Repeater](#block-qtcraft-signal_repeater), [Signal Torch](#block-qtcraft-signal_torch)
 
 **Dropped by**
 
@@ -10150,10 +10152,6 @@ Lights up at once while it is powered and goes dark a moment after.
 | · | [Signal Dust](#block-qtcraft-signal_dust) | · | [Signal Lamp](#block-qtcraft-signal_lamp) |
 | [Signal Dust](#block-qtcraft-signal_dust) | [Lantern](#block-qtcraft-lantern) | [Signal Dust](#block-qtcraft-signal_dust) |  |
 | · | [Signal Dust](#block-qtcraft-signal_dust) | · |  |
-
-**Used in**
-
-[Chunk Loader](#block-qtcraft-chunk_loader)
 
 **Dropped by**
 
@@ -10938,6 +10936,10 @@ Grainy sand with faces in it. Whoever walks on it is slowed down. Fire lit on it
 
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
+**Found in**
+
+[Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley) (Surface, Beaches)
+
 ### <a id="block-qtcraft-soul_soil"></a>Soul soil
 
 Firm soul ground that does not slow anyone down. Fire lit on it burns as soul fire, forever.
@@ -10962,6 +10964,10 @@ Firm soul ground that does not slow anyone down. Fire lit on it burns as soul fi
 **Faster with**
 
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+**Found in**
+
+[Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley) (Below the surface, Under water)
 
 ### <a id="block-qtcraft-soul_torch"></a>Soul torch
 

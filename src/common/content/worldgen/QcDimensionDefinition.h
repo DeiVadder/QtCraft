@@ -63,13 +63,15 @@ struct QcDimensionDefinition
     };
 
     /*! \brief How a liquid flows in the dimension instead of its own values (\c {"liquids"}:
-        {"<liquid block>": {"distance": n, "ticks": n}}), e.g. lava in the nether: further and
-        faster. Missing values keep the liquid's own. \qcfields */
+        {"<liquid block>": {"distance": n, "ticks": n, "dropSearch": n}}), e.g. lava in the
+        nether: further, faster and looking further for a drop. Missing values keep the liquid's
+        own. \qcfields */
     struct LiquidFlow
     {
         QString liquid;
         std::optional<int> distance;
         std::optional<int> ticks;
+        std::optional<int> dropSearch;
     };
 
     /*! \brief A fixed point where travellers arrive (\c {"arrival"}: {"x", "y", "z",
@@ -98,6 +100,9 @@ struct QcDimensionDefinition
     QString generatorOptions;
     /*! The height of the bedrock roof (\c {"ceiling"}, 1 to 255); 0 for an open sky. */
     int ceiling = 0;
+    /*! The lowest height a portal comes out at (\c {"portalFloor"}, default 2): above the lava
+        sea of the nether. */
+    int portalFloor = 2;
     /*! How many overworld blocks one block of this dimension stands for (\c {"coordinateScale"};
         nether: 8). */
     double coordinateScale = 1.0;

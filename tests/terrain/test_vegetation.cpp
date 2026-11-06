@@ -263,6 +263,10 @@ private slots:
         const QcTerrainGenerator generator(m_content, 1);
         QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
+            // No grass blocks grow in another dimension.
+            if (!biome.dimension.isEmpty()) {
+                continue;
+            }
             // Bone meal grows grass on a grass block in every biome.
             QVERIFY2(!biome.vegetation.grass.plants.isEmpty(), qPrintable(biome.name));
             for (const QcVegetationLayer *layer : {&biome.vegetation.grass, &biome.vegetation.flowers}) {

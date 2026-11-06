@@ -22,7 +22,6 @@
 #include "worldgen/terrain/QcVegetationPatchPlacer.h"
 
 #include <QList>
-#include <QVarLengthArray>
 
 #include <array>
 #include <memory>
@@ -272,12 +271,6 @@ private:
     // Per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     QList<bool> carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
     void placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
-    // The cells of one vein, chunk-local; on the stack up to the largest vein the content allows
-    // (`veinSize` at most 64, QcWorldgenParser).
-    using Vein = QVarLengthArray<QcBlockPos, 64>;
-    // One compact vein of `ore`, grown from its first cell.
-    [[nodiscard]] Vein grownVein(const Ore &ore, int vein, QcChunkPos pos) const;
-    void placeVein(QcChunk &chunk, const Ore &ore, const Vein &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     // Columns under and around `village` (may be null) and the footprints of surface structures
     // (`structures`) get none.

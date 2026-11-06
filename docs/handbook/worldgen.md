@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Copper ore veins](#ore-qtcraft-copper) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Dry shrub](#feature-qtcraft-dry_shrub) · [Emerald ore veins](#ore-qtcraft-emerald) · [Giant jungle tree](#feature-qtcraft-giant_jungle_tree) · [Giant spruce](#feature-qtcraft-giant_spruce_tree) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Infested stone veins](#ore-qtcraft-infested_stone) · [Iron ore veins](#ore-qtcraft-iron) · [Jungle bush](#feature-qtcraft-jungle_bush) · [Jungle tree](#feature-qtcraft-jungle_tree) · [Lapis lazuli ore veins](#ore-qtcraft-lapis) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lily pads](#feature-qtcraft-lily_pad) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Oak bush](#feature-qtcraft-oak_bush) · [Oak tree](#feature-qtcraft-oak_tree) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Reeds](#feature-qtcraft-reeds) · [Signal ore veins](#ore-qtcraft-signal) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
+**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Copper ore veins](#ore-qtcraft-copper) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Dry shrub](#feature-qtcraft-dry_shrub) · [Emerald ore veins](#ore-qtcraft-emerald) · [Giant jungle tree](#feature-qtcraft-giant_jungle_tree) · [Giant spruce](#feature-qtcraft-giant_spruce_tree) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Infested stone veins](#ore-qtcraft-infested_stone) · [Iron ore veins](#ore-qtcraft-iron) · [Jungle bush](#feature-qtcraft-jungle_bush) · [Jungle tree](#feature-qtcraft-jungle_tree) · [Lapis lazuli ore veins](#ore-qtcraft-lapis) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lily pads](#feature-qtcraft-lily_pad) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Nether gold ore veins](#ore-qtcraft-nether_gold) · [Nether quartz ore veins](#ore-qtcraft-nether_quartz) · [Oak bush](#feature-qtcraft-oak_bush) · [Oak tree](#feature-qtcraft-oak_tree) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Reeds](#feature-qtcraft-reeds) · [Signal ore veins](#ore-qtcraft-signal) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
 
 ## QtCraft
 
@@ -324,6 +324,26 @@ Tried in every chunk, whatever the biome.
 
 [Forest](biomes.md#biome-qtcraft-forest) (0.12 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (0.4 % of columns), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (0.3 % of columns), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.15 % of columns)
 
+### <a id="ore-qtcraft-nether_gold"></a>Nether gold ore veins
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_gold` |
+| Block | [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 10–117 |
+| Veins | 10 per chunk, up to 8 blocks each |
+
+### <a id="ore-qtcraft-nether_quartz"></a>Nether quartz ore veins
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_quartz` |
+| Block | [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 10–117 |
+| Veins | 16 per chunk, up to 12 blocks each |
+
 ### <a id="feature-qtcraft-oak_bush"></a>Oak bush
 
 | | |
@@ -464,11 +484,11 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Ore veins**
 
-[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Copper ore veins](#ore-qtcraft-copper) (y 16–96), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Emerald ore veins](#ore-qtcraft-emerald) (y 4–32), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Infested stone veins](#ore-qtcraft-infested_stone) (y 40–160), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Lapis lazuli ore veins](#ore-qtcraft-lapis) (y 2–34), [Magma block veins](#ore-qtcraft-magma) (y 5–24), [Signal ore veins](#ore-qtcraft-signal) (y 2–16)
+[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Copper ore veins](#ore-qtcraft-copper) (y 16–96), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Emerald ore veins](#ore-qtcraft-emerald) (y 4–32), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Infested stone veins](#ore-qtcraft-infested_stone) (y 40–160), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Lapis lazuli ore veins](#ore-qtcraft-lapis) (y 2–34), [Magma block veins](#ore-qtcraft-magma) (y 5–24), [Nether gold ore veins](#ore-qtcraft-nether_gold) (y 10–117), [Nether quartz ore veins](#ore-qtcraft-nether_quartz) (y 10–117), [Signal ore veins](#ore-qtcraft-signal) (y 2–16)
 
 **Biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [River](biomes.md#biome-qtcraft-river), [River Delta](biomes.md#biome-qtcraft-delta), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [Mountains](biomes.md#biome-qtcraft-mountains), [Nether Wastes](biomes.md#biome-qtcraft-nether_wastes), [Plains](biomes.md#biome-qtcraft-plains), [River](biomes.md#biome-qtcraft-river), [River Delta](biomes.md#biome-qtcraft-delta), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="feature-qtcraft-wild_carrots"></a>Wild carrots
 

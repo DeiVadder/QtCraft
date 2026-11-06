@@ -239,6 +239,8 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         const bool storedByASwitch = !arrival.hasBlockEntityRecord && m_state.world().isVersionMapped(pos);
         if (arrival.generated || storedByASwitch) {
             QcFurnishing::furnish(m_state, pos);
+            // A chunk whose liquids start to flow changes by that, so it arrives generated only once.
+            arrival.blockEntities.blockUpdates.append(m_state.world().generator().liquidStartsIn(*chunk));
         }
     }
 

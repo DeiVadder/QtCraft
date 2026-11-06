@@ -5869,6 +5869,74 @@ Protokoll 89. Geprüft in `test_effect_rules` (eine Prüfung je Regel, über `/e
 - **Als Inhalt, nicht als Testdaten:** Das Portal der Vorführwelt und das Handbuch sollen wirklich in den Nether führen, und 84.2 ersetzt nur den Generator der Datei. Welten aus Entwicklungsständen mit diesem Platzhalter-Nether werden vor dem Release nicht umgestellt (Regel „keine Welt-Migration vor dem Release“); der flache Generator folgt der Versionsreihe der Oberwelt. **Für 84.2 offen:** `world.json` hält deshalb `dimensionGeneratorVersions["nether"]` mit der Nummer der Oberwelt; eine eigene Nether-Reihe „Version 1“ würde abgelehnt oder falsch gelesen, und schon gespeicherte flache Nether-Chunks blieben flach. 84.2 muss das lösen: die Nummerierung fortsetzen, die gespeicherte Version nach Generator-Typ schlüsseln oder den Eintrag beim Wechsel des Typs verwerfen.
 - **Verworfen:** Platzhalter nur in Tests (die Vorführwelt bräuchte dann einen Sonderweg, und das Handbuch beschriebe etwas, das es im Spiel nicht gibt).
 
+## E-1030 Nether-Generator: Gelände, Biome und Daten (Paket 84.2)
+
+- **Was:** `QcNetherGenerator` (`src/worldgen/nether`) ersetzt den Platzhalter aus E-1026; `dimensions/nether.json` nennt `{"type": "nether"}` und `"ceiling": 127`. Der Typ dient nur Dimensionen: `QcWorldGenerators::types()` und `isKnown()` kennen ihn nicht (keine Welt lässt sich als Nether anlegen), `checkOptions`, `create` und `versionSeries` schon.
+- **Gelände** (`QcNetherTerrain`): 3D-Rauschen auf einem groben Gitter (4 × 8 × 4 Blöcke, trilinear; 425 Stützpunkte statt 32 768 Rauschwerte je Chunk), dazu Zug zum Boden unterhalb `floorHeight` und zur Decke oberhalb `roofHeight`; fest, wo die Summe über 0 liegt. Lava füllt alles Offene bis `liquidLevel` 31. Grundgestein bei 0 und 127, je `bedrockLayers` tief ausdünnend, darüber nichts. `isSolid`, `floorAt` rechnen dieselbe Zelle wie der Chunk, darum braucht die Planung keine Chunks.
+- **Biome und Erze als gewöhnliche Dateien:** `biomes/*.json` und `ores/*.json` bekommen das Feld `dimension`; die Oberwelt lässt fremde aus (`Biome::elsewhere`, `byClimate()`; `oresOf`), der Nether nimmt nur seine. So bleiben Texte, Kartenfarben, Spawn-Gewichte (84.4) und das Handbuch dieselben Wege. Die Indizes der Oberwelt-Biome verschieben sich dadurch; Prüfsummen hashen Namen, `test_generator_versions` bleibt grün.
+- **Biom-Karte ohne Oberwelt-Klima:** zwei eigene Rauschfelder (`biomeScale` 200), ein Biom ist ein Punkt darin (`temperature`, `humidity` bedeuten dort nur Koordinaten), die Spalte nimmt den nächsten Punkt. 84.3 ergänzt Karmesin-, Wirrwald und Basaltdeltas nur als Dateien. Seelensandtal rund 17 % der Karte.
+- **Übriges als Daten:** `worldgen/nether.json` (`QcNetherSettings`, `QcNetherParser`; eine spätere Datei ersetzt die ganze). Adern teilen sich den Code mit der Oberwelt (`QcOreVeins`, aus `QcTerrainGenerator` herausgelöst, Ausgabe gleich).
+- **Verworfen:** Nether-Biome in eigener Liste von `nether.json` (Spawn-Gewichte, Handbuch und Texte bräuchten zweite Wege); jeder Block aus vollem Rauschen (rund 75-mal mehr Rauschwerte, ohne sichtbaren Gewinn); `temperature`/`humidity` aus dem Oberwelt-Klima (Plan: keine Oberwelt-Klimakarte im Nether).
+
+## E-1031 Lavaquellen fließen beim Eintreffen des Chunks (Paket 84.2)
+
+- **Was:** Eine Quelle (`springs`) ist ein Lava-Block in einer Wand mit genau einer offenen Seite. Damit sie wirklich fließt, gibt `QcWorldGenerator::liquidStartsIn(chunk)` (Standard leer) die Zellen eines frisch erzeugten Chunks zurück; `QcChunkLoading::restore` stellt sie als Block-Updates ein, wie gespeicherte Updates. `QcNetherDecorator::springsIn` rechnet die Versuche aus dem Chunk nach (24 Hash-Werte je Chunk, keine Suche), darum billig auf dem Tick-Thread und ohne Zustand.
+- **Einmalig ohne Merker:** Ein Chunk, dessen Quelle lief, ist geändert und kommt beim nächsten Mal aus dem Speicher (nicht `generated`); einer, dessen Quelle nicht lief, wird neu erzeugt und startet sie wieder.
+- **Lavasee:** Quellblöcke des Sees planen keine Schritte, solange niemand sie berührt: der See kostet keine Flüssigkeits-Ticks (Messung E-1035).
+- **Verworfen:** Liste in `QcChunk` (Speicher in jedem Chunk für wenige Fälle); Feld in `QcChunkFurnishing` (`furnish` fragt den Generator nur bei Spawnern, Containern und Schienen, und der Generator kennt die Quellen ohne Chunk nicht); vorgefertigte Lavasäulen im Generator (bleiben ohne Update stehen, Ende am Chunk-Rand).
+
+## E-1032 Ruinenportale und Bauwerke im Nether (Paket 84.2)
+
+- **Was:** `QcNetherStructures`: höchstens eine Kopie je Art und Quadrat (`spacing` 320, Anteil 0,5), ganz im Quadrat, auf einem Boden über der Lava mit Platz; Ecken dürfen um 6 Blöcke abweichen, 8 Versuche je Quadrat. Der Bau leert den Grundriss, füllt darunter bis zu 12 Blöcke auf und schreibt die Kopie. `ruined_portal_nether` ist die Ruine der Oberwelt mit Netherrack statt Terrakotta (dort unverändert, siehe Plan: eingefrorene Oberwelt) und Netherziegeln statt Bruchstein, ohne `surface`-Feld, also nie in der Oberwelt. `/locate` kennt sie im Nether (`locatableNames`, `nearestStructure`); die Truhe kommt über `furnishingIn`.
+- **Ohne Plan-Cache:** Ein Plan liest nur das Rauschen (rund 2 000 Rauschwerte), ein Chunk fragt nur seine Quadrate; thread-sicher ohne Sperre. Wird der Nether reicher an Bauwerken (Festung 84.5a mit eigenem Netz-Planer, Bastion 84.6b), bringen die ihre Planer und Caches selbst.
+
+## E-1033 Eigene Versionsreihe des Nethers: Reihe neben der Nummer (Paket 84.2, löst die offene Frage aus E-1026)
+
+- **Problem:** Der Platzhalter folgte der Oberwelt-Reihe; `world.json` hält für `qtcraft:nether` eine Oberwelt-Nummer (2, nach einem Umstieg 87.1 auch 1). Eine bloße Nummer „1“ wäre in der neuen Reihe gültig und würde falsch gelesen; gespeicherte flache Chunks kämen neben echten Nether-Chunks zu liegen.
+- **Entscheidung:** Die Nummer gilt nur in ihrer Reihe, also steht die Reihe daneben: `"dimensions": {"qtcraft:nether": {"version": 1, "series": "nether"}}` (`QcGeneratorVersion::Series::name`, `QcWorldInfo::dimensionGeneratorSeries`, geschrieben von `QcDimensions::withVersion`). Ohne `series` gilt die Oberwelt-Reihe; alle Einträge vor 84.2 sind das ohne Umbau. Nach Reihe statt nach Generator-Typ, weil flach, leer und Gelände dieselben Nummern teilen.
+- **Reihe passt nicht** (`QcDimensions::seriesFits`): Die Dimension öffnet nicht, mit Grund („was made by the overworld generators (version 2) …“), `versionWarnings` nennt es beim Laden, der Generator-Umstieg lehnt ab, der Eintrag bleibt unverändert. Der Rest der Welt spielt weiter; ein Spieler, der dort war, steht in der Oberwelt und behält seinen Rückweg (E-989). Gilt für jede Dimension, deren Generator ein Mod austauscht. **Entwicklungswelten mit Platzhalter bleiben so**, keine Migration (Regel vor dem Release); wer den Nether darin will, löscht `dimensions/qtcraft/nether` und den Eintrag.
+- **Welten aus 1.0.0** haben keinen Eintrag: späte Dimension, `Series::forLateDimension`: solange die Reihe nichts eingefroren hat die offene Version 1. **Reihe:** `QcGeneratorVersion::nether` {1, 1, 0}; beim Release 1.1.0 `lastFrozen` auf 1 setzen.
+- **Weltformat bleibt 20:** nur ein neues optionales Feld; veröffentlichte Stände lesen Format 20 nicht (E-979). **Prüfsummen:** `test_generator_versions` hat `netherVersionsKeepTheirWorlds`, Werte unter `"nether"` von `tests/data/generator-versions.json`, Aufnahme mit `QC_RECORD_GENERATOR_REFERENCE=1 QC_RECORD_GENERATOR_SERIES=nether`. Die Checkliste von E-922 gilt.
+- **Verworfen:** die Oberwelt-Nummerierung fortsetzen (Nether beginnt bei 3: widerspricht E-979 und der Reihe je Generator; die Nummer verriete nichts über die flachen Chunks); den Eintrag beim Typwechsel still verwerfen (flache Chunks bleiben, Nähte ohne Hinweis); `generator`-Typ statt Reihe im Eintrag (Wechsel flach ↔ leer ist kein Zahlenproblem).
+
+## E-1034 Ankunft im Nether der Vorführwelt (Paket 84.2)
+
+- **Was:** Eine Vorführwelt öffnet den Nether mit der Option `station` (`QcWorldGenerators::netherStation`, gesetzt in `QcDimensions::open`, weil nur sie weiß, dass die Welt unversioniert ist). Die Struktur `nether_arrival` entsteht dort, wohin das Portal der Vorführwelt führt: `QcWorldGenerators` plant die Vorführwelt einmal, nimmt die Lage von `station.portal` (`portal_station`) und teilt durch den Maßstab. Die Station ist ein geräumter Boden von 21 × 21 Blöcken mit Mustern (Netherrack, Seelensand, Seelenerde, Kies, Glowstone, beide Erze), Feuer, Seelenfeuer, Magma und einem gefassten Lava-Becken, jeweils beschriftet. Die Mitte bleibt frei: dort baut `create` das Gegenportal.
+- **Verworfen:** feste Koordinaten in `nether.json` (die Lage der Portal-Station hängt vom Plan der Vorführwelt ab und wandert mit jeder Etappe).
+
+## E-1035 Lava und Kosten des Generators (Paket 84.2, offene Frage 6 des Plans)
+
+- **Gemessen** (`test_nether_measure`, Seed 42, Ticks von Hand, 289 Chunks auf einmal geladen, Radius 8; Release-Build, Debug in Klammern): Tick im Schnitt 0,138 ms (2,4 ms über die ersten 1200 Ticks), 99. Perzentil 4,2 ms, schlechtester Tick 7,9 ms (94,5 ms); Plan der Flüssigkeit höchstens 294 Schritte, nichts verworfen. Nach etwa 2500 Ticks ist der Plan leer und bleibt leer.
+- **Warum es billig ist:** Quellblöcke eines Lavasees ticken nicht, bis ein Nachbar sich ändert. Nur die Lavaquellen starten (`QcWorldGenerator::liquidStartsIn`), sie fließen aus und kommen zur Ruhe. **Kein Folgepaket nötig.**
+- **Kosten je Chunk** (`generationCost`, 36 Chunks): Nether 0,43 ms gegen Oberwelt 2,50 ms im Release (Debug 5,8 gegen 12,0 ms); Generieren und Laden zusammen 0,77 ms je Chunk.
+- **Mit schnellerer Lava (E-1037), gleiche Messung im Release:** Tick im Schnitt 0,192 ms, 99. Perzentil 5,4 ms, schlechtester Tick 8,0 ms, Plan höchstens 496 Schritte, 0 verworfen, vor Tick 2000 leer. Die Quellen kommen schneller zur Ruhe; kein Folgepaket nötig.
+
+## E-1036 Chunk-Lader nur im Kreativmodus (Paket 79.91)
+
+- **Was (Mensch 2026-11-05):** Das Rezept `recipes/chunk_loader.json` ist entfernt; der Block kommt nur noch aus dem Kreativ-Katalog oder von `/give`. Gesetzte Lader arbeiten weiter (E-377, `QcChunkLoaders`); die Grenzen `chunkLoaders`/`chunkLoadersPerPlayer` bleiben. Das Handbuch sagt es.
+
+## E-1037 Lava fließt im Nether weiter und schneller (Paket 84.2, Mensch 2026-11-05)
+
+- **Was:** `QcLiquidFlow` nimmt die Werte `liquids` der Dimension (`QcDimensionDefinition::liquidFlows`) und rechnet mit ihnen statt mit denen des Blocks: Der Nether setzt für Lava `distance` 7 und `ticks` 10, die Oberwelt bleibt bei 3 und 30, wie im Vorbild. `fedState` und `spreadFaces` bekommen die Reichweite als Argument.
+- **Blockzustände:** `lava` hat dafür die Stufen 0 bis 7. Die Welten speichern Zustände beim Namen, die neuen Stufen ändern also weder Weltformat noch vorhandene Chunks; das Protokoll bleibt 90, der Inhalt kommt ohnehin vom Server. Eine Dimension, die weiter will, als der Block Stufen hat, fließt so weit, wie es Stufen gibt, mit einer Warnung.
+- **Darstellung:** Die Höhe je Zustand steht in einer Tabelle für den ganzen Inhalt und kennt die Dimension nicht. Bis zur eigenen `distance` bleibt sie unverändert (Oberwelt wie bisher), Stufen darüber sind eine dünne Schicht von 1/8. Im Nether fällt Lava also auf den ersten drei Blöcken stärker ab als im Vorbild.
+- **Verworfen:** Stufe je Dimension in der Höhentabelle (Tabelle je Dimension im Client, nur für drei Stufen Höhe).
+
+## E-1038 Keine Spawns auf Grundgestein (Paket 84.2, Mensch 2026-11-05)
+
+- **Was:** `QcBlockDefinition::keepsSpawnsAway` gilt auch für feste Blöcke, die man nicht abbauen kann (`hardness` < 0): heute nur Grundgestein. Wie im Vorbild erscheint darauf nichts, auch nicht auf dem Dach des Nethers. Die Handbuch-Tabellen lesen dieselbe Regel.
+- **Verworfen:** ein neues Feld im Blockformat (ändert das Inhaltsformat im Protokoll für einen einzigen Block).
+
+## E-1039 Lavaquellen fallen als dünne Säule ins Meer (Paket 84.2, Mensch 2026-11-05)
+
+- **Befund** (`test_nether_measure::fallsOfTheSprings`, Seed 42, 169 Chunks um das Ruinenportal, nach 2500 Ticks, Reichweite 7): 25 Quellen (0,15 je Chunk), 7 öffnen auf einen Absatz; die größten Lavakörper hatten 1977, 1702 und 1461 Zellen aus je 2 bis 3 Quellen, in einer Höhe bis 39 fallende Zellen und bis 96 Zellen Fläche, auch eine einzige Quelle machte 588 Zellen. Ursache: Der Strom läuft auf jedem Absatz bis zu 7 Blöcke nach allen Seiten, jede Kante fällt, und auf dem nächsten Absatz beginnt es von vorn. `dropSearch` blieb bei 2, kürzer als die Reichweite, die Lava lief also gleichmäßig statt zur nächsten Kante.
+- **Was:** (1) `liquids` einer Dimension nimmt auch `dropSearch`, der Nether setzt 4 wie im Vorbild; die Oberwelt bleibt bei 2. (2) Eine Lavaquelle entsteht nur noch, wo die Öffnung frei ins Lavameer fällt (`QcNetherDecorator::fallsIntoTheSea`): kein Absatz unterwegs, also eine Säule. Dafür mehr Versuche je Chunk (`tries` 96).
+- **Ergebnis** (gleiche Messung): 20 Körper aus je 1 Quelle (0,12 je Chunk), 0 Absätze, in jeder Höhe genau 1 fallende Zelle, größter Körper 32 Zellen.
+- **Nach den Bauwerken:** Quellen öffnen sich erst im fertigen Chunk (`QcNetherDecorator::placeSprings` nach `QcNetherStructures::build`). Vorher fiel in der Vorführwelt eine Säule auf den Boden der Ankunftsstation und lief dort breit aus; `noSpringFallsOntoTheStation` stellt die Station unter eine Säule.
+- **Kosten** (`lavaCost` im Release, Seed 42, 289 Chunks, 3000 Ticks): Tick im Schnitt 0,061 ms, 99. Perzentil 0,50 ms, schlechtester 3,0 ms, Plan höchstens 58 Schritte, 0 verworfen (vorher 0,192, 5,4, 8,0 ms und 496 Schritte); `generationCost` Nether 0,42 ms gegen Oberwelt 2,31 ms je Chunk.
+- **Bleibt:** Lava läuft auf offenem Boden 7 Blöcke, alle 10 Ticks; das betrifft Lava, die Spieler ausgießen.
+- **Verworfen:** Vorhänge durch eine kürzere Reichweite des Nethers begrenzen (der Mensch wollte die schnelle Lava); nur `dropSearch` erhöhen (Absätze breiten die Lava weiter aus).
+
 ## E-1040 Ring und Anteil beim Umstieg `blend` (Paket 87.3)
 
 - **Was:** `qtcraft-headless --convert-generator … --mode blend [--blend-chunks N]` und „Mit Übergang umstellen“ tun dasselbe wie `hard` (E-1014) und legen zusätzlich einen Ring um die alte Fläche, die Chunks der Karte einschließlich des Bauwerks-Abschlusses (E-1013). Die Breite ist ein Parameter der Umwandlung (`QcBlendWidth`: 2 bis 16 Chunks, Standard 6, Mensch 2026-11-05), gehört nicht zur Welt und steht im Dialog als Schieberegler (`QcGeneratorUpgradeController::blendChunks`, ein Wert außerhalb wird mit `qCWarning` abgelehnt, E-688; `convert` und `checkTargets` lehnen ihn ebenfalls ab).

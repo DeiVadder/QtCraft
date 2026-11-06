@@ -530,6 +530,29 @@ A structure (`structures/<name>.json`, decision E-219) is a building made of blo
 - **Fields:** `name` (at most 128 characters with the namespace, no `/` or `.`: it names the dimension's folder), `translation` (default `dimension.<namespace>.<name>`), `generator` with `type` (`world` = the type the world was created with, only for the overworld; else a world type such as `void` or `flat`) and its `options` (as for a world of that type), `ceiling` (height of a bedrock roof, 0 for an open sky; every dimension is 256 blocks high), `coordinateScale` (overworld blocks per block, the nether's 8), `sky` (`overworld`, `nether`, `end`), `fogColour`, `ambientLight` (0–15), `skyLight`, `dayCycle`, `weather`, `waterEvaporates`, `liquids` (`{"qtcraft:lava": {"distance": 7, "ticks": 10}}`: how a liquid flows here), `bedsExplode`, `compassesSpin`, `floor` (`bedrock`, `void`), `voidDamage` (per second below a void floor), `arrival` (a fixed arrival point with an optional platform). Defaults: those of the overworld. The server reads the generator and `weather` now; sky, light, the other rules and the arrival point take effect with stages 83.1c to 83.3. When a server starts it warns about a generator that cannot generate, `world` outside the overworld, another type for the overworld (it always generates as the world was created) and unknown blocks in `arrival.platform` and `liquids`; such a dimension does not open, the server still starts.
 - **Worlds:** the overworld stays in the world folder; `dimensions/<namespace>/<name>/` holds every other dimension, with the same files and a `dimension.json` (a part Windows reserves, such as `con` or `com1`, gets a `~`). A dimension opens when a player is in it or `/tp … in <dimension>` names it. The one-time setup of its generator runs when it first opens, without the time and the rules, which stay those of the world. A player whose dimension cannot open (its mod is missing) plays from the world spawn and returns to his place when it opens again. Each dimension keeps its own world generator version (`"generator": {"dimensions": {"<name>": {"version": N}}}` in `world.json`): a new world gives every dimension the current one, a world older than the dimension gives it the newest frozen one when it is first opened. A world keeps at most 256 of these, entries of removed mods included; beyond that a further dimension does not open.
 
+### The nether (stage 84.2)
+
+The dimension `qtcraft:nether` uses the generator type `nether` (decision E-1030); it serves dimensions only, no world can be created as it. `worldgen/nether.json` holds its settings; a later pack replaces the file as a whole:
+
+```json
+{
+    "filler": "netherrack", "bedrock": "bedrock", "liquid": "lava",
+    "liquidLevel": 31, "roof": 127, "bedrockLayers": 4, "biomeScale": 200,
+    "shape": { "scale": 56, "verticalScale": 28, "octaves": 3, "floorHeight": 30, "floorFade": 16, "roofHeight": 100, "roofFade": 22, "solidity": -0.06 },
+    "shores": [ { "block": "gravel", "scale": 14, "threshold": 0.22, "height": 3, "depth": 3 } ],
+    "clusters": [ { "block": "glowstone", "on": "netherrack", "tries": 6, "minY": 40, "maxY": 124, "size": 40, "radius": 4, "depth": 9 } ],
+    "springs": [ { "block": "lava", "in": "netherrack", "tries": 24, "minY": 36, "maxY": 120 } ],
+    "fires": [ { "block": "fire", "on": ["netherrack"], "tries": 3 } ],
+    "structures": [ { "structure": "ruined_portal_nether", "spacing": 320, "chance": 0.5 } ],
+    "station": { "structure": "nether_arrival", "portal": "portal_station" }
+}
+```
+
+- **Terrain:** `shape` is a 3D noise on a coarse grid: solid where the noise plus `solidity` plus the pull of the floor (below `floorHeight`, full after `floorFade` blocks) and of the roof (above `roofHeight`, full after `roofFade`) is above 0. `liquid` fills what is open up to `liquidLevel`; bedrock closes height 0 and `roof`, `bedrockLayers` deep in thinning layers; nothing lies above `roof`.
+- **Dimension fields:** `portalFloor` is the lowest height a portal comes out at (default 2); `liquids` sets `distance`, `ticks` and `dropSearch` of a liquid in the dimension, as far as the block has `level` states.
+- **Biomes and ores:** ordinary files in `biomes/` and `ores/` with `"dimension": "nether"` (the `biomes` of an ore do not count there: nether ores lie in every biome); the overworld's terrain leaves those out, and files without the field stay out of the nether. On the nether's map a biome's `temperature` and `humidity` are its point between two noises of cell size `biomeScale`: a column takes the biome with the nearest point. A biome gives `surface`, `subsurface`, `subsurfaceDepth` and `surfacePatches`; the map colour, texts and creatures work as everywhere.
+- **Lists:** `shores` turn floors within `height` blocks of the lava into `block`, `depth` deep, where a noise of cell size `scale` is above `threshold`; `clusters` hang from roofs of `on`; `springs` are cells of `in` in a wall with one open side, which flow as soon as their chunk arrives; `fires` burn on floors of `on`; `structures` place one copy at most per square of `spacing` blocks with the share `chance`, on a floor above the lava; `/locate` finds them in the nether. `station` is built only in the nether of a showcase, where its portal leads.
+
 ### Portals (stage 83.3)
 
 `portals/<name>.json` (decisions E-1020 to E-1025) describes a portal between two dimensions: a frame of blocks that, once lit, fills with a portal block and carries whoever stands in it. The base game has `qtcraft:nether` (`content/qtcraft/portals/nether.json`).

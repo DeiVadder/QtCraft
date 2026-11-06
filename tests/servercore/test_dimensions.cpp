@@ -451,12 +451,12 @@ private slots:
         const std::shared_ptr<const QcContentRegistry> content = contentWithTestDimensions();
         QcWorldInfo info;
         info.generator = QString::fromLatin1(QcWorldGenerators::terrain);
-        const QMap<QString, int> versions = QcDimensions::versionsForNewWorld(*content, info);
+        const QMap<QString, int> versions = QcDimensions::withVersionsForNewWorld(*content, info).dimensionGeneratorVersions;
         // The two test dimensions and the nether of the base game.
         QCOMPARE(versions.size(), 3);
         QCOMPARE(versions.value(u"test:empty"_s), QcGeneratorVersion::current);
         info.generator = QString::fromLatin1(QcWorldGenerators::showcase);
-        QVERIFY(QcDimensions::versionsForNewWorld(*content, info).isEmpty());
+        QVERIFY(QcDimensions::withVersionsForNewWorld(*content, info).dimensionGeneratorVersions.isEmpty());
     }
 
     void aWorldNeverKeepsMoreVersionsThanItCanRead()
@@ -469,7 +469,7 @@ private slots:
         QcWorldInfo info;
         info.name = u"Crowded"_s;
         info.generator = QString::fromLatin1(QcWorldGenerators::terrain);
-        info.dimensionGeneratorVersions = QcDimensions::versionsForNewWorld(*content, info);
+        info.dimensionGeneratorVersions = QcDimensions::withVersionsForNewWorld(*content, info).dimensionGeneratorVersions;
         QCOMPARE(info.dimensionGeneratorVersions.size(), QcWorldInfo::maxDimensionVersions);
         QTemporaryDir dir;
         const QcTestWorldFiles storage(dir.path(), content);

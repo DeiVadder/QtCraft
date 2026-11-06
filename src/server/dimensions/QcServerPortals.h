@@ -75,6 +75,8 @@ private:
     void hum();
     void forgetGone();
     void carry(const Departure &departure);
+    // Tells `player` why the portal of `departure` does not take him, if its dimension refused.
+    void tellRefusal(const QcServerClient &player, const Departure &departure);
     // The player of `departure`, still playing in the dimension he left from; null otherwise.
     QcServerClient *playerOf(const Departure &departure);
 

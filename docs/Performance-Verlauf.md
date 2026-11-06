@@ -2898,6 +2898,10 @@ Stand `0ea6db0`, Release, D3D11, RTX 5060 Ti, i7-14700K, 2560 × 1440 mit 143 Hz
 
 Server-Tick im Mittel 0,55–0,96 ms. Mit VSync zeigt die Bildzeit nur die Monitorfrequenz (6,94 ms).
 
+## Nether-Generator 84.2: Lava und Chunk-Kosten (2026-11-05)
+
+`test_nether_measure` im Release-Build, Seed 42, Ticks von Hand, 289 Chunks, 3000 Ticks: Tick im Schnitt 0,138 ms, 99. Perzentil 4,2 ms, schlechtester 7,9 ms, Flüssigkeits-Plan höchstens 294 Schritte, 0 verworfen, nach etwa 2500 Ticks leer. `generationCost`: Nether 0,43 ms je Chunk, Oberwelt 2,50 ms. Mit Lava wie im Vorbild (Reichweite 7, alle 10 Ticks; E-1037): Schnitt 0,192 ms, 99. Perzentil 5,4 ms, schlechtester 8,0 ms, Plan höchstens 496 Schritte, 0 verworfen, vor Tick 2000 leer; Nether 0,41 ms je Chunk, Oberwelt 2,33 ms. Einordnung in E-1035. Mit Quellen nur noch über dem Lavameer (E-1039): Schnitt 0,061 ms, 99. Perzentil 0,50 ms, schlechtester 3,0 ms, Plan höchstens 58 Schritte, 0 verworfen; `generationCost` Nether 0,42 ms, Oberwelt 2,31 ms je Chunk.
+
 ## Release 1.0.0: `release/1.0` gegen `v1.0.0-rc.4`, Fenster-A/B und Headless-A/B (2026-11-04)
 
 - **Stände:** `rc4` = `v1.0.0-rc.4` (`89042db`), `rel10` = `release/1.0` beim Schnitt (`33bdebb`; 82 Commits, darunter 79.47/79.49 Main.qml-Aufteilung, 79.81 Tintenfisch, 79.80 Fisch-Wege, 79.86 Bogen, 79.88 feste Item-Drops, 79.90 HD-Werkzeuge), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv (alle Szenarien 6 Runden, Grund: Streuung von Tick und Render-CPU), Sicht 8. Zweite Reihe gleich mit `TEXTURE_PACKS=builtin:qtcraft_hd_64` für beide; dort 31 von 48 Läufen `loaded=1` (Parallels-VM und `ApplicationsStorageExtension` liefen mit, Last 4–5), die erste Reihe ruhig (2 von 48).

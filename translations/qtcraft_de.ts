@@ -9578,6 +9578,11 @@ Jetzt: %2</translation>
             <numerusform>%1 hat %n weitere Fortschritte erzielt</numerusform>
         </translation>
     </message>
+    <message>
+        <location filename="../src/server/dimensions/QcServerPortals.cpp" line="219"/>
+        <source>This portal leads nowhere: %1</source>
+        <translation>Dieses Portal führt nirgendwohin: %1</translation>
+    </message>
 </context>
 <context>
     <name>QcStartFailure</name>

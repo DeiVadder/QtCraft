@@ -38,6 +38,12 @@ int highestFloor(const QcDimensionDefinition &dimension, int height)
     return top - height - 1;
 }
 
+// The lowest floor of a frame in `dimension`, whose highest is `highest`.
+int lowestFloor(const QcDimensionDefinition &dimension, int highest)
+{
+    return std::min(dimension.portalFloor, highest);
+}
+
 // Looks for ground where a new frame stands without building more than itself.
 class SpotSearch
 {
@@ -180,7 +186,8 @@ QcVec3 QcPortalLinks::scaled(const QcPortalDefinition &portal, QcServerDimension
     const double scale = m_state.current().definition().coordinateScale / target.definition().coordinateScale;
     const QcServerState::Scope scope(m_state, target);
     const int highest = highestFloor(target.definition(), QcPortalDefinition::innerOf(portal.minHeight));
-    const QcVec3 point{position.x * scale, std::clamp(position.y, 2.0, static_cast<double>(highest)), position.z * scale};
+    const double lowest = lowestFloor(target.definition(), highest);
+    const QcVec3 point{position.x * scale, std::clamp(position.y, lowest, static_cast<double>(highest)), position.z * scale};
     const double radius = std::max(1.0, portal.searchRadius / target.definition().coordinateScale);
     if (const std::optional<QcPortalFrame> frame = known(portal, point, radius)) {
         return frame->arrival();
@@ -216,7 +223,7 @@ QcPortalFrame QcPortalLinks::create(const QcPortalDefinition &portal, const QcVe
     }
     QcPortalFrame frame = found.value_or(shape);
     if (!found) {
-        frame.origin = {floorOf(point.x), std::clamp(floorOf(point.y), 2, highest), floorOf(point.z)};
+        frame.origin = {floorOf(point.x), std::clamp(floorOf(point.y), lowestFloor(m_state.current().definition(), highest), highest), floorOf(point.z)};
     }
 
     // Where it must stand, it gets a floor to step out on and room around it (decision E-1025).

@@ -33,4 +33,6 @@ qc_add_test(test_simulation_limits SOURCES servercore/test_simulation_limits.cpp
 qc_add_test(test_world_backup SOURCES servercore/test_world_backup.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h fixtures/QcTestLogin.h LIBRARIES qc_server)
 qc_add_test(test_dimension_play SOURCES servercore/test_dimension_play.cpp fixtures/QcTestUtil.h fixtures/QcTestWorldFiles.h LIBRARIES qc_base_content qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_dimension_parts SOURCES servercore/test_dimension_parts.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_base_content qc_server TIMEOUT 270)
+qc_add_test(test_nether_measure SOURCES servercore/test_nether_measure.cpp fixtures/QcTestUtil.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 120)
+qc_add_test(test_nether_dimension SOURCES servercore/test_nether_dimension.cpp fixtures/QcTestUtil.h fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 120)
 qc_add_test(test_dimensions SOURCES servercore/test_dimensions.cpp fixtures/QcTestUtil.h fixtures/QcTestWorldFiles.h LIBRARIES qc_base_content qc_server qc_worlds qc_clientcore TIMEOUT 180)

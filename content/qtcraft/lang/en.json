@@ -62,6 +62,8 @@
     "biome.qtcraft.flower_valley": "Flower Valley",
     "biome.qtcraft.forest": "Forest",
     "biome.qtcraft.mountains": "Mountains",
+    "biome.qtcraft.nether_wastes": "Nether Wastes",
+    "biome.qtcraft.soul_sand_valley": "Soul Sand Valley",
     "biome.qtcraft.plains": "Plains",
     "biome.qtcraft.swamp": "Swamp",
     "biome.qtcraft.taiga": "Taiga",
@@ -747,6 +749,7 @@
     "structure.qtcraft.ruined_portal": "Ruined portal",
     "structure.qtcraft.ruined_portal_sunken": "Sunken ruined portal",
     "structure.qtcraft.ruined_portal_large": "Large ruined portal",
+    "structure.qtcraft.ruined_portal_nether": "Nether ruined portal",
     "structure.qtcraft.well": "Well",
     "structure.qtcraft.desert_well": "Desert well",
     "structure.qtcraft.oasis": "Oasis",
@@ -996,6 +999,7 @@
     "material.qtcraft.blackstone": "Blackstone",
     "material.qtcraft.polished_blackstone": "Polished blackstone",
     "material.qtcraft.polished_blackstone_brick": "Polished blackstone brick",
+    "structure.qtcraft.nether_arrival": "Nether arrival",
     "structure.qtcraft.nether_station": "Nether blocks",
     "showcase.category.nether": "Nether"
 }

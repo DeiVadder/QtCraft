@@ -250,6 +250,7 @@ namespace QcWorldgenParser {
 
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
+    biome.dimension = reader.name(u"dimension"_s, packNamespace);
     biome.ruggedness = reader.number(u"ruggedness"_s, biome.ruggedness, 0.0, 1.0);
     biome.rarity = reader.number(u"rarity"_s, biome.rarity, 0.0, 1.0);
     biome.spread = reader.number(u"spread"_s, biome.spread, 0.0, 0.1);
@@ -323,6 +324,7 @@ namespace QcWorldgenParser {
     ore.maxY = reader.integer(u"maxY"_s, 64, ore.minY, QcWorld::worldHeight - 1);
     ore.veinsPerChunk = reader.integer(u"veinsPerChunk"_s, 8, 0, 256);
     ore.veinSize = reader.integer(u"veinSize"_s, 6, 1, 64);
+    ore.dimension = reader.name(u"dimension"_s, packNamespace);
     ore.biomes = QcContentFields::parseNames(u"biomes"_s, packNamespace, reader);
 
     if (ore.block.isEmpty()) {

@@ -100,7 +100,7 @@ QcStatus QcServerPersistence::open()
     m_state.info().generatorOptions = m_state.config().generatorOptions;
     m_state.info().worldOptions = m_state.config().worldOptions;
     m_state.info().generatorVersion = versionOf(m_state.config());
-    m_state.info().dimensionGeneratorVersions = QcDimensions::versionsForNewWorld(m_state.content(), m_state.info());
+    m_state.info() = QcDimensions::withVersionsForNewWorld(m_state.content(), std::move(m_state.info()));
     m_state.info().setupDone = false;
 
     if (m_state.config().worldDirectory.isEmpty()) {
@@ -366,7 +366,7 @@ QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storag
     m_state.info() = *info;
     // QcWorldLibrary writes world.json of a new world without the content, so without its dimensions.
     if (!m_state.info().setupDone) {
-        m_state.info().dimensionGeneratorVersions = QcDimensions::versionsForNewWorld(m_state.content(), m_state.info());
+        m_state.info() = QcDimensions::withVersionsForNewWorld(m_state.content(), std::move(m_state.info()));
     }
     warnings.append(QcDimensions::versionWarnings(m_state.content(), m_state.info()));
     m_state.world().loaders().restore(m_state.info().chunkLoaders);

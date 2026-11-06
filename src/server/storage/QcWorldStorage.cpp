@@ -120,7 +120,11 @@ QJsonObject generatorJson(const QcWorldInfo &info)
     if (!info.dimensionGeneratorVersions.isEmpty()) {
         QJsonObject dimensions;
         for (auto it = info.dimensionGeneratorVersions.begin(); it != info.dimensionGeneratorVersions.end(); ++it) {
-            dimensions.insert(it.key(), QJsonObject{{u"version"_s, it.value()}});
+            QJsonObject dimension{{u"version"_s, it.value()}};
+            if (const QString series = info.dimensionGeneratorSeries.value(it.key()); !series.isEmpty()) {
+                dimension.insert(u"series"_s, series);
+            }
+            dimensions.insert(it.key(), dimension);
         }
         generator.insert(u"dimensions"_s, dimensions);
     }
@@ -166,6 +170,20 @@ QcResult<QMap<QString, int>> dimensionVersionsOf(const QJsonObject &generator, c
         versions.insert(it.key(), static_cast<int>(number));
     }
     return versions;
+}
+
+// The series of the dimensions' numbers (decision E-1033), for those outside the overworld's;
+// damage to the entries themselves is refused by dimensionVersionsOf().
+QMap<QString, QString> dimensionSeriesOf(const QJsonObject &generator)
+{
+    QMap<QString, QString> series;
+    const QJsonObject dimensions = generator.value(u"dimensions"_s).toObject();
+    for (auto it = dimensions.begin(); it != dimensions.end(); ++it) {
+        if (const QString name = it.value().toObject().value(u"series"_s).toString(); !name.isEmpty()) {
+            series.insert(it.key(), name.left(QcDimensionDefinition::maxNameLength));
+        }
+    }
+    return series;
 }
 
 // The generator version of world.json's "generator" (decision E-922): worlds without one are of
@@ -305,6 +323,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         return qcError(dimensionVersions.error());
     }
     info.dimensionGeneratorVersions = std::move(*dimensionVersions);
+    info.dimensionGeneratorSeries = dimensionSeriesOf(generator);
     // Optional (decision E-1014): a value out of range only asks again.
     info.keepGeneratorVersion = std::clamp(json.value(u"keepGeneratorVersion"_s).toInt(0), 0, QcGeneratorVersion::maxStored);
     // A mode this version does not know (a newer one) plays as survival and keeps its name.

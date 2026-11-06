@@ -299,6 +299,10 @@ private slots:
     void everyBiomeHasASaneShare()
     {
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
+            // Biomes of another dimension have no place in the climate.
+            if (!biome.dimension.isEmpty()) {
+                continue;
+            }
             // River biomes lie under the water of rivers, not on land (test_rivers, decision E-840);
             // delta biomes are rare and only at river mouths (test_river_deltas, decision E-850).
             if (biome.river || biome.delta) {

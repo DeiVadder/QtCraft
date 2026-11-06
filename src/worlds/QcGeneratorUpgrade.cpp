@@ -144,7 +144,8 @@ QList<Change> outdatedIn(const QcWorldInfo &info, const QcContentRegistry &conte
     }
     for (auto it = info.dimensionGeneratorVersions.cbegin(); it != info.dimensionGeneratorVersions.cend(); ++it) {
         const QcDimensionDefinition *dimension = content.worldgen().dimension(it.key());
-        if (dimension == nullptr || dimension->isOverworld()) {
+        // A number of another series (E-1033) says nothing about this generator; the switch refuses it.
+        if (dimension == nullptr || dimension->isOverworld() || !QcDimensions::seriesFits(info, *dimension)) {
             continue;
         }
         if (const std::optional<Change> change = changeOf(it.key(), QcDimensions::generatorTypeIn(info, *dimension), it.value())) {

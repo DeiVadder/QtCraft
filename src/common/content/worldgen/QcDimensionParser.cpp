@@ -54,7 +54,7 @@ std::optional<int> optionalInteger(QcJsonFieldReader &reader, const QString &key
     return reader.integer(key, low, low, high);
 }
 
-// "liquids": {"<liquid block>": {"distance": n, "ticks": n}}.
+// "liquids": {"<liquid block>": {"distance": n, "ticks": n, "dropSearch": n}}.
 QList<Definition::LiquidFlow> liquidFlowsOf(QcJsonFieldReader &reader, const QString &packNamespace)
 {
     const QJsonValue value = reader.json.value(u"liquids"_s);
@@ -71,7 +71,7 @@ QList<Definition::LiquidFlow> liquidFlowsOf(QcJsonFieldReader &reader, const QSt
     for (auto it = liquids.begin(); it != liquids.end(); ++it) {
         const QJsonObject entry{{u"liquid"_s, it.key()}};
         QcJsonFieldReader names{entry, reader.context, {}};
-        Definition::LiquidFlow flow{names.name(u"liquid"_s, packNamespace), {}, {}};
+        Definition::LiquidFlow flow{names.name(u"liquid"_s, packNamespace), {}, {}, {}};
         reader.adopt(names);
         if (!it.value().isObject()) {
             reader.fail(u"'liquids' entry '%1' must be an object"_s.arg(it.key()));
@@ -81,6 +81,7 @@ QList<Definition::LiquidFlow> liquidFlowsOf(QcJsonFieldReader &reader, const QSt
         QcJsonFieldReader nested{values, reader.context + u" liquids "_s + it.key(), {}};
         flow.distance = optionalInteger(nested, u"distance"_s, 0, 15);
         flow.ticks = optionalInteger(nested, u"ticks"_s, 1, 1200);
+        flow.dropSearch = optionalInteger(nested, u"dropSearch"_s, 0, 8);
         reader.adopt(nested);
         flows.append(std::move(flow));
     }
@@ -159,6 +160,7 @@ QcResult<QcDimensionDefinition> parseDimension(const QJsonObject &json, const QS
     Generator generator = generatorOf(reader, dimension);
     dimension.generatorType = std::move(generator.type);
     dimension.generatorOptions = std::move(generator.options);
+    dimension.portalFloor = reader.integer(u"portalFloor"_s, 2, 1, QcWorld::worldHeight - 3);
     dimension.ceiling = reader.integer(u"ceiling"_s, 0, 0, QcWorld::worldHeight - 1);
     dimension.coordinateScale = reader.number(u"coordinateScale"_s, 1.0, 1.0 / Definition::maxCoordinateScale, Definition::maxCoordinateScale);
     dimension.sky = skyOf(reader);

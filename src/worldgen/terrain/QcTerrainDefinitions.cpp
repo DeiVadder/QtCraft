@@ -54,7 +54,7 @@ public:
         if (definition.delta && (!definition.riverBiome.isEmpty() || definition.rarity > 0.0)) {
             warn(u"Delta biome %1 names a river biome or has a rarity, which is ignored"_s.arg(definition.name));
         }
-        if (!definition.delta && !definition.surfacePatches.isEmpty()) {
+        if (!definition.delta && !definition.surfacePatches.isEmpty() && definition.dimension.isEmpty()) {
             warn(u"Biome %1 has surface patches, which only delta biomes use"_s.arg(definition.name));
         }
     }
@@ -439,11 +439,20 @@ QList<QcTerrainDefinitions::Ore> oresOf(Loader &loader, const QcContentRegistry 
 {
     QList<QcTerrainDefinitions::Ore> ores;
     for (const QcOreDefinition &definition : content.worldgen().ores()) {
+        if (!definition.dimension.isEmpty() && definition.dimension != QLatin1StringView(QcDimensionDefinition::overworldName)) {
+            continue;
+        }
         if (const std::optional<QcTerrainDefinitions::Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {
             ores.append(*ore);
         }
     }
     return ores;
+}
+
+// Whether the biome `definition` belongs to a dimension of its own.
+bool isElsewhere(const QcBiomeDefinition &definition)
+{
+    return !definition.dimension.isEmpty() && definition.dimension != QLatin1StringView(QcDimensionDefinition::overworldName);
 }
 
 } // namespace
@@ -477,6 +486,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     coldEdges = coldEdgesOf(loader, terrain.coldEdges, water);
     for (const QcBiomeDefinition &definition : content.worldgen().biomes()) {
         Biome biome = loader.biome(definition, stone, water);
+        biome.elsewhere = isElsewhere(definition);
         // With freezing by temperature the water of every biome may freeze where its column is cold
         // enough (decision E-858); a biome's own frozenWater names the block, the others take the ice.
         biome.frozenWater = coldEdges.byTemperature && biome.frozenWater == water ? coldEdges.ice : biome.frozenWater;

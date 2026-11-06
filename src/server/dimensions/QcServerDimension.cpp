@@ -14,7 +14,7 @@ QcServerDimension::QcServerDimension(QcDimensionDefinition definition, const std
     , m_entities(content, seed, m_clients)
     , m_plants(content, seed)
     , m_growth(content, seed)
-    , m_liquids(content)
+    , m_liquids(content, m_definition.liquidFlows)
 {
     // Villagers claim beds and workstations in the village state (decision E-411).
     m_entities.creatures().population().setVillages(&m_world.villages());

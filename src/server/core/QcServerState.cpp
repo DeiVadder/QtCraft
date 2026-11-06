@@ -74,7 +74,7 @@ QcResult<QcServerDimension *> QcServerState::openDimension(const QString &name)
         }
     }
     if (QcDimensions::isVersioned(info())) {
-        info().dimensionGeneratorVersions.insert(name, dimension.generatorVersion());
+        info() = QcDimensions::withVersion(std::move(info()), dimension.definition(), dimension.generatorVersion());
     }
     return opened;
 }

@@ -36,6 +36,8 @@ private:
     void dropPendingChanges(QcChunkPos chunk);
     // Minecarts in the chunk without a rider (without drops); a ridden one stays with its rider.
     void removeMinecarts(QcChunkPos chunk);
+    // Sets the liquids of the generated `chunk` flowing, as on its first arrival.
+    void startLiquids(QcChunkPos chunk);
     void resend(QcChunkPos chunk);
     // Moves playing players in regenerated chunks up until feet and head are in passable blocks.
     void liftPlayers(const QList<QcChunkPos> &chunks);

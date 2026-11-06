@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcNamedList.h"
 #include "common/content/worldgen/QcDimensionDefinition.h"
+#include "common/content/worldgen/QcNetherDefinition.h"
 #include "common/content/worldgen/QcPortalDefinition.h"
 #include "common/content/worldgen/QcShowcaseDefinition.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
@@ -77,6 +78,11 @@ public:
         return registered != nullptr ? *registered : m_defaultOverworld;
     }
 
+    /*! Replaces the settings of the nether generator with \a nether (decision E-1030). */
+    void setNether(QcNetherSettings nether) { m_nether = std::move(nether); }
+    /*! Returns the settings of the nether generator. */
+    const QcNetherSettings &nether() const { return m_nether; }
+
     /*! Adds the \a portal, or replaces the one of the same name in its place (decision
         E-1020). */
     void registerPortal(QcPortalDefinition portal) { m_portals.set(std::move(portal)); }
@@ -114,6 +120,7 @@ private:
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
+    QcNetherSettings m_nether;
     QcNamedList<QcWorldOptionGroup> m_optionGroups;
     QcNamedList<QcWorldOptionDefinition> m_options;
     QcNamedList<QcWorldPreset> m_presets;

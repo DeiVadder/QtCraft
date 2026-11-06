@@ -387,8 +387,8 @@ struct QcBlockDefinition
     static constexpr double maxSlipperiness = 0.995;
 
     /*! Returns whether creatures keep from spawning on or in the block because it hurts or slows
-        them (lava, cobweb; QcNaturalSpawner). */
-    bool keepsSpawnsAway() const { return contactDamage > 0.0 || slowsInside < 1.0; }
+        them (lava, cobweb; QcNaturalSpawner) or is solid and cannot be broken (bedrock). */
+    bool keepsSpawnsAway() const { return contactDamage > 0.0 || slowsInside < 1.0 || (solid && hardness < 0.0); }
     /*! Returns whether the block is water: a liquid that sets nothing alight (lava does); the one
         test for spawn spots in water, drowned and fish, putting out burning bodies and
         QcPhysics::isWaterAt. */

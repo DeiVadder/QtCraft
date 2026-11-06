@@ -4,6 +4,7 @@
 #include "server/dimensions/QcServerPortals.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -208,6 +209,18 @@ void QcServerPortals::travel()
     }
 }
 
+void QcServerPortals::tellRefusal(const QcServerClient &player, const Departure &departure)
+{
+    const QcPortalDefinition &portal = *departure.portal;
+    const QcResult<QcServerDimension *> opened = m_state.openDimension(m_state.current().name() == portal.from ? portal.to : portal.from);
+    if (opened) {
+        return;
+    }
+    player.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "This portal leads nowhere: %1"), {opened.error()}));
+    // Once: he has to step out before the portal takes him again.
+    m_travellers.playerArrived(departure.id);
+}
+
 void QcServerPortals::carry(const Departure &departure)
 {
     const QcServerState::Scope scope(m_state, *departure.from);
@@ -221,6 +234,9 @@ void QcServerPortals::carry(const Departure &departure)
     }
     const std::optional<QcPortalLinks::Destination> destination = m_links.destination(*departure.portal, middleOf(departure.cell));
     if (!destination) {
+        if (player != nullptr) {
+            tellRefusal(*player, departure);
+        }
         return;
     }
 

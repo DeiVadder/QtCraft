@@ -185,6 +185,16 @@ private slots:
 
     // Through the portal into a dimension of nothing with stone in it: a ledge one block wide along
     // x at the point, and a field to step out on `fieldAt` blocks along x away (none with 0).
+    // A portal from low down does not come out in the lava sea of a dimension (portalFloor).
+    void portalFloorKeepsTheFrameUp()
+    {
+        m_content = contentLeadingTo({{u"name"_s, QString::fromLatin1(voidName)}, {u"portalFloor"_s, 150}, {u"generator"_s, QJsonObject{{u"type"_s, u"void"_s}, {u"options"_s, u"radius=0"_s}}}, {u"weather"_s, false}}, u"scaled"_s);
+        startWithPortal();
+        standIn(m_inner);
+        QCOMPARE(m_client->dimensions.last(), QString::fromLatin1(voidName));
+        QVERIFY(QcPhysics::blockContaining(m_client->motion.position).y >= 150);
+    }
+
     void travelOverGround(int fieldAt)
     {
         m_content = contentLeadingTo({{u"name"_s, QString::fromLatin1(voidName)}, {u"generator"_s, QJsonObject{{u"type"_s, u"void"_s}, {u"options"_s, u"radius=0"_s}}}, {u"weather"_s, false}}, u"scaled"_s);

@@ -1,0 +1,17 @@
+{
+    "name": "soul_sand_valley",
+    "dimension": "nether",
+    "icon": "soul_sand",
+    "mapColour": "#5b4a3f",
+    "temperature": 0.74,
+    "humidity": 0.3,
+    "surface": "soul_sand",
+    "subsurface": "soul_soil",
+    "subsurfaceDepth": 2,
+    "surfacePatches": [
+        {
+            "block": "soul_soil",
+            "share": 0.35
+        }
+    ]
+}

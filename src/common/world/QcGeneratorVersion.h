@@ -47,6 +47,10 @@ struct Series
     int oldest = 1;
     int current = 1;
     int lastFrozen = 0;
+    /*! The name of the series: a number means something only within its series, so world.json
+        keeps the name beside the number of a dimension of another series than the overworld's
+        (decision E-1033). */
+    const char *name = "overworld";
 
     /*! Returns whether this game generates \a version of the series. */
     [[nodiscard]] constexpr bool isKnown(int version) const { return version >= oldest && version <= current; }
@@ -58,5 +62,8 @@ struct Series
 
 /*! The versions of the overworld's generators (terrain, flat, void, showcase). */
 inline constexpr Series overworld{oldest, current, lastFrozen};
+/*! The versions of the nether generator (decision E-1033): version 1 is open until the release
+    that ships it. */
+inline constexpr Series nether{1, 1, 0, "nether"};
 
 } // namespace QcGeneratorVersion

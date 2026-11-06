@@ -101,8 +101,11 @@ QcResult<QcServerDimension *> QcDimensions::open(const QString &name, qint64 see
     if (const QcStatus options = QcWorldGenerators::checkOptions(type, definition->generatorOptions, *content()); !options) {
         return qcError(u"The dimension '%1' cannot be generated: %2"_s.arg(name, options.error()));
     }
-    const int generatorVersion = versionIn(info, *definition);
     const QcGeneratorVersion::Series series = QcWorldGenerators::versionSeries(type);
+    if (const QcStatus fits = seriesFits(info, *definition); !fits) {
+        return qcError(fits.error());
+    }
+    const int generatorVersion = versionIn(info, *definition);
     if (!series.isKnown(generatorVersion)) {
         return qcError(u"The dimension '%1' was made with world generator version %2; this game generates versions %3 to %4"_s.arg(name)
                            .arg(generatorVersion)
@@ -110,7 +113,10 @@ QcResult<QcServerDimension *> QcDimensions::open(const QString &name, qint64 see
                            .arg(series.current));
     }
 
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(type, content(), seed, definition->generatorOptions, generatorVersion);
+    // A demonstration world's nether builds the arrival of its portal (decision E-1034).
+    const bool station = !isVersioned(info) && type == QLatin1StringView(QcWorldGenerators::nether);
+    const QString options = station ? QString::fromLatin1(QcWorldGenerators::netherStation) : definition->generatorOptions;
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(type, content(), seed, options, generatorVersion);
     if (!generator) {
         return qcError(u"The dimension '%1' cannot be generated with the world type '%2'"_s.arg(name, type));
     }
@@ -128,6 +134,29 @@ bool QcDimensions::isVersioned(const QcWorldInfo &info)
     return info.generator != QLatin1StringView(QcWorldGenerators::showcase);
 }
 
+QcStatus QcDimensions::seriesFits(const QcWorldInfo &info, const QcDimensionDefinition &dimension)
+{
+    if (!isVersioned(info) || dimension.isOverworld() || !info.dimensionGeneratorVersions.contains(dimension.name)) {
+        return {};
+    }
+    const QString own = QString::fromLatin1(QcWorldGenerators::versionSeries(generatorTypeIn(info, dimension)).name);
+    const QString stored = info.dimensionGeneratorSeries.value(dimension.name, QString::fromLatin1(QcGeneratorVersion::overworld.name));
+    if (stored == own) {
+        return {};
+    }
+    return qcError(u"The dimension '%1' was made by the %2 generators (version %3); this game makes it with the %4 generators and does not read their chunks as these"_s
+                       .arg(dimension.name, stored)
+                       .arg(info.dimensionGeneratorVersions.value(dimension.name))
+                       .arg(own));
+}
+
+QcWorldInfo QcDimensions::withVersion(QcWorldInfo info, const QcDimensionDefinition &dimension, int version)
+{
+    const QString series = QString::fromLatin1(QcWorldGenerators::versionSeries(generatorTypeIn(info, dimension)).name);
+    info.setDimensionVersion(dimension.name, version, series == QLatin1StringView(QcGeneratorVersion::overworld.name) ? QString() : series);
+    return info;
+}
+
 int QcDimensions::versionIn(const QcWorldInfo &info, const QcDimensionDefinition &dimension)
 {
     if (dimension.isOverworld()) {
@@ -140,21 +169,20 @@ int QcDimensions::versionIn(const QcWorldInfo &info, const QcDimensionDefinition
     return info.dimensionGeneratorVersions.value(dimension.name, series.forLateDimension());
 }
 
-QMap<QString, int> QcDimensions::versionsForNewWorld(const QcContentRegistry &content, const QcWorldInfo &info)
+QcWorldInfo QcDimensions::withVersionsForNewWorld(const QcContentRegistry &content, QcWorldInfo info)
 {
-    QMap<QString, int> versions = info.dimensionGeneratorVersions;
     if (!isVersioned(info)) {
-        return versions;
+        return info;
     }
     for (const QcDimensionDefinition &dimension : content.worldgen().dimensions()) {
-        if (versions.size() >= QcWorldInfo::maxDimensionVersions) {
+        if (info.dimensionGeneratorVersions.size() >= QcWorldInfo::maxDimensionVersions) {
             break;
         }
-        if (!dimension.isOverworld() && !versions.contains(dimension.name)) {
-            versions.insert(dimension.name, QcWorldGenerators::versionSeries(dimension.generatorType).current);
+        if (!dimension.isOverworld() && !info.dimensionGeneratorVersions.contains(dimension.name)) {
+            info = withVersion(std::move(info), dimension, QcWorldGenerators::versionSeries(dimension.generatorType).current);
         }
     }
-    return versions;
+    return info;
 }
 
 QStringList QcDimensions::definitionWarnings(const QcContentRegistry &content)
@@ -170,11 +198,14 @@ QStringList QcDimensions::definitionWarnings(const QcContentRegistry &content)
 QStringList QcDimensions::versionWarnings(const QcContentRegistry &content, const QcWorldInfo &info)
 {
     QStringList warnings;
-    if (!isVersioned(info) || info.dimensionGeneratorVersions.size() < QcWorldInfo::maxDimensionVersions) {
+    if (!isVersioned(info)) {
         return warnings;
     }
     for (const QcDimensionDefinition &dimension : content.worldgen().dimensions()) {
-        if (!dimension.isOverworld() && !info.dimensionGeneratorVersions.contains(dimension.name)) {
+        if (const QcStatus fits = seriesFits(info, dimension); !fits) {
+            warnings.append(u"%1; it will not open"_s.arg(fits.error()));
+        }
+        if (info.dimensionGeneratorVersions.size() >= QcWorldInfo::maxDimensionVersions && !dimension.isOverworld() && !info.dimensionGeneratorVersions.contains(dimension.name)) {
             warnings.append(u"The world keeps the versions of %1 dimensions: the dimension '%2' will not open"_s.arg(info.dimensionGeneratorVersions.size()).arg(dimension.name));
         }
     }

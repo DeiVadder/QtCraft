@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Dschungelbusch](#feature-qtcraft-jungle_bush) · [Eiche](#feature-qtcraft-oak_tree) · [Eichenbusch](#feature-qtcraft-oak_bush) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Reeds](#feature-qtcraft-reeds) · [Riesenfichte](#feature-qtcraft-giant_spruce_tree) · [Riesiger Dschungelbaum](#feature-qtcraft-giant_jungle_tree) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Trockenes Gestrüpp](#feature-qtcraft-dry_shrub) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Dschungelbusch](#feature-qtcraft-jungle_bush) · [Eiche](#feature-qtcraft-oak_tree) · [Eichenbusch](#feature-qtcraft-oak_bush) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Nethergolderz-Vorkommen](#ore-qtcraft-nether_gold) · [Netherquarzerz-Vorkommen](#ore-qtcraft-nether_quartz) · [Reeds](#feature-qtcraft-reeds) · [Riesenfichte](#feature-qtcraft-giant_spruce_tree) · [Riesiger Dschungelbaum](#feature-qtcraft-giant_jungle_tree) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Trockenes Gestrüpp](#feature-qtcraft-dry_shrub) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -162,11 +162,11 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Erzadern**
 
-[Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) (y 40–160), [Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Kupfererz-Vorkommen](#ore-qtcraft-copper) (y 16–96), [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) (y 2–34), [Magmablock-Vorkommen](#ore-qtcraft-magma) (y 5–24), [Signalerz-Vorkommen](#ore-qtcraft-signal) (y 2–16), [Smaragderz-Vorkommen](#ore-qtcraft-emerald) (y 4–32), [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) (y 10–50), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
+[Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) (y 40–160), [Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Kupfererz-Vorkommen](#ore-qtcraft-copper) (y 16–96), [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) (y 2–34), [Magmablock-Vorkommen](#ore-qtcraft-magma) (y 5–24), [Nethergolderz-Vorkommen](#ore-qtcraft-nether_gold) (y 10–117), [Netherquarzerz-Vorkommen](#ore-qtcraft-nether_quartz) (y 10–117), [Signalerz-Vorkommen](#ore-qtcraft-signal) (y 2–16), [Smaragderz-Vorkommen](#ore-qtcraft-emerald) (y 4–32), [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) (y 10–50), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
 
 **Biome**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
 
 ### <a id="ore-qtcraft-gold"></a>Golderz-Vorkommen
 
@@ -290,6 +290,26 @@ Je Quadrat aus Chunks geplant, wo die Mittelspalte in einem dieser Biome liegt.
 **In Biomen**
 
 [Dschungel](biomes.md#biome-qtcraft-jungle) (0,4 % der Säulen), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (0,3 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (0,15 % der Säulen), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta) (0,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,12 % der Säulen)
+
+### <a id="ore-qtcraft-nether_gold"></a>Nethergolderz-Vorkommen
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_gold` |
+| Block | [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore) |
+| Ersetzt | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Höhen | y 10–117 |
+| Adern | 10 pro Chunk, je bis 8 Blöcke |
+
+### <a id="ore-qtcraft-nether_quartz"></a>Netherquarzerz-Vorkommen
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_quartz` |
+| Block | [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore) |
+| Ersetzt | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Höhen | y 10–117 |
+| Adern | 16 pro Chunk, je bis 12 Blöcke |
 
 ### <a id="feature-qtcraft-reeds"></a>Reeds
 

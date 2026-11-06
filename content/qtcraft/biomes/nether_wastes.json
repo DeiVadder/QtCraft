@@ -1,0 +1,10 @@
+{
+    "name": "nether_wastes",
+    "dimension": "nether",
+    "icon": "netherrack",
+    "mapColour": "#7a2e2a",
+    "temperature": 0.5,
+    "humidity": 0.5,
+    "surface": "netherrack",
+    "subsurface": "netherrack"
+}

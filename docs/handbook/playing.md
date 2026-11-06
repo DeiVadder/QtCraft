@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -666,6 +666,28 @@ Nothing holds you below the bottom of the world: through a hole in the bedrock o
 **Dropped items**
 
 Items on the ground vanish after 300 s while their area is loaded. Items you throw can be picked up again after 2 s.
+
+### <a id="chapter-qtcraft-nether"></a>The Nether
+
+**A cave without end**
+
+The Nether is one huge cave of netherrack. Bedrock closes it at the bottom and at height 127; there is no sky, no sun and no weather, only a dim light that never changes. Caverns, shafts and bridges of rock fill the height between, and below height 32 lies a sea of lava. Lava springs break out of the walls and run down as soon as you come near, so watch your step on ledges.
+
+**Wastes and soul sand valleys**
+
+Most of the Nether is **Nether Wastes**: bare netherrack with banks of gravel and soul sand along the lava. In a **Soul Sand Valley** every floor is soul sand and soul soil, which slows you down, and the fires burn blue. A map shows the biomes of the Nether as it does those of the overworld, and `/locate` knows its structures once you stand in it.
+
+**What to look for**
+
+Clusters of glowstone hang from the roofs of the caverns. Nether quartz and nether gold ore lie in the netherrack at every height. Fires burn on the rock here and there; on netherrack and soul soil they never go out, so keep your distance.
+
+**Ruined portals**
+
+Now and then a ruined portal stands on a floor above the lava, with a chest and a broken frame of obsidian and crying obsidian. Finish the frame with obsidian and light it to get a second way home.
+
+**See also**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Gravel](blocks.md#block-qtcraft-gravel), [Glowstone](blocks.md#block-qtcraft-glowstone), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Fire](blocks.md#block-qtcraft-fire), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian)
 
 ### <a id="chapter-qtcraft-experience"></a>Experience
 

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Frozen River](#biome-qtcraft-frozen_river) · [Frozen River Delta](#biome-qtcraft-frozen_delta) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Lush River Delta](#biome-qtcraft-lush_delta) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [River](#biome-qtcraft-river) · [River Delta](#biome-qtcraft-delta) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Frozen River](#biome-qtcraft-frozen_river) · [Frozen River Delta](#biome-qtcraft-frozen_delta) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Lush River Delta](#biome-qtcraft-lush_delta) · [Mountains](#biome-qtcraft-mountains) · [Nether Wastes](#biome-qtcraft-nether_wastes) · [Plains](#biome-qtcraft-plains) · [River](#biome-qtcraft-river) · [River Delta](#biome-qtcraft-delta) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Soul Sand Valley](#biome-qtcraft-soul_sand_valley) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
 
 ## QtCraft
 
@@ -355,6 +355,28 @@ High rocky peaks with snow on top.
 
 [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
+### <a id="biome-qtcraft-nether_wastes"></a>Nether Wastes
+
+Bare netherrack, with banks of gravel and soul sand along the lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wastes` |
+| Climate | temperature 0.5, humidity 0.5, ruggedness 0.2 |
+| Terrain height | around y 68, ± 6 |
+| Surface | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Below the surface | [Netherrack](blocks.md#block-qtcraft-netherrack) (3 blocks) |
+| Under water | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Beaches | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
+**Creatures**
+
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+
 ### <a id="biome-qtcraft-plains"></a>Plains
 
 Open grassland with flowers and few trees; pigs and sheep graze here.
@@ -396,7 +418,7 @@ The water of the winding rivers that run through the land down to the sea or int
 | | |
 |---|---|
 | ID | `qtcraft:river` |
-| Rivers of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Jungle](#biome-qtcraft-jungle), [Jungle Edge](#biome-qtcraft-jungle_edge), [Mountains](#biome-qtcraft-mountains), [Plains](#biome-qtcraft-plains), [Swamp](#biome-qtcraft-swamp) |
+| Rivers of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Jungle](#biome-qtcraft-jungle), [Jungle Edge](#biome-qtcraft-jungle_edge), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley), [Swamp](#biome-qtcraft-swamp) |
 | Surface | [Sand](blocks.md#block-qtcraft-sand) |
 | Below the surface | [Sand](blocks.md#block-qtcraft-sand) (3 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand), [Gravel](blocks.md#block-qtcraft-gravel) (35 %), [Clay](blocks.md#block-qtcraft-clay) (10 %) |
@@ -417,7 +439,7 @@ Where a wide river runs through flat land into the sea, it spreads into a fan of
 | | |
 |---|---|
 | ID | `qtcraft:delta` |
-| Deltas of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Mountains](#biome-qtcraft-mountains), [Plains](#biome-qtcraft-plains) |
+| Deltas of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Mountains](#biome-qtcraft-mountains), [Nether Wastes](#biome-qtcraft-nether_wastes), [Plains](#biome-qtcraft-plains), [Soul Sand Valley](#biome-qtcraft-soul_sand_valley) |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (2 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand), [Mud](blocks.md#block-qtcraft-mud) (30 %), [Clay](blocks.md#block-qtcraft-clay) (10 %), [Gravel](blocks.md#block-qtcraft-gravel) (10 %) |
@@ -466,6 +488,28 @@ Cold spruce forest on snow between the tundra and the taiga: fewer and smaller t
 **Creatures**
 
 [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid), [Wolf](creatures.md#mob-qtcraft-wolf)
+
+### <a id="biome-qtcraft-soul_sand_valley"></a>Soul Sand Valley
+
+Floors of soul sand and soul soil, where fires burn blue.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_sand_valley` |
+| Climate | temperature 0.74, humidity 0.3, ruggedness 0.2 |
+| Terrain height | around y 68, ± 6 |
+| Surface | [Soul sand](blocks.md#block-qtcraft-soul_sand) |
+| Below the surface | [Soul soil](blocks.md#block-qtcraft-soul_soil) (2 blocks) |
+| Under water | [Soul soil](blocks.md#block-qtcraft-soul_soil) |
+| Beaches | [Soul sand](blocks.md#block-qtcraft-soul_sand) |
+
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
+**Creatures**
+
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 

@@ -1,6 +1,7 @@
 {
     "%1, x %2, z %3": "%1, x %2, z %3",
     "QtCraft": "QtCraft",
+    "This portal leads nowhere: %1": "Dieses Portal führt nirgendwohin: %1",
     "QtCraft renderer spike": "QtCraft-Renderer-Spike",
     "Chat or /command (e.g. /help), Enter to send, Esc to cancel": "Chat oder /Befehl (z. B. /help), Enter sendet, Esc bricht ab",
     "You died": "Du bist gestorben",

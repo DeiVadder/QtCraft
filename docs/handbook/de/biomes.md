@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Netherwüste](#biome-qtcraft-nether_wastes) · [Seelensandtal](#biome-qtcraft-soul_sand_valley) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
 
 ## QtCraft
 
@@ -184,7 +184,7 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 | | |
 |---|---|
 | ID | `qtcraft:river` |
-| Flüsse in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Flüsse in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Sand](blocks.md#block-qtcraft-sand) |
 | Unter der Oberfläche | [Sand](blocks.md#block-qtcraft-sand) (3 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Kies](blocks.md#block-qtcraft-gravel) (35 %), [Ton](blocks.md#block-qtcraft-clay) (10 %) |
@@ -205,7 +205,7 @@ Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in fla
 | | |
 |---|---|
 | ID | `qtcraft:delta` |
-| Deltas in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Deltas in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (2 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Schlamm](blocks.md#block-qtcraft-mud) (30 %), [Ton](blocks.md#block-qtcraft-clay) (10 %), [Kies](blocks.md#block-qtcraft-gravel) (10 %) |
@@ -288,6 +288,50 @@ Ein Flussdelta in kaltem Land (Tundra, verschneite Taiga, Taiga): kahle Inseln a
 **Wesen**
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
+### <a id="biome-qtcraft-nether_wastes"></a>Netherwüste
+
+Nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wastes` |
+| Klima | Temperatur 0,5, Feuchte 0,5, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (3 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
+### <a id="biome-qtcraft-soul_sand_valley"></a>Seelensandtal
+
+Böden aus Seelensand und Seelenerde, auf denen Feuer blau brennt.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_sand_valley` |
+| Klima | Temperatur 0,74, Feuchte 0,3, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Seelensand](blocks.md#block-qtcraft-soul_sand) |
+| Unter der Oberfläche | [Seelenerde](blocks.md#block-qtcraft-soul_soil) (2 Blöcke) |
+| Unter Wasser | [Seelenerde](blocks.md#block-qtcraft-soul_soil) |
+| Strände | [Seelensand](blocks.md#block-qtcraft-soul_sand) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
 
 ### <a id="biome-qtcraft-swamp"></a>Sumpf
 

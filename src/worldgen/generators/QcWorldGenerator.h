@@ -98,6 +98,15 @@ public:
         Q_UNUSED(pos);
         return {};
     }
+    /*! Returns the cells of the just generated \a chunk that get a block update when it arrives,
+        so that a liquid there starts to flow (the nether's springs, decision E-1031), in world
+        coordinates; the chunk is at hand, so this is cheap on the tick thread. Empty for
+        generators whose liquids rest. */
+    [[nodiscard]] virtual QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const
+    {
+        Q_UNUSED(chunk);
+        return {};
+    }
     /*! Returns the guardian zones (decision E-591) and spawn areas (decision E-871) of the
         structures within about \a reach blocks of \a from (whole regions); empty for generators
         without any. */
