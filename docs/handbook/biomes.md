@@ -22,11 +22,11 @@ Dark rock in bands of basalt and blackstone, stone posts on floors and under roo
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Magma Slime](creatures.md#mob-qtcraft-magma_slime) (71.43 %), [Wailer](creatures.md#mob-qtcraft-wailer) (28.57 %)
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+[Lava Wader](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-birch_forest"></a>Birch Forest
 
@@ -86,11 +86,11 @@ Red mats on the floors, huge fungi with hollow domes, wart hanging from the roof
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Rottusk](creatures.md#mob-qtcraft-rottusk) (100 %)
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+[Lava Wader](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -423,11 +423,11 @@ Bare netherrack, with banks of gravel and soul sand along the lava.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Magma Slime](creatures.md#mob-qtcraft-magma_slime) (1.31 %), [Rottusk](creatures.md#mob-qtcraft-rottusk) (65.36 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (0.65 %), [Wailer](creatures.md#mob-qtcraft-wailer) (32.68 %)
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+[Lava Wader](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-plains"></a>Plains
 
@@ -557,11 +557,11 @@ Floors of soul sand and soul soil, where fires burn blue.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.41 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (28.17 %), [Wailer](creatures.md#mob-qtcraft-wailer) (70.42 %)
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+[Lava Wader](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
@@ -680,8 +680,8 @@ Blue-green cushions on the floors, huge fungi with flat canopies and twisting vi
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Shadewalker](creatures.md#mob-qtcraft-shadewalker) (100 %)
 
 **Creatures**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Squid](creatures.md#mob-qtcraft-squid)
+[Lava Wader](creatures.md#mob-qtcraft-lava_wader)

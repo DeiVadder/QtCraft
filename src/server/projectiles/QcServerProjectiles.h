@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "server/explosions/QcServerExplosions.h"
 #include "server/projectiles/QcHitEffects.h"
 #include "server/projectiles/QcPlayerFishing.h"
 #include "server/projectiles/QcPlayerLaunchers.h"
@@ -30,7 +31,8 @@ struct QcServerClient;
 class QcServerProjectiles
 {
 public:
-    QcServerProjectiles(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerInventory &inventory);
+    QcServerProjectiles(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerInventory &inventory,
+                        QcServerExplosions &explosions);
 
     /*! Ends draws whose launcher left the hand, then moves every projectile. */
     void tick();
@@ -49,6 +51,14 @@ public:
         signal; the server wires QcServerCircuits::hitTarget). */
     void setBlockHit(std::function<void(const QcProjectileManager::BlockHit &)> blockHit) { m_blockHit = std::move(blockHit); }
 
+    /*! \a client strikes the entity \a id: a flying projectile that can be deflected flies on
+        where he looks, as his shot (decision E-1053). Returns \c false when \a id is no
+        projectile. */
+    bool deflect(QcServerClient &client, quint32 id);
+
+    /*! How far from the eyes (metres) a strike reaches a projectile. */
+    static constexpr double deflectReach = 6.0;
+
 private:
     QList<QcProjectileFlight::Body> bodies() const;
     QList<QcProjectileManager::PlayerView> collectors() const;
@@ -56,6 +66,12 @@ private:
     bool hit(const QcProjectileManager::Hit &hit);
     // `creature` shot it (0: no creature, decision E-873).
     void hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along, quint32 creature);
+
+    /*!
+        Applies \a impact of \a hit to the creature it struck, pushed along \a along. Returns
+        whether the creature took it; a pet of another player and one that dodges do not.
+    */
+    bool hitCreature(const QcProjectileManager::Hit &hit, const QcHitEffects::Impact &impact, const QcVec3 &along);
     // The foes of the players' pets (decision E-480): a player's shot at a creature names it as the
     // player's target (true when a player shot); a creature's shot at a player names the shooter,
     // which is returned (0 when no creature shot).
@@ -76,9 +92,11 @@ private:
     QcServerSounds &m_sounds;
     QcPlayerHealth &m_health;
     QcServerInventory &m_inventory;
+    QcServerExplosions &m_explosions;
     QcPlayerLaunchers m_launchers;
     QcPlayerThrows m_throws;
     QcPlayerFishing m_fishing;
     QcHitEffects m_effects;
+    QList<QcServerExplosions::Blast> m_blasts;
     std::function<void(const QcProjectileManager::BlockHit &)> m_blockHit;
 };

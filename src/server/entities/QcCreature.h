@@ -16,6 +16,7 @@
 #include "server/golems/QcGolemState.h"
 #include "server/guardians/QcGuardPost.h"
 #include "server/mobbrains/QcArcherState.h"
+#include "server/mobbrains/QcDrifterState.h"
 #include "server/mobbrains/QcTameState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
@@ -153,6 +154,12 @@ struct QcCreature : QcEntity
         the boat puts it on its seat every tick. Not saved: a creature saved on its seat gets in
         again. */
     quint32 vehicle = 0;
+    /*! The heading and charge of a drifter (QcMobDefinition::Ai::Drifter, decision E-1053). */
+    QcComponent<QcDrifterState> drifter;
+    /*! The player (entity id) riding it, 0 for none (decision E-1054); not saved. */
+    quint32 rider = 0;
+    /*! Wears a saddle (decision E-1054), saved with it. */
+    bool saddled = false;
     /*! Game ticks until it may teleport again (QcTeleportDefinition::cooldownSeconds); not
         saved. */
     int teleportCooldown = 0;

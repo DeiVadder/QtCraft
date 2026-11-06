@@ -9,6 +9,7 @@
 #include "server/guardians/QcGuardianBrain.h"
 #include "server/mobbrains/QcArcherBrain.h"
 #include "server/mobbrains/QcCreatureBrains.h"
+#include "server/mobbrains/QcDrifterBrain.h"
 #include "server/mobbrains/QcFishSwimming.h"
 #include "server/mobbrains/QcNeutralBrain.h"
 #include "server/mobbrains/QcTameBrain.h"
@@ -145,6 +146,7 @@ private:
     // Tameable kinds think with these (decision E-480); wild ones through the brain of their AI.
     QcTameBrain m_tamePassive;
     QcTameBrain m_tameNeutral;
+    QcDrifterBrain m_drifters;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;

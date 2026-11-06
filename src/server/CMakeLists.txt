@@ -233,6 +233,8 @@ target_sources(qc_server PRIVATE
     mobbrains/QcArcherBrain.h mobbrains/QcArcherBrain.cpp
     mobbrains/QcArcherState.h
     mobbrains/QcCreatureBrains.h mobbrains/QcCreatureBrains.cpp
+    mobbrains/QcDrifterBrain.h mobbrains/QcDrifterBrain.cpp
+    mobbrains/QcDrifterState.h
     mobbrains/QcFishSwimming.h mobbrains/QcFishSwimming.cpp
     mobbrains/QcMobBrain.h
     mobbrains/QcMobFear.h mobbrains/QcMobFear.cpp
@@ -257,6 +259,7 @@ target_sources(qc_server PRIVATE
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
     mobs/QcNameTags.h mobs/QcNameTags.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
+    mobs/QcServerMounts.h mobs/QcServerMounts.cpp
 )
 target_sources(qc_server PRIVATE
     network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp

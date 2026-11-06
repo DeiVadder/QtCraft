@@ -167,6 +167,34 @@ QcDrinkHealDefinition parseDrinks(QcJsonFieldReader &reader, const QString &pack
 
 } // namespace
 
+// Drifting, riding, falling apart and the weakness to a projectile (decisions E-1053 to E-1055).
+void QcMobReader::parseNetherTraits()
+{
+    m_reader.nestedObject(u"drift"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.drift.seconds = nested.number(u"seconds"_s, 4.0, 0.5, 60.0);
+        m_mob.drift.keepsToLava = nested.boolean(u"keepsToLava"_s, false);
+    });
+    m_reader.nestedObject(u"ride"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcRideDefinition ride;
+        ride.saddle = nested.name(u"saddle"_s, m_namespace);
+        ride.steer = nested.name(u"steer"_s, m_namespace);
+        ride.speed = nested.number(u"speed"_s, 3.0, 0.1, 20.0);
+        ride.seat = nested.number(u"seat"_s, 1.2, 0.0, 8.0);
+        m_mob.ride = std::move(ride);
+    });
+    m_reader.nestedObject(u"splits"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcSplitDefinition splits;
+        splits.into = nested.name(u"into"_s, m_namespace);
+        splits.min = nested.integer(u"min"_s, 2, 1, 8);
+        splits.max = nested.integer(u"max"_s, 4, splits.min, 8);
+        m_mob.splits = std::move(splits);
+    });
+    m_reader.nestedObject(u"weakTo"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.weakTo = nested.name(u"projectile"_s, m_namespace);
+        m_mob.deflectedDamage = nested.number(u"damage"_s, 1000.0, 0.0, 10000.0);
+    });
+}
+
 // Taming, shyness, packs and cats (decision E-480).
 void QcMobReader::parseCompanions()
 {
@@ -176,6 +204,9 @@ void QcMobReader::parseCompanions()
     m_reader.nestedObject(u"shy"_s,
                         [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.shy = parseShy(nested, m_namespace); });
     m_mob.packRange = m_reader.number(u"packRange"_s, 0.0, 0.0, 64.0);
+    m_mob.fireImmune = m_reader.boolean(u"fireImmune"_s, false);
+    m_mob.hops = m_reader.boolean(u"hops"_s, false);
+    parseNetherTraits();
     m_mob.frightens = m_reader.boolean(u"frightens"_s, false);
     m_mob.scaredOfCats = m_reader.boolean(u"scaredOfCats"_s, false);
 

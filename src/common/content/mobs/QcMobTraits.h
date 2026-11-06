@@ -272,6 +272,9 @@ struct QcArcherDefinition
     double range = 15.0;
     double minDistance = 5.0;
     double keepDistance = 12.0;
+    /*! Played where it starts to draw, \c {drawSeconds} before the shot (\c {warnSound}; the
+        wailer's cry, decision E-1053); empty for none. Only drifters play it. */
+    QString warnSound;
 
     bool operator==(const QcArcherDefinition &) const = default;
 };
@@ -340,20 +343,68 @@ struct QcFamilyDefinition
     static constexpr int maxChildrenLimit = 16;
 };
 
+/*! \brief A creature that drifts without paths (decision E-1053; the wailer, the lava wader),
+    from its data (\c {drift}; the drifter AI, with \c {hover}): it holds a heading for about
+    \c {seconds} and turns at a wall. With \c {keepsToLava} it picks headings that lead over lava
+    where it can. \qcfields */
+struct QcDriftDefinition
+{
+    double seconds = 4.0;
+    bool keepsToLava = false;
+
+    bool operator==(const QcDriftDefinition &) const = default;
+};
+
+/*! \brief A creature a player rides (decision E-1054; the lava wader), from its data (\c {ride}):
+    the item \c {saddle} used on it saddles it, using it saddled mounts it, and while the rider
+    holds \c {steer} it goes where he looks at \c {speed} m/s. \c {seat} is the height of the
+    rider's feet above its feet. \qcfields */
+struct QcRideDefinition
+{
+    QString saddle;
+    QString steer;
+    QcItemId saddleId = qcNoItem;
+    QcItemId steerId = qcNoItem;
+    double speed = 3.0;
+    double seat = 1.2;
+
+    bool operator==(const QcRideDefinition &) const = default;
+};
+
+/*! \brief A creature that falls apart when it dies (decision E-1055; the magma slime), from its
+    data (\c {splits}): \c {min} to \c {max} creatures of the kind \c {into} appear where it died.
+    \qcfields */
+struct QcSplitDefinition
+{
+    QString into;
+    int min = 2;
+    int max = 4;
+
+    bool operator==(const QcSplitDefinition &) const = default;
+};
+
 /*! \brief A creature that hovers (the Kjut, decision E-839), from its data (\c {hover}): it floats
     \c {height} metres above the ground or the liquid below it, bobbing by \c {bob} metres every
     \c {bobSeconds}, never higher than \c {maxHeight} above the ground and lower under a low
     ceiling; it flies without gravity towards where its brain wants to go, rises over a wall in its
-    way and turns to face where it goes at no more than \c {turnSpeed} degrees a second.
+    way and turns to face where it goes at no more than \c {turnSpeed} degrees a second, rising and
+    sinking at no more than \c {climbSpeed} metres a second (the wailer's slow drift, decision
+    E-1053). With \c {sinksInWater} only lava carries it, not water (the lava wader, decision
+    E-1054).
 
     Server side only. \qcfields */
 struct QcHoverDefinition
 {
+    /*! The largest \c {height} and \c {maxHeight}. */
+    static constexpr double highest = 24.0;
+
     double height = 0.6;
     double bob = 0.08;
     double bobSeconds = 2.5;
     double maxHeight = 3.0;
     double turnSpeed = 120.0;
+    double climbSpeed = 3.0;
+    bool sinksInWater = false;
 
     bool operator==(const QcHoverDefinition &) const = default;
 };

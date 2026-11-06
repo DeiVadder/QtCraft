@@ -3,6 +3,7 @@
 
 #include "server/mobs/QcMobManager.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
@@ -83,6 +84,34 @@ QcCreature *QcMobManager::find(quint32 id)
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
+const QcCreature *QcMobManager::riddenBy(quint32 player) const
+{
+    const auto it = riders().constFind(player);
+    const QcCreature *mob = it == riders().cend() ? nullptr : find(*it);
+    return mob && mob->rider == player ? mob : nullptr;
+}
+
+QcCreature *QcMobManager::riddenBy(quint32 player)
+{
+    const auto it = riders().constFind(player);
+    QcCreature *mob = it == riders().cend() ? nullptr : find(*it);
+    return mob && mob->rider == player ? mob : nullptr;
+}
+
+void QcMobManager::seatRider(QcCreature &mob, quint32 player)
+{
+    mob.rider = player;
+    m_riders.insert(player, mob.id);
+}
+
+void QcMobManager::dropRider(quint32 player)
+{
+    if (QcCreature *mob = riddenBy(player)) {
+        mob->rider = 0;
+    }
+    m_riders.remove(player);
+}
+
 quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
 {
     QcCreature mob;
@@ -104,6 +133,9 @@ quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint
     }
     if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Archer) {
         mob.archer.emplace();
+    }
+    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Drifter) {
+        mob.drifter.emplace();
     }
     if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Golem) {
         mob.golem.emplace();
@@ -175,8 +207,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
         return std::nullopt;
     }
 
-    // Young animals leave nothing behind (decision E-293).
-    QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
+    QList<QcItemDrop> drops = dropsOf(mob);
     erase(it, Departure::Died);
     return drops;
 }
@@ -194,6 +225,12 @@ void QcMobManager::angerPack(const QcCreature &mob, quint32 attacker)
             other.struckBy = attacker;
         }
     }
+}
+
+void QcMobManager::setDimension(const QcDimensionDefinition &definition)
+{
+    m_dayCycle = definition.dayCycle;
+    m_spawner->setDimension(definition);
 }
 
 void QcMobManager::setHurtTicks(int ticks)
@@ -244,9 +281,19 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
         return std::nullopt;
     }
 
-    // Young animals leave nothing behind (decision E-293).
-    QList<QcItemDrop> drops = it->isYoung() ? QList<QcItemDrop>() : m_content->mobs()[it->type].drops;
+    QList<QcItemDrop> drops = dropsOf(*it);
     erase(it, Departure::Died);
+    return drops;
+}
+
+QList<QcItemDrop> QcMobManager::dropsOf(const QcCreature &mob) const
+{
+    // Young animals leave nothing behind (decision E-293), a saddled one its saddle (E-1054).
+    const QcMobDefinition &definition = m_content->mobs()[mob.type];
+    QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
+    if (mob.saddled && definition.ride) {
+        drops.append(QcItemDrop{.item = definition.ride->saddle, .count = 1});
+    }
     return drops;
 }
 
@@ -466,11 +513,14 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
         mob.woundedThisTick = false;
         mob.attackedThisTick = false;
     }
-    const QList<PlayerHit> hits = m_behaviour->tick(m_mobs, world, players, {worldTime, dt});
+    // Where the day does not run the creatures live at midnight, the sky's time does not reach them
+    // (decision E-1050).
+    const double time = m_dayCycle ? worldTime : QcDayCycle::midnightTime;
+    const QList<PlayerHit> hits = m_behaviour->tick(m_mobs, world, players, {time, dt});
 
     // Despawn mobs far from everyone, now and then those nobody came near for a while, and night
     // creatures in daylight once nobody is close.
-    const bool night = QcDayCycle::isNight(worldTime);
+    const bool night = QcDayCycle::isNight(time);
     QList<QcMobUpkeep::Fate> fates;
     fates.reserve(m_mobs.size());
     for (QcCreature &mob : m_mobs) {
@@ -490,8 +540,8 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
         return QcWorld::isInVoid(mob.motion.position.y) ? Departure::Void : Departure::Despawned;
     });
 
-    m_spawner->tick(world, players, {night, QcSpawnLight::skyDarkening(worldTime, m_rain, m_thunder)}, dt, nextEntityId);
-    m_population->tick(world, worldTime, nextEntityId);
+    m_spawner->tick(world, players, {night, QcSpawnLight::skyDarkening(time, m_rain, m_thunder)}, dt, nextEntityId);
+    m_population->tick(world, time, nextEntityId);
     return hits;
 }
 
@@ -544,6 +594,7 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.carried = mob.carried;
     stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
     stored.confined = mob.confined;
+    stored.saddled = mob.saddled;
     stored.noAi = mob.noAi;
     if (mob.isTame()) {
         stored.tame = QcTameState{.owner = mob.tame->owner, .sitting = mob.tame->sitting, .collar = mob.tame->collar};
@@ -601,6 +652,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         }
         carryBlock(mob, stored.carried);
         mob.keptForBlock = stored.keptForBlock && mob.carried != qcAirBlockId;
+        mob.saddled = stored.saddled;
         // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this
         // only guards against a world.json put back by hand.
         *m_nextUid = std::max(*m_nextUid, stored.uid + 1);
@@ -608,6 +660,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         uids.insert(mob.uid);
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {
             mob.archer.emplace();
+        }
+        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Drifter) {
+            mob.drifter.emplace();
         }
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Golem) {
             mob.golem.emplace().playerBuilt = stored.playerBuilt;

@@ -13254,6 +13254,10 @@ Knochenmehl lässt ihn zum großen Pilz wachsen, aber nur auf Wirr-Nylium; von s
 | Pflanzbar auf | [Wirr-Nylium](#block-qtcraft-warped_nylium) |
 | Klang | Gras und Pflanzen |
 
+**Wird verwendet für**
+
+[Wirrpilz an der Angel](items.md#item-qtcraft-fungus_on_a_stick)
+
 **Kommt vor in**
 
 [Karmesinwald](biomes.md#biome-qtcraft-crimson_forest) (Gräser), [Wirrwald](biomes.md#biome-qtcraft-warped_forest) (Gräser)

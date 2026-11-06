@@ -12778,6 +12778,10 @@ Bone meal grows it into a huge fungus, but only on warped nylium; it never grows
 | Can be planted on | [Warped nylium](#block-qtcraft-warped_nylium) |
 | Sound | grass and plants |
 
+**Used in**
+
+[Fungus on a Stick](items.md#item-qtcraft-fungus_on_a_stick)
+
 **Found in**
 
 [Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)

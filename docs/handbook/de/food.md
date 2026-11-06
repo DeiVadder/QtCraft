@@ -471,4 +471,4 @@ Fällt von Zombies. Kaum Nahrung.
 
 **Droppt aus**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned), [Moderhauer](creatures.md#mob-qtcraft-rottusk), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)

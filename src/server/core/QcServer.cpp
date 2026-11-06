@@ -92,7 +92,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health, m_blocks)
-    , m_projectiles(m_state, m_sounds, m_health, m_inventory)
+    , m_projectiles(m_state, m_sounds, m_health, m_inventory, m_explosions)
     , m_trading(m_state, m_sounds, m_inventory, m_screens)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
@@ -377,7 +377,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
         m_interaction.useItem(client, *use);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
-        if (!m_stands.hit(client, attack->id) && !m_vehicles.hit(client, attack->id)
+        if (!m_stands.hit(client, attack->id) && !m_vehicles.hit(client, attack->id) && !m_projectiles.deflect(client, attack->id)
             && !QcServerHanging(m_state, m_sounds, m_inventory).hit(client, attack->id)) {
             m_combat.attack(client, attack->id);
         }

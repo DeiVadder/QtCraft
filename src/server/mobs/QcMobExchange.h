@@ -62,6 +62,8 @@ struct Stored
     QcBlockId carried = qcAirBlockId;
     bool keptForBlock = false;
     bool confined = false;
+    /*! Wears a saddle (decision E-1054). */
+    bool saddled = false;
     /*! Without a mind (QcCreature::noAi, decision E-510). */
     bool noAi = false;
     /*! Owner, sitting and collar of a tame one (decision E-480; its target is not saved). */

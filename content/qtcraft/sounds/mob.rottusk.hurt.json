@@ -1,0 +1,26 @@
+{
+    "name": "mob.rottusk.hurt",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.22,
+            "frequency": 260,
+            "endFrequency": 120,
+            "attack": 0.005,
+            "curve": 2,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.15,
+            "attack": 0.002,
+            "curve": 3,
+            "highpass": 900,
+            "gain": 0.3
+        }
+    ]
+}

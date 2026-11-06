@@ -401,6 +401,8 @@ struct QcBlockDefinition
         test for spawn spots in water, drowned and fish, putting out burning bodies and
         QcPhysics::isWaterAt. */
     bool isWater() const { return liquid && fire.setsAlightSeconds == 0; }
+    /*! Returns whether it is a liquid that sets bodies alight: lava (decision E-1051). */
+    bool isLava() const { return liquid && fire.setsAlightSeconds > 0; }
     /*! Returns whether the server gives the block random ticks (growing plants, crops, soil). */
     bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }
     /*! Returns the texture name of the block's \a face. */

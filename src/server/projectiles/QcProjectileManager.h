@@ -123,6 +123,8 @@ public:
 
     /*! Returns every projectile of the world. */
     const QList<QcProjectile> &all() const { return m_projectiles; }
+    /*! Returns the projectile \a id, nullptr when there is none. */
+    QcProjectile *find(quint32 id);
     /*! Returns every projectile of the world for changes in place (loading, tests). */
     QList<QcProjectile> &editableAll() { return m_projectiles; }
     /*! Returns whether any projectile flies (and needs the bodies of the tick). */

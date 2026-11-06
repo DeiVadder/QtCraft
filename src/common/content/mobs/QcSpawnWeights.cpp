@@ -17,12 +17,12 @@ QcSpawnWeights::QcSpawnWeights(const QcContentRegistry &content)
     }
 }
 
-double QcSpawnWeights::ruleWeight(const QcMobDefinition &mob, const QString &biome)
+double QcSpawnWeights::ruleWeight(const QcMobDefinition &mob, const QString &biome, bool namedOnly)
 {
     double weight = 0.0;
     const QList<QcMobDefinition::SpawnRule> rules = mob.spawnRules();
     for (const QcMobDefinition::SpawnRule &rule : rules) {
-        if (rule.biomes.isEmpty() || rule.biomes.contains(biome)) {
+        if (rule.biomes.isEmpty() ? !namedOnly : rule.biomes.contains(biome)) {
             weight = std::max(weight, rule.weight);
         }
     }
@@ -32,9 +32,11 @@ double QcSpawnWeights::ruleWeight(const QcMobDefinition &mob, const QString &bio
 QcSpawnWeights::Table QcSpawnWeights::tableOf(const QcContentRegistry &content, const QString &biome)
 {
     const auto definition = std::ranges::find(content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
+    // A biome of another dimension lists only the kinds that name it (decision E-1050).
+    const bool namedOnly = definition != content.worldgen().biomes().end() && !definition->dimension.isEmpty();
     Table table;
     for (const QcMobDefinition &mob : content.mobs()) {
-        double weight = mob.isMonster() ? ruleWeight(mob, biome) : 0.0;
+        double weight = mob.isMonster() ? ruleWeight(mob, biome, namedOnly) : 0.0;
         // The biome's own weight counts only for kinds it has at all.
         if (weight > 0.0 && definition != content.worldgen().biomes().end()) {
             const auto own = std::ranges::find(definition->monsterWeights, mob.name, &QcSpawnWeight::mob);

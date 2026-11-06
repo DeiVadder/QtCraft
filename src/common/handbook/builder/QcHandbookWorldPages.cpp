@@ -109,7 +109,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
         const double weight = weights.weight(type, biome.name);
         if (mob.isMonster() && weight > 0.0) {
             monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
-        } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
+        } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name, !biome.dimension.isEmpty()) > 0.0) {
             creatures.links.append(context.links.mobLink(mob));
         }
     }

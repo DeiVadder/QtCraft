@@ -45,6 +45,7 @@ private:
     // creatures, milking, crumbling, guarding and drinking.
     void parseCreatureTraits();
     void parseCompanions();
+    void parseNetherTraits();
     void parseWaterAndMilk();
     void parseGuardian();
 

@@ -116,7 +116,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     }
 
     warnings.append(checkGolemReferences(content, mob));
-    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound, mob.golem.attackSound, mob.golem.repairSound}) {
+    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound, mob.golem.attackSound, mob.golem.repairSound, mob.archer.warnSound}) {
         if (!knowsSound(content, name)) {
             warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
         }

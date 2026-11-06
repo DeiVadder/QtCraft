@@ -68,7 +68,7 @@ void QcEnvironmentDamage::applyContactDamage()
         }
 
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        const bool fireProof = mob.effects && QcEffectRules::fireProof(m_state.content(), mob.effects->all());
+        const bool fireProof = definition.fireImmune || (mob.effects && QcEffectRules::fireProof(m_state.content(), mob.effects->all()));
         if (const double damage = contactDamageOf(m_state, mob.motion.position, {definition.width, definition.height}, fireProof);
             damage > 0.0) {
             touched.append({mob.id, damage});

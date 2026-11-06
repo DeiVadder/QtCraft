@@ -7,6 +7,9 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 
+#include <QList>
+
+#include <algorithm>
 #include <array>
 #include <cmath>
 
@@ -121,6 +124,57 @@ std::optional<QcVec3> nearest(const QcBlockAccess &world, const QcVec3 &point, c
             if (fits(world, feet, cells)) {
                 return middleOf(feet);
             }
+        }
+    }
+    return std::nullopt;
+}
+
+namespace {
+
+// The place of the column at `feet` nearest `point` where a body can stand, at most three cells up
+// or down.
+std::optional<QcVec3> nearestInColumn(const QcBlockAccess &world, const QcVec3 &point, QcBlockPos feet, int cells)
+{
+    std::optional<QcVec3> best;
+    for (int dy = -3; dy <= 3; ++dy) {
+        const QcBlockPos cell = feet.offset(0, dy, 0);
+        const QcVec3 place{cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
+        if (canStand(world, cell, cells) && (!best || (place - point).length() < (*best - point).length())) {
+            best = place;
+        }
+    }
+    return best;
+}
+
+// The same among the columns `ring` cells away from `centre`.
+std::optional<QcVec3> nearestOnRing(const QcBlockAccess &world, const QcVec3 &point, QcBlockPos centre, int ring, int cells)
+{
+    std::optional<QcVec3> best;
+    for (int dx = -ring; dx <= ring; ++dx) {
+        // Only the edge: the two ends of a middle column, the whole of an outer one.
+        const int step = std::abs(dx) == ring ? 1 : std::max(1, 2 * ring);
+        for (int dz = -ring; dz <= ring; dz += step) {
+            const std::optional<QcVec3> place = nearestInColumn(world, point, centre.offset(dx, 0, dz), cells);
+            if (place && (!best || (*place - point).length() < (*best - point).length())) {
+                best = place;
+            }
+        }
+    }
+    return best;
+}
+
+} // namespace
+
+std::optional<QcVec3> standBeside(const QcBlockAccess &world, const QcVec3 &point, int reach, int cells)
+{
+    const QcBlockPos centre = QcPhysics::blockContaining(point);
+    QList<int> rings{1, 0};
+    for (int ring = 2; ring <= reach; ++ring) {
+        rings.append(ring);
+    }
+    for (const int ring : std::as_const(rings)) {
+        if (const std::optional<QcVec3> place = nearestOnRing(world, point, centre, ring, cells)) {
+            return place;
         }
     }
     return std::nullopt;

@@ -37,7 +37,17 @@
     "spawn": {
         "maxGroup": 2,
         "weight": 100,
-        "caves": true
+        "caves": true,
+        "also": [
+            {
+                "biomes": [
+                    "soul_sand_valley"
+                ],
+                "weight": 20,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
     },
     "skeleton": "skeleton",
     "outfit": "skeleton",

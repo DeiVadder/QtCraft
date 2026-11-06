@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -25,6 +25,10 @@ Drück die Benutzen-Taste, um den Schwimmer auszuwerfen, und noch einmal, um ihn
 | · | · | [Stock](#item-qtcraft-stick) | [Angel](#item-qtcraft-fishing_rod) |
 | · | [Stock](#item-qtcraft-stick) | [Faden](#item-qtcraft-string) |  |
 | [Stock](#item-qtcraft-stick) | · | [Faden](#item-qtcraft-string) |  |
+
+**Wird verwendet für**
+
+[Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick)
 
 ### <a id="item-qtcraft-birch_boat"></a>Birkenboot
 
@@ -281,7 +285,7 @@ Ein Neuntel eines Eisenbarrens, für kleine Metallteile wie Laternen und Ketten.
 
 **Wird verwendet für**
 
-[Eisenbarren](#item-qtcraft-iron_ingot), [Kette](blocks.md#block-qtcraft-chain), [Laterne](blocks.md#block-qtcraft-lantern), [Seelenlaterne](blocks.md#block-qtcraft-soul_lantern), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook)
+[Eisenbarren](#item-qtcraft-iron_ingot), [Kette](blocks.md#block-qtcraft-chain), [Laterne](blocks.md#block-qtcraft-lantern), [Sattel](#item-qtcraft-saddle), [Seelenlaterne](blocks.md#block-qtcraft-soul_lantern), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook)
 
 ### <a id="item-qtcraft-string"></a>Faden
 
@@ -295,11 +299,11 @@ Faden aus einem Spinnennetz; vier ergeben weiße Wolle.
 
 **Wird verwendet für**
 
-[Angel](#item-qtcraft-fishing_rod), [Bogen](#item-qtcraft-bow), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
+[Angel](#item-qtcraft-fishing_rod), [Bogen](#item-qtcraft-bow), [Sattel](#item-qtcraft-saddle), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
 
 **Droppt aus**
 
-[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Katze](creatures.md#mob-qtcraft-cat) (50 %), [Spinne](creatures.md#mob-qtcraft-spider) (50 %), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Stolperdraht](blocks.md#block-qtcraft-tripwire)
+[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Katze](creatures.md#mob-qtcraft-cat) (50 %), [Lavastelze](creatures.md#mob-qtcraft-lava_wader) (2×, 50 %), [Spinne](creatures.md#mob-qtcraft-spider) (50 %), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Stolperdraht](blocks.md#block-qtcraft-tripwire)
 
 ### <a id="item-qtcraft-feather"></a>Feder
 
@@ -317,6 +321,15 @@ Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird
 **Droppt aus**
 
 [Huhn](creatures.md#mob-qtcraft-chicken) (50 %)
+
+### <a id="item-qtcraft-fireball"></a>Feuerkugel
+
+Der brennende Schuss eines Klagegeists. Im Flug getroffen, fliegt er in die Richtung des Schlags zurück.
+
+| | |
+|---|---|
+| ID | `qtcraft:fireball` |
+| Stapelgröße | 64 |
 
 ### <a id="item-qtcraft-flint"></a>Feuerstein
 
@@ -549,6 +562,10 @@ Geschmolzenes Gold.
 
 [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Glocke](blocks.md#block-qtcraft-bell), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings), [Goldblock](blocks.md#block-qtcraft-gold_block), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldhelm](tools.md#item-qtcraft-golden_helmet), [Goldnugget](#item-qtcraft-gold_nugget), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Goldstiefel](tools.md#item-qtcraft-golden_boots), [Uhr](#item-qtcraft-clock)
 
+**Droppt aus**
+
+[Moderhauer](creatures.md#mob-qtcraft-rottusk) (2,5 %)
+
 ### <a id="item-qtcraft-gold_nugget"></a>Goldnugget
 
 Ein Neuntel eines Goldbarrens.
@@ -572,7 +589,7 @@ Ein Neuntel eines Goldbarrens.
 
 **Droppt aus**
 
-[Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore) (2–6×), [Sandgolem](creatures.md#mob-qtcraft-sand_golem) (30 %)
+[Moderhauer](creatures.md#mob-qtcraft-rottusk) (60 %, 30 %), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore) (2–6×), [Sandgolem](creatures.md#mob-qtcraft-sand_golem) (30 %)
 
 ### <a id="item-qtcraft-gray_dye"></a>Grauer Farbstoff
 
@@ -845,6 +862,19 @@ Zeigt das Land, das du erkundet hast, während du sie hieltest, mit dir und den 
 |---|---|
 | ID | `qtcraft:filled_map` |
 | Stapelgröße | 64 |
+
+### <a id="item-qtcraft-wailer_tear"></a>Klageträne
+
+Die Träne eines Klagegeists, das Einzige, was von ihm bleibt. Sie fällt über Lava so leicht wie über Fels, also schnell sein.
+
+| | |
+|---|---|
+| ID | `qtcraft:wailer_tear` |
+| Stapelgröße | 64 |
+
+**Droppt aus**
+
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (50 %)
 
 ### <a id="item-qtcraft-bone"></a>Knochen
 
@@ -1135,7 +1165,7 @@ Zähe Haut für Bücher; vorerst nur aus Fetzen zusammengesetzt.
 
 **Wird verwendet für**
 
-[Buch](#item-qtcraft-book), [Lederhose](tools.md#item-qtcraft-leather_leggings), [Lederkappe](tools.md#item-qtcraft-leather_helmet), [Lederstiefel](tools.md#item-qtcraft-leather_boots), [Lederwams](tools.md#item-qtcraft-leather_chestplate), [Rahmen](#item-qtcraft-item_frame), [Rucksack](blocks.md#block-qtcraft-backpack)
+[Buch](#item-qtcraft-book), [Lederhose](tools.md#item-qtcraft-leather_leggings), [Lederkappe](tools.md#item-qtcraft-leather_helmet), [Lederstiefel](tools.md#item-qtcraft-leather_boots), [Lederwams](tools.md#item-qtcraft-leather_chestplate), [Rahmen](#item-qtcraft-item_frame), [Rucksack](blocks.md#block-qtcraft-backpack), [Sattel](#item-qtcraft-saddle)
 
 **Droppt aus**
 
@@ -1245,6 +1275,19 @@ Färbt Wolle, Glas, Terrakotta und Beton magentafarben.
 **Wird verwendet für**
 
 [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Magentafarbenes Betonpulver](blocks.md#block-qtcraft-magenta_concrete_powder), [Magentafarbenes Bett](blocks.md#block-qtcraft-magenta_bed), [Magentafarbenes Glas](blocks.md#block-qtcraft-magenta_stained_glass)
+
+### <a id="item-qtcraft-magma_cream"></a>Magmacreme
+
+Was ein Magmaschleim hinterlässt: ein warmer, klebriger Klumpen. Noch lässt sich nichts damit brauen.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_cream` |
+| Stapelgröße | 64 |
+
+**Droppt aus**
+
+[Kleiner Magmaschleim](creatures.md#mob-qtcraft-magma_slime_small) (10 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (25 %)
 
 ### <a id="item-qtcraft-melon_seeds"></a>Melonenkerne
 
@@ -1635,6 +1678,25 @@ Auf einen Block stellen und einkleiden: Rechtsklick mit Rüstung oder einem Item
 | · | [Stock](#item-qtcraft-stick) | · |  |
 | [Stock](#item-qtcraft-stick) | [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) | [Stock](#item-qtcraft-stick) |  |
 
+### <a id="item-qtcraft-saddle"></a>Sattel
+
+Kommt auf eine Lavastelze, damit sie dich trägt. Aus Leder, Faden und einem Eisennugget.
+
+| | |
+|---|---|
+| ID | `qtcraft:saddle` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leder](#item-qtcraft-leather) | [Leder](#item-qtcraft-leather) | [Leder](#item-qtcraft-leather) | [Sattel](#item-qtcraft-saddle) |
+| [Faden](#item-qtcraft-string) | · | [Faden](#item-qtcraft-string) |  |
+| [Eisennugget](#item-qtcraft-iron_nugget) | · | [Eisennugget](#item-qtcraft-iron_nugget) |  |
+
 ### <a id="item-qtcraft-shade_pearl"></a>Schattenperle
 
 Lassen Schattenwandler fallen. Mit der Benutzen-Taste geworfen, bringt sie dich dorthin, wo sie landet, auf einem Block oder einem Wesen; die Landung schmerzt ein wenig wie ein Sturz. Du kommst immer an einer Stelle mit Platz für dich an, nie in Blöcken oder im Wasser und nie auf der anderen Seite einer Wand oder eines Dachs; eine Perle, die unter Wasser landet, ist verloren, ebenso deine Perlen, die noch fliegen, wenn du stirbst. Die nächste kannst du nach einer Sekunde werfen.
@@ -1787,6 +1849,10 @@ Aus Kohle und Feuerstein, ergiebiger aus Funkengel und Kohle. Auch verpuffende k
 **Wird verwendet für**
 
 [Sprengstoff](blocks.md#block-qtcraft-explosive)
+
+**Droppt aus**
+
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (65 %, 30 %)
 
 ### <a id="item-qtcraft-fishing_bobber"></a>Schwimmer
 
@@ -2173,6 +2239,23 @@ Färbt Wolle, Glas, Terrakotta und Beton weiß.
 **Wird verwendet für**
 
 [Grauer Farbstoff](#item-qtcraft-gray_dye), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta), [Weißes Betonpulver](blocks.md#block-qtcraft-white_concrete_powder), [Weißes Bett](blocks.md#block-qtcraft-white_bed), [Weißes Glas](blocks.md#block-qtcraft-white_stained_glass)
+
+### <a id="item-qtcraft-fungus_on_a_stick"></a>Wirrpilz an der Angel
+
+In der Hand beim Reiten auf einer Lavastelze: Das Wesen läuft, wohin du schaust.
+
+| | |
+|---|---|
+| ID | `qtcraft:fungus_on_a_stick` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Angel](#item-qtcraft-fishing_rod) | [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) | [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) |
 
 ### <a id="item-qtcraft-poison_splash_potion"></a>Wurftrank der Vergiftung
 

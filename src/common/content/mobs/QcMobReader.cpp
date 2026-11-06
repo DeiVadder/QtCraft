@@ -38,6 +38,7 @@ namespace {
     }
     // A tentacle of a creature that swims in pulses (decision E-974).
     part.tentacle = json.value(u"tentacle"_s).toBool(false);
+    part.saddled = json.value(u"saddled"_s).toBool(false);
     return part;
 }
 
@@ -115,6 +116,7 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     archer.range = reader.number(u"range"_s, archer.range, 2.0, 64.0);
     archer.minDistance = reader.number(u"minDistance"_s, archer.minDistance, 0.0, 32.0);
     archer.keepDistance = reader.number(u"keepDistance"_s, archer.keepDistance, 1.0, 64.0);
+    archer.warnSound = reader.name(u"warnSound"_s, packNamespace);
     if (archer.projectile.isEmpty()) {
         reader.fail(u"needs a 'projectile'"_s);
     } else if (archer.minDistance >= archer.keepDistance || archer.keepDistance > archer.range) {
@@ -216,6 +218,7 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     rule.maxY = reader.integer(u"maxY"_s, QcWorld::worldHeight, 1, QcWorld::worldHeight);
     rule.sky = reader.boolean(u"sky"_s, false);
     rule.water = reader.boolean(u"water"_s, false);
+    rule.lava = reader.boolean(u"lava"_s, false);
 
     const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
     for (const auto &entry : blocks) {
@@ -330,8 +333,9 @@ void QcMobReader::parseFighting()
     m_reader.nestedObject(u"archer"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_mob.archer = parseArcher(nested, m_namespace);
     });
-    if (m_reader.ok() && m_json.contains(u"archer"_s) != (m_mob.ai == QcMobDefinition::Ai::Archer)) {
-        m_reader.fail(u"the archer AI goes with 'archer' settings, and they with it"_s);
+    const bool shoots = m_mob.ai == QcMobDefinition::Ai::Archer || (m_mob.ai == QcMobDefinition::Ai::Drifter && m_mob.hostile);
+    if (m_reader.ok() && m_json.contains(u"archer"_s) != shoots) {
+        m_reader.fail(u"the archer AI and a hostile drifter go with 'archer' settings, and they with them"_s);
     }
     m_reader.nestedObject(u"golem"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_mob.golem = parseGolem(nested, m_namespace);
@@ -371,6 +375,9 @@ QcResult<QcMobDefinition> QcMobReader::read()
     m_mob.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     parseMobSounds();
     parseFamily();
+    if (m_reader.ok() && (m_mob.ai == QcMobDefinition::Ai::Drifter) != (m_mob.hover && m_json.contains(u"drift"_s))) {
+        m_reader.fail(u"the drifter AI goes with 'hover' and 'drift', and 'drift' with it"_s);
+    }
     checkWaterSpawns();
 
     if (!m_reader.ok()) {
@@ -403,7 +410,7 @@ void QcMobReader::parseAi()
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
         {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
-        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}};
+        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}, {u"drifter"_s, Ai::Drifter}};
     const Ai fallback = m_mob.villager ? Ai::Villager : m_mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = m_reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
@@ -454,6 +461,7 @@ void QcMobReader::parseSpawnConditions(const QJsonObject &spawn, QcJsonFieldRead
     m_mob.spawnBiomes = main.biomes;
     m_mob.spawnUnderSky = main.sky;
     m_mob.spawnInWater = main.water;
+    m_mob.spawnOnLava = main.lava;
     m_mob.maxGroup = spawnReader.integer(u"maxGroup"_s, 2, 1, 4);
 }
 
@@ -577,16 +585,18 @@ void QcMobReader::parseMobSounds()
 // A parent that splits off children (decision E-839): "family": {"child", "maxChildren",
 // "childrenPerHit", "maxSplits", "popDrops", "popSound", "orbitRadius", "orbitSeconds",
 // "tetherTexture", "tetherRange"}, and hovering: "hover": {"height", "bob", "bobSeconds",
-// "maxHeight", "turnSpeed"}.
+// "maxHeight", "turnSpeed", "climbSpeed", "sinksInWater"}.
 void QcMobReader::parseFamily()
 {
     m_reader.nestedObject(u"hover"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         QcHoverDefinition &hover = m_mob.hover.emplace();
-        hover.height = nested.number(u"height"_s, hover.height, 0.0, 2.0);
+        hover.height = nested.number(u"height"_s, hover.height, 0.0, QcHoverDefinition::highest);
         hover.bob = nested.number(u"bob"_s, hover.bob, 0.0, 0.5);
         hover.bobSeconds = nested.number(u"bobSeconds"_s, hover.bobSeconds, 0.1, 30.0);
-        hover.maxHeight = nested.number(u"maxHeight"_s, hover.maxHeight, hover.height, 16.0);
+        hover.maxHeight = nested.number(u"maxHeight"_s, hover.maxHeight, hover.height, QcHoverDefinition::highest);
         hover.turnSpeed = nested.number(u"turnSpeed"_s, hover.turnSpeed, 1.0, 3600.0);
+        hover.climbSpeed = nested.number(u"climbSpeed"_s, hover.climbSpeed, 0.1, 10.0);
+        hover.sinksInWater = nested.boolean(u"sinksInWater"_s, false);
     });
     m_reader.nestedObject(u"family"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         QcFamilyDefinition &family = m_mob.family.emplace();

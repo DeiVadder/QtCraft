@@ -24,7 +24,7 @@ namespace {
         QcMobPart part;
         quint8 tint = 0;
         stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
-            >> part.sitOffset.y >> part.sitOffset.z >> part.tentacle;
+            >> part.sitOffset.y >> part.sitOffset.z >> part.tentacle >> part.saddled;
         if (tint != static_cast<quint8>(QcTint::None) && tint != static_cast<quint8>(QcTint::Collar)) {
             return std::nullopt;
         }
@@ -52,6 +52,19 @@ namespace {
     return std::optional<QcPulseDefinition>{pulse};
 }
 
+// The rider's seat of a creature; a negative height stands for none.
+std::optional<QcRideDefinition> readRide(QDataStream &stream)
+{
+    double seat = -1.0;
+    stream >> seat;
+    if (seat < 0.0) {
+        return std::nullopt;
+    }
+    QcRideDefinition ride;
+    ride.seat = seat;
+    return ride;
+}
+
 } // namespace
 
 namespace QcMobSerializer {
@@ -62,7 +75,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
            << static_cast<quint32>(mob.parts.size());
     for (const QcMobPart &part : mob.parts) {
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture << static_cast<quint8>(part.tint)
-               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z << part.tentacle;
+               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z << part.tentacle << part.saddled;
     }
     stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.villager << mob.ambientSound << mob.hurtSound << mob.deathSound
            << mob.flying << static_cast<qint32>(mob.glow) << mob.catchWith << mob.catchItem << static_cast<quint32>(mob.breeding.food.size());
@@ -86,6 +99,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
         stream << mob.pulse->seconds << mob.pulse->thrust << mob.pulse->speed << mob.pulse->spread;
     }
     stream << mob.ink;
+    stream << (mob.ride ? mob.ride->seat : -1.0);
 }
 
 std::optional<QcMobDefinition> readMob(QDataStream &stream)
@@ -139,11 +153,13 @@ std::optional<QcMobDefinition> readMob(QDataStream &stream)
     }
     mob.pulse = *pulse;
     stream >> mob.ink;
+    mob.ride = readRide(stream);
 
     // Sizes feed physics and the mesher: reject anything outside what the parser allows.
     const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };
     bool valid = std::isfinite(mob.maxHealth) && mob.maxHealth > 0.0 && mob.maxHealth <= 1000.0 && plausible(mob.width) && plausible(mob.height) && mob.width > 0.0
                  && mob.height > 0.0;
+    valid = valid && (!mob.ride || mob.ride->seat <= 8.0);
     for (const QcMobPart &part : std::as_const(mob.parts)) {
         valid = valid && plausible(part.from.x) && plausible(part.from.y) && plausible(part.from.z)
                 && plausible(part.to.x) && plausible(part.to.y) && plausible(part.to.z) && part.sitOffset.length() <= 1.0;

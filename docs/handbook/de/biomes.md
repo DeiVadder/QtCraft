@@ -22,11 +22,11 @@ Dunkles Gestein in Bändern aus Basalt und Schwarzstein, Steinpfosten auf den B�
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (28,57 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (71,43 %)
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-birch_forest"></a>Birkenwald
 
@@ -335,11 +335,11 @@ Rote Geflechte auf den Böden, große Pilze mit hohlen Kuppeln, Warzen an den De
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Moderhauer](creatures.md#mob-qtcraft-rottusk) (100 %)
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-nether_wastes"></a>Netherwüste
 
@@ -357,11 +357,11 @@ Nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (32,68 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (1,31 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (65,36 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (0,65 %)
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-soul_sand_valley"></a>Seelensandtal
 
@@ -379,11 +379,11 @@ Böden aus Seelensand und Seelenerde, auf denen Feuer blau brennt.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (70,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,41 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (28,17 %)
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-swamp"></a>Sumpf
 
@@ -631,11 +631,11 @@ Blaugrüne Polster auf den Böden, große Pilze mit flachen Schirmen und dazwisc
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (100 %)
 
 **Wesen**
 
-[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-desert"></a>Wüste
 

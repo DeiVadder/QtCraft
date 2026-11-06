@@ -449,7 +449,7 @@ Dropped by zombies. Barely food.
 
 **Dropped by**
 
-[Drowned](creatures.md#mob-qtcraft-drowned), [Husk](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Drowned](creatures.md#mob-qtcraft-drowned), [Husk](creatures.md#mob-qtcraft-husk), [Rottusk](creatures.md#mob-qtcraft-rottusk), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="item-qtcraft-cooked_beef"></a>Steak
 

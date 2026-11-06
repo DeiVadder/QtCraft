@@ -1,0 +1,40 @@
+{
+    "name": "mob.wailer.warn",
+    "volume": 1.0,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "range": 64,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.85,
+            "frequency": 240,
+            "endFrequency": 640,
+            "attack": 0.35,
+            "curve": 0.8,
+            "tremoloRate": 9,
+            "tremoloDepth": 0.35,
+            "gain": 0.45
+        },
+        {
+            "wave": "sine",
+            "duration": 0.85,
+            "frequency": 362,
+            "endFrequency": 960,
+            "attack": 0.4,
+            "curve": 0.8,
+            "tremoloRate": 9,
+            "tremoloDepth": 0.35,
+            "gain": 0.22
+        },
+        {
+            "wave": "noise",
+            "start": 0.3,
+            "duration": 0.55,
+            "attack": 0.3,
+            "curve": 1.2,
+            "bandpass": 1800,
+            "gain": 0.12
+        }
+    ]
+}

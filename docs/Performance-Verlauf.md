@@ -2920,3 +2920,17 @@ Mit den fünf Biomen (84.3, E-1049; Rechner unter Last durch parallele Pakete, L
 - **Fenster, HD 64 (rc4 → rel10):** GPU stand +3 %, sprint −15 %, showcase −2 %, crowd −18 % (Streuung 38–74 %); Render-CPU −10 … +11 % (crowd +11 % bei 12–47 % Streuung); GUI-CPU crowd 0,96 → 1,09 ms (+13 %), sonst −6 … +1 %; Spitzenspeicher −0,2 … +2,0 %. Die Änderungen an der Item-Darstellung (79.88, 79.90) zeigen keine Kosten in GPU oder Speicher.
 - **Headless `@server` (60 Spielsekunden, adaptiv; rc4 → rel10, Tick Ø / p99):** crowd 0,229 → 0,225 / 0,388 → 0,383 ms; gravel-collapse 0,544 → 0,547 / 1,58 → 1,56; farm 0,009 → 0,009; farm-seeds 0,021 → 0,021; explore 0,308 → 0,309 / 1,49 → 1,46; Signal-Stationen components 0,094 → 0,110 (+17 %), machines 0,092 → 0,107 (+17 %), farm 0,098 → 0,120 (+22 %) bei 2–12 % Streuung. Speicher −1,5 … +1,9 %.
 - **Bewertung:** kein Rückschritt über der 10-%-Schwelle in Bildzeit, GPU oder Speicher. Über der Schwelle: (1) Signal-Stationen headless +0,015 … +0,022 ms je Tick, ganz in der Phase Wesen (0,053–0,058 → 0,068–0,076 ms) bei zwei Wesen mehr in der Szene (47–52 → 49–54; Tintenfisch/Fische der Showcase, 79.80/79.81), absolut winzig (Budget 50 ms); (2) GUI-CPU crowd +8 % (ruhig) bzw. +13 % (HD, unter Last), +0,08 … +0,12 ms je Bild, dieselbe bekannte Reserve wie seit 79.14a (Entity-Meshing auf dem GUI-Thread), Bildzeit unberührt; (3) showcase +48 Draw-Calls ohne messbare GPU- oder CPU-Kosten. Alles hingenommen; keine Fixes nötig.
+
+## Paket 84.4: Wesen im Nether (2026-11-06)
+
+`test_nether_spawns::tickCostOfACrowd` im Release-Build, je Art 40 Wesen im Nether, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 15). Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,056 | 0,064 | 0,056 |
+| Moderhauer | 0,073 | 0,058 | 0,056 |
+| Magmaschleim | 0,057 | 0,057 | 0,055 |
+| Klagegeist | 0,176 | 0,176 | 0,164 |
+| Lavastelze | 0,057 | 0,057 | 0,058 |
+
+- **Bewertung:** Moderhauer, Magmaschleim und Lavastelze kosten so viel wie Zombies. Der Klagegeist kostet rund das Dreifache (0,004 ms je Wesen und Tick), das Budget von 50 ms bleibt weit entfernt. Gemessen ist nur `QcMobManager::tick` mit einem Spieler in der Nähe, ohne Schüsse, Netz und Explosionen; keine A/B-Messung gegen `dev`.

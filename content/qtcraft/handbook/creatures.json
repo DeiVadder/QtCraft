@@ -9,6 +9,7 @@
         "spiders",
         "silverfish",
         "kjuts",
+        "nether",
         "chickens",
         "shadewalkers",
         "cows_and_fish",
@@ -47,6 +48,16 @@
         "kjut",
         "kjut_child",
         "spark_gel",
-        "gunpowder"
+        "gunpowder",
+        "rottusk",
+        "magma_slime",
+        "magma_slime_small",
+        "wailer",
+        "lava_wader",
+        "magma_cream",
+        "wailer_tear",
+        "fireball",
+        "saddle",
+        "fungus_on_a_stick"
     ]
 }

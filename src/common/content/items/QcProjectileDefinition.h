@@ -59,6 +59,11 @@ struct QcProjectileDefinition
     /*! Rises to the surface of a liquid and rests there instead of sinking (a fishing rod's
         bobber, decision E-503; QcProjectileFlight::floatHeight). */
     bool floats = false;
+    /*! A player can strike it out of the air and send it where he looks (\c {"deflectable"},
+        decision E-1053); it is then his shot. */
+    bool deflectable = false;
+    /*! Sound key played when a creature shoots it (\c {"launchSound"}); empty for none. */
+    QString launchSound;
 
     /*! Returns the first effect of \a type in onHit, if any. */
     const QcHitEffect *effect(const char *type) const
@@ -72,7 +77,7 @@ struct QcProjectileDefinition
     bool breaks() const
     {
         return effect(QcHitEffect::breaks) != nullptr || effect(QcHitEffect::teleport) != nullptr
-            || effect(QcHitEffect::splash) != nullptr;
+            || effect(QcHitEffect::splash) != nullptr || effect(QcHitEffect::explode) != nullptr;
     }
 };
 

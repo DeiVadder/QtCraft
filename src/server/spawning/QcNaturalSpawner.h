@@ -26,6 +26,7 @@
 #include <optional>
 
 class QcChunk;
+struct QcDimensionDefinition;
 class QcServerWorld;
 
 /*! \brief Creatures that come by themselves (decision E-422): monsters every tick around the living
@@ -88,6 +89,10 @@ public:
         spawner. Kinds from \a content, chunk chances decided by the world \a seed. */
     QcNaturalSpawner(QcMobManager &mobs, std::shared_ptr<const QcContentRegistry> content, quint64 seed, QRandomGenerator &random);
 
+    /*! Tells the spawner which dimension it serves (\a definition): a roof (\c {ceiling}) keeps
+        spawns below it, without \c {skyLight} no cell counts as lit by the sky, and outside the
+        overworld only rules that name a biome apply (decision E-1050). */
+    void setDimension(const QcDimensionDefinition &definition);
     /*! Sets the caps: \a hostile monsters per QcMonsterCap::areaChunks loaded chunks around
         players, \a passive and \a ambient creatures around one player at most. */
     void setCaps(int hostile, int passive, int ambient);
@@ -169,6 +174,8 @@ private:
         std::optional<QcSpawnLight::Draws> draws;
         // The feet are in water above the floor (only monster places, for drowned; decision E-838).
         bool water = false;
+        // The floor is lava (decision E-1051).
+        bool lava = false;
 
         // The biome and the block and sky light above the floor, looked up once.
         const QString &biomeIn(const QcServerWorld &world);
@@ -221,6 +228,13 @@ private:
     // The kinds of the pass that may spawn at the place and still have room by `counts`.
     QList<SpawnCandidate> candidatesAt(const QcServerWorld &world, SpawnPlace &place, Sky sky, const NearbyCounts &counts, Pass pass) const;
     bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, SpawnCandidate candidate, Sky sky) const;
+    // A random floor of a column under the dimension's roof, a solid block or lava with room above,
+    // and -1 if the column has none (decision E-1050).
+    int randomFloorBelowRoof(const QcChunk &chunk, QcBlockPos column);
+    // The sky light of every place of a dimension without a sky, none where it has to be read.
+    std::optional<int> knownSkyLight() const;
+    // Places a creature with its feet on lava at `place` (decision E-1051).
+    bool spawnOnLava(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
     // Weighted random choice by the rules' weights.
     SpawnCandidate pick(const QList<SpawnCandidate> &candidates);
     // One kind of the monster list of `biome` by weight (QcSpawnWeights); std::nullopt when the draw
@@ -255,6 +269,9 @@ private:
     int m_areaTicks = 0;
     // The sequence the running pass draws from: m_random, or m_monsterRandom while monsters spawn.
     QRandomGenerator *m_draws = nullptr;
+    int m_roof = 0;
+    bool m_skyLight = true;
+    bool m_overworld = true;
     int m_hostileCap = monsterCapPer289Chunks;
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;

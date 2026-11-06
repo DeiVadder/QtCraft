@@ -102,6 +102,8 @@ namespace QcProjectileParser {
     projectile.flightSeconds = reader.number(u"flightSeconds"_s, projectile.flightSeconds, 1.0, 3600.0);
     projectile.sticks = reader.boolean(u"sticks"_s, projectile.sticks);
     projectile.floats = reader.boolean(u"floats"_s, projectile.floats);
+    projectile.deflectable = reader.boolean(u"deflectable"_s, projectile.deflectable);
+    projectile.launchSound = reader.name(u"launchSound"_s, packNamespace);
     projectile.onHit = parseOnHit(packNamespace, projectile.damage, reader);
     // The damage of the hit is that of the damage effects.
     projectile.damage = 0.0;

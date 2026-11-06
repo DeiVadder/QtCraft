@@ -71,7 +71,7 @@ int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double hei
 bool QcBodyBurning::inSunlight(const QcEntity &body, double height) const
 {
     // By day, with nothing above the head that keeps out the sky (shade, a roof, leaves).
-    if (QcDayCycle::isNight(m_state.info().worldTime)) {
+    if (!m_state.current().definition().skyLight || QcDayCycle::isNight(m_state.info().worldTime)) {
         return false;
     }
     const QcBlockPos head = QcPhysics::blockContaining(body.motion.position + QcVec3{0.0, height * 0.9, 0.0});
@@ -113,6 +113,10 @@ void QcBodyBurning::tickCreatures()
             continue;
         }
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
+        if (definition.fireImmune) {
+            mob.burnTicks = 0;
+            continue;
+        }
         const bool sunburn = definition.burnsInDaylight && inSunlight(mob, definition.height);
         mob.burnTicks = burnTicksAfter(mob, definition.width, definition.height, sunburn ? sunlightTicks : 0);
         const bool fireProof = mob.effects && QcEffectRules::fireProof(m_state.content(), mob.effects->all());

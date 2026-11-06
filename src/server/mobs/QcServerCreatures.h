@@ -63,6 +63,8 @@ private:
     // A creature's blow at a player, with the effects of its kind's blows.
     void strike(QcServerClient &client, const QcMobManager::PlayerHit &hit);
     void playAmbientSounds(double dt);
+    // The cries of drifters that began to charge a shot this tick (QcArcherDefinition::warnSound).
+    void playWarnings();
     // The blows creatures dealt each other (a golem's, decision E-471; a pet's, decision E-480), with
     // the attacker's sound; those that die leave their loot (no experience).
     void applyCreatureHits();

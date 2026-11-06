@@ -1,0 +1,8 @@
+{
+    "name": "wailer_tear",
+    "pattern": "gem",
+    "primary": "#d7ecf2",
+    "secondary": "#8fbfd0",
+    "variation": 0.08,
+    "seed": 7306
+}

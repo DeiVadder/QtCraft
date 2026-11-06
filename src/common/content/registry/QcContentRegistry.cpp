@@ -469,6 +469,18 @@ QStringList QcContentRegistry::finish()
         mob.carries = std::move(traits.carries);
         mob.family = std::move(traits.family);
         warnings.append(traits.warnings);
+        // The items of a mount (decision E-1054): without them it cannot be saddled or steered.
+        if (mob.ride) {
+            mob.ride->saddleId = itemId(mob.ride->saddle).value_or(qcNoItem);
+            mob.ride->steerId = itemId(mob.ride->steer).value_or(qcNoItem);
+            if (mob.ride->saddleId == qcNoItem || mob.ride->steerId == qcNoItem) {
+                warnings.append(u"creature '%1': unknown item in 'ride'"_s.arg(mob.name));
+            }
+        }
+        if (mob.splits && !mobKind(mob.splits->into)) {
+            warnings.append(u"creature '%1': unknown creature '%2' in 'splits', left out"_s.arg(mob.name, mob.splits->into));
+            mob.splits.reset();
+        }
     });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(checkStructureAdventure(*this));

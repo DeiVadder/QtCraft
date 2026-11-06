@@ -407,7 +407,7 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     }
 
     if (m_prediction.riding().ridesCart()) {
-        m_prediction.followCart(m_entities);
+        m_prediction.followCart(m_entities, *m_worldMirror.content());
     } else if (m_prediction.riding().drivesBoat()) {
         rowingSounds();
     } else {

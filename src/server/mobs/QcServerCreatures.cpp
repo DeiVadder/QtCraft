@@ -67,7 +67,8 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .hurtTick = client->foes.hurtTick,
                             .struckTick = client->foes.struckTick,
                             .seated = m_state.entities().minecarts().ridden(client->id) != nullptr
-                                      || m_state.entities().boats().drivenBy(client->id) != nullptr,
+                                      || m_state.entities().boats().drivenBy(client->id) != nullptr
+                                      || m_state.entities().creatures().riddenBy(client->id) != nullptr,
                             .sightShare = QcEffectRules::sightShare(m_state.content(), client->effects.all(), armourPieces(*client))});
         }
     }
@@ -89,6 +90,7 @@ void QcServerCreatures::tick()
     m_villagers.apply();
     m_traits.apply();
     playAmbientSounds(dt);
+    playWarnings();
     applyCreatureHits();
     applyCramming();
     applyPlayerHits(hits);
@@ -166,6 +168,20 @@ void QcServerCreatures::playAmbientSounds(double dt)
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
         if (!mob.dormant && !definition.ambientSound.isEmpty() && m_state.soundRandom().generateDouble() < dt / ambientSeconds) {
             m_sounds.play(definition.ambientSound, mob.motion.position + QcVec3{0.0, definition.height * 0.8, 0.0});
+        }
+    }
+}
+
+void QcServerCreatures::playWarnings()
+{
+    for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
+        if (!mob.drifter || !mob.drifter->warns) {
+            continue;
+        }
+        mob.drifter->warns = false;
+        const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
+        if (!definition.archer.warnSound.isEmpty()) {
+            m_sounds.play(definition.archer.warnSound, mob.motion.position + QcVec3{0.0, definition.height * 0.5, 0.0});
         }
     }
 }

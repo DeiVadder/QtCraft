@@ -1,0 +1,31 @@
+{
+    "name": "fireball",
+    "item": "fireball",
+    "gravity": 0.0,
+    "drag": 0.0,
+    "waterDrag": 0.0,
+    "onHit": [
+        {
+            "type": "damage",
+            "amount": 6.0
+        },
+        {
+            "type": "ignite",
+            "seconds": 4.0
+        },
+        {
+            "type": "explode",
+            "power": 1.0
+        },
+        {
+            "type": "break",
+            "sound": "entity.fireball.burst"
+        }
+    ],
+    "size": 1.0,
+    "flightSeconds": 8.0,
+    "sticks": false,
+    "deflectable": true,
+    "launchSound": "entity.fireball.launch",
+    "hitSound": "entity.fireball.struck"
+}

@@ -526,6 +526,9 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const bool swimming = look.tilt != 0.0 || look.spread != 0.0;
     for (qsizetype index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
+        if (part.saddled && !look.saddled) {
+            continue;
+        }
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
         const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light};
         if (walking && index < look.legs->swings().size()) {

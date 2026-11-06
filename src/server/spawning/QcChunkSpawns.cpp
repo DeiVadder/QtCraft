@@ -147,6 +147,9 @@ QList<QcCreatureKindId> QcChunkSpawns::animalCandidates(const QcServerWorld &wor
             continue;
         }
 
+        if (definition.spawnBiomes.isEmpty() && m_namedBiomesOnly) {
+            continue;
+        }
         if (!definition.spawnBiomes.isEmpty()) {
             if (biome.isEmpty()) {
                 biome = world.generator().biomeAt(pos.x * QcWorld::chunkSize + floor.x, pos.z * QcWorld::chunkSize + floor.z);

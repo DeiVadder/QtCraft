@@ -1,0 +1,283 @@
+{
+    "name": "lava_wader",
+    "sounds": {
+        "ambient": "mob.lava_wader.ambient",
+        "hurt": "mob.lava_wader.hurt",
+        "death": "mob.lava_wader.death"
+    },
+    "health": 20,
+    "width": 0.9,
+    "height": 1.7,
+    "walkSpeed": 1.2,
+    "chaseSpeed": 1.2,
+    "ai": "drifter",
+    "fireImmune": true,
+    "waterDamage": 1.0,
+    "attackDamage": 0,
+    "sightRange": 8,
+    "hover": {
+        "height": 0.0,
+        "bob": 0.02,
+        "bobSeconds": 1.5,
+        "maxHeight": 1.4,
+        "turnSpeed": 120,
+        "sinksInWater": true
+    },
+    "drift": {
+        "seconds": 5.0,
+        "keepsToLava": true
+    },
+    "ride": {
+        "saddle": "saddle",
+        "steer": "fungus_on_a_stick",
+        "speed": 4.2,
+        "seat": 1.05
+    },
+    "spawn": {
+        "maxGroup": 2,
+        "weight": 0,
+        "also": [
+            {
+                "biomes": [
+                    "nether_wastes",
+                    "soul_sand_valley",
+                    "crimson_forest",
+                    "warped_forest",
+                    "basalt_deltas"
+                ],
+                "weight": 60,
+                "lava": true,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
+    },
+    "model": [
+        {
+            "from": [
+                -0.41000000000000003,
+                0,
+                -0.37
+            ],
+            "to": [
+                -0.27,
+                1.05,
+                -0.22999999999999998
+            ],
+            "texture": "lava_wader_leg"
+        },
+        {
+            "from": [
+                0.27,
+                0,
+                -0.37
+            ],
+            "to": [
+                0.41000000000000003,
+                1.05,
+                -0.22999999999999998
+            ],
+            "texture": "lava_wader_leg"
+        },
+        {
+            "from": [
+                -0.41000000000000003,
+                0,
+                0.22999999999999998
+            ],
+            "to": [
+                -0.27,
+                1.05,
+                0.37
+            ],
+            "texture": "lava_wader_leg"
+        },
+        {
+            "from": [
+                0.27,
+                0,
+                0.22999999999999998
+            ],
+            "to": [
+                0.41000000000000003,
+                1.05,
+                0.37
+            ],
+            "texture": "lava_wader_leg"
+        },
+        {
+            "from": [
+                -0.42,
+                1.0,
+                -0.5
+            ],
+            "to": [
+                0.42,
+                1.52,
+                0.5
+            ],
+            "texture": "lava_wader_hide"
+        },
+        {
+            "from": [
+                -0.3,
+                1.52,
+                -0.42
+            ],
+            "to": [
+                0.3,
+                1.6,
+                0.42
+            ],
+            "texture": "lava_wader_plate"
+        },
+        {
+            "from": [
+                -0.22,
+                1.2,
+                -0.84
+            ],
+            "to": [
+                0.22,
+                1.56,
+                -0.5
+            ],
+            "texture": "lava_wader_hide"
+        },
+        {
+            "from": [
+                -0.14,
+                1.56,
+                -0.8
+            ],
+            "to": [
+                0.14,
+                1.72,
+                -0.56
+            ],
+            "texture": "lava_wader_plate"
+        },
+        {
+            "from": [
+                -0.17,
+                1.36,
+                -0.846
+            ],
+            "to": [
+                -0.06,
+                1.46,
+                -0.84
+            ],
+            "texture": "lava_wader_eye"
+        },
+        {
+            "from": [
+                0.06,
+                1.36,
+                -0.846
+            ],
+            "to": [
+                0.17,
+                1.46,
+                -0.84
+            ],
+            "texture": "lava_wader_eye"
+        },
+        {
+            "from": [
+                -0.46,
+                1.1,
+                -0.2
+            ],
+            "to": [
+                -0.42,
+                1.42,
+                0.34
+            ],
+            "texture": "lava_wader_plate"
+        },
+        {
+            "from": [
+                0.42,
+                1.1,
+                -0.2
+            ],
+            "to": [
+                0.46,
+                1.42,
+                0.34
+            ],
+            "texture": "lava_wader_plate"
+        },
+        {
+            "from": [
+                -0.09,
+                1.25,
+                0.5
+            ],
+            "to": [
+                0.09,
+                1.42,
+                0.86
+            ],
+            "texture": "lava_wader_hide"
+        },
+        {
+            "from": [
+                -0.3,
+                1.6,
+                -0.24
+            ],
+            "to": [
+                0.3,
+                1.66,
+                0.3
+            ],
+            "texture": "lava_wader_saddle",
+            "saddled": true
+        },
+        {
+            "from": [
+                -0.44,
+                1.2,
+                -0.1
+            ],
+            "to": [
+                -0.42,
+                1.6,
+                0.08
+            ],
+            "texture": "lava_wader_saddle",
+            "saddled": true
+        },
+        {
+            "from": [
+                0.42,
+                1.2,
+                -0.1
+            ],
+            "to": [
+                0.44,
+                1.6,
+                0.08
+            ],
+            "texture": "lava_wader_saddle",
+            "saddled": true
+        }
+    ],
+    "drops": [
+        {
+            "item": "string",
+            "count": 2
+        },
+        {
+            "item": "string",
+            "chance": 0.5
+        },
+        {
+            "item": "string",
+            "chance": 0.5
+        }
+    ],
+    "experience": 3
+}

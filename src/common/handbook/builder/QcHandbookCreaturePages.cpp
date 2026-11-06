@@ -285,7 +285,7 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     Section section{context.text.label(u"section.biomeWeights"_s), {}, {}, {}};
     for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         const auto own = std::ranges::find(biome.monsterWeights, mob.name, &QcSpawnWeight::mob);
-        if (mob.isMonster() && own != biome.monsterWeights.end() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
+        if (mob.isMonster() && own != biome.monsterWeights.end() && QcSpawnWeights::ruleWeight(mob, biome.name, !biome.dimension.isEmpty()) > 0.0) {
             section.links.append(context.links.biomeLink(biome, context.text.number(own->weight)));
         }
     }

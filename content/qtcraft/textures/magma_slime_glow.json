@@ -1,0 +1,8 @@
+{
+    "name": "magma_slime_glow",
+    "pattern": "speckle",
+    "primary": "#ff9a20",
+    "secondary": "#ffdc58",
+    "variation": 0.14,
+    "seed": 7202
+}

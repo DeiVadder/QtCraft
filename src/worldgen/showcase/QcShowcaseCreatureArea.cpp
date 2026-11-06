@@ -68,6 +68,16 @@ void floodPen(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockId wate
     }
 }
 
+// Lays lava on the floor of a pen.
+void lavaFloor(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockId lava)
+{
+    for (int x = pen.wall; x < pen.wall + pen.inner; ++x) {
+        for (int z = pen.wall; z < pen.wall + pen.inner; ++z) {
+            structure.set(corner.x + x, 1, corner.z + z, lava);
+        }
+    }
+}
+
 } // namespace
 
 namespace QcShowcaseCreatureArea {
@@ -99,11 +109,17 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
             floodPen(*structure, pen, {x, 0, z}, context.content.blockId(u"qtcraft:water"_s).value_or(qcAirBlockId));
         }
 
+        // Creatures that walk on lava (decision E-1051) get a floor of it.
+        const bool onLava = std::ranges::any_of(mob.spawnRules(), &QcMobDefinition::SpawnRule::lava);
+        if (onLava) {
+            lavaFloor(*structure, pen, {x, 0, z}, context.content.blockId(u"qtcraft:lava"_s).value_or(qcAirBlockId));
+        }
+
         const double centreX = x + pen.wall + pen.inner / 2.0;
         const double centreZ = z + pen.wall + pen.inner / 2.0;
         // Confined: a creature that teleports or takes blocks stays in its pen and changes nothing
         // (decisions E-460, E-510).
-        structure->mobs.append({mob.name, {centreX, 1.0, centreZ}, true});
+        structure->mobs.append({mob.name, {centreX, onLava ? 2.0 : 1.0, centreZ}, true});
         structure->labels.append({{centreX, pen.height + 2.5, static_cast<double>(depth) - 0.5}, mob.translationKey, {}, false});
         x += pen.outer() + 1;
     }

@@ -38,6 +38,9 @@ struct QcMobPart
     /*! A tentacle (decision E-974): it turns outwards about the middle of its top as a creature
         that swims in pulses (QcPulseDefinition) glides, and back in as it pushes. */
     bool tentacle = false;
+    /*! Shown only while the creature wears a saddle (\c {"saddled"}, QcMsg::Saddled, decision
+        E-1054). */
+    bool saddled = false;
 };
 
 /*! \brief How a creature finds its way (decision E-423), from its data (\c {abilities}); the path
@@ -148,7 +151,8 @@ struct QcMobDefinition
         Archer, // keeps its distance and shoots
         Neutral, // passive until a player provokes it
         Golem, // guards villagers
-        Guardian // guards a zone
+        Guardian, // guards a zone
+        Drifter // drifts without paths; a hostile one shoots what it sees
     };
     /*! Its AI (\c {"ai"}); without the key: Villager for villagers, Hostile for hostile
         creatures, else Passive. */
@@ -175,6 +179,19 @@ struct QcMobDefinition
     std::optional<QcFamilyDefinition> family;
     /*! Hovers above the ground instead of walking (the Kjut, decision E-839). */
     std::optional<QcHoverDefinition> hover;
+    /*! How it drifts (\c {drift}; the drifter AI, decision E-1053). Server side only. */
+    QcDriftDefinition drift;
+    /*! How players ride it (\c {ride}, decision E-1054); none for no rider. Reaches the client. */
+    std::optional<QcRideDefinition> ride;
+    /*! What it falls apart into (\c {splits}, decision E-1055). Server side only. */
+    std::optional<QcSplitDefinition> splits;
+    /*! Jumps whenever it moves, like a slime (\c {hops}, decision E-1055). Server side only. */
+    bool hops = false;
+    /*! A hit by this projectile sent back by a player takes \c {deflectedDamage} health instead
+        of its own damage (\c {"weakTo": {"projectile", "damage"}}, decision E-1053; the wailer's
+        own fire). Empty for none. Server side only. \qcshared */
+    QString weakTo;
+    double deflectedDamage = 0.0;
     /*! A guardian (Ai::Guardian) chases players up to this many blocks outside the zone it
         guards (\c {"guardian": {"leash": 6}}, decision E-594). Server side only. */
     double guardLeash = 6.0;
@@ -196,6 +213,9 @@ struct QcMobDefinition
     /*! Catches fire in direct sunlight (decision E-426): by day, with the open sky above its
         head, neither in water nor in the rain. Server side only. */
     bool burnsInDaylight = false;
+    /*! Fire, lava and hot blocks do it no harm and it never burns (\c {"fireImmune"}, decision
+        E-1052). Server side only. */
+    bool fireImmune = false;
     /*! Needs no air under water and never drowns (\c {"breathesUnderWater"}, decision E-955;
         by default the creatures that swim, dive or live in water). Server side only. */
     bool breathesUnderWater = false;
@@ -303,6 +323,9 @@ struct QcMobDefinition
     /*! In water instead of on dry ground: its feet in water above a solid block (drowned;
         decision E-838). Server side only. */
     bool spawnInWater = false;
+    /*! On the surface of lava instead of on solid ground (\c {"lava"}, decision E-1051). Server
+        side only. */
+    bool spawnOnLava = false;
 
     /*! \brief One place and time where the creature spawns: the main rule (the fields above) or an
         extra one (\c {spawn.also}, e.g. slimes also on swamp surfaces at night).
@@ -332,6 +355,8 @@ struct QcMobDefinition
         bool sky = false;
         /*! In water (\c {"water"}), as spawnInWater. */
         bool water = false;
+        /*! On lava (\c {"lava"}), as spawnOnLava. */
+        bool lava = false;
     };
     /*! Extra spawn rules (\c {"spawn": {"also": [...]}}), at most maxExtraSpawns. */
     QList<SpawnRule> extraSpawns;
@@ -339,7 +364,7 @@ struct QcMobDefinition
     QList<SpawnRule> spawnRules() const
     {
         QList<SpawnRule> rules{{spawnTime, spawnBlocks, spawnWeight, spawnsInCaves, maxSpawnLight, spawnChunkChance, spawnMaxY, spawnBiomes,
-                                 spawnInDarkness, spawnUnderSky, spawnInWater}};
+                                 spawnInDarkness, spawnUnderSky, spawnInWater, spawnOnLava}};
         rules.append(extraSpawns);
         return rules;
     }

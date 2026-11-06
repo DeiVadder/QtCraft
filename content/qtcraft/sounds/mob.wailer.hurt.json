@@ -1,0 +1,27 @@
+{
+    "name": "mob.wailer.hurt",
+    "volume": 0.9,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.5,
+            "frequency": 620,
+            "endFrequency": 340,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.5
+        },
+        {
+            "wave": "sine",
+            "duration": 0.45,
+            "frequency": 930,
+            "endFrequency": 420,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.25
+        }
+    ]
+}

@@ -23,8 +23,6 @@ namespace QcMobHover {
 
 /*! Vertical speed per metre off the wanted height in 1/s. */
 inline constexpr double verticalGain = 5.0;
-/*! The highest vertical speed in m/s. */
-inline constexpr double maxVerticalSpeed = 3.0;
 /*! How fast the velocity follows the wish (share per second). */
 inline constexpr double steerRate = 6.0;
 /*! Ticks a hoverer keeps rising after a wall stopped it. */
@@ -49,8 +47,8 @@ struct Room
     std::optional<double> ceiling;
 };
 /*! Returns the room in \a world around a body of \a height whose feet are at \a feet, looking for
-    a floor within \a reach. */
-[[nodiscard]] Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, double reach);
+    a floor within \a reach; with \a sinksInWater water is no floor. */
+[[nodiscard]] Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, double reach, bool sinksInWater);
 
 /*! Returns where \a mob, a hoverer of the kind \a definition in \a room, wants its feet this
     tick: its hover height above the floor with the bob at \a seconds, higher while it climbs,

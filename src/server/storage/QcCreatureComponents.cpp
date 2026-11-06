@@ -35,6 +35,9 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     if (mob.noAi) {
         components.add(static_cast<quint16>(Component::NoAi), kindVersion, [](QDataStream &) {});
     }
+    if (mob.saddled) {
+        components.add(static_cast<quint16>(Component::Saddle), kindVersion, [](QDataStream &) {});
+    }
     if (mob.playerBuilt) {
         components.add(static_cast<quint16>(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
     }
@@ -105,13 +108,12 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
         in >> mob.keptForBlock;
         return read.has_value();
     };
-    const auto confined = [&mob](QDataStream &, quint16) {
-        mob.confined = true;
-        return true;
-    };
-    const auto noAi = [&mob](QDataStream &, quint16) {
-        mob.noAi = true;
-        return true;
+    // A component without data: being there sets the mark.
+    const auto mark = [](bool &field) {
+        return [&field](QDataStream &, quint16) {
+            field = true;
+            return true;
+        };
     };
     const auto golem = [&mob](QDataStream &in, quint16) {
         in >> mob.playerBuilt;
@@ -133,10 +135,10 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
     std::optional<QcComponentFrames::ReadComponents> components =
         QcComponentFrames::read(stream, {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
                                          known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
-                                         known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
+                                         known(Component::Confined, kindVersion, mark(mob.confined)), known(Component::Golem, kindVersion, golem),
                                          known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                                         known(Component::NoAi, kindVersion, noAi), known(Component::Family, kindVersion, family),
-                                         known(Component::Name, kindVersion, name)});
+                                         known(Component::NoAi, kindVersion, mark(mob.noAi)), known(Component::Family, kindVersion, family),
+                                         known(Component::Name, kindVersion, name), known(Component::Saddle, kindVersion, mark(mob.saddled))});
     if (!components) {
         return std::nullopt;
     }

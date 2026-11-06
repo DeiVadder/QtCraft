@@ -221,7 +221,7 @@ private slots:
         intent.forward = 1.0f;
         prediction.setIntent(intent);
         prediction.predict(world, false, QcMovement::Walk);
-        prediction.followCart(entities);
+        prediction.followCart(entities, m_content);
         QCOMPARE(prediction.motion().position, (QcVec3{0.5, 1.0, 0.5}));
         QCOMPARE(prediction.pendingInputCount(), 1);
 
@@ -262,7 +262,7 @@ private slots:
             moves.moves = {{cart.id, QcVec3{4.5 + static_cast<double>(tick), 1.0, 4.5}, 0.0f, 20.0, false, false, 0.0f, QcMsg::OnGround, qcNoItem}};
             entities.moves(moves, tick * 50);
             entities.tick(tick * 50);
-            session.followCart(entities);
+            session.followCart(entities, m_content);
         }
         const QcVec3 seat = session.motion().position;
         QVERIFY(session.previousMotion().position != seat);

@@ -106,6 +106,17 @@ int boatCount(const QcBoat &boat)
     return static_cast<int>(std::lround(boat.yaw * 10.0f)) * 2 + (paddled(boat) ? 1 : 0);
 }
 
+// What a client needs to know of a projectile: stuck in something, or open to a blow (decision
+// E-1053).
+quint16 flagsOf(const QcProjectile &projectile, const QcContentRegistry &content)
+{
+    if (projectile.stuck) {
+        return QcMsg::Stuck;
+    }
+    const QcProjectileDefinition *kind = content.projectile(projectile.type);
+    return kind && kind->deflectable ? QcMsg::Deflectable : quint16{0};
+}
+
 } // namespace
 
 QcEntitySync::QcEntitySync(QcServerState &state)
@@ -132,6 +143,9 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
         now = creatureMove(now, creature, m_state.content().mobs()[creature.type]);
+        if (creature.saddled) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Saddled);
+        }
         if (creature.effects && QcEffectRules::invisible(m_state.content(), creature.effects->all())) {
             now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
         }
@@ -139,7 +153,8 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     }
     case QcEntityKind::Player: {
         const auto &player = entity.as<QcServerClient>();
-        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id));
+        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id)
+                                     || m_state.entities().creatures().riddenBy(player.id));
         if (QcEffectRules::invisible(m_state.content(), player.effects.all())) {
             now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
         }
@@ -171,7 +186,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         const auto &projectile = entity.as<QcProjectile>();
         now.yaw = projectile.yaw;
         now.pitch = projectile.pitch;
-        now.flags = projectile.stuck ? static_cast<quint16>(QcMsg::Stuck) : quint16{0};
+        now.flags = flagsOf(projectile, m_state.content());
         break;
     }
     case QcEntityKind::PrimedExplosive:

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -325,6 +325,39 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 
 Alle Biome.
 
+### <a id="mob-qtcraft-wailer"></a>Klagegeist
+
+Ein riesiges leeres Leichentuch hinter einer bleichen Maske, das hoch über der Lava treibt. Sein Klagen trägt weit. Es speit Feuerkugeln auf jeden, den es sieht; wer eine im Flug trifft, schickt sie zurück, und nichts holt einen Klagegeist schneller herunter.
+
+| | |
+|---|---|
+| ID | `qtcraft:wailer` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 3 m breit, 3,3 m hoch |
+| Geschwindigkeit | 0,8 m/s |
+| Sieht Spieler bis | 64 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 50 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Leuchtet | 4 von 15 |
+| Beute | [Klageträne](items.md#item-qtcraft-wailer_tear) (50 %), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (65 %), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (30 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas)
+
 ### <a id="mob-qtcraft-kjut_child"></a>Kleiner Kjut
 
 Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Faden um sein Elternteil kreist, wie ein Signal an seinem Slot, bis er dich sieht. Einzeln erschlagen lässt es manchmal Funkengel fallen; mit seinem Elternteil verpufft es und lässt dann Schwarzpulver zurück.
@@ -341,6 +374,23 @@ Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Fa
 | Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Leuchtet | 15 von 15 |
 | Beute | [Funkengel](items.md#item-qtcraft-spark_gel) (50 %) |
+
+### <a id="mob-qtcraft-magma_slime_small"></a>Kleiner Magmaschleim
+
+Ein Stück Magmaschleim, noch immer glühend und noch immer zornig.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_slime_small` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 4 Lebenspunkte |
+| Größe | 0,5 m breit, 0,5 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 3 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,1 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 5 von 15 |
+| Beute | [Magmacreme](items.md#item-qtcraft-magma_cream) (10 %) |
 
 ### <a id="mob-qtcraft-cow"></a>Kuh
 
@@ -396,6 +446,106 @@ Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwa
 **Erscheint in Biomen**
 
 [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
+
+### <a id="mob-qtcraft-lava_wader"></a>Lavastelze
+
+Ein langbeiniger Vogel der Lavameere, der auf der Schmelze wie auf einem Boden schreitet und niemandem etwas tut. Mit einem Sattel lässt er sich reiten, und solange man einen Wirrpilz an der Angel vor ihn hält, geht er, wohin man schaut.
+
+| | |
+|---|---|
+| ID | `qtcraft:lava_wader` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,9 m breit, 1,7 m hoch |
+| Geschwindigkeit | 1,2 m/s |
+| Erscheint | Tag und Nacht |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 0 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Beute | [Faden](items.md#item-qtcraft-string) (2×), [Faden](items.md#item-qtcraft-string) (50 %), [Faden](items.md#item-qtcraft-string) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas), [Karmesinwald](biomes.md#biome-qtcraft-crimson_forest), [Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Wirrwald](biomes.md#biome-qtcraft-warped_forest)
+
+### <a id="mob-qtcraft-magma_slime"></a>Magmaschleim
+
+Krustenplatten, die eine Naht aus glühender Schmelze zusammenhält. Es hüpft auf alles zu, was es sieht, Feuer macht ihm nichts, und im Tod zerfällt es in kleinere Stücke.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_slime` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 1 m breit, 1 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 2,6 m/s beim Verfolgen |
+| Angriff | 4 Schaden bis 1,5 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Leuchtet | 7 von 15 |
+| Beute | [Magmacreme](items.md#item-qtcraft-magma_cream) (25 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas)
+
+### <a id="mob-qtcraft-rottusk"></a>Moderhauer
+
+Ein gebeugtes, längst gestorbenes Keilervolk mit blanken Hauern, Knochenkragen und goldener Klinge. Es lässt jeden in Ruhe, bis jemand zuschlägt: Dann wendet sich jeder Moderhauer in Hörweite gegen den Angreifer. Feuer schadet ihm nicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:rottusk` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,8 m/s beim Verfolgen |
+| Angriff | 5 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 20 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 100 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Goldnugget](items.md#item-qtcraft-gold_nugget) (60 %), [Goldnugget](items.md#item-qtcraft-gold_nugget) (30 %), [Goldbarren](items.md#item-qtcraft-gold_ingot) (2,5 %), [Goldschwert](tools.md#item-qtcraft-golden_sword) (4 %) |
+| Rudel | schlägst du einen, jagen dich auch die anderen im Umkreis von 24 m |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 
@@ -498,6 +648,12 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 Alle Biome.
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Wirrwald](biomes.md#biome-qtcraft-warped_forest)
 
 ### <a id="mob-qtcraft-slime"></a>Schleim
 
@@ -618,6 +774,12 @@ Alle Biome.
 **Gewicht in diesen Biomen**
 
 [Tundra](biomes.md#biome-qtcraft-tundra) (20)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley)
 
 ### <a id="mob-qtcraft-spider"></a>Spinne
 

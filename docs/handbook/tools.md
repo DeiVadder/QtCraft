@@ -434,6 +434,10 @@ Soft gold: hits like a wooden sword and breaks soon.
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Dropped by**
+
+[Rottusk](creatures.md#mob-qtcraft-rottusk) (4 %)
+
 ### <a id="item-qtcraft-iron_axe"></a>Iron axe
 
 Chops wood faster.

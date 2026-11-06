@@ -599,6 +599,10 @@ Weiches Gold: trifft wie ein Holzschwert und bricht bald.
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Droppt aus**
+
+[Moderhauer](creatures.md#mob-qtcraft-rottusk) (4 %)
+
 ### <a id="item-qtcraft-golden_pickaxe"></a>Goldspitzhacke
 
 Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wie Holz.

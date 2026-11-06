@@ -58,6 +58,11 @@ inline constexpr quint16 Stuck = 4096;
 /*! Under an invisibility effect (decision E-992): the body is not drawn, what it wears and holds
     is. */
 inline constexpr quint16 Invisible = 8192;
+/*! A creature wearing a saddle (decision E-1054): its QcMobPart::saddled parts are drawn. */
+inline constexpr quint16 Saddled = 16384;
+/*! On a projectile the saddle bit tells that a player can strike it (decision E-1053): the
+    crosshair finds it. */
+inline constexpr quint16 Deflectable = Saddled;
 
 /*! Returns the flag bits of \a pose: Lying, Sitting or none for standing. */
 inline quint16 poseFlags(QcPose pose)

@@ -231,6 +231,7 @@ struct HandView
 struct PartLook
 {
     bool sitting = false;
+    bool saddled = false;
     QcAppearance colors;
     double walked = 0.0;
     double speed = 0.0;

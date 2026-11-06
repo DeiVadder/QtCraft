@@ -14,7 +14,8 @@ void move(QcServerState &state, QcServerClient &player, QcServerDimension &dimen
         const QcServerState::Scope here(state, state.dimensionOf(player));
         // What he had open stays behind; what lay in a grid falls here, not where he goes.
         state.closeScreens(player);
-        // A rider or driver is moved out of his minecart or boat (decisions E-383, E-920).
+        // A rider or driver is moved out of his minecart, boat or creature (decisions E-383, E-920,
+        // E-1054).
         if (QcMinecart *cart = state.entities().minecarts().ridden(player.id)) {
             cart->rider = 0;
             cart->rest.reset();
@@ -22,6 +23,7 @@ void move(QcServerState &state, QcServerClient &player, QcServerDimension &dimen
         if (QcBoat *boat = state.entities().boats().drivenBy(player.id)) {
             boat->driver = 0;
         }
+        state.entities().creatures().dropRider(player.id);
     }
 
     if (&dimension != &state.dimensionOf(player)) {

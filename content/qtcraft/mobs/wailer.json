@@ -1,0 +1,292 @@
+{
+    "name": "wailer",
+    "sounds": {
+        "ambient": "mob.wailer.ambient",
+        "hurt": "mob.wailer.hurt",
+        "death": "mob.wailer.death"
+    },
+    "health": 10,
+    "width": 3.0,
+    "height": 3.3,
+    "walkSpeed": 0.8,
+    "chaseSpeed": 0.8,
+    "hostile": true,
+    "ai": "drifter",
+    "fireImmune": true,
+    "attackDamage": 0,
+    "attackRange": 0.5,
+    "attackCooldown": 1.0,
+    "sightRange": 64,
+    "archer": {
+        "projectile": "fireball",
+        "drawSeconds": 0.5,
+        "cooldownSeconds": 2.5,
+        "speed": 16,
+        "spreadDegrees": 2.0,
+        "range": 64,
+        "minDistance": 0,
+        "keepDistance": 64,
+        "warnSound": "mob.wailer.warn"
+    },
+    "hover": {
+        "height": 7.0,
+        "bob": 0.25,
+        "bobSeconds": 5.0,
+        "maxHeight": 14.0,
+        "turnSpeed": 45,
+        "climbSpeed": 1.0
+    },
+    "drift": {
+        "seconds": 6.0
+    },
+    "weakTo": {
+        "projectile": "fireball",
+        "damage": 1000
+    },
+    "glow": 4,
+    "spawn": {
+        "maxGroup": 1,
+        "weight": 50,
+        "biomes": [
+            "nether_wastes",
+            "soul_sand_valley"
+        ],
+        "darkness": false,
+        "maxLight": 15,
+        "also": [
+            {
+                "biomes": [
+                    "basalt_deltas"
+                ],
+                "weight": 40,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
+    },
+    "model": [
+        {
+            "from": [
+                -0.9,
+                2.5,
+                -0.9
+            ],
+            "to": [
+                0.9,
+                3.1,
+                0.9
+            ],
+            "texture": "wailer_shroud"
+        },
+        {
+            "from": [
+                -1.25,
+                1.5,
+                -1.25
+            ],
+            "to": [
+                1.25,
+                2.5,
+                1.25
+            ],
+            "texture": "wailer_shroud"
+        },
+        {
+            "from": [
+                -1.5,
+                0.75,
+                -1.5
+            ],
+            "to": [
+                1.5,
+                1.5,
+                1.5
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -0.5,
+                3.1,
+                -0.5
+            ],
+            "to": [
+                0.5,
+                3.35,
+                0.5
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -0.8,
+                1.6,
+                -1.262
+            ],
+            "to": [
+                0.8,
+                2.45,
+                -1.25
+            ],
+            "texture": "wailer_mask"
+        },
+        {
+            "from": [
+                -0.6,
+                2.08,
+                -1.268
+            ],
+            "to": [
+                -0.22,
+                2.28,
+                -1.258
+            ],
+            "texture": "wailer_hollow"
+        },
+        {
+            "from": [
+                0.22,
+                2.08,
+                -1.268
+            ],
+            "to": [
+                0.6,
+                2.28,
+                -1.258
+            ],
+            "texture": "wailer_hollow"
+        },
+        {
+            "from": [
+                -0.3,
+                1.68,
+                -1.268
+            ],
+            "to": [
+                0.3,
+                1.95,
+                -1.258
+            ],
+            "texture": "wailer_glow"
+        },
+        {
+            "from": [
+                -1.33,
+                0.15000000000000002,
+                -1.33
+            ],
+            "to": [
+                -1.0699999999999998,
+                0.75,
+                -1.0699999999999998
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -0.13,
+                0.45,
+                -1.4300000000000002
+            ],
+            "to": [
+                0.13,
+                0.75,
+                -1.17
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                1.0699999999999998,
+                0.19999999999999996,
+                -1.33
+            ],
+            "to": [
+                1.33,
+                0.75,
+                -1.0699999999999998
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -1.33,
+                0.4,
+                1.0699999999999998
+            ],
+            "to": [
+                -1.0699999999999998,
+                0.75,
+                1.33
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -0.03,
+                0.050000000000000044,
+                1.17
+            ],
+            "to": [
+                0.23,
+                0.75,
+                1.4300000000000002
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                1.0699999999999998,
+                0.35,
+                0.9700000000000001
+            ],
+            "to": [
+                1.33,
+                0.75,
+                1.23
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                -1.48,
+                0.25,
+                -0.13
+            ],
+            "to": [
+                -1.2200000000000002,
+                0.75,
+                0.13
+            ],
+            "texture": "wailer_shroud_dark"
+        },
+        {
+            "from": [
+                1.2200000000000002,
+                0.09999999999999998,
+                -0.03
+            ],
+            "to": [
+                1.48,
+                0.75,
+                0.23
+            ],
+            "texture": "wailer_shroud_dark"
+        }
+    ],
+    "drops": [
+        {
+            "item": "wailer_tear",
+            "chance": 0.5
+        },
+        {
+            "item": "gunpowder",
+            "chance": 0.65
+        },
+        {
+            "item": "gunpowder",
+            "chance": 0.3
+        }
+    ],
+    "experience": 5
+}

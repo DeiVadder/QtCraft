@@ -1,0 +1,26 @@
+{
+    "name": "entity.fireball.launch",
+    "volume": 0.9,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.45,
+            "attack": 0.01,
+            "curve": 1.5,
+            "highpass": 500,
+            "gain": 0.5
+        },
+        {
+            "wave": "sine",
+            "duration": 0.4,
+            "frequency": 180,
+            "endFrequency": 520,
+            "attack": 0.02,
+            "curve": 1.5,
+            "gain": 0.35
+        }
+    ]
+}

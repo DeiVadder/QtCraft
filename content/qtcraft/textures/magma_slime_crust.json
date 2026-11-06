@@ -1,0 +1,8 @@
+{
+    "name": "magma_slime_crust",
+    "pattern": "speckle",
+    "primary": "#3c2420",
+    "secondary": "#1e1412",
+    "variation": 0.2,
+    "seed": 7201
+}

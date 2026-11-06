@@ -34,6 +34,9 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
     if (entity.isBoat()) {
         return QcPhysics::boxAt(entity.position, QcBoatBody::width, QcBoatBody::height);
     }
+    if (entity.isProjectile()) {
+        return QcPhysics::boxAt(entity.position - QcVec3{0.0, 0.6, 0.0}, 1.2, 1.2);
+    }
     if (entity.isHanging()) {
         return entity.hanging.box();
     }
@@ -66,7 +69,7 @@ bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &enti
 bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entity, bool sneaking)
 {
     const QcMobDefinition *creature = entity.creature(content);
-    return entity.isArmourStand() || entity.isMinecart() || entity.isBoat() || entity.isHanging() || (creature && (creature->villager || creature->tameable) && !sneaking);
+    return entity.isArmourStand() || entity.isMinecart() || entity.isBoat() || entity.isHanging() || (creature && (creature->villager || creature->tameable || creature->ride) && !sneaking);
 }
 
 // Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,
@@ -131,7 +134,8 @@ void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentReg
     double nearest = m_target ? m_target->distance : attackReach;
     const quint32 vehicle = m_view.prediction.riding().vehicle();
     for (const QcClientEntity &entity : m_view.entities.all()) {
-        if (entity.isItem() || entity.isExperienceOrb() || entity.isProjectile() || entity.isBlockEntity() || entity.id == vehicle) {
+        if (entity.isItem() || entity.isExperienceOrb() || (entity.isProjectile() && (entity.flags & QcMsg::Deflectable) == 0)
+            || entity.isBlockEntity() || entity.id == vehicle) {
             continue;
         }
 

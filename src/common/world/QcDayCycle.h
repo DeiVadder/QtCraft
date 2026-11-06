@@ -17,6 +17,10 @@ inline constexpr double minimumDaylight = 0.15;
 /*! Levels sky light loses at night (midnight in clear weather). */
 inline constexpr int nightDarkening = 11;
 
+/*! The time of day a dimension without day cycle stays at, in seconds: midnight (decision
+    E-1050). */
+inline constexpr double midnightTime = dayLength * 0.75;
+
 /*! Returns the phase of the day at \a worldTime, in [0, 1). */
 double phase(double worldTime);
 /*! Returns the height of the sun at \a worldTime, in [-1, 1]. */

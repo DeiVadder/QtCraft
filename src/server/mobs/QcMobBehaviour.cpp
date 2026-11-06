@@ -40,6 +40,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_guardians(m_random, m_paths)
     , m_tamePassive(m_random, m_paths, m_passive)
     , m_tameNeutral(m_random, m_paths, m_neutral)
+    , m_drifters(m_random)
     , m_fish(m_random)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
@@ -65,6 +66,9 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
             break;
         case QcMobDefinition::Ai::Guardian:
             m_brains.push_back(&m_guardians);
+            break;
+        case QcMobDefinition::Ai::Drifter:
+            m_brains.push_back(&m_drifters);
             break;
         }
         // A tameable kind (passive or neutral, QcMobReader) thinks tame or wild (decision E-480).
@@ -202,6 +206,8 @@ QcPhysics::Steering QcMobBehaviour::adjusted(const QcCreature &mob, const QcMobD
     if (mob.effects) {
         steering.speed *= mob.effects->speedFactor(*m_content);
     }
+    // Slimes move by hops (decision E-1055).
+    steering.jump = steering.jump || (definition.hops && steering.wish.length() > 0.0);
 
     // A diver swims up only towards the player it chases when he is above it (decision E-838).
     if (definition.abilities.dives && mob.motion.inWater && mob.chasing != 0 && context.players) {

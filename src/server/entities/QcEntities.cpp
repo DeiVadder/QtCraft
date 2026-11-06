@@ -134,7 +134,7 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
 
 void QcEntities::displace(QcEntity &entity, const QcVec3 &delta) const
 {
-    if (entity.kind == QcEntityKind::Player && (m_carts.ridden(entity.id) || boats().drivenBy(entity.id))) {
+    if (entity.kind == QcEntityKind::Player && (m_carts.ridden(entity.id) || boats().drivenBy(entity.id) || m_creatures.riddenBy(entity.id))) {
         return;
     }
 

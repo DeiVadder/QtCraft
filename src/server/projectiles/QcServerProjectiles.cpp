@@ -9,6 +9,7 @@
 #include "server/animals/QcServerAnimals.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/gameplay/QcServerCombat.h"
@@ -34,11 +35,13 @@ double splashShare(const QcVec3 &at, double radius, const QcAabb &box)
 
 } // namespace
 
-QcServerProjectiles::QcServerProjectiles(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerInventory &inventory)
+QcServerProjectiles::QcServerProjectiles(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerInventory &inventory,
+                                         QcServerExplosions &explosions)
     : m_state(state)
     , m_sounds(sounds)
     , m_health(health)
     , m_inventory(inventory)
+    , m_explosions(explosions)
     , m_launchers(state, sounds, inventory, *this)
     , m_throws(state, inventory, *this)
     , m_fishing(state, sounds, inventory)
@@ -66,7 +69,10 @@ void QcServerProjectiles::tick()
     m_fishing.tick();
     const QList<QcProjectileManager::Launch> launches = m_state.entities().creatures().takeLaunches();
     for (const QcProjectileManager::Launch &shot : launches) {
-        launch(shot);
+        const QcProjectileDefinition *definition = m_state.content().projectile(shot.type);
+        if (launch(shot) && definition && !definition->launchSound.isEmpty()) {
+            m_sounds.play(definition->launchSound, shot.position);
+        }
     }
 
     QcProjectileManager &projectiles = m_state.entities().projectiles();
@@ -96,10 +102,46 @@ void QcServerProjectiles::tick()
             if (const QcHitEffect *teleport = definition.effect(QcHitEffect::teleport)) {
                 teleportThrower(projectile, *teleport);
             }
+            if (const QcHitEffect *blast = definition.effect(QcHitEffect::explode)) {
+                // Goes off after the pass: an explosion reaches the bodies the pass is walking past.
+                // Only a player who is there sets the rule aside: a shooter that is gone (after a
+                // load) counts as the creature it most likely was.
+                const bool byPlayer = std::ranges::any_of(m_state.clients(), [&](const auto &client) {
+                    return client->id == projectile.shooter && isPresent(*client);
+                });
+                m_blasts.append({projectile.motion.position, blast->number,
+                                 m_explosions.breaksBlocks() && (byPlayer || m_state.info().mobGriefing),
+                                 definition.effect(QcHitEffect::ignite) != nullptr});
+            }
         },
         m_blockHit};
     const QList<QcProjectileFlight::Body> bodies = projectiles.anyFlying() ? this->bodies() : QList<QcProjectileFlight::Body>();
     projectiles.tick(m_state.world(), bodies, collectors(), QcPhysics::tickDuration, handlers);
+    const QList<QcServerExplosions::Blast> blasts = std::exchange(m_blasts, {});
+    for (const QcServerExplosions::Blast &blast : blasts) {
+        m_explosions.explode(blast);
+    }
+}
+
+bool QcServerProjectiles::deflect(QcServerClient &client, quint32 id)
+{
+    QcProjectile *projectile = m_state.entities().projectiles().find(id);
+    if (!projectile) {
+        return false;
+    }
+    // Strikes that reach a flying projectile send it on; a strike at any other does nothing.
+    const QcProjectileDefinition *definition = m_state.content().projectile(projectile->type);
+    const QcVec3 eyes = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const std::optional<QcAabb> body = m_state.entities().boxOf(*projectile);
+    if (!client.dead && definition && definition->deflectable && !projectile->stuck && (projectile->motion.position - eyes).length() <= deflectReach
+        && body && QcLineOfSight::canSee(m_state.world(), client, *body)) {
+        projectile->motion.velocity = QcProjectileFlight::direction(client.yaw, client.pitch) * projectile->motion.velocity.length();
+        projectile->shooter = client.id;
+        projectile->age = 0.0;
+        QcProjectileFlight::turnAlong(*projectile);
+        m_sounds.play(definition->hitSound, projectile->motion.position);
+    }
+    return true;
 }
 
 QList<QcProjectileFlight::Body> QcServerProjectiles::bodies() const
@@ -141,33 +183,8 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
     const QcVec3 along = QcVec3{projectile.motion.velocity.x, 0.0, projectile.motion.velocity.z}.normalized();
     const QcHitEffects::Impact impact = m_effects.impactOf(hit.definition, hit.damage);
     bool took = false;
-    if (const QcCreature *target = m_state.entities().creatures().find(hit.body)) {
-        // A creature that dodges projectiles (a shadewalker, decision E-460) teleports away unhurt;
-        // the projectile bounces off.
-        const QcMobDefinition &definition = m_state.content().mobs()[target->type];
-        // A player's arrow leaves the pets of other players unhurt (decision E-480).
-        if (QcPetOwners::isOthersPet(m_state, *target, projectile.shooter)) {
-            return false;
-        }
-        if (definition.teleport && definition.teleport->dodgesProjectiles) {
-            m_state.entities().creatures().teleport(hit.body, m_state.world());
-            return false;
-        }
-        const bool byPlayer = noteShot(projectile.shooter, hit.body);
-        took = QcServerCombat::hurtCreature(m_state, m_sounds,
-                                            {.creature = hit.body,
-                                             .damage = impact.damage,
-                                             .from = projectile.motion.position - along,
-                                             .attacker = byPlayer ? projectile.shooter : 0,
-                                             .knockback = impact.knockback});
-        // The hit may have killed it.
-        QcCreature *mob = took ? m_state.entities().creatures().find(hit.body) : nullptr;
-        if (mob) {
-            mob->burnTicks = std::max(mob->burnTicks, impact.burnTicks);
-            for (const QcStatusEffect &effect : impact.effects) {
-                QcServerEffects::giveCreature(m_state.content(), m_state.entities().creatures(), hit.body, effect);
-            }
-        }
+    if (m_state.entities().creatures().find(hit.body)) {
+        took = hitCreature(hit, impact, along);
     } else {
         for (const auto &client : m_state.clients()) {
             if (client->id == hit.body && isPresent(*client) && client->hurt.wouldTake(impact.damage) != QcHurtWindow::Take::Ignored
@@ -181,6 +198,45 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
 
     if (took && !hit.definition.hitSound.isEmpty()) {
         m_sounds.play(hit.definition.hitSound, projectile.motion.position);
+    }
+    return took;
+}
+
+bool QcServerProjectiles::hitCreature(const QcProjectileManager::Hit &hit, const QcHitEffects::Impact &impact, const QcVec3 &along)
+{
+    const QcProjectile &projectile = hit.projectile;
+    const QcCreature *target = m_state.entities().creatures().find(hit.body);
+    if (!target) {
+        return false;
+    }
+
+    // A creature that dodges projectiles (a shadewalker, decision E-460) teleports away unhurt;
+    // the projectile bounces off.
+    const QcMobDefinition &definition = m_state.content().mobs()[target->type];
+    // A player's arrow leaves the pets of other players unhurt (decision E-480).
+    if (QcPetOwners::isOthersPet(m_state, *target, projectile.shooter)) {
+        return false;
+    }
+    if (definition.teleport && definition.teleport->dodgesProjectiles) {
+        m_state.entities().creatures().teleport(hit.body, m_state.world());
+        return false;
+    }
+    const bool byPlayer = noteShot(projectile.shooter, hit.body);
+    // Its own fire sent back by a player is what brings such a creature down (decision E-1053).
+    const bool weak = byPlayer && definition.weakTo == hit.definition.name;
+    const bool took = QcServerCombat::hurtCreature(m_state, m_sounds,
+                                                        {.creature = hit.body,
+                                                         .damage = weak ? definition.deflectedDamage : impact.damage,
+                                                         .from = projectile.motion.position - along,
+                                                         .attacker = byPlayer ? projectile.shooter : 0,
+                                                         .knockback = impact.knockback});
+    // The hit may have killed it.
+    QcCreature *mob = took ? m_state.entities().creatures().find(hit.body) : nullptr;
+    if (mob) {
+        mob->burnTicks = std::max(mob->burnTicks, impact.burnTicks);
+        for (const QcStatusEffect &effect : impact.effects) {
+            QcServerEffects::giveCreature(m_state.content(), m_state.entities().creatures(), hit.body, effect);
+        }
     }
     return took;
 }

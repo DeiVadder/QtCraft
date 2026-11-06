@@ -1,0 +1,18 @@
+{
+    "name": "mob.lava_wader.hurt",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.2,
+            "frequency": 340,
+            "endFrequency": 180,
+            "attack": 0.004,
+            "curve": 2,
+            "gain": 0.55
+        }
+    ]
+}

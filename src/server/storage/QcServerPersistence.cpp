@@ -15,6 +15,7 @@
 #include "server/dimensions/QcDimensions.h"
 #include "server/maps/QcMapSaveCodec.h"
 #include "server/minecarts/QcServerMinecarts.h"
+#include "server/mobs/QcServerMounts.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcSaveFile.h"
@@ -60,6 +61,24 @@ QString optionsDifference(const QJsonObject &stored, const QJsonObject &given)
         }
     }
     return u"The world was made with other world generation options than given"_s;
+}
+
+// Where the player in a vehicle is saved: where he would get out, for he is not saved with it and
+// comes back on foot. The seat of a cart lies inside the block under the rail (decision E-383), a
+// boat puts him beside it (decision E-920), a creature on firm ground (decision E-1054).
+std::optional<QcVec3> exitOfVehicle(const QcServerState &state, const QcServerClient &client)
+{
+    const QcEntities &entities = state.entities();
+    if (const QcMinecart *cart = entities.minecarts().ridden(client.id)) {
+        return QcServerMinecarts::exitSpot(state.world(), *cart);
+    }
+    if (const QcBoat *boat = entities.boats().drivenBy(client.id)) {
+        return QcServerBoats::exitSpot(state.world(), *boat);
+    }
+    if (const QcCreature *mob = entities.creatures().riddenBy(client.id)) {
+        return QcServerMounts::exitSpot(state.world(), *mob);
+    }
+    return std::nullopt;
 }
 
 } // namespace
@@ -464,16 +483,8 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
     const QcServerState::Scope scope(m_state, m_state.dimensionOf(client));
     QcPlayerRecords::Record record = QcPlayerRecords::of(client, m_state.content());
     QcPlayerData &player = record.player;
-    // A rider is saved where he would get out: the seat lies inside the block under the rail, and the
-    // rider is not saved with the cart (decision E-383).
-    if (const QcMinecart *cart = m_state.entities().minecarts().ridden(client.id)) {
-        player.motion.position = QcServerMinecarts::exitSpot(m_state.world(), *cart);
-        player.motion.velocity = {};
-        player.motion.onGround = false;
-    }
-    // A driver likewise, beside his boat (decision E-920).
-    if (const QcBoat *boat = m_state.entities().boats().drivenBy(client.id)) {
-        player.motion.position = QcServerBoats::exitSpot(m_state.world(), *boat);
+    if (const std::optional<QcVec3> exit = exitOfVehicle(m_state, client)) {
+        player.motion.position = *exit;
         player.motion.velocity = {};
         player.motion.onGround = false;
     }

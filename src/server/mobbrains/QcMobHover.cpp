@@ -21,14 +21,15 @@ double share(quint32 id, quint32 salt)
     return static_cast<double>(hash >> 8) / static_cast<double>(1u << 24);
 }
 
-// The top of what carries a hoverer in the cell `pos` (a collision box or a liquid), if anything.
-std::optional<double> floorIn(const QcBlockAccess &world, QcBlockPos pos)
+// The top of what carries a hoverer in the cell `pos` (a collision box or a liquid; with
+// `sinksInWater` no water), if anything.
+std::optional<double> floorIn(const QcBlockAccess &world, QcBlockPos pos, bool sinksInWater)
 {
     const QList<QcAabb> boxes = QcPhysics::collisionBoxesAt(world, pos);
     if (!boxes.isEmpty()) {
         return std::ranges::max(boxes, {}, [](const QcAabb &box) { return box.max.y; }).max.y;
     }
-    if (QcPhysics::isLiquidAt(world, pos)) {
+    if (QcPhysics::isLiquidAt(world, pos) && !(sinksInWater && QcPhysics::isWaterAt(world, pos))) {
         return pos.y + 1.0;
     }
     return std::nullopt;
@@ -55,14 +56,14 @@ double vertical(double velocity, double rise, bool knockedBack)
     return std::max(velocity - fade * QcPhysics::tickDuration, least);
 }
 
-Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, double reach)
+Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, double reach, bool sinksInWater)
 {
     Room room{feet.y - reach, std::nullopt};
     const QcBlockPos start = QcPhysics::blockContaining(feet + QcVec3{0.0, height * 0.5, 0.0});
     for (int down = 0; down <= static_cast<int>(std::ceil(reach + height)) + 1; ++down) {
         const QcBlockPos cell = start.offset(0, -down, 0);
         // Only what lies below the middle of the body carries it.
-        if (const std::optional<double> top = floorIn(world, cell); top && *top <= feet.y + height * 0.5) {
+        if (const std::optional<double> top = floorIn(world, cell, sinksInWater); top && *top <= feet.y + height * 0.5) {
             room.floor = *top;
             break;
         }
@@ -103,7 +104,7 @@ void fly(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess
     }
     const QcHoverDefinition &hover = *definition.hover;
     const double dt = QcPhysics::tickDuration;
-    const Room room = roomAt(world, mob.motion.position, definition.height, hover.maxHeight + 1.0);
+    const Room room = roomAt(world, mob.motion.position, definition.height, hover.maxHeight + 1.0, hover.sinksInWater);
     // An orbit point may lie below the floor or above the highest hover: its feet stay between.
     double feet = course.feetY.value_or(wantedFeet(mob, definition, room, seconds));
     feet = std::min(feet, room.floor + hover.maxHeight);
@@ -114,7 +115,7 @@ void fly(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess
     mob.climbTicks = std::max(0, mob.climbTicks - 1);
 
     // Sideways towards the wish, unless knocked back (then it drifts and slows) or without a mind.
-    const double rise = std::clamp((feet - mob.motion.position.y) * verticalGain, -maxVerticalSpeed, maxVerticalSpeed);
+    const double rise = std::clamp((feet - mob.motion.position.y) * verticalGain, -hover.climbSpeed, hover.climbSpeed);
     const bool steers = !mob.hurt.knockedBack() && !mob.noAi;
     const QcVec3 wish = steers ? course.steering.wish * course.steering.speed : QcVec3{};
     const double blend = std::min(1.0, (steers ? steerRate : steerRate * 0.25) * dt);

@@ -103,8 +103,8 @@ public:
         acknowledged an input of this draw and does not draw. */
     [[nodiscard]] bool usingItemRefused(const QcMsg::PlayerState &state) const;
     /*! While riding, after predict(): the player moves onto the seat of the cart as the entity
-        mirror \a entities shows it this tick. */
-    void followCart(const QcClientEntities &entities);
+        mirror \a entities shows it this tick; \a content tells the seat of a creature. */
+    void followCart(const QcClientEntities &entities, const QcContentRegistry &content);
     /*! A tick without a step (the server paused or the player dead, decision E-960): the state one
         tick earlier becomes the current one, so the interpolation between them stands still
         instead of swinging back over the last step with every tick. */

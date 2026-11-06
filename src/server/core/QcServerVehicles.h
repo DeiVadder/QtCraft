@@ -5,6 +5,7 @@
 
 #include "server/boats/QcServerBoats.h"
 #include "server/minecarts/QcServerMinecarts.h"
+#include "server/mobs/QcServerMounts.h"
 
 #include <optional>
 
@@ -14,9 +15,10 @@ class QcServerSounds;
 class QcServerState;
 struct QcServerClient;
 
-/*! \brief The vehicles of the server, minecarts (decision E-382) and boats (decision E-920), and
-    what the server asks of both at once: a hit or a use of an entity, the input of a rider,
-    getting out, the tick, which vehicle a player is in. */
+/*! \brief The vehicles of the server, minecarts (decision E-382), boats (decision E-920) and
+    creatures that carry a rider (decision E-1054), and what the server asks of all at once: a hit
+    or a use of an entity, the input of a rider, getting out, the tick, which vehicle a player is
+    in. */
 class QcServerVehicles
 {
 public:
@@ -30,21 +32,26 @@ public:
     QcServerBoats &boats() { return m_boats; }
     /*! Returns the boats. */
     const QcServerBoats &boats() const { return m_boats; }
+    /*! Returns the creatures that carry riders. */
+    QcServerMounts &mounts() { return m_mounts; }
+    /*! Returns the creatures that carry riders. */
+    const QcServerMounts &mounts() const { return m_mounts; }
 
     /*! \a client hits the entity \a id. Returns \c false when \a id is neither a cart nor a
         boat. */
     bool hit(QcServerClient &client, quint32 id);
-    /*! \a client uses the entity \a id. Returns \c false when \a id is neither a cart nor a
-        boat; a player in a vehicle uses no cart or boat. */
+    /*! \a client uses the entity \a id. Returns \c false when \a id is no cart, no boat and no
+        creature that carries a rider; a player in a vehicle uses no other. */
     bool use(QcServerClient &client, quint32 id);
     /*! Takes \a input of \a client as a rider or driver. Returns \c false when the player is in
         no vehicle (the input moves him). */
     bool steer(QcServerClient &client, const QcPlayerInput &input);
     /*! Gets the player \a client out of whatever he is in. */
     void leave(QcServerClient &client);
-    /*! Moves the carts, then the boats. */
+    /*! Moves the carts, then the boats, then keeps riders of creatures on their seats. */
     void tick();
-    /*! Returns the entity id of the cart or boat the player \a client is in, 0 for none. */
+    /*! Returns the entity id of the cart, boat or creature the player \a client is in, 0 for
+        none. */
     quint32 vehicleOf(const QcServerClient &client) const;
     /*! Returns the state of the boat the player \a client drives, none for a cart or no
         vehicle. */
@@ -54,4 +61,5 @@ private:
     QcServerState &m_state;
     QcServerMinecarts m_minecarts;
     QcServerBoats m_boats;
+    QcServerMounts m_mounts;
 };

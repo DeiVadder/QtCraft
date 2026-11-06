@@ -43,8 +43,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     PlayerState (decision E-986), 89 the moving count of status effects in PlayerInput and
     PlayerHealth, absorption in PlayerHealth, the Invisible flag and more fields of effects in the
     content (decision E-992), 90 the dimension the player is in (DimensionChange, decision
-    E-1002). */
-inline constexpr quint32 version = 90;
+    E-1002), 91 creatures that carry a rider: the Saddled and Deflectable flags and the ride seat
+    in the content (decisions E-1053, E-1054). */
+inline constexpr quint32 version = 91;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

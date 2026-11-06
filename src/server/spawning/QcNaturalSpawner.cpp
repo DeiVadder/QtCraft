@@ -3,6 +3,7 @@
 
 #include "server/spawning/QcNaturalSpawner.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcWeightedChoice.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcSpawnGround.h"
@@ -26,15 +27,37 @@ namespace {
 constexpr double spawnInterval = 1.0;
 constexpr int spawnAttemptsPerPlayer = 4;
 
+// Whether `cells` blocks from `bottom` up are loaded and not solid.
+bool columnIsFree(const QcServerWorld &world, QcBlockPos bottom, int cells)
+{
+    for (int up = 0; up < cells; ++up) {
+        const std::optional<QcBlockId> block = world.blockAt(bottom.offset(0, up, 0));
+        if (!block || world.content().block(*block).solid) {
+            return false;
+        }
+    }
+    return true;
+}
+
 // Whether a walker taller than two blocks (a shadewalker, decision E-460) has room above the two cells
 // every spawn checks: the cells up to its height are not solid. Unloaded cells count as solid.
 bool roomAbove(const QcServerWorld &world, QcBlockPos feet, double height)
 {
+    return columnIsFree(world, feet.offset(0, 2, 0), static_cast<int>(std::ceil(height - 1e-6)) - 2);
+}
+
+// Whether a body wider than two blocks (a wailer, decision E-1053) fits with its feet at `feet`: no
+// solid cell in its box. Unloaded cells count as solid. Narrower kinds such as spiders only need
+// the column they stand in.
+bool roomAround(const QcServerWorld &world, QcBlockPos feet, double width, double height)
+{
+    const int reach = static_cast<int>(std::ceil(width * 0.5 - 0.5));
     const int cells = static_cast<int>(std::ceil(height - 1e-6));
-    for (int up = 2; up < cells; ++up) {
-        const std::optional<QcBlockId> block = world.blockAt(feet.offset(0, up, 0));
-        if (!block || world.content().block(*block).solid) {
-            return false;
+    for (int x = -reach; x <= reach; ++x) {
+        for (int z = -reach; z <= reach; ++z) {
+            if (!columnIsFree(world, feet.offset(x, 0, z), cells)) {
+                return false;
+            }
         }
     }
     return true;
@@ -89,6 +112,14 @@ QcNaturalSpawner::QcNaturalSpawner(QcMobManager &mobs, std::shared_ptr<const QcC
         m_rules.append(definition.spawnRules());
         m_areaRules.append(QcSpawnAreas::ruleOf(definition));
     }
+}
+
+void QcNaturalSpawner::setDimension(const QcDimensionDefinition &definition)
+{
+    m_roof = definition.ceiling;
+    m_skyLight = definition.skyLight;
+    m_overworld = definition.isOverworld();
+    m_chunks.setNamedBiomesOnly(!m_overworld);
 }
 
 void QcNaturalSpawner::tick(QcServerWorld &world, const QList<PlayerView> &players, Sky sky, double dt, const NextId &nextEntityId)
@@ -308,7 +339,9 @@ QList<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlaces(const 
     // One of the floors of the column, each as likely: the open surface, the ground under trees and
     // roofs, cave floors, and the beds of water (drowned, decision E-838).
     const QcBlockPos column{x, 0, z};
-    const int top = std::min(chunk->highestNonAir(column.localX(), column.localZ()) + 1, QcWorld::worldHeight - 2);
+    // Under a roof nothing above it counts, and the roof is no ground (decision E-1050).
+    const int ceiling = m_roof > 0 ? m_roof - 1 : QcWorld::worldHeight - 2;
+    const int top = std::min(chunk->highestNonAir(column.localX(), column.localZ()) + 1, ceiling);
     const auto blockAt = [&](int y) -> const QcBlockDefinition & { return m_content->block(chunk->block(column.localX(), y, column.localZ())); };
     const auto passable = [&](int y) { return !blockAt(y).solid && !blockAt(y).liquid; };
     const auto water = [&](int y) { return blockAt(y).isWater(); };
@@ -332,8 +365,10 @@ QList<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlaces(const 
         place.x = x;
         place.z = z;
         std::tie(place.floorY, place.water) = floor;
-        place.cave = top - 1 > place.floorY + 1 + caveDepth;
+        // Under a roof every floor is as open as any other.
+        place.cave = m_roof == 0 && top - 1 > place.floorY + 1 + caveDepth;
         place.ground = chunk->block(column.localX(), place.floorY, column.localZ());
+        place.skyLight = knownSkyLight();
         return place;
     };
     // In a spawn area every floor is a place of its own (decision E-871): each storey of a farm gets
@@ -358,6 +393,20 @@ std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::placeInColumn(cons
     }
 
     const QcContentRegistry &content = *m_content;
+    if (m_roof > 0) {
+        const int floorY = randomFloorBelowRoof(*chunk, column);
+        if (floorY < 0) {
+            return std::nullopt;
+        }
+        SpawnPlace place;
+        place.x = column.x;
+        place.z = column.z;
+        place.floorY = floorY;
+        place.ground = chunk->block(column.localX(), floorY, column.localZ());
+        place.lava = content.block(place.ground).isLava();
+        place.skyLight = knownSkyLight();
+        return place;
+    }
     int surface = chunk->highestNonAir(column.localX(), column.localZ());
     // Plants (tall grass, flowers) stand on the real ground; mobs spawn in them.
     while (surface > 0) {
@@ -387,6 +436,30 @@ std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::placeInColumn(cons
         return std::nullopt;
     }
     return place;
+}
+
+std::optional<int> QcNaturalSpawner::knownSkyLight() const
+{
+    return m_skyLight ? std::nullopt : std::optional<int>(0);
+}
+
+int QcNaturalSpawner::randomFloorBelowRoof(const QcChunk &chunk, QcBlockPos column)
+{
+    // A roof this low leaves no cell to look in.
+    if (m_roof <= 3) {
+        return -1;
+    }
+
+    // Down from a random height to the first floor, as the role model looks for a place.
+    for (int y = 2 + m_draws->bounded(m_roof - 3); y > 1; --y) {
+        const QcBlockDefinition &below = m_content->block(chunk.block(column.localX(), y - 1, column.localZ()));
+        const QcBlockId feet = chunk.block(column.localX(), y, column.localZ());
+        const QcBlockId head = chunk.block(column.localX(), y + 1, column.localZ());
+        if ((below.solid || below.isLava()) && feet == qcAirBlockId && head == qcAirBlockId) {
+            return y - 1;
+        }
+    }
+    return -1;
 }
 
 int QcNaturalSpawner::randomCaveFloor(const QcChunk &chunk, QcBlockPos column, int surface)
@@ -440,8 +513,9 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     // block or liquid, walkers on ground that carries them (QcSpawnGround).
     const QcBlockDefinition &ground = content.block(place.ground);
     const bool water = ground.isWater();
+    const bool carried = rule.lava ? place.lava : QcSpawnGround::carries(content, place.ground);
     const bool groundOk = (rule.blocks.isEmpty() || rule.blocks.contains(ground.name))
-                          && (definition.aquatic ? water : (definition.flying || QcSpawnGround::carries(content, place.ground)));
+                          && (definition.aquatic ? water : (definition.flying || carried));
     // Walkers spawn either in water (drowned) or on dry ground (decision E-838).
     if (!timeOk || !groundOk || rule.water != place.water || rule.weight <= 0.0 || place.floorY + 1 > rule.maxY) {
         return false;
@@ -460,7 +534,8 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
         || (!definition.flying && !definition.aquatic && !roomAbove(world, {place.x, place.floorY + 1, place.z}, definition.height))) {
         return false;
     }
-    return rule.biomes.isEmpty() || rule.biomes.contains(place.biomeIn(world));
+    // Beyond the overworld a kind comes only where it names the biome (decision E-1050).
+    return rule.biomes.isEmpty() ? m_overworld : rule.biomes.contains(place.biomeIn(world));
 }
 
 const QString &QcNaturalSpawner::SpawnPlace::biomeIn(const QcServerWorld &world)
@@ -531,6 +606,7 @@ int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, 
         }
         const bool member = definition.aquatic    ? spawnSwimmer(world, place, i, chosen, nextEntityId)
                             : definition.flying   ? spawnFlyer(world, place, i, chosen, nextEntityId)
+                            : chosen.rule->lava  ? spawnOnLava(world, place, i, chosen, nextEntityId)
                             : chosen.rule->water ? spawnWader(world, place, i, chosen, nextEntityId)
                                                   : spawnWalker(world, place, i, chosen, nextEntityId);
         spawned += member;
@@ -588,6 +664,21 @@ bool QcNaturalSpawner::spawnWader(const QcServerWorld &world, const SpawnPlace &
     return true;
 }
 
+bool QcNaturalSpawner::spawnOnLava(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
+                                    const NextId &nextEntityId)
+{
+    const auto [dx, dz] = QcChunkSpawns::groupOffsets[static_cast<std::size_t>(member)];
+    const QcBlockPos feet{place.x + dx, place.floorY + 1, place.z + dz};
+    const QcContentRegistry &content = *m_content;
+    const std::optional<QcBlockId> floor = world.blockAt(feet.offset(0, -1, 0));
+    if (!floor || !content.block(*floor).isLava() || world.blockAt(feet).value_or(1) != qcAirBlockId
+        || !columnIsFree(world, feet, static_cast<int>(std::ceil(content.mobs()[chosen.type].height - 1e-6)))) {
+        return false;
+    }
+    m_mobs.spawn(chosen.type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, nextEntityId());
+    return true;
+}
+
 bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
                                const NextId &nextEntityId)
 {
@@ -597,9 +688,10 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
     // Unloaded cells count as solid.
     const auto blockAt = [&world](QcBlockPos pos) { return world.blockAt(pos).value_or(static_cast<QcBlockId>(1)); };
     const QcBlockId floor = blockAt(feet.offset(0, -1, 0));
+    const QcMobDefinition &definition = content.mobs()[chosen.type];
     const bool standable = QcSpawnGround::carries(content, floor) && QcSpawnGround::leavesRoom(content, blockAt(feet))
-                           && QcSpawnGround::leavesRoom(content, blockAt(feet.offset(0, 1, 0)))
-                           && roomAbove(world, feet, content.mobs()[chosen.type].height);
+                           && QcSpawnGround::leavesRoom(content, blockAt(feet.offset(0, 1, 0))) && roomAbove(world, feet, definition.height)
+                           && (definition.width <= 2.0 || roomAround(world, feet, definition.width, definition.height));
     const bool groundOk = chosen.rule->blocks.isEmpty() || chosen.rule->blocks.contains(content.block(floor).name);
     if (!standable || !groundOk) {
         return false;
@@ -608,7 +700,6 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
     // Each member decides for itself whether rock covers it, e.g. at the edge of a ravine.
     const std::shared_ptr<const QcChunk> column = world.chunk(feet.chunk());
     const bool covered = place.cave && column && column->highestNonAir(feet.localX(), feet.localZ()) > feet.y + caveDepth;
-    const QcMobDefinition &definition = content.mobs()[chosen.type];
     m_mobs.spawn(chosen.type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, nextEntityId(), covered, QcChunkSpawns::isAnimal(definition));
     // Spawned by a night-only rule (swamp slimes): goes with the daylight like night creatures.
     m_mobs.editableMobs().last().nightRule = chosen.rule->time == QcMobDefinition::SpawnTime::Night;
