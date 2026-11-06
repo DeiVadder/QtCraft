@@ -166,11 +166,11 @@ QStringList checkStructures(const QcContentRegistry &content)
             }
         }
         // A spawn area (decision E-871) brings forth monsters only: kinds of the natural monster spawns.
-        const QStringList areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
-        for (const QString &mob : areaMonsters) {
-            const std::optional<QcCreatureKindId> type = content.mobKind(mob);
+        const QList<QcStructureDefinition::SpawnArea::Monster> areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
+        for (const QcStructureDefinition::SpawnArea::Monster &monster : areaMonsters) {
+            const std::optional<QcCreatureKindId> type = content.mobKind(monster.mob);
             if (!type || !content.mobs()[*type].isMonster()) {
-                warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, mob));
+                warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, monster.mob));
             }
         }
         warnings.append(checkChests(structure, content));

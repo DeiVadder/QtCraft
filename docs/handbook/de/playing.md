@@ -671,9 +671,13 @@ Glowstone hängt in Trauben von den Decken der Hallen. Netherquarz- und Nethergo
 
 Ab und zu steht auf einem Boden über der Lava eine Portal-Ruine, mit einer Truhe und einem kaputten Rahmen aus Obsidian und Weinendem Obsidian. Ergänze den Rahmen mit Obsidian und entzünde ihn, dann hast du einen zweiten Heimweg.
 
+**Festungen**
+
+Zwischen dem Lavameer und der Decke stehen Festungen aus Netherziegeln: Hallen, verbunden durch lange, gerade Gänge. Über offenen Höhlen und dem Lavameer läuft ein Gang als Brücke auf Pfeilern, durch den Fels als geschlossene Galerie mit Schießscharten und Leuchtstein-Lampen; Treppen steigen zwischen den Böden, und ein Treppenhaus führt in ein oberes Geschoss. Eine Halle ist eine offene Plattform mit einem Monster-Spawner auf einem Podest, eine andere ein Garten, in dem Netherwarze auf Seelensand um eine Truhe wächst. Weitere Truhen stehen in den Hallen, mit Gold, Eisen, Diamanten, Obsidian, Netherwarze, Sätteln und goldener Ausrüstung. In einer Festung kommen zu jeder Tageszeit Monster. /locate fortress nennt die nächste.
+
 **Siehe auch**
 
-[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Kies](blocks.md#block-qtcraft-gravel), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Feuer](blocks.md#block-qtcraft-fire), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian)
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Kies](blocks.md#block-qtcraft-gravel), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Feuer](blocks.md#block-qtcraft-fire), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Netherziegel](blocks.md#block-qtcraft-nether_bricks)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 

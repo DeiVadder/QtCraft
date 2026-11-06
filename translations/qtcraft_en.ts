@@ -84,8 +84,8 @@
 <context>
     <name>GeneratorUpgradeDialog</name>
     <message numerus="yes">
+        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="100"/>
         <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="101"/>
-        <location filename="../src/app/qml/menus/GeneratorUpgradeDialog.qml" line="102"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>

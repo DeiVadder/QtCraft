@@ -6,7 +6,8 @@
         "landscape",
         "biomes",
         "finds",
-        "ruins"
+        "ruins",
+        "fortress"
     ],
     "related": [
         "netherrack",
@@ -20,6 +21,7 @@
         "fire",
         "soul_fire",
         "obsidian",
-        "crying_obsidian"
+        "crying_obsidian",
+        "nether_bricks"
     ]
 }

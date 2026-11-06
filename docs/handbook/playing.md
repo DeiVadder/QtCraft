@@ -685,9 +685,13 @@ Clusters of glowstone hang from the roofs of the caverns. Nether quartz and neth
 
 Now and then a ruined portal stands on a floor above the lava, with a chest and a broken frame of obsidian and crying obsidian. Finish the frame with obsidian and light it to get a second way home.
 
+**Fortresses**
+
+Between the lava sea and the roof stand fortresses of nether bricks: halls joined by long, straight passages. Over open caverns and the lava sea a passage runs as a bridge on piers, through the rock as a closed gallery with slits and glowstone lamps; stairs climb between floors, and a stairwell leads to an upper floor. One hall is an open platform with a monster spawner on a dais, another a garden where nether wart grows on soul sand around a chest. More chests stand in the halls, with gold, iron, diamonds, obsidian, nether wart, saddles and golden gear. Monsters come inside a fortress at any time. /locate fortress names the nearest one.
+
 **See also**
 
-[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Gravel](blocks.md#block-qtcraft-gravel), [Glowstone](blocks.md#block-qtcraft-glowstone), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Fire](blocks.md#block-qtcraft-fire), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian)
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Gravel](blocks.md#block-qtcraft-gravel), [Glowstone](blocks.md#block-qtcraft-glowstone), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Fire](blocks.md#block-qtcraft-fire), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Nether bricks](blocks.md#block-qtcraft-nether_bricks)
 
 ### <a id="chapter-qtcraft-experience"></a>Experience
 

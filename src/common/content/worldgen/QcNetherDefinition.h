@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/content/worldgen/QcStructureDefinition.h"
+
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -122,6 +124,48 @@ struct QcNetherSettings
         double chance = 0.5;
     };
 
+    /*! \brief The fortress of the nether (\c {"fortress"}, decisions E-1070 to E-1075): a net of
+        rooms and passages on a square lattice of \c {lattice} points \c {spacing} blocks apart, on
+        two levels, at most one per square region of \c {regionSize} blocks and wholly inside it.
+        A \c {regionSize} of 0 (no entry) means no fortresses.
+
+        The floor of its lower level lies between \c {lowestFloor} and \c {highestFloor}; it has
+        \c {minRooms} to \c {maxRooms} rooms there and up to \c {upperRooms} above. A passage or
+        room with at least \c {roofShare} of its samples in rock gets walls and a roof, the others
+        stand open as bridges. \c {spawnerMob} is the kind of the platform's spawner,
+        \c {lootTable} fills its chests, \c {monsters} are the kinds of its spawn area (E-871).
+        \qcfields */
+    struct Fortress
+    {
+        int regionSize = 0;
+        double chance = 0.5;
+        int attempts = 6;
+        int lowestFloor = 44;
+        int highestFloor = 60;
+        int lattice = 5;
+        int spacing = 24;
+        int minRooms = 10;
+        int maxRooms = 16;
+        int upperRooms = 4;
+        double loopChance = 0.25;
+        double roofShare = 0.3;
+        double chestChance = 0.35;
+        QString brick;
+        QString cracked;
+        QString chiseled;
+        QString lane;
+        QString fence;
+        QString stairs;
+        QString light;
+        QString soil;
+        QString crop;
+        QString chest;
+        QString spawner;
+        QString spawnerMob;
+        QString lootTable;
+        QList<QcStructureDefinition::SpawnArea::Monster> monsters;
+    };
+
     /*! \brief The station a demonstration world's nether builds at its arrival (\c {"station"},
         decision E-1034): \c {structure} with its middle where the showcase structure \c {portal}
         leads to. \qcfields */
@@ -164,4 +208,6 @@ struct QcNetherSettings
     QList<Structure> structures;
     /*! The arrival station of a demonstration world; no structure for none. */
     Station station;
+    /*! The fortresses. */
+    Fortress fortress;
 };

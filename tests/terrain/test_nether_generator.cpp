@@ -423,6 +423,23 @@ private slots:
 
         // Chunks inside each of the biomes with the most to build (seed 42).
         qInfo("ms per chunk: crimson forest %.2f, warped forest %.2f, basalt deltas %.2f", timed(*nether, -70, -77), timed(*nether, -49, -69), timed(*nether, -60, -103));
+
+        // A fortress: planning a region, and the chunks around the middle of one, first with its
+        // plan still to make, then with the plan in the cache.
+        const std::unique_ptr<QcNetherGenerator> planner = generator(42);
+        QElapsedTimer timer;
+        timer.start();
+        std::shared_ptr<const QcFortressPlan> plan;
+        for (int i = 0; i < 16; ++i) {
+            const std::shared_ptr<const QcFortressPlan> found = planner->fortress().planOf(i % 4 - 2, i / 4 - 2);
+            plan = plan ? plan : found;
+        }
+        const double planning = static_cast<double>(timer.nsecsElapsed()) / 16.0e6;
+        QVERIFY(plan);
+        const QcChunkPos middle = plan->middle().chunk();
+        const std::unique_ptr<QcNetherGenerator> cold = generator(42);
+        const double first = timed(*cold, middle.x - 3, middle.z - 3);
+        qInfo("fortress: ms per region planned %.2f; ms per chunk around its middle %.2f with planning, %.2f planned", planning, first, timed(*cold, middle.x - 3, middle.z - 3));
     }
 };
 

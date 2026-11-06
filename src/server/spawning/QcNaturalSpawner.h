@@ -191,6 +191,8 @@ private:
     {
         QcCreatureKindId type;
         const SpawnRule *rule = nullptr;
+        // Drawn in a spawn area: the area is the place, so no biome is asked for in any dimension.
+        bool inArea = false;
     };
 
     // Ticks at least between two counts of the loaded chunks while the areas stay (currentMonsterCap).
@@ -227,28 +229,28 @@ private:
     int randomCaveFloor(const QcChunk &chunk, QcBlockPos column, int surface);
     // The kinds of the pass that may spawn at the place and still have room by `counts`.
     QList<SpawnCandidate> candidatesAt(const QcServerWorld &world, SpawnPlace &place, Sky sky, const NearbyCounts &counts, Pass pass) const;
-    bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, SpawnCandidate candidate, Sky sky) const;
+    bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, const SpawnCandidate &candidate, Sky sky) const;
     // A random floor of a column under the dimension's roof, a solid block or lava with room above,
     // and -1 if the column has none (decision E-1050).
     int randomFloorBelowRoof(const QcChunk &chunk, QcBlockPos column);
     // The sky light of every place of a dimension without a sky, none where it has to be read.
     std::optional<int> knownSkyLight() const;
     // Places a creature with its feet on lava at `place` (decision E-1051).
-    bool spawnOnLava(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    bool spawnOnLava(const QcServerWorld &world, const SpawnPlace &place, int member, const SpawnCandidate &chosen, const NextId &nextEntityId);
     // Weighted random choice by the rules' weights.
     SpawnCandidate pick(const QList<SpawnCandidate> &candidates);
     // One kind of the monster list of `biome` by weight (QcSpawnWeights); std::nullopt when the draw
     // falls on a kind that is not among the candidates.
     std::optional<SpawnCandidate> pickOfBiome(const QList<SpawnCandidate> &candidates, const QString &biome);
     // A group of the chosen kind, at most `room` members; returns how many spawned.
-    int spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, int room, const NextId &nextEntityId);
+    int spawnGroup(QcServerWorld &world, const SpawnPlace &place, const SpawnCandidate &chosen, int room, const NextId &nextEntityId);
     // One member of a group; false when there is no room for it.
-    bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
-    bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, const SpawnCandidate &chosen, const NextId &nextEntityId);
+    bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, const SpawnCandidate &chosen, const NextId &nextEntityId);
     // A walker spawning in water (drowned, decision E-838): its feet in the water above the floor.
-    bool spawnWader(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    bool spawnWader(const QcServerWorld &world, const SpawnPlace &place, int member, const SpawnCandidate &chosen, const NextId &nextEntityId);
     // A water creature in the water below the surface `place` (decision E-502).
-    bool spawnSwimmer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    bool spawnSwimmer(const QcServerWorld &world, const SpawnPlace &place, int member, const SpawnCandidate &chosen, const NextId &nextEntityId);
 
     QcMobManager &m_mobs;
     std::shared_ptr<const QcContentRegistry> m_content;
@@ -258,10 +260,9 @@ private:
     QcChunkSpawns m_chunks;
     // The monster lists of the biomes (decision E-838).
     QcSpawnWeights m_weights;
-    // The spawn areas of structures (decision E-871) and the rules their kinds spawn by there
-    // (QcSpawnAreas::ruleOf), indexed by type.
+    // The spawn areas of structures (decisions E-871, E-1074) with the rules their kinds spawn by
+    // there (QcSpawnAreas::ruleOf).
     QcSpawnAreas m_areas;
-    QList<QcMobDefinition::SpawnRule> m_areaRules;
     // The areas of the last monster cap and their loaded chunks (currentMonsterCap).
     QList<QcChunkPos> m_areaCentres;
     qsizetype m_areaChunks = 0;

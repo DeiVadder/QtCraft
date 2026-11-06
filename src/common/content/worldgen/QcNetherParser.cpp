@@ -4,10 +4,13 @@
 #include "common/content/worldgen/QcNetherParser.h"
 
 #include "common/content/registry/QcContentFields.h"
+#include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/core/QcWorldConstants.h"
 
 #include <QJsonArray>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -42,8 +45,8 @@ template <typename Entry, typename Read>
     return entries;
 }
 
-// The block `key` of an entry, which is required.
-[[nodiscard]] QString requiredBlock(QcJsonFieldReader &reader, const QString &key, const QString &packNamespace)
+// The name `key` of an entry (a block, structure, creature or loot table), which is required.
+[[nodiscard]] QString requiredName(QcJsonFieldReader &reader, const QString &key, const QString &packNamespace)
 {
     QString block = reader.name(key, packNamespace);
     if (block.isEmpty()) {
@@ -69,7 +72,7 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Shore shoreOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Shore shore;
-    shore.block = requiredBlock(reader, u"block"_s, pack);
+    shore.block = requiredName(reader, u"block"_s, pack);
     shore.scale = reader.number(u"scale"_s, shore.scale, 1.0, 512.0);
     shore.threshold = reader.number(u"threshold"_s, shore.threshold, -1.0, 1.0);
     shore.height = reader.integer(u"height"_s, shore.height, 0, 32);
@@ -80,7 +83,7 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Pillar pillarOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Pillar pillar;
-    pillar.block = requiredBlock(reader, u"block"_s, pack);
+    pillar.block = requiredName(reader, u"block"_s, pack);
     pillar.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
     pillar.scale = reader.number(u"scale"_s, pillar.scale, 1.0, 512.0);
     pillar.threshold = reader.number(u"threshold"_s, pillar.threshold, -1.0, 1.0);
@@ -91,8 +94,8 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Pool poolOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Pool pool;
-    pool.block = requiredBlock(reader, u"block"_s, pack);
-    pool.rim = requiredBlock(reader, u"rim"_s, pack);
+    pool.block = requiredName(reader, u"block"_s, pack);
+    pool.rim = requiredName(reader, u"rim"_s, pack);
     pool.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
     pool.scale = reader.number(u"scale"_s, pool.scale, 1.0, 512.0);
     pool.threshold = reader.number(u"threshold"_s, pool.threshold, -1.0, 1.0);
@@ -104,8 +107,8 @@ template <typename Entry, typename Read>
 {
     QcNetherSettings::Cluster cluster;
     cluster.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
-    cluster.block = requiredBlock(reader, u"block"_s, pack);
-    cluster.on = requiredBlock(reader, u"on"_s, pack);
+    cluster.block = requiredName(reader, u"block"_s, pack);
+    cluster.on = requiredName(reader, u"on"_s, pack);
     cluster.tries = reader.integer(u"tries"_s, cluster.tries, 0, 64);
     cluster.minY = reader.integer(u"minY"_s, cluster.minY, 1, top);
     cluster.maxY = reader.integer(u"maxY"_s, cluster.maxY, cluster.minY, top);
@@ -118,8 +121,8 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Spring springOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Spring spring;
-    spring.block = requiredBlock(reader, u"block"_s, pack);
-    spring.in = requiredBlock(reader, u"in"_s, pack);
+    spring.block = requiredName(reader, u"block"_s, pack);
+    spring.in = requiredName(reader, u"in"_s, pack);
     spring.tries = reader.integer(u"tries"_s, spring.tries, 0, 256);
     spring.minY = reader.integer(u"minY"_s, spring.minY, 1, top);
     spring.maxY = reader.integer(u"maxY"_s, spring.maxY, spring.minY, top);
@@ -129,7 +132,7 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Fire fireOf(const QJsonObject &json, QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Fire fire;
-    fire.block = requiredBlock(reader, u"block"_s, pack);
+    fire.block = requiredName(reader, u"block"_s, pack);
     fire.on = QcContentFields::parseNames(u"on"_s, pack, reader);
     fire.tries = reader.integer(u"tries"_s, fire.tries, 0, 64);
     if (json.value(u"on"_s).toArray().isEmpty()) {
@@ -141,10 +144,72 @@ template <typename Entry, typename Read>
 [[nodiscard]] QcNetherSettings::Structure structureOf(QcJsonFieldReader &reader, const QString &pack)
 {
     QcNetherSettings::Structure structure;
-    structure.structure = requiredBlock(reader, u"structure"_s, pack);
+    structure.structure = requiredName(reader, u"structure"_s, pack);
     structure.spacing = reader.integer(u"spacing"_s, structure.spacing, 32, 4096);
     structure.chance = reader.number(u"chance"_s, structure.chance, 0.0, 1.0);
     return structure;
+}
+
+// The most kinds of the fortress's spawn area.
+constexpr qsizetype maxFortressMonsters = 8;
+// The cells between a fortress's net and the edge of its region on each side
+// (QcFortressPlanner), and the least room left for its place.
+constexpr int fortressMargin = 12;
+constexpr int leastFortressRoom = 16;
+
+// A kind of the fortress's spawn area: a creature with its weight and, when given, its light.
+[[nodiscard]] QcStructureDefinition::SpawnArea::Monster fortressMonsterOf(QcJsonFieldReader &reader, const QString &pack)
+{
+    QcStructureDefinition::SpawnArea::Monster monster;
+    monster.mob = requiredName(reader, u"mob"_s, pack);
+    monster.weight = reader.integer(u"weight"_s, monster.weight, 1, 100);
+    if (reader.json.contains(u"maxLight"_s)) {
+        monster.maxLight = reader.integer(u"maxLight"_s, 15, 0, 15);
+    }
+    return monster;
+}
+
+// The sizes of a fortress; the blocks are all required. A fortress stays wholly inside its
+// region: the region must hold the net, its margins and some room to place it. The floors are
+// not bounded by the lava sea or the roof: a fortress may reach into either.
+[[nodiscard]] QcNetherSettings::Fortress fortressOf(QcJsonFieldReader &reader, const QString &pack)
+{
+    QcNetherSettings::Fortress fortress;
+    fortress.lattice = reader.integer(u"lattice"_s, fortress.lattice, 3, 9);
+    fortress.spacing = reader.integer(u"spacing"_s, fortress.spacing, 24, 48);
+    const int leastRegion = (fortress.lattice - 1) * fortress.spacing + 2 * fortressMargin + leastFortressRoom;
+    fortress.regionSize = reader.integer(u"regionSize"_s, std::max(448, leastRegion), leastRegion, 4096);
+    fortress.chance = reader.number(u"chance"_s, fortress.chance, 0.0, 1.0);
+    fortress.attempts = reader.integer(u"attempts"_s, fortress.attempts, 1, 32);
+    fortress.lowestFloor = reader.integer(u"lowestFloor"_s, fortress.lowestFloor, 1, top - 32);
+    fortress.highestFloor = reader.integer(u"highestFloor"_s, fortress.highestFloor, fortress.lowestFloor, top - 32);
+    fortress.minRooms = reader.integer(u"minRooms"_s, fortress.minRooms, 3, 64);
+    fortress.maxRooms = reader.integer(u"maxRooms"_s, fortress.maxRooms, fortress.minRooms, 64);
+    fortress.upperRooms = reader.integer(u"upperRooms"_s, fortress.upperRooms, 2, 16);
+    fortress.loopChance = reader.number(u"loopChance"_s, fortress.loopChance, 0.0, 1.0);
+    fortress.roofShare = reader.number(u"roofShare"_s, fortress.roofShare, 0.0, 1.0);
+    fortress.chestChance = reader.number(u"chestChance"_s, fortress.chestChance, 0.0, 1.0);
+    fortress.brick = requiredName(reader, u"brick"_s, pack);
+    fortress.cracked = requiredName(reader, u"cracked"_s, pack);
+    fortress.chiseled = requiredName(reader, u"chiseled"_s, pack);
+    fortress.lane = requiredName(reader, u"lane"_s, pack);
+    fortress.fence = requiredName(reader, u"fence"_s, pack);
+    fortress.stairs = requiredName(reader, u"stairs"_s, pack);
+    fortress.light = requiredName(reader, u"light"_s, pack);
+    fortress.soil = requiredName(reader, u"soil"_s, pack);
+    fortress.crop = requiredName(reader, u"crop"_s, pack);
+    fortress.chest = requiredName(reader, u"chest"_s, pack);
+    fortress.spawner = requiredName(reader, u"spawner"_s, pack);
+    fortress.spawnerMob = requiredName(reader, u"spawnerMob"_s, pack);
+    fortress.lootTable = requiredName(reader, u"lootTable"_s, pack);
+    const QJsonValue monsters = reader.json.value(u"monsters"_s);
+    if (!monsters.isArray() || monsters.toArray().isEmpty() || monsters.toArray().size() > maxFortressMonsters) {
+        reader.fail(u"needs 'monsters', an array of 1 to %1 entries"_s.arg(maxFortressMonsters));
+        return fortress;
+    }
+    fortress.monsters = listOf<QcStructureDefinition::SpawnArea::Monster>(reader.json, u"monsters"_s, reader,
+        [&pack](QcJsonFieldReader &entry) { return fortressMonsterOf(entry, pack); });
+    return fortress;
 }
 
 } // namespace
@@ -171,8 +236,11 @@ QcResult<QcNetherSettings> parse(const QJsonObject &json, const QString &packNam
     nether.fires = listOf<QcNetherSettings::Fire>(json, u"fires"_s, reader, [&](QcJsonFieldReader &entry) { return fireOf(entry.json, entry, packNamespace); });
     nether.structures = listOf<QcNetherSettings::Structure>(json, u"structures"_s, reader, [&](QcJsonFieldReader &entry) { return structureOf(entry, packNamespace); });
     reader.nestedObject(u"station"_s, [&nether, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        nether.station.structure = requiredBlock(nested, u"structure"_s, packNamespace);
-        nether.station.portal = requiredBlock(nested, u"portal"_s, packNamespace);
+        nether.station.structure = requiredName(nested, u"structure"_s, packNamespace);
+        nether.station.portal = requiredName(nested, u"portal"_s, packNamespace);
+    });
+    reader.nestedObject(u"fortress"_s, [&nether, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        nether.fortress = fortressOf(nested, packNamespace);
     });
     if (!reader.ok()) {
         return qcError(reader.error);

@@ -104,7 +104,7 @@ public:
         const QList<QcBlockPos> built = builtWithin(from, reach);
         for (const QcBlockPos site : built) {
             sites.guards.append(QcGuardSite{0, site, site, {}});
-            sites.spawnAreas.append(QcSpawnArea{site, site, {}});
+            sites.spawnAreas.append(QcSpawnArea{site, site, {}, {}});
         }
         return sites;
     }

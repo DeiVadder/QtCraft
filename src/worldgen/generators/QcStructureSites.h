@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcBlockBox.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcWorldConstants.h"
 #include "worldgen/generators/QcGuardSite.h"
@@ -13,22 +14,36 @@
 
 #include <algorithm>
 
-/*! \brief The footprint of a placed structure over the whole height of the world in which the
-    natural monster spawns bring forth only its kinds (decision E-871, the spawn overrides of the
-    original game's structures: the witch hut and its witches).
+/*! \brief Where the natural monster spawns bring forth only a structure's kinds (decision E-871,
+    the spawn overrides of the original game's structures): the footprint of a witch hut over the
+    whole height of the world, or the boxes of a fortress's parts (decision E-1074).
 
     Like guardian zones it comes from the plans alone and needs no saving. */
 struct QcSpawnArea
 {
-    /*! The lowest and the highest corner of the footprint in world cells, both inside; y spans
-        the world. \qcshared */
+    /*! The lowest and the highest corner of the area in world cells, both inside: the footprint
+        over the whole height, or the box around all parts. \qcshared */
     QcBlockPos min;
     QcBlockPos max;
-    /*! The structure's \c {monsters} (names). */
-    QStringList monsters;
+    /*! The structure's \c {monsters}. */
+    QList<QcStructureDefinition::SpawnArea::Monster> monsters;
+    /*! The boxes of the parts, each inside min and max; none: the whole box is the area. */
+    QList<QcBlockBox> parts;
 
-    /*! Returns whether the column \a x, \a z lies in the footprint. */
+    /*! Returns whether the column \a x, \a z lies in the footprint (the box around all parts). */
     bool containsColumn(int x, int z) const { return x >= min.x && z >= min.z && x <= max.x && z <= max.z; }
+    /*! Returns whether a part of the area holds a cell of the column \a x, \a z. */
+    bool touchesColumn(int x, int z) const
+    {
+        const auto inColumn = [x, z](const QcBlockBox &box) { return x >= box.low.x && z >= box.low.z && x <= box.high.x && z <= box.high.z; };
+        return containsColumn(x, z) && (parts.isEmpty() || std::ranges::any_of(parts, inColumn));
+    }
+    /*! Returns whether the area holds the cell \a feet, where a creature's feet would be. */
+    bool contains(QcBlockPos feet) const
+    {
+        const QcBlockBox whole{min, max};
+        return whole.contains(feet) && (parts.isEmpty() || std::ranges::any_of(parts, [feet](const QcBlockBox &box) { return box.contains(feet); }));
+    }
 
     /*! Returns the spawn area of \a placement, a placed copy of a structure, if it has one. */
     static std::optional<QcSpawnArea> of(const QcStructurePlacement &placement)
@@ -40,7 +55,7 @@ struct QcSpawnArea
         const QcBlockPos a = placement.toWorld(QcBlockPos{0, 0, 0});
         const QcBlockPos b = placement.toWorld(QcBlockPos{placement.structure().sizeX() - 1, 0, placement.structure().sizeZ() - 1});
         return QcSpawnArea{{std::min(a.x, b.x), 0, std::min(a.z, b.z)}, {std::max(a.x, b.x), QcWorld::worldHeight - 1, std::max(a.z, b.z)},
-                           rule->monsters};
+                           rule->monsters, {}};
     }
 };
 

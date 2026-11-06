@@ -16,6 +16,7 @@
 #include <memory>
 #include <optional>
 
+class QcFortressGenerator;
 class QcNetherTerrain;
 
 /*! \brief The structures of the nether (decision E-1032): at most one copy of a kind per square
@@ -28,8 +29,10 @@ class QcNetherStructures
 {
 public:
     /*! Plans from \a definitions and \a terrain, which outlive it, with the \a content of the
-        placements (which must outlive it too). */
-    QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content);
+        placements (which must outlive it too); no copy reaches into a fortress of \a fortresses,
+        which outlives it too. */
+    QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content,
+                       const QcFortressGenerator &fortresses);
 
     /*! Puts the arrival station with its middle at \a middle (standing on the floor at its y). */
     void setStation(QcBlockPos middle);
@@ -58,13 +61,12 @@ private:
     // Turns pool cells around and over the footprint of `plan` in `chunk` into their rim, so that
     // what the footprint clears opens no pool (decision E-1047).
     void sealPools(QcChunk &chunk, const QcStructurePlacement &plan) const;
-    // Turns `cell` of `chunk` into the rim of its pool, if it is one.
-    void sealCell(QcChunk &chunk, QcBlockPos cell) const;
     // Empties the footprint of `plan` in `chunk` and fills the ground below it.
     void prepare(QcChunk &chunk, const QcStructurePlacement &plan) const;
 
     const QcNetherDefinitions &m_definitions;
     const QcNetherTerrain &m_terrain;
     std::shared_ptr<const QcContentRegistry> m_content;
+    const QcFortressGenerator &m_fortresses;
     std::optional<QcStructurePlacement> m_station;
 };

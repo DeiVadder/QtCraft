@@ -225,3 +225,28 @@ QcNetherDefinitions::QcNetherDefinitions(const QcContentRegistry &content, quint
         station = structureOf(content, settings.station.structure);
     }
 }
+
+void QcNetherDefinitions::sealPools(QcChunk &chunk, const QcBlockBox &box) const
+{
+    const int lowest = std::max(box.low.y, settings.liquidLevel + 2);
+    const int top = std::min(box.high.y, settings.roof - 1);
+    // The box in the chunk's own columns.
+    const int originX = chunk.pos().x * QcWorld::chunkSize;
+    const int originZ = chunk.pos().z * QcWorld::chunkSize;
+    const int firstX = std::max(box.low.x - originX, 0);
+    const int lastX = std::min(box.high.x - originX, QcWorld::chunkSize - 1);
+    const int firstZ = std::max(box.low.z - originZ, 0);
+    const int lastZ = std::min(box.high.z - originZ, QcWorld::chunkSize - 1);
+    const int width = lastX - firstX + 1;
+    const int columns = width > 0 && lastZ >= firstZ ? width * (lastZ - firstZ + 1) : 0;
+    for (int column = 0; column < columns; ++column) {
+        const int x = firstX + column % width;
+        const int z = firstZ + column / width;
+        for (int y = lowest; y <= top; ++y) {
+            const auto pool = std::ranges::find(pools, chunk.block(x, y, z), &Pool::block);
+            if (pool != pools.end()) {
+                chunk.setBlock(x, y, z, pool->rim);
+            }
+        }
+    }
+}

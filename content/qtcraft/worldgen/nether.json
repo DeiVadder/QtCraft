@@ -117,6 +117,51 @@
             "chance": 0.5
         }
     ],
+    "fortress": {
+        "regionSize": 448,
+        "chance": 0.6,
+        "attempts": 6,
+        "lowestFloor": 44,
+        "highestFloor": 60,
+        "lattice": 5,
+        "spacing": 24,
+        "minRooms": 10,
+        "maxRooms": 16,
+        "upperRooms": 4,
+        "loopChance": 0.25,
+        "roofShare": 0.3,
+        "chestChance": 0.35,
+        "brick": "nether_bricks",
+        "cracked": "cracked_nether_bricks",
+        "chiseled": "chiseled_nether_bricks",
+        "lane": "red_nether_bricks",
+        "fence": "nether_brick_fence",
+        "stairs": "nether_brick_stairs",
+        "light": "glowstone",
+        "soil": "soul_sand",
+        "crop": "nether_wart_crop",
+        "chest": "chest",
+        "spawner": "spawner",
+        "spawnerMob": "magma_slime",
+        "lootTable": "fortress_chest",
+        "monsters": [
+            {
+                "mob": "skeleton",
+                "weight": 2,
+                "maxLight": 7
+            },
+            {
+                "mob": "rottusk",
+                "weight": 5,
+                "maxLight": 15
+            },
+            {
+                "mob": "magma_slime",
+                "weight": 3,
+                "maxLight": 15
+            }
+        ]
+    },
     "station": {
         "structure": "nether_arrival",
         "portal": "portal_station"

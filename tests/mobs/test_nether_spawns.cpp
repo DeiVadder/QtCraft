@@ -6,6 +6,8 @@
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/spawning/QcMonsterCap.h"
+#include "server/spawning/QcNaturalSpawner.h"
+#include "server/spawning/QcSpawnAreas.h"
 #include "worldgen/nether/QcNetherGenerator.h"
 
 #include <QElapsedTimer>
@@ -16,7 +18,7 @@ using namespace Qt::StringLiterals;
 
 // Who comes by itself under the roof of the nether (decisions E-1050, E-1051, E-1038): only kinds
 // that name its biomes, on floors below the roof, never on bedrock, the same at every time of day;
-// lava waders on the lava. Ticks are stepped by hand on a real nether, no server.
+// lava waders on the lava; in a fortress's parts only its kinds (decision E-1074). Ticks are stepped by hand on a real nether, no server.
 class TestNetherSpawns : public QObject
 {
     Q_OBJECT
@@ -26,28 +28,85 @@ private:
     quint32 m_nextId = 1;
     static constexpr int radius = 5;
     static constexpr int seconds = 90;
-    static constexpr qsizetype maxRottusksNear = 16;
+    // The monster cap spread evenly over where monsters may be: they come only 24 to 128 blocks from
+    // the player and vanish beyond 128, so the ring between 24 and 64 blocks holds its share of
+    // the ring up to 128, about 15.6 of 70 (decisions E-1050, E-1051).
+    static constexpr double nearRadius = 64.0;
+    static constexpr double ringNear = nearRadius * nearRadius - QcNaturalSpawner::monsterRadiusMin * QcNaturalSpawner::monsterRadiusMin;
+    static constexpr double ringAll = QcNaturalSpawner::monsterRadiusMax * QcNaturalSpawner::monsterRadiusMax - QcNaturalSpawner::monsterRadiusMin * QcNaturalSpawner::monsterRadiusMin;
+    static constexpr double capNear = QcNaturalSpawner::monsterCapPer289Chunks * ringNear / ringAll;
+    // The time average may lie up to 40 % above the even share (groups of 4 come together); the
+    // highest count at any one moment up to three groups of 4 above it.
+    static constexpr double maxMeanNear = capNear * 1.4;
+    static constexpr double maxMostNear = capNear + 3 * 4;
+    // Samples are taken every two seconds after the first twenty, when the cap has filled.
+    static constexpr int rampUpSeconds = 20;
+    static constexpr int sampleSeconds = 2;
+
+    // How many rottusks and wailers stood within 64 blocks of the player: the time average and the
+    // highest count at any tick.
+    struct Crowd
+    {
+        double meanRottusks = 0.0;
+        qsizetype mostRottusks = 0;
+        qsizetype mostWailers = 0;
+    };
 
     const QcDimensionDefinition &nether() const { return *m_content->worldgen().dimension(u"qtcraft:nether"_s); }
 
-    std::unique_ptr<QcServerWorld> makeWorld(qint64 seed = 4711, int chunks = radius) const
+    std::unique_ptr<QcServerWorld> makeWorld(qint64 seed = 4711, int chunks = radius, QcChunkPos centre = {0, 0}) const
     {
         auto world = std::make_unique<QcServerWorld>(m_content, std::make_unique<QcNetherGenerator>(m_content, seed));
         for (int x = -chunks; x <= chunks; ++x) {
             for (int z = -chunks; z <= chunks; ++z) {
-                world->loadChunk({x, z});
+                world->loadChunk({centre.x + x, centre.z + z});
             }
         }
         return world;
     }
 
+    // Sprinted spawning for `seconds` around the middle of the chunk `centre`.
+    Crowd crowdNear(qint64 seed, QcChunkPos centre)
+    {
+        const std::unique_ptr<QcServerWorld> world = makeWorld(seed, QcMonsterCap::reach, centre);
+        QcMobManager mobs(m_content, 9);
+        mobs.setDimension(nether());
+        const QcVec3 player{centre.x * QcWorld::chunkSize + 8.5, 64.0, centre.z * QcWorld::chunkSize + 8.5};
+        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = player}};
+        const QcCreatureKindId rottusk = *m_content->mobKind(u"qtcraft:rottusk"_s);
+        const QcCreatureKindId wailer = *m_content->mobKind(u"qtcraft:wailer"_s);
+        const auto countNear = [&](QcCreatureKindId type) {
+            return std::ranges::count_if(mobs.mobs(), [&](const QcCreature &mob) { return mob.type == type && (mob.motion.position - player).length() <= nearRadius; });
+        };
+
+        const int ticksPerSecond = static_cast<int>(QcPhysics::tickRate);
+        Crowd crowd;
+        qsizetype total = 0;
+        int samples = 0;
+        for (int tick = 0; tick < seconds * ticksPerSecond; ++tick) {
+            mobs.tick(*world, players, 0.0, QcPhysics::tickDuration, [this] { return m_nextId++; });
+            const qsizetype rottusks = countNear(rottusk);
+            crowd.mostRottusks = std::max(crowd.mostRottusks, rottusks);
+            crowd.mostWailers = std::max(crowd.mostWailers, countNear(wailer));
+            if (tick >= rampUpSeconds * ticksPerSecond && tick % (sampleSeconds * ticksPerSecond) == 0) {
+                total += rottusks;
+                ++samples;
+            }
+        }
+        crowd.meanRottusks = static_cast<double>(total) / samples;
+        return crowd;
+    }
+
     // The kinds that came in `seconds` of sprinted ticks at the world time `time`, with where they
     // stood when they came.
-    QHash<QString, QList<QcVec3>> census(QcServerWorld &world, double time)
+    // With `removeSeen` every creature is removed in the tick it came, so the cap never fills.
+    QHash<QString, QList<QcVec3>> census(QcServerWorld &world, double time, const QcVec3 &player = {8.5, 64.0, 8.5}, bool removeSeen = false)
     {
         QcMobManager mobs(m_content, 9);
         mobs.setDimension(nether());
-        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = {8.5, 64.0, 8.5}}};
+        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = player}};
+        // The ids from the start: two censuses with the same seed must see the same creatures.
+        m_nextId = 1;
         QHash<QString, QList<QcVec3>> seen;
         QSet<quint32> counted;
         const double dt = QcPhysics::tickDuration;
@@ -58,6 +117,9 @@ private:
                     counted.insert(mob.id);
                     seen[m_content->mobs()[mob.type].name].append(mob.motion.position);
                 }
+            }
+            if (removeSeen) {
+                mobs.removeAll();
             }
         }
         return seen;
@@ -138,30 +200,61 @@ private slots:
                                  .arg(cost({u"qtcraft:lava_wader"_s}, 40), 0, 'f', 3);
     }
 
+    void rottusksDoNotCrowdTheWastes_data()
+    {
+        QTest::addColumn<QcChunkPos>("centre");
+        QTest::newRow("near a fortress") << QcChunkPos{0, 0};
+        QTest::newRow("far from any") << QcChunkPos{80, 0};
+    }
+
     // Rottusks come as in the role model (weight 100, groups of 4 in the wastes, the monster cap
-    // of 70 per 289 chunks; the human, 2026-11-06) and no more: the most within 64 blocks of the
-    // player at any tick of sprinted spawning, with the creatures' own despawning, the monster
-    // cap's whole area loaded (as a player's view distance does).
+    // of 70 per 289 chunks; the human, 2026-11-06) and no more: on average over sprinted spawning
+    // no more than the cap's share near the player allows, and never a crowd at any tick, with the
+    // creatures' own despawning, the monster cap's whole area loaded (as a player's view distance
+    // does). Measured at seed 42 beside a fortress and far from any spawn area.
     void rottusksDoNotCrowdTheWastes()
     {
-        const std::unique_ptr<QcServerWorld> world = makeWorld(42, QcMonsterCap::reach);
-        QcMobManager mobs(m_content, 9);
-        mobs.setDimension(nether());
-        const QcVec3 player{8.5, 64.0, 8.5};
-        const QList<QcMobManager::PlayerView> players{{.entityId = 900000, .position = player}};
-        const QcCreatureKindId rottusk = *m_content->mobKind(u"qtcraft:rottusk"_s);
-        const QcCreatureKindId wailer = *m_content->mobKind(u"qtcraft:wailer"_s);
-        qsizetype most = 0;
-        qsizetype mostWailers = 0;
-        for (int tick = 0; tick < seconds * QcPhysics::tickRate; ++tick) {
-            mobs.tick(*world, players, 0.0, QcPhysics::tickDuration, [this] { return m_nextId++; });
-            const auto near = [&](const QcCreature &mob, QcCreatureKindId type) { return mob.type == type && (mob.motion.position - player).length() <= 64.0; };
-            most = std::max(most, std::ranges::count_if(mobs.mobs(), [&](const QcCreature &mob) { return near(mob, rottusk); }));
-            mostWailers = std::max(mostWailers, std::ranges::count_if(mobs.mobs(), [&](const QcCreature &mob) { return near(mob, wailer); }));
+        QFETCH(QcChunkPos, centre);
+        const Crowd crowd = crowdNear(42, centre);
+        qInfo() << "within 64 blocks: rottusks on average" << crowd.meanRottusks << "at most" << crowd.mostRottusks << "wailers at most" << crowd.mostWailers << "share of the cap" << capNear;
+        QVERIFY(crowd.mostRottusks > 0);
+        QVERIFY2(crowd.meanRottusks <= maxMeanNear, qPrintable(QString::number(crowd.meanRottusks)));
+        QVERIFY2(static_cast<double>(crowd.mostRottusks) <= maxMostNear, qPrintable(QString::number(crowd.mostRottusks)));
+    }
+
+    // In the boxes of a fortress's parts only its kinds of monsters come (decision E-1074); the
+    // skeletons there stand in block light of at most 7.
+    void aFortressBringsForthItsKindsInItsParts()
+    {
+        const qint64 seed = 42;
+        const QcNetherGenerator probe(m_content, seed);
+        std::shared_ptr<const QcFortressPlan> plan;
+        for (int i = 0; i < 16 && !plan; ++i) {
+            plan = probe.fortress().planOf(i % 4 - 2, i / 4 - 2);
         }
-        qInfo() << "most within 64 blocks: rottusks" << most << "wailers" << mostWailers;
-        QVERIFY(most > 0);
-        QVERIFY2(most <= maxRottusksNear, qPrintable(QString::number(most)));
+        QVERIFY(plan);
+        const QcBlockPos middle = plan->middle();
+        const std::unique_ptr<QcServerWorld> world = makeWorld(seed, radius, middle.chunk());
+        QCOMPARE(world->generator().structureSitesNear(middle, QcSpawnAreas::reach).spawnAreas.size(), qsizetype{1});
+        const QHash<QString, QList<QcVec3>> seen = census(*world, 0.0, {middle.x + 0.5, middle.y + 0.0, middle.z + 0.5}, true);
+        const QSet<QString> fortressKinds{u"qtcraft:skeleton"_s, u"qtcraft:rottusk"_s, u"qtcraft:magma_slime"_s};
+        int inside = 0;
+        int outside = 0;
+        for (auto it = seen.cbegin(); it != seen.cend(); ++it) {
+            for (const QcVec3 &at : it.value()) {
+                const QcBlockPos feet = QcPhysics::blockContaining(at);
+                const bool inPart = std::ranges::any_of(plan->parts, [feet](const QcBlockBox &part) { return part.contains(feet); });
+                // Creatures that are no monsters (lava waders on the sea under a bridge) keep their
+                // own rules, as the striders of the original game do.
+                const bool monster = m_content->mobs()[*m_content->mobKind(it.key())].isMonster();
+                QVERIFY2(!inPart || !monster || fortressKinds.contains(it.key()), qPrintable(u"%1 at %2 %3 %4"_s.arg(it.key()).arg(feet.x).arg(feet.y).arg(feet.z)));
+                inside += inPart && monster ? 1 : 0;
+                outside += inPart ? 0 : 1;
+                QVERIFY2(!inPart || it.key() != u"qtcraft:skeleton"_s || world->blockLight(feet) <= 7, qPrintable(u"skeleton at %1 %2 %3"_s.arg(feet.x).arg(feet.y).arg(feet.z)));
+            }
+        }
+        qInfo() << "fortress kinds in its parts:" << inside << "others outside:" << outside << seen.keys();
+        QVERIFY(inside > 0);
     }
 
     void theTimeOfDayDoesNotReachTheNether()

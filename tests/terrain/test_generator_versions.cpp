@@ -219,6 +219,7 @@ public:
         }
         if (dynamic_cast<const QcNetherGenerator *>(&m_generator)) {
             addStructures();
+            addFortress();
             addNetherBiome();
         }
         if (const auto *terrainGenerator = dynamic_cast<const QcTerrainGenerator *>(&m_generator); terrainGenerator && m_explore) {
@@ -295,6 +296,20 @@ private:
                 m_coverage.located.insert(name);
                 add(placement->origin().offset(placement->sizeX() / 2, 0, placement->sizeZ() / 2).chunk());
             }
+        }
+    }
+
+    // The nearest fortress of the nether: the chunk of its middle and the eight around it.
+    void addFortress()
+    {
+        const QcLocateResult found = m_generator.locate(u"fortress"_s, {0, 64, 0}, structureReach);
+        if (!found.place) {
+            return;
+        }
+        m_coverage.located.insert(u"fortress"_s);
+        const QcChunkPos at = found.place->at.chunk();
+        for (int i = 0; i < 9; ++i) {
+            add({at.x - 1 + i % 3, at.z - 1 + i / 3});
         }
     }
 
@@ -518,10 +533,12 @@ private slots:
         QFETCH(int, version);
         const Run run = checksumsOf(netherCases(), version);
         qInfo().noquote() << u"nether version %1 on %2:\n%3"_s.arg(version).arg(platform(), QString::fromUtf8(QJsonDocument(run.checksums).toJson()));
-        for (const QStringView part : {u"netherrack", u"lava", u"glowstone", u"nether_quartz_ore", u"nether_gold_ore", u"soul_sand", u"soul_soil", u"gravel", u"obsidian"}) {
+        for (const QStringView part : {u"netherrack", u"lava", u"glowstone", u"nether_quartz_ore", u"nether_gold_ore", u"soul_sand", u"soul_soil", u"gravel", u"obsidian",
+                                        u"nether_bricks"}) {
             QVERIFY2(std::ranges::any_of(run.coverage.blocks, [part](const QString &name) { return name.contains(part); }), qPrintable(part.toString()));
         }
         QVERIFY(run.coverage.located.contains(u"ruined_portal_nether"_s));
+        QVERIFY(run.coverage.located.contains(u"fortress"_s));
         QVERIFY(run.coverage.biomes.contains(u"qtcraft:soul_sand_valley"_s));
         compareWithReference(QcGeneratorVersion::nether, version, run.checksums);
     }

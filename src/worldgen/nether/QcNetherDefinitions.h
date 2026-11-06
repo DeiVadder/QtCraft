@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcBlockBox.h"
+#include "common/world/QcChunk.h"
 #include "common/world/QcVegetationTable.h"
 #include "worldgen/structures/QcStructure.h"
 #include "worldgen/terrain/QcNoise.h"
@@ -182,6 +184,10 @@ struct QcNetherDefinitions
 
     /*! Resolves the nether settings of \a content; the seeds follow \a seed. */
     QcNetherDefinitions(const QcContentRegistry &content, quint64 seed);
+
+    /*! Turns the pool cells of \a chunk inside \a box (above the sea, under the roof) into their
+        rim, so that what a structure clears there opens no pool (decision E-1047). */
+    void sealPools(QcChunk &chunk, const QcBlockBox &box) const;
 
     /*! The settings as read (the shape and the heights). */
     QcNetherSettings settings;

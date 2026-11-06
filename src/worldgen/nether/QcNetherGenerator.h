@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "worldgen/fortress/QcFortressGenerator.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 #include "worldgen/nether/QcNetherDecorator.h"
 #include "worldgen/nether/QcNetherDefinitions.h"
@@ -31,10 +32,13 @@ public:
     QString biomeAt(int x, int z) const override;
     bool isNaturalGround(QcBlockId block) const override;
     [[nodiscard]] std::optional<QcBlockId> platformBlock() const override { return definitions().filler; }
-    QcChunkFurnishing furnishingIn(QcChunkPos pos) const override { return structures().furnishingIn(pos); }
+    QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
+    QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override { return fortress().sitesNear(from, reach); }
+    [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
+    [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
-    QStringList locatableNames() const override { return structures().names(); }
-    QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return structures().labelsIn(pos); }
+    QStringList locatableNames() const override;
+    QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return structures().labelsIn(pos) + fortress().labelsIn(pos); }
     QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const override { return m_decorator.springsIn(chunk); }
 
     /*! Returns the rock and the lava, for tests. */
@@ -43,6 +47,8 @@ public:
     const QcNetherDecorator &decorator() const { return m_decorator; }
     /*! Returns the structures, for tests. */
     const QcNetherStructures &structures() const { return m_structures; }
+    /*! Returns the fortresses, for tests. */
+    const QcFortressGenerator &fortress() const { return m_fortress; }
     /*! Returns the resolved settings. */
     const QcNetherDefinitions &definitions() const { return m_definitions; }
 
@@ -52,5 +58,6 @@ private:
     QcNetherDecorator m_decorator;
     QcNetherDeltas m_deltas;
     QcNetherGrowth m_growth;
+    QcFortressGenerator m_fortress;
     QcNetherStructures m_structures;
 };

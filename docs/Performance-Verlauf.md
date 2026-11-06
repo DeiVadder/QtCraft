@@ -2934,3 +2934,17 @@ Mit den fünf Biomen (84.3, E-1049; Rechner unter Last durch parallele Pakete, L
 | Lavastelze | 0,057 | 0,057 | 0,058 |
 
 - **Bewertung:** Moderhauer, Magmaschleim und Lavastelze kosten so viel wie Zombies. Der Klagegeist kostet rund das Dreifache (0,004 ms je Wesen und Tick), das Budget von 50 ms bleibt weit entfernt. Gemessen ist nur `QcMobManager::tick` mit einem Spieler in der Nähe, ohne Schüsse, Netz und Explosionen; keine A/B-Messung gegen `dev`.
+
+## Paket 84.5a: Netherfestung, Kosten der Generierung (2026-11-06)
+
+`test_nether_generator generationCost` im Release-Build ohne Fenster, Seed 42, drei Läufe nacheinander; der Rechner stand unter fremder Last (Lastmittel 24–31 auf 14 Kernen), die Werte streuen darum mehr als sonst.
+
+| Lauf | Nether je Chunk | Oberwelt je Chunk | Region planen | Chunks um die Mitte einer Festung, Plan noch zu machen | dieselben, Plan im Cache |
+|------|-----------------|-------------------|---------------|-------------------------------------------------------|--------------------------|
+| 1 | 0,69 ms | 2,58 ms | 0,23 ms | 0,47 ms | 0,46 ms |
+| 2 | 0,63 ms | 2,54 ms | 0,23 ms | 0,66 ms | 0,60 ms |
+| 3 | 0,87 ms | 3,51 ms | 0,27 ms | 0,60 ms | 0,56 ms |
+
+- **Planen:** 16 Regionen (448 Blöcke) im Schnitt 0,23–0,27 ms je Region, mit und ohne Festung; ein Plan wird je Region einmal gemacht (Cache von 256 Plänen).
+- **Chunks in einer Festung** (6 × 6 Chunks um ihre Mitte) kosten nicht mehr als gewöhnliche Nether-Chunks: Die Höhlen dort sind offen, das Gelände ist billiger, und das Schreiben der Festung fällt nicht auf. Der Vergleich mit 84.3 (0,54–0,56 ms bei Last 12) ist unter dieser Last nicht belastbar; eine verschränkte A/B-Messung gegen 84.3 steht aus und braucht einen ruhigen Rechner.
+- **Test:** `test_nether_fortress` von etwa 305 s auf 17–24 s Debug-Zeit (die Tests, die Blöcke lesen, teilen sich 9 erzeugte Festungen statt jede Festung jedes Seeds neu; die Prüfungen auf Reihenfolge und vier Threads erzeugen je 3×3 Chunks frisch, das Abtasten der Pfeiler unter den Spawn-Kästen kostet Planungszeit, Erzeugungskosten nicht neu gemessen), `TIMEOUT` 600 → 450 (≥ 15 × Debug-Zeit; `tests/structures/tests.cmake`; die übrigen Struktur-Tests behalten ihre Grenzen).

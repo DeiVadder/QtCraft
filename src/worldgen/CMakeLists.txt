@@ -20,11 +20,22 @@ target_sources(qc_worldgen PRIVATE
     dungeons/QcDungeonPlanner.h dungeons/QcDungeonPlanner.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    fortress/QcFortressBlocks.h fortress/QcFortressBlocks.cpp
+    fortress/QcFortressBuilder.h fortress/QcFortressBuilder.cpp
+    fortress/QcFortressCanvas.h fortress/QcFortressCanvas.cpp
+    fortress/QcFortressGenerator.h fortress/QcFortressGenerator.cpp
+    fortress/QcFortressNet.h fortress/QcFortressNet.cpp
+    fortress/QcFortressPlan.h
+    fortress/QcFortressPlanner.h fortress/QcFortressPlanner.cpp
+    fortress/QcFortressRooms.h fortress/QcFortressRooms.cpp
+)
+target_sources(qc_worldgen PRIVATE
     generators/QcBiomeMap.h generators/QcBiomeMap.cpp
     generators/QcChunkFurnishing.h
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
     generators/QcLocatedPlace.h
+    generators/QcStateResolver.h generators/QcStateResolver.cpp
     generators/QcStructureClosure.h generators/QcStructureClosure.cpp
     generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp

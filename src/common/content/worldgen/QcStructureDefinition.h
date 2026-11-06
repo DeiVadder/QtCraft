@@ -201,7 +201,19 @@ struct QcStructureDefinition
         The witch hut and its witches. \qcfields */
     struct SpawnArea
     {
-        QStringList monsters;
+        /*! \brief A kind of a spawn area: \c {mob}, drawn by \c {weight} among the area's kinds,
+            with its own light test unless \c {maxLight} gives the brightest block light at the
+            feet (the fortress's kinds, decision E-1074). \qcfields */
+        struct Monster
+        {
+            QString mob;
+            int weight = 1;
+            std::optional<int> maxLight;
+
+            bool operator==(const Monster &) const = default;
+        };
+
+        QList<Monster> monsters;
 
         bool operator==(const SpawnArea &) const = default;
     };

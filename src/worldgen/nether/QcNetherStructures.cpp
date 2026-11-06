@@ -3,6 +3,8 @@
 
 #include "worldgen/nether/QcNetherStructures.h"
 
+#include "common/core/QcIntMath.h"
+#include "worldgen/fortress/QcFortressGenerator.h"
 #include "worldgen/nether/QcNetherTerrain.h"
 #include "worldgen/terrain/QcNoise.h"
 
@@ -23,17 +25,14 @@ constexpr int maxSlope = 6;
 // The deepest foundation below a copy.
 constexpr int maxFoundation = 12;
 
-int floorDiv(int value, int divisor)
-{
-    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
-}
-
 } // namespace
 
-QcNetherStructures::QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content)
+QcNetherStructures::QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content,
+                                       const QcFortressGenerator &fortresses)
     : m_definitions(definitions)
     , m_terrain(terrain)
     , m_content(std::move(content))
+    , m_fortresses(fortresses)
 {
 }
 
@@ -66,7 +65,8 @@ std::optional<QcStructurePlacement> QcNetherStructures::planOf(const QcNetherDef
             const std::optional<int> corner = m_terrain.floorAt(x + dx, z + dz, *middle - maxSlope, 2);
             level = level && corner && std::abs(*corner - *middle) <= maxSlope;
         }
-        if (level) {
+        // A fortress never yields: it plans first, and a copy that would stand in it tries elsewhere.
+        if (level && m_fortresses.plansIn({x, z, x + size - 1, z + size - 1}).isEmpty()) {
             const int turns = static_cast<int>(qcPositionRandom(kind.seed, regionX, attempt * 4 + 2, regionZ) * 4.0);
             return QcStructurePlacement(kind.structure, QcBlockPos{x, *middle + 1 - structure.groundLayer, z}, turns, *m_content);
         }
@@ -78,8 +78,8 @@ QList<QcStructurePlacement> QcNetherStructures::plansIn(const QcNetherDefinition
 {
     QList<QcStructurePlacement> plans;
     // A region's size is no multiple of a chunk's for every spacing: a chunk may touch four.
-    for (int regionZ = floorDiv(area.minZ, kind.spacing); regionZ <= floorDiv(area.maxZ, kind.spacing); ++regionZ) {
-        for (int regionX = floorDiv(area.minX, kind.spacing); regionX <= floorDiv(area.maxX, kind.spacing); ++regionX) {
+    for (int regionZ = qcFloorDiv(area.minZ, kind.spacing); regionZ <= qcFloorDiv(area.maxZ, kind.spacing); ++regionZ) {
+        for (int regionX = qcFloorDiv(area.minX, kind.spacing); regionX <= qcFloorDiv(area.maxX, kind.spacing); ++regionX) {
             if (std::optional<QcStructurePlacement> plan = planOf(kind, regionX, regionZ)) {
                 plans.append(std::move(*plan));
             }
@@ -137,28 +137,8 @@ void QcNetherStructures::sealPools(QcChunk &chunk, const QcStructurePlacement &p
 {
     const QcBlockPos origin = plan.origin();
     const int floor = origin.y + plan.structure().groundLayer;
-    const int lowest = std::max(floor, m_definitions.settings.liquidLevel + 2);
-    const int top = std::min(origin.y + plan.structure().sizeY() + 1, m_definitions.settings.roof - 1);
-    for (int z = 0; z < QcWorld::chunkSize; ++z) {
-        for (int x = 0; x < QcWorld::chunkSize; ++x) {
-            const int worldX = chunk.pos().x * QcWorld::chunkSize + x;
-            const int worldZ = chunk.pos().z * QcWorld::chunkSize + z;
-            if (worldX < origin.x - 1 || worldX > origin.x + plan.sizeX() || worldZ < origin.z - 1 || worldZ > origin.z + plan.sizeZ()) {
-                continue;
-            }
-            for (int y = lowest; y <= top; ++y) {
-                sealCell(chunk, {x, y, z});
-            }
-        }
-    }
-}
-
-void QcNetherStructures::sealCell(QcChunk &chunk, QcBlockPos cell) const
-{
-    const auto pool = std::ranges::find(m_definitions.pools, chunk.block(cell.x, cell.y, cell.z), &QcNetherDefinitions::Pool::block);
-    if (pool != m_definitions.pools.end()) {
-        chunk.setBlock(cell.x, cell.y, cell.z, pool->rim);
-    }
+    const int top = origin.y + plan.structure().sizeY() + 1;
+    m_definitions.sealPools(chunk, {{origin.x - 1, floor, origin.z - 1}, {origin.x + plan.sizeX(), top, origin.z + plan.sizeZ()}});
 }
 
 void QcNetherStructures::build(QcChunk &chunk) const
