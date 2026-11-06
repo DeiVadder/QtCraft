@@ -116,6 +116,18 @@ if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComb
     failed=1
 fi
 check worldoptions-terrain --overlay "@300 open:worldOptionsPage"
+# The switch of the map's dimensions (decision E-1078): right from the form, right to the nether,
+# confirmed, and the map shows the nether's scale.
+LOG_ITEMS=worldMapScale
+check newworld-dimension --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadRight" \
+    --overlay "@600 pad:dpadRight" --overlay "@600 pad:south"
+LOG_ITEMS=
+order=$(grep 'padFocus' "$DATA/newworld-dimension.log" | sed 's/^padFocus: //' | tr '\n' ' ')
+if [ "$order" != "worldName worldMapDimension_qtcraft:overworld worldMapDimension_qtcraft:nether worldMapDimension_qtcraft:nether " ]; then
+    echo "newworld-dimension: the pad's focus does not reach the switch right of the form: $order"
+    failed=1
+fi
+expect_shown newworld-dimension worldMapScale yes
 MENU_WORLD_TYPE=
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"

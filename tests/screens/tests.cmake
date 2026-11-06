@@ -41,6 +41,8 @@ qc_add_test(test_loading_progress SOURCES screens/test_loading_progress.cpp LIBR
 qc_add_test(test_world_options_controller SOURCES screens/test_world_options_controller.cpp LIBRARIES qc_base_content qc_app_core qc_worlds)
 # The map preview of a new world: same map, same as the generated chunks, cancelled by a change (E-921).
 qc_add_test(test_world_map_preview SOURCES screens/test_world_map_preview.cpp LIBRARIES qc_base_content qc_app_core qc_worlds TIMEOUT 630)
+# The nether on the map preview: the server's nether biomes, its fortresses, the choice kept (E-1077).
+qc_add_test(test_world_map_nether SOURCES screens/test_world_map_nether.cpp LIBRARIES qc_base_content qc_app_core qc_worlds qc_server TIMEOUT 300)
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
 qc_add_test(test_sign_controller SOURCES screens/test_sign_controller.cpp fixtures/QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave

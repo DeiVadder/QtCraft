@@ -13,6 +13,8 @@
 
 #include <memory>
 
+struct QcDimensionDefinition;
+
 /*! \brief The world types a world can be created with; world.json names the type and its options
     (decisions E-221, E-223).
 
@@ -62,5 +64,14 @@ inline constexpr qsizetype maxOptionsLength = 4096;
     the version. What the generator could not resolve is in its warnings(). */
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed, const QString &options,
                                          int version);
+/*! Returns the generator version a new world stores for \a dimension, which is not the overworld:
+    the current one of the series of its generator. */
+[[nodiscard]] int versionForNewWorld(const QcDimensionDefinition &dimension);
+/*! Returns the generator of \a dimension, which is not the overworld, in a world of \a seed and
+    \a content: create() with the dimension's type and options as \a version. The nether of a
+    \a demonstration world (a showcase) also builds the arrival of its portal (decision E-1034).
+    The server opens dimensions with it and the map preview shows them with it (decision E-1077). */
+[[nodiscard]] std::unique_ptr<QcWorldGenerator> createDimension(const QcDimensionDefinition &dimension, std::shared_ptr<const QcContentRegistry> content,
+                                                                qint64 seed, int version, bool demonstration = false);
 
 } // namespace QcWorldGenerators

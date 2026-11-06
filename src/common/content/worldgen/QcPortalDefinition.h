@@ -59,6 +59,16 @@ struct QcPortalDefinition
         Spawn,
     };
 
+    /*! How a traveller arrives through the portal (arrivalIn()). */
+    enum class Arrival : quint8 {
+        /*! Not at all: it does not lead there. */
+        None,
+        /*! Near the scaled point of the portal he entered. */
+        Scaled,
+        /*! At the arrival point of the target (QcDimensionDefinition::arrival). */
+        Fixed,
+    };
+
     /*! Qualified name (\c {"name"}, required). */
     QString name;
     /*! The dimension the portal leads from (\c {"from"}). */
@@ -120,4 +130,14 @@ struct QcPortalDefinition
     /*! Returns whether the portal is lit in the dimension \a dimension: its \c {from} or its
         \c {to}. */
     bool lightsIn(const QString &dimension) const { return dimension == from || dimension == to; }
+    /*! Returns how a traveller entering the portal in the dimension \a here arrives in \a target:
+        from \c {from} to \c {to} by the link, a fixed one only when \a target has its arrival
+        point; the way back by the scaled link unless it leads to the world spawn. */
+    [[nodiscard]] Arrival arrivalIn(const QcDimensionDefinition &target, const QString &here) const
+    {
+        if (here == from && target.name == to) {
+            return link == Link::Fixed && target.arrival ? Arrival::Fixed : Arrival::Scaled;
+        }
+        return here == to && target.name == from && back == Back::Linked ? Arrival::Scaled : Arrival::None;
+    }
 };

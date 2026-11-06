@@ -59,7 +59,7 @@ ColumnLayout {
     }
 
     // The pad's down from the form's last setting goes to "Create and play": the footer lies too
-    // far to the side of it for the spatial step (the map column has no focus target).
+    // far to the side of it for the spatial step (the switch of the map column is right of the form).
     function gamepadCommand(command: int): bool {
         if (command !== GamepadMenuInput.Command.Down || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
             return false;

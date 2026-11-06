@@ -15,8 +15,10 @@ import QtCraft
 // "+" and "−" zoom; villages and structures show only with their switch, so the map does not give
 // them away, and then every kind has its own marker and a check box in the legend. On "New world"
 // it is `compact` (decision E-930): a small map without zoom or villages and the most common
-// biomes below it. A thin bar shows how far the drawing is. GameController.worldOptions.preview
-// computes it.
+// biomes below it. A thin bar shows how far the drawing is. Above both maps a switch lists the
+// dimensions of the content that have a map (decision E-1078), with a line on the scale against
+// the overworld where it differs; a marker shows the spawn (decision E-1079).
+// GameController.worldOptions.preview computes it.
 SettingGroup {
     id: group
 
@@ -28,6 +30,8 @@ SettingGroup {
     property bool sitesWanted: false
     // The markers and their legend show (never on the compact map).
     readonly property bool sitesShown: !compact && preview.showSites
+    // The spawn lies on the shown map.
+    readonly property bool spawnShown: preview.spawn.title !== undefined
     // The page's view: the map takes its height, less the rows below it, and the page scrolls to
     // the map when it gets the keyboard's focus.
     property Flickable flickable: null
@@ -47,6 +51,20 @@ SettingGroup {
     }
 
     title: qsTr("Map preview")
+
+    // The dimensions the map can show, when there is more than one.
+    Segments {
+        id: dimensionChoice
+
+        objectName: "worldMapDimension"
+        visible: group.preview.dimensions.length > 1
+        Layout.fillWidth: true
+        Layout.topMargin: Ui.space.s
+        label: qsTr("Dimension")
+        model: group.preview.dimensions
+        currentValue: group.preview.dimension
+        onActivated: value => group.preview.dimension = value
+    }
 
     // The marker of a kind of site (WorldMapPreview.siteLegend): its tint, one of four colours,
     // and its shape, each with a dark outline; the village (style 0) a red square with a white one.
@@ -75,6 +93,54 @@ SettingGroup {
         }
     }
 
+    // The spawn's marker: a cross in the accent, unlike the markers of the sites.
+    component SpawnMarker: Item {
+        implicitWidth: Ui.space.l
+        implicitHeight: Ui.space.l
+
+        Repeater {
+            model: 2
+
+            delegate: Rectangle {
+                required property int index
+
+                anchors.centerIn: parent
+                width: parent.width
+                height: parent.width / 3
+                rotation: 45 + 90 * index
+                color: Theme.accent
+                border.color: Theme.knobOutline
+                border.width: Ui.size.line
+            }
+        }
+    }
+
+    // A marker at `place` (x and y, 0..1 across the map; text on hover), kept inside the map of
+    // `mapSize` at its edges; `hovering` says when the pointer comes (1) and goes (-1).
+    component PlacedMarker: Item {
+        id: placed
+
+        required property var place
+        required property size mapSize
+
+        signal hovering(int change)
+
+        x: Math.max(0, Math.min(mapSize.width - width, (place.x ?? 0) * mapSize.width - width / 2))
+        y: Math.max(0, Math.min(mapSize.height - height, (place.y ?? 0) * mapSize.height - height / 2))
+
+        HoverHandler {
+            id: hover
+
+            onHoveredChanged: placed.hovering(hovered ? 1 : -1)
+        }
+        Component.onDestruction: if (hover.hovered)
+            placed.hovering(-1)
+        ThemedToolTip {
+            text: placed.place.text ?? ""
+            shown: hover.hovered
+        }
+    }
+
     GridLayout {
         id: body
 
@@ -82,7 +148,7 @@ SettingGroup {
         // The legend beside the map while the page is wide enough for both.
         readonly property bool beside: width >= 2 * legendWidth + columnSpacing
         readonly property real widthForMap: beside ? width - legendWidth - columnSpacing : width
-        readonly property real heightForMap: (group.flickable ? group.flickable.height : 0) - controls.implicitHeight - sitesSwitch.implicitHeight - focusInfo.implicitHeight - Ui.size.track - 6 * Ui.space.l
+        readonly property real heightForMap: (group.flickable ? group.flickable.height : 0) - dimensionChoice.implicitHeight - scaleHint.implicitHeight - controls.implicitHeight - sitesSwitch.implicitHeight - focusInfo.implicitHeight - Ui.size.track - 7 * Ui.space.l
         readonly property real mapSide: group.compact ? Ui.size.map : Math.max(Ui.size.map, Math.min(widthForMap, heightForMap))
 
         Layout.fillWidth: true
@@ -111,7 +177,8 @@ SettingGroup {
                 onActiveFocusChanged: if (activeFocus)
                     group.scrollIntoView()
                 Accessible.role: Accessible.Graphic
-                Accessible.name: qsTr("Map of the new world, %1 by %1 blocks").arg(2 * group.preview.radius)
+                Accessible.name: group.preview.overworld ? qsTr("Map of the new world, %1 by %1 blocks").arg(2 * group.preview.radius)
+                                                         : qsTr("Map of another dimension of the new world, %1 by %1 blocks").arg(2 * group.preview.radius)
                 Accessible.focusable: !group.compact
                 Keys.onLeftPressed: group.preview.pan(-0.25, 0)
                 Keys.onRightPressed: group.preview.pan(0.25, 0)
@@ -163,29 +230,39 @@ SettingGroup {
                     Repeater {
                         model: group.sitesShown ? group.preview.sites : []
 
-                        delegate: SiteMarker {
-                            id: site
-
+                        delegate: PlacedMarker {
                             required property var modelData
 
-                            style: modelData.style
-                            shape: modelData.shape
-                            tint: modelData.tint
-                            x: Math.max(0, Math.min(frame.width - width, modelData.x * frame.width - width / 2))
-                            y: Math.max(0, Math.min(frame.height - height, modelData.y * frame.height - height / 2))
+                            place: modelData
+                            mapSize: Qt.size(frame.width, frame.height)
+                            onHovering: change => frame.hoveredMarkers += change
+                            width: site.implicitWidth
+                            height: site.implicitHeight
                             opacity: group.preview.busy ? 0.5 : 1
 
-                            HoverHandler {
-                                id: hover
+                            SiteMarker {
+                                id: site
 
-                                onHoveredChanged: frame.hoveredMarkers += hovered ? 1 : -1
+                                anchors.fill: parent
+                                style: parent.modelData.style
+                                shape: parent.modelData.shape
+                                tint: parent.modelData.tint
                             }
-                            Component.onDestruction: if (hover.hovered)
-                                frame.hoveredMarkers -= 1
-                            ThemedToolTip {
-                                text: site.modelData.text
-                                shown: hover.hovered
-                            }
+                        }
+                    }
+
+                    PlacedMarker {
+                        visible: group.spawnShown
+                        place: group.preview.spawn
+                        mapSize: Qt.size(frame.width, frame.height)
+                        onHovering: change => frame.hoveredMarkers += change
+                        width: spawnMark.implicitWidth
+                        height: spawnMark.implicitHeight
+
+                        SpawnMarker {
+                            id: spawnMark
+
+                            anchors.fill: parent
                         }
                     }
                 }
@@ -280,6 +357,19 @@ SettingGroup {
                 preview: group.preview
             }
 
+            // The scale: the same place lies that many times farther out in the overworld.
+            Label {
+                id: scaleHint
+
+                objectName: "worldMapScale"
+                visible: group.preview.coordinateScale !== 1
+                Layout.preferredWidth: body.mapSide
+                text: qsTr("Scale 1:%1 – one block here stands for %1 blocks of the overworld.").arg(group.preview.coordinateScale)
+                color: Theme.textMuted
+                font.pixelSize: Ui.type.help
+                wrapMode: Text.WordWrap
+            }
+
             // What the centre of the map is, for the keyboard and the pad (no pointer there).
             Label {
                 id: focusInfo
@@ -344,11 +434,31 @@ SettingGroup {
                 font.pixelSize: Ui.type.help
             }
 
+            // The spawn's marker.
+            RowLayout {
+                visible: group.spawnShown
+                Layout.fillWidth: true
+                spacing: Ui.space.s
+
+                SpawnMarker {
+                    Layout.preferredWidth: Ui.size.icon
+                    Layout.preferredHeight: Ui.size.icon
+                }
+                Label {
+                    Layout.fillWidth: true
+                    text: group.preview.spawn.title ?? ""
+                    textFormat: Text.PlainText
+                    color: Theme.text
+                    font.pixelSize: Ui.type.help
+                    elide: Text.ElideRight
+                }
+            }
+
             // The kinds of villages and structures on the map, each shown or hidden by its box.
             Label {
                 Layout.topMargin: Ui.space.s
                 visible: group.sitesShown && group.preview.siteLegend.length > 0
-                text: qsTr("Villages and structures")
+                text: group.preview.overworld ? qsTr("Villages and structures") : qsTr("Structures")
                 color: Theme.heading
                 font.pixelSize: Ui.type.help
                 font.bold: true
@@ -388,7 +498,8 @@ SettingGroup {
             Label {
                 Layout.fillWidth: true
                 visible: group.sitesShown && group.preview.radius > group.preview.sitesRadius
-                text: qsTr("Villages and structures only inside the frame (%1 × %1 blocks).").arg(2 * group.preview.sitesRadius)
+                text: group.preview.overworld ? qsTr("Villages and structures only inside the frame (%1 × %1 blocks).").arg(2 * group.preview.sitesRadius)
+                                              : qsTr("Structures only inside the frame (%1 × %1 blocks).").arg(2 * group.preview.sitesRadius)
                 color: Theme.textMuted
                 font.pixelSize: Ui.type.help
                 wrapMode: Text.WordWrap
@@ -437,7 +548,7 @@ SettingGroup {
 
         objectName: "worldMapSites"
         visible: !group.compact
-        label: qsTr("Show villages and structures")
+        label: group.preview.overworld ? qsTr("Show villages and structures") : qsTr("Show structures")
         help: qsTr("Off by default, so the map keeps them a surprise.")
         checked: group.sitesWanted
         onToggled: group.sitesWanted = checked

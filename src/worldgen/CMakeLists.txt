@@ -32,6 +32,7 @@ target_sources(qc_worldgen PRIVATE
 target_sources(qc_worldgen PRIVATE
     generators/QcBiomeMap.h generators/QcBiomeMap.cpp
     generators/QcChunkFurnishing.h
+    generators/QcDimensionMaps.h generators/QcDimensionMaps.cpp
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
     generators/QcLocatedPlace.h
@@ -67,6 +68,7 @@ target_sources(qc_worldgen PRIVATE
     nether/QcNetherDeltas.h nether/QcNetherDeltas.cpp
     nether/QcNetherGenerator.h nether/QcNetherGenerator.cpp
     nether/QcNetherGrowth.h nether/QcNetherGrowth.cpp
+    nether/QcNetherMap.h nether/QcNetherMap.cpp
     nether/QcNetherStructures.h nether/QcNetherStructures.cpp
     nether/QcNetherTerrain.h nether/QcNetherTerrain.cpp
 )

@@ -4,8 +4,8 @@
 #include "app/preview/QcWorldMapTexts.h"
 
 #include "app/preview/QcWorldMapPainter.h"
-#include "app/preview/QcWorldMapWork.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
 
 #include <QColor>
@@ -46,11 +46,35 @@ QString QcWorldMapTexts::kind(const QString &kind) const
         return tr("Village");
     }
     // A structure of the content ("qtcraft:desert_temple"; the coastal tower is named without
-    // its pack).
+    // its pack); one without a structure file (the nether fortress, decision E-1077) by its key
+    // "structure.<pack>.<name>".
     const QString name = kind.contains(u':') ? kind : u"qtcraft:"_s + kind;
-    const QcStructureDefinition *structure = m_content ? m_content->worldgen().structure(name) : nullptr;
-    const QString title = structure ? text(structure->translationKey) : QString();
+    if (!m_content) {
+        return kind.section(u':', -1);
+    }
+    const QcStructureDefinition *structure = m_content->worldgen().structure(name);
+    const QString key = structure ? structure->translationKey : u"structure.%1.%2"_s.arg(name.section(u':', 0, 0), name.section(u':', 1));
+    const QString title = text(key);
     return title.isEmpty() ? kind.section(u':', -1) : title;
+}
+
+QString QcWorldMapTexts::dimension(const QcDimensionDefinition &definition) const
+{
+    const QString name = m_content ? text(definition.translationKey) : QString();
+    return name.isEmpty() ? definition.name.section(u':', -1) : name;
+}
+
+QString QcWorldMapTexts::spawn(QcWorldMapSpawn::Kind kind)
+{
+    switch (kind) {
+    case QcWorldMapSpawn::Kind::WorldSpawn:
+        return tr("World spawn");
+    case QcWorldMapSpawn::Kind::ScaledPortal:
+        return tr("Portal from the world spawn");
+    case QcWorldMapSpawn::Kind::FixedArrival:
+        return tr("Arrival of the portal");
+    }
+    return {};
 }
 
 QString QcWorldMapTexts::cell(const QcWorldMapResult &map, int cellX, int cellZ) const
@@ -65,6 +89,9 @@ QString QcWorldMapTexts::cell(const QcWorldMapResult &map, int cellX, int cellZ)
     }
     if (code == QcWorldMapResult::iceCell) {
         return tr("Frozen sea and lakes");
+    }
+    if (code == QcWorldMapResult::unknownCell) {
+        return {};
     }
     return biome(code);
 }

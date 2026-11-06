@@ -66,6 +66,8 @@ public:
     /*! Adds the \a dimension, or replaces the one of the same name in its place (decision
         E-978). */
     void registerDimension(QcDimensionDefinition dimension) { m_dimensions.set(std::move(dimension)); }
+    /*! Removes the dimension named \a name, if any. */
+    void removeDimension(const QString &name) { m_dimensions.remove(name); }
     /*! Returns the dimensions in registration order. */
     const QList<QcDimensionDefinition> &dimensions() const { return m_dimensions.items(); }
     /*! Returns the dimension named \a name; null when there is none. The overworld may be

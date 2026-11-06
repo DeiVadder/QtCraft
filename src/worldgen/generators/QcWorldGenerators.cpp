@@ -3,6 +3,7 @@
 
 #include "worldgen/generators/QcWorldGenerators.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"
@@ -138,6 +139,19 @@ std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<co
         generator->setVersion(type == QLatin1StringView(showcase) ? QcGeneratorVersion::current : version);
     }
     return generator;
+}
+
+int versionForNewWorld(const QcDimensionDefinition &dimension)
+{
+    return versionSeries(dimension.generatorType).current;
+}
+
+std::unique_ptr<QcWorldGenerator> createDimension(const QcDimensionDefinition &dimension, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
+                                                  int version, bool demonstration)
+{
+    const bool station = demonstration && dimension.generatorType == QLatin1StringView(nether);
+    const QString options = station ? QString::fromLatin1(netherStation) : dimension.generatorOptions;
+    return create(dimension.generatorType, std::move(content), seed, options, version);
 }
 
 } // namespace QcWorldGenerators

@@ -3856,34 +3856,55 @@ Als Nächstes: %3</translation>
 <context>
     <name>MapPreviewGroup</name>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="37"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="41"/>
         <source>&lt; 1 %</source>
         <translation>&lt; 1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="37"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="41"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="49"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="53"/>
         <source>Map preview</source>
         <translation>Kartenvorschau</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="114"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="63"/>
+        <source>Dimension</source>
+        <translation>Dimension</translation>
+    </message>
+    <message>
+        <source>Overworld</source>
+        <translation type="vanished">Oberwelt</translation>
+    </message>
+    <message>
+        <source>Nether</source>
+        <translation type="vanished">Nether</translation>
+    </message>
+    <message>
+        <source>Map of the new world&apos;s nether, %1 by %1 blocks</source>
+        <translation type="vanished">Karte des Nethers der neuen Welt, %1 mal %1 Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="180"/>
         <source>Map of the new world, %1 by %1 blocks</source>
         <translation>Karte der neuen Welt, %1 mal %1 Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="196"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="273"/>
         <source>Drawing the map …</source>
         <translation>Karte wird gezeichnet …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="206"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="283"/>
         <source>Refining …</source>
         <translation>Wird verfeinert …</translation>
+    </message>
+    <message>
+        <source>Scale 1:%1 – one block of the nether stands for %1 blocks of the overworld.</source>
+        <translation type="vanished">Maßstab 1:%1 – ein Block im Nether steht für %1 Blöcke der Oberwelt.</translation>
     </message>
     <message>
         <source>Village</source>
@@ -3894,7 +3915,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Bauwerk</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="342"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="432"/>
         <source>+ %n more</source>
         <translation>
             <numerusform>+ %n weiteres</numerusform>
@@ -3902,42 +3923,62 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="351"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="461"/>
         <source>Villages and structures</source>
         <translation>Dörfer und Bauwerke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="379"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="461"/>
+        <source>Structures</source>
+        <translation>Bauwerke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="489"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="391"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="502"/>
+        <source>Structures only inside the frame (%1 × %1 blocks).</source>
+        <translation>Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke).</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="501"/>
         <source>Villages and structures only inside the frame (%1 × %1 blocks).</source>
         <translation>Dörfer und Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="410"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="181"/>
+        <source>Map of another dimension of the new world, %1 by %1 blocks</source>
+        <translation>Karte einer anderen Dimension der neuen Welt, %1 mal %1 Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="367"/>
+        <source>Scale 1:%1 – one block here stands for %1 blocks of the overworld.</source>
+        <translation>Maßstab 1:%1 – ein Block hier steht für %1 Blöcke der Oberwelt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="521"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="417"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="528"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="422"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="533"/>
         <source>Centre</source>
         <translation>Mitte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="423"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="534"/>
         <source>Centre the map on the world&apos;s middle</source>
         <translation>Karte auf die Weltmitte setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="428"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="539"/>
         <source>%1 × %1 blocks</source>
         <translation>%1 × %1 Blöcke</translation>
     </message>
@@ -3946,12 +3987,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Anderer Seed</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="440"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="551"/>
         <source>Show villages and structures</source>
         <translation>Dörfer und Bauwerke zeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="441"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="551"/>
+        <source>Show structures</source>
+        <translation>Bauwerke zeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="552"/>
         <source>Off by default, so the map keeps them a surprise.</source>
         <translation>Standardmäßig aus, damit die Karte sie nicht verrät.</translation>
     </message>
@@ -9864,19 +9910,34 @@ Jetzt: %2</translation>
         <translation>Dorf</translation>
     </message>
     <message>
-        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="64"/>
-        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="87"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="71"/>
+        <source>World spawn</source>
+        <translation>Welt-Spawn</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="73"/>
+        <source>Portal from the world spawn</source>
+        <translation>Portal vom Welt-Spawn</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="75"/>
+        <source>Arrival of the portal</source>
+        <translation>Ankunft des Portals</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="88"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="114"/>
         <source>Sea and lakes</source>
         <translation>Meer und Seen</translation>
     </message>
     <message>
-        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="67"/>
-        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="90"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="91"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="117"/>
         <source>Frozen sea and lakes</source>
         <translation>Zugefrorenes Meer und Seen</translation>
     </message>
     <message>
-        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="102"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="129"/>
         <source>%1, x %2, z %3</source>
         <translation>%1, x %2, z %3</translation>
     </message>
@@ -10014,7 +10075,7 @@ Jetzt: %2</translation>
 <context>
     <name>Segments</name>
     <message>
-        <location filename="../src/app/qml/controls/Segments.qml" line="76"/>
+        <location filename="../src/app/qml/controls/Segments.qml" line="79"/>
         <source>%1: %2</source>
         <translation>%1: %2</translation>
     </message>

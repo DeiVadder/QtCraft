@@ -181,7 +181,8 @@ std::optional<QcPortalLinks::Destination> QcPortalLinks::destination(const QcPor
         return std::nullopt;
     }
     QcServerDimension &target = **opened;
-    if (const std::optional<QcDimensionDefinition::Arrival> &arrival = target.definition().arrival; outward && portal.link == QcPortalDefinition::Link::Fixed && arrival) {
+    const std::optional<QcDimensionDefinition::Arrival> &arrival = target.definition().arrival;
+    if (arrival && portal.arrivalIn(target.definition(), here) == QcPortalDefinition::Arrival::Fixed) {
         return Destination{&target, fixed(target, *arrival)};
     }
     return Destination{&target, scaled(portal, target, position)};

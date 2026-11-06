@@ -7,11 +7,14 @@
 #include "app/models/QcWorldMapImageProvider.h"
 #include "app/preview/QcWorldMapTexts.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcWorkerPool.h"
+#include "worldgen/generators/QcDimensionMaps.h"
 #include "worlds/QcWorldLibrary.h"
 
 #include <QColor>
 #include <QHash>
+#include <QPointF>
 
 #include <algorithm>
 #include <cmath>
@@ -36,6 +39,25 @@ QVariantMap markerOf(qsizetype style)
     return {{u"style"_s, style}, {u"shape"_s, QVariant::fromValue(shape)}, {u"tint"_s, tint}};
 }
 
+// A centre column multiplied by `factor` (the same place in the other dimension's blocks), kept
+// within maxCentre.
+int scaledCentre(int centre, double factor)
+{
+    return static_cast<int>(std::clamp(std::floor(centre * factor), static_cast<double>(-maxCentre), static_cast<double>(maxCentre)));
+}
+
+// Where the column (x, z) lies on the square `area`, in fractions of its width from the north-west
+// corner; none outside it.
+std::optional<QPointF> fractionOn(QcBiomeMap::Area area, int x, int z)
+{
+    if (area.radius <= 0) {
+        return std::nullopt;
+    }
+    const double width = 2.0 * area.radius;
+    const QPointF fraction((x - (area.centreX - area.radius)) / width, (z - (area.centreZ - area.radius)) / width);
+    const bool inside = fraction.x() >= 0.0 && fraction.x() < 1.0 && fraction.y() >= 0.0 && fraction.y() < 1.0;
+    return inside ? std::optional(fraction) : std::nullopt;
+}
 
 } // namespace
 
@@ -68,8 +90,8 @@ void QcWorldMapPreview::setSeedText(const QString &text)
     }
     m_seedText = text;
     emit seedTextChanged();
-    // Another world: its villages and structures lie elsewhere.
-    setSiteList({});
+    // Another world: its villages, structures and spawn lie elsewhere.
+    forgetPlaces();
     requestUpdate();
 }
 
@@ -84,9 +106,85 @@ void QcWorldMapPreview::setGeneratorVersion(int version)
     }
     m_generatorVersion = version;
     emit generatorVersionChanged();
-    // Another world: its villages and structures may lie elsewhere.
-    setSiteList({});
+    // Another world: its villages, structures and spawn may lie elsewhere.
+    forgetPlaces();
     requestUpdate();
+}
+
+void QcWorldMapPreview::setDimension(const QString &dimension)
+{
+    if (dimension == this->dimension()) {
+        return;
+    }
+    const QcDimensionDefinition *definition = content() ? QcDimensionMaps::dimensionOf(*content(), dimension) : nullptr;
+    if (!definition || !QcDimensionMaps::hasMap(*definition, *content())) {
+        qCWarning(lcPreview, "Map preview: dimension %s refused: not a dimension with a map", qPrintable(dimension));
+        return;
+    }
+
+    moveToDimension(dimension, definition->coordinateScale);
+    emit dimensionChanged();
+    forgetPlaces();
+    requestUpdate();
+}
+
+void QcWorldMapPreview::moveToDimension(const QString &name, double scale)
+{
+    const double factor = coordinateScale() / scale;
+    m_dimension = name;
+    m_coordinateScale = scale;
+    QcBiomeMap::Area area = view();
+    area.centreX = scaledCentre(area.centreX, factor);
+    area.centreZ = scaledCentre(area.centreZ, factor);
+    setView(area);
+}
+
+QVariantList QcWorldMapPreview::dimensions() const
+{
+    if (!content()) {
+        return {};
+    }
+    const QcWorldMapTexts names = texts();
+    QVariantList list;
+    for (const QcDimensionDefinition &definition : content()->worldgen().dimensions()) {
+        if (QcDimensionMaps::hasMap(definition, *content())) {
+            const QVariantMap entry{{u"value"_s, definition.name}, {u"text"_s, names.dimension(definition)}};
+            if (definition.isOverworld()) {
+                list.prepend(entry);
+            } else {
+                list.append(entry);
+            }
+        }
+    }
+    return list;
+}
+
+QVariantMap QcWorldMapPreview::spawn() const
+{
+    if (!spawnPlace()) {
+        return {};
+    }
+    const QPoint column = spawnPlace()->column;
+    const std::optional<QPointF> at = fractionOn(shown().area, column.x(), column.y());
+    if (!at) {
+        return {};
+    }
+    const QString title = QcWorldMapTexts::spawn(spawnPlace()->kind);
+    return {{u"x"_s, at->x()}, {u"y"_s, at->y()}, {u"title"_s, title}, {u"text"_s, QcWorldMapTexts::place(title, column.x(), column.y())}};
+}
+
+void QcWorldMapPreview::setSpawnPlace(std::optional<QcWorldMapSpawn> place)
+{
+    if (place != m_spawnPlace) {
+        m_spawnPlace = place;
+        emit spawnChanged();
+    }
+}
+
+void QcWorldMapPreview::forgetPlaces()
+{
+    setSiteList({});
+    setSpawnPlace(std::nullopt);
 }
 
 void QcWorldMapPreview::setActive(bool active)
@@ -192,9 +290,23 @@ void QcWorldMapPreview::setWorld(std::shared_ptr<const QcContentRegistry> conten
     if (content == this->content() && values == this->values()) {
         return;
     }
+    const bool otherContent = content != this->content();
     setContent(std::move(content));
     setValues(values);
-    setSiteList({});
+    forgetPlaces();
+    if (otherContent) {
+        emit dimensionsChanged();
+        if (this->content()) {
+            // A dimension of a mod that is gone: back to the overworld, no refusal of the player's.
+            const QcDimensionDefinition *shown = QcDimensionMaps::dimensionOf(*this->content(), dimension());
+            if (shown && QcDimensionMaps::hasMap(*shown, *this->content())) {
+                moveToDimension(dimension(), shown->coordinateScale);
+            } else {
+                moveToDimension(QString::fromLatin1(QcDimensionDefinition::overworldName), this->content()->worldgen().overworld().coordinateScale);
+            }
+        }
+        emit dimensionChanged();
+    }
     if (!this->content()) {
         clear();
         return;
@@ -223,7 +335,7 @@ void QcWorldMapPreview::setBusy(bool busy)
 
 void QcWorldMapPreview::setPasses(int done, int count)
 {
-    if (done != m_passesDone || count != m_passCount) {
+    if (done != passesDone() || count != passCount()) {
         m_passesDone = done;
         m_passCount = count;
         emit progressChanged();
@@ -267,7 +379,7 @@ void QcWorldMapPreview::start(QcWorldMapRequest::Passes passes)
     const int sitesPass = showSites() ? 1 : 0;
     setPasses(passes == QcWorldMapRequest::Passes::All ? 0 : mapPasses, mapPasses + sitesPass);
 
-    const QcWorldMapRequest request{content(), values(), QcWorldLibrary::seedFromText(m_seedText), view(), showSites(), passes, generatorVersion()};
+    const QcWorldMapRequest request{content(), values(), QcWorldLibrary::seedFromText(m_seedText), view(), showSites(), passes, generatorVersion(), dimension()};
     pool().submit([this, worker = m_worker, request, build, hook = m_resultHook] {
         bool stopped = false;
         const auto cancelled = [this, build, &stopped] {
@@ -311,6 +423,11 @@ void QcWorldMapPreview::apply(QcWorldMapResult result)
         return;
     }
 
+    if (result.pass == QcWorldMapResult::Pass::Spawn) {
+        setSpawnPlace(result.spawn);
+        return;
+    }
+
     setPassMilliseconds(result.pass, result.milliseconds);
     setPasses(static_cast<int>(result.pass) + 1, passCount());
     if (result.pass == QcWorldMapResult::Pass::Sites) {
@@ -340,29 +457,22 @@ void QcWorldMapPreview::updateMarkers()
     const QcBiomeMap::Area area = shown().area;
     const QcWorldMapTexts names = texts();
     QVariantList markers;
-    if (area.radius > 0) {
-        const double width = 2.0 * area.radius;
-        for (const QcBiomeMap::Site &site : siteList()) {
-            const double x = (site.x - (area.centreX - area.radius)) / width;
-            const double y = (site.z - (area.centreZ - area.radius)) / width;
-            if (x < 0.0 || x >= 1.0 || y < 0.0 || y >= 1.0) {
-                continue;
-            }
-            if (hiddenKinds().contains(site.name)) {
-                continue;
-            }
-            const SiteKind kind = site.kind == QcBiomeMap::Site::Kind::Village ? SiteKind::Village : SiteKind::Structure;
-            const qsizetype style = siteKinds().indexOf(site.name);
-            QVariantMap marker = markerOf(style < 0 ? siteKinds().size() : style);
-            const QString title = names.kind(site.name);
-            marker.insert(QVariantMap{{u"x"_s, x},
-                                      {u"y"_s, y},
-                                      {u"kind"_s, QVariant::fromValue(kind)},
-                                      {u"name"_s, site.name},
-                                      {u"title"_s, title},
-                                      {u"text"_s, QcWorldMapTexts::place(title, site.x, site.z)}});
-            markers.append(marker);
+    for (const QcBiomeMap::Site &site : siteList()) {
+        const std::optional<QPointF> at = fractionOn(area, site.x, site.z);
+        if (!at || hiddenKinds().contains(site.name)) {
+            continue;
         }
+        const SiteKind kind = site.kind == QcBiomeMap::Site::Kind::Village ? SiteKind::Village : SiteKind::Structure;
+        const qsizetype style = siteKinds().indexOf(site.name);
+        QVariantMap marker = markerOf(style < 0 ? siteKinds().size() : style);
+        const QString title = names.kind(site.name);
+        marker.insert(QVariantMap{{u"x"_s, at->x()},
+                                  {u"y"_s, at->y()},
+                                  {u"kind"_s, QVariant::fromValue(kind)},
+                                  {u"name"_s, site.name},
+                                  {u"title"_s, title},
+                                  {u"text"_s, QcWorldMapTexts::place(title, site.x, site.z)}});
+        markers.append(marker);
     }
     setMarkers(std::move(markers), siteLegendOfList());
 }
@@ -435,6 +545,8 @@ void QcWorldMapPreview::retranslate()
 {
     setLegend(texts().legend(shown()));
     updateMarkers();
+    emit dimensionsChanged();
+    emit spawnChanged();
 }
 
 
@@ -447,7 +559,7 @@ void QcWorldMapPreview::clear()
     setImage({});
     setShown({});
     setLegend({});
-    setSiteList({});
+    forgetPlaces();
 }
 
 void QcWorldMapPreview::stopAndForget()

@@ -113,10 +113,7 @@ QcResult<QcServerDimension *> QcDimensions::open(const QString &name, qint64 see
                            .arg(series.current));
     }
 
-    // A demonstration world's nether builds the arrival of its portal (decision E-1034).
-    const bool station = !isVersioned(info) && type == QLatin1StringView(QcWorldGenerators::nether);
-    const QString options = station ? QString::fromLatin1(QcWorldGenerators::netherStation) : definition->generatorOptions;
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(type, content(), seed, options, generatorVersion);
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::createDimension(*definition, content(), seed, generatorVersion, !isVersioned(info));
     if (!generator) {
         return qcError(u"The dimension '%1' cannot be generated with the world type '%2'"_s.arg(name, type));
     }
@@ -179,7 +176,7 @@ QcWorldInfo QcDimensions::withVersionsForNewWorld(const QcContentRegistry &conte
             break;
         }
         if (!dimension.isOverworld() && !info.dimensionGeneratorVersions.contains(dimension.name)) {
-            info = withVersion(std::move(info), dimension, QcWorldGenerators::versionSeries(dimension.generatorType).current);
+            info = withVersion(std::move(info), dimension, QcWorldGenerators::versionForNewWorld(dimension));
         }
     }
     return info;
