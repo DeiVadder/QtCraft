@@ -33,4 +33,5 @@ target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PR
 qc_add_test(test_english_plurals SOURCES content/test_english_plurals.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_english_plurals PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_advancement_content SOURCES content/test_advancement_content.cpp LIBRARIES qc_base_content)
+qc_add_test(test_progression_reachability SOURCES content/test_progression_reachability.cpp content/QcProgressionRules.h content/QcProgressionRules.cpp content/QcProgressionSolver.h content/QcProgressionSolver.cpp content/QcWorldCensus.h content/QcWorldCensus.cpp fixtures/QcTestUtil.h LIBRARIES qc_worlds qc_worldgen qc_base_content TIMEOUT 480)
 qc_add_test(test_nether_blocks SOURCES content/test_nether_blocks.cpp LIBRARIES qc_base_content)

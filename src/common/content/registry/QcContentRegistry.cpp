@@ -16,6 +16,7 @@
 #include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentSerializer.h"
+#include "common/content/worldgen/QcProgressionGoalParser.h"
 
 #include <algorithm>
 
@@ -497,6 +498,7 @@ QStringList QcContentRegistry::finish()
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
     warnings.append(m_advancements.resolve(*this));
+    warnings.append(QcProgressionGoalParser::checkTargets(*this));
     return warnings;
 }
 

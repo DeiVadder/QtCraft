@@ -24,6 +24,7 @@
 #include "common/content/villages/QcVillagerParser.h"
 #include "common/content/worldgen/QcDimensionParser.h"
 #include "common/content/worldgen/QcPortalParser.h"
+#include "common/content/worldgen/QcProgressionGoalParser.h"
 #include "common/content/worldgen/QcShowcaseParser.h"
 #include "common/content/worldgen/QcStructureParser.h"
 #include "common/content/worldgen/QcWeatherParser.h"
@@ -45,6 +46,7 @@ using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
 using QcDimensionParser::parseDimension;
 using QcPortalParser::parsePortal;
+using QcProgressionGoalParser::parseProgressionGoal;
 using QcEffectParser::parseEffect;
 using QcPotionParser::parseBrewingRecipe;
 using QcPotionParser::parsePotion;

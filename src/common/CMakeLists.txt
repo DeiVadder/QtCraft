@@ -155,6 +155,8 @@ target_sources(qc_common PRIVATE
     content/worldgen/QcNetherParser.h content/worldgen/QcNetherParser.cpp
     content/worldgen/QcPortalDefinition.h
     content/worldgen/QcPortalParser.h content/worldgen/QcPortalParser.cpp
+    content/worldgen/QcProgressionGoal.h
+    content/worldgen/QcProgressionGoalParser.h content/worldgen/QcProgressionGoalParser.cpp
     content/worldgen/QcShowcaseDefinition.h
     content/worldgen/QcShowcaseParser.h content/worldgen/QcShowcaseParser.cpp
     content/worldgen/QcStructureDefinition.h

@@ -72,6 +72,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `handbook/` | handbook chapter | A chapter of the handbook's "Basics" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `trades/` | set of offers of a profession | What villagers of a profession buy and sell (stage 37.2c); see "Trading". |
+| `progression/` | progression goal | Something every world must let a player reach, checked by a test; see below. |
 | `commands/` | command macro | A chat and console command made of other commands; see below. |
 | `advancements/` | advancement | A step of the adventure guide: place in the tree, icon, texts, handbook link, criteria; add, replace or switch off by name; see below. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
@@ -596,6 +597,18 @@ The dimension `qtcraft:nether` uses the generator type `nether` (decision E-1030
 
 - **Fields:** `name`, `from` (default the overworld), `to` (required, not `from`), `block` (required: the portal block, which needs `"support": "portal"` and a state `axis` with `x` and `z` for vertical frames), `frame` (required: a block, or `{"block", "insert": {"property", "value"}}` for a frame whose blocks take an insert, like an end portal), `shape` (`type` `vertical` (upright, along x or z) or `ring` (lying, square), `min` and `max` outer size with the frame, 3 to 66), `trigger` (`fire`: any fire lit inside the empty frame, from flint and steel, lava or lightning; `item` with `item`: using that item on a frame block without insert puts it in, the last one lights the ring), `link` (`scaled`: the point by the coordinate scales of both dimensions, the nearest known portal within `searchRadius` blocks of the `from` side, else a new frame of the smallest size on ground within `createRadius`, else at the point on a floor of `platform` (default the frame block); `fixed`: the `arrival` of the target dimension, without a portal there, so it leads one way), `back` (`linked`: the way back is found like the way there; `spawn`: a portal lit in `to` leads to the world spawn), `wait` (seconds a player stands in it before travelling, per game mode), `cooldown` (seconds creatures, items and minecarts rest after travelling), `sounds`.
 - **Rules:** frame corners are not needed; the inside must be empty (air or fire). Breaking a frame block puts the portal out (support rule). A player has to step out of the portal he arrived in before it takes him back. Each dimension keeps the portals it knows in `portals.json` beside its chunks.
+
+### Progression goals (stage 84.7a)
+
+`progression/<name>.json` (decisions E-1095 to E-1097) names something a player must be able to reach in every world. Nothing in the game reads goals beyond a load warning for a goal that names an item, portal or dimension that does not exist; `test_progression_reachability` works out from the content and from chunks the generators really make whether each goal can be reached from each start dimension, and names the step that is missing. A later pack replaces a goal by name, a mod adds its own.
+
+```json
+{ "name": "obsidian", "item": "obsidian", "count": 10 }
+```
+
+- **Fields:** `name`, and exactly one of `item` (with `count`, 1 to 9999, default 1), `food: true` (anything that can be eaten), `fire: true` (a way to light fire), `portal` (lighting that portal) and `dimension` (standing in that dimension). The base game has `crafting_table`, `wooden_pickaxe`, `stone_pickaxe`, `furnace`, `fire`, `food`, `obsidian`, `nether_portal` and `overworld`.
+- **Checking your mod:** in a source checkout, build the test and set `QC_TEST_MOD_DIR` to your mods folder: `QC_TEST_MOD_DIR=<mods folder> ctest --preset debug -R test_progression_reachability`. The test loads the base game and the mods like the game does, fails on a mod that does not load cleanly and reports every goal that cannot be reached with the step that is missing. The cases that change content or make up their own land always use the base game alone.
+- **What counts as a way:** crafting (a pattern wider or higher than 2 needs a table), smelting (a machine and fuel), the stonecutter, what blocks drop with the tool they need, what creatures drop, chests, bartering, villagers' trades level by level, buckets, bottles and reactions of liquids, and portals, which need a whole frame and something that lights a chosen cell (a lighter, or a block with `sparks`; fire that merely burns does not light a frame) and open the blocks and creatures of the dimension behind them. Brewing, fishing, growing trees and the anvil do not count yet.
 
 ### Villages (stage 37.2)
 
