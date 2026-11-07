@@ -1,0 +1,11 @@
+{
+    "name": "long_poison",
+    "variantOf": "poison",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "poison",
+            "seconds": 90
+        }
+    ]
+}

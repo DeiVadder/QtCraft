@@ -1,0 +1,11 @@
+{
+    "name": "long_night_vision",
+    "variantOf": "night_vision",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "night_vision",
+            "seconds": 480
+        }
+    ]
+}

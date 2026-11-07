@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_spider_eye",
+    "base": "water",
+    "ingredient": "spider_eye",
+    "result": "mundane"
+}

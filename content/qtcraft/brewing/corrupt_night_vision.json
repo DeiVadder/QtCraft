@@ -1,0 +1,6 @@
+{
+    "name": "corrupt_night_vision",
+    "base": "night_vision",
+    "ingredient": "fermented_spider_eye",
+    "result": "invisibility"
+}

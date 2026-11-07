@@ -1,0 +1,11 @@
+{
+    "name": "strong_healing",
+    "variantOf": "healing",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "instant_health",
+            "level": 2
+        }
+    ]
+}

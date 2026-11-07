@@ -4,5 +4,6 @@
     "colour": "#430a09",
     "instant": true,
     "damage": 6,
-    "reversedOnUndead": true
+    "reversedOnUndead": true,
+    "undeadAmount": 4
 }

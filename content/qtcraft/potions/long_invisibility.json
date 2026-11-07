@@ -1,0 +1,11 @@
+{
+    "name": "long_invisibility",
+    "variantOf": "invisibility",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "invisibility",
+            "seconds": 480
+        }
+    ]
+}

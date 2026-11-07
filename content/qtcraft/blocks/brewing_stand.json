@@ -1,0 +1,45 @@
+{
+    "name": "brewing_stand",
+    "sound": "metal",
+    "shape": "brewing_stand",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "light": 1,
+    "hardness": 0.5,
+    "tool": "pickaxe",
+    "states": {
+        "bottle_0": [
+            false,
+            true
+        ],
+        "bottle_1": [
+            false,
+            true
+        ],
+        "bottle_2": [
+            false,
+            true
+        ]
+    },
+    "machine": {
+        "category": "brewing",
+        "sound": "block.brewing_stand.brew",
+        "brewing": {
+            "fuel": "ember_dust",
+            "fuelUses": 20,
+            "seconds": 20,
+            "finishSound": "block.brewing_stand.finish"
+        }
+    },
+    "textures": {
+        "all": "brewing_stand_base",
+        "slots": {
+            "rod": "brewing_stand_rod",
+            "bottle": "brewing_stand_bottle"
+        }
+    },
+    "itemTexture": "brewing_stand_item",
+    "signal": {
+        "comparator": "contents"
+    }
+}

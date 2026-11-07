@@ -30,6 +30,21 @@ struct QcBitesDefinition
     bool isEdible() const { return food > 0; }
 };
 
+/*! \brief A cauldron that holds water (decision E-1065): its state \c {level} goes from \c {"0"} up
+    to its last value. A glass bottle takes one level as \c {bottle}, that bottle puts one back, a
+    \c {bucket} of the liquid fills it and an empty bucket takes a full one. Server side only. */
+struct QcCauldronDefinition
+{
+    /*! Qualified item a glass bottle becomes (\c {"bottle"} in \c {"cauldron"}); empty for a
+        block that is no cauldron. */
+    QString bottle;
+    /*! Qualified item of a filled bucket (\c {"bucket"} in \c {"cauldron"}). */
+    QString bucket;
+
+    /*! Returns whether the block is a cauldron. */
+    bool isCauldron() const { return !bottle.isEmpty(); }
+};
+
 /*! \brief A campfire (decision E-772).
 
     A lit one (\c {slotCount} above 0) takes up to \c {slotCount} items with the use button that

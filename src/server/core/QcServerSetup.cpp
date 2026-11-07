@@ -78,8 +78,8 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
             container->stacks[i] = stacks[i];
         }
     } else if (QcBlockEntities::Machine *machine = entities.machine(contents.at)) {
-        for (qsizetype i = 0; i < stacks.size() && i < QcBlockEntities::Machine::slotCount; ++i) {
-            machine->stacks[static_cast<std::size_t>(i)] = stacks[i];
+        for (qsizetype i = 0; i < stacks.size() && i < machine->stacks.size(); ++i) {
+            machine->stacks[i] = stacks[i];
         }
     }
     if (!contents.name.isEmpty()) {

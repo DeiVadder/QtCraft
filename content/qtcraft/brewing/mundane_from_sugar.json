@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_sugar",
+    "base": "water",
+    "ingredient": "sugar",
+    "result": "mundane"
+}

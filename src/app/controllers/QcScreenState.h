@@ -75,6 +75,7 @@ public:
         Enchanting,
         Anvil,
         Advancements,
+        Brewing,
     };
     Q_ENUM(Overlay)
     // How much of the HUD shows behind the screens (GameController.HudShown in QML, decision
@@ -174,8 +175,9 @@ public:
     // The session's game mode changed to one with these `rules`: an open creative inventory becomes
     // the usual one without the catalogue, and a spectator's screens of items close.
     void gameModeChanged(QcGameModes::Rules rules);
-    // The session opened a machine: the chest screen for a container, else the furnace screen.
-    void machineOpened(bool container);
+    // The session opened a machine: the chest screen for a container, the brewing screen for a
+    // stand, else the furnace screen.
+    void machineOpened(bool container, bool brewing);
     // The session closed the machine (or the server did): its screen closes.
     void machineClosed();
     void tradeOpened();

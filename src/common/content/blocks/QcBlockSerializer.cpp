@@ -299,7 +299,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 biteFood = 0;
     qint32 campfireSlots = 0;
     stream >> signLines >> signLength;
-    stream >> block.floats >> biteFood >> campfireSlots;
+    stream >> block.floats >> biteFood >> campfireSlots >> block.cauldron.bottle >> block.cauldron.bucket;
     block.sign = {signLines, signLength};
     block.bites.food = biteFood;
     block.campfire.slotCount = campfireSlots;
@@ -399,8 +399,9 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     // Signs: the client draws their text and offers the editor (decision E-766).
     stream << static_cast<quint8>(block.sign.lines) << static_cast<quint8>(block.sign.lineLength);
     // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
-    // take the use instead of food being eaten.
+    // take the use instead of food being eaten, a cauldron takes its bottle instead of it being drunk.
     stream << block.floats << static_cast<qint32>(block.bites.food) << static_cast<qint32>(block.campfire.slotCount);
+    stream << block.cauldron.bottle << block.cauldron.bucket;
     // How a hand holds its item (decision E-831).
     QcHoldSerializer::write(stream, block.hold);
     // The material and family of a building part, "<material>/<family>" (the creative tab Building

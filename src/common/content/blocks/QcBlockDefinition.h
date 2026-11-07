@@ -315,6 +315,8 @@ struct QcBlockDefinition
     QcBitesDefinition bites;
     /*! A campfire (decision E-772); the slots reach the client. */
     QcCampfireDefinition campfire;
+    /*! A cauldron that holds water (decision E-1065). Server side only. */
+    QcCauldronDefinition cauldron;
     /*! A liquid flowing into the block breaks it with its drops (plants, torches). Server side
         only. */
     bool washable = false;

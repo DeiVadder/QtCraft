@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked cod](#item-qtcraft-cooked_cod) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Cooked salmon](#item-qtcraft-cooked_salmon) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw beef](#item-qtcraft-raw_beef) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw cod](#item-qtcraft-raw_cod) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Raw salmon](#item-qtcraft-raw_salmon) · [Rotten flesh](#item-qtcraft-rotten_flesh) · [Steak](#item-qtcraft-cooked_beef)
+**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked cod](#item-qtcraft-cooked_cod) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Cooked salmon](#item-qtcraft-cooked_salmon) · [Golden carrot](#item-qtcraft-golden_carrot) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw beef](#item-qtcraft-raw_beef) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw cod](#item-qtcraft-raw_cod) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Raw salmon](#item-qtcraft-raw_salmon) · [Rotten flesh](#item-qtcraft-rotten_flesh) · [Steak](#item-qtcraft-cooked_beef)
 
 ## QtCraft
 
@@ -70,6 +70,10 @@ A snack and the seed of carrot plants. Pigs follow their love for it.
 | Stack size | 64 |
 | Food | 3 food points |
 | Places | [Carrot crop](blocks.md#block-qtcraft-carrot_crop) |
+
+**Used in**
+
+[Golden carrot](#item-qtcraft-golden_carrot)
 
 **Dropped by**
 
@@ -185,6 +189,26 @@ Cooked salmon, a good meal.
 
 [Fuels](tables.md#table-fuels)
 
+### <a id="item-qtcraft-golden_carrot"></a>Golden carrot
+
+A carrot in eight gold nuggets. It fills well and is the ingredient of night vision potions.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_carrot` |
+| Stack size | 64 |
+| Food | 6 food points |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Golden carrot](#item-qtcraft-golden_carrot) |
+| [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Carrot](#item-qtcraft-carrot) | [Gold nugget](items.md#item-qtcraft-gold_nugget) |  |
+| [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Gold nugget](items.md#item-qtcraft-gold_nugget) | [Gold nugget](items.md#item-qtcraft-gold_nugget) |  |
+
 ### <a id="item-qtcraft-melon_slice"></a>Melon slice
 
 A juicy bite; nine make a whole melon again.
@@ -197,7 +221,7 @@ A juicy bite; nine make a whole melon again.
 
 **Used in**
 
-[Melon](blocks.md#block-qtcraft-melon), [Melon seeds](items.md#item-qtcraft-melon_seeds)
+[Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Melon](blocks.md#block-qtcraft-melon), [Melon seeds](items.md#item-qtcraft-melon_seeds)
 
 **Dropped by**
 

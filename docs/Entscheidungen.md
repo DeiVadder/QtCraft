@@ -6168,6 +6168,75 @@ Protokoll 89. Geprüft in `test_effect_rules` (eine Prüfung je Regel, über `/e
 - **Generator-Version:** Der Spawner ändert seine Art, die Nether-Reihe ist offen (E-1033).
 - **Offen für den Menschen (E-1074, Punkt 1):** Die zweite Regel der Java-Edition (Liste auch auf Netherziegeln im Rahmen der ganzen Festung) bleibt draußen. Im Spiel ändert sie fast nichts, weil Ziegel fast nur in den Teilen liegen; sie zählt für Farmen auf selbst gelegten Ziegeln.
 
+## E-1061 Trank-Arten als Daten, Items aus der Registry (Paket 85.2) — `QcPotionDefinition`, `QcPotionCatalog`, `QcPotionParser`, `QcPotionGenerator`
+
+`potions/<name>.json` beschreibt eine Art (Effekte mit Dauer und Stufe, Farbe, Formen); `QcPotionGenerator` läuft am Anfang von `QcContentRegistry::finish` und baut daraus JSON für die vorhandenen Parser `parseItem`/`parseProjectile`, so wie `QcPartGenerator` die Bauteile. Damit gibt es keinen zweiten Weg für Items.
+
+- **Ids:** `<art>_potion`, `<art>_splash_potion`, `<art>_lingering_potion`. So bleiben `healing_potion`, `harming_splash_potion` und `poison_splash_potion` aus 0.1.0 unverändert; ihre JSON-Dateien fielen weg, die Texturen blieben. `water_bottle` bleibt mit `"item"` in der Art `water` (nur Form `drink`). Ein Item, eine Textur oder eine Übersetzung, die es schon gibt, wird nicht ersetzt: ein Mod kann so einzelne Tränke von Hand bestimmen.
+- **Namen:** aus `potion.form.<form>` + `potion.<ns>.<name>` + `potion.variant.<variant>`, also je Sprache drei Schlüsselgruppen statt je Item einer.
+- **Bilder:** prozedurales Muster `bottle` mit der Farbe der Art, ohne Farbe die des ersten Effekts; der Seed kommt aus dem Namen (CRC, in jedem Prozess gleich).
+- **Verweiltränke:** Items mit eigener Id entstehen schon, damit Mods und 85.3 die Ids haben. Bis die Wolke kommt, verhalten sie sich wie ein Wurftrank mit einem Viertel der Dauer; ein Brauweg fehlt mit Absicht (Frage 2 des Plans: Verweiltränke erst mit dem End).
+
+## E-1062 Brau-Rezepte als Daten (Paket 85.2) — `QcBrewingRecipe`, `QcBrewingRules`
+
+`brewing/<name>.json` hat eine von drei Formen: `base` + `result` (Art zu Art, in jeder Form), `variant` (Art zu ihrer Variante `long`/`strong`), `form` (Trink- zu Wurfform). `QcBrewingRules` rechnet das beim Start in eine Tabelle Zutat und Flasche zu Ergebnis um; das erste Rezept gewinnt. Weil Rezepte auf Arten statt auf Items gehen, deckt ein Rezept alle Formen ab und ein Mod-Trank mit `variantOf` bekommt Signalstaub, Leuchtsteinstaub und Schwarzpulver ohne eigene Rezepte.
+
+## E-1063 Braustand: eine Maschine mit fünf Plätzen, kein eigenes Protokoll (Paket 85.2) — `QcBrewerDefinition`, `QcBrewingRules`, `QcServerMachines`, `Machine`, `BrewingScreen.qml`
+
+- **Tabelle:** Der Stand ist ein Eintrag der Maschinen-Tabelle, `Machine.stacks` wurde eine Liste, deren Länge `QcMachineDefinition::slotCount()` vorgibt. Eine eigene Tabelle hätte Speichern, Bildschirm, Trichter und Komparator ein zweites Mal gebraucht. `burnRemaining` zählt hier Brauvorgänge, `progress` Sekunden, `progressItem` die Zutat, mit der der Vorgang begann.
+- **Speichern:** Maschinen-Eintrag Version 3: die ersten drei Plätze wie bisher, nach dem Namen Anzahl und weitere Plätze. Version 2 liest sich weiter.
+- **Protokoll:** Keine Änderung. `OpenMachine` mit Kategorie `brewing` und `MachineState` mit fünf Stapeln passen schon; Plätze 45 Zutat, 46 Brennstoff, 47–49 Flaschen. Rezepte, Tränke, `drink.effects` und `cauldron` bleiben auf dem Server. Der Client unterscheidet den Bildschirm über die Kategorie (`Overlay::Brewing`).
+- **Ablauf wie im Vorbild:** Brennstoff geht hinein, sobald der Stand leer ist, auch ohne Arbeit; der Beginn kostet einen Vorgang; der Vorgang bricht ab, wenn die Zutat wechselt oder nichts mehr passt; ein Abbruch gibt den Vorgang nicht zurück.
+- **Trichter:** oben in die Zutat, Seite in Flaschen und Brennstoff, unten heraus nur Flaschen. Komparator wie jede Maschine (`contents`).
+- **Abweichungen vom Vorbild:** Leere Glasflaschen liegen dort in den Flaschenplätzen; bei uns nimmt der Platz nur Tränke, weil die Prüfung auf `QcPotionCatalog` geht. Wasser-Wurftränke fehlen (Art `water` nur als `drink`).
+
+## E-1064 Sofort-Effekte nehmen mit der Entfernung ab (Paket 85.2) — `QcStatusEffect::strength`, `QcEffectDefinition::amountAt`, `QcHitEffects`
+
+Bisher skalierte die Wirkung `damage` eines Wurftranks mit dem Abstand. Der Schadenstrank geht jetzt über `instant_damage`, damit Trinken und Werfen dieselbe Art nutzen. Damit das Abnehmen bleibt, trägt ein Sofort-Effekt `strength` (Standard 1) und `amountAt`/`damageTo` nehmen sie an; `splashImpact` gibt den Anteil weiter. Effekte mit Dauer behalten die Zeit-Skalierung aus 85.1.
+
+## E-1065 Kessel mit Füllstand (Paket 85.2) — `QcCauldronDefinition`, `QcServerKitchen::useCauldron`
+
+Der Kessel hat Zustand `level` 0–3 und ein Datenfeld `cauldron` (`bottle`, `bucket`). Glasflasche nimmt eine Stufe, Wasserflasche gibt eine zurück, Wassereimer füllt ganz, leerer Eimer nimmt nur einen vollen Kessel. Regen füllt ihn nicht, das bleibt eine Lücke zum Vorbild.
+
+Ein Kessel ohne Stufe aus älteren Welten und Hexenhütten liest sich als `level=0`, derselbe leere Kessel wie zuvor. Die Generatoren schreiben also dieselbe Welt, nur der Zustandsname hat eine Stufe mehr. Darum bleiben die aufgenommenen Prüfsummen eingefrorener Versionen (E-922) unangetastet: `QcChunkChecksum` nennt den leeren Kessel wie aufgenommen.
+
+Der Client muss wissen, dass ein Kessel eine Flasche nimmt, sonst schickt er `ConsumeItem` statt `UseItem` und die Wasserflasche wird getrunken. Darum überträgt `QcBlockSerializer` `bottle` und `bucket` im Inhalt (Protokoll 93) statt eines bloßen Merkmals: `QcHandActions` entscheidet je gehaltenem Gegenstand, Milch bleibt trinkbar. Schleichend wird getrunken; ein voller Kessel lässt die Wasserflasche trinken wie das Vorbild. Der Vergleicher liest die Stufe unskaliert 0–3 (`{"property": "level", "scaled": false}`).
+
+Offen für den Menschen: das Vorbild trennt `cauldron` und `water_cauldron` in zwei Blöcke; bei uns ist es einer mit Zustand.
+
+## E-1066 Werte nach dem Vorbild (Paket 85.2)
+
+„Sicher“ heißt: Wert des Vorbilds (Java-Ausgabe) aus verlässlicher Erinnerung. Keine eigene Abstimmung. Dauern sind Sekunden, „–“ heißt: gab es vorher nicht.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Braudauer | – | 20 s | Vorbild, sicher |
+| Vorgänge je Brennstoff | – | 20 | Vorbild, sicher |
+| Wasserflasche Stapel | 16 | 1 | Vorbild, sicher (Tränke stapeln nicht) |
+| Wurftrank Gift | 20 s, Stufe I | 45 s, Stufe I | Vorbild, sicher |
+| Wurftrank Schaden | Wirkung `damage` 6 | `instant_damage` Stufe I (6) | Vorbild, sicher |
+| Heiltrank | ohne Wirkung | `instant_health` Stufe I (4) | Vorbild, sicher |
+| Schnelligkeit, Stärke | – | 180 / lang 480 / II 90 | Vorbild, sicher |
+| Feuerresistenz, Nachtsicht, Unsichtbarkeit | – | 180 / lang 480 | Vorbild, sicher |
+| Langsamkeit | – | 90 / lang 240 / IV 20 | Vorbild, sicher |
+| Schwäche | – | 90 / lang 240 | Vorbild, sicher |
+| Gift | – | 45 / lang 90 / II 21,6 | Vorbild; 21,6 unsicher (Anzeige dort 0:21) |
+| Regeneration | – | 45 / lang 90 / II 22,5 | Vorbild; 22,5 unsicher (Anzeige dort 0:22) |
+| Goldene Karotte | – | Nahrung 6, Sättigung 1,2 als Faktor | Vorbild, sicher |
+| Tauschtabelle Hauerling | ohne Tränke | Feuerresistenz 8, Wurftrank davon 8 (Summe 406) | Vorbild, sicher (E-1085) |
+| Kessel | ohne Füllstand | 3 Flaschen je Füllung | Vorbild, sicher |
+| Licht des Stands | – | 1 | Vorbild, sicher |
+
+Zutaten: Netherwarze auf Wasser ergibt den seltsamen Trank; Zucker Schnelligkeit, Vergoldete Melonenscheibe Heilung, Spinnenauge Gift, Magmacreme Feuerresistenz, Goldene Karotte Nachtsicht, Glutstaub Stärke, Klageträne Regeneration; Fermentiertes Spinnenauge auf Wasser Schwäche. Umkehrungen: Schnelligkeit und ihre lange Form zu Langsamkeit, Heilung und Gift zu Schaden, Nachtsicht zu Unsichtbarkeit. Die Zutaten auf Wasser ergeben den schlichten Trank, Leuchtsteinstaub den dicken. Kugelfisch, Hasenpfote, Schildkrötenpanzer und Phantomhaut fehlen mit Absicht (Frage 4 des Plans).
+
+**Stapel über der neuen Grenze.** Wasserflaschen stapelten in 1.0.0 bis 16, jetzt 1. `QcStackReader` teilt den Stapel (`QcItemStack::split`) und sammelt den Rest. Spieler: in freien Platz des Inventars, was dort nicht passt, steht als `QcLoadWarnings`-Eintrag. Behälter: freie Plätze, der Rest fällt beim Laden des Chunks heraus (`QcBlockEntityRecord::spills`). Maschinen und Lagerfeuer: fällt heraus. Loren: freie Plätze, der Rest liegt daneben. Wo niemand sammelt (Rüstungsständer, Rahmen, Tausch, Item-Daten eines Bodengegenstands), nennt eine Warnung die verlorene Zahl.
+
+Das hat Grenzen, und Gegenstände können trotzdem verloren gehen. Was herausfällt, läuft durch den Item-Manager: 512 wache Gegenstände, dahinter eine Warteschlange von 1024, die ihre ältesten Einträge verwirft. Liegen gebliebene Gegenstände verschwinden nach 300 s. Bei vollem Inventar verliert der Spieler den Rest, nur eine Log-Zeile nennt ihn. Rückstau-Code gibt es dafür nicht: es trifft nur billige Flaschen aus 1.0.0-Welten, das nehmen wir hin.
+
+**Wasserflasche beim Handwerk.** `water_bottle` hat `emptiesTo` `glass_bottle`: Schlamm herstellen gibt die leere Flasche zurück (vorher ging sie verloren).
+
+**Sofortwirkungen auf Untote.** Das Vorbild schadet immer mit 6, heilt immer mit 4 (je Stufe verdoppelt): Heiltrank trifft Untote mit 6, Schadenstrank heilt sie um 4. Datenfeld `undeadAmount`. Zwei Sofortwirkungen desselben Ticks: die stärkere (`strength`, nähere Wurftrank-Mitte) gilt.
+
 ## E-1070 Netherfestung: Plan und chunkweises Schreiben (Paket 84.5a)
 
 - **Was:** Eine Festung ist ein Plan (`QcFortressPlan`: Räume, gerade Gänge, Truhen, Spawner, Pfeiler, Umriss) aus Seed, Region und Rausch-Funktion des Geländes allein; jeder Chunk schreibt nur seine eigenen Zellen (`QcFortressCanvas`) und liest nur seine eigenen Blöcke, darum kommt ein Chunk in jeder Reihenfolge gleich heraus (Test `aChunkComesOutTheSameInAnyOrder`). Abgenutzte Ziegel folgen aus der Zelle (Hash), nicht aus einer Zufallsfolge.
@@ -6307,7 +6376,7 @@ Alt: beide Wesen sind neu, „alt“ ist der Standardwert, den die Daten ohne Ei
 
 ## E-1085 Tauschtabelle und was fehlt (Paket 84.6a)
 
-- **Tabelle** `loot/tuskling_barter.json` mit den Gewichten des Vorbilds (Summe dort 459): Wasserflasche 10, Eisennuggets 10 (10–36), Schattenperle 10 (2–4, für die Enderperle, E-894), Faden 20 (3–9), Netherquarz 20 (5–12), Obsidian 40, Weinender Obsidian 40 (1–3), Feuerkugel 40 (als Feuerkugel-Item aus 84.4), Leder 40 (2–4), Seelensand 40 (2–8), Netherziegel 40 (2–8), Kies 40 (8–16), Schwarzstein 40 (8–16). Summe bei uns 390.
+- **Tabelle** `loot/tuskling_barter.json` mit den Gewichten des Vorbilds (Summe dort 459): Wasserflasche 10, Eisennuggets 10 (10–36), Schattenperle 10 (2–4, für die Enderperle, E-894), Faden 20 (3–9), Netherquarz 20 (5–12), Obsidian 40, Weinender Obsidian 40 (1–3), Feuerkugel 40 (als Feuerkugel-Item aus 84.4), Leder 40 (2–4), Seelensand 40 (2–8), Netherziegel 40 (2–8), Kies 40 (8–16), Schwarzstein 40 (8–16). Summe bei uns 390 (mit den beiden Feuerresistenz-Tränken aus 85.2: 406, E-1066).
 - **Ausgelassen, mit eigenem Paket:** Trank der Feuerresistenz und Wurftrank davon (je 8, Tränke kommen mit 85.2), verzauberte Eisenstiefel mit Seelenläufer (8) und Buch mit Seelenläufer (5) (die Verzauberung Seelenläufer fehlt, eigenes kleines Paket), Spektralpfeile (40, 6–12; brauchen den Effekt „Leuchten“ mit Umriss, eigenes Paket). Nach diesen Paketen kommen die Einträge mit ihren Gewichten in die Tabelle; bis dahin liegen die übrigen Anteile höher (Obsidian 40/390 statt 40/459).
 
 ## E-1086 Tick-Kosten von Hauerling und Borstenkeiler (Paket 84.6a)

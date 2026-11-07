@@ -1,0 +1,9 @@
+{
+    "name": "speed",
+    "effects": [
+        {
+            "effect": "speed",
+            "seconds": 180
+        }
+    ]
+}

@@ -97,7 +97,7 @@ private slots:
         for (const auto &entry : table->pools.front().entries) {
             total += entry.weight;
         }
-        QCOMPARE(total, 390.0);
+        QCOMPARE(total, 406.0);
         constexpr int draws = 20000;
         QHash<QString, int> seen;
         for (quint64 seed = 1; seed <= draws; ++seed) {

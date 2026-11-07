@@ -1,0 +1,8 @@
+{
+    "name": "healing",
+    "effects": [
+        {
+            "effect": "instant_health"
+        }
+    ]
+}

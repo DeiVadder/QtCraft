@@ -1,0 +1,12 @@
+{
+    "name": "strong_regeneration",
+    "variantOf": "regeneration",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "regeneration",
+            "seconds": 22.5,
+            "level": 2
+        }
+    ]
+}

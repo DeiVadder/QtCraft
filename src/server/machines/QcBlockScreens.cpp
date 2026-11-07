@@ -319,7 +319,7 @@ void QcBlockScreens::send(QcServerClient &client, bool force)
 
     QcMsg::MachineState state;
     state.pos = machine->pos;
-    state.stacks = QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
+    state.stacks = machine->stacks;
     state.burn = static_cast<float>(m_state.machineRules().burnFraction(*machine));
     state.progress = static_cast<float>(m_state.machineRules().progressFraction(*machine, m_state.world().blockAt(machine->pos).value_or(qcAirBlockId)));
 

@@ -1,0 +1,9 @@
+{
+    "name": "strength",
+    "effects": [
+        {
+            "effect": "strength",
+            "seconds": 180
+        }
+    ]
+}

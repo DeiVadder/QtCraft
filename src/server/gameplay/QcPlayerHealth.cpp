@@ -13,6 +13,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/dimensions/QcPlayerTravel.h"
+#include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcToolWear.h"
 #include "server/items/QcServerExperience.h"
@@ -352,6 +353,11 @@ void QcPlayerHealth::drink(QcServerClient &client, const QcItemDefinition &held)
     // Milk ends every status effect (decision E-500); the client hears of it with its health.
     if (held.drink->clearsEffects && client.effects.clear()) { // NOLINT(bugprone-unchecked-optional-access): consume() checked it
         sendHealth(client);
+    }
+    // What a potion gives (decision E-1061).
+    for (const QcPotionEffect &effect : held.drink->effects) { // NOLINT(bugprone-unchecked-optional-access): consume() checked it
+        const int ticks = static_cast<int>(std::lround(effect.seconds / QcPhysics::tickDuration));
+        QcServerEffects::givePlayer(m_state, client, {effect.effect, effect.level, ticks});
     }
     // Creative players keep what they drink, like the items they place.
     if (!client.rules().infiniteItems) {

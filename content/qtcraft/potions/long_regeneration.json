@@ -1,0 +1,11 @@
+{
+    "name": "long_regeneration",
+    "variantOf": "regeneration",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "regeneration",
+            "seconds": 90
+        }
+    ]
+}

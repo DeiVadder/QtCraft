@@ -117,6 +117,8 @@ private:
     bool enchantingAccepts(const OpenSlots &open) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
+    // What makes `machine` a brewing stand; null for other machines.
+    const QcBrewerDefinition *brewerOf(const QcBlockEntities::Machine &machine) const;
 
     QcServerState &m_state;
     QcBlockScreens &m_screens;

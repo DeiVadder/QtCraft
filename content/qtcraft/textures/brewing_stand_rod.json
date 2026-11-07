@@ -1,0 +1,8 @@
+{
+    "name": "brewing_stand_rod",
+    "pattern": "metal_block",
+    "primary": "#e8b040",
+    "secondary": "#ff8a2a",
+    "variation": 0.1,
+    "seed": 8505
+}

@@ -1,0 +1,8 @@
+{
+    "name": "harming",
+    "effects": [
+        {
+            "effect": "instant_damage"
+        }
+    ]
+}

@@ -108,6 +108,30 @@ private:
         return sent;
     }
 
+    // What pressing the use button once sends, sneaking or not, as the hand of `session` would.
+    QList<QcMessage> useSends(QcClientSession &session, bool sneaking)
+    {
+        QcPlayerInput intent = session.prediction().intent();
+        intent.sneak = sneaking;
+        session.setIntent(intent);
+        const QcClientEntities entities;
+        QList<QcMessage> sent;
+        quint32 predicted = 0;
+        QcHandActions hand({session.prediction(), session.inventoryMirror(), entities, session.vitals()}, session.gameMode(),
+                           [&sent](const QcMessage &message) { sent.append(message); }, [](const QcSoundCue &) {},
+                           [&predicted](const QList<QcMsg::BlockUpdate> &) { return ++predicted; });
+        const QcContentRegistry &content = *session.worldMirror().content();
+        hand.refreshTarget(*session.world(), content);
+        std::ignore = hand.use(*session.world(), content);
+        return sent;
+    }
+
+    template<typename Message>
+    static bool sends(const QList<QcMessage> &sent)
+    {
+        return std::ranges::any_of(sent, [](const QcMessage &message) { return std::holds_alternative<Message>(message); });
+    }
+
     // A break that the server refuses for a reason it knows before the client does: the block shows
     // gone at once and comes back with the acknowledgement.
     void checkRefusedBreak(const QString &serverCommand)
@@ -456,6 +480,50 @@ private slots:
         QVERIFY(QcPredictionFixture::aim(*session, ground, QcBlockFace::Up));
         QCOMPARE(heldUseSends(*session, false).size(), 1);
         QVERIFY(heldUseSends(*session, true).isEmpty());
+        fixture().forget(session.get());
+    }
+
+    void aCauldronTakesItsBottleInsteadOfItBeingDrunk()
+    {
+        // Decision E-1065: the client asks the block, or the bottle would only ever be drunk.
+        auto session = start(QcGameMode::Survival);
+        QVERIFY(session);
+        const QcBlockPos pot = QcPredictionFixture::feet(*session).offset(2, 0, 0);
+        QVERIFY(fixture().clearCellOnStone(*session, pot));
+        fixture().host().runConsoleCommand(u"setblock %1 %2 %3 qtcraft:cauldron[level=1]"_s.arg(pot.x).arg(pot.y).arg(pot.z));
+        const QcBlockId low = *m_content->stateId(u"qtcraft:cauldron[level=1]"_s);
+        QVERIFY(fixture().waitFor([&] { return session->world()->blockAt(pot) == low; }));
+        session->selectHotbarSlot(0);
+        QVERIFY(fixture().give(*session, u"qtcraft:water_bottle"_s, 1));
+        QVERIFY(aimAnyFace(*session, pot));
+
+        const QList<QcMessage> poured = useSends(*session, false);
+        QVERIFY(sends<QcMsg::UseItem>(poured));
+        QVERIFY(!sends<QcMsg::ConsumeItem>(poured));
+        QVERIFY(sends<QcMsg::ConsumeItem>(useSends(*session, true)));
+
+        // Milk is nothing to a cauldron.
+        session->selectHotbarSlot(1);
+        QVERIFY(fixture().give(*session, u"qtcraft:milk_bucket"_s, 1));
+        QVERIFY(sends<QcMsg::ConsumeItem>(useSends(*session, false)));
+
+        // A block in the hand is still forecast against it, and repeats.
+        session->selectHotbarSlot(2);
+        QVERIFY(fixture().give(*session, u"qtcraft:dirt"_s, 1));
+        QCOMPARE(heldUseSends(*session, false).size(), 1);
+
+        // Through the session the bottle reaches the server and raises the level.
+        session->selectHotbarSlot(0);
+        QVERIFY(fixture().waitFor([&] { return session->inventory().selectedStack().item == m_content->itemId(u"qtcraft:water_bottle"_s); }));
+        QVERIFY(session->useItem());
+        const QcBlockId raised = *m_content->stateId(u"qtcraft:cauldron[level=2]"_s);
+        QVERIFY(fixture().waitFor([&] { return session->world()->blockAt(pot) == raised; }));
+
+        // An adventurer needs no allow-list for it (the server asks for none either).
+        fixture().host().runConsoleCommand(u"gamemode adventure Ann"_s);
+        QVERIFY(fixture().waitFor([&] { return session->gameMode().mode() == QcGameMode::Adventure; }));
+        QVERIFY(fixture().waitFor([&] { return session->inventory().selectedStack().item == m_content->itemId(u"qtcraft:glass_bottle"_s); }));
+        QVERIFY(sends<QcMsg::UseItem>(useSends(*session, false)));
         fixture().forget(session.get());
     }
 

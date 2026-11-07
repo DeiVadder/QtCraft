@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -198,6 +198,32 @@ Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barr
 **Siehe auch**
 
 [Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Roheisen](items.md#item-qtcraft-raw_iron), [Kupferbarren](items.md#item-qtcraft-copper_ingot), [Kette](blocks.md#block-qtcraft-chain), [Räucherofen](blocks.md#block-qtcraft-smoker), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire)
+
+### <a id="chapter-qtcraft-brewing"></a>Brauen
+
+**Der Braustand**
+
+Stelle einen Braustand aus einer Glutrute und drei Steinen her und öffne ihn mit der Benutzen-Taste. Glutstaub im Brennstoff-Platz gibt dem Stand 20 Brauvorgänge. Lege oben eine Zutat ein und unten bis zu drei Flaschen: Ändert die Zutat mindestens eine davon, läuft der Brauvorgang 20 Sekunden, dann ändert sich jede passende Flasche und eine Zutat ist verbraucht. Nimmst du die Zutat weg, tauschst sie oder nimmst die letzte passende Flasche, bricht der Vorgang ab.
+
+Ein Trichter von oben füllt die Zutat, ein Trichter von der Seite füllt Flaschen und Brennstoff, ein Trichter darunter nimmt die Flaschen heraus. Ein Komparator liest, wie voll der Stand ist.
+
+**Grundlage und Wirkung**
+
+Fast jeder Trank beginnt als Wasserflasche mit Netherwarze, das ergibt einen seltsamen Trank. Der nimmt dann die Zutat der Wirkung auf: Zucker für Schnelligkeit, vergoldete Melonenscheibe für Heilung, Spinnenauge für Vergiftung, Magmacreme für Feuerresistenz, goldene Karotte für Nachtsicht, Glutstaub für Stärke und eine Klageträne für Regeneration. Ein fermentiertes Spinnenauge in einer Wasserflasche ergibt einen Trank der Schwäche. Andere Zutaten auf Wasser ergeben nur einen schlichten Trank, Leuchtsteinstaub einen dicken.
+
+**Länger, stärker, geworfen, umgekehrt**
+
+Signalstaub lässt einen Trank länger wirken, Leuchtsteinstaub macht ihn stärker, aber kürzer; ein Trank ist entweder das eine oder das andere. Schwarzpulver macht aus einem Trank einen Wurftrank, der alle rund um die Stelle trifft, an der er zerbricht, mit der Entfernung schwächer. Ein fermentiertes Spinnenauge kehrt einen Trank um: Schnelligkeit wird Langsamkeit, Heilung und Vergiftung werden Schaden, Nachtsicht wird Unsichtbarkeit.
+
+Verweiltränke gibt es als Gegenstände, sie lassen sich aber noch nicht brauen; geworfen wirken sie wie ein Wurftrank ein Viertel der Zeit.
+
+**Wasser aus dem Kessel**
+
+Ein Wassereimer füllt einen Kessel, jede Glasflasche nimmt ein Drittel heraus; eine Wasserflasche gibt ein Drittel zurück, und ein leerer Eimer nimmt einen vollen Kessel. Glasflaschen füllen sich auch an jedem Wasser.
+
+**Siehe auch**
+
+[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear)
 
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 

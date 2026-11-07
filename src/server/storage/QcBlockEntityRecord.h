@@ -119,6 +119,9 @@ struct QcBlockEntityRecord
     QList<QcBlockEntities::Container> containers;
     /*! Machines with contents (or a cooldown); empty ones come back with their block. */
     QList<QcBlockEntities::Machine> machines;
+    /*! What was read beyond the room of its block entity (decision E-1066), never written: it
+        comes out at the block when the chunk is back. */
+    QList<QcBlockEntities::Spill> spills;
     /*! Saplings with the time left until they try to grow. */
     QList<QcBlockEntities::Sapling> saplings;
     /*! What circuit components remember. */

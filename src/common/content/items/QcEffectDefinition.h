@@ -45,9 +45,13 @@ struct QcEffectDefinition
     /*! Acts once in the tick after it was given and ends (\c {"instant"}): whatever duration it
         is given with, it lasts that one tick and the HUD does not show it. */
     bool instant = false;
-    /*! On undead creatures (QcMobDefinition::undead) \c {heal} hurts and \c {damage} heals
-        (\c {"reversedOnUndead"}): instant health and instant damage. */
+    /*! On undead creatures (QcMobDefinition::undead) what heals hurts and what hurts heals, by
+        \c {undeadAmount} (\c {"reversedOnUndead"}): instant health and instant damage. */
     bool reversedOnUndead = false;
+    /*! What a \c {reversedOnUndead} effect deals to or gives the undead at level I, doubled per
+        level above I (\c {"undeadAmount"}, 0 to 1000): the reference's hurt is always 6, its heal
+        always 4. */
+    double undeadAmount = 0.0;
     /*! Ticks between two hurts at level 1 (\c {"periodTicks"}, 1 to 72000). */
     int periodTicks = 25;
     /*! Its damage never takes the health below this (poison: 1, it never kills). */
@@ -104,11 +108,18 @@ struct QcEffectDefinition
     /*! Returns whether it heals at \a level in the tick in which \a ticksLeft ticks remain. */
     bool healsAt(int level, int ticksLeft) const { return heal > 0.0 && actsAt(level, ticksLeft); }
     /*! Returns \a amount (\c {damage} or \c {heal}) as it acts at \a level: doubled per level above
-        I for an instant effect, else as it is. */
-    double amountAt(double amount, int level) const { return instant ? amount * (1 << std::clamp(level - 1, 0, 30)) : amount; }
+        I and scaled by \a strength (QcStatusEffect::strength) for an instant effect, else as it
+        is. */
+    double amountAt(double amount, int level, double strength = 1.0) const
+    {
+        return instant ? amount * (1 << std::clamp(level - 1, 0, 30)) * strength : amount;
+    }
     /*! Returns the factor on a body's speed at \a level. */
     double speedFactorAt(int level) const { return std::max(0.0, 1.0 + speed * std::max(level, 0)); }
     /*! Returns the damage it deals at \a level to a body with \a health, never leaving it below
-        \c {minHealth}; 0 when there is no room. */
-    double damageTo(double health, int level = 1) const { return std::clamp(health - minHealth, 0.0, amountAt(damage, level)); }
+        \c {minHealth}; 0 when there is no room. An instant effect deals \a strength of it. */
+    double damageTo(double health, int level = 1, double strength = 1.0) const
+    {
+        return std::clamp(health - minHealth, 0.0, amountAt(damage, level, strength));
+    }
 };

@@ -1,0 +1,9 @@
+{
+    "name": "weakness",
+    "effects": [
+        {
+            "effect": "weakness",
+            "seconds": 90
+        }
+    ]
+}

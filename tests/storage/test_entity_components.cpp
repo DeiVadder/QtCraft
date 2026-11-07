@@ -103,6 +103,25 @@ private:
     }
 
 private slots:
+    void whatACartHeldBeyondItsStacksStaysInItOrBesideIt()
+    {
+        // Water bottles stacked to 16 in 1.0.0 and hold one now (decision E-1066).
+        const QcItemId bottle = *m_content->itemId(u"qtcraft:water_bottle"_s);
+        QcEntityRecord record;
+        record.chunk = {0, 0};
+        QcMinecart cart;
+        cart.motion.position = {6.5, 64.0, 6.5};
+        cart.stacks = {{bottle, 3, 0}, {}};
+        record.minecarts = {{cart, 0}};
+
+        const QcEntityRecord back = decoded(QcEntityCodec::encode(record, *m_content), *m_content);
+        QCOMPARE(back.minecarts.size(), 1);
+        QCOMPARE(back.minecarts.first().entry.stacks, (QList<QcItemStack>{{bottle, 1, 0}, {bottle, 1, 0}}));
+        QCOMPARE(back.items.size(), 1);
+        QCOMPARE(back.items.first().entry.stack, QcItemStack(bottle, 1, 0));
+        QCOMPARE(back.items.first().entry.position, cart.motion.position);
+    }
+
     void newerDataSurvivesTheRuntimeObjectsOfEveryKind()
     {
         const QcEntityRecord record = newerRecord();

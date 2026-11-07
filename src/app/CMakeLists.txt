@@ -305,10 +305,12 @@ qt_add_qml_module(qc_app_core
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/AnvilScreen.qml
+        qml/inventory/BrewingScreen.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
         qml/inventory/EnchantingOffer.qml
         qml/inventory/EnchantingScreen.qml
+        qml/inventory/FuelFlame.qml
         qml/inventory/FurnaceScreen.qml
         qml/inventory/InventoryScreen.qml
         qml/inventory/InventorySlot.qml
@@ -317,6 +319,7 @@ qt_add_qml_module(qc_app_core
         qml/inventory/ParchmentField.qml
         qml/inventory/PixelArt.qml
         qml/inventory/PlayerSlots.qml
+        qml/inventory/SlotName.qml
         qml/inventory/SlotScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml

@@ -57,7 +57,8 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
             return 0;
         }
         const auto index = property->values.indexOf(content.property(*block, signal.readProperty));
-        return static_cast<int>(std::max<qsizetype>(0, index) * 15 / (property->values.size() - 1));
+        const qsizetype value = std::max<qsizetype>(0, index);
+        return static_cast<int>(signal.readScaled ? value * 15 / (property->values.size() - 1) : std::min<qsizetype>(value, 15));
     }
     case QcComparatorReading::Bites: {
         const QcBlockProperty *bites = content.block(*block).property(QStringLiteral("bites"));
@@ -94,7 +95,7 @@ int QcComparatorReadings::contentsAt(QcBlockPos pos) const
         return fullness(content, container->stacks);
     }
     if (const QcBlockEntities::Machine *machine = m_entities.machine(pos)) {
-        return fullness(content, QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()));
+        return fullness(content, machine->stacks);
     }
     // A container nobody opened yet is empty.
     return 0;

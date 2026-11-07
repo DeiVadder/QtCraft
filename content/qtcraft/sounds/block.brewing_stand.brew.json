@@ -1,0 +1,19 @@
+{
+    "name": "block.brewing_stand.brew",
+    "volume": 0.3,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.5,
+            "attack": 0.08,
+            "curve": 1.5,
+            "bandpass": 520,
+            "resonance": 6,
+            "density": 22,
+            "gain": 1.0
+        }
+    ]
+}

@@ -176,7 +176,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Furnace](blocks.md#block-qtcraft-furnace), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword)
+[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Furnace](blocks.md#block-qtcraft-furnace), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword)
 
 ### <a id="tag-qtcraft-soul_blocks"></a>Soul sand or soul soil
 

@@ -102,7 +102,7 @@ void QcServerEffects::tickPlayer(QcServerClient &client)
 
 void QcServerEffects::actOnPlayer(QcServerClient &client, const QcEffectDefinition &definition, const QcStatusEffect &effect)
 {
-    const double damage = definition.hurtsAt(effect.level, effect.ticksLeft) ? definition.damageTo(client.health, effect.level) : 0.0;
+    const double damage = definition.hurtsAt(effect.level, effect.ticksLeft) ? definition.damageTo(client.health, effect.level, effect.strength) : 0.0;
     if (damage > 0.0) {
         m_health.damage(client, damage, {}, QcPlayerHealth::DamageKind::Effect);
     }
@@ -110,7 +110,7 @@ void QcServerEffects::actOnPlayer(QcServerClient &client, const QcEffectDefiniti
         return;
     }
     if (definition.healsAt(effect.level, effect.ticksLeft) && client.health < QcServerClient::maxHealth) {
-        client.health = std::min(client.health + definition.amountAt(definition.heal, effect.level), QcServerClient::maxHealth);
+        client.health = std::min(client.health + definition.amountAt(definition.heal, effect.level, effect.strength), QcServerClient::maxHealth);
         m_health.sendHealth(client);
     }
     // Hunger (decision E-838): food exhaustion every tick, times the level.
@@ -151,14 +151,14 @@ double QcServerEffects::tickCreature(QcCreature &mob)
             continue;
         }
         const bool hurts = definition->hurtsAt(effect.level, effect.ticksLeft);
-        const double hurt = hurts ? definition->damageTo(mob.health, effect.level) : 0.0;
-        const double heal = definition->healsAt(effect.level, effect.ticksLeft) ? definition->amountAt(definition->heal, effect.level) : 0.0;
-        // Instant health hurts the undead, instant damage heals them by its full amount (not only
-        // up to the health they have).
+        const double hurt = hurts ? definition->damageTo(mob.health, effect.level, effect.strength) : 0.0;
+        const double heal = definition->healsAt(effect.level, effect.ticksLeft) ? definition->amountAt(definition->heal, effect.level, effect.strength) : 0.0;
+        // Instant health hurts the undead, instant damage heals them, each by the effect's amount
+        // for the undead.
         const bool reversed = definition->reversedOnUndead && kind.undead;
-        const double undeadHeal = hurts ? definition->amountAt(definition->damage, effect.level) : 0.0;
-        damage += reversed ? heal : hurt;
-        mob.health = std::min(mob.health + (reversed ? undeadHeal : heal), kind.maxHealth);
+        const double undead = definition->amountAt(definition->undeadAmount, effect.level, effect.strength);
+        damage += reversed ? (heal > 0.0 ? undead : 0.0) : hurt;
+        mob.health = std::min(mob.health + (reversed ? (hurts ? undead : 0.0) : heal), kind.maxHealth);
     }
 
     mob.effects->tick();

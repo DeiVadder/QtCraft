@@ -1,0 +1,6 @@
+{
+    "name": "corrupt_speed",
+    "base": "speed",
+    "ingredient": "fermented_spider_eye",
+    "result": "slowness"
+}

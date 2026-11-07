@@ -8,6 +8,7 @@
 #include "server/storage/QcBlockEntityRecords.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcComponentFrames.h"
+#include "server/storage/QcPlayerStorage.h"
 #include "server/storage/QcSaveFile.h"
 
 #include <QRegularExpression>
@@ -142,12 +143,15 @@ QByteArray namedEntriesBlob(const QcContentRegistry &content, QcBlockPos chest, 
     });
     const QByteArray furnaceFields = bytes([&](QDataStream &out) {
         writePos(out, furnace);
-        for (std::size_t i = 0; i < QcBlockEntities::Machine::slotCount; ++i) {
+        for (int i = 0; i < QcBlockEntities::Machine::slotCount; ++i) {
             QcSaveFile::writeStack(out, {}, content);
         }
         out << 0.0 << 0.0 << 0.0 << 0.0;
         if (version >= 2) {
             out << u"Kitchen"_s;
+        }
+        if (version >= 3) {
+            out << quint8{0};
         }
     });
 
@@ -258,18 +262,134 @@ private slots:
         QVERIFY(old->machines[0].name.isEmpty());
         QVERIFY(old->kept.isEmpty());
 
-        // Version 3: the name is read, what follows it is kept as the entry's tail and written back.
-        const QByteArray future = namedEntriesBlob(*m_content, chest, furnace, 3, "more");
+        // A later version: the name is read, what follows it is kept as the entry's tail and written back.
+        const QByteArray future = namedEntriesBlob(*m_content, chest, furnace, 4, "more");
         const QcResult<QcBlockEntityRecord> read = decode(future, {0, 0}, warnings);
         QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
         QCOMPARE(read->containers.value(0).name, u"Ores"_s);
         QCOMPARE(read->machines.value(0).name, u"Kitchen"_s);
         QVERIFY(read->kept.tables.isEmpty());
         QCOMPARE(read->kept.entries.size(), 2);
-        QCOMPARE(read->kept.entries.value(chest), QcEntityComponents{tail(Table::Containers, 3, "more")});
-        QCOMPARE(read->kept.entries.value(furnace), QcEntityComponents{tail(Table::Machines, 3, "more")});
+        QCOMPARE(read->kept.entries.value(chest), QcEntityComponents{tail(Table::Containers, 4, "more")});
+        QCOMPARE(read->kept.entries.value(furnace), QcEntityComponents{tail(Table::Machines, 4, "more")});
         QCOMPARE(QcBlockEntityCodec::encode(*read, *m_content), future);
         QVERIFY(warnings.texts().isEmpty());
+    }
+
+    void aBrewingStandKeepsItsFiveSlots()
+    {
+        QcBlockEntityRecord record;
+        QcBlockEntities::Machine stand;
+        stand.pos = {4, 64, 5};
+        stand.stacks = {{*m_content->itemId(u"qtcraft:sugar"_s), 3, 0}, {*m_content->itemId(u"qtcraft:ember_dust"_s), 2, 0}, {}, {*m_content->itemId(u"qtcraft:awkward_potion"_s), 1, 0}, {*m_content->itemId(u"qtcraft:water_bottle"_s), 1, 0}};
+        stand.burnRemaining = 7.0;
+        stand.burnSeconds = 20.0;
+        stand.progress = 3.5;
+        record.machines.append(stand);
+
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = decode(QcBlockEntityCodec::encode(record, *m_content), {0, 0}, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        QCOMPARE(read->machines.value(0).stacks, stand.stacks);
+        QCOMPARE(read->machines.value(0).burnRemaining, 7.0);
+        QCOMPARE(read->machines.value(0).progress, 3.5);
+        QVERIFY(warnings.texts().isEmpty());
+    }
+
+    void aMachineEntryOfTheFirstReleaseIsRead()
+    {
+        // Version 2, as 1.0.0 wrote it: three stacks, the name and nothing after it.
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = decode(namedEntriesBlob(*m_content, {1, 64, 1}, {4, 64, 5}, 2, {}), {0, 0}, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        QCOMPARE(read->machines.size(), 1);
+        QCOMPARE(read->machines[0].stacks.size(), QcBlockEntities::Machine::slotCount);
+        QCOMPARE(read->machines[0].name, u"Kitchen"_s);
+        QCOMPARE(read->containers.value(0).name, u"Ores"_s);
+        QVERIFY(read->kept.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
+    }
+
+    void stacksBeyondTheLimitMoveToFreeSlots()
+    {
+        // Water bottles stacked to 16 in 1.0.0 and hold one now (decision E-1066).
+        const QcItemId bottle = *m_content->itemId(u"qtcraft:water_bottle"_s);
+        QcBlockEntityRecord record;
+        QcBlockEntities::Container chest;
+        chest.pos = {1, 64, 1};
+        chest.stacks = {{bottle, 3, 0}, {}, {}, {}};
+        record.containers.append(chest);
+
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = decode(QcBlockEntityCodec::encode(record, *m_content), {0, 0}, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        const QList<QcItemStack> one{{bottle, 1, 0}, {bottle, 1, 0}, {bottle, 1, 0}, {}};
+        QCOMPARE(read->containers.value(0).stacks, one);
+        QVERIFY(read->spills.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
+    }
+
+    void whatNoSlotTakesComesOutWithTheChunk()
+    {
+        const QcItemId bottle = *m_content->itemId(u"qtcraft:water_bottle"_s);
+        const QcItemId stone = *m_content->itemId(u"qtcraft:stone"_s);
+        QcBlockEntityRecord record;
+        QcBlockEntities::Container chest;
+        chest.pos = {1, 64, 1};
+        chest.stacks = {{bottle, 4, 0}, {stone, 1, 0}, {}};
+        record.containers.append(chest);
+        QcBlockEntities::Machine furnace;
+        furnace.pos = {4, 64, 5};
+        furnace.stacks[QcBlockEntities::Machine::inputSlot] = {bottle, 3, 0};
+        record.machines.append(furnace);
+
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = decode(QcBlockEntityCodec::encode(record, *m_content), {0, 0}, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        QCOMPARE(read->containers.value(0).stacks.value(2), QcItemStack(bottle, 1, 0));
+        QCOMPARE(read->machines.value(0).stacks.value(QcBlockEntities::Machine::inputSlot).count, 1);
+
+        QcBlockEntities loaded(m_content);
+        QcCircuitState circuits;
+        QcHopperQueue hoppers;
+        std::ignore = QcBlockEntityRecords::apply({*read}, loaded, circuits, hoppers, 1000);
+        const QList<QcBlockEntities::Spill> spills = loaded.takeSpills();
+        QCOMPARE(spills.size(), 2);
+        QCOMPARE(spills[0].pos, chest.pos);
+        QCOMPARE(spills[0].stacks, (QList<QcItemStack>{{bottle, 1, 0}, {bottle, 1, 0}}));
+        QCOMPARE(spills[1].pos, furnace.pos);
+        QCOMPARE(spills[1].stacks.size(), 2);
+        QVERIFY(warnings.texts().isEmpty());
+    }
+
+    void aPlayerKeepsWhatHeldBeyondItsStack()
+    {
+        QTemporaryDir dir;
+        QcPlayerStorage storage(dir.path(), m_content);
+        const QcItemId bottle = *m_content->itemId(u"qtcraft:water_bottle"_s);
+        QcPlayerData player;
+        player.inventory.setSlot(0, {bottle, 16, 0});
+        QVERIFY(storage.write(u"Ann"_s, player).has_value());
+        QcPlayerStorage::Result read = storage.read(u"Ann"_s);
+        QVERIFY(read.has_value());
+        QVERIFY((*read).player.has_value());
+        int bottles = 0;
+        for (int slot = 0; slot < QcInventory::slotCount; ++slot) {
+            const QcItemStack stack = (*read).player->inventory.slot(slot);
+            QVERIFY(stack.isEmpty() || stack.count == 1);
+            bottles += stack.isEmpty() ? 0 : stack.count;
+        }
+        QCOMPARE(bottles, 16);
+        QVERIFY((*read).warnings.isEmpty());
+
+        // A full inventory cannot take them: nothing goes without a word.
+        for (int slot = 1; slot < QcInventory::slotCount; ++slot) {
+            player.inventory.setSlot(slot, {*m_content->itemId(u"qtcraft:stone"_s), 64, 0});
+        }
+        QVERIFY(storage.write(u"Ann"_s, player).has_value());
+        read = storage.read(u"Ann"_s);
+        QVERIFY(read.has_value());
+        QVERIFY((*read).warnings.join(u'\n').contains(u"water_bottle"_s));
     }
 
     void damagedFramesAreRefused_data()

@@ -6,6 +6,7 @@
 #include "common/content/blockbehaviour/QcHangingParser.h"
 #include "common/content/items/QcArmourParser.h"
 #include "common/content/items/QcHoldParser.h"
+#include "common/content/items/QcPotionParser.h"
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/core/QcLogging.h"
@@ -180,9 +181,10 @@ void ItemReader::parseDispense()
 // Drinks and fish buckets (decisions E-500, E-501): "drink": {"clearsEffects": true} and "releases".
 void ItemReader::parseContainerUses()
 {
-    m_reader.nestedObject(u"drink"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+    m_reader.nestedObject(u"drink"_s, [&](const QJsonObject &json, QcJsonFieldReader &nested) {
         QcDrinkDefinition drink;
         drink.clearsEffects = nested.boolean(u"clearsEffects"_s, false);
+        drink.effects = QcPotionParser::parseEffects(json, nested, m_namespace);
         m_item.drink = drink;
     });
     if (m_item.drink && (m_item.food > 0 || m_item.armour || !m_item.placesBlock.isEmpty() || m_item.throwable || m_item.launcher)) {

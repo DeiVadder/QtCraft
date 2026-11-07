@@ -1,0 +1,6 @@
+{
+    "name": "healing",
+    "base": "awkward",
+    "ingredient": "gilded_melon_slice",
+    "result": "healing"
+}

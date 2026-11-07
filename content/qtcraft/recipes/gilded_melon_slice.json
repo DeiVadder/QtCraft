@@ -1,0 +1,16 @@
+{
+    "name": "gilded_melon_slice",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NMN",
+        "NNN"
+    ],
+    "key": {
+        "N": "gold_nugget",
+        "M": "melon_slice"
+    },
+    "result": {
+        "item": "gilded_melon_slice"
+    }
+}

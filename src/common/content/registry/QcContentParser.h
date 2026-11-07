@@ -11,6 +11,7 @@
 #include "common/content/items/QcEnchantmentParser.h"
 #include "common/content/items/QcHoldParser.h"
 #include "common/content/items/QcItemParser.h"
+#include "common/content/items/QcPotionParser.h"
 #include "common/content/items/QcProjectileParser.h"
 #include "common/content/mobs/QcMobParser.h"
 #include "common/content/recipes/QcLootTableParser.h"
@@ -45,6 +46,8 @@ using QcCommandMacroParser::parseCommandMacro;
 using QcDimensionParser::parseDimension;
 using QcPortalParser::parsePortal;
 using QcEffectParser::parseEffect;
+using QcPotionParser::parseBrewingRecipe;
+using QcPotionParser::parsePotion;
 using QcEnchantmentParser::parseEnchantment;
 using QcAdvancementParser::parseAdvancement;
 using QcLootTableParser::parseLootTable;

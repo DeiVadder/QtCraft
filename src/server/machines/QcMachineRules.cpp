@@ -4,7 +4,9 @@
 #include "server/machines/QcMachineRules.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <utility>
 
 namespace {
 
@@ -17,6 +19,7 @@ constexpr int maxItemsPerTick = 64;
 
 QcMachineRules::QcMachineRules(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
+    , m_brewing(m_content)
 {
     for (const QcSmeltingRecipe &recipe : m_content->smeltingRecipes()) {
         const std::optional<QcItemId> input = m_content->itemId(recipe.inputItem);
@@ -71,6 +74,9 @@ double QcMachineRules::burnFraction(const Machine &machine) const
 double QcMachineRules::progressFraction(const Machine &machine, QcBlockId block) const
 {
     const QcMachineDefinition *definition = machineOf(block);
+    if (definition && definition->brewing) {
+        return std::clamp(machine.progress / definition->brewing->seconds, 0.0, 1.0);
+    }
     const QcSmeltingRecipe *recipe =
         definition && !machine.stacks[inputSlot].isEmpty() ? recipeFor(*definition, machine.stacks[inputSlot].item) : nullptr;
     return recipe ? std::clamp(machine.progress / recipe->seconds, 0.0, 1.0) : 0.0;
@@ -201,14 +207,15 @@ QList<QcBlockPos> QcMachineRules::tick(QcBlockEntities &entities, const QcBlockA
 
         const std::optional<QcBlockId> block = world.blockAt(machine.pos);
         const QcMachineDefinition *definition = block ? machineOf(*block) : nullptr;
-        if (!definition) {
+        if (!definition || definition->brewing) {
             // Not loaded (a machine entry always has a machine block, QcBlockEntityChecks).
             return;
         }
 
-        const std::array<QcItemStack, slotCount> before = machine.stacks;
+        // By value: a copy of the list would make the step detach it.
+        const std::array<QcItemStack, Machine::slotCount> before{machine.stacks.at(inputSlot), machine.stacks.at(fuelSlot), machine.stacks.at(outputSlot)};
         step(machine, *definition, dt);
-        if (machine.stacks != before) {
+        if (!std::ranges::equal(before, std::as_const(machine.stacks))) {
             slotsChanged.append(machine.pos);
         }
     });

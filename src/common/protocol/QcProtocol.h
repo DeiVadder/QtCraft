@@ -45,8 +45,8 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     content (decision E-992), 90 the dimension the player is in (DimensionChange, decision
     E-1002), 91 creatures that carry a rider: the Saddled and Deflectable flags and the ride seat
     in the content (decisions E-1053, E-1054), 92 the spin of model parts in the content (decision
-    E-1056). */
-inline constexpr quint32 version = 92;
+    E-1056), 93 the bottle and bucket of cauldrons in the content (decision E-1065). */
+inline constexpr quint32 version = 93;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

@@ -271,6 +271,7 @@ void SignalReader::readReading()
         }
         m_signal.reading = QcComparatorReading::Property;
         m_signal.readProperty = property;
+        m_signal.readScaled = value.toObject().value(u"scaled"_s).toBool(true);
         return;
     }
     m_reader.fail(u"'comparator' must be \"contents\", \"carts\", \"bites\" or an object with 'property'"_s);

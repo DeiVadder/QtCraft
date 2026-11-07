@@ -16,7 +16,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 24> overlayNames{
+constexpr std::array<QStringView, 25> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -41,8 +41,9 @@ constexpr std::array<QStringView, 24> overlayNames{
     u"enchanting",
     u"anvil",
     u"advancements",
+    u"brewing",
 };
-static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Advancements) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Brewing) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -115,6 +116,7 @@ bool QcScreenState::isSettingsPage(Overlay overlay)
     case Overlay::Inventory:
     case Overlay::Creative:
     case Overlay::Furnace:
+    case Overlay::Brewing:
     case Overlay::Chest:
     case Overlay::Trade:
     case Overlay::Pause:
@@ -138,6 +140,7 @@ bool QcScreenState::isSlotScreen(Overlay overlay)
     case Overlay::Inventory:
     case Overlay::Creative:
     case Overlay::Furnace:
+    case Overlay::Brewing:
     case Overlay::Chest:
     case Overlay::Trade:
     case Overlay::Stonecutter:
@@ -335,7 +338,7 @@ void QcScreenState::closeSessionScreens() const
     if (m_overlay != Overlay::Inventory) {
         m_parts.session->inventoryMirror().closeCrafting();
     }
-    if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Chest) {
+    if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Brewing && m_overlay != Overlay::Chest) {
         m_parts.session->closeMachine();
     }
     if (m_overlay != Overlay::Trade) {
@@ -373,10 +376,7 @@ void QcScreenState::craftingOpened()
 void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
 {
     // A spectator uses no screen of items (decision E-730): it closes, which tells the server.
-    const bool itemScreen = m_overlay == Overlay::Inventory || m_overlay == Overlay::Creative || m_overlay == Overlay::Furnace
-                            || m_overlay == Overlay::Chest || m_overlay == Overlay::Trade || m_overlay == Overlay::Stonecutter
-                            || m_overlay == Overlay::Enchanting || m_overlay == Overlay::Anvil;
-    if (itemScreen && !rules.interacts) {
+    if (isSlotScreen(m_overlay) && !rules.interacts) {
         setOverlay(Overlay::None);
         return;
     }
@@ -387,14 +387,14 @@ void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
     }
 }
 
-void QcScreenState::machineOpened(bool container)
+void QcScreenState::machineOpened(bool container, bool brewing)
 {
-    setOverlay(container ? Overlay::Chest : Overlay::Furnace);
+    setOverlay(container ? Overlay::Chest : brewing ? Overlay::Brewing : Overlay::Furnace);
 }
 
 void QcScreenState::machineClosed()
 {
-    if (m_overlay == Overlay::Furnace || m_overlay == Overlay::Chest) {
+    if (m_overlay == Overlay::Furnace || m_overlay == Overlay::Brewing || m_overlay == Overlay::Chest) {
         setOverlay(Overlay::None);
     }
 }

@@ -182,7 +182,7 @@ void QcSessionWiring::onContentReady()
 void QcSessionWiring::onMachineOpened()
 {
     m_targets.player.nameOpenMachine();
-    m_targets.screens.machineOpened(m_parts.session->machine().isContainer());
+    m_targets.screens.machineOpened(m_parts.session->machine().isContainer(), m_parts.session->machine().isBrewing());
     m_targets.player.updateMachine();
     m_targets.startup.machineOpened();
 }

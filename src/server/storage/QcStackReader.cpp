@@ -7,6 +7,7 @@
 #include "server/storage/QcItemDataCodec.h"
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -44,7 +45,43 @@ QcItemStack QcStackReader::readAt(QDataStream &stream, int depth)
         m_warnings.addOnce(u"item:"_s + name, u"%1: unknown item '%2' dropped (in this world reported only here)"_s.arg(m_path, name));
         return {};
     }
-    return fitted({*item, itemCount, damage, std::move(*data)});
+    return keptOf({*item, itemCount, damage, std::move(*data)});
+}
+
+QcItemStack QcStackReader::keptOf(const Saved &saved)
+{
+    const QcItemStack stack = fitted(saved);
+    const QcItemDefinition &definition = m_content.item(saved.item);
+    const int count = std::min(saved.count, QcItemDefinition::maxStackLimit);
+    const QList<QcItemStack> parts = stack.withCount(count).split(definition.maxStack);
+    if (m_collectsOverflow) {
+        m_overflow.append(parts.sliced(1));
+    } else if (parts.size() > 1) {
+        const QString text = u"%1: a stack of '%2' holds more than the item stacks to; %3 lost (in this world reported only here)"_s;
+        m_warnings.addOnce(u"overflow:"_s + definition.name, text.arg(m_path, definition.name).arg(count - parts.constFirst().count));
+    }
+    return parts.constFirst();
+}
+
+QList<QcItemStack> QcStackReader::takeOverflow()
+{
+    return std::exchange(m_overflow, {});
+}
+
+QcStackReader::Filled QcStackReader::fillWithOverflow(QList<QcItemStack> stacks)
+{
+    Filled filled{std::move(stacks), {}};
+    const QList<QcItemStack> overflow = takeOverflow();
+    auto slot = filled.stacks.begin();
+    for (const QcItemStack &stack : overflow) {
+        slot = std::find_if(slot, filled.stacks.end(), [](const QcItemStack &held) { return held.isEmpty(); });
+        if (slot != filled.stacks.end()) {
+            *slot = stack;
+        } else {
+            filled.rest.append(stack);
+        }
+    }
+    return filled;
 }
 
 QcItemStack QcStackReader::fitted(const Saved &saved) const

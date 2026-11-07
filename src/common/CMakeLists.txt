@@ -73,6 +73,10 @@ target_sources(qc_common PRIVATE
     content/items/QcItemDefinition.h content/items/QcItemDefinition.cpp
     content/items/QcItemParser.h content/items/QcItemParser.cpp
     content/items/QcItemSerializer.h content/items/QcItemSerializer.cpp
+    content/items/QcPotionCatalog.h content/items/QcPotionCatalog.cpp
+    content/items/QcPotionDefinition.h
+    content/items/QcPotionGenerator.h content/items/QcPotionGenerator.cpp
+    content/items/QcPotionParser.h content/items/QcPotionParser.cpp
     content/items/QcProjectileDefinition.h
     content/items/QcProjectileParser.h content/items/QcProjectileParser.cpp
 )

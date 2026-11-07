@@ -1,0 +1,8 @@
+{
+    "name": "brewing_stand_bottle",
+    "pattern": "metal_block",
+    "primary": "#c8dce6",
+    "secondary": "#e0f0f8",
+    "variation": 0.1,
+    "seed": 8506
+}

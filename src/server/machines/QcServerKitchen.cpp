@@ -34,10 +34,61 @@ bool QcServerKitchen::use(QcServerClient &client, QcBlockPos pos)
     if (definition.bites.isEdible()) {
         return eatBite(client, pos, *block);
     }
+    if (definition.cauldron.isCauldron()) {
+        return useCauldron(client, pos, *block);
+    }
     if (definition.campfire.cooks()) {
         return putOut(client, pos, *block) || putOnCampfire(client, pos, *block);
     }
     return false;
+}
+
+bool QcServerKitchen::useCauldron(QcServerClient &client, QcBlockPos pos, QcBlockId block)
+{
+    const QcItemDefinition *held = m_state.heldItem(client);
+    if (!held) {
+        return false;
+    }
+
+    const QcContentRegistry &content = m_state.content();
+    const QcCauldronDefinition &cauldron = content.block(block).cauldron;
+    const QcBlockProperty *property = content.block(block).property(u"level"_s);
+    if (!property) {
+        return false;
+    }
+
+    const QStringList &levels = property->values;
+    const qsizetype level = levels.indexOf(content.property(block, u"level"_s));
+    const qsizetype top = levels.size() - 1;
+    if (held->bottles && level > 0) {
+        changeCauldron(client, pos, levels[level - 1], cauldron.bottle);
+    } else if (held->name == cauldron.bottle && level >= 0 && level < top) {
+        changeCauldron(client, pos, levels[level + 1], held->emptiesTo);
+    } else if (held->name == cauldron.bucket && level >= 0) {
+        // Also on a full cauldron: the bucket empties, the level stays.
+        changeCauldron(client, pos, levels[top], held->emptiesTo);
+    } else if (held->scoops && level == top) {
+        const QString bucket = cauldron.bucket;
+        changeCauldron(client, pos, levels[0], bucket);
+    } else if (held->name == cauldron.bottle) {
+        // A full cauldron takes no more: the bottle is drunk as anywhere else.
+        m_health.consume(client);
+    } else {
+        return false;
+    }
+    return true;
+}
+
+void QcServerKitchen::changeCauldron(QcServerClient &client, QcBlockPos pos, const QString &level, const QString &item)
+{
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    m_blocks.setAndBroadcast(pos, m_state.content().withProperty(block.value_or(qcAirBlockId), u"level"_s, level));
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::bucketFill), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
+    // Creative players keep what they hold, like the items they place.
+    if (!client.rules().infiniteItems) {
+        m_inventory.exchangeHeld(client, item);
+        m_inventory.send(client);
+    }
 }
 
 bool QcServerKitchen::eatBite(QcServerClient &client, QcBlockPos pos, QcBlockId block)

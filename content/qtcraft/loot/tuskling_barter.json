@@ -9,6 +9,14 @@
                     "weight": 10
                 },
                 {
+                    "item": "fire_resistance_potion",
+                    "weight": 8
+                },
+                {
+                    "item": "fire_resistance_splash_potion",
+                    "weight": 8
+                },
+                {
                     "item": "iron_nugget",
                     "weight": 10,
                     "count": [

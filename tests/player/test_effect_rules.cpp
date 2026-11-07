@@ -9,6 +9,7 @@
 #include "common/gameplay/QcMining.h"
 #include "common/gameplay/QcSwingSpeed.h"
 #include "common/protocol/QcProtocol.h"
+#include "common/world/QcDayCycle.h"
 #include "fixtures/QcServerTestFixture.h"
 #include "server/gameplay/QcMovementEpochs.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -42,6 +43,8 @@ private:
         }
         chat(u"/gamerule mobSpawning false"_s);
         chat(u"/gamemode survival"_s);
+        // By night: the sun burns the undead (QcBodyBurning) and would blur what they are dealt.
+        m_server->setWorldTime(QcDayCycle::midnightTime);
         ticks(1);
         player().hunger.restore(10, 0.0, 0.0);
         idle(2);
@@ -285,17 +288,17 @@ private slots:
         const double full = m_server->mobs().find(zombie)->health;
         QVERIFY(giveMob(zombie, "instant_health"));
         ticks(2);
-        QCOMPARE(m_server->mobs().find(zombie)->health, full - 4.0);
+        QCOMPARE(m_server->mobs().find(zombie)->health, full - 6.0);
         ticks(30);
         QVERIFY(giveMob(zombie, "instant_damage"));
         ticks(2);
-        QCOMPARE(m_server->mobs().find(zombie)->health, full);
+        QCOMPARE(m_server->mobs().find(zombie)->health, full - 2.0);
         // The full amount heals, also beyond the health the creature has.
         ticks(30);
         m_server->mobs().find(zombie)->health = 3.0;
         QVERIFY(giveMob(zombie, "instant_damage", 2));
         ticks(2);
-        QCOMPARE(m_server->mobs().find(zombie)->health, std::min(15.0, full));
+        QCOMPARE(m_server->mobs().find(zombie)->health, std::min(11.0, full));
 
         const quint32 pig = creature("pig", -1.5);
         QVERIFY(giveMob(pig, "instant_damage"));
@@ -673,7 +676,7 @@ private slots:
 
     void theWireCarriesCountAndExtraHealth()
     {
-        QCOMPARE(QcProtocol::version, 92u);
+        QCOMPARE(QcProtocol::version, 93u);
         QcMsg::PlayerHealth health;
         health.absorption = 6.5;
         health.movementEpoch = 300;

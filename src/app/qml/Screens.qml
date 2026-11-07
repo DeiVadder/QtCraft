@@ -46,6 +46,12 @@ Item {
     }
 
     OverlayScreen {
+        overlay: GameController.Overlay.Brewing
+
+        screen: BrewingScreen { game: screens.game }
+    }
+
+    OverlayScreen {
         overlay: GameController.Overlay.Chest
 
         screen: ChestScreen { game: screens.game }

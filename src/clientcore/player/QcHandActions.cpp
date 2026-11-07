@@ -81,11 +81,18 @@ bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
                || block->signal.isUsable() || block->sign.isSign());
 }
 
-// Whether `block` (none: no block aimed at) takes food used on it instead of the food being eaten:
-// cake is eaten bite by bite, a lit campfire cooks it (decisions E-772, E-773); not while sneaking.
-bool takesFood(const QcBlockDefinition *block, bool sneaking)
+// Whether the cauldron `cauldron` acts on `item`: bottles and buckets, full or empty (decision E-1065).
+bool fillsCauldron(const QcCauldronDefinition &cauldron, const QcItemDefinition *item)
 {
-    return block && !sneaking && (block->bites.isEdible() || block->campfire.cooks());
+    return cauldron.isCauldron() && item && (item->name == cauldron.bottle || item->name == cauldron.bucket || item->bottles || item->scoops);
+}
+
+// Whether `block` (none: no block aimed at) takes `item` used on it instead of the item being eaten,
+// drunk or placed: cake is eaten bite by bite, a lit campfire cooks food (decisions E-772, E-773), a
+// cauldron takes what fills or empties it; not while sneaking.
+bool takesHeld(const QcBlockDefinition *block, const QcItemDefinition *item, bool sneaking)
+{
+    return block && !sneaking && (block->bites.isEdible() || block->campfire.cooks() || fillsCauldron(block->cauldron, item));
 }
 
 // Whether the held item aims at liquids too: buckets and bottles take from them, a lily pad and a
@@ -340,10 +347,10 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
     }
 
     // Food is eaten, drinks drunk (decision E-500) and armour put on (all sent as ConsumeItem) unless
-    // the food plants a block and a block is aimed at, or the aimed block takes food (cake, a
-    // campfire): then the server plants, cooks or eats it or, where it cannot, eats the food (decision
-    // E-292).
-    const bool fed = m_target && takesFood(targetDefinition, m_view.prediction.intent().sneak) && QcRaycast::isWithinReach(eye, m_target->block);
+    // the food plants a block and a block is aimed at, or the aimed block takes it (cake, a campfire,
+    // a cauldron its bottle): then the server plants, cooks, pours or eats it or, where it cannot,
+    // eats the food (decision E-292) or drinks the bottle.
+    const bool fed = m_target && takesHeld(targetDefinition, item, m_view.prediction.intent().sneak) && QcRaycast::isWithinReach(eye, m_target->block);
     if (item && QcClientLauncher::consumes(*item, m_target.has_value()) && !opensScreen && !fed) {
         m_send(QcMsg::ConsumeItem{});
         return HandEffect::Use;
@@ -361,9 +368,10 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
     const QcRaycastHit target = *m_target;
 
     // Adventure mode (decision E-735): the held item acts on the block only where the allow-lists
-    // permit it; food is eaten instead (the server decides the same). An empty hand would do
-    // nothing anyway: no request and no notice.
-    if (!opensScreen && !permitted(world, content, QcAdventureRules::Action::PlaceOn, target.block)) {
+    // permit it; food is eaten instead (the server decides the same). A block that takes the item
+    // (a cauldron) needs no permission, on the server neither. An empty hand would do nothing
+    // anyway: no request and no notice.
+    if (!opensScreen && !fed && !permitted(world, content, QcAdventureRules::Action::PlaceOn, target.block)) {
         if (item && item->food > 0) {
             m_send(QcMsg::ConsumeItem{});
             return HandEffect::Use;
@@ -392,7 +400,7 @@ QList<QcMsg::BlockUpdate> QcHandActions::placementForecast(const QcClientWorld &
     const std::optional<QcBlockId> clicked = world.blockAt(target.block);
     const QcPlayerInput &intent = m_view.prediction.intent();
     const QcBlockDefinition *clickedDefinition = clicked && content.isValidBlock(*clicked) ? &content.block(*clicked) : nullptr;
-    if (!item || !clickedDefinition || reactsToUse(clickedDefinition, intent.sneak) || takesFood(clickedDefinition, intent.sneak)) {
+    if (!item || !clickedDefinition || reactsToUse(clickedDefinition, intent.sneak) || takesHeld(clickedDefinition, item, intent.sneak)) {
         return {};
     }
 
@@ -454,7 +462,7 @@ bool QcHandActions::repeatsUse(const QcClientWorld &world, const QcContentRegist
     const std::optional<QcBlockId> block = world.blockAt(m_target->block);
     const QcBlockDefinition *definition = block && content.isValidBlock(*block) ? &content.block(*block) : nullptr;
     const bool sneaking = m_view.prediction.intent().sneak;
-    if (!definition || reactsToUse(definition, sneaking) || takesFood(definition, sneaking) || QcClientLauncher::consumes(*item, true)) {
+    if (!definition || reactsToUse(definition, sneaking) || takesHeld(definition, item, sneaking) || QcClientLauncher::consumes(*item, true)) {
         return false;
     }
 

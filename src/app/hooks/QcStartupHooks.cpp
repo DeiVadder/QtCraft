@@ -261,7 +261,7 @@ void QcStartupHooks::runAfterDelays(const DelayedSteps &steps)
 
 void QcStartupHooks::openStartupOverlay()
 {
-    if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s
+    if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"brewing"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s
         || m_startupOverlay == u"enchanting"_s || m_startupOverlay == u"anvil"_s) {
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
@@ -627,6 +627,12 @@ void QcStartupHooks::machineOpened()
     // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
     session.inventoryMirror().moveItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
     session.inventoryMirror().moveItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
+    // A stand takes hotbar slots 3 to 5 as its bottles.
+    if (session.machine().isBrewing()) {
+        for (int bottle = 0; bottle < 3; ++bottle) {
+            session.inventoryMirror().moveItem(2 + bottle, QcMsg::MoveInventoryItem::machineOutputSlot + bottle);
+        }
+    }
     // A few seconds of burning show the flame and the arrow in the screenshot.
     QTimer::singleShot(2500, this, [this] { releaseScreenshot(); });
 }

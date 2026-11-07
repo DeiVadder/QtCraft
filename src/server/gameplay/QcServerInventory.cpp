@@ -109,8 +109,8 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
     open.combined.stacks = client.inventory.allSlots();
     open.combined.stacks.append(client.crafting.grid);
     if (open.machine) {
-        open.combined.stacks.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
-        open.blockSlots = QcMachineRules::slotCount;
+        open.combined.stacks.append(open.machine->stacks);
+        open.blockSlots = static_cast<int>(open.machine->stacks.size());
     } else if (open.container) {
         open.combined.stacks.append(*open.container->stacks);
         open.blockSlots = static_cast<int>(open.container->stacks->size());
@@ -148,22 +148,20 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     }
 
     // Only an inventory whose slots really change tells comparators and hoppers.
-    const QList<QcItemStack> before = open.container ? *open.container->stacks
-                                      : open.machine ? QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end())
-                                                     : QList<QcItemStack>();
+    const QList<QcItemStack> before = open.container ? *open.container->stacks : open.machine ? open.machine->stacks : QList<QcItemStack>();
     if (open.machine) {
         if (!machineAccepts(*open.machine, open.combined.stacks)) {
             send(client);
             m_screens.send(client, true);
             return;
         }
-        // A player taking from the output gets the experience the machine gathered (decision E-398).
+        // A player taking from the output gets the experience the machine gathered (decision E-398);
+        // what a stand brewed in its bottle slots counts for nothing.
         const auto countOf = [](const QcItemStack &stack) { return stack.isEmpty() ? 0 : stack.count; };
-        const bool tookOutput = countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
+        const bool tookOutput = !brewerOf(*open.machine)
+                                && countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         const QcItemStack output = open.machine->stacks[QcMachineRules::outputSlot];
-        for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
-            open.machine->stacks[static_cast<std::size_t>(slot)] = open.combined.stacks[machineSlot + slot];
-        }
+        open.machine->stacks = open.combined.stacks.mid(machineSlot, open.blockSlots);
         if (tookOutput) {
             const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
             QcServerExperience::drop(m_state, points, client.motion.position + QcVec3{0.0, 0.5, 0.0});
@@ -196,7 +194,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     }
     if (open.machine) {
         m_screens.sendToViewers(open.machine->pos);
-        if (QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()) != before) {
+        if (open.machine->stacks != before) {
             m_state.noteContents(open.machine->pos);
         }
     }
@@ -206,7 +204,7 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
 {
     OpenSlots open = openSlots(client);
     if (client.dead || !isUsableSlot(client, move.from, open.blockSlots) || !isUsableSlot(client, move.to, open.blockSlots) || move.from == move.to
-        || (open.machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
+        || (open.machine && !brewerOf(*open.machine) && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -259,6 +257,13 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
         const QcMachineDefinition *definition = block ? m_state.machineRules().machineOf(*block) : nullptr;
         situation.smeltable = definition && m_state.machineRules().recipeFor(*definition, item);
         situation.fuel = m_state.machineRules().fuelSeconds(item) > 0.0;
+        if (const QcBrewerDefinition *brewer = brewerOf(*open.machine)) {
+            const QcBrewingRules &rules = m_state.machineRules().brewing();
+            situation.brewing = true;
+            situation.smeltable = rules.isIngredient(item);
+            situation.fuel = rules.isFuel(*brewer, item);
+            situation.bottle = rules.isPotion(item);
+        }
     }
 
     QList<int> targets = QcQuickMove::targets(move.slot, situation);
@@ -292,19 +297,38 @@ bool QcServerInventory::enchantingAccepts(const OpenSlots &open) const
     return (item.isEmpty() || item.count == 1) && (lapis.isEmpty() || m_state.content().itemId(QString(QcEnchantingTable::lapisItem)) == lapis.item);
 }
 
+const QcBrewerDefinition *QcServerInventory::brewerOf(const QcBlockEntities::Machine &machine) const
+{
+    const std::optional<QcBlockId> block = m_state.world().blockAt(machine.pos);
+    const QcMachineDefinition *definition = block ? m_state.machineRules().machineOf(*block) : nullptr;
+    return definition && definition->brewing ? &*definition->brewing : nullptr;
+}
+
 bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const
 {
+    // What stays behind is part of what was there, data and all.
+    const auto partOf = [](const QcItemStack &now, const QcItemStack &before) {
+        return !before.isEmpty() && now.withCount(before.count) == before && now.count <= before.count;
+    };
+
+    if (const QcBrewerDefinition *brewer = brewerOf(machine)) {
+        // Every slot of a stand keeps to its kind; what lay there may stay.
+        for (int slot = 0; slot < QcBrewerDefinition::slotCount; ++slot) {
+            const QcItemStack &stack = combined[machineSlot + slot];
+            if (!stack.isEmpty() && !partOf(stack, machine.stacks[slot]) && !m_state.machineRules().brewing().accepts(*brewer, slot, stack)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Only fuel goes into the fuel slot, and nothing goes into the output (not even by a swap).
-    // An emptied container left behind by burnt fuel may stay or be taken out.
+    // An emptied container left behind by burnt fuel may stay or be taken out; fuel carries no contents.
     const QcItemStack &fuel = combined[machineSlot + QcMachineRules::fuelSlot];
     const QcItemStack &previousFuel = machine.stacks[QcMachineRules::fuelSlot];
     const QcItemStack &output = combined[machineSlot + QcMachineRules::outputSlot];
     const QcItemStack &previousOutput = machine.stacks[QcMachineRules::outputSlot];
 
-    // Fuel never carries contents, and what stays behind is part of what was there, data and all.
-    const auto partOf = [](const QcItemStack &now, const QcItemStack &before) {
-        return !before.isEmpty() && now.withCount(before.count) == before && now.count <= before.count;
-    };
     const bool fuelOk = fuel.isEmpty() || (m_state.machineRules().fuelSeconds(fuel.item) > 0.0 && !fuel.hasContents()) || partOf(fuel, previousFuel);
     const bool outputOk = output.isEmpty() || partOf(output, previousOutput);
     return fuelOk && outputOk;

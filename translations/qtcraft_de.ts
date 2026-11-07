@@ -1208,6 +1208,29 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>BrewingScreen</name>
+    <message>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="21"/>
+        <source>Brewing stand</source>
+        <translation>Braustand</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="38"/>
+        <source>Fuel</source>
+        <translation>Brennstoff</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="64"/>
+        <source>Ingredient</source>
+        <translation>Zutat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="112"/>
+        <source>Bottles</source>
+        <translation>Flaschen</translation>
+    </message>
+</context>
+<context>
     <name>CharacterEditor</name>
     <message>
         <location filename="../src/app/qml/character/CharacterEditor.qml" line="168"/>
@@ -2191,12 +2214,12 @@ Als Nächstes: %3</translation>
         <translation>Zum Schmelzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="87"/>
+        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="64"/>
         <source>Fuel</source>
         <translation>Brennstoff</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="151"/>
+        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="128"/>
         <source>Result</source>
         <translation>Ergebnis</translation>
     </message>
@@ -8543,17 +8566,17 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="229"/>
+        <location filename="../src/server/core/QcServer.cpp" line="232"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="491"/>
+        <location filename="../src/server/core/QcServer.cpp" line="494"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="522"/>
+        <location filename="../src/server/core/QcServer.cpp" line="525"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -8588,49 +8611,49 @@ Jetzt: %2</translation>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="44"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="45"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="46"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="47"/>
         <source>%1 died of a status effect</source>
         <translation>%1 ist an einem Statuseffekt gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="48"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="49"/>
         <source>%1 drowned</source>
         <translation>%1 ist ertrunken</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="56"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="57"/>
         <location filename="../src/server/gameplay/QcServerCombat.cpp" line="128"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="211"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="212"/>
         <source>%1 was shot by %2</source>
         <translation>%1 wurde von %2 erschossen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="212"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="213"/>
         <source>%1 was slain by %2</source>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="290"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="296"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="298"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="304"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="304"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="310"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -9082,7 +9105,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="273"/>
+        <location filename="../src/server/core/QcServer.cpp" line="276"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="99"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>

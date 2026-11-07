@@ -56,6 +56,7 @@ public:
         , m_path(path)
         , m_stacks(content, path, m_warnings)
     {
+        m_stacks.setCollectsOverflow(true);
     }
 
     // The player of a file of `version`; an error names the damaged part.
@@ -210,7 +211,21 @@ private:
                 m_warnings.add(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(m_path, definition.name));
             }
         }
+        worn.inventory = withOverflow(std::move(worn.inventory));
         return m_stream.status() == QDataStream::Ok ? std::optional(std::move(worn)) : std::nullopt;
+    }
+
+    // `inventory` with what a slot held beyond its item's limit in its free room (decision E-1066).
+    [[nodiscard]] QcInventory withOverflow(QcInventory inventory)
+    {
+        const QList<QcItemStack> overflow = m_stacks.takeOverflow();
+        for (const QcItemStack &stack : overflow) {
+            if (const int left = inventory.add(stack, m_content); left > 0) {
+                const QString name = m_content.item(stack.item).name;
+                m_warnings.add(u"%1: no room for %2 of '%3' beyond the stack limit; dropped"_s.arg(m_path).arg(left).arg(name));
+            }
+        }
+        return inventory;
     }
 
     // Game mode, flight and the kept inventory set; std::nullopt when damaged.

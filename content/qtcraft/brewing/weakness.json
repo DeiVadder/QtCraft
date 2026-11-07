@@ -1,0 +1,6 @@
+{
+    "name": "weakness",
+    "base": "water",
+    "ingredient": "fermented_spider_eye",
+    "result": "weakness"
+}

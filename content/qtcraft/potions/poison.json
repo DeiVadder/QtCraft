@@ -1,0 +1,9 @@
+{
+    "name": "poison",
+    "effects": [
+        {
+            "effect": "poison",
+            "seconds": 45
+        }
+    ]
+}

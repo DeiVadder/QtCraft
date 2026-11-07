@@ -207,6 +207,9 @@ struct QcSignalDefinition
         property it reads for QcComparatorReading::Property (\c {"comparator"}). \qcshared */
     QcComparatorReading reading = QcComparatorReading::None;
     QString readProperty;
+    /*! The property's index is scaled to 0 to 15 (\c {"scaled"}), else read as it is (a
+        cauldron's level). */
+    bool readScaled = true;
     /*! Note blocks: their instruments. */
     QcNoteInstruments instruments;
     /*! Targets: ticks a hit keeps its strength, for projectiles that stick (arrows) and others.

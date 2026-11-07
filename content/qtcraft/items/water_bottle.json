@@ -1,4 +1,6 @@
 {
     "name": "water_bottle",
-    "maxStack": 16
+    "maxStack": 1,
+    "drink": {},
+    "emptiesTo": "glass_bottle"
 }

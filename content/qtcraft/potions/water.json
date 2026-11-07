@@ -1,0 +1,8 @@
+{
+    "name": "water",
+    "item": "water_bottle",
+    "colour": "#385dc6",
+    "forms": [
+        "drink"
+    ]
+}

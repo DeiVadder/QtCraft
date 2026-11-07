@@ -206,6 +206,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     machines/QcBlockScreens.h machines/QcBlockScreens.cpp
+    machines/QcBrewingRules.h machines/QcBrewingRules.cpp
     machines/QcCampfires.h machines/QcCampfires.cpp
     machines/QcContainerSounds.h machines/QcContainerSounds.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
@@ -337,6 +338,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     storage/QcBarterCodec.h storage/QcBarterCodec.cpp
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
+    storage/QcBlockEntityFormat.h
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
     storage/QcBoatCodec.h storage/QcBoatCodec.cpp
@@ -352,6 +354,7 @@ target_sources(qc_server PRIVATE
     storage/QcHangingCodec.h storage/QcHangingCodec.cpp
     storage/QcItemDataCodec.h storage/QcItemDataCodec.cpp
     storage/QcLoadWarnings.h
+    storage/QcMinecartCodec.h storage/QcMinecartCodec.cpp
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
     storage/QcPlayerReturn.h
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp

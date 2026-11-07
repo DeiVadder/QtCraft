@@ -143,6 +143,8 @@ check creative $world --game-mode creative --overlay creative
 # shellcheck disable=SC2086
 check furnace $world --look 0,-89 --chat "/give raw_iron 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
 # shellcheck disable=SC2086
+check brewing $world --look 0,-89 --chat "/give sugar 5" --chat "/give ember_dust 2" --chat "/give awkward_potion" --chat "/give awkward_potion" --chat "/give awkward_potion" --chat "/setblock ~ ~-1 ~ brewing_stand" --overlay brewing
+# shellcheck disable=SC2086
 check chest $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ chest" --overlay chest
 # The machines in the common frame (stage 76.2-e): the key hints are shown and end inside it.
 LOG_ITEMS=slotFrame,slotKeyHints
@@ -232,6 +234,16 @@ check pad-inventory $world --chat "/give stone 5" --overlay inventory --overlay 
 if ! grep -o 'padFocus: slot:[0-9]*' "$DATA/pad-inventory.log" | tr '\n' ' ' | grep -Eq 'slot:100 .*slot:101 .*slot:102 .*slot:9'; then
     echo "pad-inventory: the pad's focus did not move as expected:"
     grep 'padFocus' "$DATA/pad-inventory.log"
+    failed=1
+fi
+# The pad on the brewing stand's screen: its focus reaches the stand's slots (decision E-1063). The
+# stand opens a moment after the world, so the steps wait; steps of one delay run in order.
+# shellcheck disable=SC2086
+check pad-brewing $world --look 0,-89 --chat "/setblock ~ ~-1 ~ brewing_stand" --overlay brewing --overlay "@4000 pad:dpadLeft" --overlay "@4000 pad:dpadUp" --overlay "@4000 pad:dpadRight" \
+    --overlay "@4000 pad:dpadUp" --overlay "@4000 pad:dpadLeft" --overlay "@4000 pad:dpadLeft"
+if ! grep -o 'padFocus: slot:[0-9]*' "$DATA/pad-brewing.log" | tr '\n' ' ' | grep -Eq 'slot:46 .*slot:50 .*slot:46 .*slot:48 .*slot:4[57]'; then
+    echo "pad-brewing: the pad's focus did not reach the stand's slots:"
+    grep 'padFocus' "$DATA/pad-brewing.log"
     failed=1
 fi
 # The chat on the pad: the on-screen keyboard (decision E-584) with its keys named.

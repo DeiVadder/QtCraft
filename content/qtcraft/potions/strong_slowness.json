@@ -1,0 +1,12 @@
+{
+    "name": "strong_slowness",
+    "variantOf": "slowness",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "slowness",
+            "seconds": 20,
+            "level": 4
+        }
+    ]
+}

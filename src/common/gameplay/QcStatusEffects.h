@@ -21,6 +21,9 @@ struct QcStatusEffect
     int level = 1;
     /*! The ticks it still lasts. */
     int ticksLeft = 0;
+    /*! The share of an instant effect that arrives (a splash farther off, decision E-1064); not
+        saved, an instant effect acts in the next tick. */
+    double strength = 1.0;
 
     bool operator==(const QcStatusEffect &) const = default;
 };

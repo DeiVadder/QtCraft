@@ -19,6 +19,7 @@ QcEffectDefinition withBodyFields(QcJsonFieldReader &reader, QcEffectDefinition 
     effect.heal = reader.number(u"heal"_s, effect.heal, 0.0, 1000.0);
     effect.instant = reader.boolean(u"instant"_s, effect.instant);
     effect.reversedOnUndead = reader.boolean(u"reversedOnUndead"_s, effect.reversedOnUndead);
+    effect.undeadAmount = reader.number(u"undeadAmount"_s, effect.undeadAmount, 0.0, 1000.0);
     effect.attack = reader.number(u"attack"_s, effect.attack, -1000.0, 1000.0);
     effect.resistance = reader.number(u"resistance"_s, effect.resistance, 0.0, 1.0);
     effect.fireProof = reader.boolean(u"fireProof"_s, effect.fireProof);

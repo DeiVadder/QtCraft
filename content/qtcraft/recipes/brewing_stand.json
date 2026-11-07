@@ -1,0 +1,15 @@
+{
+    "name": "brewing_stand",
+    "type": "shaped",
+    "pattern": [
+        " R ",
+        "###"
+    ],
+    "key": {
+        "R": "ember_rod",
+        "#": "#stone_crafting_materials"
+    },
+    "result": {
+        "item": "brewing_stand"
+    }
+}

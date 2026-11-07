@@ -1,0 +1,11 @@
+{
+    "name": "long_slowness",
+    "variantOf": "slowness",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "slowness",
+            "seconds": 240
+        }
+    ]
+}

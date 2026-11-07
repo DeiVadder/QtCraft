@@ -587,6 +587,13 @@ void BlockReader::readNamedObjects()
     readDrops();
     m_block.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     m_reader.nestedObject(u"infested"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readInfested(nested); });
+    m_reader.nestedObject(u"cauldron"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_block.cauldron.bottle = nested.name(u"bottle"_s, m_namespace);
+        m_block.cauldron.bucket = nested.name(u"bucket"_s, m_namespace);
+        if (nested.ok() && (m_block.cauldron.bottle.isEmpty() || m_block.cauldron.bucket.isEmpty())) {
+            nested.fail(u"a cauldron needs 'bottle' and 'bucket'"_s);
+        }
+    });
     m_reader.nestedObject(u"campfire"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         m_block.campfire = QcCookingParser::parseCampfire(json, nested, m_namespace);
     });

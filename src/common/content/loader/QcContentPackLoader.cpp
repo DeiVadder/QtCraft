@@ -161,7 +161,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "enchantments", "loot", "advancements", "dimensions", "portals"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "potions", "brewing", "enchantments", "loot", "advancements", "dimensions", "portals"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -211,6 +211,7 @@ public:
     void loadShapes();
     void loadBlocks();
     void loadLaterDefinitions();
+    void loadWorldDefinitions();
     void loadWorldgenSettings();
     void loadWeatherSettings();
     // How items are held by category (`held.json`, decision E-831).
@@ -427,6 +428,24 @@ void PackReader::loadVillageStyles()
     applyStyleExtensions(extensions);
 }
 
+// The folders of dimensions, buildings and villages, in this order.
+void PackReader::loadWorldDefinitions()
+{
+    loadDefinitions(u"dimensions"_s, QcContentParser::parseDimension,
+                    [this](QcDimensionDefinition dimension) { m_registry.worldgen().registerDimension(std::move(dimension)); });
+    loadDefinitions(u"portals"_s, QcContentParser::parsePortal,
+                    [this](QcPortalDefinition portal) { m_registry.worldgen().registerPortal(std::move(portal)); });
+    loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
+                    [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
+    loadVillageStyles();
+    loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
+                    [this](QcVillagerProfession profession) { m_registry.villageCatalog().registerProfession(std::move(profession)); });
+    loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
+                    [this](QcVillagerSettings settings) { m_registry.villageCatalog().registerVillagerSettings(std::move(settings)); });
+    loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
+                    [this](QcTradeSet set) { m_registry.villageCatalog().registerTradeSet(std::move(set)); });
+}
+
 // Definition folders loaded after the blocks, in this order.
 void PackReader::loadLaterDefinitions()
 {
@@ -465,23 +484,15 @@ void PackReader::loadLaterDefinitions()
                     [this](QcOreDefinition ore) { m_registry.worldgen().registerOre(std::move(ore)); });
     loadDefinitions(u"handbook"_s, QcContentParser::parseHandbookChapter,
                     [this](QcHandbookChapter chapter) { m_registry.registerHandbookChapter(std::move(chapter)); });
-    loadDefinitions(u"dimensions"_s, QcContentParser::parseDimension,
-                    [this](QcDimensionDefinition dimension) { m_registry.worldgen().registerDimension(std::move(dimension)); });
-    loadDefinitions(u"portals"_s, QcContentParser::parsePortal,
-                    [this](QcPortalDefinition portal) { m_registry.worldgen().registerPortal(std::move(portal)); });
-    loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
-                    [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
-    loadVillageStyles();
-    loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
-                    [this](QcVillagerProfession profession) { m_registry.villageCatalog().registerProfession(std::move(profession)); });
-    loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
-                    [this](QcVillagerSettings settings) { m_registry.villageCatalog().registerVillagerSettings(std::move(settings)); });
-    loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
-                    [this](QcTradeSet set) { m_registry.villageCatalog().registerTradeSet(std::move(set)); });
+    loadWorldDefinitions();
     loadDefinitions(u"projectiles"_s, QcContentParser::parseProjectile,
                     [this](QcProjectileDefinition projectile) { m_registry.registerProjectile(std::move(projectile)); });
     loadDefinitions(u"effects"_s, QcContentParser::parseEffect,
                     [this](QcEffectDefinition effect) { m_registry.registerEffect(std::move(effect)); });
+    loadDefinitions(u"potions"_s, QcContentParser::parsePotion,
+                    [this](QcPotionDefinition potion) { m_registry.potionCatalog().registerPotion(std::move(potion)); });
+    loadDefinitions(u"brewing"_s, QcContentParser::parseBrewingRecipe,
+                    [this](QcBrewingRecipe recipe) { m_registry.potionCatalog().registerRecipe(std::move(recipe)); });
     loadDefinitions(u"enchantments"_s, QcContentParser::parseEnchantment,
                     [this](QcEnchantmentDefinition enchantment) { m_registry.registerEnchantment(std::move(enchantment)); });
     loadDefinitions(u"loot"_s, QcContentParser::parseLootTable,

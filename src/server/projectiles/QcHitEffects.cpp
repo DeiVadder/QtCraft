@@ -62,7 +62,7 @@ QcHitEffects::Impact QcHitEffects::splashImpact(const QcProjectileDefinition &de
         } else if (effect.is(QcHitEffect::effect)) {
             const int ticks = static_cast<int>(std::lround(effect.number * share / QcPhysics::tickDuration));
             if (ticks > 0) {
-                impact.effects.append({effect.subject, effect.level, ticks});
+                impact.effects.append({effect.subject, effect.level, ticks, share});
             }
         }
     }

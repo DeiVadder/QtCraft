@@ -1,0 +1,11 @@
+{
+    "name": "long_strength",
+    "variantOf": "strength",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "strength",
+            "seconds": 480
+        }
+    ]
+}

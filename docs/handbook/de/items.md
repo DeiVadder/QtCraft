@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Glutrute](#item-qtcraft-ember_rod) · [Glutstaub](#item-qtcraft-ember_dust) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Dicker Trank](#item-qtcraft-thick_potion) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Glutrute](#item-qtcraft-ember_rod) · [Glutstaub](#item-qtcraft-ember_dust) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schlichter Trank](#item-qtcraft-mundane_potion) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Seltsamer Trank](#item-qtcraft-awkward_potion) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trank der Feuerresistenz](#item-qtcraft-fire_resistance_potion) · [Trank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_potion) · [Trank der Heilung II](#item-qtcraft-strong_healing_potion) · [Trank der Langsamkeit](#item-qtcraft-slowness_potion) · [Trank der Langsamkeit (lang)](#item-qtcraft-long_slowness_potion) · [Trank der Langsamkeit II](#item-qtcraft-strong_slowness_potion) · [Trank der Nachtsicht](#item-qtcraft-night_vision_potion) · [Trank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_potion) · [Trank der Regeneration](#item-qtcraft-regeneration_potion) · [Trank der Regeneration (lang)](#item-qtcraft-long_regeneration_potion) · [Trank der Regeneration II](#item-qtcraft-strong_regeneration_potion) · [Trank der Schnelligkeit](#item-qtcraft-speed_potion) · [Trank der Schnelligkeit (lang)](#item-qtcraft-long_speed_potion) · [Trank der Schnelligkeit II](#item-qtcraft-strong_speed_potion) · [Trank der Schwäche](#item-qtcraft-weakness_potion) · [Trank der Schwäche (lang)](#item-qtcraft-long_weakness_potion) · [Trank der Stärke](#item-qtcraft-strength_potion) · [Trank der Stärke (lang)](#item-qtcraft-long_strength_potion) · [Trank der Stärke II](#item-qtcraft-strong_strength_potion) · [Trank der Unsichtbarkeit](#item-qtcraft-invisibility_potion) · [Trank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_potion) · [Trank der Vergiftung](#item-qtcraft-poison_potion) · [Trank der Vergiftung (lang)](#item-qtcraft-long_poison_potion) · [Trank der Vergiftung II](#item-qtcraft-strong_poison_potion) · [Trank des Schadens](#item-qtcraft-harming_potion) · [Trank des Schadens II](#item-qtcraft-strong_harming_potion) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Vergoldete Melonenscheibe](#item-qtcraft-gilded_melon_slice) · [Verweiltrank der Dicke](#item-qtcraft-thick_lingering_potion) · [Verweiltrank der Feuerresistenz](#item-qtcraft-fire_resistance_lingering_potion) · [Verweiltrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_lingering_potion) · [Verweiltrank der Heilung](#item-qtcraft-healing_lingering_potion) · [Verweiltrank der Heilung II](#item-qtcraft-strong_healing_lingering_potion) · [Verweiltrank der Langsamkeit](#item-qtcraft-slowness_lingering_potion) · [Verweiltrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_lingering_potion) · [Verweiltrank der Langsamkeit II](#item-qtcraft-strong_slowness_lingering_potion) · [Verweiltrank der Nachtsicht](#item-qtcraft-night_vision_lingering_potion) · [Verweiltrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_lingering_potion) · [Verweiltrank der Regeneration](#item-qtcraft-regeneration_lingering_potion) · [Verweiltrank der Regeneration (lang)](#item-qtcraft-long_regeneration_lingering_potion) · [Verweiltrank der Regeneration II](#item-qtcraft-strong_regeneration_lingering_potion) · [Verweiltrank der Schlichtheit](#item-qtcraft-mundane_lingering_potion) · [Verweiltrank der Schnelligkeit](#item-qtcraft-speed_lingering_potion) · [Verweiltrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_lingering_potion) · [Verweiltrank der Schnelligkeit II](#item-qtcraft-strong_speed_lingering_potion) · [Verweiltrank der Schwäche](#item-qtcraft-weakness_lingering_potion) · [Verweiltrank der Schwäche (lang)](#item-qtcraft-long_weakness_lingering_potion) · [Verweiltrank der Seltsamkeit](#item-qtcraft-awkward_lingering_potion) · [Verweiltrank der Stärke](#item-qtcraft-strength_lingering_potion) · [Verweiltrank der Stärke (lang)](#item-qtcraft-long_strength_lingering_potion) · [Verweiltrank der Stärke II](#item-qtcraft-strong_strength_lingering_potion) · [Verweiltrank der Unsichtbarkeit](#item-qtcraft-invisibility_lingering_potion) · [Verweiltrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_lingering_potion) · [Verweiltrank der Vergiftung](#item-qtcraft-poison_lingering_potion) · [Verweiltrank der Vergiftung (lang)](#item-qtcraft-long_poison_lingering_potion) · [Verweiltrank der Vergiftung II](#item-qtcraft-strong_poison_lingering_potion) · [Verweiltrank des Schadens](#item-qtcraft-harming_lingering_potion) · [Verweiltrank des Schadens II](#item-qtcraft-strong_harming_lingering_potion) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Dicke](#item-qtcraft-thick_splash_potion) · [Wurftrank der Feuerresistenz](#item-qtcraft-fire_resistance_splash_potion) · [Wurftrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_splash_potion) · [Wurftrank der Heilung](#item-qtcraft-healing_splash_potion) · [Wurftrank der Heilung II](#item-qtcraft-strong_healing_splash_potion) · [Wurftrank der Langsamkeit](#item-qtcraft-slowness_splash_potion) · [Wurftrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_splash_potion) · [Wurftrank der Langsamkeit II](#item-qtcraft-strong_slowness_splash_potion) · [Wurftrank der Nachtsicht](#item-qtcraft-night_vision_splash_potion) · [Wurftrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_splash_potion) · [Wurftrank der Regeneration](#item-qtcraft-regeneration_splash_potion) · [Wurftrank der Regeneration (lang)](#item-qtcraft-long_regeneration_splash_potion) · [Wurftrank der Regeneration II](#item-qtcraft-strong_regeneration_splash_potion) · [Wurftrank der Schlichtheit](#item-qtcraft-mundane_splash_potion) · [Wurftrank der Schnelligkeit](#item-qtcraft-speed_splash_potion) · [Wurftrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_splash_potion) · [Wurftrank der Schnelligkeit II](#item-qtcraft-strong_speed_splash_potion) · [Wurftrank der Schwäche](#item-qtcraft-weakness_splash_potion) · [Wurftrank der Schwäche (lang)](#item-qtcraft-long_weakness_splash_potion) · [Wurftrank der Seltsamkeit](#item-qtcraft-awkward_splash_potion) · [Wurftrank der Stärke](#item-qtcraft-strength_splash_potion) · [Wurftrank der Stärke (lang)](#item-qtcraft-long_strength_splash_potion) · [Wurftrank der Stärke II](#item-qtcraft-strong_strength_splash_potion) · [Wurftrank der Unsichtbarkeit](#item-qtcraft-invisibility_splash_potion) · [Wurftrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_splash_potion) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank der Vergiftung (lang)](#item-qtcraft-long_poison_splash_potion) · [Wurftrank der Vergiftung II](#item-qtcraft-strong_poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Wurftrank des Schadens II](#item-qtcraft-strong_harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -170,6 +170,16 @@ Das härteste Material, für die besten Werkzeuge.
 
 [Diamanterz](blocks.md#block-qtcraft-diamond_ore)
 
+### <a id="item-qtcraft-thick_potion"></a>Dicker Trank
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:thick_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
 ### <a id="item-qtcraft-egg"></a>Ei
 
 Von Hühnern gelegt. Mit der Benutzen-Taste geworfen, zerplatzt es, wo es landet; aus jedem achten Ei schlüpft dort ein Küken, ab und zu sogar vier.
@@ -321,6 +331,24 @@ Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird
 **Droppt aus**
 
 [Huhn](creatures.md#mob-qtcraft-chicken) (50 %)
+
+### <a id="item-qtcraft-fermented_spider_eye"></a>Fermentiertes Spinnenauge
+
+Ein Spinnenauge mit Zucker und einem braunen Pilz. Im Braustand kehrt es Tränke um.
+
+| | |
+|---|---|
+| ID | `qtcraft:fermented_spider_eye` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Spinnenauge](#item-qtcraft-spider_eye) | [Brauner Pilz](blocks.md#block-qtcraft-brown_mushroom) | [Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye) |
+| [Zucker](#item-qtcraft-sugar) | · |  |
 
 ### <a id="item-qtcraft-fireball"></a>Feuerkugel
 
@@ -535,7 +563,7 @@ Der heiße Kern eines Glutgeists, nur von einem, den ein Spieler besiegt. Im Ofe
 
 **Wird verwendet für**
 
-[Glutstaub](#item-qtcraft-ember_dust)
+[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](#item-qtcraft-ember_dust)
 
 **Droppt aus**
 
@@ -543,7 +571,7 @@ Der heiße Kern eines Glutgeists, nur von einem, den ein Spieler besiegt. Im Ofe
 
 ### <a id="item-qtcraft-ember_dust"></a>Glutstaub
 
-Aus einer Glutrute werden zwei Portionen. Mit Schwarzpulver und Kohle oder Holzkohle gibt er Feuerkugeln.
+Aus einer Glutrute werden zwei Portionen. Mit Schwarzpulver und Kohle oder Holzkohle gibt er Feuerkugeln. Er treibt einen Braustand für 20 Brauvorgänge an und ist die Zutat für Stärketränke.
 
 | | |
 |---|---|
@@ -634,7 +662,7 @@ Ein Neuntel eines Goldbarrens.
 
 **Wird verwendet für**
 
-[Goldbarren](#item-qtcraft-gold_ingot)
+[Goldbarren](#item-qtcraft-gold_ingot), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Vergoldete Melonenscheibe](#item-qtcraft-gilded_melon_slice)
 
 **Droppt aus**
 
@@ -690,12 +718,13 @@ Aus Kaktus im Ofen.
 
 ### <a id="item-qtcraft-healing_potion"></a>Heiltrank
 
-Was eine Hexe trinkt, wenn sie verletzt ist: es heilt sie um 4. Brauen gibt es noch nicht, Spieler können ihn also weder herstellen noch trinken.
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
 
 | | |
 |---|---|
 | ID | `qtcraft:healing_potion` |
 | Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
 
 ### <a id="item-qtcraft-light_blue_dye"></a>Hellblauer Farbstoff
 
@@ -1804,6 +1833,16 @@ Fällt von Schleimen.
 
 [Schleim](creatures.md#mob-qtcraft-slime)
 
+### <a id="item-qtcraft-mundane_potion"></a>Schlichter Trank
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:mundane_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
 ### <a id="item-qtcraft-snowball"></a>Schneeball
 
 Wird mit der Benutzen-Taste geworfen, einer nach dem anderen und sofort. Er tut nicht weh, stößt aber zurück, was er trifft, und zerplatzt an allem, worauf er trifft. Schnee mit einer Schaufel abgebaut gibt Schneebälle; vier ergeben einen Schneeblock.
@@ -1912,6 +1951,16 @@ Der Schwimmer einer Angel. Er treibt auf dem Wasser, bis du ihn einholst; herste
 | ID | `qtcraft:fishing_bobber` |
 | Stapelgröße | 64 |
 
+### <a id="item-qtcraft-awkward_potion"></a>Seltsamer Trank
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:awkward_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
 ### <a id="item-qtcraft-signal_dust_chunk"></a>Signalstaubstück
 
 Ein Neuntel Signalstaub: neun ergeben wieder einen Staub, eines über einem Stock eine kleine Signalfackel.
@@ -1966,6 +2015,10 @@ Spinnen lassen manchmal eines fallen. Sein Bild steht für Vergiftung neben den 
 |---|---|
 | ID | `qtcraft:spider_eye` |
 | Stapelgröße | 64 |
+
+**Wird verwendet für**
+
+[Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye)
 
 **Droppt aus**
 
@@ -2043,6 +2096,266 @@ Weicher Ton: vier ergeben einen Tonblock, der Ofen macht daraus einen Ziegelstei
 **Droppt aus**
 
 [Ton](blocks.md#block-qtcraft-clay) (4×)
+
+### <a id="item-qtcraft-fire_resistance_potion"></a>Trank der Feuerresistenz
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire_resistance_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_fire_resistance_potion"></a>Trank der Feuerresistenz (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_fire_resistance_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_healing_potion"></a>Trank der Heilung II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_healing_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-slowness_potion"></a>Trank der Langsamkeit
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:slowness_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_slowness_potion"></a>Trank der Langsamkeit (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_slowness_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_slowness_potion"></a>Trank der Langsamkeit II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_slowness_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-night_vision_potion"></a>Trank der Nachtsicht
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:night_vision_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_night_vision_potion"></a>Trank der Nachtsicht (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_night_vision_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-regeneration_potion"></a>Trank der Regeneration
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:regeneration_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_regeneration_potion"></a>Trank der Regeneration (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_regeneration_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_regeneration_potion"></a>Trank der Regeneration II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_regeneration_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-speed_potion"></a>Trank der Schnelligkeit
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:speed_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_speed_potion"></a>Trank der Schnelligkeit (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_speed_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_speed_potion"></a>Trank der Schnelligkeit II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_speed_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-weakness_potion"></a>Trank der Schwäche
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:weakness_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_weakness_potion"></a>Trank der Schwäche (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_weakness_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strength_potion"></a>Trank der Stärke
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strength_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_strength_potion"></a>Trank der Stärke (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_strength_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_strength_potion"></a>Trank der Stärke II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_strength_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-invisibility_potion"></a>Trank der Unsichtbarkeit
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:invisibility_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_invisibility_potion"></a>Trank der Unsichtbarkeit (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_invisibility_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-poison_potion"></a>Trank der Vergiftung
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:poison_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-long_poison_potion"></a>Trank der Vergiftung (lang)
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_poison_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_poison_potion"></a>Trank der Vergiftung II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_poison_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-harming_potion"></a>Trank des Schadens
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:harming_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
+
+### <a id="item-qtcraft-strong_harming_potion"></a>Trank des Schadens II
+
+Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_harming_potion` |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
 
 ### <a id="item-qtcraft-hopper_minecart"></a>Trichterlore
 
@@ -2169,6 +2482,295 @@ Zur Lampe geformter Ton; im Ofen brennen.
 
 [Brennstoffe](tables.md#table-fuels)
 
+### <a id="item-qtcraft-gilded_melon_slice"></a>Vergoldete Melonenscheibe
+
+Eine Melonenscheibe in acht Goldnuggets, die Zutat für Heiltränke.
+
+| | |
+|---|---|
+| ID | `qtcraft:gilded_melon_slice` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldnugget](#item-qtcraft-gold_nugget) | [Goldnugget](#item-qtcraft-gold_nugget) | [Goldnugget](#item-qtcraft-gold_nugget) | [Vergoldete Melonenscheibe](#item-qtcraft-gilded_melon_slice) |
+| [Goldnugget](#item-qtcraft-gold_nugget) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Goldnugget](#item-qtcraft-gold_nugget) |  |
+| [Goldnugget](#item-qtcraft-gold_nugget) | [Goldnugget](#item-qtcraft-gold_nugget) | [Goldnugget](#item-qtcraft-gold_nugget) |  |
+
+### <a id="item-qtcraft-thick_lingering_potion"></a>Verweiltrank der Dicke
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:thick_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-fire_resistance_lingering_potion"></a>Verweiltrank der Feuerresistenz
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire_resistance_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_fire_resistance_lingering_potion"></a>Verweiltrank der Feuerresistenz (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_fire_resistance_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-healing_lingering_potion"></a>Verweiltrank der Heilung
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:healing_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_healing_lingering_potion"></a>Verweiltrank der Heilung II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_healing_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-slowness_lingering_potion"></a>Verweiltrank der Langsamkeit
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:slowness_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_slowness_lingering_potion"></a>Verweiltrank der Langsamkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_slowness_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_slowness_lingering_potion"></a>Verweiltrank der Langsamkeit II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_slowness_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-night_vision_lingering_potion"></a>Verweiltrank der Nachtsicht
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:night_vision_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_night_vision_lingering_potion"></a>Verweiltrank der Nachtsicht (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_night_vision_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-regeneration_lingering_potion"></a>Verweiltrank der Regeneration
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:regeneration_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_regeneration_lingering_potion"></a>Verweiltrank der Regeneration (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_regeneration_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_regeneration_lingering_potion"></a>Verweiltrank der Regeneration II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_regeneration_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-mundane_lingering_potion"></a>Verweiltrank der Schlichtheit
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:mundane_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-speed_lingering_potion"></a>Verweiltrank der Schnelligkeit
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:speed_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_speed_lingering_potion"></a>Verweiltrank der Schnelligkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_speed_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_speed_lingering_potion"></a>Verweiltrank der Schnelligkeit II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_speed_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-weakness_lingering_potion"></a>Verweiltrank der Schwäche
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:weakness_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_weakness_lingering_potion"></a>Verweiltrank der Schwäche (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_weakness_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-awkward_lingering_potion"></a>Verweiltrank der Seltsamkeit
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:awkward_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strength_lingering_potion"></a>Verweiltrank der Stärke
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strength_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_strength_lingering_potion"></a>Verweiltrank der Stärke (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_strength_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_strength_lingering_potion"></a>Verweiltrank der Stärke II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_strength_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-invisibility_lingering_potion"></a>Verweiltrank der Unsichtbarkeit
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:invisibility_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_invisibility_lingering_potion"></a>Verweiltrank der Unsichtbarkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_invisibility_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-poison_lingering_potion"></a>Verweiltrank der Vergiftung
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:poison_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_poison_lingering_potion"></a>Verweiltrank der Vergiftung (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_poison_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_poison_lingering_potion"></a>Verweiltrank der Vergiftung II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_poison_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-harming_lingering_potion"></a>Verweiltrank des Schadens
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:harming_lingering_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_harming_lingering_potion"></a>Verweiltrank des Schadens II
+
+Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_harming_lingering_potion` |
+| Stapelgröße | 1 |
+
 ### <a id="item-qtcraft-enchanted_book"></a>Verzaubertes Buch
 
 Entsteht, wenn man ein Buch am Zaubertisch verzaubert; ein Buch nimmt jede Verzauberung an. In der Hand wirken seine Verzauberungen nicht: Der zu verzaubernde Gegenstand kommt in den linken Platz eines Ambosses, das Buch in den rechten, und die Verzauberungen des Buchs gehen zum halben Preis des Kombinierens zweier Gegenstände auf ihn über. Zwei Bücher mit derselben Verzauberung auf derselben Stufe ergeben ein Buch der nächsten Stufe.
@@ -2222,7 +2824,8 @@ Eine an beliebigem Wasser gefüllte Glasflasche; das Wasser bleibt, wo es ist.
 | | |
 |---|---|
 | ID | `qtcraft:water_bottle` |
-| Stapelgröße | 16 |
+| Stapelgröße | 1 |
+| Danach | [Glasflasche](#item-qtcraft-glass_bottle) |
 
 **Wird verwendet für**
 
@@ -2306,22 +2909,274 @@ In der Hand beim Reiten auf einer Lavastelze: Das Wesen läuft, wohin du schaust
 |---|---|---|
 | [Angel](#item-qtcraft-fishing_rod) | [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) | [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) |
 
+### <a id="item-qtcraft-thick_splash_potion"></a>Wurftrank der Dicke
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:thick_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-fire_resistance_splash_potion"></a>Wurftrank der Feuerresistenz
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire_resistance_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_fire_resistance_splash_potion"></a>Wurftrank der Feuerresistenz (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_fire_resistance_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-healing_splash_potion"></a>Wurftrank der Heilung
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:healing_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_healing_splash_potion"></a>Wurftrank der Heilung II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_healing_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-slowness_splash_potion"></a>Wurftrank der Langsamkeit
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:slowness_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_slowness_splash_potion"></a>Wurftrank der Langsamkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_slowness_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_slowness_splash_potion"></a>Wurftrank der Langsamkeit II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_slowness_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-night_vision_splash_potion"></a>Wurftrank der Nachtsicht
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:night_vision_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_night_vision_splash_potion"></a>Wurftrank der Nachtsicht (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_night_vision_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-regeneration_splash_potion"></a>Wurftrank der Regeneration
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:regeneration_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_regeneration_splash_potion"></a>Wurftrank der Regeneration (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_regeneration_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_regeneration_splash_potion"></a>Wurftrank der Regeneration II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_regeneration_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-mundane_splash_potion"></a>Wurftrank der Schlichtheit
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:mundane_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-speed_splash_potion"></a>Wurftrank der Schnelligkeit
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:speed_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_speed_splash_potion"></a>Wurftrank der Schnelligkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_speed_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_speed_splash_potion"></a>Wurftrank der Schnelligkeit II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_speed_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-weakness_splash_potion"></a>Wurftrank der Schwäche
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:weakness_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_weakness_splash_potion"></a>Wurftrank der Schwäche (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_weakness_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-awkward_splash_potion"></a>Wurftrank der Seltsamkeit
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:awkward_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strength_splash_potion"></a>Wurftrank der Stärke
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strength_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_strength_splash_potion"></a>Wurftrank der Stärke (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_strength_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_strength_splash_potion"></a>Wurftrank der Stärke II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_strength_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-invisibility_splash_potion"></a>Wurftrank der Unsichtbarkeit
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:invisibility_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-long_invisibility_splash_potion"></a>Wurftrank der Unsichtbarkeit (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_invisibility_splash_potion` |
+| Stapelgröße | 1 |
+
 ### <a id="item-qtcraft-poison_splash_potion"></a>Wurftrank der Vergiftung
 
-Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und vergiftet alles Lebendige im Umkreis von 4 m, je näher, desto länger, bis zu 20 s; wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
 
 | | |
 |---|---|
 | ID | `qtcraft:poison_splash_potion` |
 | Stapelgröße | 1 |
 
+### <a id="item-qtcraft-long_poison_splash_potion"></a>Wurftrank der Vergiftung (lang)
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_poison_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_poison_splash_potion"></a>Wurftrank der Vergiftung II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_poison_splash_potion` |
+| Stapelgröße | 1 |
+
 ### <a id="item-qtcraft-harming_splash_potion"></a>Wurftrank des Schadens
 
-Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und verletzt alles Lebendige im Umkreis von 4 m, in der Mitte bis zu 6, weiter weg weniger; Rüstung hilft nicht, und wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
 
 | | |
 |---|---|
 | ID | `qtcraft:harming_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-strong_harming_splash_potion"></a>Wurftrank des Schadens II
+
+Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_harming_splash_potion` |
 | Stapelgröße | 1 |
 
 ### <a id="item-qtcraft-brick"></a>Ziegelstein
@@ -2368,7 +3223,7 @@ Aus Zuckerrohr gemacht; süßt einen Kürbiskuchen.
 
 **Wird verwendet für**
 
-[Kuchen](blocks.md#block-qtcraft-cake), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
+[Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye), [Kuchen](blocks.md#block-qtcraft-cake), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
 
 **Droppt aus**
 

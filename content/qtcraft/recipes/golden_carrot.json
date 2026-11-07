@@ -1,0 +1,16 @@
+{
+    "name": "golden_carrot",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NCN",
+        "NNN"
+    ],
+    "key": {
+        "N": "gold_nugget",
+        "C": "carrot"
+    },
+    "result": {
+        "item": "golden_carrot"
+    }
+}

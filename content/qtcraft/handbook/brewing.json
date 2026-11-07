@@ -1,0 +1,24 @@
+{
+    "name": "brewing",
+    "order": 65,
+    "icon": "brewing_stand",
+    "sections": [
+        "stand",
+        "potions",
+        "steps",
+        "cauldron"
+    ],
+    "related": [
+        "brewing_stand",
+        "ember_dust",
+        "nether_wart",
+        "glass_bottle",
+        "water_bottle",
+        "cauldron",
+        "fermented_spider_eye",
+        "gilded_melon_slice",
+        "golden_carrot",
+        "magma_cream",
+        "wailer_tear"
+    ]
+}

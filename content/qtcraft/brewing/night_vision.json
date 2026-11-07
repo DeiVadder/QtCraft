@@ -1,0 +1,6 @@
+{
+    "name": "night_vision",
+    "base": "awkward",
+    "ingredient": "golden_carrot",
+    "result": "night_vision"
+}

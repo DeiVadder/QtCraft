@@ -183,11 +183,11 @@ private slots:
         const quint32 far = spawn("pig", 0.0, 6.0);
         burst("poison_splash_potion", centre + QcVec3{0.0, 1.0, 0.0}, thrower);
 
-        // The player, hit in the middle, gets nearly the whole 20 s, the pig 2 m away less, the
+        // The player, hit in the middle, gets nearly the whole 45 s, the pig 2 m away less, the
         // thrower and a pig beyond the radius nothing.
         const QcStatusEffect *onPlayer = player().effects.find(u"qtcraft:poison"_s);
         QVERIFY(onPlayer);
-        QVERIFY2(onPlayer->ticksLeft > 380 && onPlayer->ticksLeft <= 400, qPrintable(QString::number(onPlayer->ticksLeft)));
+        QVERIFY2(onPlayer->ticksLeft > 855 && onPlayer->ticksLeft <= 900, qPrintable(QString::number(onPlayer->ticksLeft)));
         const int nearTicks = poisonTicksOf(near);
         QVERIFY2(nearTicks > 100 && nearTicks < onPlayer->ticksLeft, qPrintable(QString::number(nearTicks)));
         QCOMPARE(poisonTicksOf(thrower), 0);
@@ -205,7 +205,9 @@ private slots:
         const quint32 pig = spawn("pig", 0.0, 2.5);
         const double pigBefore = mob(pig)->health;
         burst("harming_splash_potion", player().motion.position + QcVec3{0.0, 1.0, 0.0}, 0);
-        // Inside the player's body: the whole 6, armour or not; the pig 2.2 m from its box less.
+        // Inside the player's body: the whole 6, armour or not; the pig 2.2 m from its box less. The
+        // effect acts in the tick after the burst.
+        ticks(1);
         QCOMPARE(player().health, before - 6.0);
         QVERIFY(mob(pig)->health < pigBefore && mob(pig)->health > pigBefore - 4.0);
     }

@@ -7,6 +7,7 @@
 #include "common/content/items/QcAnvilSwap.h"
 #include "common/content/items/QcArmourDefinition.h"
 #include "common/content/items/QcHoldDisplay.h"
+#include "common/content/items/QcPotionDefinition.h"
 #include "common/content/items/QcProjectileDefinition.h"
 
 #include <QString>
@@ -69,6 +70,8 @@ struct QcDrinkDefinition
 {
     /*! Drinking it ends all status effects of the player (QcStatusEffects::clear). */
     bool clearsEffects = false;
+    /*! The status effects drinking it gives (a potion, decision E-1061). Server side only. */
+    QList<QcPotionEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 
     bool operator==(const QcDrinkDefinition &) const = default;
 };

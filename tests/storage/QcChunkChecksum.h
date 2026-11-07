@@ -134,13 +134,22 @@ public:
 private:
     QCryptographicHash &hash() { return m_hash; }
 
+    // The state name as the checksums were recorded. An empty cauldron is the same block it was
+    // before it got its level (decision E-1065): a state added later with a default that keeps the
+    // block as it was changes no world, so it changes no checksum.
+    QString recordedName(QcBlockId block) const
+    {
+        const QString name = m_content.stateName(block);
+        return name == QStringLiteral("qtcraft:cauldron[level=0]") ? QStringLiteral("qtcraft:cauldron") : name;
+    }
+
     void addRun(std::optional<QcBlockId> block, qint64 length)
     {
         if (!block) {
             return;
         }
         if (!m_names.contains(*block)) {
-            m_names.insert(*block, m_content.stateName(*block));
+            m_names.insert(*block, recordedName(*block));
         }
         addString(m_names.value(*block));
         addInts({length});

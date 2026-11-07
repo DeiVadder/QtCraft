@@ -1,0 +1,6 @@
+{
+    "name": "poison",
+    "base": "awkward",
+    "ingredient": "spider_eye",
+    "result": "poison"
+}

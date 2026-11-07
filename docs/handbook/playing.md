@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -198,6 +198,32 @@ Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine 
 **See also**
 
 [Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Raw iron](items.md#item-qtcraft-raw_iron), [Copper ingot](items.md#item-qtcraft-copper_ingot), [Chain](blocks.md#block-qtcraft-chain), [Smoker](blocks.md#block-qtcraft-smoker), [Blast furnace](blocks.md#block-qtcraft-blast_furnace), [Campfire](blocks.md#block-qtcraft-campfire)
+
+### <a id="chapter-qtcraft-brewing"></a>Brewing
+
+**The brewing stand**
+
+Craft a brewing stand from an Ember Rod and three stones and use it to open its screen. Ember Dust in the fuel slot gives the stand 20 brews. Put an ingredient on top and up to three bottles below: if the ingredient changes at least one of them, the brew runs for 20 seconds, then every bottle it fits changes and one ingredient is used up. Taking the ingredient away, changing it or taking the last fitting bottle stops the brew.
+
+A hopper from above fills the ingredient, a hopper from the side fills bottles and fuel, and a hopper below takes the bottles out. A comparator reads how full the stand is.
+
+**Base and effects**
+
+Nearly every potion starts as a water bottle with nether wart, which makes an odd potion. An odd potion then takes the ingredient of the effect: sugar for swiftness, gilded melon slice for healing, spider eye for poison, magma cream for fire resistance, golden carrot for night vision, Ember Dust for strength and a wailer tear for regeneration. A fermented spider eye in a water bottle makes a potion of weakness. Other ingredients on water only give a plain potion, glowstone dust a thick one.
+
+**Longer, stronger, thrown, turned**
+
+Signal dust makes a potion last longer, glowstone dust makes it stronger but shorter; a potion is either one or the other. Gunpowder turns a potion into a splash potion, which reaches everyone around where it breaks, less with the distance. A fermented spider eye turns a potion around: swiftness into slowness, healing and poison into harming, night vision into invisibility.
+
+Lingering potions exist as items but cannot be brewed yet; thrown, they act like a splash potion for a quarter of the time.
+
+**Water from the cauldron**
+
+A water bucket fills a cauldron, and each glass bottle takes a third of it; a water bottle puts a third back and an empty bucket takes a full cauldron. Glass bottles also fill at any water.
+
+**See also**
+
+[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear)
 
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 

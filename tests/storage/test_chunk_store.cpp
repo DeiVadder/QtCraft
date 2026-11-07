@@ -94,6 +94,42 @@ private slots:
         QVERIFY(QcRegionFile::readIndex(path, {0, 0}, "TEST", 2).error().contains(u"older development version"_s));
     }
 
+    void aCauldronOfTheFirstReleaseIsAnEmptyOne()
+    {
+        // 1.0.0 named the block without a level (decision E-1065).
+        const QcBlockId empty = *m_content->stateId(u"qtcraft:cauldron[level=0]"_s);
+        const std::shared_ptr<QcChunk> chunk = generated({0, 0});
+        chunk->setBlock(1, 70, 1, empty);
+
+        const QByteArray raw = qUncompress(QcChunkCodec::encode(*chunk, *m_content));
+        QDataStream in(raw);
+        in.setVersion(QcSaveFile::streamVersion);
+        quint32 count = 0;
+        in >> count;
+        QStringList names(count);
+        for (QString &name : names) {
+            in >> name;
+        }
+        QVERIFY(names.contains(u"qtcraft:cauldron[level=0]"_s));
+        names.replaceInStrings(u"qtcraft:cauldron[level=0]"_s, u"qtcraft:cauldron"_s);
+
+        QByteArray bare;
+        QDataStream out(&bare, QIODevice::WriteOnly);
+        out.setVersion(QcSaveFile::streamVersion);
+        out << count;
+        for (const QString &name : std::as_const(names)) {
+            out << name;
+        }
+        const QByteArray blocks = raw.mid(in.device()->pos());
+        out.writeRawData(blocks.constData(), static_cast<int>(blocks.size()));
+
+        QcLoadWarnings warnings;
+        const QcResult<std::shared_ptr<QcChunk>> read = QcChunkCodec::decode(qCompress(bare, 1), {0, 0}, *m_content, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        QCOMPARE((*read)->block(1, 70, 1), empty);
+        QVERIFY(warnings.texts().isEmpty());
+    }
+
     void chunksRoundTripThroughTheStore()
     {
         QTemporaryDir dir;

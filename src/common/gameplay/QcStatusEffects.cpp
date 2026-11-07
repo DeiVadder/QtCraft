@@ -25,7 +25,10 @@ bool QcStatusEffects::give(const QcStatusEffect &effect)
         return true;
     }
 
-    if (effect.level > it->level || (effect.level == it->level && effect.ticksLeft > it->ticksLeft)) {
+    // Two instant effects of one tick and one level (two splashes): the nearer one counts. A higher
+    // level still comes first, however far away it landed.
+    const bool stronger = effect.ticksLeft == it->ticksLeft && effect.strength > it->strength;
+    if (effect.level > it->level || (effect.level == it->level && (effect.ticksLeft > it->ticksLeft || stronger))) {
         *it = effect;
         return true;
     }

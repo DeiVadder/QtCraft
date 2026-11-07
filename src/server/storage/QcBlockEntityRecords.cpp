@@ -93,6 +93,7 @@ struct Entries
     for (const QcBlockEntities::Machine &machine : record.machines) {
         entities.putMachine(machine);
     }
+    entities.addSpills(record.spills);
     for (const QcBlockEntities::Sapling &sapling : record.saplings) {
         if (!entities.putSapling(sapling)) {
             warnings.append(u"A growing sapling at %1 %2 %3 shares its position or order with another one and was left out"_s
