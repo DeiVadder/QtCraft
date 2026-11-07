@@ -3604,7 +3604,7 @@ Obsidian with glowing violet tears. Found only in the frames of ruined portals; 
 | ID | `qtcraft:crying_obsidian` |
 | Hardness | 25 |
 | Breaking by hand | 125 s |
-| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
 | Breaking with the best tool | 4.69 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
 | Drops | [Crying obsidian](#block-qtcraft-crying_obsidian) |
 | Drops without the right tool | nothing |
@@ -3617,7 +3617,7 @@ Obsidian with glowing violet tears. Found only in the frames of ruined portals; 
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-cut_sandstone"></a>Cut sandstone
 
@@ -8322,14 +8322,14 @@ A log with bark on all six sides, for walls and beams.
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
-Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or better.
+Forms where water meets a lava source. Very hard; needs a pickaxe of level 4 or better.
 
 | | |
 |---|---|
 | ID | `qtcraft:obsidian` |
 | Hardness | 25 |
 | Breaking by hand | 125 s |
-| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
 | Breaking with the best tool | 4.69 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
 | Drops | [Obsidian](#block-qtcraft-obsidian) |
 | Drops without the right tool | nothing |
@@ -8341,7 +8341,7 @@ Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or 
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-orange_bed"></a>Orange bed
 

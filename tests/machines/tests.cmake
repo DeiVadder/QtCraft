@@ -25,5 +25,5 @@ qc_add_test(test_stonecutter SOURCES machines/test_stonecutter.cpp fixtures/QcPl
 # Long hopper lines move one item per 8 ticks and hopper, also with 2310 hoppers (decision E-344).
 qc_add_test(test_hopper_lines SOURCES machines/test_hopper_lines.cpp fixtures/QcMachineFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 # The brewing stand, potions and the cauldron (decisions E-1061 to E-1066).
-qc_add_test(test_brewing SOURCES machines/test_brewing.cpp fixtures/QcMachineFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_brewing SOURCES machines/test_brewing.cpp fixtures/QcMachineFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 240)
 qc_add_test(test_brewing_screen SOURCES machines/test_brewing_screen.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)

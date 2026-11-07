@@ -7882,14 +7882,14 @@ Spielt einen Ton, wenn ein Signal ihn erreicht oder wenn man ihn benutzt; jedes 
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
-Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhacke der Stufe 3 oder besser.
+Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhacke der Stufe 4 oder besser.
 
 | | |
 |---|---|
 | ID | `qtcraft:obsidian` |
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
-| Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
+| Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
 | Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
 | Beute | [Obsidian](#block-qtcraft-obsidian) |
 | Beute ohne passendes Werkzeug | nichts |
@@ -7901,7 +7901,7 @@ Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhac
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-furnace"></a>Ofen
 
@@ -12920,7 +12920,7 @@ Obsidian mit leuchtenden violetten Tränen. Es gibt ihn nur in den Rahmen von Po
 | ID | `qtcraft:crying_obsidian` |
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
-| Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
+| Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
 | Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
 | Beute | [Weinender Obsidian](#block-qtcraft-crying_obsidian) |
 | Beute ohne passendes Werkzeug | nichts |
@@ -12933,7 +12933,7 @@ Obsidian mit leuchtenden violetten Tränen. Es gibt ihn nur in den Rahmen von Po
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-wheat_crop"></a>Weizenpflanze
 

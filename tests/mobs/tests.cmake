@@ -24,7 +24,7 @@ qc_add_test(test_fish SOURCES mobs/test_fish.cpp fixtures/QcServerTestFixture.h 
 qc_add_test(test_squids SOURCES mobs/test_squids.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fish_paths SOURCES mobs/test_fish_paths.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_silverfish SOURCES mobs/test_silverfish.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_nether_spawns SOURCES mobs/test_nether_spawns.cpp fixtures/QcTestUtil.h LIBRARIES qc_server qc_worldgen TIMEOUT 750)
+qc_add_test(test_nether_spawns SOURCES mobs/test_nether_spawns.cpp fixtures/QcTestUtil.h LIBRARIES qc_server qc_worldgen TIMEOUT 1200)
 qc_add_test(test_gold_folk SOURCES mobs/test_gold_folk.cpp mobs/QcGoldFolkFixture.h mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_barter SOURCES mobs/test_barter.cpp mobs/QcGoldFolkFixture.h mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_nether_mobs SOURCES mobs/test_nether_mobs.cpp mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

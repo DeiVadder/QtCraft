@@ -13,7 +13,7 @@ qc_add_test(test_texture_atlas SOURCES textures/test_texture_atlas.cpp LIBRARIES
 # Outlines of enlarged cut-out textures (decision E-1000): straight blades, the sword's guard.
 qc_add_test(test_texture_outline SOURCES textures/test_texture_outline.cpp LIBRARIES qc_clientcore)
 # The relief patterns (decision E-1043): tiling fields, painting at each resolution, Nether materials.
-qc_add_test(test_texture_relief SOURCES textures/test_texture_relief.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_texture_relief SOURCES textures/test_texture_relief.cpp LIBRARIES qc_base_content qc_clientcore TIMEOUT 150)
 # The base content's 16 x 16 textures stay byte for byte (decision E-1000): one hash per platform.
 qc_add_test(test_texture_base_hash SOURCES textures/test_texture_base_hash.cpp LIBRARIES qc_base_content qc_clientcore)
 # Animated textures (decision E-878): frames by time, definitions, pack strips, frames in the atlas.

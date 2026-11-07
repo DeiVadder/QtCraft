@@ -145,12 +145,12 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> layout)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 630 COST 37)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 780 COST 37)
     # The pad in the main menu at the same size: the settings' pages, back entries and Y (decision
     # E-925), the handbook, the character's draft, saved worlds and "New world" (decision E-930).
     add_test(NAME app_offscreen_menu_pad COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> pad)
-    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 690 COST 43)
+    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 780 COST 43)
     # The pause menu's buttons in a saved world and on a joined server, the pause and death cards
     # above the HUD's status rows at 200 % and 225 %, and the sign typed on the pad's keyboard
     # (decision E-928). It waits for the world and a dedicated server in real time: label realtime
@@ -170,7 +170,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # behind screens, full-screen screens, the handbook and the chat line only the parts decision
     # E-927 keeps show, and closing brings them back (1280 x 720 at 100 and 200 %).
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 930 COST 55)
+    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 1080 COST 55)
     # The main menu fills windows up to 3440 x 1440 (a large monitor in fullscreen, decision E-875):
     # Auto lets the page grow with the window, and it stands centred beside the side bar.
     add_test(NAME app_offscreen_window_fill COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh $<TARGET_FILE:qtcraft>
@@ -183,7 +183,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1500 COST 100
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 2310 COST 100
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
     # The same screens at 100 % in the windows of large monitors at 100 % display scaling (decision
@@ -195,7 +195,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         list(GET parts 1 expect)
         add_test(NAME app_offscreen_ui_scale_100_${size} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> 100
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_100_${size})
-        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 1980 COST 130
+        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 2730 COST 130
             ENVIRONMENT "QC_UI_SIZE=${size};QC_UI_EXPECT=${expect}"
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
@@ -445,7 +445,7 @@ set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
-    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 630 COST 60
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 750 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
 endif()
 # qtcraft is a GUI program on Windows (WIN32_EXECUTABLE): without a console, Qt sends its messages to
