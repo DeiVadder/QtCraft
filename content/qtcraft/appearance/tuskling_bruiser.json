@@ -7,8 +7,16 @@
             "texture": "tuskling_bruiser_hide",
             "tint": "none"
         },
-        "face": {
-            "texture": "tuskling_bruiser_face",
+        "eye": {
+            "texture": "tuskling_bruiser_eye",
+            "tint": "none"
+        },
+        "pupil": {
+            "texture": "mob_eye_pupil",
+            "tint": "none"
+        },
+        "nostril": {
+            "texture": "mob_nostril",
             "tint": "none"
         },
         "nose": {

@@ -1,8 +1,8 @@
 {
     "name": "tuskling_bruiser_snout",
     "pattern": "speckle",
-    "primary": "#b97a70",
-    "secondary": "#6a3a36",
+    "primary": "#7e443e",
+    "secondary": "#5e322e",
     "variation": 0.1,
     "seed": 7323
 }

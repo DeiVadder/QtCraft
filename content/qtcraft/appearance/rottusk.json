@@ -7,8 +7,16 @@
             "texture": "rottusk_hide",
             "tint": "none"
         },
-        "face": {
-            "texture": "rottusk_face",
+        "eye": {
+            "texture": "rottusk_eye",
+            "tint": "none"
+        },
+        "pupil": {
+            "texture": "mob_eye_pupil",
+            "tint": "none"
+        },
+        "nostril": {
+            "texture": "mob_nostril",
             "tint": "none"
         },
         "nose": {

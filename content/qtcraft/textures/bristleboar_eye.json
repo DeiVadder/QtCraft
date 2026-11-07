@@ -1,0 +1,8 @@
+{
+    "name": "bristleboar_eye",
+    "pattern": "noise",
+    "primary": "#f6b64e",
+    "secondary": "#e29e3c",
+    "variation": 0.04,
+    "seed": 7314
+}

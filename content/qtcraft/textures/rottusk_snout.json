@@ -1,8 +1,8 @@
 {
     "name": "rottusk_snout",
     "pattern": "speckle",
-    "primary": "#b98a86",
-    "secondary": "#7a5553",
+    "primary": "#7c5e5c",
+    "secondary": "#5a4240",
     "variation": 0.1,
     "seed": 7104
 }

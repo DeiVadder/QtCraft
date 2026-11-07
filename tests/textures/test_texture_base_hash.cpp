@@ -30,7 +30,7 @@ namespace {
 
 // The recorded hash (SHA-1, hex) of the 16 x 16 textures per platform.
 constexpr std::array<std::pair<const char *, const char *>, 1> recorded = {{
-    {"darwin-arm64", "c01e193156f17eabf7f3de07b055661b030efdca"},
+    {"darwin-arm64", "d6715553f4304fe63ea1407ce3356b269e8248ac"},
 }};
 
 QString platform()

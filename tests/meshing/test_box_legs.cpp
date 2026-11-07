@@ -102,6 +102,56 @@ bool inside(const QcMobPart &a, const QcMobPart &b)
            && a.to.z <= b.to.z;
 }
 
+// The boxes a creature looks out of: a box model's parts, or the head bone of a skeleton model with
+// the textures of its outfit.
+QList<QcMobPart> faceParts(const QcContentRegistry &content, const QString &name)
+{
+    const QcMobDefinition &creature = mob(content, name);
+    if (creature.skeleton.isEmpty()) {
+        return creature.parts;
+    }
+
+    const QcModelDefinition *model = content.assets().model(creature.skeleton);
+    const QcAppearanceDefinition *outfit = content.assets().appearance(creature.outfit);
+    if (!model || !outfit) {
+        qFatal("Creature %s has no skeleton or outfit", qPrintable(name));
+    }
+    const auto head = std::ranges::find(model->bones, QcBoneRole::Head, &QcModelBone::role);
+    if (head == model->bones.end()) {
+        qFatal("Creature %s has no head", qPrintable(name));
+    }
+
+    QList<QcMobPart> parts;
+    for (const QcModelBox &box : head->boxes) {
+        const QcAppearanceLayer *layer = outfit->layer(box.slot);
+        QcMobPart part;
+        part.from = box.from;
+        part.to = box.to;
+        part.texture = layer ? layer->texture : QString();
+        parts.append(part);
+    }
+    return parts;
+}
+
+// The first part on side `side` (-1 left, 1 right) whose texture passes `named`.
+template<typename Named>
+const QcMobPart *partOnSide(const QList<QcMobPart> &parts, double side, Named named)
+{
+    const auto found = std::ranges::find_if(parts, [side, &named](const QcMobPart &part) {
+        return named(part.texture) && (part.from.x + part.to.x) * side > 0.0;
+    });
+    return found == parts.end() ? nullptr : &*found;
+}
+
+// A part other than `ignored` covers `box` for a viewer standing in front of the creature.
+bool coveredFromTheFront(const QList<QcMobPart> &parts, const QcMobPart &box, const QcMobPart *ignored)
+{
+    return std::ranges::any_of(parts, [&box, ignored](const QcMobPart &part) {
+        return &part != ignored && &part != &box && part.from.z < box.from.z && part.from.x < box.to.x && box.from.x < part.to.x
+               && part.from.y < box.to.y && box.from.y < part.to.y;
+    });
+}
+
 // The middle of the vertices of part `index` along z.
 double meanZ(const QcEntityMesh &mesh, qsizetype index, bool lowest)
 {
@@ -124,7 +174,7 @@ double meanZ(const QcEntityMesh &mesh, qsizetype index, bool lowest)
 
 // The walk of creatures built from static boxes (decision E-888): QcBoxLegs finds the legs in the
 // parts, QcAnimator::legSwing gives the angle, QcEntityMesher::appendParts turns the legs. Also the
-// eyes of the creatures built from boxes.
+// eyes of the creatures built from boxes and the faces of the tuskling folk.
 class TestBoxLegs : public QObject
 {
     Q_OBJECT
@@ -279,7 +329,7 @@ private slots:
     {
         QTest::addColumn<QString>("name");
         for (const QString &name : {u"wolf"_s, u"dog"_s, u"cat"_s, u"ocelot"_s, u"pig"_s, u"cow"_s, u"sheep"_s, u"chicken"_s, u"spider"_s,
-                                    u"cave_spider"_s, u"cod"_s, u"salmon"_s, u"slime"_s}) {
+                                    u"cave_spider"_s, u"cod"_s, u"salmon"_s, u"slime"_s, u"bristleboar"_s}) {
             QTest::newRow(qPrintable(name)) << name;
         }
     }
@@ -306,6 +356,37 @@ private slots:
         }
         QVERIFY(left > 0);
         QCOMPARE(left, right);
+    }
+
+    void goldFolkHaveFaces_data()
+    {
+        QTest::addColumn<QString>("name");
+        for (const QString &name : {u"tuskling"_s, u"tuskling_bruiser"_s, u"rottusk"_s, u"bristleboar"_s}) {
+            QTest::newRow(qPrintable(name)) << name;
+        }
+    }
+
+    // Each side has an eye big enough for play distance, a pupil on it and a nostril, and from the
+    // front no tusk, snout or gold band covers them (decision E-1090).
+    void goldFolkHaveFaces()
+    {
+        QFETCH(QString, name);
+        const QList<QcMobPart> parts = faceParts(*m_content, name);
+        for (const double side : {-1.0, 1.0}) {
+            const QcMobPart *eye = partOnSide(parts, side, [](const QString &texture) { return texture.endsWith(u"_eye"_s); });
+            const QcMobPart *pupil = partOnSide(parts, side, [](const QString &texture) { return texture.endsWith(u"mob_eye_pupil"_s); });
+            const QcMobPart *nostril = partOnSide(parts, side, [](const QString &texture) { return texture.endsWith(u"mob_nostril"_s); });
+            QVERIFY(eye && pupil && nostril);
+
+            QVERIFY(eye->to.x - eye->from.x >= 0.1 && eye->to.y - eye->from.y >= 0.08);
+            QVERIFY(pupil->from.x > eye->from.x && pupil->to.x < eye->to.x);
+            QVERIFY(pupil->from.y > eye->from.y && pupil->to.y < eye->to.y);
+            QVERIFY(touches(*pupil, *eye) && pupil->from.z < eye->from.z);
+
+            QVERIFY(!coveredFromTheFront(parts, *eye, pupil));
+            QVERIFY(!coveredFromTheFront(parts, *pupil, nullptr));
+            QVERIFY(!coveredFromTheFront(parts, *nostril, nullptr));
+        }
     }
 
     // At the widest swing, neighbouring legs of a side keep apart: a full 32 degrees for short legs
