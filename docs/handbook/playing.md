@@ -223,7 +223,7 @@ A water bucket fills a cauldron, and each glass bottle takes a third of it; a wa
 
 **See also**
 
-[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear)
+[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear)
 
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 
@@ -585,6 +585,10 @@ Hold the use button with a bow in your hand to draw it and let go to shoot. A fu
 
 Arrows fall in an arc and slow down, much faster in water. A hit deals more damage the faster the arrow flies and pushes the target back; armour protects as against blows. Arrows stick in the block they hit and fall when it goes; walk over them to pick them up. They vanish after 60 s. A world holds at most 1024 arrows in flight or stuck, and at most 64 stuck in one chunk (the oldest go first).
 
+**Tipped arrows**
+
+Eight arrows around a splash potion in the crafting grid make eight tipped arrows of that potion, its long and strong kinds too. The bottle is used up. Bows and dispensers shoot them like any arrow. What a tipped arrow hits takes the arrow's damage and gets the potion's effect for an eighth of its time: a poison arrow poisons for about five and a half seconds, and instant effects like healing and harming act at once. A stuck tipped arrow gives itself back when you pick it up.
+
 **Throwing**
 
 Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit. A shade pearl is thrown the same way and teleports you to where it lands.
@@ -595,7 +599,7 @@ Cast a fishing rod with the use button and its bobber flies off and floats on th
 
 **See also**
 
-[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Shade Pearl](items.md#item-qtcraft-shade_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
+[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Shade Pearl](items.md#item-qtcraft-shade_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-explosives"></a>Explosives
 

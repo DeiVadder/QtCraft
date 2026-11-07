@@ -116,10 +116,13 @@ struct QcEffectDefinition
     }
     /*! Returns the factor on a body's speed at \a level. */
     double speedFactorAt(int level) const { return std::max(0.0, 1.0 + speed * std::max(level, 0)); }
-    /*! Returns the damage it deals at \a level to a body with \a health, never leaving it below
-        \c {minHealth}; 0 when there is no room. An instant effect deals \a strength of it. */
+    /*! Returns the damage it deals at \a level to a body with \a health: with a \c {minHealth}
+        never leaving it below that (0 when there is no room), without one all of it, since the
+        short invulnerability compares the whole amount and the body's own damage takes what is
+        more than its health. An instant effect deals \a strength of it. */
     double damageTo(double health, int level = 1, double strength = 1.0) const
     {
-        return std::clamp(health - minHealth, 0.0, amountAt(damage, level, strength));
+        const double amount = amountAt(damage, level, strength);
+        return minHealth > 0.0 ? std::clamp(health - minHealth, 0.0, amount) : amount;
     }
 };

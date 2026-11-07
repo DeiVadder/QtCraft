@@ -6453,3 +6453,67 @@ Die Familie steht seit 84.1 und 84.3 (Blöcke, Stufen, Treppen, Mauern aus `mate
 - **Warten auf 84.8:** `netherite_scrap`, `netherite_ingot`, `ancient_debris`, `netherite_upgrade_smithing_template` (Schmiedevorlage; im Vorbild 100 % in der Schatztruhe, 10 % sonst).
 - **Warten ohne Paket:** `crossbow`, `spectral_arrow` (E-1085), `lodestone`, `golden_apple`, `enchanted_golden_apple`, `golden_carrot`, `banner_pattern`, `music_disc`, `soul_speed_book`, `soul_speed_golden_boots`.
 - **Prüfung:** `test_nether_bastion::theLootWaitsForWhatIsMissing` scheitert, sobald ein Item eines `pending` existiert: wer 84.8 baut, wird zum Umschreiben auf `"item"` gezwungen, und alle Einträge mit `item` müssen existieren.
+
+## E-1100 Getränkte Pfeile ohne Verweiltrank: acht Pfeile um einen Wurftrank (Paket 85.3) — `QcPotionGenerator`
+
+Im Vorbild entstehen getränkte Pfeile aus acht Pfeilen um einen Verweiltrank. Den braut erst der Drachenatem des Endes, und der Mensch hat am 2026-11-05 entschieden: bis dahin kein Verweiltrank-Weg, 85.3 nur Pfeile aus vorhandenen Tränken. Die Wolke entfällt damit in diesem Paket; der alte Text der Planzeile ist überholt.
+
+- **Zutat:** Der Wurftrank nimmt den Platz des Verweiltranks ein, acht Pfeile im Ring, ein Trank in der Mitte, Ergebnis acht Pfeile. Er ist die letzte Stufe, die es gibt: wie der Verweiltrank im Vorbild kostet er einen Brauschritt mehr als der Trinktrank (Schwarzpulver), und es braucht keine Ersatz-Zutat und keinen neuen Brauschritt. Der Trinktrank bleibt außen vor, sonst wären Pfeile billiger als im Vorbild. Die Verweil-Items aus E-1061 taugen ausdrücklich nicht, sie sind ohne Brauweg nur über Befehle oder Mods zu haben.
+- **Aus den Daten:** `QcPotionGenerator` erzeugt nach den Flaschen je Trank-Art mit mindestens einem Effekt und der Form `splash` Item, Geschoss, Rezept, Textur und Namen. Es gibt keine JSON-Datei je Pfeil; ein Mod-Trank bekommt seinen Pfeil von selbst, unter seinem Namensraum, und lässt ihn weg, indem er `splash` weglässt. So fallen `water` (nur `drink`) und die drei Grundlagen ohne Effekt (`awkward`, `mundane`, `thick`) heraus: von 31 Arten haben 27 einen Pfeil. Die Pfeile ohne Wirkung des Vorbilds fehlen damit, sie täten nichts.
+- **Ids:** `<art>_tipped_arrow`, also `poison_tipped_arrow`, `long_poison_tipped_arrow`, `strong_poison_tipped_arrow`. Sie folgen den Trank-Ids und bleiben, wenn das Ende kommt.
+- **Geschoss:** eine Kopie von `qtcraft:arrow` mit einem zusätzlichen Eintrag `effect` je Trank-Effekt. Flug, Schaden, Rückstoß, Klänge und Steckenbleiben kommen vom Pfeil, auch wenn ein Mod ihn ändert. Den Eintrag `effect` gibt es seit E-450, der Treffer selbst brauchte keinen neuen Code: Bogen (Tag `qtcraft:arrows`), Spender (`dispense: shoot`), Aufheben und Speichern gehen über die vorhandenen Wege. Das Protokoll bleibt bei 93.
+- **Keine vierte Form:** `QcPotionForm` zählt Flaschen; Braustand und `QcPotionCatalog::potionOf` sollen Pfeile nicht als Trank sehen. Darum steht der Pfeil nicht im Katalog.
+- **Wenn das Ende kommt:** Die Konstante `tippingForm` im Generator wird `Lingering`, die Rezepte folgen, Pfeile in Welten bleiben gültig.
+
+Offen für den Menschen: Ob der Wurftrank die richtige Zwischenlösung ist, entscheidet die Abnahme; die Änderung wäre die eine Konstante.
+
+## E-1101 Werte der getränkten Pfeile (Paket 85.3)
+
+Alles hier stammt aus der Erinnerung an das Vorbild (Java-Ausgabe), nichts wurde nachgeschlagen. „Sicher“ heißt verlässliche Erinnerung, „unsicher“ heißt, dass der Mensch es prüfen sollte. „Alt“ ist überall „–“, weil es getränkte Pfeile nicht gab; die Pfeil-Werte selbst bleiben unverändert.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Anteil an der Trinkzeit | – | ein Achtel | Vorbild, Erinnerung, sicher |
+| Rundung | – | ganze Ticks, abgerundet, mindestens 1 | Vorbild, Erinnerung, sicher (ganzzahlige Division) |
+| Pfeile je Rezept | – | 8 | Vorbild, Erinnerung, sicher |
+| Flasche beim Herstellen | – | verbraucht, keine Glasflasche zurück | Vorbild, Erinnerung, sicher |
+| Stapel | – | 64 | Vorbild, Erinnerung, sicher |
+| Stufe des Effekts | – | die des Tranks | Vorbild, Erinnerung, sicher |
+| Schaden, Rückstoß, Flug, Liegezeit | – | wie `arrow` | Vorbild, Erinnerung, sicher |
+| Effekt nur bei zählendem Treffer | – | ja, auch in der kurzen Unverwundbarkeit nicht | Vorbild, Erinnerung, sicher |
+| Aufheben | – | als derselbe Pfeil | Vorbild, Erinnerung, sicher |
+| Sofortwirkung | – | volle Stärke, einen Tick nach dem Treffer | Vorbild, Erinnerung, unsicher, siehe unten |
+| Zutat | – | Wurftrank statt Verweiltrank | **Abweichung**, E-1100 |
+
+Dauern in Sekunden, gerechnet aus den Werten von E-1066 (dort steht, welche Trankzeit unsicher ist):
+
+| Trank | Trinkzeit | Pfeil | Trank | Trinkzeit | Pfeil |
+|-------|-----------|-------|-------|-----------|-------|
+| Schnelligkeit, Stärke | 180 | 22,5 | Vergiftung, Regeneration | 45 | 5,6 |
+| … lang | 480 | 60 | … lang | 90 | 11,25 |
+| … II | 90 | 11,25 | Vergiftung II | 21,6 | 2,7 |
+| Feuerresistenz, Nachtsicht, Unsichtbarkeit | 180 | 22,5 | Regeneration II | 22,5 | 2,8 |
+| … lang | 480 | 60 | Langsamkeit, Schwäche | 90 | 11,25 |
+| Langsamkeit IV | 20 | 2,5 | … lang | 240 | 30 |
+
+**Sofortwirkung und Unverwundbarkeit.** Heilung und Schaden wirken in voller Stärke einen Tick nach dem Treffer und laufen durch das Fenster aus E-429: Der Schaden des Pfeils öffnet es, die Sofortwirkung zählt darin als stärkerer Treffer und nimmt nur den Unterschied. Nach meiner Erinnerung läuft es im Vorbild genauso, weil auch dort der magische Schaden das Fenster beachtet; sicher bin ich nicht. Es ist keine neue Regel, sondern die vorhandene. Bei voller Spannung (Pfeil 6) und einem schwachen Schuss (Pfeil 2) heißt das:
+
+| Pfeil auf | voll | schwach |
+|-----------|------|---------|
+| Schaden I, Lebende | 6, die Wirkung legt nichts drauf (6 ist nicht mehr als 6) | 2, dann 4: zusammen 6 |
+| Schaden II, Lebende | 6, dann 6: zusammen 12 | 2, dann 10: zusammen 12 |
+| Heilung I, Lebende | −6, dann +4 | −2, dann +4 |
+| Schaden I, Untote | −6, dann +4 | −2, dann +4 |
+| Heilung I, Untote | 6, die Wirkung legt nichts drauf (6 ist nicht mehr als 6) | 2, dann 4: zusammen 6 |
+
+**Das Fenster braucht den ganzen Betrag.** `QcEffectDefinition::damageTo` begrenzte den Schaden vorher auf die verbleibende Gesundheit, und zwar vor dem Vergleich im Fenster: Ein verwundetes Wesen nahm dadurch weniger oder gar nichts, ein Schadenspfeil konnte nie töten. Jetzt begrenzt es nur noch mit `minHealth` (Gift). Ohne `minHealth` geht der ganze Betrag ins Fenster, den Überschuss fangen `QcMobManager::damage` und `QcPlayerHealth::damage` ab. Das gilt für Trinken, Wurf und Pfeil gleich; Wurftränke verhalten sich außerhalb des Fensters wie zuvor, im Fenster zählen sie jetzt ebenfalls mit dem ganzen Betrag.
+
+**Wer den Kill bekommt.** Stirbt ein Wesen an der Sofortwirkung eines Spieler-Pfeils, zählt das wie ein Treffer dieses Spielers (Erfahrung, Beute nur vom Spieler, `EntityKilled`). Der Spieler reist auf dem Effekt mit (`QcStatusEffect::giver`, nicht gespeichert, wie `strength`). `QcCreature::struckBy` taugt dafür nicht: Das Gehirn neutraler Wesen leert es im Tick vor den Effekten, und passive Wesen behalten es für immer, ein alter Treffer gäbe also einem Spieler den Kill durch einen Spender-Pfeil. Ein Wurftrank gibt keinen Spieler mit, wie zuvor.
+
+Noch nicht da, mit Absicht, weil es nicht zum Auftrag gehört: Beute und Tausch mit getränkten Pfeilen (Pfeilmacher-Beruf fehlt), der Abwurf des Eiswanderers (`stray`), die farbige Spur im Flug.
+
+## E-1102 Aussehen und Schauplatz der getränkten Pfeile (Paket 85.3) — `QcTextureSpec::Pattern`, `QcTextureRangedPatterns`
+
+Neues Muster `tipped_arrow`: dieselbe Form wie `arrow`, dazu Spitze und das Stück Schaft dahinter in der Farbe des Tranks (`secondary`, wie die Flüssigkeit im Muster `bottle`), Schaft `primary`, die Federn fest weiß wie beim Pfeil (eine Textur hat zwei Farben, die zweite nimmt der Trank). Die Schaftfarbe liest der Generator aus der Textur `arrow`. Das Vorbild färbt ebenfalls Spitze und Schaftansatz. Das Geschoss in der Welt zeigt das Item-Bild (E-425), die Farbe ist also auch im Flug und steckend zu sehen. Die gespannte Bogen-Textur bleibt die eine (E-987), sie zeigt den schlichten Pfeil.
+
+Der Schießstand der Showcase-Welt hat einen Spender mit Vergiftungs-, Schnelligkeits- und Schadenspfeilen, den ein Knopf auslöst und der auf den Heuballen zielt; die Truhe enthält Pfeile und einen Wurftrank. Das Handbuch-Kapitel „Bogenschießen“ hat einen Abschnitt, jedes Item die Beschreibung `potion.form.tipped.description`.

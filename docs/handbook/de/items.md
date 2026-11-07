@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Dicker Trank](#item-qtcraft-thick_potion) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Glutrute](#item-qtcraft-ember_rod) · [Glutstaub](#item-qtcraft-ember_dust) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schlichter Trank](#item-qtcraft-mundane_potion) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Seltsamer Trank](#item-qtcraft-awkward_potion) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trank der Feuerresistenz](#item-qtcraft-fire_resistance_potion) · [Trank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_potion) · [Trank der Heilung II](#item-qtcraft-strong_healing_potion) · [Trank der Langsamkeit](#item-qtcraft-slowness_potion) · [Trank der Langsamkeit (lang)](#item-qtcraft-long_slowness_potion) · [Trank der Langsamkeit II](#item-qtcraft-strong_slowness_potion) · [Trank der Nachtsicht](#item-qtcraft-night_vision_potion) · [Trank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_potion) · [Trank der Regeneration](#item-qtcraft-regeneration_potion) · [Trank der Regeneration (lang)](#item-qtcraft-long_regeneration_potion) · [Trank der Regeneration II](#item-qtcraft-strong_regeneration_potion) · [Trank der Schnelligkeit](#item-qtcraft-speed_potion) · [Trank der Schnelligkeit (lang)](#item-qtcraft-long_speed_potion) · [Trank der Schnelligkeit II](#item-qtcraft-strong_speed_potion) · [Trank der Schwäche](#item-qtcraft-weakness_potion) · [Trank der Schwäche (lang)](#item-qtcraft-long_weakness_potion) · [Trank der Stärke](#item-qtcraft-strength_potion) · [Trank der Stärke (lang)](#item-qtcraft-long_strength_potion) · [Trank der Stärke II](#item-qtcraft-strong_strength_potion) · [Trank der Unsichtbarkeit](#item-qtcraft-invisibility_potion) · [Trank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_potion) · [Trank der Vergiftung](#item-qtcraft-poison_potion) · [Trank der Vergiftung (lang)](#item-qtcraft-long_poison_potion) · [Trank der Vergiftung II](#item-qtcraft-strong_poison_potion) · [Trank des Schadens](#item-qtcraft-harming_potion) · [Trank des Schadens II](#item-qtcraft-strong_harming_potion) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Vergoldete Melonenscheibe](#item-qtcraft-gilded_melon_slice) · [Verweiltrank der Dicke](#item-qtcraft-thick_lingering_potion) · [Verweiltrank der Feuerresistenz](#item-qtcraft-fire_resistance_lingering_potion) · [Verweiltrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_lingering_potion) · [Verweiltrank der Heilung](#item-qtcraft-healing_lingering_potion) · [Verweiltrank der Heilung II](#item-qtcraft-strong_healing_lingering_potion) · [Verweiltrank der Langsamkeit](#item-qtcraft-slowness_lingering_potion) · [Verweiltrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_lingering_potion) · [Verweiltrank der Langsamkeit II](#item-qtcraft-strong_slowness_lingering_potion) · [Verweiltrank der Nachtsicht](#item-qtcraft-night_vision_lingering_potion) · [Verweiltrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_lingering_potion) · [Verweiltrank der Regeneration](#item-qtcraft-regeneration_lingering_potion) · [Verweiltrank der Regeneration (lang)](#item-qtcraft-long_regeneration_lingering_potion) · [Verweiltrank der Regeneration II](#item-qtcraft-strong_regeneration_lingering_potion) · [Verweiltrank der Schlichtheit](#item-qtcraft-mundane_lingering_potion) · [Verweiltrank der Schnelligkeit](#item-qtcraft-speed_lingering_potion) · [Verweiltrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_lingering_potion) · [Verweiltrank der Schnelligkeit II](#item-qtcraft-strong_speed_lingering_potion) · [Verweiltrank der Schwäche](#item-qtcraft-weakness_lingering_potion) · [Verweiltrank der Schwäche (lang)](#item-qtcraft-long_weakness_lingering_potion) · [Verweiltrank der Seltsamkeit](#item-qtcraft-awkward_lingering_potion) · [Verweiltrank der Stärke](#item-qtcraft-strength_lingering_potion) · [Verweiltrank der Stärke (lang)](#item-qtcraft-long_strength_lingering_potion) · [Verweiltrank der Stärke II](#item-qtcraft-strong_strength_lingering_potion) · [Verweiltrank der Unsichtbarkeit](#item-qtcraft-invisibility_lingering_potion) · [Verweiltrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_lingering_potion) · [Verweiltrank der Vergiftung](#item-qtcraft-poison_lingering_potion) · [Verweiltrank der Vergiftung (lang)](#item-qtcraft-long_poison_lingering_potion) · [Verweiltrank der Vergiftung II](#item-qtcraft-strong_poison_lingering_potion) · [Verweiltrank des Schadens](#item-qtcraft-harming_lingering_potion) · [Verweiltrank des Schadens II](#item-qtcraft-strong_harming_lingering_potion) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Dicke](#item-qtcraft-thick_splash_potion) · [Wurftrank der Feuerresistenz](#item-qtcraft-fire_resistance_splash_potion) · [Wurftrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_splash_potion) · [Wurftrank der Heilung](#item-qtcraft-healing_splash_potion) · [Wurftrank der Heilung II](#item-qtcraft-strong_healing_splash_potion) · [Wurftrank der Langsamkeit](#item-qtcraft-slowness_splash_potion) · [Wurftrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_splash_potion) · [Wurftrank der Langsamkeit II](#item-qtcraft-strong_slowness_splash_potion) · [Wurftrank der Nachtsicht](#item-qtcraft-night_vision_splash_potion) · [Wurftrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_splash_potion) · [Wurftrank der Regeneration](#item-qtcraft-regeneration_splash_potion) · [Wurftrank der Regeneration (lang)](#item-qtcraft-long_regeneration_splash_potion) · [Wurftrank der Regeneration II](#item-qtcraft-strong_regeneration_splash_potion) · [Wurftrank der Schlichtheit](#item-qtcraft-mundane_splash_potion) · [Wurftrank der Schnelligkeit](#item-qtcraft-speed_splash_potion) · [Wurftrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_splash_potion) · [Wurftrank der Schnelligkeit II](#item-qtcraft-strong_speed_splash_potion) · [Wurftrank der Schwäche](#item-qtcraft-weakness_splash_potion) · [Wurftrank der Schwäche (lang)](#item-qtcraft-long_weakness_splash_potion) · [Wurftrank der Seltsamkeit](#item-qtcraft-awkward_splash_potion) · [Wurftrank der Stärke](#item-qtcraft-strength_splash_potion) · [Wurftrank der Stärke (lang)](#item-qtcraft-long_strength_splash_potion) · [Wurftrank der Stärke II](#item-qtcraft-strong_strength_splash_potion) · [Wurftrank der Unsichtbarkeit](#item-qtcraft-invisibility_splash_potion) · [Wurftrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_splash_potion) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank der Vergiftung (lang)](#item-qtcraft-long_poison_splash_potion) · [Wurftrank der Vergiftung II](#item-qtcraft-strong_poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Wurftrank des Schadens II](#item-qtcraft-strong_harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Birkenboot](#item-qtcraft-birch_boat) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Dicker Trank](#item-qtcraft-thick_potion) · [Ei](#item-qtcraft-egg) · [Eichenboot](#item-qtcraft-oak_boat) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Fermentiertes Spinnenauge](#item-qtcraft-fermented_spider_eye) · [Feuerkugel](#item-qtcraft-fireball) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Fichtenboot](#item-qtcraft-spruce_boat) · [Funkengel](#item-qtcraft-spark_gel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Gemälde](#item-qtcraft-painting) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Glutrute](#item-qtcraft-ember_rod) · [Glutstaub](#item-qtcraft-ember_dust) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Karte](#item-qtcraft-filled_map) · [Klageträne](#item-qtcraft-wailer_tear) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kompass](#item-qtcraft-compass) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Leere Karte](#item-qtcraft-map) · [Leuchtsteinstaub](#item-qtcraft-glowstone_dust) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Magmacreme](#item-qtcraft-magma_cream) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Namensschild](#item-qtcraft-name_tag) · [Netherquarz](#item-qtcraft-quartz) · [Netherwarze](#item-qtcraft-nether_wart) · [Netherziegelstein](#item-qtcraft-nether_brick) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Pfeil der Feuerresistenz](#item-qtcraft-fire_resistance_tipped_arrow) · [Pfeil der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_tipped_arrow) · [Pfeil der Heilung](#item-qtcraft-healing_tipped_arrow) · [Pfeil der Heilung II](#item-qtcraft-strong_healing_tipped_arrow) · [Pfeil der Langsamkeit](#item-qtcraft-slowness_tipped_arrow) · [Pfeil der Langsamkeit (lang)](#item-qtcraft-long_slowness_tipped_arrow) · [Pfeil der Langsamkeit II](#item-qtcraft-strong_slowness_tipped_arrow) · [Pfeil der Nachtsicht](#item-qtcraft-night_vision_tipped_arrow) · [Pfeil der Nachtsicht (lang)](#item-qtcraft-long_night_vision_tipped_arrow) · [Pfeil der Regeneration](#item-qtcraft-regeneration_tipped_arrow) · [Pfeil der Regeneration (lang)](#item-qtcraft-long_regeneration_tipped_arrow) · [Pfeil der Regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow) · [Pfeil der Schnelligkeit](#item-qtcraft-speed_tipped_arrow) · [Pfeil der Schnelligkeit (lang)](#item-qtcraft-long_speed_tipped_arrow) · [Pfeil der Schnelligkeit II](#item-qtcraft-strong_speed_tipped_arrow) · [Pfeil der Schwäche](#item-qtcraft-weakness_tipped_arrow) · [Pfeil der Schwäche (lang)](#item-qtcraft-long_weakness_tipped_arrow) · [Pfeil der Stärke](#item-qtcraft-strength_tipped_arrow) · [Pfeil der Stärke (lang)](#item-qtcraft-long_strength_tipped_arrow) · [Pfeil der Stärke II](#item-qtcraft-strong_strength_tipped_arrow) · [Pfeil der Unsichtbarkeit](#item-qtcraft-invisibility_tipped_arrow) · [Pfeil der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_tipped_arrow) · [Pfeil der Vergiftung](#item-qtcraft-poison_tipped_arrow) · [Pfeil der Vergiftung (lang)](#item-qtcraft-long_poison_tipped_arrow) · [Pfeil der Vergiftung II](#item-qtcraft-strong_poison_tipped_arrow) · [Pfeil des Schadens](#item-qtcraft-harming_tipped_arrow) · [Pfeil des Schadens II](#item-qtcraft-strong_harming_tipped_arrow) · [Rahmen](#item-qtcraft-item_frame) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Sattel](#item-qtcraft-saddle) · [Schattenperle](#item-qtcraft-shade_pearl) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schlichter Trank](#item-qtcraft-mundane_potion) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Seltsamer Trank](#item-qtcraft-awkward_potion) · [Signalstaubstück](#item-qtcraft-signal_dust_chunk) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tintenbeutel](#item-qtcraft-ink_sac) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trank der Feuerresistenz](#item-qtcraft-fire_resistance_potion) · [Trank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_potion) · [Trank der Heilung II](#item-qtcraft-strong_healing_potion) · [Trank der Langsamkeit](#item-qtcraft-slowness_potion) · [Trank der Langsamkeit (lang)](#item-qtcraft-long_slowness_potion) · [Trank der Langsamkeit II](#item-qtcraft-strong_slowness_potion) · [Trank der Nachtsicht](#item-qtcraft-night_vision_potion) · [Trank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_potion) · [Trank der Regeneration](#item-qtcraft-regeneration_potion) · [Trank der Regeneration (lang)](#item-qtcraft-long_regeneration_potion) · [Trank der Regeneration II](#item-qtcraft-strong_regeneration_potion) · [Trank der Schnelligkeit](#item-qtcraft-speed_potion) · [Trank der Schnelligkeit (lang)](#item-qtcraft-long_speed_potion) · [Trank der Schnelligkeit II](#item-qtcraft-strong_speed_potion) · [Trank der Schwäche](#item-qtcraft-weakness_potion) · [Trank der Schwäche (lang)](#item-qtcraft-long_weakness_potion) · [Trank der Stärke](#item-qtcraft-strength_potion) · [Trank der Stärke (lang)](#item-qtcraft-long_strength_potion) · [Trank der Stärke II](#item-qtcraft-strong_strength_potion) · [Trank der Unsichtbarkeit](#item-qtcraft-invisibility_potion) · [Trank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_potion) · [Trank der Vergiftung](#item-qtcraft-poison_potion) · [Trank der Vergiftung (lang)](#item-qtcraft-long_poison_potion) · [Trank der Vergiftung II](#item-qtcraft-strong_poison_potion) · [Trank des Schadens](#item-qtcraft-harming_potion) · [Trank des Schadens II](#item-qtcraft-strong_harming_potion) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Tropenholzboot](#item-qtcraft-jungle_boat) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Uhr](#item-qtcraft-clock) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Vergoldete Melonenscheibe](#item-qtcraft-gilded_melon_slice) · [Verweiltrank der Dicke](#item-qtcraft-thick_lingering_potion) · [Verweiltrank der Feuerresistenz](#item-qtcraft-fire_resistance_lingering_potion) · [Verweiltrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_lingering_potion) · [Verweiltrank der Heilung](#item-qtcraft-healing_lingering_potion) · [Verweiltrank der Heilung II](#item-qtcraft-strong_healing_lingering_potion) · [Verweiltrank der Langsamkeit](#item-qtcraft-slowness_lingering_potion) · [Verweiltrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_lingering_potion) · [Verweiltrank der Langsamkeit II](#item-qtcraft-strong_slowness_lingering_potion) · [Verweiltrank der Nachtsicht](#item-qtcraft-night_vision_lingering_potion) · [Verweiltrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_lingering_potion) · [Verweiltrank der Regeneration](#item-qtcraft-regeneration_lingering_potion) · [Verweiltrank der Regeneration (lang)](#item-qtcraft-long_regeneration_lingering_potion) · [Verweiltrank der Regeneration II](#item-qtcraft-strong_regeneration_lingering_potion) · [Verweiltrank der Schlichtheit](#item-qtcraft-mundane_lingering_potion) · [Verweiltrank der Schnelligkeit](#item-qtcraft-speed_lingering_potion) · [Verweiltrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_lingering_potion) · [Verweiltrank der Schnelligkeit II](#item-qtcraft-strong_speed_lingering_potion) · [Verweiltrank der Schwäche](#item-qtcraft-weakness_lingering_potion) · [Verweiltrank der Schwäche (lang)](#item-qtcraft-long_weakness_lingering_potion) · [Verweiltrank der Seltsamkeit](#item-qtcraft-awkward_lingering_potion) · [Verweiltrank der Stärke](#item-qtcraft-strength_lingering_potion) · [Verweiltrank der Stärke (lang)](#item-qtcraft-long_strength_lingering_potion) · [Verweiltrank der Stärke II](#item-qtcraft-strong_strength_lingering_potion) · [Verweiltrank der Unsichtbarkeit](#item-qtcraft-invisibility_lingering_potion) · [Verweiltrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_lingering_potion) · [Verweiltrank der Vergiftung](#item-qtcraft-poison_lingering_potion) · [Verweiltrank der Vergiftung (lang)](#item-qtcraft-long_poison_lingering_potion) · [Verweiltrank der Vergiftung II](#item-qtcraft-strong_poison_lingering_potion) · [Verweiltrank des Schadens](#item-qtcraft-harming_lingering_potion) · [Verweiltrank des Schadens II](#item-qtcraft-strong_harming_lingering_potion) · [Verzaubertes Buch](#item-qtcraft-enchanted_book) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wirrpilz an der Angel](#item-qtcraft-fungus_on_a_stick) · [Wurftrank der Dicke](#item-qtcraft-thick_splash_potion) · [Wurftrank der Feuerresistenz](#item-qtcraft-fire_resistance_splash_potion) · [Wurftrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_splash_potion) · [Wurftrank der Heilung](#item-qtcraft-healing_splash_potion) · [Wurftrank der Heilung II](#item-qtcraft-strong_healing_splash_potion) · [Wurftrank der Langsamkeit](#item-qtcraft-slowness_splash_potion) · [Wurftrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_splash_potion) · [Wurftrank der Langsamkeit II](#item-qtcraft-strong_slowness_splash_potion) · [Wurftrank der Nachtsicht](#item-qtcraft-night_vision_splash_potion) · [Wurftrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_splash_potion) · [Wurftrank der Regeneration](#item-qtcraft-regeneration_splash_potion) · [Wurftrank der Regeneration (lang)](#item-qtcraft-long_regeneration_splash_potion) · [Wurftrank der Regeneration II](#item-qtcraft-strong_regeneration_splash_potion) · [Wurftrank der Schlichtheit](#item-qtcraft-mundane_splash_potion) · [Wurftrank der Schnelligkeit](#item-qtcraft-speed_splash_potion) · [Wurftrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_splash_potion) · [Wurftrank der Schnelligkeit II](#item-qtcraft-strong_speed_splash_potion) · [Wurftrank der Schwäche](#item-qtcraft-weakness_splash_potion) · [Wurftrank der Schwäche (lang)](#item-qtcraft-long_weakness_splash_potion) · [Wurftrank der Seltsamkeit](#item-qtcraft-awkward_splash_potion) · [Wurftrank der Stärke](#item-qtcraft-strength_splash_potion) · [Wurftrank der Stärke (lang)](#item-qtcraft-long_strength_splash_potion) · [Wurftrank der Stärke II](#item-qtcraft-strong_strength_splash_potion) · [Wurftrank der Unsichtbarkeit](#item-qtcraft-invisibility_splash_potion) · [Wurftrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_splash_potion) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank der Vergiftung (lang)](#item-qtcraft-long_poison_splash_potion) · [Wurftrank der Vergiftung II](#item-qtcraft-strong_poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Wurftrank des Schadens II](#item-qtcraft-strong_harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -1553,9 +1553,553 @@ Wird mit dem Bogen geschossen. Sein Schaden wächst mit seiner Geschwindigkeit; 
 | [Stock](#item-qtcraft-stick) |  |
 | [Feder](#item-qtcraft-feather) |  |
 
+**Wird verwendet für**
+
+[Pfeil der Feuerresistenz](#item-qtcraft-fire_resistance_tipped_arrow), [Pfeil der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_tipped_arrow), [Pfeil der Heilung](#item-qtcraft-healing_tipped_arrow), [Pfeil der Heilung II](#item-qtcraft-strong_healing_tipped_arrow), [Pfeil der Langsamkeit](#item-qtcraft-slowness_tipped_arrow), [Pfeil der Langsamkeit (lang)](#item-qtcraft-long_slowness_tipped_arrow), [Pfeil der Langsamkeit II](#item-qtcraft-strong_slowness_tipped_arrow), [Pfeil der Nachtsicht](#item-qtcraft-night_vision_tipped_arrow), [Pfeil der Nachtsicht (lang)](#item-qtcraft-long_night_vision_tipped_arrow), [Pfeil der Regeneration](#item-qtcraft-regeneration_tipped_arrow), [Pfeil der Regeneration (lang)](#item-qtcraft-long_regeneration_tipped_arrow), [Pfeil der Regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow), [Pfeil der Schnelligkeit](#item-qtcraft-speed_tipped_arrow), [Pfeil der Schnelligkeit (lang)](#item-qtcraft-long_speed_tipped_arrow), [Pfeil der Schnelligkeit II](#item-qtcraft-strong_speed_tipped_arrow), [Pfeil der Schwäche](#item-qtcraft-weakness_tipped_arrow), [Pfeil der Schwäche (lang)](#item-qtcraft-long_weakness_tipped_arrow), [Pfeil der Stärke](#item-qtcraft-strength_tipped_arrow), [Pfeil der Stärke (lang)](#item-qtcraft-long_strength_tipped_arrow), [Pfeil der Stärke II](#item-qtcraft-strong_strength_tipped_arrow), [Pfeil der Unsichtbarkeit](#item-qtcraft-invisibility_tipped_arrow), [Pfeil der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_tipped_arrow), [Pfeil der Vergiftung](#item-qtcraft-poison_tipped_arrow), [Pfeil der Vergiftung (lang)](#item-qtcraft-long_poison_tipped_arrow), [Pfeil der Vergiftung II](#item-qtcraft-strong_poison_tipped_arrow), [Pfeil des Schadens](#item-qtcraft-harming_tipped_arrow), [Pfeil des Schadens II](#item-qtcraft-strong_harming_tipped_arrow)
+
 **Droppt aus**
 
 [Eiswanderer](creatures.md#mob-qtcraft-stray) (50 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
+
+### <a id="item-qtcraft-fire_resistance_tipped_arrow"></a>Pfeil der Feuerresistenz
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire_resistance_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Feuerresistenz](#item-qtcraft-fire_resistance_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Feuerresistenz](#item-qtcraft-fire_resistance_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_fire_resistance_tipped_arrow"></a>Pfeil der Feuerresistenz (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_fire_resistance_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-healing_tipped_arrow"></a>Pfeil der Heilung
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:healing_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Heilung](#item-qtcraft-healing_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Heilung](#item-qtcraft-healing_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_healing_tipped_arrow"></a>Pfeil der Heilung II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_healing_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Heilung II](#item-qtcraft-strong_healing_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Heilung II](#item-qtcraft-strong_healing_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-slowness_tipped_arrow"></a>Pfeil der Langsamkeit
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:slowness_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Langsamkeit](#item-qtcraft-slowness_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Langsamkeit](#item-qtcraft-slowness_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_slowness_tipped_arrow"></a>Pfeil der Langsamkeit (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_slowness_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Langsamkeit (lang)](#item-qtcraft-long_slowness_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Langsamkeit (lang)](#item-qtcraft-long_slowness_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_slowness_tipped_arrow"></a>Pfeil der Langsamkeit II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_slowness_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Langsamkeit II](#item-qtcraft-strong_slowness_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Langsamkeit II](#item-qtcraft-strong_slowness_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-night_vision_tipped_arrow"></a>Pfeil der Nachtsicht
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:night_vision_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Nachtsicht](#item-qtcraft-night_vision_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Nachtsicht](#item-qtcraft-night_vision_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_night_vision_tipped_arrow"></a>Pfeil der Nachtsicht (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_night_vision_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Nachtsicht (lang)](#item-qtcraft-long_night_vision_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Nachtsicht (lang)](#item-qtcraft-long_night_vision_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-regeneration_tipped_arrow"></a>Pfeil der Regeneration
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:regeneration_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Regeneration](#item-qtcraft-regeneration_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Regeneration](#item-qtcraft-regeneration_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_regeneration_tipped_arrow"></a>Pfeil der Regeneration (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_regeneration_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Regeneration (lang)](#item-qtcraft-long_regeneration_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Regeneration (lang)](#item-qtcraft-long_regeneration_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_regeneration_tipped_arrow"></a>Pfeil der Regeneration II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_regeneration_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Regeneration II](#item-qtcraft-strong_regeneration_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-speed_tipped_arrow"></a>Pfeil der Schnelligkeit
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:speed_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Schnelligkeit](#item-qtcraft-speed_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Schnelligkeit](#item-qtcraft-speed_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_speed_tipped_arrow"></a>Pfeil der Schnelligkeit (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_speed_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Schnelligkeit (lang)](#item-qtcraft-long_speed_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Schnelligkeit (lang)](#item-qtcraft-long_speed_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_speed_tipped_arrow"></a>Pfeil der Schnelligkeit II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_speed_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Schnelligkeit II](#item-qtcraft-strong_speed_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Schnelligkeit II](#item-qtcraft-strong_speed_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-weakness_tipped_arrow"></a>Pfeil der Schwäche
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:weakness_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Schwäche](#item-qtcraft-weakness_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Schwäche](#item-qtcraft-weakness_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_weakness_tipped_arrow"></a>Pfeil der Schwäche (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_weakness_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Schwäche (lang)](#item-qtcraft-long_weakness_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Schwäche (lang)](#item-qtcraft-long_weakness_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strength_tipped_arrow"></a>Pfeil der Stärke
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strength_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Stärke](#item-qtcraft-strength_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Stärke](#item-qtcraft-strength_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_strength_tipped_arrow"></a>Pfeil der Stärke (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_strength_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Stärke (lang)](#item-qtcraft-long_strength_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Stärke (lang)](#item-qtcraft-long_strength_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_strength_tipped_arrow"></a>Pfeil der Stärke II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_strength_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Stärke II](#item-qtcraft-strong_strength_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Stärke II](#item-qtcraft-strong_strength_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-invisibility_tipped_arrow"></a>Pfeil der Unsichtbarkeit
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:invisibility_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Unsichtbarkeit](#item-qtcraft-invisibility_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Unsichtbarkeit](#item-qtcraft-invisibility_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_invisibility_tipped_arrow"></a>Pfeil der Unsichtbarkeit (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_invisibility_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-poison_tipped_arrow"></a>Pfeil der Vergiftung
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:poison_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Vergiftung](#item-qtcraft-poison_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_poison_tipped_arrow"></a>Pfeil der Vergiftung (lang)
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_poison_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Vergiftung (lang)](#item-qtcraft-long_poison_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Vergiftung (lang)](#item-qtcraft-long_poison_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_poison_tipped_arrow"></a>Pfeil der Vergiftung II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_poison_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil der Vergiftung II](#item-qtcraft-strong_poison_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank der Vergiftung II](#item-qtcraft-strong_poison_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-harming_tipped_arrow"></a>Pfeil des Schadens
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:harming_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil des Schadens](#item-qtcraft-harming_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_harming_tipped_arrow"></a>Pfeil des Schadens II
+
+Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_harming_tipped_arrow` |
+| Stapelgröße | 64 |
+| Gruppen | [Beliebiger Pfeil](tags.md#tag-qtcraft-arrows) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | 8 × [Pfeil des Schadens II](#item-qtcraft-strong_harming_tipped_arrow) |
+| [Pfeil](#item-qtcraft-arrow) | [Wurftrank des Schadens II](#item-qtcraft-strong_harming_splash_potion) | [Pfeil](#item-qtcraft-arrow) |  |
+| [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) | [Pfeil](#item-qtcraft-arrow) |  |
 
 ### <a id="item-qtcraft-item_frame"></a>Rahmen
 
@@ -2927,6 +3471,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:fire_resistance_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Feuerresistenz](#item-qtcraft-fire_resistance_tipped_arrow)
+
 ### <a id="item-qtcraft-long_fire_resistance_splash_potion"></a>Wurftrank der Feuerresistenz (lang)
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -2935,6 +3483,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:long_fire_resistance_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Feuerresistenz (lang)](#item-qtcraft-long_fire_resistance_tipped_arrow)
 
 ### <a id="item-qtcraft-healing_splash_potion"></a>Wurftrank der Heilung
 
@@ -2945,6 +3497,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:healing_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Heilung](#item-qtcraft-healing_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_healing_splash_potion"></a>Wurftrank der Heilung II
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -2953,6 +3509,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:strong_healing_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Heilung II](#item-qtcraft-strong_healing_tipped_arrow)
 
 ### <a id="item-qtcraft-slowness_splash_potion"></a>Wurftrank der Langsamkeit
 
@@ -2963,6 +3523,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:slowness_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Langsamkeit](#item-qtcraft-slowness_tipped_arrow)
+
 ### <a id="item-qtcraft-long_slowness_splash_potion"></a>Wurftrank der Langsamkeit (lang)
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -2971,6 +3535,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:long_slowness_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Langsamkeit (lang)](#item-qtcraft-long_slowness_tipped_arrow)
 
 ### <a id="item-qtcraft-strong_slowness_splash_potion"></a>Wurftrank der Langsamkeit II
 
@@ -2981,6 +3549,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:strong_slowness_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Langsamkeit II](#item-qtcraft-strong_slowness_tipped_arrow)
+
 ### <a id="item-qtcraft-night_vision_splash_potion"></a>Wurftrank der Nachtsicht
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -2989,6 +3561,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:night_vision_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Nachtsicht](#item-qtcraft-night_vision_tipped_arrow)
 
 ### <a id="item-qtcraft-long_night_vision_splash_potion"></a>Wurftrank der Nachtsicht (lang)
 
@@ -2999,6 +3575,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:long_night_vision_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Nachtsicht (lang)](#item-qtcraft-long_night_vision_tipped_arrow)
+
 ### <a id="item-qtcraft-regeneration_splash_potion"></a>Wurftrank der Regeneration
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3007,6 +3587,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:regeneration_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Regeneration](#item-qtcraft-regeneration_tipped_arrow)
 
 ### <a id="item-qtcraft-long_regeneration_splash_potion"></a>Wurftrank der Regeneration (lang)
 
@@ -3017,6 +3601,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:long_regeneration_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Regeneration (lang)](#item-qtcraft-long_regeneration_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_regeneration_splash_potion"></a>Wurftrank der Regeneration II
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3025,6 +3613,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:strong_regeneration_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow)
 
 ### <a id="item-qtcraft-mundane_splash_potion"></a>Wurftrank der Schlichtheit
 
@@ -3044,6 +3636,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:speed_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Schnelligkeit](#item-qtcraft-speed_tipped_arrow)
+
 ### <a id="item-qtcraft-long_speed_splash_potion"></a>Wurftrank der Schnelligkeit (lang)
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3052,6 +3648,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:long_speed_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Schnelligkeit (lang)](#item-qtcraft-long_speed_tipped_arrow)
 
 ### <a id="item-qtcraft-strong_speed_splash_potion"></a>Wurftrank der Schnelligkeit II
 
@@ -3062,6 +3662,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:strong_speed_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Schnelligkeit II](#item-qtcraft-strong_speed_tipped_arrow)
+
 ### <a id="item-qtcraft-weakness_splash_potion"></a>Wurftrank der Schwäche
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3071,6 +3675,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:weakness_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Schwäche](#item-qtcraft-weakness_tipped_arrow)
+
 ### <a id="item-qtcraft-long_weakness_splash_potion"></a>Wurftrank der Schwäche (lang)
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3079,6 +3687,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:long_weakness_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Schwäche (lang)](#item-qtcraft-long_weakness_tipped_arrow)
 
 ### <a id="item-qtcraft-awkward_splash_potion"></a>Wurftrank der Seltsamkeit
 
@@ -3098,6 +3710,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:strength_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Stärke](#item-qtcraft-strength_tipped_arrow)
+
 ### <a id="item-qtcraft-long_strength_splash_potion"></a>Wurftrank der Stärke (lang)
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3106,6 +3722,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:long_strength_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Stärke (lang)](#item-qtcraft-long_strength_tipped_arrow)
 
 ### <a id="item-qtcraft-strong_strength_splash_potion"></a>Wurftrank der Stärke II
 
@@ -3116,6 +3736,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:strong_strength_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Stärke II](#item-qtcraft-strong_strength_tipped_arrow)
+
 ### <a id="item-qtcraft-invisibility_splash_potion"></a>Wurftrank der Unsichtbarkeit
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3124,6 +3748,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:invisibility_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Unsichtbarkeit](#item-qtcraft-invisibility_tipped_arrow)
 
 ### <a id="item-qtcraft-long_invisibility_splash_potion"></a>Wurftrank der Unsichtbarkeit (lang)
 
@@ -3134,6 +3762,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:long_invisibility_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Unsichtbarkeit (lang)](#item-qtcraft-long_invisibility_tipped_arrow)
+
 ### <a id="item-qtcraft-poison_splash_potion"></a>Wurftrank der Vergiftung
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3142,6 +3774,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:poison_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Vergiftung](#item-qtcraft-poison_tipped_arrow)
 
 ### <a id="item-qtcraft-long_poison_splash_potion"></a>Wurftrank der Vergiftung (lang)
 
@@ -3152,6 +3788,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:long_poison_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil der Vergiftung (lang)](#item-qtcraft-long_poison_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_poison_splash_potion"></a>Wurftrank der Vergiftung II
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3160,6 +3800,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:strong_poison_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil der Vergiftung II](#item-qtcraft-strong_poison_tipped_arrow)
 
 ### <a id="item-qtcraft-harming_splash_potion"></a>Wurftrank des Schadens
 
@@ -3170,6 +3814,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 | ID | `qtcraft:harming_splash_potion` |
 | Stapelgröße | 1 |
 
+**Wird verwendet für**
+
+[Pfeil des Schadens](#item-qtcraft-harming_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_harming_splash_potion"></a>Wurftrank des Schadens II
 
 Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.
@@ -3178,6 +3826,10 @@ Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er ze
 |---|---|
 | ID | `qtcraft:strong_harming_splash_potion` |
 | Stapelgröße | 1 |
+
+**Wird verwendet für**
+
+[Pfeil des Schadens II](#item-qtcraft-strong_harming_tipped_arrow)
 
 ### <a id="item-qtcraft-brick"></a>Ziegelstein
 

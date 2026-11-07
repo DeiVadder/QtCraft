@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Birch Boat](#item-qtcraft-birch_boat) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Ember Dust](#item-qtcraft-ember_dust) · [Ember Rod](#item-qtcraft-ember_rod) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fermented spider eye](#item-qtcraft-fermented_spider_eye) · [Fireball](#item-qtcraft-fireball) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Fungus on a Stick](#item-qtcraft-fungus_on_a_stick) · [Gilded melon slice](#item-qtcraft-gilded_melon_slice) · [Glass bottle](#item-qtcraft-glass_bottle) · [Glowstone dust](#item-qtcraft-glowstone_dust) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Ink sac](#item-qtcraft-ink_sac) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Jungle Boat](#item-qtcraft-jungle_boat) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Lingering potion of fire resistance](#item-qtcraft-fire_resistance_lingering_potion) · [Lingering potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_lingering_potion) · [Lingering potion of harming](#item-qtcraft-harming_lingering_potion) · [Lingering potion of harming II](#item-qtcraft-strong_harming_lingering_potion) · [Lingering potion of healing](#item-qtcraft-healing_lingering_potion) · [Lingering potion of healing II](#item-qtcraft-strong_healing_lingering_potion) · [Lingering potion of invisibility](#item-qtcraft-invisibility_lingering_potion) · [Lingering potion of invisibility (long)](#item-qtcraft-long_invisibility_lingering_potion) · [Lingering potion of night vision](#item-qtcraft-night_vision_lingering_potion) · [Lingering potion of night vision (long)](#item-qtcraft-long_night_vision_lingering_potion) · [Lingering potion of oddity](#item-qtcraft-awkward_lingering_potion) · [Lingering potion of plainness](#item-qtcraft-mundane_lingering_potion) · [Lingering potion of poison](#item-qtcraft-poison_lingering_potion) · [Lingering potion of poison (long)](#item-qtcraft-long_poison_lingering_potion) · [Lingering potion of poison II](#item-qtcraft-strong_poison_lingering_potion) · [Lingering potion of regeneration](#item-qtcraft-regeneration_lingering_potion) · [Lingering potion of regeneration (long)](#item-qtcraft-long_regeneration_lingering_potion) · [Lingering potion of regeneration II](#item-qtcraft-strong_regeneration_lingering_potion) · [Lingering potion of slowness](#item-qtcraft-slowness_lingering_potion) · [Lingering potion of slowness (long)](#item-qtcraft-long_slowness_lingering_potion) · [Lingering potion of slowness II](#item-qtcraft-strong_slowness_lingering_potion) · [Lingering potion of strength](#item-qtcraft-strength_lingering_potion) · [Lingering potion of strength (long)](#item-qtcraft-long_strength_lingering_potion) · [Lingering potion of strength II](#item-qtcraft-strong_strength_lingering_potion) · [Lingering potion of swiftness](#item-qtcraft-speed_lingering_potion) · [Lingering potion of swiftness (long)](#item-qtcraft-long_speed_lingering_potion) · [Lingering potion of swiftness II](#item-qtcraft-strong_speed_lingering_potion) · [Lingering potion of thickness](#item-qtcraft-thick_lingering_potion) · [Lingering potion of weakness](#item-qtcraft-weakness_lingering_potion) · [Lingering potion of weakness (long)](#item-qtcraft-long_weakness_lingering_potion) · [Magenta dye](#item-qtcraft-magenta_dye) · [Magma Cream](#item-qtcraft-magma_cream) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Nether brick](#item-qtcraft-nether_brick) · [Nether quartz](#item-qtcraft-quartz) · [Nether wart](#item-qtcraft-nether_wart) · [Oak Boat](#item-qtcraft-oak_boat) · [Odd potion](#item-qtcraft-awkward_potion) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Plain potion](#item-qtcraft-mundane_potion) · [Potion of fire resistance](#item-qtcraft-fire_resistance_potion) · [Potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_potion) · [Potion of harming](#item-qtcraft-harming_potion) · [Potion of harming II](#item-qtcraft-strong_harming_potion) · [Potion of healing](#item-qtcraft-healing_potion) · [Potion of healing II](#item-qtcraft-strong_healing_potion) · [Potion of invisibility](#item-qtcraft-invisibility_potion) · [Potion of invisibility (long)](#item-qtcraft-long_invisibility_potion) · [Potion of night vision](#item-qtcraft-night_vision_potion) · [Potion of night vision (long)](#item-qtcraft-long_night_vision_potion) · [Potion of poison](#item-qtcraft-poison_potion) · [Potion of poison (long)](#item-qtcraft-long_poison_potion) · [Potion of poison II](#item-qtcraft-strong_poison_potion) · [Potion of regeneration](#item-qtcraft-regeneration_potion) · [Potion of regeneration (long)](#item-qtcraft-long_regeneration_potion) · [Potion of regeneration II](#item-qtcraft-strong_regeneration_potion) · [Potion of slowness](#item-qtcraft-slowness_potion) · [Potion of slowness (long)](#item-qtcraft-long_slowness_potion) · [Potion of slowness II](#item-qtcraft-strong_slowness_potion) · [Potion of strength](#item-qtcraft-strength_potion) · [Potion of strength (long)](#item-qtcraft-long_strength_potion) · [Potion of strength II](#item-qtcraft-strong_strength_potion) · [Potion of swiftness](#item-qtcraft-speed_potion) · [Potion of swiftness (long)](#item-qtcraft-long_speed_potion) · [Potion of swiftness II](#item-qtcraft-strong_speed_potion) · [Potion of weakness](#item-qtcraft-weakness_potion) · [Potion of weakness (long)](#item-qtcraft-long_weakness_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Saddle](#item-qtcraft-saddle) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of fire resistance](#item-qtcraft-fire_resistance_splash_potion) · [Splash potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_splash_potion) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of harming II](#item-qtcraft-strong_harming_splash_potion) · [Splash potion of healing](#item-qtcraft-healing_splash_potion) · [Splash potion of healing II](#item-qtcraft-strong_healing_splash_potion) · [Splash potion of invisibility](#item-qtcraft-invisibility_splash_potion) · [Splash potion of invisibility (long)](#item-qtcraft-long_invisibility_splash_potion) · [Splash potion of night vision](#item-qtcraft-night_vision_splash_potion) · [Splash potion of night vision (long)](#item-qtcraft-long_night_vision_splash_potion) · [Splash potion of oddity](#item-qtcraft-awkward_splash_potion) · [Splash potion of plainness](#item-qtcraft-mundane_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Splash potion of poison (long)](#item-qtcraft-long_poison_splash_potion) · [Splash potion of poison II](#item-qtcraft-strong_poison_splash_potion) · [Splash potion of regeneration](#item-qtcraft-regeneration_splash_potion) · [Splash potion of regeneration (long)](#item-qtcraft-long_regeneration_splash_potion) · [Splash potion of regeneration II](#item-qtcraft-strong_regeneration_splash_potion) · [Splash potion of slowness](#item-qtcraft-slowness_splash_potion) · [Splash potion of slowness (long)](#item-qtcraft-long_slowness_splash_potion) · [Splash potion of slowness II](#item-qtcraft-strong_slowness_splash_potion) · [Splash potion of strength](#item-qtcraft-strength_splash_potion) · [Splash potion of strength (long)](#item-qtcraft-long_strength_splash_potion) · [Splash potion of strength II](#item-qtcraft-strong_strength_splash_potion) · [Splash potion of swiftness](#item-qtcraft-speed_splash_potion) · [Splash potion of swiftness (long)](#item-qtcraft-long_speed_splash_potion) · [Splash potion of swiftness II](#item-qtcraft-strong_speed_splash_potion) · [Splash potion of thickness](#item-qtcraft-thick_splash_potion) · [Splash potion of weakness](#item-qtcraft-weakness_splash_potion) · [Splash potion of weakness (long)](#item-qtcraft-long_weakness_splash_potion) · [Spruce Boat](#item-qtcraft-spruce_boat) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Thick potion](#item-qtcraft-thick_potion) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Wailer Tear](#item-qtcraft-wailer_tear) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Arrow of fire resistance](#item-qtcraft-fire_resistance_tipped_arrow) · [Arrow of fire resistance (long)](#item-qtcraft-long_fire_resistance_tipped_arrow) · [Arrow of harming](#item-qtcraft-harming_tipped_arrow) · [Arrow of harming II](#item-qtcraft-strong_harming_tipped_arrow) · [Arrow of healing](#item-qtcraft-healing_tipped_arrow) · [Arrow of healing II](#item-qtcraft-strong_healing_tipped_arrow) · [Arrow of invisibility](#item-qtcraft-invisibility_tipped_arrow) · [Arrow of invisibility (long)](#item-qtcraft-long_invisibility_tipped_arrow) · [Arrow of night vision](#item-qtcraft-night_vision_tipped_arrow) · [Arrow of night vision (long)](#item-qtcraft-long_night_vision_tipped_arrow) · [Arrow of poison](#item-qtcraft-poison_tipped_arrow) · [Arrow of poison (long)](#item-qtcraft-long_poison_tipped_arrow) · [Arrow of poison II](#item-qtcraft-strong_poison_tipped_arrow) · [Arrow of regeneration](#item-qtcraft-regeneration_tipped_arrow) · [Arrow of regeneration (long)](#item-qtcraft-long_regeneration_tipped_arrow) · [Arrow of regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow) · [Arrow of slowness](#item-qtcraft-slowness_tipped_arrow) · [Arrow of slowness (long)](#item-qtcraft-long_slowness_tipped_arrow) · [Arrow of slowness II](#item-qtcraft-strong_slowness_tipped_arrow) · [Arrow of strength](#item-qtcraft-strength_tipped_arrow) · [Arrow of strength (long)](#item-qtcraft-long_strength_tipped_arrow) · [Arrow of strength II](#item-qtcraft-strong_strength_tipped_arrow) · [Arrow of swiftness](#item-qtcraft-speed_tipped_arrow) · [Arrow of swiftness (long)](#item-qtcraft-long_speed_tipped_arrow) · [Arrow of swiftness II](#item-qtcraft-strong_speed_tipped_arrow) · [Arrow of weakness](#item-qtcraft-weakness_tipped_arrow) · [Arrow of weakness (long)](#item-qtcraft-long_weakness_tipped_arrow) · [Birch Boat](#item-qtcraft-birch_boat) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Ember Dust](#item-qtcraft-ember_dust) · [Ember Rod](#item-qtcraft-ember_rod) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fermented spider eye](#item-qtcraft-fermented_spider_eye) · [Fireball](#item-qtcraft-fireball) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Fungus on a Stick](#item-qtcraft-fungus_on_a_stick) · [Gilded melon slice](#item-qtcraft-gilded_melon_slice) · [Glass bottle](#item-qtcraft-glass_bottle) · [Glowstone dust](#item-qtcraft-glowstone_dust) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Ink sac](#item-qtcraft-ink_sac) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Jungle Boat](#item-qtcraft-jungle_boat) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Lingering potion of fire resistance](#item-qtcraft-fire_resistance_lingering_potion) · [Lingering potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_lingering_potion) · [Lingering potion of harming](#item-qtcraft-harming_lingering_potion) · [Lingering potion of harming II](#item-qtcraft-strong_harming_lingering_potion) · [Lingering potion of healing](#item-qtcraft-healing_lingering_potion) · [Lingering potion of healing II](#item-qtcraft-strong_healing_lingering_potion) · [Lingering potion of invisibility](#item-qtcraft-invisibility_lingering_potion) · [Lingering potion of invisibility (long)](#item-qtcraft-long_invisibility_lingering_potion) · [Lingering potion of night vision](#item-qtcraft-night_vision_lingering_potion) · [Lingering potion of night vision (long)](#item-qtcraft-long_night_vision_lingering_potion) · [Lingering potion of oddity](#item-qtcraft-awkward_lingering_potion) · [Lingering potion of plainness](#item-qtcraft-mundane_lingering_potion) · [Lingering potion of poison](#item-qtcraft-poison_lingering_potion) · [Lingering potion of poison (long)](#item-qtcraft-long_poison_lingering_potion) · [Lingering potion of poison II](#item-qtcraft-strong_poison_lingering_potion) · [Lingering potion of regeneration](#item-qtcraft-regeneration_lingering_potion) · [Lingering potion of regeneration (long)](#item-qtcraft-long_regeneration_lingering_potion) · [Lingering potion of regeneration II](#item-qtcraft-strong_regeneration_lingering_potion) · [Lingering potion of slowness](#item-qtcraft-slowness_lingering_potion) · [Lingering potion of slowness (long)](#item-qtcraft-long_slowness_lingering_potion) · [Lingering potion of slowness II](#item-qtcraft-strong_slowness_lingering_potion) · [Lingering potion of strength](#item-qtcraft-strength_lingering_potion) · [Lingering potion of strength (long)](#item-qtcraft-long_strength_lingering_potion) · [Lingering potion of strength II](#item-qtcraft-strong_strength_lingering_potion) · [Lingering potion of swiftness](#item-qtcraft-speed_lingering_potion) · [Lingering potion of swiftness (long)](#item-qtcraft-long_speed_lingering_potion) · [Lingering potion of swiftness II](#item-qtcraft-strong_speed_lingering_potion) · [Lingering potion of thickness](#item-qtcraft-thick_lingering_potion) · [Lingering potion of weakness](#item-qtcraft-weakness_lingering_potion) · [Lingering potion of weakness (long)](#item-qtcraft-long_weakness_lingering_potion) · [Magenta dye](#item-qtcraft-magenta_dye) · [Magma Cream](#item-qtcraft-magma_cream) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Nether brick](#item-qtcraft-nether_brick) · [Nether quartz](#item-qtcraft-quartz) · [Nether wart](#item-qtcraft-nether_wart) · [Oak Boat](#item-qtcraft-oak_boat) · [Odd potion](#item-qtcraft-awkward_potion) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Plain potion](#item-qtcraft-mundane_potion) · [Potion of fire resistance](#item-qtcraft-fire_resistance_potion) · [Potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_potion) · [Potion of harming](#item-qtcraft-harming_potion) · [Potion of harming II](#item-qtcraft-strong_harming_potion) · [Potion of healing](#item-qtcraft-healing_potion) · [Potion of healing II](#item-qtcraft-strong_healing_potion) · [Potion of invisibility](#item-qtcraft-invisibility_potion) · [Potion of invisibility (long)](#item-qtcraft-long_invisibility_potion) · [Potion of night vision](#item-qtcraft-night_vision_potion) · [Potion of night vision (long)](#item-qtcraft-long_night_vision_potion) · [Potion of poison](#item-qtcraft-poison_potion) · [Potion of poison (long)](#item-qtcraft-long_poison_potion) · [Potion of poison II](#item-qtcraft-strong_poison_potion) · [Potion of regeneration](#item-qtcraft-regeneration_potion) · [Potion of regeneration (long)](#item-qtcraft-long_regeneration_potion) · [Potion of regeneration II](#item-qtcraft-strong_regeneration_potion) · [Potion of slowness](#item-qtcraft-slowness_potion) · [Potion of slowness (long)](#item-qtcraft-long_slowness_potion) · [Potion of slowness II](#item-qtcraft-strong_slowness_potion) · [Potion of strength](#item-qtcraft-strength_potion) · [Potion of strength (long)](#item-qtcraft-long_strength_potion) · [Potion of strength II](#item-qtcraft-strong_strength_potion) · [Potion of swiftness](#item-qtcraft-speed_potion) · [Potion of swiftness (long)](#item-qtcraft-long_speed_potion) · [Potion of swiftness II](#item-qtcraft-strong_speed_potion) · [Potion of weakness](#item-qtcraft-weakness_potion) · [Potion of weakness (long)](#item-qtcraft-long_weakness_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Saddle](#item-qtcraft-saddle) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of fire resistance](#item-qtcraft-fire_resistance_splash_potion) · [Splash potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_splash_potion) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of harming II](#item-qtcraft-strong_harming_splash_potion) · [Splash potion of healing](#item-qtcraft-healing_splash_potion) · [Splash potion of healing II](#item-qtcraft-strong_healing_splash_potion) · [Splash potion of invisibility](#item-qtcraft-invisibility_splash_potion) · [Splash potion of invisibility (long)](#item-qtcraft-long_invisibility_splash_potion) · [Splash potion of night vision](#item-qtcraft-night_vision_splash_potion) · [Splash potion of night vision (long)](#item-qtcraft-long_night_vision_splash_potion) · [Splash potion of oddity](#item-qtcraft-awkward_splash_potion) · [Splash potion of plainness](#item-qtcraft-mundane_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Splash potion of poison (long)](#item-qtcraft-long_poison_splash_potion) · [Splash potion of poison II](#item-qtcraft-strong_poison_splash_potion) · [Splash potion of regeneration](#item-qtcraft-regeneration_splash_potion) · [Splash potion of regeneration (long)](#item-qtcraft-long_regeneration_splash_potion) · [Splash potion of regeneration II](#item-qtcraft-strong_regeneration_splash_potion) · [Splash potion of slowness](#item-qtcraft-slowness_splash_potion) · [Splash potion of slowness (long)](#item-qtcraft-long_slowness_splash_potion) · [Splash potion of slowness II](#item-qtcraft-strong_slowness_splash_potion) · [Splash potion of strength](#item-qtcraft-strength_splash_potion) · [Splash potion of strength (long)](#item-qtcraft-long_strength_splash_potion) · [Splash potion of strength II](#item-qtcraft-strong_strength_splash_potion) · [Splash potion of swiftness](#item-qtcraft-speed_splash_potion) · [Splash potion of swiftness (long)](#item-qtcraft-long_speed_splash_potion) · [Splash potion of swiftness II](#item-qtcraft-strong_speed_splash_potion) · [Splash potion of thickness](#item-qtcraft-thick_splash_potion) · [Splash potion of weakness](#item-qtcraft-weakness_splash_potion) · [Splash potion of weakness (long)](#item-qtcraft-long_weakness_splash_potion) · [Spruce Boat](#item-qtcraft-spruce_boat) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Thick potion](#item-qtcraft-thick_potion) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Wailer Tear](#item-qtcraft-wailer_tear) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -45,9 +45,553 @@ Shot from a bow. Its damage grows with its speed; armour takes part of it. Arrow
 | [Stick](#item-qtcraft-stick) |  |
 | [Feather](#item-qtcraft-feather) |  |
 
+**Used in**
+
+[Arrow of fire resistance](#item-qtcraft-fire_resistance_tipped_arrow), [Arrow of fire resistance (long)](#item-qtcraft-long_fire_resistance_tipped_arrow), [Arrow of harming](#item-qtcraft-harming_tipped_arrow), [Arrow of harming II](#item-qtcraft-strong_harming_tipped_arrow), [Arrow of healing](#item-qtcraft-healing_tipped_arrow), [Arrow of healing II](#item-qtcraft-strong_healing_tipped_arrow), [Arrow of invisibility](#item-qtcraft-invisibility_tipped_arrow), [Arrow of invisibility (long)](#item-qtcraft-long_invisibility_tipped_arrow), [Arrow of night vision](#item-qtcraft-night_vision_tipped_arrow), [Arrow of night vision (long)](#item-qtcraft-long_night_vision_tipped_arrow), [Arrow of poison](#item-qtcraft-poison_tipped_arrow), [Arrow of poison (long)](#item-qtcraft-long_poison_tipped_arrow), [Arrow of poison II](#item-qtcraft-strong_poison_tipped_arrow), [Arrow of regeneration](#item-qtcraft-regeneration_tipped_arrow), [Arrow of regeneration (long)](#item-qtcraft-long_regeneration_tipped_arrow), [Arrow of regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow), [Arrow of slowness](#item-qtcraft-slowness_tipped_arrow), [Arrow of slowness (long)](#item-qtcraft-long_slowness_tipped_arrow), [Arrow of slowness II](#item-qtcraft-strong_slowness_tipped_arrow), [Arrow of strength](#item-qtcraft-strength_tipped_arrow), [Arrow of strength (long)](#item-qtcraft-long_strength_tipped_arrow), [Arrow of strength II](#item-qtcraft-strong_strength_tipped_arrow), [Arrow of swiftness](#item-qtcraft-speed_tipped_arrow), [Arrow of swiftness (long)](#item-qtcraft-long_speed_tipped_arrow), [Arrow of swiftness II](#item-qtcraft-strong_speed_tipped_arrow), [Arrow of weakness](#item-qtcraft-weakness_tipped_arrow), [Arrow of weakness (long)](#item-qtcraft-long_weakness_tipped_arrow)
+
 **Dropped by**
 
 [Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
+
+### <a id="item-qtcraft-fire_resistance_tipped_arrow"></a>Arrow of fire resistance
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire_resistance_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of fire resistance](#item-qtcraft-fire_resistance_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of fire resistance](#item-qtcraft-fire_resistance_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_fire_resistance_tipped_arrow"></a>Arrow of fire resistance (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_fire_resistance_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of fire resistance (long)](#item-qtcraft-long_fire_resistance_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of fire resistance (long)](#item-qtcraft-long_fire_resistance_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-harming_tipped_arrow"></a>Arrow of harming
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:harming_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of harming](#item-qtcraft-harming_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of harming](#item-qtcraft-harming_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_harming_tipped_arrow"></a>Arrow of harming II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_harming_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of harming II](#item-qtcraft-strong_harming_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of harming II](#item-qtcraft-strong_harming_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-healing_tipped_arrow"></a>Arrow of healing
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:healing_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of healing](#item-qtcraft-healing_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of healing](#item-qtcraft-healing_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_healing_tipped_arrow"></a>Arrow of healing II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_healing_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of healing II](#item-qtcraft-strong_healing_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of healing II](#item-qtcraft-strong_healing_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-invisibility_tipped_arrow"></a>Arrow of invisibility
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:invisibility_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of invisibility](#item-qtcraft-invisibility_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of invisibility](#item-qtcraft-invisibility_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_invisibility_tipped_arrow"></a>Arrow of invisibility (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_invisibility_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of invisibility (long)](#item-qtcraft-long_invisibility_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of invisibility (long)](#item-qtcraft-long_invisibility_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-night_vision_tipped_arrow"></a>Arrow of night vision
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:night_vision_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of night vision](#item-qtcraft-night_vision_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of night vision](#item-qtcraft-night_vision_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_night_vision_tipped_arrow"></a>Arrow of night vision (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_night_vision_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of night vision (long)](#item-qtcraft-long_night_vision_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of night vision (long)](#item-qtcraft-long_night_vision_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-poison_tipped_arrow"></a>Arrow of poison
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:poison_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of poison](#item-qtcraft-poison_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of poison](#item-qtcraft-poison_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_poison_tipped_arrow"></a>Arrow of poison (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_poison_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of poison (long)](#item-qtcraft-long_poison_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of poison (long)](#item-qtcraft-long_poison_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_poison_tipped_arrow"></a>Arrow of poison II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_poison_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of poison II](#item-qtcraft-strong_poison_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of poison II](#item-qtcraft-strong_poison_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-regeneration_tipped_arrow"></a>Arrow of regeneration
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:regeneration_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of regeneration](#item-qtcraft-regeneration_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of regeneration](#item-qtcraft-regeneration_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_regeneration_tipped_arrow"></a>Arrow of regeneration (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_regeneration_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of regeneration (long)](#item-qtcraft-long_regeneration_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of regeneration (long)](#item-qtcraft-long_regeneration_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_regeneration_tipped_arrow"></a>Arrow of regeneration II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_regeneration_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of regeneration II](#item-qtcraft-strong_regeneration_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-slowness_tipped_arrow"></a>Arrow of slowness
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:slowness_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of slowness](#item-qtcraft-slowness_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of slowness](#item-qtcraft-slowness_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_slowness_tipped_arrow"></a>Arrow of slowness (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_slowness_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of slowness (long)](#item-qtcraft-long_slowness_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of slowness (long)](#item-qtcraft-long_slowness_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_slowness_tipped_arrow"></a>Arrow of slowness II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_slowness_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of slowness II](#item-qtcraft-strong_slowness_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of slowness II](#item-qtcraft-strong_slowness_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strength_tipped_arrow"></a>Arrow of strength
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strength_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of strength](#item-qtcraft-strength_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of strength](#item-qtcraft-strength_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_strength_tipped_arrow"></a>Arrow of strength (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_strength_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of strength (long)](#item-qtcraft-long_strength_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of strength (long)](#item-qtcraft-long_strength_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_strength_tipped_arrow"></a>Arrow of strength II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_strength_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of strength II](#item-qtcraft-strong_strength_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of strength II](#item-qtcraft-strong_strength_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-speed_tipped_arrow"></a>Arrow of swiftness
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:speed_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of swiftness](#item-qtcraft-speed_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of swiftness](#item-qtcraft-speed_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_speed_tipped_arrow"></a>Arrow of swiftness (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_speed_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of swiftness (long)](#item-qtcraft-long_speed_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of swiftness (long)](#item-qtcraft-long_speed_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-strong_speed_tipped_arrow"></a>Arrow of swiftness II
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:strong_speed_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of swiftness II](#item-qtcraft-strong_speed_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of swiftness II](#item-qtcraft-strong_speed_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-weakness_tipped_arrow"></a>Arrow of weakness
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:weakness_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of weakness](#item-qtcraft-weakness_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of weakness](#item-qtcraft-weakness_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
+
+### <a id="item-qtcraft-long_weakness_tipped_arrow"></a>Arrow of weakness (long)
+
+Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:long_weakness_tipped_arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | 8 × [Arrow of weakness (long)](#item-qtcraft-long_weakness_tipped_arrow) |
+| [Arrow](#item-qtcraft-arrow) | [Splash potion of weakness (long)](#item-qtcraft-long_weakness_splash_potion) | [Arrow](#item-qtcraft-arrow) |  |
+| [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) | [Arrow](#item-qtcraft-arrow) |  |
 
 ### <a id="item-qtcraft-birch_boat"></a>Birch Boat
 
@@ -2713,6 +3257,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:fire_resistance_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of fire resistance](#item-qtcraft-fire_resistance_tipped_arrow)
+
 ### <a id="item-qtcraft-long_fire_resistance_splash_potion"></a>Splash potion of fire resistance (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2721,6 +3269,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_fire_resistance_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of fire resistance (long)](#item-qtcraft-long_fire_resistance_tipped_arrow)
 
 ### <a id="item-qtcraft-harming_splash_potion"></a>Splash potion of harming
 
@@ -2731,6 +3283,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:harming_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of harming](#item-qtcraft-harming_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_harming_splash_potion"></a>Splash potion of harming II
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2739,6 +3295,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strong_harming_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of harming II](#item-qtcraft-strong_harming_tipped_arrow)
 
 ### <a id="item-qtcraft-healing_splash_potion"></a>Splash potion of healing
 
@@ -2749,6 +3309,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:healing_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of healing](#item-qtcraft-healing_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_healing_splash_potion"></a>Splash potion of healing II
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2757,6 +3321,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strong_healing_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of healing II](#item-qtcraft-strong_healing_tipped_arrow)
 
 ### <a id="item-qtcraft-invisibility_splash_potion"></a>Splash potion of invisibility
 
@@ -2767,6 +3335,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:invisibility_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of invisibility](#item-qtcraft-invisibility_tipped_arrow)
+
 ### <a id="item-qtcraft-long_invisibility_splash_potion"></a>Splash potion of invisibility (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2775,6 +3347,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_invisibility_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of invisibility (long)](#item-qtcraft-long_invisibility_tipped_arrow)
 
 ### <a id="item-qtcraft-night_vision_splash_potion"></a>Splash potion of night vision
 
@@ -2785,6 +3361,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:night_vision_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of night vision](#item-qtcraft-night_vision_tipped_arrow)
+
 ### <a id="item-qtcraft-long_night_vision_splash_potion"></a>Splash potion of night vision (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2793,6 +3373,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_night_vision_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of night vision (long)](#item-qtcraft-long_night_vision_tipped_arrow)
 
 ### <a id="item-qtcraft-awkward_splash_potion"></a>Splash potion of oddity
 
@@ -2821,6 +3405,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:poison_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of poison](#item-qtcraft-poison_tipped_arrow)
+
 ### <a id="item-qtcraft-long_poison_splash_potion"></a>Splash potion of poison (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2829,6 +3417,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_poison_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of poison (long)](#item-qtcraft-long_poison_tipped_arrow)
 
 ### <a id="item-qtcraft-strong_poison_splash_potion"></a>Splash potion of poison II
 
@@ -2839,6 +3431,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:strong_poison_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of poison II](#item-qtcraft-strong_poison_tipped_arrow)
+
 ### <a id="item-qtcraft-regeneration_splash_potion"></a>Splash potion of regeneration
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2847,6 +3443,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:regeneration_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of regeneration](#item-qtcraft-regeneration_tipped_arrow)
 
 ### <a id="item-qtcraft-long_regeneration_splash_potion"></a>Splash potion of regeneration (long)
 
@@ -2857,6 +3457,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:long_regeneration_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of regeneration (long)](#item-qtcraft-long_regeneration_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_regeneration_splash_potion"></a>Splash potion of regeneration II
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2865,6 +3469,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strong_regeneration_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of regeneration II](#item-qtcraft-strong_regeneration_tipped_arrow)
 
 ### <a id="item-qtcraft-slowness_splash_potion"></a>Splash potion of slowness
 
@@ -2875,6 +3483,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:slowness_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of slowness](#item-qtcraft-slowness_tipped_arrow)
+
 ### <a id="item-qtcraft-long_slowness_splash_potion"></a>Splash potion of slowness (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2883,6 +3495,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_slowness_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of slowness (long)](#item-qtcraft-long_slowness_tipped_arrow)
 
 ### <a id="item-qtcraft-strong_slowness_splash_potion"></a>Splash potion of slowness II
 
@@ -2893,6 +3509,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:strong_slowness_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of slowness II](#item-qtcraft-strong_slowness_tipped_arrow)
+
 ### <a id="item-qtcraft-strength_splash_potion"></a>Splash potion of strength
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2901,6 +3521,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strength_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of strength](#item-qtcraft-strength_tipped_arrow)
 
 ### <a id="item-qtcraft-long_strength_splash_potion"></a>Splash potion of strength (long)
 
@@ -2911,6 +3535,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:long_strength_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of strength (long)](#item-qtcraft-long_strength_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_strength_splash_potion"></a>Splash potion of strength II
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2919,6 +3547,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strong_strength_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of strength II](#item-qtcraft-strong_strength_tipped_arrow)
 
 ### <a id="item-qtcraft-speed_splash_potion"></a>Splash potion of swiftness
 
@@ -2929,6 +3561,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:speed_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of swiftness](#item-qtcraft-speed_tipped_arrow)
+
 ### <a id="item-qtcraft-long_speed_splash_potion"></a>Splash potion of swiftness (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2938,6 +3574,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:long_speed_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of swiftness (long)](#item-qtcraft-long_speed_tipped_arrow)
+
 ### <a id="item-qtcraft-strong_speed_splash_potion"></a>Splash potion of swiftness II
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2946,6 +3586,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:strong_speed_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of swiftness II](#item-qtcraft-strong_speed_tipped_arrow)
 
 ### <a id="item-qtcraft-thick_splash_potion"></a>Splash potion of thickness
 
@@ -2965,6 +3609,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 | ID | `qtcraft:weakness_splash_potion` |
 | Stack size | 1 |
 
+**Used in**
+
+[Arrow of weakness](#item-qtcraft-weakness_tipped_arrow)
+
 ### <a id="item-qtcraft-long_weakness_splash_potion"></a>Splash potion of weakness (long)
 
 Throw it with the use button: it reaches everyone around where it breaks, less with the distance.
@@ -2973,6 +3621,10 @@ Throw it with the use button: it reaches everyone around where it breaks, less w
 |---|---|
 | ID | `qtcraft:long_weakness_splash_potion` |
 | Stack size | 1 |
+
+**Used in**
+
+[Arrow of weakness (long)](#item-qtcraft-long_weakness_tipped_arrow)
 
 ### <a id="item-qtcraft-spruce_boat"></a>Spruce Boat
 

@@ -60,9 +60,17 @@ private:
     // Keeps the extra health within what the effects give; used up, it ends them.
     void settleAbsorption(QcServerClient &client) const;
     void tickCreatures();
+    // What the effects of a creature do to it in a tick, and who gets the kill.
+    struct CreatureHurt
+    {
+        quint32 creature = 0;
+        double damage = 0.0;
+        quint32 attacker = 0;
+    };
+
     // What the effects of `mob` do to it in this tick and their countdown; returns the damage they
     // deal, which may kill it and so waits until the list of creatures is walked through.
-    double tickCreature(QcCreature &mob);
+    CreatureHurt tickCreature(QcCreature &mob);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

@@ -97,22 +97,45 @@ QColor paintBowDrawn(const QcTextureSpec &spec, int x, int y, QColor color)
     return paintDrawnBow(spec, x, y, color, Stage);
 }
 
-// A shaft (primary) with a stone head at the top right and white fletching (secondary) at the
-// bottom left.
-QColor paintArrow(const QcTextureSpec &spec, int x, int y, QColor color)
+// The colours of an arrow's parts.
+struct ArrowColours
+{
+    QColor head;
+    QColor shaft;
+    QColor fletching;
+};
+
+// A shaft with a head at the top right and fletching at the bottom left.
+QColor paintArrowShape(const QcTextureSpec &spec, int x, int y, const ArrowColours &colours)
 {
     const double along = alongOf(x, y);
     const double across = std::abs(acrossOf(x, y));
     if (along >= 4.0 && along <= 7.0 && across <= (7.0 - along) * 0.8 + 0.5) {
-        return varied(spec, QColor(0x6e, 0x6e, 0x72), x, y, 8);
+        return varied(spec, colours.head, x, y, 8);
     }
     if (along >= -6.5 && along < 4.0 && across <= 0.5) {
-        return varied(spec, color, x, y, 5);
+        return varied(spec, colours.shaft, x, y, 5);
     }
     if (along >= -7.0 && along <= -3.5 && across <= 1.5) {
-        return varied(spec, spec.secondary, x, y, 6);
+        return varied(spec, colours.fletching, x, y, 6);
     }
     return clear();
+}
+
+// A shaft (primary) with a stone head and white fletching (secondary).
+QColor paintArrow(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return paintArrowShape(spec, x, y, {QColor(0x6e, 0x6e, 0x72), color, spec.secondary});
+}
+
+// A tipped arrow (decision E-1102): a shaft (primary) whose head and the piece behind it are wet
+// with the potion (secondary), and white fletching, fixed like the plain arrow's head: a texture
+// has two colours, and the potion takes the second.
+QColor paintTippedArrow(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    constexpr double wetFrom = 1.0;
+    const QColor shaft = alongOf(x, y) >= wetFrom ? spec.secondary : color;
+    return paintArrowShape(spec, x, y, {spec.secondary, shaft, QColor(0xe8, 0xe8, 0xe8)});
 }
 
 // A quill (secondary) with soft vanes (primary) that narrow towards both ends.
@@ -163,12 +186,13 @@ QColor paintFishingRod(const QcTextureSpec &spec, int x, int y, QColor color)
     return line || hook ? spec.secondary : clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 8> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 9> painters = {{
     {Pattern::Bow, paintBow},
     {Pattern::BowDrawn1, paintBowDrawn<1>},
     {Pattern::BowDrawn2, paintBowDrawn<2>},
     {Pattern::BowDrawn3, paintBowDrawn<3>},
     {Pattern::Arrow, paintArrow},
+    {Pattern::TippedArrow, paintTippedArrow},
     {Pattern::Feather, paintFeather},
     {Pattern::Bone, paintBone},
     {Pattern::FishingRod, paintFishingRod},

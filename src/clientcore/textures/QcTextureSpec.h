@@ -243,6 +243,7 @@ struct QcTextureSpec
         BowDrawn2, // the second stage
         BowDrawn3, // the third stage, fully drawn
         Arrow, // an arrow
+        TippedArrow, // an arrow whose head (secondary) is wet with a potion, decision E-1102
         Feather, // a feather
         Bone, // a bone
         /*! A fishing rod (decision E-503): the rod (primary) on the diagonal, its line

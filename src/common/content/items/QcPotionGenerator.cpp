@@ -6,8 +6,12 @@
 #include "common/content/items/QcPotionParser.h"
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QJsonArray>
+
+#include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -17,6 +21,20 @@ namespace {
 constexpr double lingeringShare = 0.25;
 // How an instant effect travels in a hit entry, which needs a duration.
 constexpr double instantSeconds = 1.0;
+// A tipped arrow gives the eighth part of the drink's time, at least one tick (decision E-1101).
+constexpr double tippedShare = 0.125;
+// The arrows one potion tips, around it in the crafting grid.
+constexpr int tippedArrows = 8;
+// The form a tipped arrow is made from: the reference's lingering potion needs the End, the splash
+// potion is the last step there is until then (decision E-1100).
+constexpr QcPotionForm tippingForm = QcPotionForm::Splash;
+// The form's name in the texts of a tipped arrow.
+constexpr auto tippedForm = "tipped";
+// The plain arrow: its flight and hit go to every tipped arrow, its tag makes them ammunition.
+constexpr auto plainArrow = "qtcraft:arrow";
+constexpr auto arrowTag = "qtcraft:arrows";
+// The shaft of a tipped arrow when the plain arrow's texture gives none (a pack's picture).
+constexpr auto arrowShaft = "#8a6a44";
 // The bottle's glass and the liquid of a potion without effects (the reference's water colour).
 constexpr auto bottleGlass = "#c8dce6";
 constexpr auto splashGlass = "#d9cfe8";
@@ -54,11 +72,11 @@ QString potionText(const QcContentRegistry &registry, const QcPotionDefinition &
     return registry.translations().translate(u"potion.variant.%1"_s.arg(potion.variant), language).arg(text);
 }
 
-// Gives the item of `form` its display name in every language with potion texts, unless a pack
-// wrote one; the others fall back to the default language like every other text.
-void addTexts(QcContentRegistry &registry, const QcPotionDefinition &potion, QcPotionForm form, const QString &key)
+// Gives the item of the form named `form` its display name in every language with potion texts,
+// unless a pack wrote one; the others fall back to the default language like every other text.
+void addTexts(QcContentRegistry &registry, const QcPotionDefinition &potion, const QString &form, const QString &key)
 {
-    const QString formKey = u"potion.form.%1"_s.arg(QcPotionParser::formName(form));
+    const QString formKey = u"potion.form.%1"_s.arg(form);
     const QStringList languages = registry.translations().languages();
     for (const QString &language : languages) {
         if (registry.translations().has(formKey, language) && !registry.translations().has(key, language)) {
@@ -75,15 +93,16 @@ QString liquidColour(const QcContentRegistry &registry, const QcPotionDefinition
     return u"#%1"_s.arg(colour, 6, 16, u'0');
 }
 
-void addTexture(QcContentRegistry &registry, const QcPotionDefinition &potion, QcPotionForm form, const QString &name)
+// Gives the item `name` of `potion` the texture `pattern`, with `primary` and the colour of the
+// liquid, unless a pack has one.
+void addTexture(QcContentRegistry &registry, const QcPotionDefinition &potion, const QString &name, const QString &pattern, const QString &primary)
 {
     if (registry.assets().texture(name)) {
         return;
     }
-    const auto glass = form == QcPotionForm::Drink ? bottleGlass : form == QcPotionForm::Splash ? splashGlass : lingeringGlass;
     const QJsonObject procedural{{u"name"_s, name},
-                                 {u"pattern"_s, u"bottle"_s},
-                                 {u"primary"_s, QString::fromLatin1(glass)},
+                                 {u"pattern"_s, pattern},
+                                 {u"primary"_s, primary},
                                  {u"secondary"_s, liquidColour(registry, potion)},
                                  {u"variation"_s, 0.06},
                                  {u"seed"_s, static_cast<int>(qChecksum(localPart(name).toUtf8()) % 9973U)}};
@@ -161,9 +180,119 @@ QcResult<QcItemId> addItem(QcContentRegistry &registry, const QcPotionDefinition
     if (!item) {
         return qcError(item.error());
     }
-    addTexture(registry, potion, form, name);
-    addTexts(registry, potion, form, key);
+    const auto glass = form == QcPotionForm::Drink ? bottleGlass : form == QcPotionForm::Splash ? splashGlass : lingeringGlass;
+    addTexture(registry, potion, name, u"bottle"_s, QString::fromLatin1(glass));
+    addTexts(registry, potion, QcPotionParser::formName(form), key);
     return registry.registerItem(std::move(*item));
+}
+
+// How many seconds of `seconds` a tipped arrow gives: whole ticks, rounded down as the reference's
+// integer division does, at least one.
+double tippedSeconds(double seconds)
+{
+    return std::max(std::floor(seconds * tippedShare * QcPhysics::tickRate), 1.0) * QcPhysics::tickDuration;
+}
+
+// The hit effect of `effect` on a tipped arrow; an instant effect keeps its full strength.
+QcHitEffect tippedEffect(const QcContentRegistry &registry, const QcPotionEffect &effect)
+{
+    const QcEffectDefinition *kind = registry.effect(effect.effect);
+    QcHitEffect hit;
+    hit.type = QString::fromLatin1(QcHitEffect::effect);
+    hit.number = kind && kind->instant ? instantSeconds : tippedSeconds(effect.seconds);
+    hit.subject = effect.effect;
+    hit.level = effect.level;
+    return hit;
+}
+
+// The item file of the tipped arrow `name`: the plain arrow's ammunition with a look of its own.
+QJsonObject arrowItemJson(const QString &name, const QString &key)
+{
+    return {{u"name"_s, name},
+            {u"translation"_s, key},
+            {u"description"_s, u"potion.form.%1.description"_s.arg(QString::fromLatin1(tippedForm))},
+            {u"texture"_s, name},
+            {u"tags"_s, QJsonArray{QString::fromLatin1(arrowTag)}},
+            {u"projectile"_s, name},
+            {u"dispense"_s, u"shoot"_s}};
+}
+
+// The recipe of the tipped arrow `name`: eight arrows around `bottle`.
+QJsonObject arrowRecipeJson(const QString &name, const QString &bottle)
+{
+    return {{u"name"_s, name},
+            {u"type"_s, u"shaped"_s},
+            {u"pattern"_s, QJsonArray{u"AAA"_s, u"APA"_s, u"AAA"_s}},
+            {u"key"_s, QJsonObject{{u"A"_s, QString::fromLatin1(plainArrow)}, {u"P"_s, bottle}}},
+            {u"result"_s, QJsonObject{{u"item"_s, name}, {u"count"_s, tippedArrows}}}};
+}
+
+// The shaft of the plain arrow's texture.
+QString shaftColour(const QcContentRegistry &registry)
+{
+    const QcTextureDefinition *plain = registry.assets().texture(QString::fromLatin1(plainArrow));
+    return plain ? plain->procedural.value(u"primary"_s).toString(QString::fromLatin1(arrowShaft)) : QString::fromLatin1(arrowShaft);
+}
+
+// Registers the tipped arrow of `potion`: its item unless a pack defined it, then what a pack did
+// not write of its projectile (what the plain arrow does and the potion's effects), recipe and
+// texture. The error is the warning.
+QcResult<QcItemId> addArrow(QcContentRegistry &registry, const QcPotionDefinition &potion, const QcProjectileDefinition &plain)
+{
+    const QString name = u"%1:%2_tipped_arrow"_s.arg(namespaceOf(potion.name), localPart(potion.name));
+    if (const std::optional<QcItemId> existing = registry.itemId(name)) {
+        return *existing;
+    }
+
+    const QString packNamespace = namespaceOf(name);
+    const QString key = u"item.%1.%2"_s.arg(packNamespace, localPart(name));
+    QcResult<QcItemDefinition> item = QcContentParser::parseItem(arrowItemJson(name, key), packNamespace);
+    if (!item) {
+        return qcError(item.error());
+    }
+    QcResult<QcRecipeDefinition> recipe = QcContentParser::parseRecipe(arrowRecipeJson(name, itemName(potion, tippingForm)), packNamespace);
+    if (!recipe) {
+        return qcError(recipe.error());
+    }
+
+    QcProjectileDefinition projectile = plain;
+    projectile.name = name;
+    projectile.item = name;
+    for (const QcPotionEffect &effect : potion.effects) {
+        projectile.onHit.append(tippedEffect(registry, effect));
+    }
+    if (!registry.projectile(name)) {
+        registry.registerProjectile(std::move(projectile));
+    }
+    if (!registry.recipeIndex(recipe->name)) {
+        registry.registerRecipe(std::move(*recipe));
+    }
+    addTexture(registry, potion, name, u"tipped_arrow"_s, shaftColour(registry));
+    addTexts(registry, potion, QString::fromLatin1(tippedForm), key);
+    return registry.registerItem(std::move(*item));
+}
+
+// Gives the potions with an effect and the form arrows are made from their tipped arrow; content
+// without the plain arrow has none.
+QStringList addArrows(QcContentRegistry &registry, const QList<QcPotionDefinition> &potions)
+{
+    const QcProjectileDefinition *found = registry.projectile(QString::fromLatin1(plainArrow));
+    if (!found) {
+        return {};
+    }
+
+    QStringList warnings;
+    // A copy: registering projectiles below may move the plain one.
+    const QcProjectileDefinition plain = *found;
+    for (const QcPotionDefinition &potion : potions) {
+        if (potion.effects.isEmpty() || !potion.hasForm(tippingForm)) {
+            continue;
+        }
+        if (const QcResult<QcItemId> arrow = addArrow(registry, potion, plain); !arrow) {
+            warnings.append(u"potion '%1': %2"_s.arg(potion.name, arrow.error()));
+        }
+    }
+    return warnings;
 }
 
 } // namespace
@@ -193,6 +322,7 @@ QStringList generate(QcContentRegistry &registry)
             }
         }
     }
+    warnings.append(addArrows(registry, potions));
     return warnings;
 }
 

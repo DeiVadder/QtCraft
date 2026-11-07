@@ -24,6 +24,9 @@ struct QcStatusEffect
     /*! The share of an instant effect that arrives (a splash farther off, decision E-1064); not
         saved, an instant effect acts in the next tick. */
     double strength = 1.0;
+    /*! The player whose shot gave an instant effect (decision E-1101), who gets the kill when it
+        kills a creature; 0 for none. Not saved, like \c {strength}. */
+    quint32 giver = 0;
 
     bool operator==(const QcStatusEffect &) const = default;
 };

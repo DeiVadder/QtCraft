@@ -21,6 +21,7 @@ qc_add_test(test_ammunition SOURCES player/test_ammunition.cpp fixtures/QcServer
 qc_add_test(test_effect_rules SOURCES player/test_effect_rules.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_status_effects SOURCES player/test_status_effects.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fishing SOURCES player/test_fishing.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_tipped_arrows SOURCES player/test_tipped_arrows.cpp fixtures/QcMachineFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore qc_base_content TIMEOUT 300)
 qc_add_test(test_projectiles SOURCES player/test_projectiles.cpp fixtures/QcServerTestFixture.h fixtures/QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_experience_sources SOURCES player/test_experience_sources.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_projectile_measure SOURCES player/test_projectile_measure.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

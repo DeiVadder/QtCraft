@@ -5,12 +5,14 @@
     "sections": [
         "bow",
         "arrows",
+        "tipped",
         "throwing",
         "fishing"
     ],
     "related": [
         "bow",
         "arrow",
+        "poison_tipped_arrow",
         "feather",
         "snowball",
         "shade_pearl",

@@ -250,7 +250,8 @@ bool QcServerProjectiles::hitCreature(const QcProjectileManager::Hit &hit, const
     QcCreature *mob = took ? m_state.entities().creatures().find(hit.body) : nullptr;
     if (mob) {
         mob->burnTicks = std::max(mob->burnTicks, impact.burnTicks);
-        for (const QcStatusEffect &effect : impact.effects) {
+        for (QcStatusEffect effect : impact.effects) {
+            effect.giver = byPlayer ? projectile.shooter : 0;
             QcServerEffects::giveCreature(m_state.content(), m_state.entities().creatures(), hit.body, effect);
         }
     }

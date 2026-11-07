@@ -223,7 +223,7 @@ Ein Wassereimer füllt einen Kessel, jede Glasflasche nimmt ein Drittel heraus; 
 
 **Siehe auch**
 
-[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear)
+[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear)
 
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 
@@ -585,6 +585,10 @@ Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und las
 
 Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Treffer richtet umso mehr Schaden an, je schneller der Pfeil fliegt, und stößt das Ziel zurück; Rüstung schützt wie gegen Schläge. Pfeile bleiben im getroffenen Block stecken und fallen, wenn er verschwindet; lauf darüber, um sie aufzuheben. Nach 60 s verschwinden sie. Eine Welt hält höchstens 1024 fliegende oder steckende Pfeile und höchstens 64 steckende in einem Chunk (die ältesten gehen zuerst).
 
+**Getränkte Pfeile**
+
+Acht Pfeile rund um einen Wurftrank im Handwerksraster ergeben acht getränkte Pfeile dieses Tranks, auch aus seinen langen und starken Arten. Die Flasche ist dabei verbraucht. Bögen und Spender schießen sie wie jeden Pfeil. Was ein getränkter Pfeil trifft, nimmt den Schaden des Pfeils und bekommt die Wirkung des Tranks für ein Achtel seiner Zeit: Ein Giftpfeil vergiftet etwa fünfeinhalb Sekunden, Sofortwirkungen wie Heilung und Schaden wirken sofort. Ein steckender getränkter Pfeil kommt beim Aufheben als er selbst zurück.
+
 **Werfen**
 
 Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Schattenperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.
@@ -595,7 +599,7 @@ Wirf eine Angel mit der Benutzen-Taste aus, und ihr Schwimmer fliegt los und tre
 
 **Siehe auch**
 
-[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Schattenperle](items.md#item-qtcraft-shade_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
+[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Schattenperle](items.md#item-qtcraft-shade_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-explosives"></a>Sprengstoff
 

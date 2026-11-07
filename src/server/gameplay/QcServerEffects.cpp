@@ -141,10 +141,10 @@ void QcServerEffects::settleAbsorption(QcServerClient &client) const
     }
 }
 
-double QcServerEffects::tickCreature(QcCreature &mob)
+QcServerEffects::CreatureHurt QcServerEffects::tickCreature(QcCreature &mob)
 {
     const QcMobDefinition &kind = m_state.content().mobs()[mob.type];
-    double damage = 0.0;
+    CreatureHurt result{.creature = mob.id};
     for (const QcStatusEffect &effect : mob.effects->all()) {
         const QcEffectDefinition *definition = m_state.content().effect(effect.name);
         if (!definition) {
@@ -157,7 +157,9 @@ double QcServerEffects::tickCreature(QcCreature &mob)
         // for the undead.
         const bool reversed = definition->reversedOnUndead && kind.undead;
         const double undead = definition->amountAt(definition->undeadAmount, effect.level, effect.strength);
-        damage += reversed ? (heal > 0.0 ? undead : 0.0) : hurt;
+        const double dealt = reversed ? (heal > 0.0 ? undead : 0.0) : hurt;
+        result.damage += dealt;
+        result.attacker = dealt > 0.0 && effect.giver != 0 ? effect.giver : result.attacker;
         mob.health = std::min(mob.health + (reversed ? (hurts ? undead : 0.0) : heal), kind.maxHealth);
     }
 
@@ -165,30 +167,30 @@ double QcServerEffects::tickCreature(QcCreature &mob)
     if (mob.effects->isEmpty()) {
         mob.effects.reset();
     }
-    return damage;
+    return result;
 }
 
 void QcServerEffects::tickCreatures()
 {
     // Hurting may kill a creature (an effect of a mod without minHealth) and so change the list.
-    QList<std::pair<quint32, double>> hurts;
+    QList<CreatureHurt> hurts;
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
         if (mob.dormant || !mob.effects) {
             continue;
         }
-        if (const double damage = tickCreature(mob); damage > 0.0) {
-            hurts.append({mob.id, damage});
+        if (const CreatureHurt hurt = tickCreature(mob); hurt.damage > 0.0) {
+            hurts.append(hurt);
         }
     }
 
-    for (const auto &[id, damage] : std::as_const(hurts)) {
-        const QcCreature *mob = m_state.entities().creatures().find(id);
+    for (const CreatureHurt &hurt : std::as_const(hurts)) {
+        const QcCreature *mob = m_state.entities().creatures().find(hurt.creature);
         if (!mob) {
             continue;
         }
         // No push; a passive creature runs on the way it faces.
         const double yaw = qDegreesToRadians(static_cast<double>(mob->yaw));
         const QcVec3 behind = mob->motion.position - QcVec3{std::sin(yaw), 0.0, -std::cos(yaw)};
-        QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = id, .damage = damage, .from = behind, .knockback = 0.0});
+        QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = hurt.creature, .damage = hurt.damage, .from = behind, .attacker = hurt.attacker, .knockback = 0.0});
     }
 }

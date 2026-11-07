@@ -8,7 +8,9 @@
         "H": "hay_block",
         "W": "white_wool",
         "R": "red_wool",
-        "C": "chest[facing=north]"
+        "C": "chest[facing=north]",
+        "D": "signal_dispenser[facing=north]",
+        "B": "stone_button[attach=north]"
     },
     "layers": [
         [
@@ -30,8 +32,8 @@
             "         ",
             "         ",
             "         ",
-            "         ",
-            "         ",
+            "        D",
+            "        B",
             "         ",
             "         ",
             "      C  ",
@@ -96,6 +98,18 @@
                     "count": 64
                 },
                 {
+                    "item": "poison_tipped_arrow",
+                    "count": 16
+                },
+                {
+                    "item": "slowness_tipped_arrow",
+                    "count": 16
+                },
+                {
+                    "item": "poison_splash_potion",
+                    "count": 1
+                },
+                {
                     "item": "feather",
                     "count": 16
                 },
@@ -116,6 +130,27 @@
                     "count": 16
                 }
             ]
+        },
+        {
+            "at": [
+                8,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "poison_tipped_arrow",
+                    "count": 16
+                },
+                {
+                    "item": "speed_tipped_arrow",
+                    "count": 16
+                },
+                {
+                    "item": "harming_tipped_arrow",
+                    "count": 16
+                }
+            ]
         }
     ],
     "labels": [
@@ -126,6 +161,14 @@
                 5.5
             ],
             "text": "structure.qtcraft.archery_range"
+        },
+        {
+            "at": [
+                8.5,
+                2.6,
+                5.5
+            ],
+            "text": "structure.qtcraft.archery_range.dispenser"
         }
     ]
 }

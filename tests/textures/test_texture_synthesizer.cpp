@@ -135,6 +135,34 @@ private slots:
         QVERIFY(first != QcTextureSynthesizer::synthesize(spec));
     }
 
+    // The potion wets the head and the shaft behind it at the top right (decision E-1102), and
+    // nothing of the fletching at the bottom left; the plain arrow has no such colour.
+    void aTippedArrowShowsItsPotionAtTheHead()
+    {
+        QcTextureSpec spec;
+        spec.pattern = QcTextureSpec::Pattern::TippedArrow;
+        spec.primary = QColor(0x8a, 0x6a, 0x44);
+        spec.secondary = QColor(0x00, 0xe0, 0x00);
+        const auto greenPixels = [](const QImage &image, int fromX, int toX) {
+            int count = 0;
+            for (int y = 0; y < image.height(); ++y) {
+                for (int x = fromX; x < toX; ++x) {
+                    const QColor colour = image.pixelColor(x, y);
+                    count += colour.alpha() > 0 && colour.green() > 2 * colour.red();
+                }
+            }
+            return count;
+        };
+
+        const QImage tipped = QcTextureSynthesizer::synthesize(spec);
+        const int half = tipped.width() / 2;
+        QVERIFY(greenPixels(tipped, half, tipped.width()) >= 6);
+        QCOMPARE(greenPixels(tipped, 0, half), 0);
+
+        spec.pattern = QcTextureSpec::Pattern::Arrow;
+        QCOMPARE(greenPixels(QcTextureSynthesizer::synthesize(spec), half, tipped.width()), 0);
+    }
+
     void tileHasFixedSize()
     {
         const QImage image = QcTextureSynthesizer::synthesize({});

@@ -1159,6 +1159,8 @@
     "chapter.qtcraft.archery.arrows.title": "Pfeile im Flug",
     "chapter.qtcraft.archery.arrows.text": "Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Treffer richtet umso mehr Schaden an, je schneller der Pfeil fliegt, und stößt das Ziel zurück; Rüstung schützt wie gegen Schläge. Pfeile bleiben im getroffenen Block stecken und fallen, wenn er verschwindet; lauf darüber, um sie aufzuheben. Nach {projectiles.despawnSeconds} s verschwinden sie. Eine Welt hält höchstens {projectiles.limit} fliegende oder steckende Pfeile und höchstens {projectiles.perChunk} steckende in einem Chunk (die ältesten gehen zuerst).",
     "item.qtcraft.snowball.description": "Wird mit der Benutzen-Taste geworfen, einer nach dem anderen und sofort. Er tut nicht weh, stößt aber zurück, was er trifft, und zerplatzt an allem, worauf er trifft. Schnee mit einer Schaufel abgebaut gibt Schneebälle; vier ergeben einen Schneeblock.",
+    "chapter.qtcraft.archery.tipped.title": "Getränkte Pfeile",
+    "chapter.qtcraft.archery.tipped.text": "Acht Pfeile rund um einen Wurftrank im Handwerksraster ergeben acht getränkte Pfeile dieses Tranks, auch aus seinen langen und starken Arten. Die Flasche ist dabei verbraucht. Bögen und Spender schießen sie wie jeden Pfeil. Was ein getränkter Pfeil trifft, nimmt den Schaden des Pfeils und bekommt die Wirkung des Tranks für ein Achtel seiner Zeit: Ein Giftpfeil vergiftet etwa fünfeinhalb Sekunden, Sofortwirkungen wie Heilung und Schaden wirken sofort. Ein steckender getränkter Pfeil kommt beim Aufheben als er selbst zurück.",
     "chapter.qtcraft.archery.throwing.title": "Werfen",
     "chapter.qtcraft.archery.throwing.text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Schattenperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.",
     "chapter.qtcraft.archery.fishing.title": "Angeln",
@@ -1565,5 +1567,6 @@
     "potion.form.drink.description": "Trinke ihn mit der Benutzen-Taste; die Flasche bleibt.",
     "potion.form.splash.description": "Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.",
     "potion.form.lingering.description": "Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.",
+    "potion.form.tipped.description": "Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.",
     "handbook.machine.brewing": "Brauen"
 }

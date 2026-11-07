@@ -266,7 +266,7 @@ Params forPattern(Pattern pattern)
     // a handle stays straight and even at every resolution (Scale2x would leave steps that grow
     // into bumps with every doubling).
     if (among(pattern, {Pattern::Tool, Pattern::Pickaxe, Pattern::Axe, Pattern::Shovel, Pattern::Sword, Pattern::Hoe, Pattern::Stick,
-                        Pattern::Arrow, Pattern::FishingRod})) {
+                        Pattern::Arrow, Pattern::TippedArrow, Pattern::FishingRod})) {
         return {.grain = 0.03, .bevel = 0.22, .smooth = true, .rimOnly = true, .strokes = true};
     }
     // Everything else is a cut-out shape (plants, items, armour parts): smooth outlines, a bevel
