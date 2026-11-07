@@ -172,6 +172,8 @@ QcResult<QcDimensionDefinition> parseDimension(const QJsonObject &json, const QS
     dimension.waterEvaporates = reader.boolean(u"waterEvaporates"_s, false);
     dimension.liquidFlows = liquidFlowsOf(reader, packNamespace);
     dimension.bedsExplode = reader.boolean(u"bedsExplode"_s, false);
+    dimension.anchorsWork = reader.boolean(u"anchorsWork"_s, false);
+    dimension.startable = reader.boolean(u"startable"_s, false);
     dimension.compassesSpin = reader.boolean(u"compassesSpin"_s, false);
     dimension.floor = floorOf(reader);
     dimension.voidDamage = reader.number(u"voidDamage"_s, dimension.voidDamage, 0.0, Definition::maxVoidDamage);

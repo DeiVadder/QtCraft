@@ -114,6 +114,10 @@ struct QcWorldInfo
         world.json "keepGeneratorVersion"): the question before the world opens comes back only
         for a newer version. 0: not declined. */
     int keepGeneratorVersion = 0;
+    /*! The dimension players start in and respawn in without a soul anchor (decision E-1110,
+        world.json "generator"/"startDimension"), chosen when the world is created; empty for the
+        overworld, as in worlds without the key. */
+    QString startDimension;
     /*! Whether the generator's one-time setup of the world has run. */
     bool setupDone = true;
     /*! Game mode of players who join the world for the first time (decision E-282), chosen when

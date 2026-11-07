@@ -117,6 +117,9 @@ QJsonObject generatorJson(const QcWorldInfo &info)
     if (!info.worldOptions.isEmpty()) {
         generator.insert(u"worldOptions"_s, info.worldOptions);
     }
+    if (!info.startDimension.isEmpty()) {
+        generator.insert(u"startDimension"_s, info.startDimension);
+    }
     if (!info.dimensionGeneratorVersions.isEmpty()) {
         QJsonObject dimensions;
         for (auto it = info.dimensionGeneratorVersions.begin(); it != info.dimensionGeneratorVersions.end(); ++it) {
@@ -170,6 +173,14 @@ QcResult<QMap<QString, int>> dimensionVersionsOf(const QJsonObject &generator, c
         versions.insert(it.key(), static_cast<int>(number));
     }
     return versions;
+}
+
+// The dimension a world starts in (decision E-1110); a name too long for a dimension starts in
+// the overworld.
+QString startDimensionOf(const QJsonObject &generator)
+{
+    const QString name = generator.value(u"startDimension"_s).toString();
+    return name.size() > QcDimensionDefinition::maxNameLength ? QString() : name;
 }
 
 // The series of the dimensions' numbers (decision E-1033), for those outside the overworld's;
@@ -313,6 +324,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.setupDone = generator.value(u"setupDone"_s).toBool(true);
     info.generatorOptions = generator.value(u"options"_s).toString();
     info.worldOptions = generator.value(u"worldOptions"_s).toObject();
+    info.startDimension = startDimensionOf(generator);
     const QcResult<int> generatorVersion = generatorVersionOf(generator, path);
     if (!generatorVersion) {
         return qcError(generatorVersion.error());

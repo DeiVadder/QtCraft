@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -758,6 +758,28 @@ Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine
 **Siehe auch**
 
 [Lapislazulierz](blocks.md#block-qtcraft-lapis_ore), [Ofen](blocks.md#block-qtcraft-furnace)
+
+### <a id="chapter-qtcraft-nether_start"></a>Im Nether beginnen
+
+**Die Startwahl**
+
+Beim Anlegen einer normalen Welt lässt dich „Beginnen in“ unter Weltgenerierung im Nether statt in der Oberwelt anfangen. Du erscheinst auf festem Boden fern von Lava und Feuer, wenn einer in der Nähe ist, in einem Karmesin- oder Wirrwald. Ohne Seelenanker kommst du nach dem Tod dorthin zurück. Die Oberwelt liegt hinter einem Netherportal; die Welt behält ihren Start für immer.
+
+**Die ersten Schritte**
+
+Es gibt kein Wasser und kein Eisenerz. Karmesin- und Wirrstämme geben Bretter, Stöcke, eine Werkbank und Holzwerkzeuge; Schwarzstein zählt als Stein für Steinwerkzeuge und den Ofen. Nethergold-Erz gibt Nuggets und Barren, und Hauerlinge tauschen gegen Gold: Obsidian, Weinenden Obsidian, Eisennuggets, Feuerkugeln, Wasserflaschen, Kies, Seelensand, Faden und Leder. Hoglins geben Essen, und Feuer brennt auf Netherrack ewig. Zehn Obsidian ergeben einen Portalrahmen, Lava oder eine Feuerkugel entzündet ihn.
+
+**Der Seelenanker**
+
+Stelle einen Seelenanker aus sechs Weinenden Obsidian um drei Glowstone her und lade ihn mit Glowstone, bis zu vier Ladungen; mit jeder leuchtet er heller. Benutze ihn geladen im Nether, um deinen Wiederbelebungspunkt zu setzen. Jedes Wiederbeleben kostet eine Ladung; ein leerer, abgebauter oder zugestellter Anker schickt dich zum Startpunkt der Welt und ist vergessen. In der Oberwelt benutzt, explodiert ein geladener Anker mit Stärke 5 und legt Feuer.
+
+**Betten**
+
+Wo die Dimension es nicht erlaubt, lässt sich in keinem Bett schlafen: im Nether benutzt, explodiert es mit Stärke 5, stärker als TNT, und legt ringsum Feuer. Behalte Betten für die Oberwelt.
+
+**Siehe auch**
+
+[Seelenanker](blocks.md#block-qtcraft-soul_anchor), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Karmesinstamm](blocks.md#block-qtcraft-crimson_stem), [Wirrstamm](blocks.md#block-qtcraft-warped_stem), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Bett](blocks.md#block-qtcraft-bed)
 
 ### <a id="chapter-qtcraft-creatures"></a>Wesen
 

@@ -151,8 +151,16 @@ public:
     QcEntities &entities() { return current().entities(); }
     /*! Returns every entity of the current dimension, read-only. */
     const QcEntities &entities() const { return current().entities(); }
-    /*! Returns where players appear: the world spawn in the overworld. */
+    /*! Returns where players appear: the world spawn in spawnDimension(). */
     QcSpawnPoint &spawnPoint() { return m_spawnPoint; }
+    /*! Returns the dimension of the world spawn: the world's start dimension once
+        openSpawnDimension() opened it (decision E-1110), the overworld before and when it cannot
+        open. */
+    QcServerDimension &spawnDimension() { return *m_spawnDimension; }
+    /*! Opens the start dimension of the world (QcWorldInfo::startDimension) and puts the world
+        spawn there. A dimension that cannot open, or where no world may start, leaves the spawn
+        in the overworld; returns the warning then, else an empty string. */
+    QString openSpawnDimension();
     /*! Returns the damage of the blocks bodies touch (lava, magma). */
     const QcContactDamage &contactDamage() const { return m_contactDamage; }
     /*! Returns world.json: name, seed, time of day, game rules. */
@@ -229,6 +237,8 @@ private:
     ScreenCloser m_screenCloser;
     std::vector<std::unique_ptr<QcServerClient>> m_clients;
     QcSpawnPoint m_spawnPoint;
+    // Where m_spawnPoint is: never null, an open dimension.
+    QcServerDimension *m_spawnDimension = &m_dimensions.overworld();
     QcContactDamage m_contactDamage;
     QcWorldInfo m_info;
     QcAccessList m_access;

@@ -1,0 +1,16 @@
+{
+    "name": "soul_anchor",
+    "type": "shaped",
+    "pattern": [
+        "CCC",
+        "GGG",
+        "CCC"
+    ],
+    "key": {
+        "C": "crying_obsidian",
+        "G": "glowstone"
+    },
+    "result": {
+        "item": "soul_anchor"
+    }
+}

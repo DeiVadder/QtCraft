@@ -287,6 +287,7 @@ QcResult<QcNetherSettings> parse(const QJsonObject &json, const QString &packNam
     nether.roof = reader.integer(u"roof"_s, nether.roof, nether.liquidLevel + 8, top);
     nether.bedrockLayers = reader.integer(u"bedrockLayers"_s, nether.bedrockLayers, 1, 8);
     nether.biomeScale = reader.number(u"biomeScale"_s, nether.biomeScale, 8.0, 4096.0);
+    nether.spawnBiomes = QcContentFields::parseNames(u"spawnBiomes"_s, packNamespace, reader);
     reader.nestedObject(u"shape"_s, [&nether](const QJsonObject &, QcJsonFieldReader &nested) { nether.shape = shapeOf(nested); });
     nether.shores = listOf<QcNetherSettings::Shore>(json, u"shores"_s, reader, [&](QcJsonFieldReader &entry) { return shoreOf(entry, packNamespace); });
     nether.clusters = listOf<QcNetherSettings::Cluster>(json, u"clusters"_s, reader, [&](QcJsonFieldReader &entry) { return clusterOf(entry, packNamespace); });

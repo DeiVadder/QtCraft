@@ -364,14 +364,14 @@ private slots:
         data.motion.position = {0.5, 70.0, 0.5};
         data.experience = QcExperience(5, 0);
         QVERIFY(data.advancements.grant(u"qtcraft:iron"_s, u"iron"_s));
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 12);
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 13);
         QVERIFY(payload);
 
         // The advancements are the last field of version 9 (version 10 adds the air after them,
-        // version 11 the dimension, version 12 the extra health and the saturation): a byte array
-        // whose criteria count is forged.
+        // version 11 the dimension, version 12 the extra health and the saturation, version 13 the
+        // flag of the soul anchor): a byte array whose criteria count is forged.
         const auto air = static_cast<qsizetype>(sizeof(qint32)) + static_cast<qsizetype>(sizeof(quint32)) + 2 * data.dimension.size() + 1
-                         + static_cast<qsizetype>(2 * sizeof(double));
+                         + static_cast<qsizetype>(2 * sizeof(double)) + 1;
         QByteArray damaged = payload->bytes.chopped(air + static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
         QDataStream out(&damaged, QIODevice::Append);
         out.setVersion(QcSaveFile::streamVersion);

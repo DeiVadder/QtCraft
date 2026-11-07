@@ -1572,5 +1572,19 @@
     "potion.form.splash.description": "Throw it with the use button: it reaches everyone around where it breaks, less with the distance.",
     "potion.form.lingering.description": "Throw it with the use button: it acts like a splash potion for a quarter of the time.",
     "potion.form.tipped.description": "Shoot it from a bow or a dispenser: what it hits gets the potion's effect, lasting effects for an eighth of their time. Eight arrows around a splash potion make eight of them.",
-    "handbook.machine.brewing": "brewing"
+    "handbook.machine.brewing": "brewing",
+    "block.qtcraft.soul_anchor.description": "Six crying obsidian around three glowstone. Use glowstone on it to charge it, up to four times. In the Nether, using a charged anchor sets your respawn point beside it, and each respawn there takes one charge; anywhere else it explodes like a bed in the Nether. Needs a diamond pickaxe.",
+    "chapter.qtcraft.nether_start": "Starting in the Nether",
+    "chapter.qtcraft.nether_start.start.title": "The start option",
+    "chapter.qtcraft.nether_start.start.text": "When you create a normal world, \"Start in\" under World generation lets you begin in the Nether instead of the overworld. You appear on firm ground away from lava and fire, if one is near in a crimson or warped forest. Without a soul anchor you come back there after dying. The overworld lies behind a nether portal; the world keeps its start for good.",
+    "chapter.qtcraft.nether_start.first_steps.title": "The first steps",
+    "chapter.qtcraft.nether_start.first_steps.text": "There is no water and no iron ore. Crimson and warped stems give planks, sticks, a crafting table and wooden tools; blackstone counts as stone for stone tools and the furnace. Nether gold ore gives nuggets and ingots, and tusklings barter for gold: obsidian, crying obsidian, iron nuggets, fire charges, water bottles, gravel, soul sand, string and leather. Hoglins give food, and fire burns on netherrack for ever. Ten obsidian make a portal frame, and lava or a fire charge lights it.",
+    "chapter.qtcraft.nether_start.anchor.title": "The soul anchor",
+    "chapter.qtcraft.nether_start.anchor.text": "Craft a soul anchor from six crying obsidian around three glowstone and charge it with glowstone, up to four charges; it glows brighter with each. Use it charged in the Nether to set your respawn point. Each respawn takes one charge; an empty anchor, a broken one or one without room beside it sends you to the world spawn and is forgotten. Used in the overworld, a charged anchor explodes with power 5 and sets fires.",
+    "chapter.qtcraft.nether_start.beds.title": "Beds",
+    "chapter.qtcraft.nether_start.beds.text": "A bed cannot be slept in where the dimension does not allow it: used in the Nether, it explodes with power 5, stronger than TNT, and sets fires around. Keep beds for the overworld.",
+    "block.qtcraft.soul_anchor_1.description": "A soul anchor with 1 of 4 charges.",
+    "block.qtcraft.soul_anchor_2.description": "A soul anchor with 2 of 4 charges.",
+    "block.qtcraft.soul_anchor_3.description": "A soul anchor with 3 of 4 charges.",
+    "block.qtcraft.soul_anchor_4.description": "A soul anchor with 4 of 4 charges."
 }

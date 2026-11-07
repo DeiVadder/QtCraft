@@ -152,7 +152,8 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
                                              .options = *stored,
                                              .worldOptions = *worldOptions,
                                              .generatorVersion = settings.newWorldGeneratorVersion(),
-                                             .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival)};
+                                             .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival),
+                                             .startDimension = settings.startDimension};
         const QcResult<QcWorldLibrary::Entry> created = library.create(settings.world, seed, setup);
         if (!created) {
             return qcError(created.error());

@@ -234,6 +234,9 @@ struct QcNetherSettings
     int bedrockLayers = 4;
     /*! Blocks per cell of the two noises of the biome map (\c {"biomeScale"}). */
     double biomeScale = 200.0;
+    /*! The biomes the spawn search looks in first (\c {"spawnBiomes"}, decision E-1111); empty
+        or none found nearby: any biome. */
+    QStringList spawnBiomes;
     /*! The noise of the terrain. */
     Shape shape;
     /*! The banks along the lava. */

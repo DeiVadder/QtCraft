@@ -161,6 +161,17 @@ void QcWorldOptionsController::retranslate()
     for (const QcWorldPreset &preset : content()->worldgen().worldPresets()) {
         m_presets.append(QVariantMap{{u"name"_s, preset.name}, {u"title"_s, text(preset.translationKey)}, {u"help"_s, text(preset.translationKey + u".help"_s)}});
     }
+    // Each start with its own help text (\c {<dimension key>.start}), so a mod's dimension says
+    // what its start is like.
+    QVariantList starts;
+    for (const QcDimensionDefinition &dimension : content()->worldgen().dimensions()) {
+        if (dimension.canStartIn()) {
+            const QVariantMap entry{
+                {u"value"_s, dimension.name}, {u"text"_s, text(dimension.translationKey)}, {u"help"_s, text(dimension.translationKey + u".start"_s)}};
+            dimension.isOverworld() ? starts.prepend(entry) : starts.append(entry);
+        }
+    }
+    setStartDimensions(starts);
     preview()->retranslate();
     emit optionsChanged();
     emit summaryChanged();

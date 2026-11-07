@@ -246,15 +246,16 @@ private slots:
         player.experience = QcExperience(7, 0);
         player.enchantSeed = 1234;
         player.runeSeed = 99;
-        const QcResult<QcSaveFile::Payload> newest = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 12);
+        const QcResult<QcSaveFile::Payload> newest = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 13);
         QVERIFY(newest.has_value());
-        QCOMPARE(newest->version, 12);
+        QCOMPARE(newest->version, 13);
         // Version 8 is the same without the advancements (a byte array, decision E-923), the air
         // (version 10, decision E-955), the dimension (version 11, decision E-980), the extra health
-        // and the saturation (version 12, decisions E-992, E-1001) at the end.
+        // and the saturation (version 12, decisions E-992, E-1001) and the flag of the soul anchor
+        // (version 13, decision E-1112) at the end.
         const auto advancementsSize = static_cast<qsizetype>(sizeof(quint32)) + player.advancements.bytes().size()
                                       + static_cast<qsizetype>(sizeof(qint32)) + static_cast<qsizetype>(sizeof(quint32))
-                                      + 2 * player.dimension.size() + 1 + static_cast<qsizetype>(2 * sizeof(double));
+                                      + 2 * player.dimension.size() + 1 + static_cast<qsizetype>(2 * sizeof(double)) + 1;
         const QcSaveFile::Payload eight{newest->bytes.chopped(advancementsSize), 8};
         const QcSaveFile::Payload *current = &eight;
         const QcPlayerStorage::Result eightRead = storage.parse(u"Eight"_s, QcSaveFile::bytes("QCPL", eight.bytes, 8));

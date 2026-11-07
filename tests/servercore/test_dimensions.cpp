@@ -600,12 +600,13 @@ private slots:
         QcPlayerData player;
         player.dimension = u"test:empty"_s;
         // A file of version 10 is the same payload without the dimension, the flag of its return and
-        // the extra health and the saturation (version 12) at its end.
+        // the extra health and the saturation (version 12) and the flag of the soul anchor (version
+        // 13) at its end.
         const QByteArray file = storage.playerBytes(player);
         const QByteArrayView magic = QByteArrayView(file).first(4);
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(file, u"player"_s, magic, 12);
-        QVERIFY(payload && payload->version == 12);
-        const qsizetype dimensionBytes = 4 + 2 * player.dimension.size() + 1 + static_cast<qsizetype>(2 * sizeof(double));
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(file, u"player"_s, magic, 13);
+        QVERIFY(payload && payload->version == 13);
+        const qsizetype dimensionBytes = 4 + 2 * player.dimension.size() + 1 + static_cast<qsizetype>(2 * sizeof(double)) + 1;
         const QByteArray older = QcSaveFile::bytes(magic, payload->bytes.chopped(dimensionBytes), 10);
 
         const QcPlayerStorage::Result read = storage.parsePlayer(u"Old"_s, older);
@@ -628,7 +629,7 @@ private slots:
         QcPlayerData player;
         player.dimension = dimension;
         const QByteArray file = storage.playerBytes(player);
-        QCOMPARE(QcSaveFile::parse(file, u"player"_s, QByteArrayView(file).first(4), 12)->version, 12);
+        QCOMPARE(QcSaveFile::parse(file, u"player"_s, QByteArrayView(file).first(4), 13)->version, 13);
 
         const QcPlayerStorage::Result read = storage.parsePlayer(u"Lost"_s, file);
         QVERIFY(!read);

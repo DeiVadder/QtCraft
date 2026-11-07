@@ -71,6 +71,10 @@ struct Options
                                     u"World generation options of a terrain world it starts or creates (also with --server, and for --map, "
                                     u"--biome-map, --slice-map and --world-stats): 'preset=more_villages,village_spacing=256,caves=off'."_s,
                                     u"options"_s};
+    QCommandLineOption startDimension{u"start-dimension"_s,
+                                      u"Dimension a world it starts or creates begins in, e.g. 'qtcraft:nether' (also with --server, overriding "
+                                      u"server.json; default: the overworld). A saved world keeps its own."_s,
+                                      u"name"_s};
     QCommandLineOption generatorVersion{u"generator-version"_s,
                                         u"World generator version of a world it starts or creates (also with --server, overriding server.json; "
                                         u"0 or default: the current one). A saved world keeps its own."_s,
@@ -152,7 +156,7 @@ struct Options
         parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
         parser.addOptions({handbook, language, handbookWeb});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, worldOptions, generatorVersion, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
+        parser.addOptions({seed, world, generator, generatorOptions, worldOptions, startDimension, generatorVersion, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});

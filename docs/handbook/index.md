@@ -6,8 +6,8 @@ Everything the game contains, generated from the game's content data by `qtcraft
 
 ## Contents
 
-- [Basics](playing.md) – 38 entries
-- [Blocks](blocks.md) – 398 entries
+- [Basics](playing.md) – 39 entries
+- [Blocks](blocks.md) – 403 entries
 - [Building parts](parts.md) – 124 entries
 - [Liquids](liquids.md) – 2 entries
 - [Items](items.md) – 229 entries

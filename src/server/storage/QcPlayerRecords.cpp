@@ -56,6 +56,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.air = client.air.air();
     player.dimension = client.dimension;
     player.returnTo = client.returnTo;
+    player.anchor = client.anchor;
     return record;
 }
 
@@ -81,6 +82,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.air.restore(player.air);
     client.dimension = player.dimension;
     client.returnTo = player.returnTo;
+    client.anchor = player.anchor;
     QcServerGameModes::applyRules(client);
 }
 

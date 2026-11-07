@@ -4,6 +4,7 @@
 #pragma once
 
 #include "app/controllers/QcWorldLibraryController.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/world/QcGeneratorVersion.h"
 
@@ -47,6 +48,8 @@ class QcNewWorldDraft : public QObject
     Q_PROPERTY(QList<int> generatorVersions READ generatorVersions CONSTANT FINAL)
     // The current version: the form names it "Current (N)".
     Q_PROPERTY(int currentGeneratorVersion READ currentGeneratorVersion CONSTANT FINAL)
+    // The dimension the world starts in (decision E-1110), by name; the overworld by default.
+    Q_PROPERTY(QString startDimension READ startDimension WRITE setStartDimension NOTIFY startDimensionChanged FINAL)
 
 public:
     using WorldType = QcWorldLibraryController::WorldType;
@@ -76,11 +79,15 @@ public:
     int generatorVersion() const { return m_generatorVersion; }
     // A version the game does not have is refused with a warning.
     void setGeneratorVersion(int version);
+    QString startDimension() const { return m_startDimension; }
+    // An empty name is refused with a warning; whether the content has it is up to the server.
+    void setStartDimension(const QString &dimension);
     // The versions the game generates, newest first.
     [[nodiscard]] static QList<int> generatorVersions();
     [[nodiscard]] static int currentGeneratorVersion();
     // What createWorld takes besides name and seed: keepInventory, worldType, layers (a flat
-    // world's), gameMode, generatorVersion and worldOptions (those of QcWorldOptionsController).
+    // world's), gameMode, generatorVersion, startDimension and worldOptions (those of
+    // QcWorldOptionsController).
     Q_INVOKABLE QVariantMap setup() const;
 
     // The type and mode the form starts with (the test hooks QTCRAFT_MENU_WORLD_TYPE and
@@ -104,6 +111,7 @@ signals:
     void gameModeChanged();
     void keepInventoryChanged();
     void generatorVersionChanged();
+    void startDimensionChanged();
 
 private:
     void setRandomSeed(const QString &seed);
@@ -119,4 +127,5 @@ private:
     QcGameMode m_startGameMode = QcGameMode::Survival;
     bool m_keepInventory = true;
     int m_generatorVersion = QcGeneratorVersion::current;
+    QString m_startDimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
 };

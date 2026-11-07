@@ -6,6 +6,7 @@
 #include "content/QcWorldCensus.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/villages/QcVillagePlan.h"
 #include "worlds/QcModLoader.h"
 
 #include <QDir>
@@ -178,6 +179,28 @@ private slots:
         QVERIFY(census.found.value(Node::chest(u"qtcraft:fortress_chest"_s)) >= 2);
         QVERIFY(census.found.contains(Node::creature(u"qtcraft:ember_wraith"_s)));
         QVERIFY(census.found.contains(Node::creature(u"qtcraft:charred_skeleton"_s)));
+    }
+
+    // A village's chests come from the generator's furnishing as well: those its pieces gain in a
+    // later generator version (generatorChanges[].loot) and those its style renames (the style's
+    // loot), so the census reads them where a village stands.
+    void censusSeesTheChestsOfAVillage()
+    {
+        const QcDimensionDefinition &dimension = m_content->worldgen().overworld();
+        const auto terrain = QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::terrain), m_content, fixedSeeds.front(), {}, QcGeneratorVersion::current);
+        QVERIFY(terrain);
+        const std::shared_ptr<const QcVillagePlan> village = terrain->nearestVillage(terrain->spawnPoint(), 4000);
+        QVERIFY(village);
+
+        const QcWorldCensus census = QcWorldCensus::take(*terrain, dimension, *m_content, {4, 1, village->centre});
+        QStringList chests;
+        for (auto it = census.found.cbegin(); it != census.found.cend(); ++it) {
+            if (it.key().startsWith(Node::chest(u"qtcraft:village_"_s))) {
+                chests.append(it.key());
+            }
+        }
+        qInfo("%s", qPrintable(chests.join(u", "_s)));
+        QVERIFY(!chests.isEmpty());
     }
 
     void overworldStartReachesEveryGoal()

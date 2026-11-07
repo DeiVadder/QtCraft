@@ -1215,17 +1215,17 @@ Als Nächstes: %3</translation>
         <translation>Braustand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="38"/>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="32"/>
         <source>Fuel</source>
         <translation>Brennstoff</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="64"/>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="52"/>
         <source>Ingredient</source>
         <translation>Zutat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="112"/>
+        <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="83"/>
         <source>Bottles</source>
         <translation>Flaschen</translation>
     </message>
@@ -2209,17 +2209,17 @@ Als Nächstes: %3</translation>
         <translation>Ofen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="40"/>
+        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="34"/>
         <source>To smelt</source>
         <translation>Zum Schmelzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="64"/>
+        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="52"/>
         <source>Fuel</source>
         <translation>Brennstoff</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="128"/>
+        <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="104"/>
         <source>Result</source>
         <translation>Ergebnis</translation>
     </message>
@@ -3879,22 +3879,22 @@ Als Nächstes: %3</translation>
 <context>
     <name>MapPreviewGroup</name>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="41"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="43"/>
         <source>&lt; 1 %</source>
         <translation>&lt; 1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="41"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="43"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="53"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="55"/>
         <source>Map preview</source>
         <translation>Kartenvorschau</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="63"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="65"/>
         <source>Dimension</source>
         <translation>Dimension</translation>
     </message>
@@ -3911,17 +3911,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Karte des Nethers der neuen Welt, %1 mal %1 Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="180"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="182"/>
         <source>Map of the new world, %1 by %1 blocks</source>
         <translation>Karte der neuen Welt, %1 mal %1 Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="273"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="275"/>
         <source>Drawing the map …</source>
         <translation>Karte wird gezeichnet …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="283"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="285"/>
         <source>Refining …</source>
         <translation>Wird verfeinert …</translation>
     </message>
@@ -3938,7 +3938,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Bauwerk</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="432"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="434"/>
         <source>+ %n more</source>
         <translation>
             <numerusform>+ %n weiteres</numerusform>
@@ -3946,62 +3946,62 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="461"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="463"/>
         <source>Villages and structures</source>
         <translation>Dörfer und Bauwerke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="461"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="463"/>
         <source>Structures</source>
         <translation>Bauwerke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="489"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="491"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="502"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="504"/>
         <source>Structures only inside the frame (%1 × %1 blocks).</source>
         <translation>Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="501"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="503"/>
         <source>Villages and structures only inside the frame (%1 × %1 blocks).</source>
         <translation>Dörfer und Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="181"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="183"/>
         <source>Map of another dimension of the new world, %1 by %1 blocks</source>
         <translation>Karte einer anderen Dimension der neuen Welt, %1 mal %1 Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="367"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="369"/>
         <source>Scale 1:%1 – one block here stands for %1 blocks of the overworld.</source>
         <translation>Maßstab 1:%1 – ein Block hier steht für %1 Blöcke der Oberwelt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="521"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="523"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="528"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="530"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="533"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="535"/>
         <source>Centre</source>
         <translation>Mitte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="534"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="536"/>
         <source>Centre the map on the world&apos;s middle</source>
         <translation>Karte auf die Weltmitte setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="539"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="541"/>
         <source>%1 × %1 blocks</source>
         <translation>%1 × %1 Blöcke</translation>
     </message>
@@ -4010,17 +4010,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Anderer Seed</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="551"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="553"/>
         <source>Show villages and structures</source>
         <translation>Dörfer und Bauwerke zeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="551"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="553"/>
         <source>Show structures</source>
         <translation>Bauwerke zeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="552"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="554"/>
         <source>Off by default, so the map keeps them a surprise.</source>
         <translation>Standardmäßig aus, damit die Karte sie nicht verrät.</translation>
     </message>
@@ -4633,27 +4633,40 @@ Als Nächstes: %3</translation>
         <translation>Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="282"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="287"/>
+        <source>Start in</source>
+        <translation>Beginnen in</translation>
+    </message>
+    <message>
+        <source>You begin without water, iron or a bed that works; a soul anchor brings you back.</source>
+        <translation type="vanished">Du beginnst ohne Wasser, Eisen und ein Bett, das funktioniert; ein Seelenanker holt dich zurück.</translation>
+    </message>
+    <message>
+        <source>The usual start under an open sky.</source>
+        <translation type="vanished">Der gewohnte Start unter freiem Himmel.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="295"/>
         <source>World options</source>
         <translation>Weltoptionen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="291"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="304"/>
         <source>Customise …</source>
         <translation>Anpassen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="292"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="305"/>
         <source>Customise the world options</source>
         <translation>Weltoptionen anpassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="329"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="344"/>
         <source>‹ Back</source>
         <translation>‹ Zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="330"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="345"/>
         <source>Back to the start page</source>
         <translation>Zurück zur Startseite</translation>
     </message>
@@ -4662,7 +4675,7 @@ Als Nächstes: %3</translation>
         <translation type="obsolete">Hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="342"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="357"/>
         <source>Create and play</source>
         <translation>Erstellen und spielen</translation>
     </message>
@@ -6058,8 +6071,8 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="382"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="432"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="381"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
@@ -6074,9 +6087,9 @@ Als Nächstes: %3</translation>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="417"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="427"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="437"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="420"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="430"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="440"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -6085,12 +6098,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="456"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="459"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="456"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="459"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -6147,7 +6160,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="673"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="676"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -7069,7 +7082,7 @@ Jetzt: %2</translation>
     <name>QcNewWorldDraft</name>
     <message>
         <location filename="../src/app/controllers/QcNewWorldDraft.cpp" line="28"/>
-        <location filename="../src/app/controllers/QcNewWorldDraft.cpp" line="164"/>
+        <location filename="../src/app/controllers/QcNewWorldDraft.cpp" line="177"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
@@ -8566,17 +8579,17 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="232"/>
+        <location filename="../src/server/core/QcServer.cpp" line="236"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="494"/>
+        <location filename="../src/server/core/QcServer.cpp" line="501"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="525"/>
+        <location filename="../src/server/core/QcServer.cpp" line="532"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -8586,22 +8599,22 @@ Jetzt: %2</translation>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="62"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="65"/>
         <source>Cannot load player data: %1</source>
         <translation>Die Spielerdaten lassen sich nicht laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="156"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="160"/>
         <source>access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty with the whitelist on, and changes are not saved until the file is repaired</source>
         <translation>access.json ist beschädigt und konnte nicht beiseitegelegt werden: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet, und Änderungen werden nicht gespeichert, bis die Datei repariert ist</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="161"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="165"/>
         <source>access.json was damaged: operators, bans and the whitelist start empty with the whitelist on; the damaged file was kept as %1</source>
         <translation>access.json war beschädigt: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet; die beschädigte Datei liegt als %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="178"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="182"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
@@ -8642,18 +8655,18 @@ Jetzt: %2</translation>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="296"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="303"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="304"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="311"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="310"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="317"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -9105,7 +9118,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="276"/>
+        <location filename="../src/server/core/QcServer.cpp" line="280"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="99"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -9661,6 +9674,16 @@ Jetzt: %2</translation>
         <location filename="../src/server/dimensions/QcServerPortals.cpp" line="219"/>
         <source>This portal leads nowhere: %1</source>
         <translation>Dieses Portal führt nirgendwohin: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/dimensions/QcServerAnchors.cpp" line="98"/>
+        <source>Respawn point set</source>
+        <translation>Wiederbelebungspunkt gesetzt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/dimensions/QcServerAnchors.cpp" line="183"/>
+        <source>You have no charged soul anchor, or it was blocked</source>
+        <translation>Du hast keinen geladenen Seelenanker, oder er war zugestellt</translation>
     </message>
 </context>
 <context>

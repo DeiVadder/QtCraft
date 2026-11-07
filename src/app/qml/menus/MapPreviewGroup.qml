@@ -30,8 +30,10 @@ SettingGroup {
     property bool sitesWanted: false
     // The markers and their legend show (never on the compact map).
     readonly property bool sitesShown: !compact && preview.showSites
+    // The world spawn is somewhere else than this map shows (a start in another dimension).
+    property bool spawnElsewhere: false
     // The spawn lies on the shown map.
-    readonly property bool spawnShown: preview.spawn.title !== undefined
+    readonly property bool spawnShown: !spawnElsewhere && preview.spawn.title !== undefined
     // The page's view: the map takes its height, less the rows below it, and the page scrolls to
     // the map when it gets the keyboard's focus.
     property Flickable flickable: null

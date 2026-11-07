@@ -23,6 +23,8 @@ struct QcAppOptions
     QString flatLayers;
     // --game-mode: the player's mode in the world --play starts.
     QString gameMode;
+    // --start-dimension: the dimension the world --play starts begins in (decision E-1110).
+    QString startDimension;
     QString world;
     QString seed;
     std::optional<QString> camera;

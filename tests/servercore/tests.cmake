@@ -35,4 +35,6 @@ qc_add_test(test_dimension_play SOURCES servercore/test_dimension_play.cpp fixtu
 qc_add_test(test_dimension_parts SOURCES servercore/test_dimension_parts.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_base_content qc_server TIMEOUT 270)
 qc_add_test(test_nether_measure SOURCES servercore/test_nether_measure.cpp fixtures/QcTestUtil.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 120)
 qc_add_test(test_nether_dimension SOURCES servercore/test_nether_dimension.cpp fixtures/QcTestUtil.h fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 120)
+# The soul anchor, exploding beds and the start in the nether (E-1110 to E-1113).
+qc_add_test(test_soul_anchor SOURCES servercore/test_soul_anchor.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_base_content qc_server qc_worldgen TIMEOUT 300)
 qc_add_test(test_dimensions SOURCES servercore/test_dimensions.cpp fixtures/QcTestUtil.h fixtures/QcTestWorldFiles.h LIBRARIES qc_base_content qc_server qc_worlds qc_clientcore TIMEOUT 180)

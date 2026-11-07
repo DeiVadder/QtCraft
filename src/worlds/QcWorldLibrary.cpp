@@ -3,6 +3,7 @@
 
 #include "worlds/QcWorldLibrary.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcDataRoot.h"
 #include "server/storage/QcWorldStorage.h"
 
@@ -126,6 +127,8 @@ QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint
     entry.info.worldOptions = setup.worldOptions;
     entry.info.generatorVersion = setup.generatorVersion;
     entry.info.defaultGameMode = setup.gameMode;
+    // The overworld is stored as no name, as in worlds from before the choice.
+    entry.info.startDimension = setup.startDimension == QLatin1StringView(QcDimensionDefinition::overworldName) ? QString() : setup.startDimension;
     entry.info.setupDone = false;
     entry.info.created = QDateTime::currentDateTimeUtc();
     entry.info.lastPlayed = entry.info.created;

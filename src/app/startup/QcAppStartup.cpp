@@ -220,8 +220,11 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
             Qt::QueuedConnection);
         game.startup()->setScreenshotHook(screenshot);
         startNetworkRun(game, options);
-        game.startSingleplayer(options.world, options.seed, options.worldType.isEmpty() ? u"terrain"_s : options.worldType, options.flatLayers,
-                               options.gameMode);
+        game.startSingleplayer(options.world, options.seed,
+                               {{u"generator"_s, options.worldType.isEmpty() ? u"terrain"_s : options.worldType},
+                                {u"options"_s, options.flatLayers},
+                                {u"gameMode"_s, options.gameMode},
+                                {u"startDimension"_s, options.startDimension}});
     } else if (options.join && options.overlays.contains(u"multiplayer"_s)) {
         // The menu's screen joins (openMenuScreen); the screenshot shows its state, a refusal included.
         game.startup()->setMenuScreenshotHook(screenshot);

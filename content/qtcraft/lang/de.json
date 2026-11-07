@@ -1099,5 +1099,16 @@
     "structure.qtcraft.brewing_station": "Brauerei",
     "structure.qtcraft.brewing_station.stand": "Wasserflaschen und Warze",
     "structure.qtcraft.brewing_station.hopper": "Trichter füllt die Zutat",
-    "structure.qtcraft.brewing_station.cauldron": "Flaschen füllen hier"
+    "structure.qtcraft.brewing_station.cauldron": "Flaschen füllen hier",
+    "block.qtcraft.soul_anchor": "Seelenanker",
+    "block.qtcraft.soul_anchor_1": "Seelenanker (1 von 4)",
+    "block.qtcraft.soul_anchor_2": "Seelenanker (2 von 4)",
+    "block.qtcraft.soul_anchor_3": "Seelenanker (3 von 4)",
+    "block.qtcraft.soul_anchor_4": "Seelenanker (4 von 4)",
+    "advancement.qtcraft.soul_anchor": "Verankerte Seele",
+    "advancement.qtcraft.soul_anchor.description": "Setze deinen Wiederbelebungspunkt an einem geladenen Seelenanker",
+    "advancement.qtcraft.full_anchor": "Fast neun Leben",
+    "advancement.qtcraft.full_anchor.description": "Lade einen Seelenanker bis zu allen vier Ladungen",
+    "dimension.qtcraft.overworld.start": "Der gewohnte Start unter freiem Himmel.",
+    "dimension.qtcraft.nether.start": "Du beginnst ohne Wasser, Eisen und ein Bett, das funktioniert; ein Seelenanker holt dich zurück."
 }

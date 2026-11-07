@@ -32,6 +32,9 @@ void QcPlayerJoin::join(QcServerClient &client)
         return;
     }
 
+    // A new player starts where the world spawn is (decision E-1110), told by the Welcome.
+    m_state.moveClient(client, m_state.spawnDimension());
+    const QcServerState::Scope scope(m_state, m_state.spawnDimension());
     client.state = QcServerClient::State::Playing;
     client.joined = true;
     client.motion.position = m_state.spawnPoint().position();
@@ -123,6 +126,7 @@ void QcPlayerJoin::placeInDimension(QcServerClient &client)
     if (!client.returnTo) {
         client.returnTo = QcPlayerReturn{saved, client.motion.position, client.yaw, client.pitch};
     }
+    m_state.moveClient(client, m_state.spawnDimension());
     client.motion = {};
     client.motion.position = m_state.spawnPoint().position();
     client.fallPeak = client.motion.position.y;

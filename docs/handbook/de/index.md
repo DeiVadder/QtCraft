@@ -6,8 +6,8 @@ Alles, was das Spiel enthält, erzeugt aus den Inhaltsdaten des Spiels mit `qtcr
 
 ## Inhalt
 
-- [Grundlagen](playing.md) – 38 Einträge
-- [Blöcke](blocks.md) – 398 Einträge
+- [Grundlagen](playing.md) – 39 Einträge
+- [Blöcke](blocks.md) – 403 Einträge
 - [Bauteile](parts.md) – 124 Einträge
 - [Flüssigkeiten](liquids.md) – 2 Einträge
 - [Gegenstände](items.md) – 229 Einträge

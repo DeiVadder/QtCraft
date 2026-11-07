@@ -5,6 +5,7 @@
 
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcSessionMessages.h"
+#include "server/dimensions/QcPortalLinks.h"
 #include "server/entities/QcHurtWindow.h"
 
 #include <QtGlobal>
@@ -78,8 +79,9 @@ public:
     /*! Returns whether a fall limit of \a maxFallSpeed m/s (0: none) holds a fall below the speed
         it reaches at fallDamageThreshold blocks, so that it never hurts (decision E-992). */
     [[nodiscard]] static bool fallHeldBack(float maxFallSpeed);
-    /*! Brings the dead player \a client back at the spawn. */
-    void respawn(QcServerClient &client);
+    /*! Brings the dead player \a client back: \a atAnchor at his soul anchor, else at the world
+        spawn (decisions E-1110, E-1112). */
+    void respawn(QcServerClient &client, const std::optional<QcPortalLinks::Destination> &atAnchor = std::nullopt);
     /*! Eats the food \a client holds or puts on the held armour. */
     void consume(QcServerClient &client);
     /*! Drinks the drink \a held by \a client (milk clears the status effects, decision E-500)

@@ -1099,5 +1099,16 @@
     "structure.qtcraft.brewing_station": "Brewery",
     "structure.qtcraft.brewing_station.stand": "Water bottles and wart",
     "structure.qtcraft.brewing_station.hopper": "Hopper fills ingredient",
-    "structure.qtcraft.brewing_station.cauldron": "Bottles fill here"
+    "structure.qtcraft.brewing_station.cauldron": "Bottles fill here",
+    "block.qtcraft.soul_anchor": "Soul anchor",
+    "block.qtcraft.soul_anchor_1": "Soul anchor (1 of 4)",
+    "block.qtcraft.soul_anchor_2": "Soul anchor (2 of 4)",
+    "block.qtcraft.soul_anchor_3": "Soul anchor (3 of 4)",
+    "block.qtcraft.soul_anchor_4": "Soul anchor (4 of 4)",
+    "advancement.qtcraft.soul_anchor": "Anchored Soul",
+    "advancement.qtcraft.soul_anchor.description": "Set your respawn point at a charged soul anchor",
+    "advancement.qtcraft.full_anchor": "Almost Nine Lives",
+    "advancement.qtcraft.full_anchor.description": "Charge a soul anchor to the full four",
+    "dimension.qtcraft.overworld.start": "The usual start under an open sky.",
+    "dimension.qtcraft.nether.start": "You begin without water, iron or a bed that works; a soul anchor brings you back."
 }

@@ -285,15 +285,16 @@ if ! grep -q 'Opened world' "$DATA/world-play-de.log"; then
     failed=1
 fi
 # "New world" in one column (decision E-930): the pad walks it in reading order, name, type, seed,
-# the die, game mode, keeping the inventory, the generator version, the world options, and down
+# the die, game mode, keeping the inventory, the generator version, the start dimension (decision
+# E-1110), the world options, and down
 # from there reaches "Create and play".
 MENU_WORLD_TYPE=terrain
 check newworld-pad-de --language de --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
     --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
-    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
 MENU_WORLD_TYPE=
 order=$(grep 'padFocus' "$DATA/newworld-pad-de.log" | sed 's/^padFocus: //' | tr '\n' ' ')
-if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
     echo "newworld-pad-de: the pad's focus does not walk the form in reading order: $order"
     failed=1
 fi

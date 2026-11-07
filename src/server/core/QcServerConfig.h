@@ -35,6 +35,9 @@ struct QcServerConfig
     /*! The version of the world generator (decision E-922, QcWorldInfo::generatorVersion); a
         saved world must have been made with it, a new one keeps it. */
     int generatorVersion = QcGeneratorVersion::current;
+    /*! The dimension a new world starts in (decision E-1110, QcWorldInfo::startDimension); empty
+        for the overworld. A saved world keeps the one it was created with. */
+    QString startDimension;
     /*! Radius in chunks streamed around each player; network clients may ask for less, never
         more. */
     int viewDistance = 8;

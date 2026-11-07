@@ -192,11 +192,10 @@ public:
     // The mods that went into the content of the running world.
     const QList<QcModStatus> &loadedMods() const { return m_worlds.loadedMods(); }
 
-    // A world that is not saved (test hooks --play and --showcase), made by the generator type
-    // `generator` (QcWorldGenerators).
-    // `gameMode` is that of the player ("survival", "creative").
-    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
-                                       const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
+    // A world that is not saved (test hooks --play and --showcase). `setup` holds "generator" (the
+    // generator type, QcWorldGenerators; terrain without it), its "options", "gameMode" of the
+    // player ("survival", "creative") and "startDimension" (decision E-1110; empty: the overworld).
+    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // Creates a saved world in the library and starts it. `setup` holds "worldType" (a
     // WorldLibrary.WorldType; E-221, E-223), "layers" of a flat world (empty: the default),
     // "keepInventory", "gameMode" (a GameMode.Mode; decision E-282) and "worldOptions" of a terrain

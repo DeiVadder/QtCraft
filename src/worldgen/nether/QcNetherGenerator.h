@@ -16,6 +16,7 @@
 #include "worldgen/nether/QcNetherTerrain.h"
 
 #include <memory>
+#include <mutex>
 
 /*! \brief World generator of the nether (decisions E-1030 to E-1032): caves between a floor and a
     roof of bedrock from 3D noise, a sea of lava, the nether's own biome map, and everything from
@@ -65,6 +66,7 @@ private:
     // Stands what a demonstration world shows around `station` and keeps the natural ones away.
     void setDemonstrations(QcBlockPos station);
 
+    std::shared_ptr<const QcContentRegistry> m_content;
     QcNetherDefinitions m_definitions;
     QcNetherTerrain m_terrain;
     QcNetherDecorator m_decorator;
@@ -74,4 +76,7 @@ private:
     QcFortressGenerator m_fortress;
     QcBastionGenerator m_bastion;
     QcNetherStructures m_structures;
+    // The spawn, searched at the first call.
+    mutable std::once_flag m_spawnOnce;
+    mutable QcBlockPos m_spawn;
 };

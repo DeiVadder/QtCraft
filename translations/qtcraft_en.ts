@@ -107,7 +107,7 @@
 <context>
     <name>MapPreviewGroup</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="432"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="434"/>
         <source>+ %n more</source>
         <translation>
             <numerusform>+ %n more</numerusform>

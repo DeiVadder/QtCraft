@@ -290,7 +290,7 @@ void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wa
     }
 }
 
-void QcPlayerHealth::respawn(QcServerClient &client)
+void QcPlayerHealth::respawn(QcServerClient &client, const std::optional<QcPortalLinks::Destination> &atAnchor)
 {
     if (!client.dead) {
         return;
@@ -304,9 +304,11 @@ void QcPlayerHealth::respawn(QcServerClient &client)
     if (!client.hunger.frozen()) {
         client.hunger.reset();
     }
-    // The world spawn is in the overworld, wherever he died. He leaves from where he fell.
-    const QcVec3 spawn = m_state.spawnPoint().position();
-    QcPlayerTravel::move(m_state, client, m_state.dimensions().overworld(), spawn);
+    // At his soul anchor, else at the world spawn, wherever he died (decisions E-1110, E-1112). He
+    // leaves from where he fell.
+    QcServerDimension &home = atAnchor ? *atAnchor->dimension : m_state.spawnDimension();
+    const QcVec3 spawn = atAnchor ? atAnchor->position : m_state.spawnPoint().position();
+    QcPlayerTravel::move(m_state, client, home, spawn);
     client.motion = {};
     client.motion.position = spawn;
 

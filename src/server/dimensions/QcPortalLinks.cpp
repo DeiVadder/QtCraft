@@ -170,9 +170,9 @@ std::optional<QcPortalLinks::Destination> QcPortalLinks::destination(const QcPor
         return std::nullopt;
     }
     if (!outward && portal.back == QcPortalDefinition::Back::Spawn) {
-        QcServerDimension &overworld = m_state.dimensions().overworld();
-        const QcServerState::Scope scope(m_state, overworld);
-        return Destination{&overworld, m_state.spawnPoint().position()};
+        QcServerDimension &home = m_state.spawnDimension();
+        const QcServerState::Scope scope(m_state, home);
+        return Destination{&home, m_state.spawnPoint().position()};
     }
 
     const QcResult<QcServerDimension *> opened = m_state.openDimension(outward ? portal.to : portal.from);

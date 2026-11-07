@@ -121,6 +121,7 @@ target_sources(qc_server PRIVATE
     dimensions/QcPlayerTravel.h dimensions/QcPlayerTravel.cpp
     dimensions/QcPortalIndex.h dimensions/QcPortalIndex.cpp
     dimensions/QcPortalLinks.h dimensions/QcPortalLinks.cpp
+    dimensions/QcServerAnchors.h dimensions/QcServerAnchors.cpp
     dimensions/QcServerDimension.h dimensions/QcServerDimension.cpp
     dimensions/QcServerPortals.h dimensions/QcServerPortals.cpp
     dimensions/QcTravellers.h dimensions/QcTravellers.cpp

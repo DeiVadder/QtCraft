@@ -15,6 +15,7 @@ target_sources(qc_common PRIVATE
     blockrules/QcBlockRules.h blockrules/QcBlockRules.cpp
     blockrules/QcPortalShapes.h blockrules/QcPortalShapes.cpp
     blockrules/QcRails.h blockrules/QcRails.cpp
+    blockrules/QcSafeStand.h blockrules/QcSafeStand.cpp
     blockrules/QcSlabRules.h blockrules/QcSlabRules.cpp
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
 )
@@ -35,6 +36,7 @@ target_sources(qc_common PRIVATE
     content/blockbehaviour/QcSpawnerDefinition.h
 )
 target_sources(qc_common PRIVATE
+    content/blocks/QcAnchorDefinition.h
     content/blocks/QcBlockDefinition.h
     content/blocks/QcBlockParser.h content/blocks/QcBlockParser.cpp
     content/blocks/QcBlockProperty.h

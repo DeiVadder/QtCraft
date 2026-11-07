@@ -13,6 +13,8 @@
     "waterEvaporates": true,
     "compassesSpin": true,
     "bedsExplode": true,
+    "anchorsWork": true,
+    "startable": true,
     "ceiling": 127,
     "portalFloor": 33,
     "liquids": {

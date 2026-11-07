@@ -422,11 +422,12 @@ private slots:
         QCOMPARE(read->player->saturation, 7.5);
         QCOMPARE(read->player->absorption, 2.0);
 
-        // The same file as version 11: without the extra health and the saturation at its end.
+        // The same file as version 11: without the extra health, the saturation and the flag of
+        // the soul anchor (version 13) at its end.
         QFile file(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Fed"_s)));
         QVERIFY(file.open(QIODevice::ReadOnly));
         constexpr qsizetype headerSize = 4 + 2 + 4 + 4;
-        const QByteArray payload = file.readAll().mid(headerSize).chopped(2 * sizeof(double));
+        const QByteArray payload = file.readAll().mid(headerSize).chopped(2 * sizeof(double) + 1);
         file.close();
         QByteArray old("QCPL");
         QDataStream header(&old, QIODevice::Append);

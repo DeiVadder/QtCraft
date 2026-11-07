@@ -566,7 +566,8 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
         return qcError(version.error());
     }
     const QcWorldLibrary::NewWorld setup{
-        .generator = generator, .options = *options, .worldOptions = *worldOptions, .generatorVersion = *version, .gameMode = *mode};
+        .generator = generator, .options = *options, .worldOptions = *worldOptions, .generatorVersion = *version, .gameMode = *mode,
+        .startDimension = request.value(u"startDimension"_s).toString(m_baseConfig.startDimension)};
     const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, setup);
     if (!entry) {
         return qcError(entry.error());

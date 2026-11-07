@@ -31,7 +31,12 @@
         "v": "weeping_vines",
         "V": "twisting_vines",
         "b": "basalt",
-        "k": "blackstone"
+        "k": "blackstone",
+        "0": "soul_anchor",
+        "1": "soul_anchor_1",
+        "2": "soul_anchor_2",
+        "3": "soul_anchor_3",
+        "4": "soul_anchor_4"
     },
     "layers": [
         [
@@ -71,7 +76,7 @@
             "                     ",
             "                     ",
             " b    k              ",
-            "                     ",
+            "          0 1 2 3 4  ",
             "                     ",
             "      b              ",
             "                     ",
@@ -465,6 +470,54 @@
                 12.5
             ],
             "text": "block.qtcraft.blackstone"
+        },
+        {
+            "at": [
+                10.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor"
+        },
+        {
+            "at": [
+                12.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_1"
+        },
+        {
+            "at": [
+                14.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_2"
+        },
+        {
+            "at": [
+                16.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_3"
+        },
+        {
+            "at": [
+                18.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_4"
+        },
+        {
+            "at": [
+                14.5,
+                3.4,
+                13.5
+            ],
+            "text": "chapter.qtcraft.nether_start"
         }
     ]
 }

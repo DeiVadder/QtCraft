@@ -81,6 +81,7 @@ target_sources(qc_worldgen PRIVATE
     nether/QcNetherGenerator.h nether/QcNetherGenerator.cpp
     nether/QcNetherGrowth.h nether/QcNetherGrowth.cpp
     nether/QcNetherMap.h nether/QcNetherMap.cpp
+    nether/QcNetherSpawn.h nether/QcNetherSpawn.cpp
     nether/QcNetherStructures.h nether/QcNetherStructures.cpp
     nether/QcNetherTerrain.h nether/QcNetherTerrain.cpp
 )

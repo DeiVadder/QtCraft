@@ -1664,5 +1664,8 @@
     ],
     "Width of the transition": "Breite des Übergangs",
     "Land around the explored area that blends into the new generator": "Land um das erkundete Gebiet, das in den neuen Generator übergeht",
-    "Blending the land around it into the new version …": "Das Land rundherum wird in die neue Version überblendet …"
+    "Blending the land around it into the new version …": "Das Land rundherum wird in die neue Version überblendet …",
+    "Start in": "Beginnen in",
+    "Respawn point set": "Wiederbelebungspunkt gesetzt",
+    "You have no charged soul anchor, or it was blocked": "Du hast keinen geladenen Seelenanker, oder er war zugestellt"
 }

@@ -331,12 +331,13 @@ private slots:
         QCOMPARE(read->player->air, 123);
 
         // A file of version 9 has no air (nor the dimension of version 11 and the extra health and
-        // saturation of version 12): the player comes back with a full breath.
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 12);
+        // saturation of version 12 and the flag of the soul anchor of version 13): the player comes
+        // back with a full breath.
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 13);
         QVERIFY(payload);
         // With the flag of the return (decision E-989).
         const qsizetype dimension = static_cast<qsizetype>(sizeof(quint32)) + 2 * data.dimension.size() + 1;
-        const QByteArray older = payload->bytes.chopped(dimension + static_cast<qsizetype>(sizeof(qint32)) + static_cast<qsizetype>(2 * sizeof(double)));
+        const QByteArray older = payload->bytes.chopped(dimension + static_cast<qsizetype>(sizeof(qint32)) + static_cast<qsizetype>(2 * sizeof(double)) + 1);
         const QcPlayerStorage::Result old = storage.parse(u"Raw"_s, QcSaveFile::bytes("QCPL", older, 9));
         QVERIFY(old && old->player);
         QCOMPARE(old->player->air, QcAirSupply::maxAir);

@@ -46,6 +46,7 @@ using namespace Qt::StringLiterals;
 QcServerInteraction::QcServerInteraction(QcServerState &state, const Parts &parts)
     : m_state(state)
     , m_parts(parts)
+    , m_anchors(state, parts.sounds, parts.blocks, parts.inventory, parts.explosions)
 {
 }
 
@@ -128,6 +129,12 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     }
 
     if (useClickedBlock(client, message.target)) {
+        return;
+    }
+    // Soul anchors and beds that explode (decisions E-1112, E-1113); the client may have predicted
+    // the held block placed against them.
+    if (!client.sneaking && QcLineOfSight::isWithinReach(client, message.target) && m_anchors.use(client, message.target)) {
+        rejectPlacement(client, qcNeighbour(message.target, message.face));
         return;
     }
 

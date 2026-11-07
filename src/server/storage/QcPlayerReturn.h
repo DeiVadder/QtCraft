@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 
 #include <QString>
@@ -18,4 +19,14 @@ struct QcPlayerReturn
     float pitch = 0.0f;
 
     bool operator==(const QcPlayerReturn &) const = default;
+};
+
+/*! \brief The soul anchor a player respawns at (decision E-1112): its dimension and block. The
+    anchor binds him until a respawn finds it gone, empty or blocked. \qcfields */
+struct QcRespawnAnchor
+{
+    QString dimension;
+    QcBlockPos pos;
+
+    bool operator==(const QcRespawnAnchor &) const = default;
 };

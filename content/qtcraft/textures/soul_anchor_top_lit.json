@@ -1,0 +1,32 @@
+{
+    "name": "soul_anchor_top_lit",
+    "pattern": "emblem",
+    "primary": "#1c1428",
+    "variation": 0.12,
+    "seed": 8821,
+    "palette": {
+        "e": "#120c1c",
+        "v": "#7a34c4",
+        "g": "#c7701e",
+        "G": "#ffb340",
+        "c": "#fff1b8"
+    },
+    "bitmap": [
+        "eeeeeeeeeeeeeeee",
+        "e..............e",
+        "e..vv......vv..e",
+        "e..v........v..e",
+        "e.....gggg.....e",
+        "e....gGGGGg....e",
+        "e...gGGccGGg...e",
+        "e...gGcccGGg...e",
+        "e...gGGcccGg...e",
+        "e...gGGccGGg...e",
+        "e....gGGGGg....e",
+        "e.....gggg.....e",
+        "e..v........v..e",
+        "e..vv......vv..e",
+        "e..............e",
+        "eeeeeeeeeeeeeeee"
+    ]
+}

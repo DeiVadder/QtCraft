@@ -34,6 +34,9 @@ class QcWorldOptionsController : public QObject
     Q_PROPERTY(QVariantList groups READ groups NOTIFY optionsChanged FINAL)
     // The presets: maps with name, title and help.
     Q_PROPERTY(QVariantList presets READ presets NOTIFY optionsChanged FINAL)
+    // The dimensions a new world may start in (decision E-1110), the overworld first: value (the
+    // dimension's name) and text.
+    Q_PROPERTY(QVariantList startDimensions READ startDimensions NOTIFY optionsChanged FINAL)
     // Option name -> value (a number, or true/false for a switch).
     Q_PROPERTY(QVariantMap values READ values NOTIFY valuesChanged FINAL)
     // The preset whose values are the chosen ones; "" when none is (the defaults or own values).
@@ -63,6 +66,7 @@ public:
 
     QVariantList groups() const { return m_groups; }
     QVariantList presets() const { return m_presets; }
+    QVariantList startDimensions() const { return m_startDimensions; }
     QVariantMap values() const { return chosen().toVariantMap(); }
     QString preset() const;
     int changedCount() const;
@@ -110,6 +114,9 @@ private:
     QList<QcWorldOptions::Option> m_options;
     QVariantList m_groups;
     QVariantList m_presets;
+    void setStartDimensions(const QVariantList &starts) { m_startDimensions = starts; }
+
+    QVariantList m_startDimensions;
     QJsonObject m_values;
     // Follows the content and the values.
     std::unique_ptr<QcWorldMapPreview> m_preview;

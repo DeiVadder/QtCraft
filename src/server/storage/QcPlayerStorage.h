@@ -73,6 +73,8 @@ struct QcPlayerData
     QString dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
     /*! Where he returns to when that dimension can open again (decision E-989). */
     std::optional<QcPlayerReturn> returnTo;
+    /*! The soul anchor he respawns at (decision E-1112); none in files before version 13. */
+    std::optional<QcRespawnAnchor> anchor;
 };
 
 /*! \brief The player files of a world directory (players/<name>-<hash>.qcp, decision E-093):

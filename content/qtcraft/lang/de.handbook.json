@@ -1572,5 +1572,19 @@
     "potion.form.splash.description": "Wirf ihn mit der Benutzen-Taste: Er trifft alle rund um die Stelle, an der er zerbricht, mit der Entfernung schwächer.",
     "potion.form.lingering.description": "Wirf ihn mit der Benutzen-Taste: Er wirkt wie ein Wurftrank ein Viertel der Zeit.",
     "potion.form.tipped.description": "Schieß ihn mit einem Bogen oder Spender: Was er trifft, bekommt die Wirkung des Tranks, anhaltende Wirkungen für ein Achtel ihrer Zeit. Acht Pfeile rund um einen Wurftrank ergeben acht davon.",
-    "handbook.machine.brewing": "Brauen"
+    "handbook.machine.brewing": "Brauen",
+    "block.qtcraft.soul_anchor.description": "Sechs Weinende Obsidian um drei Glowstone. Glowstone darauf lädt ihn, bis zu viermal. Im Nether setzt ein geladener Anker beim Benutzen deinen Wiederbelebungspunkt neben sich, und jedes Wiederbeleben dort kostet eine Ladung; anderswo explodiert er wie ein Bett im Nether. Braucht eine Diamantspitzhacke.",
+    "chapter.qtcraft.nether_start": "Im Nether beginnen",
+    "chapter.qtcraft.nether_start.start.title": "Die Startwahl",
+    "chapter.qtcraft.nether_start.start.text": "Beim Anlegen einer normalen Welt lässt dich „Beginnen in“ unter Weltgenerierung im Nether statt in der Oberwelt anfangen. Du erscheinst auf festem Boden fern von Lava und Feuer, wenn einer in der Nähe ist, in einem Karmesin- oder Wirrwald. Ohne Seelenanker kommst du nach dem Tod dorthin zurück. Die Oberwelt liegt hinter einem Netherportal; die Welt behält ihren Start für immer.",
+    "chapter.qtcraft.nether_start.first_steps.title": "Die ersten Schritte",
+    "chapter.qtcraft.nether_start.first_steps.text": "Es gibt kein Wasser und kein Eisenerz. Karmesin- und Wirrstämme geben Bretter, Stöcke, eine Werkbank und Holzwerkzeuge; Schwarzstein zählt als Stein für Steinwerkzeuge und den Ofen. Nethergold-Erz gibt Nuggets und Barren, und Hauerlinge tauschen gegen Gold: Obsidian, Weinenden Obsidian, Eisennuggets, Feuerkugeln, Wasserflaschen, Kies, Seelensand, Faden und Leder. Hoglins geben Essen, und Feuer brennt auf Netherrack ewig. Zehn Obsidian ergeben einen Portalrahmen, Lava oder eine Feuerkugel entzündet ihn.",
+    "chapter.qtcraft.nether_start.anchor.title": "Der Seelenanker",
+    "chapter.qtcraft.nether_start.anchor.text": "Stelle einen Seelenanker aus sechs Weinenden Obsidian um drei Glowstone her und lade ihn mit Glowstone, bis zu vier Ladungen; mit jeder leuchtet er heller. Benutze ihn geladen im Nether, um deinen Wiederbelebungspunkt zu setzen. Jedes Wiederbeleben kostet eine Ladung; ein leerer, abgebauter oder zugestellter Anker schickt dich zum Startpunkt der Welt und ist vergessen. In der Oberwelt benutzt, explodiert ein geladener Anker mit Stärke 5 und legt Feuer.",
+    "chapter.qtcraft.nether_start.beds.title": "Betten",
+    "chapter.qtcraft.nether_start.beds.text": "Wo die Dimension es nicht erlaubt, lässt sich in keinem Bett schlafen: im Nether benutzt, explodiert es mit Stärke 5, stärker als TNT, und legt ringsum Feuer. Behalte Betten für die Oberwelt.",
+    "block.qtcraft.soul_anchor_1.description": "Ein Seelenanker mit 1 von 4 Ladungen.",
+    "block.qtcraft.soul_anchor_2.description": "Ein Seelenanker mit 2 von 4 Ladungen.",
+    "block.qtcraft.soul_anchor_3.description": "Ein Seelenanker mit 3 von 4 Ladungen.",
+    "block.qtcraft.soul_anchor_4.description": "Ein Seelenanker mit 4 von 4 Ladungen."
 }

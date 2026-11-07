@@ -24,3 +24,4 @@ qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_c
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp fixtures/QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_kitchen_blocks SOURCES world/test_kitchen_blocks.cpp fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_safe_stand SOURCES world/test_safe_stand.cpp fixtures/QcTestUtil.h LIBRARIES qc_common qc_base_content)

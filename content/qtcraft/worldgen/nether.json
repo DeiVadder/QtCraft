@@ -6,6 +6,10 @@
     "roof": 127,
     "bedrockLayers": 4,
     "biomeScale": 200,
+    "spawnBiomes": [
+        "crimson_forest",
+        "warped_forest"
+    ],
     "shape": {
         "scale": 56,
         "verticalScale": 28,

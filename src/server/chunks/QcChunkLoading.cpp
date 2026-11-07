@@ -280,8 +280,8 @@ void QcChunkLoading::forPlayerChunks(Visit visit) const
 template<typename Visit>
 void QcChunkLoading::forSpawnChunks(Visit visit) const
 {
-    // Spawn chunks only stay in the overworld, where the world spawn is.
-    if (!m_state.current().isOverworld()) {
+    // Spawn chunks only stay in the dimension of the world spawn (decision E-1110).
+    if (&m_state.current() != &m_state.spawnDimension()) {
         return;
     }
     const int radius = m_state.info().spawnChunkRadius;
@@ -388,7 +388,7 @@ QcChunkLoading::NeededInputs QcChunkLoading::neededInputs() const
     if (m_state.current().isOverworld()) {
         inputs.forced = m_state.info().forcedChunks;
     }
-    inputs.spawnRadius = m_state.info().spawnChunkRadius;
+    inputs.spawnRadius = &m_state.current() == &m_state.spawnDimension() ? m_state.info().spawnChunkRadius : 0;
     if (inputs.spawnRadius > 0) {
         inputs.spawn = m_state.spawnPoint().column().chunk();
     }

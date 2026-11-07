@@ -9,6 +9,8 @@
 
 #include <utility>
 
+using namespace Qt::StringLiterals;
+
 namespace {
 
 // The limits of what a dimension keeps itself: block entities, fires, villages, circuits, entities.
@@ -108,6 +110,24 @@ qsizetype QcServerState::removeClosedClients()
         }
     }
     return std::erase_if(m_clients, [](const std::unique_ptr<QcServerClient> &client) { return client->state == QcServerClient::State::Closed; });
+}
+
+QString QcServerState::openSpawnDimension()
+{
+    const QString name = info().startDimension;
+    if (name.isEmpty() || name == QLatin1StringView(QcDimensionDefinition::overworldName)) {
+        return {};
+    }
+    const QcResult<QcServerDimension *> opened = openDimension(name);
+    if (!opened) {
+        return u"The world starts in the dimension %1, which cannot open (%2); players start in the overworld"_s.arg(name, opened.error());
+    }
+    if (!(*opened)->definition().canStartIn()) {
+        return u"No world may start in the dimension %1; players start in the overworld"_s.arg(name);
+    }
+    m_spawnDimension = *opened;
+    m_spawnPoint.bind(**opened);
+    return {};
 }
 
 QcServerDimension &QcServerState::dimensionOf(const QcServerClient &client)

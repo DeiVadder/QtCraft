@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -758,6 +758,28 @@ Operators change experience with /xp add <player> <amount> [points|levels] (a ne
 **See also**
 
 [Lapis lazuli ore](blocks.md#block-qtcraft-lapis_ore), [Furnace](blocks.md#block-qtcraft-furnace)
+
+### <a id="chapter-qtcraft-nether_start"></a>Starting in the Nether
+
+**The start option**
+
+When you create a normal world, "Start in" under World generation lets you begin in the Nether instead of the overworld. You appear on firm ground away from lava and fire, if one is near in a crimson or warped forest. Without a soul anchor you come back there after dying. The overworld lies behind a nether portal; the world keeps its start for good.
+
+**The first steps**
+
+There is no water and no iron ore. Crimson and warped stems give planks, sticks, a crafting table and wooden tools; blackstone counts as stone for stone tools and the furnace. Nether gold ore gives nuggets and ingots, and tusklings barter for gold: obsidian, crying obsidian, iron nuggets, fire charges, water bottles, gravel, soul sand, string and leather. Hoglins give food, and fire burns on netherrack for ever. Ten obsidian make a portal frame, and lava or a fire charge lights it.
+
+**The soul anchor**
+
+Craft a soul anchor from six crying obsidian around three glowstone and charge it with glowstone, up to four charges; it glows brighter with each. Use it charged in the Nether to set your respawn point. Each respawn takes one charge; an empty anchor, a broken one or one without room beside it sends you to the world spawn and is forgotten. Used in the overworld, a charged anchor explodes with power 5 and sets fires.
+
+**Beds**
+
+A bed cannot be slept in where the dimension does not allow it: used in the Nether, it explodes with power 5, stronger than TNT, and sets fires around. Keep beds for the overworld.
+
+**See also**
+
+[Soul anchor](blocks.md#block-qtcraft-soul_anchor), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Glowstone](blocks.md#block-qtcraft-glowstone), [Crimson stem](blocks.md#block-qtcraft-crimson_stem), [Warped stem](blocks.md#block-qtcraft-warped_stem), [Blackstone](blocks.md#block-qtcraft-blackstone), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Bed](blocks.md#block-qtcraft-bed)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 

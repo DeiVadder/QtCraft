@@ -8,6 +8,7 @@
 #include "common/content/blockbehaviour/QcLiquidDefinition.h"
 #include "common/content/blockbehaviour/QcSignalDefinition.h"
 #include "common/content/blockbehaviour/QcSpawnerDefinition.h"
+#include "common/content/blocks/QcAnchorDefinition.h"
 #include "common/content/blocks/QcBlockProperty.h"
 #include "common/content/blocks/QcShapeCondition.h"
 #include "common/content/blocks/QcShapeDefinition.h"
@@ -320,6 +321,8 @@ struct QcBlockDefinition
     QcCampfireDefinition campfire;
     /*! A cauldron that holds water (decision E-1065). Server side only. */
     QcCauldronDefinition cauldron;
+    /*! A soul anchor (decision E-1112). Server side only. */
+    QcAnchorDefinition anchor;
     /*! A liquid flowing into the block breaks it with its drops (plants, torches). Server side
         only. */
     bool washable = false;

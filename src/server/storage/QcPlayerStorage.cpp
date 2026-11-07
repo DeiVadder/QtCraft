@@ -28,11 +28,12 @@ namespace {
 // seed (decision E-884), version 9 the advancements (decision E-923; QcAdvancementProgress::bytes as
 // one byte array, so a later format of it is skipped as a whole), version 10 the air under water
 // (decision E-955), version 11 the dimension and the return location (decisions E-978, E-989),
-// version 12 the extra health of absorption and the saturation (decisions E-992, E-1001). Version 5
+// version 12 the extra health of absorption and the saturation (decisions E-992, E-1001), version 13
+// the soul anchor (decision E-1112). Version 5
 // is read without effects, 5 and 6 without seeds, 7 without rune seed, 5 to 9 with a full breath,
 // 5 to 10 in the overworld, 5 to 11 without extra health and with the saturation of a new player;
 // files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 12;
+constexpr quint16 playerVersion = 13;
 constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -133,10 +134,13 @@ public:
         }
         if (version >= 11) {
             m_stream >> player.dimension;
-            readReturn(player);
+            player.returnTo = readReturn();
         }
         if (version >= 12) {
             m_stream >> player.absorption >> player.saturation;
+        }
+        if (version >= 13) {
+            player.anchor = readAnchor();
         }
         return player;
     }
@@ -145,16 +149,33 @@ public:
 
 private:
     // Where the player returns to, if the file names a place (decision E-989).
-    void readReturn(QcPlayerData &player)
+    [[nodiscard]] std::optional<QcPlayerReturn> readReturn()
     {
         bool hasReturn = false;
         m_stream >> hasReturn;
         if (!hasReturn) {
-            return;
+            return std::nullopt;
         }
         QcPlayerReturn back;
         m_stream >> back.dimension >> back.position.x >> back.position.y >> back.position.z >> back.yaw >> back.pitch;
-        player.returnTo = std::move(back);
+        return back;
+    }
+
+    // The soul anchor he respawns at, if the file names one (decision E-1112).
+    [[nodiscard]] std::optional<QcRespawnAnchor> readAnchor()
+    {
+        bool hasAnchor = false;
+        m_stream >> hasAnchor;
+        if (!hasAnchor) {
+            return std::nullopt;
+        }
+        QcRespawnAnchor anchor;
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        m_stream >> anchor.dimension >> x >> y >> z;
+        anchor.pos = {x, y, z};
+        return anchor;
     }
 
     // The armour slots and the inventory with the pieces that no longer fit their slot.
@@ -327,6 +348,11 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
         stream << back.dimension << back.position.x << back.position.y << back.position.z << back.yaw << back.pitch;
     }
     stream << player.absorption << player.saturation;
+    stream << player.anchor.has_value();
+    if (player.anchor) {
+        stream << player.anchor->dimension << static_cast<qint32>(player.anchor->pos.x) << static_cast<qint32>(player.anchor->pos.y)
+               << static_cast<qint32>(player.anchor->pos.z);
+    }
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
@@ -409,7 +435,10 @@ bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
     const auto nameOk = [](const QString &name) { return !name.isEmpty() && name.size() <= QcDimensionDefinition::maxNameLength; };
     const QcPlayerReturn *back = player.returnTo ? &*player.returnTo : nullptr;
     const bool returnOk = !back || (nameOk(back->dimension) && inWorld(back->position) && directionOk(back->yaw, back->pitch));
-    const bool dimensionOk = nameOk(player.dimension) && returnOk;
+    const QcRespawnAnchor *anchor = player.anchor ? &*player.anchor : nullptr;
+    const bool anchorOk = !anchor || (nameOk(anchor->dimension) && anchor->pos.y >= 0 && anchor->pos.y < QcWorld::worldHeight && std::abs(anchor->pos.x) <= horizontalLimit
+                                      && std::abs(anchor->pos.z) <= horizontalLimit);
+    const bool dimensionOk = nameOk(player.dimension) && returnOk && anchorOk;
     return inWorld(m.position) && finite(m.velocity) && directionOk(player.yaw, player.pitch) && dimensionOk && std::isfinite(player.health)
            && std::isfinite(player.exhaustion)
            && std::isfinite(player.absorption) && player.absorption >= 0.0;

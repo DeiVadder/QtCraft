@@ -1,0 +1,21 @@
+{
+    "name": "nether_start",
+    "order": 91,
+    "icon": "soul_anchor",
+    "sections": [
+        "start",
+        "first_steps",
+        "anchor",
+        "beds"
+    ],
+    "related": [
+        "soul_anchor",
+        "crying_obsidian",
+        "glowstone",
+        "crimson_stem",
+        "warped_stem",
+        "blackstone",
+        "nether_gold_ore",
+        "bed"
+    ]
+}

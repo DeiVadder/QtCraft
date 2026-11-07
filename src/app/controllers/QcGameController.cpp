@@ -375,15 +375,15 @@ void QcGameController::setLanguage(const QString &language)
     m_worldOptions->retranslate();
 }
 
-void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator,
-                                         const QString &options, const QString &gameMode)
+void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QVariantMap &setup)
 {
     QcWorldInfo world;
     world.name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
     world.seed = QcWorldLibrary::seedFromText(seedText);
-    world.generator = generator;
-    world.generatorOptions = options.trimmed();
-    world.defaultGameMode = QcGameModes::parse(gameMode).value_or(QcGameMode::Survival);
+    world.generator = setup.value(u"generator"_s, u"terrain"_s).toString();
+    world.generatorOptions = setup.value(u"options"_s).toString().trimmed();
+    world.defaultGameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+    world.startDimension = setup.value(u"startDimension"_s).toString();
     startWorld({}, world, QcLoadingProgress::Kind::NewWorld);
 }
 
@@ -408,6 +408,9 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
         return;
     }
     world.generatorVersion = *version;
+    // Any world type, as --play, server.json and the control interface; the server falls back to
+    // the overworld for a dimension the content does not offer for a start (decision E-1110).
+    world.startDimension = setup.value(u"startDimension"_s).toString();
 
     // Wrong layers of a flat world are refused before anything is created; the world keeps the
     // defaults of its type as they are now.

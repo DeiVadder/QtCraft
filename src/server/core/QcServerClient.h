@@ -230,6 +230,8 @@ struct QcServerClient : QcEntity
     QString dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
     /*! Where he returns to when the dimension he was in can open again (decision E-989). */
     std::optional<QcPlayerReturn> returnTo;
+    /*! The soul anchor he respawns at (decision E-1112); saved in his file. */
+    std::optional<QcRespawnAnchor> anchor;
 
     /*! Health points and whether the player is dead (QcPlayerHealth). \qcshared */
     double health = maxHealth;

@@ -594,6 +594,12 @@ void BlockReader::readNamedObjects()
             nested.fail(u"a cauldron needs 'bottle' and 'bucket'"_s);
         }
     });
+    m_reader.nestedObject(u"anchor"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_block.anchor.charge = nested.integer(u"charge"_s, 0, 0, QcAnchorDefinition::maxCharge);
+        m_block.anchor.charged = nested.name(u"charged"_s, m_namespace);
+        m_block.anchor.spent = nested.name(u"spent"_s, m_namespace);
+        m_block.anchor.fuel = nested.name(u"fuel"_s, m_namespace);
+    });
     m_reader.nestedObject(u"campfire"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         m_block.campfire = QcCookingParser::parseCampfire(json, nested, m_namespace);
     });

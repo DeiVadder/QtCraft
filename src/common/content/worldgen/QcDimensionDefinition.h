@@ -124,6 +124,12 @@ struct QcDimensionDefinition
     QList<LiquidFlow> liquidFlows;
     /*! Whether a bed explodes when used (\c {"bedsExplode"}). */
     bool bedsExplode = false;
+    /*! Whether a charged soul anchor sets the respawn point here (\c {"anchorsWork"},
+        decision E-1112); used anywhere else it explodes. */
+    bool anchorsWork = false;
+    /*! Whether a new world may start here (\c {"startable"}, decision E-1110); the overworld
+        always may. */
+    bool startable = false;
     /*! Whether compasses and clocks spin instead of pointing and telling the time
         (\c {"compassesSpin"}). */
     bool compassesSpin = false;
@@ -136,6 +142,8 @@ struct QcDimensionDefinition
 
     /*! Returns whether this is the overworld. */
     bool isOverworld() const { return name == QLatin1StringView(overworldName); }
+    /*! Returns whether a new world may start here: the overworld or a \c {"startable"} one. */
+    bool canStartIn() const { return startable || isOverworld(); }
     /*! Returns the overworld as a world without its definition plays it: the defaults. */
     static QcDimensionDefinition defaultOverworld()
     {

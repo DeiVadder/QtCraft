@@ -118,6 +118,7 @@ QcStatus QcServerPersistence::open()
     m_state.info().generator = m_state.config().generator;
     m_state.info().generatorOptions = m_state.config().generatorOptions;
     m_state.info().worldOptions = m_state.config().worldOptions;
+    m_state.info().startDimension = m_state.config().startDimension;
     m_state.info().generatorVersion = versionOf(m_state.config());
     m_state.info() = QcDimensions::withVersionsForNewWorld(m_state.content(), std::move(m_state.info()));
     m_state.info().setupDone = false;

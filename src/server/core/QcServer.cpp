@@ -87,7 +87,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_vehicles.minecarts(), m_vehicles.boats(), m_animals, m_plants, m_health, m_circuits,
-                              m_ignition, m_portals, m_golems, m_kitchen, m_workstations})
+                              m_ignition, m_portals, m_golems, m_kitchen, m_workstations, m_explosions})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
@@ -188,6 +188,10 @@ QcStatus QcServer::openWorld()
 
     const QStringList accessWarnings = m_state.access().open(m_state.config().worldDirectory, m_state.config().operators);
     m_persistence.noteWarnings(accessWarnings + m_state.identities().open(m_state.config().worldDirectory));
+    // Players of a world that starts elsewhere appear there (decision E-1110).
+    if (const QString spawnWarning = m_state.openSpawnDimension(); !spawnWarning.isEmpty()) {
+        m_persistence.noteWarnings({spawnWarning});
+    }
 
     // A new world gets what its generator sets up once (decision E-221).
     if (!m_state.info().setupDone) {
@@ -390,7 +394,10 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
-        m_health.respawn(client);
+        // Only the dead respawn; asking the anchor first would spend a charge for a living player.
+        if (client.dead) {
+            m_health.respawn(client, m_interaction.anchors().respawnAt(client));
+        }
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
         m_commands.chat(client, chat->text);
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {

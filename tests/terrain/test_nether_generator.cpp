@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/world/QcBlockAccess.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/nether/QcNetherGenerator.h"
@@ -69,6 +70,62 @@ private:
     qint64 m_airInCaves = 0;
     qint64 m_cellsInCaves = 0;
 };
+
+// The generated nether as a block access, chunk by chunk as asked for.
+class Generated : public QcBlockAccess
+{
+public:
+    Generated(const QcNetherGenerator &generator, const QcContentRegistry &content)
+        : m_generator(generator)
+        , m_content(content)
+    {
+    }
+
+    std::optional<QcBlockId> blockAt(QcBlockPos pos) const override
+    {
+        if (pos.y < 0 || pos.y >= QcWorld::worldHeight) {
+            return qcAirBlockId;
+        }
+        std::shared_ptr<QcChunk> &chunk = m_chunks[pos.chunk()];
+        if (!chunk) {
+            chunk = m_generator.generate(pos.chunk());
+        }
+        return chunk->block(pos.localX(), pos.y, pos.localZ());
+    }
+
+    const QcContentRegistry &content() const override { return m_content; }
+
+private:
+    const QcNetherGenerator &m_generator;
+    const QcContentRegistry &m_content;
+    mutable QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
+};
+
+// A check of a spawn apart from QcSafeStand: firm ground, an empty body and no lava, fire or
+// hurting block in the 5 x 5 cells around, from below the feet to above the head. Returns what is
+// wrong, empty when it is safe.
+QString unsafeAt(const Generated &world, QcBlockPos feet)
+{
+    const QcContentRegistry &content = world.content();
+    const QcBlockDefinition &ground = content.block(*world.blockAt(feet.offset(0, -1, 0)));
+    if (!ground.solid || ground.liquid || ground.contactDamage > 0.0) {
+        return u"ground "_s + ground.name;
+    }
+    for (int dy = 0; dy <= 1; ++dy) {
+        const QcBlockDefinition &body = content.block(*world.blockAt(feet.offset(0, dy, 0)));
+        if (body.solid || body.liquid) {
+            return u"body "_s + body.name;
+        }
+    }
+    for (int cell = 0; cell < 5 * 5 * 4; ++cell) {
+        const QcBlockPos at = feet.offset(cell % 5 - 2, cell / 25 - 1, cell / 5 % 5 - 2);
+        const QcBlockDefinition &near = content.block(*world.blockAt(at));
+        if (near.isLava() || near.fire.isFire || near.contactDamage > 0.0) {
+            return u"near "_s + near.name;
+        }
+    }
+    return {};
+}
 
 } // namespace
 
@@ -356,6 +413,31 @@ private slots:
         QVERIFY(nether->isNaturalGround(chunk->block(spawn.localX(), spawn.y - 1, spawn.localZ())));
         QVERIFY(!nether->terrain().isSolid(spawn.x, spawn.y, spawn.z));
         QVERIFY(!nether->terrain().isSolid(spawn.x, spawn.y + 1, spawn.z));
+        const QString unsafe = unsafeAt(Generated(*nether, *m_content), spawn);
+        QVERIFY2(unsafe.isEmpty(), qPrintable(unsafe));
+    }
+
+    // The spawn search looks at the real blocks (decision E-1111): over many seeds no spawn stands
+    // on or near lava, magma or fire, and most lie in a forest.
+    void theSpawnIsSafeOverManySeeds()
+    {
+        const qint64 first = randomSeed();
+        int inForest = 0;
+        constexpr int seeds = 60;
+        qint64 slowest = 0;
+        for (qint64 seed = first; seed < first + seeds; ++seed) {
+            const std::unique_ptr<QcNetherGenerator> nether = generator(seed);
+            QElapsedTimer timer;
+            timer.start();
+            const QcBlockPos spawn = nether->spawnPoint();
+            slowest = std::max(slowest, timer.elapsed());
+            const QString unsafe = unsafeAt(Generated(*nether, *m_content), spawn);
+            QVERIFY2(unsafe.isEmpty(), qPrintable(u"seed %1: %2"_s.arg(seed).arg(unsafe)));
+            const QString biome = nether->biomeAt(spawn.x, spawn.z);
+            inForest += biome == u"qtcraft:crimson_forest"_s || biome == u"qtcraft:warped_forest"_s ? 1 : 0;
+        }
+        qInfo("%d of %d spawns in a forest, the slowest search %lld ms", inForest, seeds, slowest);
+        QVERIFY(inForest * 2 > seeds);
     }
 
     // The overworld's terrain never picks a biome or an ore of the nether.
