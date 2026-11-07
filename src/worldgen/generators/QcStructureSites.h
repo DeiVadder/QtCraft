@@ -6,6 +6,7 @@
 #include "common/core/QcBlockBox.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcWorldConstants.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/generators/QcGuardSite.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
@@ -43,6 +44,19 @@ struct QcSpawnArea
     {
         const QcBlockBox whole{min, max};
         return whole.contains(feet) && (parts.isEmpty() || std::ranges::any_of(parts, [feet](const QcBlockBox &box) { return box.contains(feet); }));
+    }
+
+    /*! Returns the spawn area of \a parts, which lie in the columns of \a bounds, with \a monsters
+        (a structure of many parts, decision E-1074): the box around them all is only its
+        outline. */
+    static QcSpawnArea ofParts(QcXzRect bounds, const QList<QcStructureDefinition::SpawnArea::Monster> &monsters, const QList<QcBlockBox> &parts)
+    {
+        QcSpawnArea area{{bounds.minX, QcWorld::worldHeight - 1, bounds.minZ}, {bounds.maxX, 0, bounds.maxZ}, monsters, parts};
+        for (const QcBlockBox &part : parts) {
+            area.min.y = std::min(area.min.y, part.low.y);
+            area.max.y = std::max(area.max.y, part.high.y);
+        }
+        return area;
     }
 
     /*! Returns the spawn area of \a placement, a placed copy of a structure, if it has one. */

@@ -24,19 +24,20 @@ QList<int> contentIndices(const QcNetherGenerator &generator, const QcContentReg
     return indices;
 }
 
-// The rule of the fortresses: the plans that are built, at the place /locate finds.
-QcBiomeMap::SiteRule fortressRule(const QcNetherGenerator &generator)
+// The rule of a great structure: the plans `planOf` gives that are built, at the place /locate
+// finds.
+template <typename PlanOf>
+QcBiomeMap::SiteRule greatRule(const QString &kind, int regionSize, PlanOf planOf)
 {
-    const QString kind = u"qtcraft:fortress"_s;
-    const auto placeOf = [&generator, kind](int regionX, int regionZ) -> std::optional<QcBiomeMap::Site> {
-        const std::shared_ptr<const QcFortressPlan> plan = generator.fortress().planOf(regionX, regionZ);
+    const auto placeOf = [kind, planOf](int regionX, int regionZ) -> std::optional<QcBiomeMap::Site> {
+        const auto plan = planOf(regionX, regionZ);
         if (!plan) {
             return std::nullopt;
         }
         const QcBlockPos middle = plan->middle();
         return QcBiomeMap::Site{QcBiomeMap::Site::Kind::Structure, middle.x, middle.z, kind};
     };
-    return {kind, generator.definitions().settings.fortress.regionSize, placeOf};
+    return {kind, regionSize, placeOf};
 }
 
 // The rule of one kind of structure of the file.
@@ -74,7 +75,12 @@ QList<QcBiomeMap::SiteRule> siteRules(const QcNetherGenerator &generator)
 {
     QList<QcBiomeMap::SiteRule> rules;
     if (generator.definitions().settings.fortress.regionSize > 0) {
-        rules.append(fortressRule(generator));
+        const auto planOf = [&generator](int regionX, int regionZ) { return generator.fortress().planOf(regionX, regionZ); };
+        rules.append(greatRule(u"qtcraft:fortress"_s, generator.definitions().settings.fortress.regionSize, planOf));
+    }
+    if (generator.definitions().settings.bastion.regionSize > 0) {
+        const auto planOf = [&generator](int regionX, int regionZ) { return generator.bastion().planOf(regionX, regionZ); };
+        rules.append(greatRule(u"qtcraft:bastion"_s, generator.definitions().settings.bastion.regionSize, planOf));
     }
     for (const QcNetherDefinitions::Structure &structure : generator.definitions().structures) {
         rules.append(structureRule(generator, structure));

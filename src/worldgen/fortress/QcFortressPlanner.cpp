@@ -3,6 +3,7 @@
 
 #include "worldgen/fortress/QcFortressPlanner.h"
 
+#include "worldgen/nether/QcNetherComplexes.h"
 #include "worldgen/nether/QcNetherTerrain.h"
 #include "worldgen/terrain/QcNoise.h"
 
@@ -148,9 +149,10 @@ QList<QcBlockPos> spawnersOf(const QList<Room> &rooms)
 
 } // namespace
 
-QcFortressPlanner::QcFortressPlanner(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, quint64 seed)
+QcFortressPlanner::QcFortressPlanner(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, const QcNetherComplexes &complexes, quint64 seed)
     : m_definitions(definitions)
     , m_terrain(terrain)
+    , m_complexes(complexes)
     , m_seed(qcMixSeed(seed, 0xf047))
 {
 }
@@ -170,7 +172,7 @@ double QcFortressPlanner::openShare(QcBlockPos corner) const
 std::shared_ptr<const QcFortressPlan> QcFortressPlanner::plan(int regionX, int regionZ) const
 {
     const QcNetherSettings::Fortress &fortress = settings();
-    if (!enabled() || qcPositionRandom(seed(), regionX, 0, regionZ) >= fortress.chance) {
+    if (!enabled() || m_complexes.kindOf(regionX, regionZ) != QcNetherComplexes::Kind::Fortress) {
         return nullptr;
     }
     // Of a few places the one with the most open air around it; the parser keeps room for one.

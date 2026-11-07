@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/worldgen/QcNetherParser.h"
+#include "fixtures/QcChunkSite.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/fortress/QcFortressGenerator.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -15,7 +16,6 @@
 
 #include <array>
 #include <atomic>
-#include <deque>
 #include <memory>
 #include <thread>
 #include <vector>
@@ -35,36 +35,17 @@ constexpr int searchRegions = 8;
 
 quint64 cellKey(QcBlockPos cell)
 {
-    return (static_cast<quint64>(static_cast<quint32>(cell.x)) << 36) ^ (static_cast<quint64>(static_cast<quint32>(cell.z)) << 8) ^ static_cast<quint64>(cell.y);
+    return qcSiteCellKey(cell);
 }
 
-// The chunks of a fortress, generated once, to be read by world cell.
-class Site
+// The chunks of a fortress, generated once.
+class Site : public QcChunkSite
 {
 public:
     Site(const QcNetherGenerator &generator, const Plan &plan)
+        : QcChunkSite(generator, plan.bounds)
     {
-        const QcBlockPos low{plan.bounds.minX, 0, plan.bounds.minZ};
-        const QcBlockPos high{plan.bounds.maxX, 0, plan.bounds.maxZ};
-        for (int z = low.chunk().z - 1; z <= high.chunk().z + 1; ++z) {
-            for (int x = low.chunk().x - 1; x <= high.chunk().x + 1; ++x) {
-                const QcChunkPos pos{x, z};
-                m_chunks.insert(key(pos), generator.generate(pos));
-            }
-        }
     }
-
-    [[nodiscard]] QcBlockId at(QcBlockPos cell) const
-    {
-        const QcChunkPos pos = cell.chunk();
-        const std::shared_ptr<QcChunk> &chunk = m_chunks[key(pos)];
-        return chunk->block(cell.x - pos.x * QcWorld::chunkSize, cell.y, cell.z - pos.z * QcWorld::chunkSize);
-    }
-
-private:
-    static qint64 key(QcChunkPos pos) { return (static_cast<qint64>(pos.x) << 32) ^ static_cast<qint64>(static_cast<quint32>(pos.z)); }
-
-    mutable QHash<qint64, std::shared_ptr<QcChunk>> m_chunks;
 };
 
 // The free cells of a fortress: where one can stand or that light through it, over both floors of
@@ -237,31 +218,7 @@ private:
     // The floor cells one reaches on foot from the middle of the fortress.
     [[nodiscard]] QSet<quint64> walk(const Site &site, QcBlockPos start, QcXzRect bounds) const
     {
-        QSet<quint64> seen{cellKey(start)};
-        std::deque<QcBlockPos> open{start};
-        while (!open.empty()) {
-            const QcBlockPos feet = open.front();
-            open.pop_front();
-            for (const auto &[dx, dz] : {std::pair{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
-                for (const int dy : {1, 0, -1, -2, -3}) {
-                    const QcBlockPos next = feet.offset(dx, dy, dz);
-                    if (!bounds.contains(next.x, next.z) || seen.contains(cellKey(next))) {
-                        continue;
-                    }
-                    // Up needs headroom over the cell one leaves, a drop free air down the column.
-                    bool free = passable(site.at(next)) && passable(site.at(next.offset(0, 1, 0))) && standable(site.at(next.offset(0, -1, 0)));
-                    free = free && (dy <= 0 || passable(site.at(feet.offset(0, 2, 0))));
-                    for (int fall = dy + 1; fall <= 0 && free; ++fall) {
-                        free = passable(site.at(feet.offset(dx, fall, dz))) && passable(site.at(feet.offset(dx, fall + 1, dz)));
-                    }
-                    if (free) {
-                        seen.insert(cellKey(next));
-                        open.push_back(next);
-                    }
-                }
-            }
-        }
-        return seen;
+        return qcSiteWalk(site, start, bounds, [this](QcBlockId id) { return passable(id); }, [this](QcBlockId id) { return standable(id); });
     }
 
 private slots:

@@ -1415,6 +1415,7 @@
     "No command matches \"%1\".": "Kein Befehl passt zu „%1“.",
     "/help lists the commands by group, /help <command> explains one": "/help listet die Befehle nach Gruppen, /help <Befehl> erklärt einen",
     "%1: nothing found within %2 blocks": "%1: nichts gefunden im Umkreis von %2 Blöcken",
+    "Bastion": "Bastion",
     "Fortress": "Festung",
     "Mine shaft": "Minenschacht",
     "Dungeon": "Verlies",

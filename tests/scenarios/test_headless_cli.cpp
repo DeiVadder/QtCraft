@@ -138,7 +138,7 @@ private slots:
         // Zombie, skeleton, spider, cave spider, silverfish, shadewalker, pig, chicken, slime, firefly,
         // sheep, villager, iron golem, sand golem, witch, wolf, dog, cat, ocelot, cow, cod, salmon, the
         // Kjut and its child, the squid, and the two mannequins of the showcase (one with a cape).
-        QCOMPARE(creatures.size(), 39);
+        QCOMPARE(creatures.size(), 40);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);

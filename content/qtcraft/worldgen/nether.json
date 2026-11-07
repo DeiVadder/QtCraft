@@ -119,7 +119,7 @@
     ],
     "fortress": {
         "regionSize": 448,
-        "chance": 0.6,
+        "chance": 0.4,
         "attempts": 6,
         "lowestFloor": 44,
         "highestFloor": 60,
@@ -208,5 +208,39 @@
             "threshold": 0.12,
             "rimBand": 0.05
         }
-    ]
+    ],
+    "bastion": {
+        "regionSize": 448,
+        "chance": 0.6,
+        "floor": 33,
+        "biomes": [
+            "nether_wastes",
+            "soul_sand_valley",
+            "crimson_forest",
+            "warped_forest"
+        ],
+        "rough": "blackstone",
+        "brick": "polished_blackstone_bricks",
+        "cracked": "cracked_polished_blackstone_bricks",
+        "polished": "polished_blackstone",
+        "chiseled": "chiseled_polished_blackstone",
+        "gilded": "gilded_blackstone",
+        "gold": "gold_block",
+        "soil": "soul_soil",
+        "lava": "lava",
+        "wall": "polished_blackstone_brick_wall",
+        "stairs": "polished_blackstone_brick_stairs",
+        "lantern": "soul_lantern",
+        "chest": "chest",
+        "spawner": "spawner",
+        "spawnerMob": "magma_slime",
+        "guard": "tuskling",
+        "bruiser": "tuskling_bruiser",
+        "beast": "bristleboar",
+        "bridgeLoot": "bastion_bridge",
+        "stablesLoot": "bastion_stables",
+        "treasureLoot": "bastion_treasure",
+        "otherLoot": "bastion_other",
+        "monsters": []
+    }
 }

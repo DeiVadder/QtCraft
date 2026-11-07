@@ -16,6 +16,7 @@
 #include <memory>
 #include <optional>
 
+class QcBastionGenerator;
 class QcFortressGenerator;
 class QcNetherTerrain;
 
@@ -29,10 +30,10 @@ class QcNetherStructures
 {
 public:
     /*! Plans from \a definitions and \a terrain, which outlive it, with the \a content of the
-        placements (which must outlive it too); no copy reaches into a fortress of \a fortresses,
-        which outlives it too. */
+        placements (which must outlive it too); no copy reaches into a fortress of \a fortresses
+        or a bastion of \a bastions, which outlive it too. */
     QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content,
-                       const QcFortressGenerator &fortresses);
+                       const QcFortressGenerator &fortresses, const QcBastionGenerator &bastions);
 
     /*! Puts the arrival station with its middle at \a middle (standing on the floor at its y). */
     void setStation(QcBlockPos middle);
@@ -68,5 +69,6 @@ private:
     const QcNetherTerrain &m_terrain;
     std::shared_ptr<const QcContentRegistry> m_content;
     const QcFortressGenerator &m_fortresses;
+    const QcBastionGenerator &m_bastions;
     std::optional<QcStructurePlacement> m_station;
 };

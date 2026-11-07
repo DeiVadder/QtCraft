@@ -9,6 +9,7 @@
 
 #include <memory>
 
+class QcNetherComplexes;
 class QcNetherTerrain;
 
 /*! \brief Plans the fortress of a region (decision E-1071) from the seed and the terrain noise:
@@ -21,8 +22,9 @@ class QcNetherTerrain;
 class QcFortressPlanner
 {
 public:
-    /*! Plans from \a definitions and \a terrain, which outlive it; its places follow \a seed. */
-    QcFortressPlanner(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, quint64 seed);
+    /*! Plans from \a definitions and \a terrain in the regions \a complexes gives a fortress, all
+        of which outlive it; its places follow \a seed. */
+    QcFortressPlanner(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, const QcNetherComplexes &complexes, quint64 seed);
 
     /*! Returns whether the settings ask for fortresses. */
     [[nodiscard]] bool enabled() const { return settings().regionSize > 0; }
@@ -62,5 +64,6 @@ private:
 
     const QcNetherDefinitions &m_definitions;
     const QcNetherTerrain &m_terrain;
+    const QcNetherComplexes &m_complexes;
     quint64 m_seed = 0;
 };

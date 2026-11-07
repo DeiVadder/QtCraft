@@ -6382,3 +6382,74 @@ Alt: beide Wesen sind neu, „alt“ ist der Standardwert, den die Daten ohne Ei
 ## E-1086 Tick-Kosten von Hauerling und Borstenkeiler (Paket 84.6a)
 
 Gemessen im Release-Build, drei Läufe, je 40 Wesen (Tabellen in `docs/Performance-Verlauf.md`, „Paket 84.6a“). `QcMobManager::tick`: Zombie 0,047–0,051 ms, Hauerling 0,047–0,056 ms, Borstenkeiler 0,262–0,271 ms. Ganzer Server-Tick mit `QcServerBarter` und 100 liegenden Stapeln: Zombie 0,135–0,141 ms, Hauerling 0,135–0,148 ms. Der Tausch und das Suchen nach Gold kosten also nichts, was über die Streuung hinausgeht. Der Keiler kostet das Fünfeinhalbfache, weil jeder Blick (zweimal je Sekunde) 17 × 17 × 9 Blöcke prüft; das bleibt bei 0,5 % des Tick-Budgets, deshalb kein Zwischenspeicher. Die Prüfung bricht nicht beim ersten Fund ab, weil der nächste Block die Fluchtrichtung bestimmt.
+
+## E-1087 Bastionsruine: Plan aus Strichen, vier Formen (Paket 84.6b) — `QcBastionPlan`, `QcBastionSketch`, `QcBastionForms`, `QcBastionPlanner`, `QcBastionBuilder`, `QcBastionBlocks`, `QcBastionGenerator`, `QcChunkCanvas`, `QcRegionPlans`
+
+- **Was:** Eine Bastion ist ein Plan (`QcBastionPlan`) aus Seed, Region und Rausch-Funktion des Geländes allein: eine geordnete Liste von Strichen (`Stroke`: ein Kasten von Zellen, eine Art zu malen), dazu Truhen, Spawner, Bewohner, Rahmen der Teile, Schilder, Eingang. Jeder Chunk malt nur seine Zellen (`QcBastionBuilder`) und liest nur seine eigenen Blöcke, darum kommt ein Chunk in jeder Reihenfolge gleich heraus (`aChunkComesOutTheSameInAnyOrder`). Risse, Goldadern und was abgefallen ist, folgen aus der Zelle (Hash).
+- **Warum Striche statt Räume und Gänge wie in der Festung:** Die vier Formen teilen fast keine Bauteile; mit Strichen ist jede Form eine kurze Zeichnung in `QcBastionForms`, die um einen Mittelpunkt in Zellen denkt und die `QcBastionSketch` um Vierteldrehungen in die Welt dreht. Der Baumeister bleibt eine Liste von rund 15 Malarten.
+- **Eigener Entwurf (E-894):** Formen und Maße sind eigene, keine Nachbildung der Bauteile des Vorbilds. Brücke: Lavakanal, Dammweg auf Pfeilern mit Torhaus in der Mitte, zwei Türme. Stallungen: Hof mit Ringmauer, je sechs Boxen unter einem Dachboden, Lavarinne im Gang, Ecktürme. Schatzhalle: Halle 49 × 49 × 30 mit Boden aus Lava, Ringweg, Balkon, vier Brücken zum Pfeiler mit Goldpodest. Wohnviertel: Ringmauer, Häuser auf einem Gitter 3 × 3, Brücken im dritten Geschoss, Lavagruben an den Kreuzungen. Die Form fällt gleich wahrscheinlich, dazu eine Vierteldrehung je Region.
+- **Nicht abgeschnitten (Mensch, Regel der Festung):** Ein Plan bleibt ganz in seiner Region (Reichweite 88 Spalten, 12 Rand, Parser verlangt mindestens 200 Blöcke Region; `aBastionStaysInItsRegion`). Unten enden Mauern und Pfeiler am ersten festen Block, durch das Lavameer bis zum Grund (`foundationsReachTheRock`); oben enden sie im Fels oder als Ruine.
+- **Ruine:** `Paint::Crumble` nimmt feste Zellen weg, nach oben immer mehr (10 % bis 70 %), nur an Mauerkronen, Dächern und Brüstungen und bei rund 30 % der Eckhäuser oberhalb des ersten Stocks. Wege, Treppen und Becken bleiben ganz (`aBastionCanBeWalkedThrough`, `theLavaStaysInItsBasins`).
+- **Lava-Brücken:** Lava liegt nur in Becken, jede Zelle hat Lava oder Festes an den Seiten und unten, also fließt nichts los. Die Brücken über Kanal und Hallenboden sind Teil der Formen. Ein Steg (`landing`) führt vom Eingang bis zum ersten Boden, höchstens 24 Zellen; findet er keinen, endet er über der Lava.
+- **Geteilt mit der Festung:** `QcChunkCanvas` (Zellen eines Chunks, jetzt Basis von `QcFortressCanvas`) und `QcRegionPlans` (Plan-Cache je Region, Sperrflächen, Demonstrationen, `/locate`, jetzt auch die Festung), `QcSpawnArea::ofParts`, im Test `tests/fixtures/QcChunkSite.h`. `QcStateResolver` wie in der Festung.
+- **Einbindung:** `/locate bastion`, Ort `qtcraft:bastion` in der Kartenvorschau (`QcNetherMap::siteRules`, Text `structure.qtcraft.bastion`), Portal-Ruinen weichen aus.
+- **Showcase:** Alle vier Formen stehen in einer Reihe 128 Blöcke westlich der Ankunftsstation, Boden auf 33, mit Schildern; natürliche Bastionen und Festungen halten Abstand.
+- **Generator-Version:** Die Nether-Reihe ist offen (E-1033), Prüfsummen darwin-arm64 neu aufgenommen; `test_generator_versions` nimmt die nächste Bastion mit ihren neun Chunks dazu. Neue Chunks der Oberwelt ändern sich nicht.
+
+## E-1088 Festung und Bastion teilen die Regionen (Paket 84.6b) — `QcNetherComplexes`
+
+- **Vorbild (Java-Ausgabe):** Festung und Bastion sind ein Struktur-Satz: Abstand 27 Chunks, Gewichte 2 und 3, ein Ort je Gitterzelle; steht die gezogene Struktur im Biom nicht, kommt die andere. Die Bastion kennt Netherwüste, Seelensandtal, Karmesin- und Wirrwald, nicht die Basaltdeltas. Höhe absolut 33. Keine Prüfung des Geländes.
+- **Umsetzung:** `QcNetherComplexes::kindOf` zieht einmal je Region: unter `fortress.chance` Festung, darüber bis `+ bastion.chance` Bastion, sonst nichts; steht der Ort der Bastion im falschen Biom, wird es eine Festung. Die Region bleibt die der Festung (448 Blöcke statt 432 im Vorbild, nicht geändert); `chance` der Festung sinkt von 0,6 auf **0,4**, die Bastion bekommt 0,6, also hat jede Region eine von beiden, wie im Vorbild. Der Parser verlangt gleiche Region und eine Summe bis 1. Der Ort der Bastion ist ein Zufallsort, an dem sie ganz in die Region passt, ohne Blick aufs Gelände; sie schneidet sich in den Fels wie im Vorbild, der Steg gräbt sich zum nächsten Boden.
+- **Folge:** Es gibt weniger Festungen als seit 84.5a (0,6 auf 0,4 je Region, dazu die Bastionen, die im falschen Biom zur Festung werden); jede Region hat aber eine von beiden, Orte in Basaltdeltas nur Festungen. Anteil der Bastionen gemessen: siehe Test `theRegionsShareTheRoleModelsWeights`.
+
+## E-1089 Bewohner einer Bastion und der Hauerling-Recke (Paket 84.6b) — `QcChunkFurnishing::Resident`, `QcWorldGenerator::hasResidentsIn`, `QcFurnishing`
+
+- **Vorbild:** Die Bastion hat keine eigene Spawn-Liste (`spawn_overrides` leer): Piglins, Rohlinge und Hoglins werden beim Bau gesetzt, einmal, und bleiben; Rohlinge kommen nie wieder, sonst gilt die Spawn-Liste des Bioms.
+- **Umsetzung:** `QcChunkFurnishing` bekommt `residents`, `QcFurnishing` stellt sie beim ersten Eintreffen des Chunks hin, mit der Welt gespeichert (`persistent`), und merkt das mit derselben Marke wie Truhen: ein Getöteter kommt nicht wieder. Ein Chunk mit Bewohnern, aber ohne Truhe, Spawner oder Schiene wird über `QcWorldGenerator::hasResidentsIn` erkannt. Wer steht, sagen die Daten (`guard`, `bruiser`, `beast`). Die Zahlen je Form sind eigene Wahl (Brücke 6 Hauerlinge und 2 Recken, Stallungen 3 und 2 und 6–12 Borstenkeiler, Schatzhalle 5 und 3, Wohnviertel 11 und 2); das Vorbild setzt sie nach Bauteilen.
+- **Spawn-Gebiet (Abweichung vom Auftrag, zu entscheiden):** Der Auftrag nennt die Rahmen der Bauteile wie in der Festung. Der Plan hat sie (`parts`), und `bastion.monsters` macht daraus ein Gebiet wie bei der Festung (E-1074). Im Basisspiel bleibt die Liste **leer**, weil das Vorbild keine hat: Im Bauwerk kommen die Wesen des Bioms, und Recken kommen nie nach. Eine gefüllte Liste würde Recken nachwachsen lassen.
+- **Hauerling-Recke / Tuskling Bruiser** (`qtcraft:tuskling_bruiser`, Vorbild Piglin-Rohling; „Recke“ und „bruiser“ sind beschreibende Wörter, E-894): eigenes Modell `models/tuskling_bruiser.json` (Skelett des Hauerlings, Helmband mit Kamm, längere Hauer, Schulterplatten, Brustplatte vorn und hinten, Armschienen), dunkle, narbige Haut, dunkler Kittel, altes Gold; Texturen prozedural, Seeds 7321–7326; Klänge mit Frequenz × 0,72 gegenüber dem Hauerling (`mob.tuskling_bruiser.*`). KI `hostile`: immer feindlich, unabhängig vom Gold, keine `barter`-Daten, nimmt also nichts auf und tauscht nichts.
+- **Neu erzeugen:** `/regenerate` gibt die Blöcke zurück, nicht die Bewohner: `QcChunkRegeneration` ruft `QcFurnishing::furnishAgain` (Truhen, Spawner, Loren, keine Wesen), denn die Marke fällt mit den Blöcken. Sonst stünden sie doppelt da und Getötete kämen wieder (`test_bastion_folk::regeneratingBringsNobodyBack`).
+- **Weitergereicht:** `QcVersionedGenerator` gibt `hasResidentsIn` an den Generator der Version weiter wie `furnishingIn`; ohne das bleiben Chunks ohne Truhe leer (`test_bastion_folk::aBastionIsPeopledOnce` hat das gefunden).
+- **Nicht umgesetzt:** Heimat (das Vorbild bleibt nahe am Ort, an dem es steht; hier wandert der Recke wie jedes Monster), Rache der Recken für geschlagene Hauerlinge (Gruppenzorn nur über `packRange` der neutralen KI), Armbrust-Hauerlinge, Verwandlung in der Oberwelt, Feindschaft gegen Verkohlte Skelette.
+
+## E-1006 Werte der Bastion und des Recken nach dem Vorbild (Paket 84.6b)
+
+„Sicher“ heißt: Wert des Vorbilds (Java-Ausgabe) aus verlässlicher Erinnerung, nicht nachgelesen; „unsicher“: bescheidene eigene Wahl. Der Recke und die Bastion sind neu, „alt“ ist darum meist leer.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Recke Gesundheit | – | 50 | Vorbild, sicher |
+| Recke Schaden / Abstand | – | 7 / 1 s | Schaden Vorbild, sicher; Abstand unsicher |
+| Recke Gehen / Jagen (m/s) | – | 1,4 / 4,2 | wie Hauerling (E-1084): Vorbild 0,35 wie Piglin, sicher; Umrechnung unsicher |
+| Recke Sicht | – | 16 | Vorbild 16, ziemlich sicher |
+| Recke Waffe | – | goldene Axt | Vorbild, sicher |
+| Recke Beute | – | goldene Axt 8,5 % | Vorbild Ausrüstungs-Chance, sicher |
+| Recke Erfahrung | – | 20 | Vorbild, sicher |
+| Recke Größe | – | 0,6 × 1,95 | Vorbild, sicher |
+| Recke natürlicher Spawn | – | Gewicht 0 | Vorbild, sicher |
+| Gewichte Festung / Bastion | 0,6 / – | 0,4 / 0,6 | Vorbild 2 : 3, sicher |
+| Biome der Bastion | – | Netherwüste, Seelensandtal, Karmesinwald, Wirrwald | Vorbild, sicher |
+| Boden der Bastion | – | 33 | Vorbild `start_height` 33, sicher |
+| Region | 448 | 448 | Vorbild 432 (27 Chunks), nicht angeglichen (E-1071) |
+| Formen | – | 4, gleich wahrscheinlich | Vorbild, sicher |
+| Spawner Schatzhalle | – | 2 × Magmaschleim | Vorbild: Magmawürfel-Spawner, sicher; Anzahl unsicher |
+| Bewohner je Form | – | siehe E-1089 | unsicher, eigene Wahl |
+| Risse / Gold in den Ziegeln | – | 12 % / 1,5 % | eigene Wahl, kein Vorbild-Wert |
+
+## E-1007 Truhen-Beute der Bastion (Paket 84.6b)
+
+- **Tabellen:** `loot/bastion_bridge.json`, `bastion_stables.json`, `bastion_treasure.json`, `bastion_other.json`, Pools, Züge, Gewichte und Mengen nach den vier Tabellen des Vorbilds aus der Erinnerung (Java 1.20): die Zuordnung der Items und die Mengen sind **ziemlich sicher**, einzelne Gewichte (`bastion_stables` erster Pool, `bastion_other` erster Pool) **unsicher**; vor 84.8 gegen die Daten prüfen.
+- **Truhen je Form:** Brücke: `bastion_bridge` im Turm, `bastion_other` im Torhaus; Stallungen: zweimal `bastion_stables`, einmal `bastion_other` auf dem Boden; Schatzhalle: `bastion_treasure` auf dem Goldpodest, zweimal `bastion_other` am Ringweg; Wohnviertel: `bastion_other`, rund jedes zweite Haus. Anzahl eigene Wahl.
+- **Ohne Verzauberung:** Das Vorbild verzaubert Diamantrüstung und -werkzeug, Goldausrüstung und Armbrust zufällig; Beutetabellen haben hier kein Feld dafür, die Items kommen unverzaubert.
+- **Goldenes:** Goldblöcke, Goldbarren, Goldnuggets und Golddurchzogener Schwarzstein stehen wie im Vorbild in den Tabellen; Zorn der Hauerlinge über Gold und Truhen wie in E-1081, die Recken greifen ohnehin an.
+
+## E-1008 Schwarzstein-Familie (Paket 84.6b)
+
+Die Familie steht seit 84.1 und 84.3 (Blöcke, Stufen, Treppen, Mauern aus `materials/`), das Paket braucht keinen neuen Block. Die Bastion nimmt: Schwarzstein (roh), polierte Schwarzsteinziegel mit rissigen und golddurchzogenen Zellen, polierter und gemeißelter Schwarzstein, Ziegel-Treppe und -Mauer, Goldblock, Seelenerde in den Boxen, Seelenlaterne auf Pfosten. Alle Namen stehen in `bastion` in `worldgen/nether.json`, alle Pflicht; fehlt einer, gibt es mit einer Warnung keine Bastionen (`QcStateResolver`).
+
+## E-1009 Beute, die noch wartet: `pending` (Paket 84.6b)
+
+- **Was:** Ein Eintrag `{"pending": "netherite_scrap", "weight": 8}` statt `"item"` ist ein markierter Platz für ein Item, das es noch nicht gibt. Die Tabelle zieht ihn wie ein leeres Feld (Eintrag ohne Item, E-521): sein Anteil geht verloren, die Anteile der übrigen stimmen also schon. Kein neuer Code.
+- **Warten auf 84.8:** `netherite_scrap`, `netherite_ingot`, `ancient_debris`, `netherite_upgrade_smithing_template` (Schmiedevorlage; im Vorbild 100 % in der Schatztruhe, 10 % sonst).
+- **Warten ohne Paket:** `crossbow`, `spectral_arrow` (E-1085), `lodestone`, `golden_apple`, `enchanted_golden_apple`, `golden_carrot`, `banner_pattern`, `music_disc`, `soul_speed_book`, `soul_speed_golden_boots`.
+- **Prüfung:** `test_nether_bastion::theLootWaitsForWhatIsMissing` scheitert, sobald ein Item eines `pending` existiert: wer 84.8 baut, wird zum Umschreiben auf `"item"` gezwungen, und alle Einträge mit `item` müssen existieren.

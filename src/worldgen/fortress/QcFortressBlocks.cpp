@@ -9,12 +9,6 @@
 
 using namespace Qt::StringLiterals;
 
-namespace {
-
-constexpr std::array<const char *, 4> sideNames{"north", "east", "south", "west"};
-
-} // namespace
-
 QcFortressBlocks::Resolved QcFortressBlocks::resolve(const QcNetherSettings::Fortress &settings, const QcContentRegistry &content)
 {
     QcStateResolver resolver(content, u"fortress"_s, u"no fortresses"_s);
@@ -31,12 +25,11 @@ QcFortressBlocks::Resolved QcFortressBlocks::resolve(const QcNetherSettings::For
     blocks.fenceAlongX = state(settings.fence + u"[east=true,west=true]"_s);
     blocks.fenceAlongZ = state(settings.fence + u"[north=true,south=true]"_s);
     blocks.fencePost = state(settings.fence);
-    for (std::size_t i = 0; i < sideNames.size(); ++i) {
-        const QString side = QString::fromLatin1(sideNames[i]);
-        blocks.crops[i] = state(settings.crop + u"[age=%1]"_s.arg(i));
-        blocks.chests[i] = state(settings.chest + u"[facing="_s + side + u']');
-        blocks.stairs[i] = state(settings.stairs + u"[facing="_s + side + u",half=bottom,shape=straight]"_s);
+    for (std::size_t age = 0; age < blocks.crops.size(); ++age) {
+        blocks.crops[age] = state(settings.crop + u"[age=%1]"_s.arg(age));
     }
+    blocks.chests = resolver.facing(settings.chest);
+    blocks.stairs = resolver.facing(settings.stairs, u",half=bottom,shape=straight"_s);
     if (!resolver.resolved()) {
         return {std::nullopt, resolver.warnings()};
     }

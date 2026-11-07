@@ -1,0 +1,43 @@
+{
+    "name": "tuskling_bruiser",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "tuskling_bruiser_hide",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "tuskling_bruiser_face",
+            "tint": "none"
+        },
+        "nose": {
+            "texture": "tuskling_bruiser_snout",
+            "tint": "none"
+        },
+        "hat": {
+            "texture": "tuskling_bruiser_gold",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "tuskling_bruiser_tunic",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "tuskling_bruiser_hide",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "tuskling_bruiser_hide",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "tuskling_bruiser_breeches",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "tuskling_hoof",
+            "tint": "none"
+        }
+    }
+}

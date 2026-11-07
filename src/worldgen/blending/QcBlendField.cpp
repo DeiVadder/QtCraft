@@ -15,14 +15,6 @@ namespace {
 // Beside a held rectangle the share reaches 1 after this many columns at most.
 constexpr int widestFeather = 32;
 
-// The columns of the chunk `pos`.
-QcXzRect columnsOf(QcChunkPos pos)
-{
-    const int x = pos.x * QcWorld::chunkSize;
-    const int z = pos.z * QcWorld::chunkSize;
-    return {x, z, x + QcWorld::chunkSize - 1, z + QcWorld::chunkSize - 1};
-}
-
 // The squared distance between the nearest columns of `a` and `b`, 0 when they share one.
 qint64 squaredDistance(QcXzRect a, QcXzRect b)
 {
@@ -59,7 +51,7 @@ QcBlendField::QcBlendField(const QcChunkSet &old, int widthChunks, QList<QcXzRec
         }
     }
     for (const QcChunkPos chunk : std::as_const(m_edge)) {
-        addChunksNear(columnsOf(chunk), width());
+        addChunksNear(QcXzRect::ofChunk(chunk), width());
     }
     for (const QcXzRect rect : std::as_const(m_held)) {
         addChunksNear(rect, feather());
@@ -79,7 +71,7 @@ void QcBlendField::addChunksNear(QcXzRect edge, int reach)
     const qint64 limit = qint64{reach} * reach;
     const QList<QcChunkPos> near = edge.grown(reach).chunks();
     for (const QcChunkPos chunk : near) {
-        if (chunk.isInsideWorld() && !m_old.contains(chunk) && squaredDistance(columnsOf(chunk), edge) < limit) {
+        if (chunk.isInsideWorld() && !m_old.contains(chunk) && squaredDistance(QcXzRect::ofChunk(chunk), edge) < limit) {
             m_ring.insert(chunk);
         }
     }
@@ -92,12 +84,12 @@ int QcBlendField::feather() const
 
 QcBlendField::Shares QcBlendField::sharesIn(QcChunkPos pos) const
 {
-    const QcXzRect columns = columnsOf(pos);
+    const QcXzRect columns = QcXzRect::ofChunk(pos);
     QList<QcXzRect> edges;
     const QList<QcChunkPos> near = columns.grown(width()).chunks();
     for (const QcChunkPos chunk : near) {
         if (m_edge.contains(chunk)) {
-            edges.append(columnsOf(chunk));
+            edges.append(QcXzRect::ofChunk(chunk));
         }
     }
     QList<QcXzRect> held;

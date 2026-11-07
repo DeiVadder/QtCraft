@@ -19,8 +19,12 @@ constexpr int spawnRoom = 3;
 // The blocks from the middle of a demonstration world's station to anything of a fortress.
 constexpr int stationClearance = 40;
 
-// The word /locate takes for a fortress.
+// The blocks from the middle of a demonstration world's station to the row of its bastions.
+constexpr int bastionClearance = 40 + QcBastionPlan::reach;
+
+// The words /locate takes for a fortress and a bastion.
 constexpr QStringView locatableFortress = u"fortress";
+constexpr QStringView locatableBastion = u"bastion";
 
 quint64 netherSeed(qint64 seed)
 {
@@ -35,16 +39,33 @@ QcNetherGenerator::QcNetherGenerator(const std::shared_ptr<const QcContentRegist
     , m_decorator(m_definitions, m_terrain)
     , m_deltas(m_definitions, m_terrain)
     , m_growth(m_definitions, m_terrain)
-    , m_fortress(m_definitions, m_terrain, *content, netherSeed(seed))
-    , m_structures(m_definitions, m_terrain, content, m_fortress)
+    , m_complexes(m_definitions, m_terrain, netherSeed(seed))
+    , m_fortress(m_definitions, m_terrain, m_complexes, *content, netherSeed(seed))
+    , m_bastion(m_definitions, m_terrain, m_complexes, *content, netherSeed(seed))
+    , m_structures(m_definitions, m_terrain, content, m_fortress, m_bastion)
 {
-    m_warnings = m_definitions.warnings + m_fortress.warnings();
+    m_warnings = m_definitions.warnings + m_fortress.warnings() + m_bastion.warnings();
     if (station) {
         m_structures.setStation(*station);
-        // Its fortress stands beside it, the natural ones keep away from both.
-        m_fortress.keepClearOf(QcXzRect{station->x, station->z, station->x, station->z}.grown(stationClearance));
-        const int floor = std::clamp(station->y, m_definitions.settings.fortress.lowestFloor, m_definitions.settings.fortress.highestFloor);
-        m_fortress.setDemonstration({station->x + stationClearance, floor, station->z - stationClearance / 2});
+        setDemonstrations(*station);
+    }
+}
+
+void QcNetherGenerator::setDemonstrations(QcBlockPos station)
+{
+    // Its fortress stands east of the station and its bastions west of it, the natural ones keep
+    // away from all of them.
+    const QcXzRect around = QcXzRect{station.x, station.z, station.x, station.z}.grown(stationClearance);
+    fortressPlans().keepClearOf(around);
+    bastionPlans().keepClearOf(around);
+    const int floor = std::clamp(station.y, definitions().settings.fortress.lowestFloor, definitions().settings.fortress.highestFloor);
+    fortressPlans().setDemonstration({station.x + stationClearance, floor, station.z - stationClearance / 2});
+    if (const std::shared_ptr<const QcFortressPlan> shown = fortress().demonstration()) {
+        bastionPlans().keepClearOf(shown->bounds);
+    }
+    bastionPlans().setDemonstration({station.x - bastionClearance, station.y, station.z});
+    for (const std::shared_ptr<const QcBastionPlan> &plan : bastion().demonstrations()) {
+        fortressPlans().keepClearOf(plan->bounds);
     }
 }
 
@@ -52,13 +73,14 @@ std::shared_ptr<QcChunk> QcNetherGenerator::generate(QcChunkPos pos) const
 {
     auto chunk = std::make_shared<QcChunk>(pos);
     terrain().fill(*chunk);
-    m_decorator.decorate(*chunk);
+    decorator().decorate(*chunk);
     m_deltas.shape(*chunk);
     m_growth.grow(*chunk);
     structures().build(*chunk);
-    // Springs before the fortress, whose seals then close those beside its parts as well.
-    m_decorator.placeSprings(*chunk);
+    // Springs before the great structures, whose seals then close those beside their parts as well.
+    decorator().placeSprings(*chunk);
     fortress().build(*chunk);
+    bastion().build(*chunk);
     return chunk;
 }
 
@@ -102,22 +124,40 @@ QcChunkFurnishing QcNetherGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing = structures().furnishingIn(pos);
     furnishing.add(fortress().furnishingIn(pos));
+    furnishing.add(bastion().furnishingIn(pos));
     return furnishing;
+}
+
+QcStructureSites QcNetherGenerator::structureSitesNear(QcBlockPos from, int reach) const
+{
+    QcStructureSites sites = fortress().sitesNear(from, reach);
+    sites.add(bastion().sitesNear(from, reach));
+    return sites;
 }
 
 std::optional<QcStructureSites> QcNetherGenerator::plannedStructureSitesNear(QcBlockPos from, int reach) const
 {
-    return fortress().plannedSitesNear(from, reach);
+    std::optional<QcStructureSites> sites = fortress().plannedSitesNear(from, reach);
+    const std::optional<QcStructureSites> bastions = bastion().plannedSitesNear(from, reach);
+    if (!sites || !bastions) {
+        return std::nullopt;
+    }
+    sites->add(*bastions);
+    return sites;
 }
 
 QStringList QcNetherGenerator::locatableNames() const
 {
     QStringList names = structures().names();
     names.append(locatableFortress.toString());
+    names.append(locatableBastion.toString());
     return names;
 }
 
 QcLocateResult QcNetherGenerator::locate(QStringView kind, QcBlockPos from, int reach) const
 {
+    if (kind == locatableBastion) {
+        return bastion().nearest(from, reach);
+    }
     return kind == locatableFortress ? fortress().nearest(from, reach) : QcLocateResult{std::nullopt, reach};
 }

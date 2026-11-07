@@ -244,6 +244,10 @@ Very fast but soft: it wears out after a few uses and only mines what wood can.
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Dropped by**
+
+[Tuskling Bruiser](creatures.md#mob-qtcraft-tuskling_bruiser) (8.5 %)
+
 ### <a id="item-qtcraft-golden_boots"></a>Golden boots
 
 Shiny armour of gold: a little better than leather, but soft.

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hauerling-Recke](#mob-qtcraft-tuskling_bruiser) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -243,6 +243,22 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 Tag und Nacht
 
 [Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
+
+### <a id="mob-qtcraft-tuskling_bruiser"></a>Hauerling-Recke
+
+Der Veteran der Hauerlinge, in dunkler Rüstung und schwerem Gold, mit einer goldenen Axt. Ein Recke steht seit ihrem Bau in einer Bastionsruine und kommt nicht wieder, wenn er tot ist. Er greift an, sobald er dich sieht, egal was du trägst, und Gold bedeutet ihm nichts: Nichts kauft ihn los. Er schlägt hart zu und fällt erst nach vielen Treffern.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling_bruiser` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 50 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 4,2 m/s beim Verfolgen |
+| Angriff | 7 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Goldaxt](tools.md#item-qtcraft-golden_axe) (8,5 %) |
 
 ### <a id="mob-qtcraft-witch"></a>Hexe
 

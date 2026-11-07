@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Charred Skeleton](#mob-qtcraft-charred_skeleton) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Ember Wraith](#mob-qtcraft-ember_wraith) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Charred Skeleton](#mob-qtcraft-charred_skeleton) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Ember Wraith](#mob-qtcraft-ember_wraith) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Tuskling Bruiser](#mob-qtcraft-tuskling_bruiser) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -901,6 +901,22 @@ Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 day and night
 
 [Crimson forest](biomes.md#biome-qtcraft-crimson_forest)
+
+### <a id="mob-qtcraft-tuskling_bruiser"></a>Tuskling Bruiser
+
+The veteran of the Tusklings, in dark plate and heavy gold, with a golden axe. A Bruiser stands in a bastion ruin from the day it was built and comes back no more once it is dead. It attacks on sight, whatever you wear, and it has no use for gold: nothing buys it off. It hits hard and takes a long time to fall.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling_bruiser` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 50 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.4 m/s walking, 4.2 m/s chasing |
+| Attack | 7 damage within 1.6 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | [Golden axe](tools.md#item-qtcraft-golden_axe) (8.5 %) |
 
 ### <a id="mob-qtcraft-villager"></a>Villager
 

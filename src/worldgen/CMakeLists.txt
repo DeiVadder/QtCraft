@@ -8,6 +8,15 @@ qt_add_library(qc_worldgen ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_worldgen PRIVATE
+    bastion/QcBastionBlocks.h bastion/QcBastionBlocks.cpp
+    bastion/QcBastionBuilder.h bastion/QcBastionBuilder.cpp
+    bastion/QcBastionForms.h bastion/QcBastionForms.cpp
+    bastion/QcBastionGenerator.h bastion/QcBastionGenerator.cpp
+    bastion/QcBastionPlan.h
+    bastion/QcBastionPlanner.h bastion/QcBastionPlanner.cpp
+    bastion/QcBastionSketch.h bastion/QcBastionSketch.cpp
+)
+target_sources(qc_worldgen PRIVATE
     blending/QcBlendedChunk.h blending/QcBlendedChunk.cpp
     blending/QcBlendField.h blending/QcBlendField.cpp
     blending/QcBlendGrid.h blending/QcBlendGrid.cpp
@@ -31,11 +40,13 @@ target_sources(qc_worldgen PRIVATE
 )
 target_sources(qc_worldgen PRIVATE
     generators/QcBiomeMap.h generators/QcBiomeMap.cpp
+    generators/QcChunkCanvas.h generators/QcChunkCanvas.cpp
     generators/QcChunkFurnishing.h
     generators/QcDimensionMaps.h generators/QcDimensionMaps.cpp
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
     generators/QcLocatedPlace.h
+    generators/QcRegionPlans.h
     generators/QcStateResolver.h generators/QcStateResolver.cpp
     generators/QcStructureClosure.h generators/QcStructureClosure.cpp
     generators/QcStructureSites.h
@@ -63,6 +74,7 @@ target_sources(qc_worldgen PRIVATE
     mineshafts/QcMineshaftSite.h mineshafts/QcMineshaftSite.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    nether/QcNetherComplexes.h nether/QcNetherComplexes.cpp
     nether/QcNetherDecorator.h nether/QcNetherDecorator.cpp
     nether/QcNetherDefinitions.h nether/QcNetherDefinitions.cpp
     nether/QcNetherDeltas.h nether/QcNetherDeltas.cpp

@@ -4,6 +4,7 @@
 #include "worldgen/nether/QcNetherStructures.h"
 
 #include "common/core/QcIntMath.h"
+#include "worldgen/bastion/QcBastionGenerator.h"
 #include "worldgen/fortress/QcFortressGenerator.h"
 #include "worldgen/nether/QcNetherTerrain.h"
 #include "worldgen/terrain/QcNoise.h"
@@ -28,11 +29,12 @@ constexpr int maxFoundation = 12;
 } // namespace
 
 QcNetherStructures::QcNetherStructures(const QcNetherDefinitions &definitions, const QcNetherTerrain &terrain, std::shared_ptr<const QcContentRegistry> content,
-                                       const QcFortressGenerator &fortresses)
+                                       const QcFortressGenerator &fortresses, const QcBastionGenerator &bastions)
     : m_definitions(definitions)
     , m_terrain(terrain)
     , m_content(std::move(content))
     , m_fortresses(fortresses)
+    , m_bastions(bastions)
 {
 }
 
@@ -65,8 +67,10 @@ std::optional<QcStructurePlacement> QcNetherStructures::planOf(const QcNetherDef
             const std::optional<int> corner = m_terrain.floorAt(x + dx, z + dz, *middle - maxSlope, 2);
             level = level && corner && std::abs(*corner - *middle) <= maxSlope;
         }
-        // A fortress never yields: it plans first, and a copy that would stand in it tries elsewhere.
-        if (level && m_fortresses.plansIn({x, z, x + size - 1, z + size - 1}).isEmpty()) {
+        // The great structures never yield: they plan first, and a copy that would stand in one
+        // tries elsewhere.
+        const QcXzRect footprint{x, z, x + size - 1, z + size - 1};
+        if (level && m_fortresses.plansIn(footprint).isEmpty() && m_bastions.plansIn(footprint).isEmpty()) {
             const int turns = static_cast<int>(qcPositionRandom(kind.seed, regionX, attempt * 4 + 2, regionZ) * 4.0);
             return QcStructurePlacement(kind.structure, QcBlockPos{x, *middle + 1 - structure.groundLayer, z}, turns, *m_content);
         }

@@ -166,6 +166,50 @@ struct QcNetherSettings
         QList<QcStructureDefinition::SpawnArea::Monster> monsters;
     };
 
+    /*! \brief The bastion ruins of the nether (\c {"bastion"}, decisions E-1087 to E-1089), in the
+        regions of the fortresses: a draw under the fortresses' \c {chance} gives a fortress, the
+        next \c {chance} here a bastion in one of \c {biomes} (elsewhere a fortress), its floor at
+        \c {floor}. A \c {regionSize} of 0 (no entry) means no bastions.
+
+        \c {guard}, \c {bruiser} and \c {beast} stand in it from the start, \c {spawnerMob} is the
+        kind of the treasure hall's spawners, \c {bridgeLoot}, \c {stablesLoot}, \c {treasureLoot}
+        and \c {otherLoot} fill its chests, \c {monsters} are the kinds of its spawn area, none
+        for the biome's. \qcfields */
+    struct Bastion
+    {
+        /*! The columns from a bastion's middle to the most of it. */
+        static constexpr int reach = 88;
+        /*! The cells between a bastion's reach and the edge of its region. */
+        static constexpr int regionMargin = 12;
+        int regionSize = 0;
+        double chance = 0.0;
+        int floor = 33;
+        QStringList biomes;
+        QString rough;
+        QString brick;
+        QString cracked;
+        QString polished;
+        QString chiseled;
+        QString gilded;
+        QString gold;
+        QString soil;
+        QString lava;
+        QString wall;
+        QString stairs;
+        QString lantern;
+        QString chest;
+        QString spawner;
+        QString spawnerMob;
+        QString guard;
+        QString bruiser;
+        QString beast;
+        QString bridgeLoot;
+        QString stablesLoot;
+        QString treasureLoot;
+        QString otherLoot;
+        QList<QcStructureDefinition::SpawnArea::Monster> monsters;
+    };
+
     /*! \brief The station a demonstration world's nether builds at its arrival (\c {"station"},
         decision E-1034): \c {structure} with its middle where the showcase structure \c {portal}
         leads to. \qcfields */
@@ -210,4 +254,6 @@ struct QcNetherSettings
     Station station;
     /*! The fortresses. */
     Fortress fortress;
+    /*! The bastions. */
+    Bastion bastion;
 };

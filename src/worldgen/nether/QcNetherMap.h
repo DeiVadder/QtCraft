@@ -24,8 +24,8 @@ namespace QcNetherMap {
 [[nodiscard]] std::optional<QcBiomeMap> sample(const QcNetherGenerator &generator, const QcContentRegistry &content, QcBiomeMap::Area area,
                                                const QcBiomeMap::Cancelled &cancelled = {});
 /*! Returns what \a generator can place, as worldgen/nether.json says, in a fixed order (a kind's
-    place is its marker on the map): the fortress when the content has one, then the structures of
-    the file, a mod's too, each at the place /locate names. */
+    place is its marker on the map): the fortress and the bastion when the content has them, then
+    the structures of the file, a mod's too, each at the place /locate names. */
 [[nodiscard]] QList<QcBiomeMap::SiteRule> siteRules(const QcNetherGenerator &generator);
 
 } // namespace QcNetherMap

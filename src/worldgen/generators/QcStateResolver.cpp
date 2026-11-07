@@ -23,3 +23,13 @@ QcBlockId QcStateResolver::state(const QString &name)
     }
     return id.value_or(qcAirBlockId);
 }
+
+std::array<QcBlockId, 4> QcStateResolver::facing(const QString &name, const QString &others)
+{
+    static constexpr std::array<const char *, 4> sides{"north", "east", "south", "west"};
+    std::array<QcBlockId, 4> states{};
+    for (std::size_t i = 0; i < sides.size(); ++i) {
+        states[i] = state(name + u"[facing="_s + QString::fromLatin1(sides[i]) + others + u']');
+    }
+    return states;
+}

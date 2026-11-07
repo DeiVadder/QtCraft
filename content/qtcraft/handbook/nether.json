@@ -7,7 +7,8 @@
         "biomes",
         "finds",
         "ruins",
-        "fortress"
+        "fortress",
+        "bastion"
     ],
     "related": [
         "netherrack",
@@ -22,6 +23,8 @@
         "soul_fire",
         "obsidian",
         "crying_obsidian",
-        "nether_bricks"
+        "nether_bricks",
+        "blackstone",
+        "gilded_blackstone"
     ]
 }

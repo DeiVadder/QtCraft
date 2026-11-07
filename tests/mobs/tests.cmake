@@ -28,6 +28,7 @@ qc_add_test(test_nether_spawns SOURCES mobs/test_nether_spawns.cpp fixtures/QcTe
 qc_add_test(test_gold_folk SOURCES mobs/test_gold_folk.cpp mobs/QcGoldFolkFixture.h mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_barter SOURCES mobs/test_barter.cpp mobs/QcGoldFolkFixture.h mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_nether_mobs SOURCES mobs/test_nether_mobs.cpp mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_bastion_folk SOURCES mobs/test_bastion_folk.cpp mobs/QcGoldFolkFixture.h mobs/QcMobStageFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_worldgen TIMEOUT 300)
 qc_add_test(test_fortress_folk SOURCES mobs/test_fortress_folk.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_kjut SOURCES mobs/test_kjut.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_kjut_measure SOURCES mobs/test_kjut_measure.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

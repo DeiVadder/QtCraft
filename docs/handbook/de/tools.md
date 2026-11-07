@@ -458,6 +458,10 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Droppt aus**
+
+[Hauerling-Recke](creatures.md#mob-qtcraft-tuskling_bruiser) (8,5 %)
+
 ### <a id="item-qtcraft-golden_leggings"></a>Goldbeinschutz
 
 Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.

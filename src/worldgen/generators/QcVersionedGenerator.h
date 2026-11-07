@@ -66,6 +66,7 @@ public:
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
     QList<QcBlockPos> pointsOfInterestIn(QcChunkPos pos) const override { return generatorAt(pos).pointsOfInterestIn(pos); }
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override { return generatorAt(pos).furnishingIn(pos); }
+    [[nodiscard]] bool hasResidentsIn(QcChunkPos pos) const override { return generatorAt(pos).hasResidentsIn(pos); }
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;

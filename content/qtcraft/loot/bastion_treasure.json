@@ -1,0 +1,41 @@
+{
+    "name": "bastion_treasure",
+    "pools": [
+        {
+            "rolls": 3,
+            "entries": [
+                {"pending": "netherite_ingot", "weight": 15},
+                {"pending": "ancient_debris", "weight": 10},
+                {"pending": "netherite_scrap", "weight": 8},
+                {"pending": "ancient_debris", "weight": 4, "count": 2},
+                {"item": "diamond_sword", "weight": 6},
+                {"item": "diamond_chestplate", "weight": 6},
+                {"item": "diamond_helmet", "weight": 6},
+                {"item": "diamond_leggings", "weight": 6},
+                {"item": "diamond_boots", "weight": 6},
+                {"item": "diamond", "weight": 6, "count": [2, 6]},
+                {"pending": "enchanted_golden_apple", "weight": 2}
+            ]
+        },
+        {
+            "rolls": [3, 4],
+            "entries": [
+                {"pending": "spectral_arrow", "weight": 1, "count": [12, 25]},
+                {"item": "gold_block", "weight": 1, "count": [2, 5]},
+                {"item": "iron_block", "weight": 1, "count": [2, 5]},
+                {"item": "gold_ingot", "weight": 1, "count": [3, 9]},
+                {"item": "iron_ingot", "weight": 1, "count": [3, 9]},
+                {"item": "crying_obsidian", "weight": 1, "count": [3, 5]},
+                {"item": "quartz", "weight": 1, "count": [8, 23]},
+                {"item": "gilded_blackstone", "weight": 1, "count": [5, 15]},
+                {"item": "magma_cream", "weight": 1, "count": [3, 8]}
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {"pending": "netherite_upgrade_smithing_template", "weight": 1}
+            ]
+        }
+    ]
+}

@@ -38,6 +38,7 @@ namespace {
 const QString overworldName = QString::fromLatin1(QcDimensionDefinition::overworldName);
 const QString netherName = u"qtcraft:nether"_s;
 const QString fortressKind = u"qtcraft:fortress"_s;
+const QString bastionKind = u"qtcraft:bastion"_s;
 const QString evenRuin = u"test:even_ruin"_s;
 
 } // namespace
@@ -105,27 +106,29 @@ private slots:
         QVERIFY(sites);
         qsizetype found = 0;
         qsizetype structures = 0;
+        qsizetype bastions = 0;
         for (const QcBiomeMap::Site &site : *sites) {
+            if (site.name == bastionKind) {
+                ++bastions;
+                checkLocated(world, u"bastion", site);
+                continue;
+            }
             if (site.name != fortressKind) {
                 ++structures;
-                const std::optional<QcStructurePlacement> placed = world.nearestStructure(site.name, {site.x, 64, site.z}, 64);
-                QVERIFY2(placed, qPrintable(site.name));
-                const QcStructure &structure = placed->structure();
-                const QcBlockPos named = placed->toWorld(QcBlockPos{structure.sizeX() / 2, structure.groundLayer + 1, structure.sizeZ() / 2});
-                QCOMPARE(site.x, named.x);
-                QCOMPARE(site.z, named.z);
+                checkStructure(world, site);
                 continue;
             }
             ++found;
-            const QcLocateResult located = world.locate(u"fortress", {site.x, 64, site.z}, 64);
-            QVERIFY(located.place);
-            QCOMPARE(located.place->at.x, site.x);
-            QCOMPARE(located.place->at.z, site.z);
+            checkLocated(world, u"fortress", site);
+        }
+        if (QTest::currentTestFailed()) {
+            return;
         }
         qInfo("%lld fortresses of %lld sites", static_cast<long long>(found), static_cast<long long>(sites->size()));
         QVERIFY(structures > 0);
         if (fortresses) {
             QVERIFY(found > 0);
+            QVERIFY(bastions > 0);
         }
         const QcLocateResult nearest = world.locate(u"fortress", {0, 64, 0}, 8 * searched.radius);
         QVERIFY(nearest.place);
@@ -471,6 +474,26 @@ private slots:
     }
 
 private:
+    // The structure of the site stands with its middle at the site.
+    static void checkStructure(const QcWorldGenerator &world, const QcBiomeMap::Site &site)
+    {
+        const std::optional<QcStructurePlacement> placed = world.nearestStructure(site.name, {site.x, 64, site.z}, 64);
+        QVERIFY2(placed, qPrintable(site.name));
+        const QcStructure &structure = placed->structure();
+        const QcBlockPos named = placed->toWorld(QcBlockPos{structure.sizeX() / 2, structure.groundLayer + 1, structure.sizeZ() / 2});
+        QCOMPARE(site.x, named.x);
+        QCOMPARE(site.z, named.z);
+    }
+
+    // /locate names exactly the place of the site.
+    static void checkLocated(const QcWorldGenerator &world, QStringView word, const QcBiomeMap::Site &site)
+    {
+        const QcLocateResult located = world.locate(word, {site.x, 64, site.z}, 64);
+        QVERIFY(located.place);
+        QCOMPARE(located.place->at.x, site.x);
+        QCOMPARE(located.place->at.z, site.z);
+    }
+
     // Every cell of the map of `area` is the biome `world` has at its column, and a nether biome.
     void checkBiomes(const QcNetherGenerator &preview, const QcWorldGenerator &world, QcBiomeMap::Area area) const
     {

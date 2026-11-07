@@ -9624,6 +9624,11 @@ Jetzt: %2</translation>
         <translation>Festung</translation>
     </message>
     <message>
+        <location filename="../src/server/commands/QcVillageCommands.h" line="45"/>
+        <source>Bastion</source>
+        <translation>Bastion</translation>
+    </message>
+    <message>
         <location filename="../src/server/boats/QcServerBoats.cpp" line="149"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="326"/>
         <source>Too many boats in the world (at most %1)</source>

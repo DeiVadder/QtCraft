@@ -215,6 +215,63 @@ constexpr int leastFortressRoom = 16;
     return fortress;
 }
 
+// The keys of a bastion's names; all are required.
+constexpr std::array<std::pair<const char16_t *, QString QcNetherSettings::Bastion::*>, 22> bastionNames{{
+    {u"rough", &QcNetherSettings::Bastion::rough},
+    {u"brick", &QcNetherSettings::Bastion::brick},
+    {u"cracked", &QcNetherSettings::Bastion::cracked},
+    {u"polished", &QcNetherSettings::Bastion::polished},
+    {u"chiseled", &QcNetherSettings::Bastion::chiseled},
+    {u"gilded", &QcNetherSettings::Bastion::gilded},
+    {u"gold", &QcNetherSettings::Bastion::gold},
+    {u"soil", &QcNetherSettings::Bastion::soil},
+    {u"lava", &QcNetherSettings::Bastion::lava},
+    {u"wall", &QcNetherSettings::Bastion::wall},
+    {u"stairs", &QcNetherSettings::Bastion::stairs},
+    {u"lantern", &QcNetherSettings::Bastion::lantern},
+    {u"chest", &QcNetherSettings::Bastion::chest},
+    {u"spawner", &QcNetherSettings::Bastion::spawner},
+    {u"spawnerMob", &QcNetherSettings::Bastion::spawnerMob},
+    {u"guard", &QcNetherSettings::Bastion::guard},
+    {u"bruiser", &QcNetherSettings::Bastion::bruiser},
+    {u"beast", &QcNetherSettings::Bastion::beast},
+    {u"bridgeLoot", &QcNetherSettings::Bastion::bridgeLoot},
+    {u"stablesLoot", &QcNetherSettings::Bastion::stablesLoot},
+    {u"treasureLoot", &QcNetherSettings::Bastion::treasureLoot},
+    {u"otherLoot", &QcNetherSettings::Bastion::otherLoot},
+}};
+
+// The bastion of a file. Its regions are those of the fortresses of `fortress`,
+// and with them a draw falls on one or the other, so their chances fit into one.
+[[nodiscard]] QcNetherSettings::Bastion bastionOf(QcJsonFieldReader &reader, const QString &pack, const QcNetherSettings::Fortress &fortress)
+{
+    QcNetherSettings::Bastion bastion;
+    const int leastRegion = 2 * (QcNetherSettings::Bastion::reach + QcNetherSettings::Bastion::regionMargin);
+    bastion.regionSize = reader.integer(u"regionSize"_s, std::max(fortress.regionSize, 448), leastRegion, 4096);
+    if (fortress.regionSize > 0 && bastion.regionSize != fortress.regionSize) {
+        reader.fail(u"'regionSize' must be that of the fortress (%1)"_s.arg(fortress.regionSize));
+    }
+    bastion.chance = reader.number(u"chance"_s, 0.6, 0.0, 1.0);
+    if (fortress.regionSize > 0 && bastion.chance + fortress.chance > 1.0 + 1e-9) {
+        reader.fail(u"'chance' and the fortress's must not add up to more than 1"_s);
+    }
+    bastion.floor = reader.integer(u"floor"_s, bastion.floor, 1, top - 40);
+    bastion.biomes = QcContentFields::parseNames(u"biomes"_s, pack, reader);
+    if (bastion.biomes.isEmpty()) {
+        reader.fail(u"needs 'biomes', a list of names"_s);
+    }
+    for (const auto &[key, field] : bastionNames) {
+        bastion.*field = requiredName(reader, QString::fromUtf16(key), pack);
+    }
+    if (reader.json.value(u"monsters"_s).toArray().size() > maxFortressMonsters) {
+        reader.fail(u"'monsters' must have at most %1 entries"_s.arg(maxFortressMonsters));
+        return bastion;
+    }
+    bastion.monsters = listOf<QcStructureDefinition::SpawnArea::Monster>(reader.json, u"monsters"_s, reader,
+        [&pack](QcJsonFieldReader &entry) { return fortressMonsterOf(entry, pack); });
+    return bastion;
+}
+
 } // namespace
 
 namespace QcNetherParser {
@@ -244,6 +301,9 @@ QcResult<QcNetherSettings> parse(const QJsonObject &json, const QString &packNam
     });
     reader.nestedObject(u"fortress"_s, [&nether, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         nether.fortress = fortressOf(nested, packNamespace);
+    });
+    reader.nestedObject(u"bastion"_s, [&nether, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        nether.bastion = bastionOf(nested, packNamespace, nether.fortress);
     });
     if (!reader.ok()) {
         return qcError(reader.error);

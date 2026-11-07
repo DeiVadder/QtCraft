@@ -4,8 +4,10 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "worldgen/bastion/QcBastionGenerator.h"
 #include "worldgen/fortress/QcFortressGenerator.h"
 #include "worldgen/generators/QcWorldGenerator.h"
+#include "worldgen/nether/QcNetherComplexes.h"
 #include "worldgen/nether/QcNetherDecorator.h"
 #include "worldgen/nether/QcNetherDefinitions.h"
 #include "worldgen/nether/QcNetherDeltas.h"
@@ -33,12 +35,13 @@ public:
     bool isNaturalGround(QcBlockId block) const override;
     [[nodiscard]] std::optional<QcBlockId> platformBlock() const override { return definitions().filler; }
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
-    QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override { return fortress().sitesNear(from, reach); }
+    [[nodiscard]] bool hasResidentsIn(QcChunkPos pos) const override { return bastion().hasResidentsIn(pos); }
+    QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
     QStringList locatableNames() const override;
-    QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return structures().labelsIn(pos) + fortress().labelsIn(pos); }
+    QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return structures().labelsIn(pos) + fortress().labelsIn(pos) + bastion().labelsIn(pos); }
     QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const override { return m_decorator.springsIn(chunk); }
 
     /*! Returns the rock and the lava, for tests. */
@@ -49,15 +52,26 @@ public:
     const QcNetherStructures &structures() const { return m_structures; }
     /*! Returns the fortresses, for tests. */
     const QcFortressGenerator &fortress() const { return m_fortress; }
+    /*! Returns what stands in which region, for tests. */
+    const QcNetherComplexes &complexes() const { return m_complexes; }
+    /*! Returns the bastions, for tests. */
+    const QcBastionGenerator &bastion() const { return m_bastion; }
     /*! Returns the resolved settings. */
     const QcNetherDefinitions &definitions() const { return m_definitions; }
 
 private:
+    [[nodiscard]] QcFortressGenerator &fortressPlans() { return m_fortress; }
+    [[nodiscard]] QcBastionGenerator &bastionPlans() { return m_bastion; }
+    // Stands what a demonstration world shows around `station` and keeps the natural ones away.
+    void setDemonstrations(QcBlockPos station);
+
     QcNetherDefinitions m_definitions;
     QcNetherTerrain m_terrain;
     QcNetherDecorator m_decorator;
     QcNetherDeltas m_deltas;
     QcNetherGrowth m_growth;
+    QcNetherComplexes m_complexes;
     QcFortressGenerator m_fortress;
+    QcBastionGenerator m_bastion;
     QcNetherStructures m_structures;
 };

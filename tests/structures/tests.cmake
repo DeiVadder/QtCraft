@@ -7,7 +7,8 @@
 
 qc_add_test(test_dungeons SOURCES structures/test_dungeons.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 480)
 qc_add_test(test_locate_places SOURCES structures/test_locate_places.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
-qc_add_test(test_nether_fortress SOURCES structures/test_nether_fortress.cpp fixtures/QcTestUtil.h LIBRARIES qc_worldgen qc_base_content TIMEOUT 450)
+qc_add_test(test_nether_fortress SOURCES structures/test_nether_fortress.cpp fixtures/QcChunkSite.h fixtures/QcTestUtil.h LIBRARIES qc_worldgen qc_base_content TIMEOUT 450)
+qc_add_test(test_nether_bastion SOURCES structures/test_nether_bastion.cpp fixtures/QcChunkSite.h fixtures/QcTestUtil.h LIBRARIES qc_worldgen qc_base_content TIMEOUT 450)
 qc_add_test(test_mineshaft_inclines SOURCES structures/test_mineshaft_inclines.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)
 qc_add_test(test_mineshafts SOURCES structures/test_mineshafts.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 660)
 qc_add_test(test_coastal_towers SOURCES structures/test_coastal_towers.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)

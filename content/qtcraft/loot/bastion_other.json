@@ -1,0 +1,62 @@
+{
+    "name": "bastion_other",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {"item": "diamond_pickaxe", "weight": 6},
+                {"item": "diamond_shovel", "weight": 6},
+                {"pending": "crossbow", "weight": 6},
+                {"pending": "ancient_debris", "weight": 12},
+                {"pending": "netherite_scrap", "weight": 4},
+                {"pending": "spectral_arrow", "weight": 10, "count": [10, 22]},
+                {"pending": "banner_pattern", "weight": 9},
+                {"pending": "music_disc", "weight": 5},
+                {"item": "golden_carrot", "weight": 12, "count": [6, 17]},
+                {"pending": "golden_apple", "weight": 9},
+                {"pending": "soul_speed_book", "weight": 10}
+            ]
+        },
+        {
+            "rolls": 2,
+            "entries": [
+                {"item": "iron_sword", "weight": 2},
+                {"item": "iron_block", "weight": 2},
+                {"pending": "soul_speed_golden_boots", "weight": 1},
+                {"item": "golden_axe", "weight": 1},
+                {"item": "gold_block", "weight": 2},
+                {"pending": "crossbow", "weight": 1},
+                {"item": "gold_ingot", "weight": 2, "count": [1, 6]},
+                {"item": "iron_ingot", "weight": 2, "count": [1, 6]},
+                {"item": "golden_sword", "weight": 2},
+                {"item": "golden_chestplate", "weight": 2},
+                {"item": "golden_helmet", "weight": 2},
+                {"item": "golden_leggings", "weight": 2},
+                {"item": "golden_boots", "weight": 2},
+                {"item": "crying_obsidian", "weight": 2, "count": [1, 5]}
+            ]
+        },
+        {
+            "rolls": [3, 4],
+            "entries": [
+                {"item": "gilded_blackstone", "weight": 2, "count": [1, 5]},
+                {"item": "chain", "weight": 2, "count": [2, 10]},
+                {"item": "magma_cream", "weight": 2, "count": [2, 6]},
+                {"item": "bone_block", "weight": 2, "count": [3, 6]},
+                {"item": "iron_nugget", "weight": 1, "count": [2, 8]},
+                {"item": "obsidian", "weight": 1, "count": [4, 6]},
+                {"item": "gold_nugget", "weight": 1, "count": [2, 8]},
+                {"item": "string", "weight": 1, "count": [4, 6]},
+                {"item": "arrow", "weight": 2, "count": [5, 17]},
+                {"item": "cooked_porkchop", "weight": 1}
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {"pending": "netherite_upgrade_smithing_template", "weight": 1},
+                {"weight": 9}
+            ]
+        }
+    ]
+}

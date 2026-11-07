@@ -98,6 +98,13 @@ public:
         Q_UNUSED(pos);
         return {};
     }
+    /*! Returns whether furnishingIn() gives the chunk \a pos creatures, which a chunk does not show
+        by its blocks (decision E-1089). */
+    [[nodiscard]] virtual bool hasResidentsIn(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return false;
+    }
     /*! Returns the cells of the just generated \a chunk that get a block update when it arrives,
         so that a liquid there starts to flow (the nether's springs, decision E-1031), in world
         coordinates; the chunk is at hand, so this is cheap on the tick thread. Empty for

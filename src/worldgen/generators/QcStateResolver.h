@@ -7,6 +7,7 @@
 
 #include <QStringList>
 
+#include <array>
 #include <vector>
 
 /*! \brief Looks up the block states a generated structure places, by name, and remembers the ones
@@ -21,6 +22,9 @@ public:
     /*! Returns the state \a name, or air when the content has none (then resolved() turns
         false). */
     [[nodiscard]] QcBlockId state(const QString &name);
+    /*! Returns the states of block \a name with its \c {facing} on each side, north, east, south
+        and west; \a others are further properties of the state, each after a comma. */
+    [[nodiscard]] std::array<QcBlockId, 4> facing(const QString &name, const QString &others = {});
     /*! Returns whether every state asked for so far was found. */
     [[nodiscard]] bool resolved() const { return m_resolved; }
     /*! Returns a warning for each state that was not found. */
