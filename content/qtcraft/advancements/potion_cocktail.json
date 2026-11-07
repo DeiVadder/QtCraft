@@ -1,0 +1,70 @@
+{
+    "name": "potion_cocktail",
+    "parent": "brewing",
+    "icon": "awkward_potion",
+    "frame": "challenge",
+    "handbook": "chapter:brewing",
+    "criteria": {
+        "speed": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "speed"
+            }
+        },
+        "slowness": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "slowness"
+            }
+        },
+        "strength": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "strength"
+            }
+        },
+        "weakness": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "weakness"
+            }
+        },
+        "regeneration": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "regeneration"
+            }
+        },
+        "poison": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "poison"
+            }
+        },
+        "fire_resistance": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "fire_resistance"
+            }
+        },
+        "night_vision": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "night_vision"
+            }
+        },
+        "invisibility": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "invisibility"
+            }
+        },
+        "water_breathing": {
+            "trigger": "effect_gained",
+            "conditions": {
+                "effect": "water_breathing"
+            }
+        }
+    },
+    "requirements": "all"
+}

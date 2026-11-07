@@ -18,9 +18,9 @@ class QcContentRegistry;
     spread by \c {spreadDegrees}, then wait \c {cooldownSeconds} before they draw again. Whatever
     launch speed the aim needs, an arrow does the damage of one at \c {speed}
     (Launch::damageFactor). A target in melee gets a blow besides (the archer is cornered); the
-    blow breaks the draw. It shoots the first of its choices whose effect the target lacks and
-    neither draws nor shoots while it drinks (decision E-623). Without a target they wander like
-    passive ones. */
+    blow breaks the draw. It shoots the first of its choices that holds for the target (decision
+    E-1105) and neither draws, shoots nor walks while it drinks (decisions E-623, E-1105). Without
+    a target they wander like passive ones. */
 class QcArcherBrain : public QcPassiveBrain
 {
 public:
@@ -51,9 +51,12 @@ public:
                       const QcProjectileDefinition &definition);
     /*! Returns \a velocity turned by up to \a degrees in a direction drawn from \a random. */
     static QcVec3 spread(const QcVec3 &velocity, double degrees, QRandomGenerator &random);
-    /*! Returns what an archer of \a archer shoots at \a target: the first of its choices whose
-        effect the target lacks (the witch's poison, decision E-623), else its projectile. */
-    static const QString &projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target);
+    /*! Returns what an archer of \a archer shoots at \a target \a distance metres away
+        (horizontally): the first of its choices whose effect the target lacks, whose distances and
+        health the target meets and whose chance lies above \a draw (a number in [0, 1); the
+        witch's potions, decisions E-623, E-1105), else its projectile. */
+    static const QString &projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target, double distance,
+                                        double draw);
 
 protected:
     bool chases() const override { return true; }

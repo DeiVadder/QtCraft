@@ -10451,7 +10451,7 @@ The wire of every circuit. It carries a signal of strength 15 from a source and 
 
 **Dropped by**
 
-[Signal ore](#block-qtcraft-signal_ore) (4×, 50 %), [Witch](creatures.md#mob-qtcraft-witch) (30 %)
+[Signal ore](#block-qtcraft-signal_ore) (4×, 50 %), [Witch](creatures.md#mob-qtcraft-witch) (0–2×)
 
 ### <a id="block-qtcraft-signal_hopper"></a>Signal Hopper
 

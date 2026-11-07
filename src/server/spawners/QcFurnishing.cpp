@@ -4,6 +4,7 @@
 #include "server/spawners/QcFurnishing.h"
 
 #include "common/blockrules/QcRails.h"
+#include "common/content/registry/QcContentLoot.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/minecarts/QcMinecartMotion.h"
@@ -14,14 +15,7 @@ namespace {
 // The loot of `table` drawn with `seed`, spread over `slotCount` slots.
 QList<QcItemStack> lootFor(const QcContentRegistry &content, const QcLootTableDefinition &table, quint64 seed, int slotCount)
 {
-    const auto items = [&content](const QString &name) -> std::optional<QcLootTables::ItemInfo> {
-        const std::optional<QcItemId> id = content.itemId(name);
-        if (!id) {
-            return std::nullopt;
-        }
-        return QcLootTables::ItemInfo{*id, content.item(*id).maxStack};
-    };
-    return QcLootTables::scatter(QcLootTables::draw(table, seed, items), slotCount, seed);
+    return QcLootTables::scatter(QcLootTables::draw(table, seed, QcContentLoot::itemsOf(content)), slotCount, seed);
 }
 
 // Fills the chest at `chest.at` with its loot table's draw; a chest that holds something already

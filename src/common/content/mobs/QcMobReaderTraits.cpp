@@ -10,6 +10,12 @@
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcContentNames.h"
 
+#include <QJsonArray>
+
+#include <algorithm>
+#include <array>
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -150,17 +156,54 @@ struct Collar
     return pulse;
 }
 
-// Drinking to heal (the witch, decision E-623): the object "drinks".
-QcDrinkHealDefinition parseDrinks(QcJsonFieldReader &reader, const QString &packNamespace)
+// One potion of "drinks": {"item", "need", "chance", "distance"}.
+QcMobDrinkDefinition::Potion parseDrinkPotion(QcJsonFieldReader &reader, const QString &packNamespace)
 {
-    QcDrinkHealDefinition drinks;
-    drinks.item = reader.name(u"item"_s, packNamespace);
-    drinks.heal = reader.number(u"heal"_s, drinks.heal, 0.5, 1000.0);
-    drinks.seconds = reader.number(u"seconds"_s, drinks.seconds, 0.05, 30.0);
-    drinks.cooldownSeconds = reader.number(u"cooldownSeconds"_s, drinks.cooldownSeconds, 0.0, 3600.0);
-    drinks.sound = reader.name(u"sound"_s, packNamespace);
-    if (reader.ok() && drinks.item.isEmpty()) {
+    using Need = QcMobDrinkDefinition::Need;
+    static constexpr std::array<std::pair<QLatin1StringView, Need>, 4> needs{{
+        {QLatin1StringView("underwater"), Need::Underwater},
+        {QLatin1StringView("burning"), Need::Burning},
+        {QLatin1StringView("hurt"), Need::Hurt},
+        {QLatin1StringView("targetFar"), Need::TargetFar},
+    }};
+    QcMobDrinkDefinition::Potion potion;
+    potion.item = reader.name(u"item"_s, packNamespace);
+    const QString need = reader.string(u"need"_s);
+    const auto found = std::ranges::find(needs, need, &std::pair<QLatin1StringView, Need>::first);
+    if (found == needs.end()) {
+        reader.fail(u"'need' must be \"underwater\", \"burning\", \"hurt\" or \"targetFar\""_s);
+    } else {
+        potion.need = found->second;
+    }
+    potion.chance = reader.number(u"chance"_s, potion.chance, 0.0, 1.0);
+    potion.distance = reader.number(u"distance"_s, potion.distance, 0.0, 128.0);
+    if (reader.ok() && potion.item.isEmpty()) {
         reader.fail(u"needs the 'item' it drinks"_s);
+    }
+    return potion;
+}
+
+// Drinking potions when needed (the witch, decisions E-623, E-1105): the object "drinks" with
+// "potions", "seconds" and "sound".
+QcMobDrinkDefinition parseDrinks(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcMobDrinkDefinition drinks;
+    drinks.seconds = reader.number(u"seconds"_s, drinks.seconds, 0.05, 30.0);
+    drinks.sound = reader.name(u"sound"_s, packNamespace);
+    drinks.dropChance = reader.number(u"dropChance"_s, drinks.dropChance, 0.0, 1.0);
+    const QJsonValue potions = reader.json.value(u"potions"_s);
+    if (!potions.isArray() || potions.toArray().isEmpty() || potions.toArray().size() > QcMobDrinkDefinition::maxPotions) {
+        reader.fail(u"'potions' must be an array of 1 to %1 entries"_s.arg(QcMobDrinkDefinition::maxPotions));
+        return drinks;
+    }
+    const QJsonArray entries = potions.toArray();
+    for (const auto &entry : entries) {
+        QcJsonFieldReader nested{entry.toObject(), reader.context + u" potions"_s, {}};
+        drinks.potions.append(parseDrinkPotion(nested, packNamespace));
+        reader.adopt(nested);
+        if (!reader.ok()) {
+            break;
+        }
     }
     return drinks;
 }

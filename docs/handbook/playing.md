@@ -221,9 +221,15 @@ Lingering potions exist as items but cannot be brewed yet; thrown, they act like
 
 A water bucket fills a cauldron, and each glass bottle takes a third of it; a water bottle puts a third back and an empty bucket takes a full cauldron. Glass bottles also fill at any water.
 
+**Witches and clerics**
+
+Witches brew for themselves. Under water a witch drinks water breathing, burning fire resistance, hurt healing, and swiftness when the one she hunts is more than 11 blocks away; she stands still while she drinks. At you she throws slowness from 8 blocks or more while you are not slowed, poison while you have at least 8 health and are not poisoned, now and then weakness up close, and otherwise harming. Water breathing cannot be brewed yet; witches have it all the same.
+
+A villager who claims a brewing stand becomes a cleric in a dark red robe. Churches and temples of villages in worlds of generator version 3 or newer have one at the altar.
+
 **See also**
 
-[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear)
+[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear), [Witch](creatures.md#mob-qtcraft-witch), [Potion of water breathing](items.md#item-qtcraft-water_breathing_potion)
 
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 
@@ -489,7 +495,7 @@ Every village has its own street plan: one long main street through the middle w
 
 **Beds and workstations**
 
-The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once; one placed up to 32 blocks from a village's buildings joins it, and the area grows, but never into another village's: every bed and workstation belongs to one village. A bed or workstation farther from every village starts a settlement of its own: villagers without a home move in, and it lives like any village (children, golems). A settlement without beds, workstations and villagers is forgotten. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations (one placed beyond that is not listed later either); the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
+The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher, brewing stand: cleric). Beds and workstations you place or break inside a village count at once; one placed up to 32 blocks from a village's buildings joins it, and the area grows, but never into another village's: every bed and workstation belongs to one village. A bed or workstation farther from every village starts a settlement of its own: villagers without a home move in, and it lives like any village (children, golems). A settlement without beds, workstations and villagers is forgotten. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations (one placed beyond that is not listed later either); the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
 
 **Villages in mods**
 
@@ -507,7 +513,7 @@ When the part of a village with a bed is seen for the first time, a villager mov
 
 **Professions**
 
-A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of every field within 8 blocks of their composter, yours too, and plant them again at once; the harvest stays with the village (no items drop). With the game rule `mobGriefing` off they leave the crops alone. A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).
+A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron), the barrel a fisher (oilskin vest and hat) and the brewing stand a cleric (dark red robe). Each workstation belongs to one villager. Farmers harvest the ripe crops of every field within 8 blocks of their composter, yours too, and plant them again at once; the harvest stays with the village (no items drop). With the game rule `mobGriefing` off they leave the crops alone. A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).
 
 **A villager's day**
 
@@ -563,6 +569,10 @@ Buys coal and iron ingots (novice), gold ingots (apprentice), lapis lazuli (jour
 
 Buys string and coal (novice), sugar cane (apprentice), slimeballs (journeyman) and leather (expert). Fills your bucket with water for an emerald, sells lanterns, cooked mutton and fireflies in a bottle, and as a master slime blocks and diamond boots.
 
+**The cleric**
+
+Buys rotten flesh (novice), gold ingots (apprentice), glass bottles (expert) and nether wart (master). Sells signal dust and lapis lazuli, as a journeyman glowstone and as an expert shade pearls.
+
 **Emeralds**
 
 Emeralds are the villagers' money. You earn them by selling goods, or mine them: emerald ore lies rarely and in very small veins deep in the stone and needs an iron pickaxe or better. Nine emeralds make a block of emerald and back.
@@ -573,7 +583,7 @@ A file in `trades/` lists offers of one profession: for each the level from whic
 
 **See also**
 
-[Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel)
+[Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Brewing stand](blocks.md#block-qtcraft-brewing_stand)
 
 ### <a id="chapter-qtcraft-archery"></a>Archery
 
@@ -839,7 +849,7 @@ Jungle temples stand alone in the jungle, overgrown with moss and vines. Climb d
 
 **Witch huts and witches**
 
-Witch huts stand on stilts in the swamp, often over water, with a cauldron and potted plants inside. Witches spawn there and only there: where monsters may appear in a column of a hut's footprint, at any height from the bottom of the world to the top, only a witch comes, as often as any monster would and under the same rules: dark enough, 24–128 m from players, within the monster limit, on solid ground with room for her. Floors built into the footprint above or below the hut give more of them; light keeps them away. A witch throws splash potions: poison while you are not poisoned, then harming. A splash reaches everything living around the place it bursts, the weaker the further away. Hurt, she drinks a potion of healing for a moment and throws nothing meanwhile; milk takes the poison away again.
+Witch huts stand on stilts in the swamp, often over water, with a cauldron and potted plants inside. In a hut's footprint only witches spawn: where monsters may appear in a column of the footprint, at any height from the bottom of the world to the top, only a witch comes, as often as any monster would and under the same rules: dark enough, 24–128 m from players, within the monster limit, on solid ground with room for her. Floors built into the footprint above or below the hut give more of them; light keeps them away. Elsewhere a witch is a rare monster of the dark like the others. A witch throws splash potions chosen for her target (see the chapter on brewing). A splash reaches everything living around the place it bursts, the weaker the further away. She drinks a potion when she needs one and throws nothing meanwhile; milk takes the poison away again.
 
 **Ruined portals, wells and oases**
 

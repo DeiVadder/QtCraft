@@ -523,7 +523,8 @@ private slots:
     }
 
     // The rows serve as the trading station (decision E-414): their villagers take the professions
-    // of the rows' workstations, and farmers, smiths and fishers there all have offers.
+    // of the rows' workstations, and farmers, smiths, fishers and clerics (the brewing stands of the
+    // church and the temple, decision E-1108) there all have offers.
     void villageRowsTrade()
     {
         QTemporaryDir directory;
@@ -550,7 +551,7 @@ private slots:
                 trading.insert(mob.villager->profession);
             }
         }
-        QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s}));
+        QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s, u"qtcraft:cleric"_s}));
     }
 
     void thePetCornerHasItsPets()

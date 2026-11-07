@@ -88,6 +88,7 @@ target_sources(qc_common PRIVATE
     content/mobs/QcAppearanceDefinition.h
     content/mobs/QcBarterDefinition.h
     content/mobs/QcMobDefinition.h
+    content/mobs/QcMobDrinkDefinition.h
     content/mobs/QcMobParser.h content/mobs/QcMobParser.cpp
     content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderTraits.cpp
     content/mobs/QcMobSerializer.h content/mobs/QcMobSerializer.cpp
@@ -119,6 +120,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcCommandMacroDefinition.h
     content/registry/QcCommandMacroParser.h content/registry/QcCommandMacroParser.cpp
     content/registry/QcContentFields.h content/registry/QcContentFields.cpp
+    content/registry/QcContentLoot.h content/registry/QcContentLoot.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentParser.h content/registry/QcContentParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp

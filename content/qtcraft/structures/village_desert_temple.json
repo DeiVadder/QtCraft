@@ -24,5 +24,13 @@
         ["CCCCCCCCC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CCCCCCCCC"],
         ["kkkkkkkkk", "k       k", "k       k", "k  CCC  k", "k  C.C  k", "k  CCC  k", "k       k", "k       k", "kkkkkkkkk"],
         ["         ", "         ", "         ", "   kkk   ", "   kkk   ", "   kkk   ", "         ", "         ", "         "]
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "swaps": {
+                "terracotta": "brewing_stand"
+            }
+        }
     ]
 }

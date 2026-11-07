@@ -6,7 +6,8 @@
         "stand",
         "potions",
         "steps",
-        "cauldron"
+        "cauldron",
+        "others"
     ],
     "related": [
         "brewing_stand",
@@ -20,6 +21,8 @@
         "gilded_melon_slice",
         "golden_carrot",
         "magma_cream",
-        "wailer_tear"
+        "wailer_tear",
+        "witch",
+        "water_breathing_potion"
     ]
 }

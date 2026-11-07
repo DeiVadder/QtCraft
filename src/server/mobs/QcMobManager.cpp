@@ -12,6 +12,7 @@
 #include "server/core/QcServerWorld.h"
 #include "server/mobbrains/QcMobTeleport.h"
 #include "server/mobs/QcMobBehaviour.h"
+#include "server/mobs/QcMobDrinking.h"
 #include "server/mobs/QcMobUpkeep.h"
 #include "server/spawning/QcNaturalSpawner.h"
 #include "server/spawning/QcSpawnLight.h"
@@ -291,9 +292,11 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
 
 QList<QcItemDrop> QcMobManager::dropsOf(const QcCreature &mob) const
 {
-    // Young animals leave nothing behind (decision E-293), a saddled one its saddle (E-1054).
+    // Young animals leave nothing behind (decision E-293), a saddled one its saddle (E-1054), a
+    // drinking witch perhaps her potion (E-1105).
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
+    drops.append(QcMobDrinking::heldDrops(*m_content, mob));
     if (mob.saddled && definition.ride) {
         drops.append(QcItemDrop{.item = definition.ride->saddle, .count = 1});
     }

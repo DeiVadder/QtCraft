@@ -76,6 +76,7 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .held = held.isEmpty() ? qcNoItem : held.item,
                             .worn = wornBy(*client),
                             .effects = &client->effects,
+                            .health = client->health,
                             .speed = std::hypot(velocity.x, velocity.z),
                             .hurtTick = client->foes.hurtTick,
                             .struckTick = client->foes.struckTick,

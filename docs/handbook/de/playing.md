@@ -221,9 +221,15 @@ Verweiltränke gibt es als Gegenstände, sie lassen sich aber noch nicht brauen;
 
 Ein Wassereimer füllt einen Kessel, jede Glasflasche nimmt ein Drittel heraus; eine Wasserflasche gibt ein Drittel zurück, und ein leerer Eimer nimmt einen vollen Kessel. Glasflaschen füllen sich auch an jedem Wasser.
 
+**Hexen und Kleriker**
+
+Hexen brauen für sich selbst. Unter Wasser trinkt eine Hexe Wasseratmung, brennend Feuerresistenz, verletzt Heilung und Schnelligkeit, wenn ihr Ziel mehr als 11 Blöcke entfernt ist; solange sie trinkt, bleibt sie stehen. Auf dich wirft sie ab 8 Blöcken Langsamkeit, solange du nicht verlangsamt bist, Gift, solange du mindestens 8 Leben hast und nicht vergiftet bist, aus der Nähe ab und zu Schwäche und sonst Schaden. Wasseratmung lässt sich noch nicht brauen; Hexen haben sie trotzdem.
+
+Ein Dorfbewohner, der einen Braustand beansprucht, wird Kleriker in dunkelroter Robe. Kirchen und Tempel der Dörfer in Welten ab Generator-Version 3 haben einen am Altar.
+
 **Siehe auch**
 
-[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear)
+[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear), [Hexe](creatures.md#mob-qtcraft-witch), [Trank der Wasseratmung](items.md#item-qtcraft-water_breathing_potion)
 
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 
@@ -489,7 +495,7 @@ Jedes Dorf hat seinen eigenen Grundriss: eine lange Hauptstraße durch die Mitte
 
 **Betten und Arbeitsplätze**
 
-Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort; einer bis 32 Blöcke von den Gebäuden eines Dorfs gehört zu ihm, und das Gebiet wächst, aber nie in das eines anderen Dorfs: Jedes Bett und jeder Arbeitsplatz gehört zu genau einem Dorf. Ein Bett oder Arbeitsplatz weiter weg von jedem Dorf gründet eine eigene Siedlung: Dorfbewohner ohne Zuhause ziehen ein, und sie lebt wie jedes Dorf (Kinder, Golems). Eine Siedlung ohne Betten, Arbeitsplätze und Bewohner wird vergessen. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze (eins, das darüber hinaus gesetzt wird, auch später nicht); die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
+Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer, Braustand: Kleriker). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort; einer bis 32 Blöcke von den Gebäuden eines Dorfs gehört zu ihm, und das Gebiet wächst, aber nie in das eines anderen Dorfs: Jedes Bett und jeder Arbeitsplatz gehört zu genau einem Dorf. Ein Bett oder Arbeitsplatz weiter weg von jedem Dorf gründet eine eigene Siedlung: Dorfbewohner ohne Zuhause ziehen ein, und sie lebt wie jedes Dorf (Kinder, Golems). Eine Siedlung ohne Betten, Arbeitsplätze und Bewohner wird vergessen. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze (eins, das darüber hinaus gesetzt wird, auch später nicht); die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
 
 **Dörfer in Mods**
 
@@ -507,7 +513,7 @@ Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes 
 
 **Berufe**
 
-Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte jedes Felds bis 8 Blöcke um ihren Komposter, auch deiner, und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Mit der Spielregel `mobGriefing` aus lassen sie die Felder in Ruhe. Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).
+Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze), das Fass einen Fischer (Ölzeugweste und Südwester) und der Braustand einen Kleriker (dunkelrote Robe). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte jedes Felds bis 8 Blöcke um ihren Komposter, auch deiner, und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Mit der Spielregel `mobGriefing` aus lassen sie die Felder in Ruhe. Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).
 
 **Der Tag eines Dorfbewohners**
 
@@ -563,6 +569,10 @@ Kauft Kohle und Eisenbarren (Neuling), Goldbarren (Lehrling), Lapislazuli (Gesel
 
 Kauft Faden und Kohle (Neuling), Zuckerrohr (Lehrling), Schleimbälle (Geselle) und Leder (Experte). Füllt deinen Eimer für einen Smaragd mit Wasser, verkauft Laternen, gebratenes Hammelfleisch und Glühwürmchen im Glas, als Meister auch Schleimblöcke und Diamantstiefel.
 
+**Der Kleriker**
+
+Kauft verrottetes Fleisch (Neuling), Goldbarren (Lehrling), Glasflaschen (Experte) und Netherwarzen (Meister). Verkauft Signalstaub und Lapislazuli, als Geselle Leuchtstein und als Experte Schattenperlen.
+
 **Smaragde**
 
 Smaragde sind das Geld der Dorfbewohner. Du verdienst sie, indem du Waren verkaufst, oder baust sie ab: Smaragderz liegt selten und in sehr kleinen Adern tief im Stein und braucht eine Eisenspitzhacke oder besser. Neun Smaragde ergeben einen Smaragdblock und zurück.
@@ -573,7 +583,7 @@ Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab d
 
 **Siehe auch**
 
-[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel)
+[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Braustand](blocks.md#block-qtcraft-brewing_stand)
 
 ### <a id="chapter-qtcraft-archery"></a>Bogenschießen
 
@@ -839,7 +849,7 @@ Dschungeltempel stehen einzeln im Dschungel, bewachsen mit Moos und Ranken. Stei
 
 **Hexenhütten und Hexen**
 
-Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und Topfpflanzen. Hexen erscheinen dort und nur dort: Wo in einer Säule der Grundfläche einer Hütte ein Monster erscheinen darf, in jeder Höhe vom Boden der Welt bis oben, kommt nur eine Hexe, so oft wie sonst ein Monster und nach denselben Regeln: dunkel genug, 24–128 m von Spielern entfernt, innerhalb der Monster-Obergrenze, auf festem Boden mit Platz für sie. Böden, die man über oder unter der Hütte in die Grundfläche baut, bringen mehr; Licht hält sie fern. Eine Hexe wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Ein Wurftrank trifft alles Lebendige rund um die Stelle, an der er zerplatzt, je weiter weg, desto schwächer. Verletzt trinkt sie kurz einen Heiltrank und wirft solange nichts; Milch nimmt das Gift wieder weg.
+Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und Topfpflanzen. In der Grundfläche einer Hütte erscheinen nur Hexen: Wo in einer Säule der Grundfläche ein Monster erscheinen darf, in jeder Höhe vom Boden der Welt bis oben, kommt nur eine Hexe, so oft wie sonst ein Monster und nach denselben Regeln: dunkel genug, 24–128 m von Spielern entfernt, innerhalb der Monster-Obergrenze, auf festem Boden mit Platz für sie. Böden, die man über oder unter der Hütte in die Grundfläche baut, bringen mehr; Licht hält sie fern. Anderswo ist die Hexe ein seltenes Monster der Dunkelheit wie die anderen. Eine Hexe wirft Wurftränke, die sie nach ihrem Ziel wählt (siehe das Kapitel Brauen). Ein Wurftrank trifft alles Lebendige rund um die Stelle, an der er zerplatzt, je weiter weg, desto schwächer. Sie trinkt einen Trank, wenn sie ihn braucht, und wirft solange nichts; Milch nimmt das Gift wieder weg.
 
 **Portal-Ruinen, Brunnen und Oasen**
 

@@ -3,6 +3,7 @@
 
 #include "server/gameplay/QcServerCombat.h"
 
+#include "common/content/registry/QcContentLoot.h"
 #include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
@@ -154,6 +155,14 @@ void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &dro
 {
     for (const QcItemDrop &drop : drops) {
         if ((drop.byPlayer && !byPlayer) || (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance)) {
+            continue;
+        }
+        // A drop with a table gives one draw of the loot table (decision E-1106).
+        if (!drop.table.isEmpty()) {
+            const QList<QcItemStack> loot = QcContentLoot::draw(state.content(), drop.table, state.random().generate64());
+            for (const QcItemStack &stack : loot) {
+                state.entities().items().spawnScattered(stack, position, state.entities().newId());
+            }
             continue;
         }
         // A drop with a maxCount gives between count and maxCount items, chosen evenly.

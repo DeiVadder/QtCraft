@@ -967,7 +967,7 @@ day and night
 
 ### <a id="mob-qtcraft-witch"></a>Witch
 
-Spawns only in witch huts in the swamp: anywhere above or below a hut's footprint, in the dark like other monsters. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
+A rare monster of the night: where other monsters spawn in the dark, now and then a witch comes instead, and in the footprint of a witch hut in the swamp only witches come. She keeps her distance and throws splash potions chosen for her target: slowness from 8 blocks or more while you are not slowed, poison while you have at least 8 health and are not poisoned, now and then weakness up close, otherwise harming. She drinks when she needs to: water breathing under water, fire resistance while she burns, healing when hurt, swiftness when you are far away; she stands still while she drinks. She is immune to poison. She leaves one to three draws of glowstone dust, sugar, signal dust, spider eyes, glass bottles, gunpowder and sticks; killed while she drinks, now and then the potion in her hand.
 
 | | |
 |---|---|
@@ -977,8 +977,22 @@ Spawns only in witch huts in the swamp: anywhere above or below a hut's footprin
 | Size | 0.6 m wide, 1.95 m tall |
 | Speed | 1.2 m/s walking, 2.4 m/s chasing |
 | Sees players within | 16 m |
-| Appears | never by itself (/summon, showcase world) |
-| Drops | [Glass bottle](items.md#item-qtcraft-glass_bottle) (50 %), [Sugar](items.md#item-qtcraft-sugar) (40 %), [Stick](items.md#item-qtcraft-stick) (40 %), [Spider eye](items.md#item-qtcraft-spider_eye) (30 %), [Signal Dust](blocks.md#block-qtcraft-signal_dust) (30 %) |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Caves | also in caves at any time |
+| Spawn light | block light up to 0 |
+| Group size | up to 1 |
+| Spawn weight | 5 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Glowstone dust](items.md#item-qtcraft-glowstone_dust) (0–2×), [Sugar](items.md#item-qtcraft-sugar) (0–2×), [Signal Dust](blocks.md#block-qtcraft-signal_dust) (0–2×), [Spider eye](items.md#item-qtcraft-spider_eye) (0–2×), [Glass bottle](items.md#item-qtcraft-glass_bottle) (0–2×), [Gunpowder](items.md#item-qtcraft-gunpowder) (0–2×), [Stick](items.md#item-qtcraft-stick) (0–2×) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+All biomes.
 
 ### <a id="mob-qtcraft-wolf"></a>Wolf
 

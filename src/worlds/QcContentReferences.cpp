@@ -83,15 +83,21 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     return warnings;
 }
 
-[[nodiscard]] QStringList checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob)
+// The items and loot tables (decision E-1106) a creature drops.
+[[nodiscard]] QStringList checkMobDrops(const QcContentRegistry &content, const QcMobDefinition &mob)
 {
     QStringList warnings;
     for (const QcItemDrop &drop : mob.drops) {
-        if (!knowsItem(content, drop.item)) {
-            warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.item));
+        if (drop.table.isEmpty() ? !knowsItem(content, drop.item) : !content.lootTables().find(drop.table)) {
+            warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.table.isEmpty() ? drop.item : drop.table));
         }
     }
+    return warnings;
+}
 
+[[nodiscard]] QStringList checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    QStringList warnings = checkMobDrops(content, mob);
     for (const QcMobPart &part : mob.parts) {
         if (!knowsTexture(content, part.texture)) {
             warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));

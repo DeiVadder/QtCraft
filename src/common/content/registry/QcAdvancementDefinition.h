@@ -48,6 +48,7 @@ enum class QcAdvancementTrigger : quint8 {
     ItemEnchanted, // The player enchanted an item matching \c {item}.
     EffectGained, // The player got the status effect \c {effect}.
     LevelReached, // The player reached at least experience level \c {level}.
+    PotionBrewed, // The player took a potion matching \c {item} out of a brewing stand (decision E-1107).
 };
 
 /*! \brief What an event must show for a criterion to be met; empty fields accept anything.

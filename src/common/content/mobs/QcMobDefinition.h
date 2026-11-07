@@ -7,6 +7,7 @@
 #include "common/content/items/QcItemDefinition.h"
 #include "common/content/mobs/QcAppearanceDefinition.h"
 #include "common/content/mobs/QcBarterDefinition.h"
+#include "common/content/mobs/QcMobDrinkDefinition.h"
 #include "common/content/mobs/QcMobTraits.h"
 #include "common/core/QcCreatureKindId.h"
 #include "common/core/QcIdList.h"
@@ -178,8 +179,8 @@ struct QcMobDefinition
     std::optional<QcCarryDefinition> carries;
     /*! Crumbles into blocks at a liquid's source (decision E-593). */
     std::optional<QcCrumbleDefinition> crumbles;
-    /*! Drinks to heal itself (the witch, decision E-623). */
-    std::optional<QcDrinkHealDefinition> drinks;
+    /*! Drinks potions when it needs them (the witch, decisions E-623, E-1105). */
+    std::optional<QcMobDrinkDefinition> drinks;
     /*! Splits off children when hurt and takes them with it when it dies (the Kjut, decision
         E-839). */
     std::optional<QcFamilyDefinition> family;

@@ -11433,7 +11433,7 @@ Die Leitung jeder Schaltung. Sie trägt ein Signal der Stärke 15 von einer Quel
 
 **Droppt aus**
 
-[Hexe](creatures.md#mob-qtcraft-witch) (30 %), [Signalerz](#block-qtcraft-signal_ore) (4×, 50 %)
+[Hexe](creatures.md#mob-qtcraft-witch) (0–2×), [Signalerz](#block-qtcraft-signal_ore) (4×, 50 %)
 
 ### <a id="block-qtcraft-signal_dust_block"></a>Signalstaubblock
 

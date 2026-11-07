@@ -242,18 +242,24 @@ struct QcArcherDefinition
     /*! Name of the QcProjectileDefinition it shoots. */
     QString projectile;
     /*! \brief Another projectile it shoots instead while its target lacks a status effect (the
-        witch's poison before its harming, decision E-623).
+        witch's slowness, poison and weakness before its harming, decisions E-623, E-1105).
 
-        \c {projectile} names the projectile, \c {unlessTargetHas} the status effect (JSON keys
-        of the same names in \c {"choices"}). \qcfields */
+        \c {projectile} names the projectile, \c {unlessTargetHas} the status effect; the choice
+        also needs the target at least \c {minDistance} and at most \c {maxDistance} metres away
+        (horizontally), its health at least \c {minTargetHealth} and a draw below \c {chance}
+        (JSON keys of the same names in \c {"choices"}). \qcfields */
     struct Choice
     {
         QString projectile;
         QString unlessTargetHas;
+        double minDistance = 0.0;
+        double maxDistance = 1000.0;
+        double minTargetHealth = 0.0;
+        double chance = 1.0;
 
         bool operator==(const Choice &) const = default;
     };
-    /*! The first choice whose effect the target lacks is shot, else \c {projectile}. */
+    /*! The first choice that holds is shot, else \c {projectile}. */
     QList<Choice> choices;
     /*! Most entries of \c {choices}. */
     static constexpr int maxChoices = 8;
@@ -288,29 +294,6 @@ struct QcArcherDefinition
     bool flares = false;
 
     bool operator==(const QcArcherDefinition &) const = default;
-};
-
-/*! \brief A creature that drinks to heal (the witch, decision E-623), from its data (\c {drinks}):
-    once its health lies \c {heal} or more below its most and \c {cooldownSeconds} have passed since
-    its last drink, it holds \c {item} for \c {seconds} without shooting, then heals by \c {heal}
-    with \c {sound}.
-
-    Server side only. \qcfields */
-struct QcDrinkHealDefinition
-{
-    QString item;
-    /*! The id of \c {item}, resolved when the content is finished (QcMobTraitsContent::resolve). */
-    QcItemId itemId = qcNoItem;
-    /*! Health it heals by a drink, and how far below its most its health must lie. */
-    double heal = 4.0;
-    /*! Seconds it holds the drink before it heals. */
-    double seconds = 1.6;
-    /*! Seconds after a drink before the next one. */
-    double cooldownSeconds = 3.0;
-    /*! Played when it heals; empty for none. */
-    QString sound;
-
-    bool operator==(const QcDrinkHealDefinition &) const = default;
 };
 
 /*! \brief A parent that splits off children and takes them with it (the Kjut, decision E-839), from

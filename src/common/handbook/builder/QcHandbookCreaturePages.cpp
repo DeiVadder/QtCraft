@@ -195,7 +195,8 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     }
 
     Fact drops{text.label(u"fact.drops"_s), {}, {}};
-    for (const QcItemDrop &drop : mob.drops) {
+    const QList<QcItemDrop> shown = context.content.lootTables().shownDrops(mob.drops);
+    for (const QcItemDrop &drop : shown) {
         drops.links.append(links.itemLink(drop.item, text.dropNote(drop)));
     }
     if (drops.links.isEmpty()) {

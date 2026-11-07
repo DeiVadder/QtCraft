@@ -50,7 +50,7 @@ private slots:
                          qPrintable(u"%1 has no offer of level %2"_s.arg(set.name).arg(level)));
             }
         }
-        QCOMPARE(m_content->villageCatalog().tradeSets().size(), 3);
+        QCOMPARE(m_content->villageCatalog().tradeSets().size(), 4);
     }
 
     void aVillagerHasOffersByProfessionAndLevel()

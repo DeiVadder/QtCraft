@@ -66,11 +66,17 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
                               .count = dropReader.integer(u"count"_s, 1, 0, 64),
                               .chance = dropReader.number(u"chance"_s, 1.0, 0.0, 1.0),
                               .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64),
-                              .byPlayer = dropReader.boolean(u"byPlayer"_s, false)};
-        if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
+                              .byPlayer = dropReader.boolean(u"byPlayer"_s, false),
+                              .table = dropReader.name(u"table"_s, packNamespace)};
+        if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty() == drop.table.isEmpty()) {
             // A problem inside the entry comes first; it names the place itself.
             reader.adopt(dropReader);
-            reader.fail(u"drop needs an 'item'"_s);
+            reader.fail(u"drop needs an 'item' or a 'table'"_s);
+            break;
+        }
+        // The table draws its own counts (decision E-1106).
+        if (!drop.table.isEmpty() && (dropJson.contains(u"count"_s) || dropJson.contains(u"maxCount"_s))) {
+            reader.fail(u"a drop with a 'table' takes no 'count' or 'maxCount'"_s);
             break;
         }
         result.append(drop);
@@ -79,7 +85,8 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
 }
 
 // The projectiles an archer shoots instead while its target lacks an effect (decision E-623):
-// "choices": [{"projectile", "unlessTargetHas"}].
+// "choices": [{"projectile", "unlessTargetHas", "minDistance", "maxDistance", "minTargetHealth",
+// "chance"}] (decision E-1105).
 [[nodiscard]] QList<QcArcherDefinition::Choice> parseArcherChoices(QcJsonFieldReader &reader, const QString &packNamespace)
 {
     const QJsonValue value = reader.json.value(u"choices"_s);
@@ -95,7 +102,12 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     const QJsonArray list = value.toArray();
     for (const auto &entry : list) {
         QcJsonFieldReader nested{entry.toObject(), reader.context + u" choices"_s, {}};
-        const QcArcherDefinition::Choice choice{nested.name(u"projectile"_s, packNamespace), nested.name(u"unlessTargetHas"_s, packNamespace)};
+        const QcArcherDefinition::Choice choice{nested.name(u"projectile"_s, packNamespace),
+                                                nested.name(u"unlessTargetHas"_s, packNamespace),
+                                                nested.number(u"minDistance"_s, 0.0, 0.0, 128.0),
+                                                nested.number(u"maxDistance"_s, 1000.0, 0.0, 1000.0),
+                                                nested.number(u"minTargetHealth"_s, 0.0, 0.0, 1000.0),
+                                                nested.number(u"chance"_s, 1.0, 0.0, 1.0)};
         if (!entry.isObject() || choice.projectile.isEmpty() || choice.unlessTargetHas.isEmpty()) {
             nested.fail(u"entries need a 'projectile' and 'unlessTargetHas'"_s);
         }

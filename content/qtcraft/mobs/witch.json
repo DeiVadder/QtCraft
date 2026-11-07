@@ -19,8 +19,20 @@
         "projectile": "harming_splash_potion",
         "choices": [
             {
+                "projectile": "slowness_splash_potion",
+                "unlessTargetHas": "slowness",
+                "minDistance": 8
+            },
+            {
                 "projectile": "poison_splash_potion",
-                "unlessTargetHas": "poison"
+                "unlessTargetHas": "poison",
+                "minTargetHealth": 8
+            },
+            {
+                "projectile": "weakness_splash_potion",
+                "unlessTargetHas": "weakness",
+                "maxDistance": 3,
+                "chance": 0.25
             }
         ],
         "drawSeconds": 1.0,
@@ -32,41 +44,47 @@
         "keepDistance": 8
     },
     "drinks": {
-        "item": "healing_potion",
-        "heal": 4,
         "seconds": 1.6,
-        "cooldownSeconds": 3.0,
-        "sound": "player.drink"
+        "sound": "player.drink",
+        "dropChance": 0.085,
+        "potions": [
+            {
+                "item": "water_breathing_potion",
+                "need": "underwater",
+                "chance": 0.15
+            },
+            {
+                "item": "fire_resistance_potion",
+                "need": "burning",
+                "chance": 0.15
+            },
+            {
+                "item": "healing_potion",
+                "need": "hurt",
+                "chance": 0.05
+            },
+            {
+                "item": "speed_potion",
+                "need": "targetFar",
+                "distance": 11,
+                "chance": 0.5
+            }
+        ]
     },
     "attackDamage": 0,
     "attackRange": 1.4,
     "attackCooldown": 1.0,
     "sightRange": 16,
     "spawn": {
-        "weight": 0
+        "maxGroup": 1,
+        "weight": 5,
+        "caves": true
     },
     "skeleton": "witch",
     "outfit": "witch",
     "drops": [
         {
-            "item": "glass_bottle",
-            "chance": 0.5
-        },
-        {
-            "item": "sugar",
-            "chance": 0.4
-        },
-        {
-            "item": "stick",
-            "chance": 0.4
-        },
-        {
-            "item": "spider_eye",
-            "chance": 0.3
-        },
-        {
-            "item": "signal_dust",
-            "chance": 0.3
+            "table": "witch"
         }
     ],
     "experience": 5

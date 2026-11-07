@@ -95,7 +95,8 @@ void QcHandbookIndex::indexBlocks(const QcHandbookText &text, const QcHandbookLi
 void QcHandbookIndex::indexMobs(const QcHandbookText &text, const QcHandbookLinks &links)
 {
     for (const QcMobDefinition &mob : m_content.mobs()) {
-        for (const QcItemDrop &drop : mob.drops) {
+        const QList<QcItemDrop> shown = m_content.lootTables().shownDrops(mob.drops);
+        for (const QcItemDrop &drop : shown) {
             m_droppedBy[drop.item].addUnique(links.mobLink(mob, text.dropNote(drop)));
         }
 

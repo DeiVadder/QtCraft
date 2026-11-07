@@ -34,7 +34,7 @@ struct Resolved
     /*! Crumbling; empty if it names an unknown liquid or block. */
     std::optional<QcCrumbleDefinition> crumbles;
     /*! Drinking, with the item's id; empty if the item is unknown. */
-    std::optional<QcDrinkHealDefinition> drinks;
+    std::optional<QcMobDrinkDefinition> drinks;
     /*! Carrying, with the block ids; empty if no block is left to carry. */
     std::optional<QcCarryDefinition> carries;
     /*! The family, with the child's index; empty if the child does not qualify. */

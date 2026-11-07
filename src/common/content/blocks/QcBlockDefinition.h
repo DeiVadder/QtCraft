@@ -112,6 +112,9 @@ struct QcItemDrop
     /*! Creature drops only: it drops only when a player dealt the killing blow (\c {"byPlayer"},
         decision E-1059). Server side only. */
     bool byPlayer = false;
+    /*! Creature drops only: the loot table (QcLootTables) drawn instead of an \c {item}
+        (\c {"table"}, decision E-1106; the witch's draws). Server side only. */
+    QString table = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 
     /*! Returns the most items this drop gives. */
     int mostCount() const { return std::max(count, maxCount); }

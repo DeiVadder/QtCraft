@@ -1,0 +1,9 @@
+{
+    "name": "water_breathing",
+    "effects": [
+        {
+            "effect": "water_breathing",
+            "seconds": 180
+        }
+    ]
+}

@@ -116,6 +116,8 @@ struct PlayerView
     /*! Its status effects (an archer's choice of projectile, decision E-623); null for none
         known. */
     const QcStatusEffects *effects = nullptr;
+    /*! Its health (an archer's choice of projectile, decision E-1105). */
+    double health = 20.0;
     /*! The player's horizontal speed in m/s (shy creatures). */
     double speed = 0.0;
     /*! Server ticks at which hurtBy and struck happened: a pet keeps its target unless its owner

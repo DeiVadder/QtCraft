@@ -9,6 +9,7 @@
         "farmer",
         "smith",
         "fisher",
+        "cleric",
         "emeralds",
         "mods"
     ],
@@ -19,6 +20,7 @@
         "emerald_block",
         "composter",
         "furnace",
-        "barrel"
+        "barrel",
+        "brewing_stand"
     ]
 }

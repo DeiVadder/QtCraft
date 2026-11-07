@@ -121,9 +121,9 @@ private slots:
             QVERIFY(!definition.throwable);
             QCOMPARE(m_content->projectile(name)->item, name);
         }
-        // All 31 kinds but water and the three bases without an effect.
-        QCOMPARE(potions.size(), 31);
-        QCOMPARE(arrows, 27);
+        // All 33 kinds but water and the three bases without an effect.
+        QCOMPARE(potions.size(), 33);
+        QCOMPARE(arrows, 29);
     }
 
     void aPackThatChangesThePlainArrowChangesThemToo()

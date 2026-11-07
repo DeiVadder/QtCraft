@@ -262,7 +262,7 @@ Der Veteran der Hauerlinge, in dunkler Rüstung und schwerem Gold, mit einer gol
 
 ### <a id="mob-qtcraft-witch"></a>Hexe
 
-Erscheint nur in Hexenhütten im Sumpf: überall über oder unter der Grundfläche einer Hütte, im Dunkeln wie andere Monster. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Sie ist immun gegen Gift.
+Ein seltenes Monster der Nacht: Wo im Dunkeln andere Monster erscheinen, kommt ab und zu stattdessen eine Hexe, und in der Grundfläche einer Hexenhütte im Sumpf kommen nur Hexen. Sie hält Abstand und wirft Wurftränke, die sie nach ihrem Ziel wählt: ab 8 Blöcken Langsamkeit, solange du nicht verlangsamt bist, Gift, solange du mindestens 8 Leben hast und nicht vergiftet bist, aus der Nähe ab und zu Schwäche, sonst Schaden. Sie trinkt, wenn sie es braucht: unter Wasser Wasseratmung, brennend Feuerresistenz, verletzt Heilung, Schnelligkeit, wenn du weit weg bist; solange sie trinkt, bleibt sie stehen. Sie ist immun gegen Gift. Sie hinterlässt ein bis drei Ziehungen aus Leuchtsteinstaub, Zucker, Signalstaub, Spinnenaugen, Glasflaschen, Schwarzpulver und Stöcken; stirbt sie beim Trinken, ab und zu den Trank in ihrer Hand.
 
 | | |
 |---|---|
@@ -272,8 +272,22 @@ Erscheint nur in Hexenhütten im Sumpf: überall über oder unter der Grundfläc
 | Größe | 0,6 m breit, 1,95 m hoch |
 | Geschwindigkeit | 1,2 m/s beim Gehen, 2,4 m/s beim Verfolgen |
 | Sieht Spieler bis | 16 m |
-| Erscheint | nie von selbst (/summon, Showcase-Welt) |
-| Beute | [Glasflasche](items.md#item-qtcraft-glass_bottle) (50 %), [Zucker](items.md#item-qtcraft-sugar) (40 %), [Stock](items.md#item-qtcraft-stick) (40 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (30 %), [Signalstaub](blocks.md#block-qtcraft-signal_dust) (30 %) |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 5 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Leuchtsteinstaub](items.md#item-qtcraft-glowstone_dust) (0–2×), [Zucker](items.md#item-qtcraft-sugar) (0–2×), [Signalstaub](blocks.md#block-qtcraft-signal_dust) (0–2×), [Spinnenauge](items.md#item-qtcraft-spider_eye) (0–2×), [Glasflasche](items.md#item-qtcraft-glass_bottle) (0–2×), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (0–2×), [Stock](items.md#item-qtcraft-stick) (0–2×) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
 
 ### <a id="mob-qtcraft-cave_spider"></a>Höhlenspinne
 

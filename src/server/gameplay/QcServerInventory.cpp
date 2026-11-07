@@ -162,6 +162,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
                                 && countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         const QcItemStack output = open.machine->stacks[QcMachineRules::outputSlot];
         open.machine->stacks = open.combined.stacks.mid(machineSlot, open.blockSlots);
+        noteBrewedTaken(client, *open.machine, before);
         if (tookOutput) {
             const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
             QcServerExperience::drop(m_state, points, client.motion.position + QcVec3{0.0, 0.5, 0.0});
@@ -295,6 +296,21 @@ bool QcServerInventory::enchantingAccepts(const OpenSlots &open) const
     const QcItemStack &item = open.combined.stacks[machineSlot];
     const QcItemStack &lapis = open.combined.stacks[machineSlot + 1];
     return (item.isEmpty() || item.count == 1) && (lapis.isEmpty() || m_state.content().itemId(QString(QcEnchantingTable::lapisItem)) == lapis.item);
+}
+
+void QcServerInventory::noteBrewedTaken(QcServerClient &client, const QcBlockEntities::Machine &machine, const QList<QcItemStack> &before)
+{
+    if (!brewerOf(machine)) {
+        return;
+    }
+    // A potion taken out of a bottle slot counts as brewed, like the reference (decision E-1107).
+    for (int slot = QcBrewerDefinition::firstBottleSlot; slot < QcBrewerDefinition::slotCount && slot < before.size(); ++slot) {
+        const QcItemStack &was = before[slot];
+        const bool taken = !was.isEmpty() && (machine.stacks[slot].isEmpty() || machine.stacks[slot].item != was.item);
+        if (taken && m_state.content().potionCatalog().potionOf(was.item)) {
+            m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::PotionBrewed, .item = m_state.content().item(was.item).name});
+        }
+    }
 }
 
 const QcBrewerDefinition *QcServerInventory::brewerOf(const QcBlockEntities::Machine &machine) const

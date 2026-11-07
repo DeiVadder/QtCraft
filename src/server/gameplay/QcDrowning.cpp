@@ -66,8 +66,9 @@ void QcDrowning::tickCreatures()
     QList<quint32> drowning;
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        const bool submerged = !mob.dormant && !definition.breathesUnderWater
-                               && QcAirSupply::submergedAt(m_state.world(), QcEnvironmentDamage::eyesOf(mob, definition));
+        // Water breathing keeps creatures in air too (a witch's potion, decision E-1105).
+        const bool breathes = definition.breathesUnderWater || (mob.effects.has() && QcEffectRules::breathesUnderWater(m_state.content(), mob.effects->all()));
+        const bool submerged = !mob.dormant && !breathes && QcAirSupply::submergedAt(m_state.world(), QcEnvironmentDamage::eyesOf(mob, definition));
         if (mob.air.tick(submerged) && damages) {
             drowning.append(mob.id);
         }

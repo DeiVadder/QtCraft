@@ -23,15 +23,16 @@ struct QcServerClient;
     tuskling), server authoritative.
 
     A player gives one \c {currency} item from his hand (use on the creature, give()), or the
-    creature walks to a loved item lying within its \c {seekRange}, even away from a foe, and picks
-    one up (tick()); one it does not reach in seekLimitTicks is left alone for ignoreTicks. It looks
-    at the item for \c {admireSeconds} (QcBarterState, the item shown in its hand) and stands
-    still; then the \c {currency} is bartered away for one draw of its loot table (lootOf()), thrown
-    towards the player who gave it, and any other loved item goes to its hoard. A taken item stays
-    the stack it was (damage, enchantments, name). Taking an item keeps the creature with the
-    world. Anger ends the looking: the item falls to the ground and nothing is bartered; an angry
-    creature takes nothing. Breaking or opening a block it guards angers it (alarm()). Young ones
-    neither take nor barter. Hoard and looked-at item fall at every death (dropsOf()). */
+    creature walks to a loved item lying within its \c {seekRange}, even away from a foe, and
+    picks one up (tick()); one it does not reach in seekLimitTicks is left alone for ignoreTicks.
+    It looks at the item for \c {admireSeconds} (QcBarterState, the item shown in its hand) and
+    stands still; then the \c {currency} is bartered away for one draw of its loot table
+    (QcContentLoot::draw()), thrown towards the player who gave it, and any other loved item goes
+    to its hoard. A taken item stays the stack it was (damage, enchantments, name). Taking an
+    item keeps the creature with the world. Anger ends the looking: the item falls to the ground
+    and nothing is bartered; an angry creature takes nothing. Breaking or opening a block it
+    guards angers it (alarm()). Young ones neither take nor barter. Hoard and looked-at item fall
+    at every death (dropsOf()). */
 class QcServerBarter
 {
 public:
@@ -49,7 +50,8 @@ public:
     enum class Giving : quint8 {
         /*! Not a creature that barters or not its currency: nothing happened. */
         NotTheCurrency,
-        /*! Its currency, but it does not take it now (young, busy, angry, out of reach or sight). */
+        /*! Its currency, but it does not take it now (young, busy, angry, out of reach or
+            sight). */
         Refused,
         /*! It took one. */
         Given
@@ -67,10 +69,6 @@ public:
     void alarm(const QcServerClient &client, const QString &block, bool opened);
     /*! The looking, bartering and picking up of one game tick. */
     void tick();
-
-    /*! Returns the stacks one barter with the loot table \a table of \a content gives for
-        \a seed (QcLootTables::draw); empty for an unknown table. */
-    static QList<QcItemStack> lootOf(const QcContentRegistry &content, const QString &table, quint64 seed);
     /*! Returns what a creature holding \a barter drops when it dies: its hoard and the item it
         looks at, as the stacks they are. */
     static QList<QcItemStack> dropsOf(const QcBarterState &barter);

@@ -1,0 +1,17 @@
+{
+    "formatVersion": 1,
+    "name": "cleric",
+    "workstations": [
+        "brewing_stand"
+    ],
+    "layers": {
+        "torso": {
+            "texture": "villager_cleric_robe",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "villager_cleric_robe",
+            "tint": "none"
+        }
+    }
+}

@@ -63,8 +63,8 @@ public:
         and the loot when it dies. Nothing for an unknown creature. */
     static void woundCreature(QcServerState &state, QcServerSounds &sounds, quint32 id, double amount);
     /*! Drops the loot \a drops of a creature of \a state that died at \a position, each drop by
-        its chance (also burn deaths, QcBodyBurning); those for a player's kill only with
-        \a byPlayer. */
+        its chance (also burn deaths, QcBodyBurning), a drop with a loot table as one draw of it
+        (decision E-1106); those for a player's kill only with \a byPlayer. */
     static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position, bool byPlayer = false);
     /*! Tells every player of \a state that the creature named \a name died (decision E-866);
         nothing for no name. */

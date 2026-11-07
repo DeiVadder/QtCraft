@@ -180,7 +180,7 @@ private slots:
         QVERIFY(base);
         QVERIFY2(base->warnings.isEmpty(), qPrintable(base->warnings.join(u'\n')));
         const QcAdvancementCatalog &advancements = base->registry->advancements();
-        QVERIFY(advancements.items().size() >= 20 && advancements.items().size() <= 30);
+        QVERIFY(advancements.items().size() >= 20 && advancements.items().size() <= 40);
 
         // One root; every advancement leads into the handbook and is translated in both languages.
         int roots = 0;

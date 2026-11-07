@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
 
 #include <QtGlobal>
@@ -30,11 +31,11 @@ struct QcArcherState
     /*! The target's velocity (smoothed from the change of position). */
     QcVec3 targetVelocity;
 
-    /*! A drink to heal (QcMobDefinition::drinks, decision E-623; QcMobDrinking): the game tick
+    /*! A drink (QcMobDefinition::drinks, decisions E-623, E-1105; QcMobDrinking): the game tick
         it began at (-1 while it does not drink). */
     qint64 drinkStart = -1;
-    /*! The first tick it may drink again. */
-    quint64 drinkReady = 0;
+    /*! The potion it drinks (an item that is drunk); qcNoItem while it does not drink. */
+    QcItemId drinkItem = qcNoItem;
 
     /*! Returns whether it draws its bow. */
     bool drawing() const { return drawStart >= 0; }

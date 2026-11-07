@@ -793,6 +793,7 @@ private slots:
         const QJsonObject boarPart{{u"from"_s, QJsonArray{-0.3, 0.0, -0.3}}, {u"to"_s, QJsonArray{0.3, 0.6, 0.3}}, {u"texture"_s, u"qtcraft:pig_skin"_s}};
         writeJson(tweak + u"/mobs/boar.json"_s, {{u"name"_s, u"tweak:boar"_s},
                                                  {u"model"_s, QJsonArray{boarPart}},
+                                                 {u"drops"_s, QJsonArray{QJsonObject{{u"table"_s, u"tweak:no_loot"_s}}}},
                                                  {u"breeding"_s, QJsonObject{{u"food"_s, QJsonArray{u"tweak:acorn"_s}}}}});
         writeJson(tweak + u"/mobs/eel.json"_s, {{u"name"_s, u"tweak:eel"_s},
                                                 {u"model"_s, QJsonArray{boarPart}},
@@ -814,7 +815,8 @@ private slots:
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"unknown item 'tweak:nothing'"_s); }));
         for (const QString &expected : {u"unknown fruit 'tweak:no_fruit'"_s, u"unknown tillsInto 'tweak:no_soil'"_s,
                                         u"unknown fireAbove 'tweak:no_fire'"_s, u"fireAbove 'qtcraft:dirt' is no fire"_s,
-                                        u"unknown breeding food 'tweak:acorn'"_s, u"unknown ink texture 'tweak:no_ink'"_s}) {
+                                        u"unknown breeding food 'tweak:acorn'"_s, u"unknown ink texture 'tweak:no_ink'"_s,
+                                        u"mob tweak:boar: unknown drop 'tweak:no_loot'"_s}) {
             QVERIFY2(std::ranges::any_of(warnings, [&expected](const QString &w) { return w.contains(expected); }), qPrintable(warnings.join(u'\n')));
         }
     }

@@ -95,11 +95,11 @@ private slots:
 
         // Both professions and the base ones, each species with all of them.
         const QcContentRegistry &content = *loaded.content;
-        QCOMPARE(content.villageCatalog().professions().size(), 6);
+        QCOMPARE(content.villageCatalog().professions().size(), 7);
         QVERIFY(content.villageCatalog().profession(u"bakery:baker"_s));
         QVERIFY(content.villageCatalog().profession(u"library:librarian"_s));
         const QcVillagerSettings &species = content.villagerSettingsOf(*content.mobKind(u"qtcraft:villager"_s));
-        QCOMPARE(species.professions.size(), 6);
+        QCOMPARE(species.professions.size(), 7);
         QCOMPARE(species.forWorkstation(u"bakery:baker"_s)->name, u"bakery:baker"_s);
         const QHash<QString, QString> &workstations = content.villageCatalog().settings().workstations;
         QCOMPARE(workstations.value(u"qtcraft:crafting_table"_s), u"bakery:baker"_s);
@@ -201,7 +201,7 @@ private slots:
         QCOMPARE(gnomes.trading.offersPerLevel, 1);
         QCOMPARE(gnomes.activityAt(0.25, u"qtcraft:farmer"_s), QcVillagerActivity::Sleep);
         QCOMPARE(content.villagerSettingsOf(villager).activityAt(0.25, u"qtcraft:farmer"_s), QcVillagerActivity::Work);
-        QCOMPARE(gnomes.professions.size(), 4);
+        QCOMPARE(gnomes.professions.size(), 5);
 
         // The style's villages are the gnomes', without golems; other villages keep the base's.
         QCOMPARE(content.villagerOfStyle(u"gnomes:gnome_village"_s), gnome);
@@ -415,7 +415,7 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"'workstation' moved to 'workstations'"_s));
         QVERIFY(anyContains(loaded.warnings, u"'workstations' moved to the professions"_s));
         QVERIFY(anyContains(loaded.warnings, u"'villager' names villager settings"_s));
-        QCOMPARE(loaded.content->villageCatalog().settings().workstations.size(), 3);
+        QCOMPARE(loaded.content->villageCatalog().settings().workstations.size(), 4);
     }
 };
 

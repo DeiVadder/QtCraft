@@ -56,7 +56,7 @@ Light forest of birches.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -113,7 +113,7 @@ Sand and sandstone with cacti and little else.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Husk](creatures.md#mob-qtcraft-husk) (15.53 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3.88 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Husk](creatures.md#mob-qtcraft-husk) (15.38 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3.85 %)
 
 **Creatures**
 
@@ -148,7 +148,7 @@ A rare, sheltered valley in temperate land: a broad grassy floor between low hil
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -182,7 +182,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -216,7 +216,7 @@ Warm, dry grassland between the plains and the desert: tall grass with scattered
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -238,7 +238,7 @@ A river through cold land (tundra, snowy taiga, taiga): ice covers it, its bed a
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.57 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.96 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.57 %), [Slime](creatures.md#mob-qtcraft-slime) (19.57 %), [Spider](creatures.md#mob-qtcraft-spider) (19.57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.57 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.19 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.38 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.38 %), [Slime](creatures.md#mob-qtcraft-slime) (19.38 %), [Spider](creatures.md#mob-qtcraft-spider) (19.38 %), [Witch](creatures.md#mob-qtcraft-witch) (0.97 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.38 %)
 
 **Creatures**
 
@@ -264,7 +264,7 @@ A river delta in cold land (tundra, snowy taiga, taiga): bare islands of gravel 
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.57 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.96 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.57 %), [Slime](creatures.md#mob-qtcraft-slime) (19.57 %), [Spider](creatures.md#mob-qtcraft-spider) (19.57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.57 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.19 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.38 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.38 %), [Slime](creatures.md#mob-qtcraft-slime) (19.38 %), [Spider](creatures.md#mob-qtcraft-spider) (19.38 %), [Witch](creatures.md#mob-qtcraft-witch) (0.97 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.38 %)
 
 **Creatures**
 
@@ -298,7 +298,7 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -332,7 +332,7 @@ The thin edge of the jungle towards temperate forests: single jungle trees, many
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -365,7 +365,7 @@ A river delta in warm, wet land (jungle, jungle edge, swamp): green islands of g
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (16.39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.39 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.64 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.39 %), [Slime](creatures.md#mob-qtcraft-slime) (16.39 %), [Spider](creatures.md#mob-qtcraft-spider) (16.39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.39 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (16.26 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.26 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.63 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.26 %), [Slime](creatures.md#mob-qtcraft-slime) (16.26 %), [Spider](creatures.md#mob-qtcraft-spider) (16.26 %), [Witch](creatures.md#mob-qtcraft-witch) (0.81 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.26 %)
 
 **Creatures**
 
@@ -401,7 +401,7 @@ High rocky peaks with snow on top.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -457,7 +457,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -478,7 +478,7 @@ The water of the winding rivers that run through the land down to the sea or int
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (16.39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.39 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.64 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.39 %), [Slime](creatures.md#mob-qtcraft-slime) (16.39 %), [Spider](creatures.md#mob-qtcraft-spider) (16.39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.39 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (16.26 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.26 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.63 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.26 %), [Slime](creatures.md#mob-qtcraft-slime) (16.26 %), [Spider](creatures.md#mob-qtcraft-spider) (16.26 %), [Witch](creatures.md#mob-qtcraft-witch) (0.81 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.26 %)
 
 **Creatures**
 
@@ -507,7 +507,7 @@ Where a wide river runs through flat land into the sea, it spreads into a fan of
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (16.39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.39 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.64 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.39 %), [Slime](creatures.md#mob-qtcraft-slime) (16.39 %), [Spider](creatures.md#mob-qtcraft-spider) (16.39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.39 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (16.26 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.26 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.63 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.26 %), [Slime](creatures.md#mob-qtcraft-slime) (16.26 %), [Spider](creatures.md#mob-qtcraft-spider) (16.26 %), [Witch](creatures.md#mob-qtcraft-witch) (0.81 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.26 %)
 
 **Creatures**
 
@@ -535,7 +535,7 @@ Cold spruce forest on snow between the tundra and the taiga: fewer and smaller t
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -591,7 +591,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -623,7 +623,7 @@ Cool spruce forest with snow on the ground.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.23 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 
@@ -650,7 +650,7 @@ Cold flat land under snow; its water freezes.
 
 **Monsters (share of the monster list)**
 
-[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.94 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (3.88 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Stray](creatures.md#mob-qtcraft-stray) (15.53 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.23 %), [Shadewalker](creatures.md#mob-qtcraft-shadewalker) (1.92 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (3.85 %), [Slime](creatures.md#mob-qtcraft-slime) (19.23 %), [Spider](creatures.md#mob-qtcraft-spider) (19.23 %), [Stray](creatures.md#mob-qtcraft-stray) (15.38 %), [Witch](creatures.md#mob-qtcraft-witch) (0.96 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.23 %)
 
 **Creatures**
 

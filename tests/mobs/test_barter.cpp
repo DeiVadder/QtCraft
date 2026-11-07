@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/content/registry/QcContentLoot.h"
 #include "mobs/QcGoldFolkFixture.h"
 #include "server/animals/QcServerBarter.h"
 #include "server/dimensions/QcEntityTravel.h"
@@ -101,7 +102,7 @@ private slots:
         constexpr int draws = 20000;
         QHash<QString, int> seen;
         for (quint64 seed = 1; seed <= draws; ++seed) {
-            const QList<QcItemStack> stacks = QcServerBarter::lootOf(*m_content, u"qtcraft:tuskling_barter"_s, seed);
+            const QList<QcItemStack> stacks = QcContentLoot::draw(*m_content, u"qtcraft:tuskling_barter"_s, seed);
             QVERIFY(!stacks.isEmpty());
             ++seen[m_content->item(stacks.front().item).name];
         }
@@ -109,7 +110,7 @@ private slots:
             const double share = static_cast<double>(seen.value(entry.item)) / draws;
             QVERIFY2(std::abs(share - entry.weight / total) < 0.012, qPrintable(u"%1: %2"_s.arg(entry.item).arg(share)));
         }
-        QCOMPARE(QcServerBarter::lootOf(*m_content, u"qtcraft:tuskling_barter"_s, 77), QcServerBarter::lootOf(*m_content, u"qtcraft:tuskling_barter"_s, 77));
+        QCOMPARE(QcContentLoot::draw(*m_content, u"qtcraft:tuskling_barter"_s, 77), QcContentLoot::draw(*m_content, u"qtcraft:tuskling_barter"_s, 77));
     }
 
     void itPicksUpGoldButNotStone()

@@ -72,6 +72,7 @@ QcServerAdvancements::QcServerAdvancements(QcServerState &state)
 // trigger, so buckets by item or creature name would not pay for themselves yet.
 void QcServerAdvancements::trigger(QcServerClient &client, const QcAdvancementEvent &event)
 {
+    ++m_events[static_cast<std::size_t>(event.trigger)];
     for (const Ref ref : refsOf(event.trigger)) {
         const QcAdvancementDefinition &advancement = advancementOf(ref);
         const QcAdvancementCriterion &criterion = criterionOf(ref);

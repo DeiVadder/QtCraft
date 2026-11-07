@@ -3024,6 +3024,7 @@ Die unabhängige Prüfung von 37.1 (Wegfindung E-400, Gedränge E-401) fand zehn
 
 ## E-623 Hexe: Bogenschützen-KI mit Wurftränken nach Ziel-Effekt, Heiltrank trinken (Paket 51.3)
 
+- **Fortgeschrieben durch E-1105 (Paket 85.4):** Wahl der Wurftränke (Langsamkeit, Gift, Schwäche, Schaden nach Abstand, Leben und Zufall), Trinken nach Bedarf (Wasseratmung, Feuerresistenz, Heilung, Schnelligkeit) ohne Abklingzeit, natürlicher Spawn und Beute aus einer Tabelle (E-1106). Was unten dazu steht, ist der Stand von 51.3.
 - **Entscheidung (Auftrag: Hexe entscheiden):** Die Hexe kommt, als Fernkämpferin mit dem Effekt-System aus 52.2, in einem engen Umfang: **Gift** (vorhanden) und **Schaden** (sofort, als Schadens-Anteil des Wurftranks, kein neuer Effekt) als Wurftränke, **Heilen** durch Trinken. **Nicht:** Verlangsamung und Schwäche (Verlangsamung ändert die Bewegung der Spieler, die der Client vorhersagt: ein Bewegungs-Modifikator im Protokoll und in der Vorhersage, eigenes Paket; Schwäche ohne Verlangsamung wäre unvollständig), Brauen und trinkbare Tränke für Spieler (Heiltrank und Wurftränke sind nur Items der Hexe; im Kreativ-Inventar wirft man die Wurftränke, den Heiltrank kann man nicht trinken), natürliches Spawnen nachts (nur die Hütte), Hexen aus Dorfbewohnern durch Blitz.
 - **Wesen** (`mobs/witch.json`): 26 Leben, 0,6 × 1,95, 1,2 / 2,4 m/s, feindlich, immun gegen Gift, KI `archer` mit `harming_splash_potion` (15 m/s, Spannen 1 s, Pause 2 s, Streuung 3°, Reichweite 10, Abstand 3–8), keine Schläge (`attackDamage` 0: das Gehirn schlägt nicht, das Handbuch zeigt keine Angriffszeile, das Gehege der Showcase-Wesenreihe hat eine dünne Wand), Beute Glasflasche, Zucker, Stock, Spinnenauge, Signal Dust (je mit Chance), 5 Erfahrung. Modell `witch` (das menschliche Modell mit Nase und spitzem Hut als Kästen am Kopf, ohne Code), Kleidung `witch` (grüne Haut, violettes Gewand, dunkler Hut), Klänge `mob.witch.*` (Kichern aus Dreiecks-Tönen mit Tremolo).
 - **Wahl nach Ziel-Effekt** (`QcArcherDefinition::choices`, `QcArcherBrain::projectileFor`): `[{"projectile", "unlessTargetHas"}]`, die erste Wahl, deren Effekt das Ziel nicht hat, sonst `projectile`. Der Server kennt die Effekte der Spieler (`QcMobManager::PlayerView::effects`, ein Zeiger auf `QcServerClient::effects` für den Tick). Hexe: Gift, solange der Spieler nicht vergiftet ist, dann Schaden (wie im Vorbild; dort mit Abstands- und Lebens-Bedingungen).
@@ -6556,3 +6557,76 @@ Noch nicht da, mit Absicht, weil es nicht zum Auftrag gehört: Beute und Tausch 
 Neues Muster `tipped_arrow`: dieselbe Form wie `arrow`, dazu Spitze und das Stück Schaft dahinter in der Farbe des Tranks (`secondary`, wie die Flüssigkeit im Muster `bottle`), Schaft `primary`, die Federn fest weiß wie beim Pfeil (eine Textur hat zwei Farben, die zweite nimmt der Trank). Die Schaftfarbe liest der Generator aus der Textur `arrow`. Das Vorbild färbt ebenfalls Spitze und Schaftansatz. Das Geschoss in der Welt zeigt das Item-Bild (E-425), die Farbe ist also auch im Flug und steckend zu sehen. Die gespannte Bogen-Textur bleibt die eine (E-987), sie zeigt den schlichten Pfeil.
 
 Der Schießstand der Showcase-Welt hat einen Spender mit Vergiftungs-, Schnelligkeits- und Schadenspfeilen, den ein Knopf auslöst und der auf den Heuballen zielt; die Truhe enthält Pfeile und einen Wurftrank. Das Handbuch-Kapitel „Bogenschießen“ hat einen Abschnitt, jedes Item die Beschreibung `potion.form.tipped.description`.
+
+## E-1105 Hexe vollständig: Wurftrank nach Ziel, Trank nach Bedarf, natürlicher Spawn (Paket 85.4) — `QcArcherDefinition::Choice`, `QcArcherBrain::projectileFor`, `QcMobDrinkDefinition`, `QcMobDrinking`, `QcMobExchange::PlayerView`
+
+Erweitert E-623 auf das Verhalten des Vorbilds. Alles kommt aus `mobs/witch.json`; was ein Trank tut, steht nur in den Trank-Daten aus 85.2 (E-1061), die Hexe nennt nur Items.
+
+- **Werfen** (`QcArcherDefinition::Choice`): Eine Wahl hat neben `projectile` und `unlessTargetHas` jetzt `minDistance`, `maxDistance` (waagrecht), `minTargetHealth` und `chance`; die erste, die gilt, wird geworfen, sonst `projectile`. `projectileFor` ist rein (Abstand und ein Zufallswert in [0, 1) kommen vom Aufrufer) und wird erst beim Wurf gefragt, nicht in jedem Tick des Spannens. Der Server kennt dafür die Gesundheit des Spielers (`PlayerView::health`). Hexe: Langsamkeit ab 8 Blöcken, solange das Ziel nicht verlangsamt ist; Gift, solange es mindestens 8 Leben hat und nicht vergiftet ist; Schwäche bis 3 Blöcke zu 25 %, solange es nicht geschwächt ist; sonst Schaden. Die Reihenfolge ist die des Vorbilds.
+- **Trinken** (`QcMobDrinkDefinition`, ersetzt `QcDrinkHealDefinition`): `drinks` hat `potions` (bis 8, je `item`, `need`, `chance` je Tick, für `targetFar` die `distance`), `seconds` und `sound`. Bedürfnisse: `underwater` (Augen unter Wasser, `QcAirSupply::submergedAt`), `burning` (`burnTicks`), `hurt` (unter dem Höchstwert), `targetFar` (das zuletzt gesehene Ziel weiter als `distance`, 3D). Jeden Tick, in dem sie nicht trinkt, zieht jede Zeile ihre Chance (wie die Kette des Vorbilds); die erste, deren Bedürfnis gilt und von deren dauernden Effekten sie keinen hat, beginnt. Am Ende gibt `QcMobDrinking` die Effekte des Trink-Items (`QcDrinkDefinition::effects`) über `QcServerEffects::giveCreature`; Sofort-Heilung wirkt im Effekt-Tick. Der Klang kommt am Anfang (Vorbild). Während des Trinkens steht sie still (das Gehirn gibt Geschwindigkeit 0; im Vorbild nimmt der Trink-Modifikator −0,25 ihre ganze Grundgeschwindigkeit) und spannt nicht. `QcArcherState::drinkItem` sagt, was sie hält (`QcEntitySync`); die Abklingzeit aus E-623 entfällt, das Vorbild hat keine.
+- **Abweichung aufgegeben:** E-623 trank deterministisch ab einem Trunk unter dem Höchstwert. Jetzt wie im Vorbild 5 % je Tick, sobald sie verletzt ist; Tests ticken bis zu 400 Mal, bis sie trinkt (Fehlschlag-Wahrscheinlichkeit etwa 1e-9).
+- **Wasseratmung für Wesen:** `QcDrowning` lässt Wesen mit dem Effekt `water_breathing` nicht mehr ertrinken (vorher galt der Effekt nur für Spieler). Neue Trank-Art `water_breathing` (180 s, lang 480 s) ohne Brau-Rezept: Kugelfisch fehlt weiter (Frage 4 des Plans), der Trank ist für die Hexe, Befehle und das Kreativ-Inventar da.
+- **Natürlicher Spawn wieder** (73.2 rückgängig, E-838): Gewicht 5 in jeder Monster-Liste der Oberwelt, Gruppe 1, auch in Höhlen, Licht wie jedes Monster; nicht im Nether (Biome anderer Dimensionen führen nur, wer sie nennt, E-1050). Summe der gewöhnlichen Listen 515 → 520. Die Hütten behalten ihre Spawn-Fläche (E-871).
+- **Nicht übernommen:** die Hexe des Vorbilds nimmt Zauberschaden nur zu 15 % und ist nicht immun gegen Gift; wir lassen die Immunität (E-623). Sie trinkt im Vorbild auch Feuerresistenz, wenn der letzte Schaden Feuer war, ohne zu brennen; hier nur beim Brennen. Raids und Hexen aus Dorfbewohnern durch Blitz gibt es nicht. Ihr Trink-Klang ist `player.drink`, nicht ein eigener Hexen-Klang wie im Vorbild (die Klänge sind prozedural, ein eigener wäre eigene Gestaltung).
+- **Gehaltener Trank fällt beim Tod** (Review 85.4): Stirbt sie während des Trinkens, fällt der Trank in ihrer Hand mit `drinks.dropChance` (Hexe 0,085, die Chance des Vorbilds für Ausrüstung in der Hand, aus Erinnerung). `QcMobDrinking::heldDrops` hängt ihn an die Beute (`QcMobManager::dropsOf`), also für jede Todesart. Damit hat Wasseratmung eine Quelle im Überleben, und „Bunte Mischung“ ist erreichbar.
+- **Ziel vergessen:** Verliert ein Trinker (ein Bogenschütze mit `drinks`) sein Ziel, setzt das Gehirn `target` auf 0, damit `targetFar` nicht für ein längst verlorenes Ziel trinkt; andere Bogenschützen behalten das alte Verhalten.
+- **Immun:** Ein Trank, dessen dauernder Effekt dem Wesen nichts tut (`immuneTo`), gilt als schon wirkend; sonst tränke es ihn ohne Ende.
+- **Spannen und Trinken:** Ein Trunk bricht das Spannen ab (`drawStart` = −1), danach spannt sie neu (1 s). Im Vorbild läuft der Angriffs-Zeitgeber (60 Ticks) während des Trinkens weiter, sie wirft also bald nach dem Trunk; bei uns frühestens 1 s danach. Bewusst gelassen: so zeigt der Client nie Spannen und Trank zugleich, und Tests prüfen `!drawing()` während des ganzen Trunks.
+- **Kein neues Protokoll, kein neues Weltformat:** alles bleibt auf dem Server; Hexen werden nicht gespeichert.
+
+## E-1106 Beute von Wesen aus Beute-Tabellen (Paket 85.4) — `QcItemDrop::table`, `QcServerCombat::dropLoot`, `QcLootTables::shownDrops`
+
+Die Beute der Hexe ist im Vorbild ein Pool mit 1–3 Ziehungen aus sieben Einträgen (Stock doppelt gewichtet), je 0–2 Stück. Unabhängige `drops` mit Chance treffen das nicht. Darum darf ein Eintrag in `drops` eines Wesens statt `item` eine `table` nennen (genau eins von beiden): `dropLoot` zieht die Tabelle einmal (Format E-521, Saat aus dem Zufall des Servers) und wirft jeden Stapel aus; `chance` und `byPlayer` gelten auch für sie, `count` und `maxCount` nicht (die Tabelle zählt selbst; ein Eintrag mit `table` und einer Zahl wird beim Laden abgelehnt). Gezogen wird über `QcContentLoot::draw` (`common`), das auch Truhen und Tauschhandel nutzen. Beute-Tabellen erlauben dafür `count` ab 0 (ein Zug mit 0 gibt nichts). Das Handbuch (Wesenseite und „fällt von“) zeigt jedes Item der Tabelle mit seiner Spanne (`QcLootTables::shownDrops`); `QcContentReferences` meldet unbekannte Tabellen. Tabelle `loot/witch.json`.
+
+- **Plünderung:** gibt es bei uns nicht (kein Verzauberung `looting`); der Bonus des Vorbilds (+0–1 je Stufe) fehlt also, ohne Sonderfall.
+- **Verworfen:** ein eigenes Feld `loot` am Wesen (zweiter Weg neben `drops`); die Ziehungen in unabhängige Chancen umrechnen (Erwartung gleich, Verteilung falsch).
+
+## E-1107 Fortschritte für Brauen und Tränke (Paket 85.4) — `QcAdvancementTrigger::PotionBrewed`, `QcServerInventory::noteBrewedTaken`
+
+- **Auslöser** `potion_brewed` (Bedingung `item`): ein Trank verlässt einen Flaschenplatz eines Braustands durch den Spieler (`noteBrewedTaken` vergleicht die Plätze vor und nach jedem Schritt in `applyOpenSlots`, also für Ziehen, Schieben und Umschalt-Klick). Wie im Vorbild zählt jeder herausgenommene Trank, auch einer, den man selbst hineingelegt hat. Am Ende der Aufzählung angehängt; die Definitionen reisen nicht zum Client (er bekommt nur `impossible`-Kriterien), das Protokoll bleibt.
+- **`brewing`** („Hausgebraut“, Aufgabe, unter `iron`): einen Trank aus einem Braustand nehmen (Vorbild „Local Brewery“; dort unter dem Nether-Zweig, den es bei uns nicht gibt).
+- **`potion_cocktail`** („Bunte Mischung“, Herausforderung, unter `brewing`): `effect_gained` für Schnelligkeit, Langsamkeit, Stärke, Schwäche, Regeneration, Gift, Feuerresistenz, Nachtsicht, Unsichtbarkeit und Wasseratmung, alle nötig. **Abweichung:** Das Vorbild („A Furious Cocktail“) verlangt alle zugleich; unser Auslöser kennt nur das Erhalten eines Effekts, die Effekte zählen also nacheinander. Sprungkraft, Schildkröte und Sturzflug fehlen mit den Tränken (Frage 4).
+
+## E-1108 Kleriker mit Braustand als Arbeitsplatz (Paket 85.4)
+
+- **Beruf** `professions/cleric.json`: Arbeitsplatz `brewing_stand`, dunkelrote Robe (`villager_cleric_robe`, prozedural `speckle`) über Rumpf und Beinen. Handel `trades/cleric.json` nach dem Vorbild (Werte E-1109).
+- **Braustand im Dorf ab Generator-Version 3** (E-922, E-1016): Kirche (`village_plains_church`, statt der Steinziegel zwischen den Bücherregalen) und Tempel (`village_desert_temple`, statt der Terrakotta am Altar) tauschen in `generatorChanges` für Version 3 den einen Altarblock gegen einen Braustand, wie der Tempel des Vorbilds. Version 1 und 2 bauen wie bisher; die Prüfsummen der offenen Version 3 sind neu aufgenommen. Taiga- und Schneedörfer haben keine Kirche.
+- **Showcase:** Die Dorfreihen bauen jedes Haus in der aktuellen Version, also Kirche und Tempel mit Braustand; ihr Bewohner wird Kleriker (`test_showcase_world::villageRowsTrade` verlangt ihn).
+- **Nicht da:** Kaninchenpfote (Geselle), Schildkrötenschuppe (Experte) und Erfahrungsfläschchen (Meister) gibt es nicht; diese Angebote fehlen, Geselle und Meister haben je eines. Ender-Perle heißt bei uns Schattenperle.
+
+## E-1109 Werte der Hexe und des Klerikers nach dem Vorbild (Paket 85.4)
+
+Quelle überall: das Vorbild (Java-Ausgabe) aus Erinnerung, nichts nachgeschlagen. „Sicher“ heißt verlässliche Erinnerung, „unsicher“ sollte der Mensch prüfen.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Spawn-Gewicht Oberwelt | 0 (nur Hütte) | 5 | Vorbild, sicher |
+| Gruppe | 1 | 1 | Vorbild, sicher |
+| Licht, Höhlen | – | wie alle Monster, auch Höhlen | Vorbild, sicher |
+| Biome | keine | jede Oberwelt-Monsterliste, nicht Nether | Vorbild, sicher (Pilzinsel/Tiefes Dunkel gibt es nicht) |
+| Langsamkeit werfen | – | Abstand ≥ 8, Ziel nicht verlangsamt | Vorbild, sicher |
+| Gift werfen | solange nicht vergiftet | Leben ≥ 8 und nicht vergiftet | Vorbild, sicher |
+| Schwäche werfen | – | Abstand ≤ 3, nicht geschwächt, 25 % | Vorbild, sicher |
+| Schaden werfen | sonst | sonst | Vorbild, sicher |
+| Wurf-Abstand, Takt | 15 m/s, 1 + 2 s, Reichweite 10 | unverändert | Vorbild (0,75 Blöcke/Tick, 60 Ticks, 10), sicher |
+| Wasseratmung trinken | – | Augen unter Wasser, ohne Effekt, 15 % je Tick | Vorbild, sicher |
+| Feuerresistenz trinken | – | brennend, ohne Effekt, 15 % je Tick | Vorbild, sicher (dort auch nach Feuerschaden) |
+| Heilung trinken | ab 4 unter dem Höchstwert, Abklingzeit 3 s | verletzt, 5 % je Tick, keine Abklingzeit | Vorbild, sicher |
+| Schnelligkeit trinken | – | Ziel > 11 m, ohne Effekt, 50 % je Tick | Vorbild (Abstand² > 121), sicher |
+| Trinkdauer | 1,6 s | 1,6 s | Vorbild (32 Ticks), sicher |
+| Gehaltener Trank fällt beim Tod | nie | 8,5 % | Vorbild (Ausrüstungs-Chance in der Hand), aus Erinnerung |
+| Bewegung beim Trinken | wie sonst | steht | Vorbild (−0,25 auf 0,25), sicher |
+| Trank-Dauern | – | Wasseratmung, Feuerresistenz, Schnelligkeit 180 s; Heilung 4 sofort | Vorbild (Trank-Daten E-1066), sicher |
+| Beute | Glasflasche 50 %, Zucker 40 %, Stock 40 %, Spinnenauge 30 %, Signalstaub 30 % (je 1) | 1–3 Ziehungen aus Leuchtsteinstaub, Zucker, Signalstaub, Spinnenauge, Glasflasche, Schwarzpulver (je Gewicht 1), Stock (2), je 0–2 Stück | Vorbild, sicher |
+| Plünderungs-Bonus | – | – (keine Plünderung im Spiel) | Vorbild +0–1 je Stufe, entfällt |
+| Erfahrung | 5 | 5 | Vorbild, sicher |
+| Kleriker Neuling | – | 32 verrottetes Fleisch → 1 Smaragd (16×, EP 2); 1 Smaragd → 2 Signalstaub (12×, EP 1) | Vorbild, sicher |
+| Kleriker Lehrling | – | 3 Goldbarren → 1 Smaragd (12×, EP 10); 1 Smaragd → 1 Lapislazuli (12×, EP 5) | Vorbild, sicher |
+| Kleriker Geselle | – | 4 Smaragde → 1 Leuchtstein (12×, EP 10); 2 Kaninchenpfoten fehlen | Vorbild, sicher |
+| Kleriker Experte | – | 9 Glasflaschen → 1 Smaragd (12×, EP 30); 5 Smaragde → 1 Schattenperle (12×, EP 15); Schildkrötenschuppen fehlen | Vorbild, sicher |
+| Kleriker Meister | – | 22 Netherwarzen → 1 Smaragd (12×, EP 30); Erfahrungsfläschchen fehlt | Vorbild, sicher |
+| Spieler-Erfahrung je Handel | – | 1, 5, 10, 15, 30 je Stufe | eigene Tabelle der Berufe (E-414), nicht Vorbild |
+| Wasseratmungs-Pfeile | – | 2 neue getränkte Pfeile (Wasseratmung, lang), weil E-1100 jeden Trank mit Wurfform ableitet | Vorbild hat sie, sicher |
+| Nachfrage | – | 2 für Fleisch, 1 für die übrigen Ankäufe, 0 für Verkäufe | eigene Regel (E-414); Vorbild Preis-Faktor 0,05, unsicher |
+
+**Showcase:** Die Hexe der Station `witch_hut_station` steht jetzt in einem Glaskasten voll Wasser in ihrer Hütte: Sie trinkt Wasseratmung und, wenn sie abläuft, wieder. Werfen zeigt sie hinter Glas nicht (sie sieht niemanden, E-623); das Werfen zeigen die Bilder `docs/screenshots/85-4-*`. Der Kleriker steht in den Dorfreihen an Kirche und Tempel.

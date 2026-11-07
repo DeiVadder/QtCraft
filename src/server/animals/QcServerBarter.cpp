@@ -3,6 +3,7 @@
 
 #include "server/animals/QcServerBarter.h"
 
+#include "common/content/registry/QcContentLoot.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcServerAnimals.h"
@@ -160,7 +161,7 @@ void QcServerBarter::finish(QcCreature &mob, const QcBarterDefinition &barter)
         return;
     }
     if (content.item(item.item).name == barter.currency) {
-        throwOut(mob, lootOf(content, barter.table, m_state.random().generate64()), from);
+        throwOut(mob, QcContentLoot::draw(content, barter.table, m_state.random().generate64()), from);
         m_sounds.play(content.mobs()[mob.type].ambientSound, mob.motion.position);
         return;
     }
@@ -240,19 +241,6 @@ void QcServerBarter::throwOut(const QcCreature &mob, const QList<QcItemStack> &s
                                              m_state.entities().newId());
         }
     }
-}
-
-QList<QcItemStack> QcServerBarter::lootOf(const QcContentRegistry &content, const QString &table, quint64 seed)
-{
-    const QcLootTableDefinition *definition = content.lootTables().find(table);
-    if (!definition) {
-        return {};
-    }
-    const auto items = [&content](const QString &name) -> std::optional<QcLootTables::ItemInfo> {
-        const std::optional<QcItemId> id = content.itemId(name);
-        return id ? std::optional<QcLootTables::ItemInfo>(QcLootTables::ItemInfo{*id, content.item(*id).maxStack}) : std::nullopt;
-    };
-    return QcLootTables::draw(*definition, seed, items);
 }
 
 QList<QcItemStack> QcServerBarter::dropsOf(const QcBarterState &barter)

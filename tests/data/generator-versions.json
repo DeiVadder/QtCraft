@@ -100,12 +100,12 @@
             "darwin-arm64": {
                 "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
                 "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
-                "terrain 20261017": "4ce9b8d1122b4ce6804c5393031b82cfb079d68e9b47a8ad00c2abb4fc0a941a",
+                "terrain 20261017": "e7449101e97a567752864bac900befb71765680a40dc10ad1808d60c00f9e747",
                 "terrain 20261017 rivers": "69f6af3015366307e5da927540944edd91f5a1487d15b0002723088c8bb0bee4",
                 "terrain 42": "8e2c74b6f33a1cab837997dee74fb02c78715907a191e6fb186a558b96127e6d",
-                "terrain 42 changed options": "1bae1b10444cc357cbae893453e50626c950ceb6c01c705f9aabe3094f554761",
+                "terrain 42 changed options": "bb53c3d28c509b06a71a95e86614f53608a83f3ea9797b1da4f44333ff8b37de",
                 "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
-                "terrain 7": "63f289b70f5315ce87171f3fed2874b18b2dfc132b90190ec589cfdeec97bd3b",
+                "terrain 7": "2c539731958a3f05539d58d307a66810431e470d7783cdaa33e71093d49d47a4",
                 "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
                 "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
                 "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
