@@ -2980,3 +2980,23 @@ Release-Build, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmitt
 | Hauerling | 0,139 | 0,148 | 0,135 |
 
 - **Bewertung:** Der Hauerling kostet im Rahmen der Streuung so viel wie ein Zombie, auch mit dem Suchen nach Gold. Der Borstenkeiler kostet rund das Fünfeinhalbfache (0,0066 ms je Wesen und Tick): jeder Blick prüft 17 × 17 × 9 Blöcke auf Wirrpilz und Portal (`repelledBy`). 40 Keiler nehmen 0,5 % des Budgets von 50 ms; ein Zwischenspeicher lohnt sich erst, wenn Messungen im echten Spiel es verlangen.
+
+## Kette 84.6b–84.8 (Bastion, Nether-Start, Brauen, Hexe, Netherite), Headless-A/B `@server` (2026-11-08)
+
+Release-Builds ohne Fenster, `scripts/bench-headless.sh` mit 60 Spielsekunden, adaptiv 3–6 Runden, verschränkt; `base` = 19ddf1b (nach 84.6a, zuletzt gemessen), `dev` = b13f50a (mit 84.8). Rechner ruhig (Lastmittel 2,3–3,7). Median je Szenario, Server-Tick in ms, Spitzenspeicher in MB:
+
+| Szenario | Runden | Tick Schnitt | Tick p99 | Spitzenspeicher |
+|----------|-------:|-------------:|---------:|----------------:|
+| crowd | 6 | 0,213 → 0,212 (−0,5 %) | 0,343 → 0,360 (+5,1 %) | 73,8 → 77,3 (+4,7 %) |
+| gravel-collapse | 3 | 0,507 → 0,509 (+0,4 %) | 1,476 → 1,464 (−0,8 %) | 108,7 → 110,0 (+1,2 %) |
+| farm | 6 | 0,008 → 0,008 | 0,013 → 0,014 (+3,7 %) | 62,9 → 65,4 (+4,1 %) |
+| farm-seeds | 3 | 0,019 → 0,019 | 0,064 → 0,061 (−4,7 %) | 62,9 → 64,7 (+2,9 %) |
+| explore | 3 | 0,272 → 0,271 (−0,4 %) | 1,273 → 1,248 (−2,0 %) | 88,4 → 90,4 (+2,3 %) |
+| showcase-signal_components | 6 | 0,100 → 0,101 (+0,5 %) | 0,193 → 0,206 (+6,5 %) | 71,9 → 72,5 (+0,8 %) |
+| showcase-signal_machines | 6 | 0,096 → 0,091 (−4,7 %) | 0,181 → 0,192 (+6,1 %) | 72,1 → 72,4 (+0,3 %) |
+| showcase-signal_farm | 3 | 0,106 → 0,107 (+0,9 %) | 0,182 → 0,192 (+5,5 %) | 71,8 → 72,1 (+0,4 %) |
+
+`test_nether_generator generationCost` (Release, Seed 42, je drei Läufe abwechselnd base/dev), ms je Chunk: Nether 0,57–0,61 → 0,57–0,61, Oberwelt 2,23–2,24 → 2,21–2,23, Karmesinwald 0,63–0,64 → 0,62, Wirrwald 0,60–0,61 → 0,60–0,61, Basaltdeltas 0,58–0,59 → 0,57–0,59; Festung: Region planen 0,78 → 0,59–0,60 ms, Chunks um die Mitte 0,43–0,45 → 0,44.
+
+- **Bewertung:** keine Regression über der 10-%-Schwelle. Tick-Schnitt in allen Szenarien gleich; p99 in mehreren Szenarien 4–7 % höher, im Bereich der Streuung kurzer Läufe (Werte unter 0,4 ms). Spitzenspeicher 0,3–3,5 MB mehr durch den neuen Inhalt (Blöcke, Items, Tränke, Rezepte, Texturen). Die Schrott-Adern (84.8) ändern die Kosten der Nether-Generierung nicht messbar.
+- **Nicht gemessen:** Fenster-A/B (Bildzeiten, GPU) gegen `v1.0.0` folgt nach 84.9; die Kosten der Bastion-Generierung haben in `generationCost` noch keine eigene Zeile.
