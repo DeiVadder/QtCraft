@@ -19,7 +19,7 @@ QcServerStonecutter::QcServerStonecutter(QcServerState &state, QcServerSounds &s
     , m_screens(screens)
 {
     // One screen at a time: a block's, cart's or villager's screen opening closes the stonecutter.
-    m_screens.setStonecutterCloser([this](QcServerClient &client) { close(client, true); });
+    m_screens.setWorkstationCloser(QcWorkstation::Stonecutter, [this](QcServerClient &client) { close(client, true); });
 }
 
 bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
@@ -33,8 +33,7 @@ bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
     // same stonecutter again keeps its slots; another one starts empty.
     m_screens.close(client, true);
     m_screens.endTrade(client);
-    m_screens.closeEnchanting(client);
-    m_screens.closeAnvil(client);
+    m_screens.closeWorkstationsExcept(client, QcWorkstation::Stonecutter);
     if (client.screen.stonecutter && client.screen.stonecutter->pos != pos) {
         m_inventory.returnScreenInputs(client);
     }

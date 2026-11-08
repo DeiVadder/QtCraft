@@ -94,7 +94,8 @@ void write(QDataStream &stream, const std::optional<QcArmourDefinition> &armour)
         return;
     }
 
-    stream << static_cast<quint8>(armour->slot) << static_cast<qint32>(armour->points) << armour->set << static_cast<quint32>(armour->layers.size());
+    stream << static_cast<quint8>(armour->slot) << static_cast<qint32>(armour->points) << armour->set << armour->toughness << armour->knockbackResistance
+           << static_cast<quint32>(armour->layers.size());
     for (const QcArmourLayer &layer : armour->layers) {
         stream << static_cast<quint32>(layer.covers.size());
         for (const QString &slot : layer.covers) {
@@ -121,8 +122,10 @@ std::optional<std::optional<QcArmourDefinition>> read(QDataStream &stream)
     QcArmourDefinition definition;
     quint8 slot = 0;
     qint32 points = 0;
-    stream >> slot >> points >> definition.set;
-    if (slot > static_cast<quint8>(QcEquipmentSlot::Feet) || points < 0 || points > QcArmourDefinition::maxPoints) {
+    stream >> slot >> points >> definition.set >> definition.toughness >> definition.knockbackResistance;
+    const bool toughnessFits = definition.toughness >= 0.0 && definition.toughness <= QcArmourDefinition::maxToughness;
+    const bool resistanceFits = definition.knockbackResistance >= 0.0 && definition.knockbackResistance <= 1.0;
+    if (slot > static_cast<quint8>(QcEquipmentSlot::Feet) || points < 0 || points > QcArmourDefinition::maxPoints || !toughnessFits || !resistanceFits) {
         return std::nullopt;
     }
     const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcArmourDefinition::maxLayers);

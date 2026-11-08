@@ -177,7 +177,7 @@ private slots:
             QVERIFY2(entry && entry->sections.size() >= chapter.sections.size(), qPrintable(chapter.name));
         }
 
-        QCOMPARE(content.handbookChapters().size(), 39);
+        QCOMPARE(content.handbookChapters().size(), 40);
         QVERIFY(book.entry(u"tag:qtcraft:planks"_s));
         QVERIFY(book.entry(u"world:terrain"_s));
 
@@ -350,17 +350,17 @@ private slots:
         QCOMPARE(fact(*ore, u"Hardness"_s)->value, u"3"_s);
         QCOMPARE(fact(*ore, u"Tool"_s)->value, u"Pickaxe, level 2 or better (needed for drops)"_s);
 
-        // Without a stone pickaxe: 3 hardness × 5 s; with the diamond pickaxe (speed 8): 3 × 1.5 / 8.
+        // Without a stone pickaxe: 3 hardness × 5 s; with the netherite pickaxe (speed 9): 3 × 1.5 / 9.
         QCOMPARE(fact(*ore, u"Breaking by hand"_s)->value, u"15 s"_s);
-        QCOMPARE(fact(*ore, u"Breaking with the best tool"_s)->value, u"0.56 s"_s);
-        QCOMPARE(targets(fact(*ore, u"Breaking with the best tool"_s)->links), QStringList{u"item:qtcraft:diamond_pickaxe"_s});
+        QCOMPARE(fact(*ore, u"Breaking with the best tool"_s)->value, u"0.5 s"_s);
+        QCOMPARE(targets(fact(*ore, u"Breaking with the best tool"_s)->links), QStringList{u"item:qtcraft:netherite_pickaxe"_s});
         QCOMPARE(targets(fact(*ore, u"Drops"_s)->links), QStringList{u"item:qtcraft:raw_iron"_s});
         QCOMPARE(fact(*ore, u"Drops without the right tool"_s)->value, u"nothing"_s);
 
         const QcHandbookEntry::Section *minedWith = section(*ore, u"Mined with"_s);
         QVERIFY(minedWith);
         QCOMPARE(targets(minedWith->links), (QStringList{u"item:qtcraft:stone_pickaxe"_s, u"item:qtcraft:iron_pickaxe"_s,
-                                                         u"item:qtcraft:diamond_pickaxe"_s}));
+                                                         u"item:qtcraft:diamond_pickaxe"_s, u"item:qtcraft:netherite_pickaxe"_s}));
 
         // The ore drops raw iron (decision E-740), which smelts.
         QVERIFY(!section(*ore, u"Smelts into"_s));
@@ -382,7 +382,7 @@ private slots:
         const QcHandbookEntry *german = m_german.entry(u"block:qtcraft:iron_ore"_s);
         QCOMPARE(german->title, u"Eisenerz"_s);
         QCOMPARE(fact(*german, u"Werkzeug"_s)->value, u"Spitzhacke, Stufe 2 oder besser (nötig für Beute)"_s);
-        QCOMPARE(fact(*german, u"Abbauen mit dem besten Werkzeug"_s)->value, u"0,56 s"_s);
+        QCOMPARE(fact(*german, u"Abbauen mit dem besten Werkzeug"_s)->value, u"0,5 s"_s);
 
         // The ingot's page shows where it comes from and what it makes.
         const QcHandbookEntry *ingot = m_english.entry(u"item:qtcraft:iron_ingot"_s);

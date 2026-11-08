@@ -18,6 +18,8 @@ qc_add_test(test_anvil SOURCES machines/test_anvil.cpp machines/QcEnchantingFixt
 qc_add_test(test_anvil_screen SOURCES machines/test_anvil_screen.cpp machines/QcEnchantingFixture.h fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # The decoupled Signal blocks and the anvil swap (decision E-870).
 qc_add_test(test_anvil_variants SOURCES machines/test_anvil_variants.cpp machines/QcEnchantingFixture.h fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+# Netherite and the smithing table (decisions E-1115 to E-1118).
+qc_add_test(test_smithing SOURCES machines/test_smithing.cpp machines/QcEnchantingFixture.h fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # Named chests and machines, enchanted books, death messages with the killer (decision E-873).
 qc_add_test(test_named_containers SOURCES machines/test_named_containers.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_enchanted_books SOURCES machines/test_enchanted_books.cpp machines/QcEnchantingFixture.h fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)

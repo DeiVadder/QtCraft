@@ -6,6 +6,7 @@
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcSmithing.h"
 #include "common/protocol/QcMessages.h"
 
 #include <QList>
@@ -75,6 +76,16 @@ struct QcOpenAnvil
     }
 };
 
+/*! \brief The open smithing table (QcServerSmithing, decision E-1115): where it stands and the
+    stacks in its template, base and addition slots (by QcSmithing::Slot).
+
+    What it makes follows from them (QcSmithing::output). \qcfields */
+struct QcOpenSmithing
+{
+    QcBlockPos pos;
+    QcSmithing::Inputs inputs;
+};
+
 /*! \brief The machine, container or villager whose screen the player has open, and what the
     client was last told about it.
 
@@ -113,7 +124,51 @@ struct QcPlayerScreen
     std::optional<QcOpenEnchanting> enchanting;
     /*! The anvil whose screen is open; never together with any of the above. */
     std::optional<QcOpenAnvil> anvil;
+    /*! The smithing table whose screen is open; never together with any of the above. */
+    std::optional<QcOpenSmithing> smithing;
     /*! The sign whose editor the server opened for the player (QcServerSigns, decision
         E-766). */
     std::optional<QcBlockPos> sign;
+
+    /*! Returns the stacks in the slots of the open workstation screen (stonecutter, enchanting
+        table, anvil or smithing table), empty ones included; none without such a screen. */
+    QList<QcItemStack> workstationStacks() const
+    {
+        QList<QcItemStack> stacks;
+        if (stonecutter) {
+            stacks.append(stonecutter->input);
+        }
+        if (enchanting) {
+            stacks.append({enchanting->item, enchanting->lapis});
+        }
+        if (anvil) {
+            stacks.append({anvil->left, anvil->right});
+        }
+        if (smithing) {
+            stacks.append(QList<QcItemStack>(smithing->inputs.begin(), smithing->inputs.end()));
+        }
+        return stacks;
+    }
+
+    /*! Returns workstationStacks() and empties those slots: they go back to the player, onto
+        the ground or into the player's file. */
+    QList<QcItemStack> takeWorkstationStacks()
+    {
+        QList<QcItemStack> stacks = workstationStacks();
+        if (stonecutter && !stonecutter->input.isEmpty()) {
+            stonecutter->setInput({});
+        }
+        if (enchanting) {
+            enchanting->item = {};
+            enchanting->lapis = {};
+        }
+        if (anvil) {
+            anvil->left = {};
+            anvil->right = {};
+        }
+        if (smithing) {
+            smithing->inputs = {};
+        }
+        return stacks;
+    }
 };

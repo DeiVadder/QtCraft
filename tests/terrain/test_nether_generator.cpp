@@ -5,6 +5,7 @@
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/nether/QcNetherGenerator.h"
+#include "worldgen/terrain/QcOreVeins.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -12,6 +13,7 @@
 #include <QRandomGenerator>
 #include <QTest>
 
+#include <algorithm>
 #include <array>
 #include <bit>
 #include <optional>
@@ -19,7 +21,7 @@
 using namespace Qt::StringLiterals;
 
 // The nether generator (decisions E-1030 to E-1032): the frame of bedrock, the caves and the lava
-// sea, its two biomes, what it scatters and the ruined portals. Seeds as in decision E-846: fixed
+// sea, its two biomes, what it scatters, the hidden ancient debris (E-1117) and the ruined portals. Seeds as in decision E-846: fixed
 // ones plus a random one per run, in the log; QC_TEST_SEED sets it.
 namespace {
 
@@ -209,6 +211,36 @@ private:
         return states;
     }
 
+    // Whether a face of the chunk-local cell x, y, z inside `chunk` touches air.
+    static bool touchesAirInside(const QcChunk &chunk, int x, int y, int z)
+    {
+        static constexpr std::array<std::array<int, 3>, 6> faces{{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
+        return std::ranges::any_of(faces, [&](std::array<int, 3> face) {
+            const int nx = x + face[0];
+            const int ny = y + face[1];
+            const int nz = z + face[2];
+            const bool inside = nx >= 0 && nx < QcWorld::chunkSize && nz >= 0 && nz < QcWorld::chunkSize && ny >= 0 && ny < QcWorld::worldHeight;
+            return inside && chunk.block(nx, ny, nz) == qcAirBlockId;
+        });
+    }
+
+    // The lowest 32 layers of a chunk of netherrack, basalt and air cells mixed by position.
+    [[nodiscard]] QcChunk mixedChunk() const
+    {
+        const QcBlockId netherrack = block(u"qtcraft:netherrack"_s);
+        const QcBlockId basalt = block(u"qtcraft:basalt"_s);
+        QcChunk chunk({1, 1});
+        for (int y = 0; y < 32; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    const int kind = (x * 7 + y * 3 + z * 5) % 11;
+                    chunk.setBlock(x, y, z, kind == 0 ? qcAirBlockId : kind < 3 ? basalt : netherrack);
+                }
+            }
+        }
+        return chunk;
+    }
+
 private slots:
     void seeds_data()
     {
@@ -247,6 +279,74 @@ private slots:
         const double open = static_cast<double>(census.airInCaves()) / static_cast<double>(census.cellsInCaves());
         qInfo("open share between lava and roof: %.3f", open);
         QVERIFY2(open > 0.3 && open < 0.8, qPrintable(QString::number(open)));
+    }
+
+    // Ancient debris lies between heights 8 and 119 in rock the bare terrain has there, never with
+    // air on a face inside its chunk (faces on the chunk's border stay unchecked, decision E-1117).
+    void ancientDebrisLiesHidden_data() { seeds_data(); }
+    void ancientDebrisLiesHidden()
+    {
+        QFETCH(qint64, seed);
+        const std::unique_ptr<QcNetherGenerator> nether = generator(seed);
+        const QcBlockId debris = block(u"qtcraft:ancient_debris"_s);
+        int found = 0;
+        for (int cz = -3; cz < 3; ++cz) {
+            for (int cx = -3; cx < 3; ++cx) {
+                const std::shared_ptr<QcChunk> chunk = nether->generate({cx, cz});
+                for (int y = 0; y < QcWorld::worldHeight; ++y) {
+                    for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                        for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                            if (chunk->block(x, y, z) != debris) {
+                                continue;
+                            }
+                            ++found;
+                            const QString at = u"%1 %2 %3 in %4 %5"_s.arg(x).arg(y).arg(z).arg(cx).arg(cz);
+                            QVERIFY2(y >= 8 && y <= 119, qPrintable(at));
+                            QVERIFY2(!touchesAirInside(*chunk, x, y, z), qPrintable(at));
+                            QVERIFY2(nether->terrain().isSolid(cx * QcWorld::chunkSize + x, y, cz * QcWorld::chunkSize + z), qPrintable(at));
+                        }
+                    }
+                }
+            }
+        }
+        qInfo("ancient debris in 36 chunks: %d", found);
+        QVERIFY(found > 0);
+    }
+
+    // A hidden vein replaces only its block and leaves out the cells next to air.
+    void hiddenVeinsReplaceOnlyTheirBlock()
+    {
+        const QcBlockId netherrack = block(u"qtcraft:netherrack"_s);
+        const QcBlockId debris = block(u"qtcraft:ancient_debris"_s);
+        QcChunk chunk = mixedChunk();
+        const QcChunk before = chunk;
+        QcTerrainDefinitions::Ore ore;
+        ore.block = debris;
+        ore.replaces = netherrack;
+        ore.minY = 8;
+        ore.maxY = 24;
+        ore.veinSize = 6;
+        ore.hidden = true;
+        for (int vein = 0; vein < 200; ++vein) {
+            ore.seed = static_cast<quint64>(randomSeed()) + static_cast<quint64>(vein);
+            QcOreVeins::place(chunk, ore, QcOreVeins::grown(ore, vein, chunk.pos()));
+        }
+
+        int placed = 0;
+        for (int y = 0; y < 32; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    if (chunk.block(x, y, z) == debris) {
+                        ++placed;
+                        QCOMPARE(before.block(x, y, z), netherrack);
+                        QVERIFY(!touchesAirInside(before, x, y, z));
+                    } else {
+                        QCOMPARE(chunk.block(x, y, z), before.block(x, y, z));
+                    }
+                }
+            }
+        }
+        QVERIFY(placed > 0);
     }
 
     // The single question and the chunk agree, cell by cell, on the bare rock.

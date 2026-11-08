@@ -81,6 +81,12 @@ Item {
         screen: AnvilScreen { game: screens.game }
     }
 
+    OverlayScreen {
+        overlay: GameController.Overlay.Smithing
+
+        screen: SmithingScreen { game: screens.game }
+    }
+
     // A moment after the world starts to play, the pause menu is made in the background (decision
     // E-875): after the world's first frames and the creative screen, before the first Esc.
     Timer {

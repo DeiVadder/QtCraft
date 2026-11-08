@@ -1,0 +1,7 @@
+{
+    "name": "netherite_axe",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_axe",
+    "addition": "netherite_ingot",
+    "result": "netherite_axe"
+}

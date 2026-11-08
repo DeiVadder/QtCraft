@@ -76,6 +76,7 @@ public:
         Anvil,
         Advancements,
         Brewing,
+        Smithing,
     };
     Q_ENUM(Overlay)
     // How much of the HUD shows behind the screens (GameController.HudShown in QML, decision
@@ -101,7 +102,7 @@ public:
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
     // "texturepacks", "character", "lan", "chat", "sign", "stonecutter", "display", "audio",
-    // "interface", "admin", "enchanting", "anvil" or "advancements".
+    // "interface", "admin", "enchanting", "anvil", "advancements", "brewing" or "smithing".
     static QString overlayName(Overlay overlay);
     // The pause menu and the screens it opens (settings, character, LAN, manage server) and the
     // advancements (decision E-924): the world waits behind them, and the window draws at the
@@ -118,7 +119,7 @@ public:
     // TexturePacks): one SettingsScreen shows them, each at its page.
     static bool isSettingsPage(Overlay overlay);
     // The screens with item slots (inventory, creative, furnace, chest, trade, stonecutter,
-    // enchanting, anvil): the pad picks up and puts down there (decision E-583).
+    // enchanting, anvil, smithing): the pad picks up and puts down there (decision E-583).
     static bool isSlotScreen(Overlay overlay);
     // How much of the HUD shows with `overlay` open, the handbook open or not and the player dead
     // (the death screen) or not (decision E-927).
@@ -184,15 +185,11 @@ public:
     void tradeClosed();
     // The server opened the editor of a sign.
     void signOpened();
-    // The server opened or closed the stonecutter.
-    void stonecutterOpened();
-    void stonecutterClosed();
-    // The server opened or closed the enchanting table (decision E-864).
-    void enchantingOpened();
-    void enchantingClosed();
-    // The server opened or closed the anvil (decision E-866).
-    void anvilOpened();
-    void anvilClosed();
+    // The server opened the workstation screen `overlay` (stonecutter, enchanting table E-864,
+    // anvil E-866, smithing table E-1115): it replaces the screen shown.
+    void workstationOpened(Overlay overlay);
+    // The server closed the workstation screen `overlay`: it closes if it is still shown.
+    void workstationClosed(Overlay overlay);
     // The player died (screens close, held keys and buttons are forgotten, the mouse is freed for
     // the death screen) or respawned (the world takes the mouse back).
     void healthChanged(bool dead);

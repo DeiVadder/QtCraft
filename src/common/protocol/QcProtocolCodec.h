@@ -455,4 +455,23 @@ void encode(QDataStream &stream, const QcMsg::DimensionChange &m);
 /*! Returns the QcMsg::DimensionChange read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DimensionChange>, QDataStream &stream);
 
+// The smithing table (QcSmithingCodec.cpp)
+
+/*! Writes the payload of \a m (QcMsg::OpenSmithing) to \a stream. */
+void encode(QDataStream &stream, QcMsg::OpenSmithing m);
+/*! Writes the payload of \a m (QcMsg::SmithingState) to \a stream. */
+void encode(QDataStream &stream, const QcMsg::SmithingState &m);
+/*! Writes the payload of \a m (QcMsg::ForgeSmithing) to \a stream. */
+void encode(QDataStream &stream, const QcMsg::ForgeSmithing &m);
+/*! Writes the payload of \a m (QcMsg::CloseSmithing) to \a stream. */
+void encode(QDataStream &stream, QcMsg::CloseSmithing m);
+/*! Returns the QcMsg::OpenSmithing read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenSmithing>, QDataStream &stream);
+/*! Returns the QcMsg::SmithingState read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SmithingState>, QDataStream &stream);
+/*! Returns the QcMsg::ForgeSmithing read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ForgeSmithing>, QDataStream &stream);
+/*! Returns the QcMsg::CloseSmithing read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseSmithing>, QDataStream &stream);
+
 } // namespace QcProtocolCodec

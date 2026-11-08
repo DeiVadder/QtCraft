@@ -311,7 +311,7 @@ private slots:
         const QList<QcEnchantment> protection{{u"qtcraft:protection"_s, 4}};
         player().equipment.stacks[static_cast<std::size_t>(QcEquipmentSlot::Chest)] = QcItemStack{chestplate, 1, durability - 1}.withEnchantments(protection);
         const int points = QcArmour::points(*m_content, player().equipment);
-        const double expected = QcEnchanting::reducedDamage(QcArmour::reducedDamage(1.0, points), 4);
+        const double expected = QcEnchanting::reducedDamage(QcArmour::reducedDamage(1.0, points, 0.0), 4);
 
         // The burn wears the chestplate out, and its protection still counts for that burn.
         const double lost = oneBurn();

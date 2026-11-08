@@ -330,6 +330,7 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     ore.maxY = definition.maxY;
     ore.veins = definition.veinsPerChunk;
     ore.veinSize = definition.veinSize;
+    ore.hidden = definition.hidden;
     ore.seed = seed;
     for (const QString &biome : definition.biomes) {
         const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);

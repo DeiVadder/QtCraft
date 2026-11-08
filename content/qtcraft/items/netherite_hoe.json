@@ -1,0 +1,16 @@
+{
+    "name": "netherite_hoe",
+    "texture": "netherite_hoe",
+    "maxStack": 1,
+    "durability": 2031,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 5,
+    "toolSpeed": 9.0,
+    "tills": true,
+    "tags": [
+        "fire_resistant"
+    ]
+}

@@ -111,6 +111,8 @@ target_sources(qc_common PRIVATE
     content/recipes/QcRecipeDefinition.h content/recipes/QcRecipeDefinition.cpp
     content/recipes/QcRecipeParser.h content/recipes/QcRecipeParser.cpp
     content/recipes/QcSmeltingRecipe.h
+    content/recipes/QcSmithingRecipe.h
+    content/recipes/QcSmithingSerializer.h content/recipes/QcSmithingSerializer.cpp
     content/recipes/QcStonecutting.h content/recipes/QcStonecutting.cpp
 )
 target_sources(qc_common PRIVATE
@@ -251,6 +253,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
     gameplay/QcSlotList.h gameplay/QcSlotList.cpp
+    gameplay/QcSmithing.h gameplay/QcSmithing.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcStatusEffects.h gameplay/QcStatusEffects.cpp
     gameplay/QcSwingSpeed.h gameplay/QcSwingSpeed.cpp
@@ -338,6 +341,8 @@ target_sources(qc_common PRIVATE
     protocol/QcSessionMessages.h
     protocol/QcSignCodec.cpp
     protocol/QcSignMessages.h
+    protocol/QcSmithingCodec.cpp
+    protocol/QcSmithingMessages.h
     protocol/QcStreamLimits.h
     protocol/QcTradeCodec.cpp
     protocol/QcTradeMessages.h

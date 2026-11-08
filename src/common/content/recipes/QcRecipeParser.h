@@ -5,6 +5,7 @@
 
 #include "common/content/recipes/QcRecipeDefinition.h"
 #include "common/content/recipes/QcSmeltingRecipe.h"
+#include "common/content/recipes/QcSmithingRecipe.h"
 #include "common/core/QcResult.h"
 
 #include <QJsonObject>
@@ -23,5 +24,9 @@ namespace QcRecipeParser {
     category "stonecutting" (a \c {"category"} in the file is ignored); seconds and experience
     mean nothing to it. A name longer than QcStonecutting::maxRecipeName is refused. */
 [[nodiscard]] QcResult<QcSmeltingRecipe> parseStonecuttingRecipe(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the smithing recipe (decision E-1115) read from \a json, its names qualified with
+    \a packNamespace, or the first failure: \c {"template"}, \c {"base"}, \c {"addition"} and
+    \c {"result"} are all required. */
+[[nodiscard]] QcResult<QcSmithingRecipe> parseSmithingRecipe(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcRecipeParser

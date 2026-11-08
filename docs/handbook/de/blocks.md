@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Amboss](#block-qtcraft-anvil) · [Angeschlagener Amboss](#block-qtcraft-chipped_anvil) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Basalt](#block-qtcraft-basalt) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Beschädigter Amboss](#block-qtcraft-damaged_anvil) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkenschild](#block-qtcraft-birch_sign) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Bett](#block-qtcraft-blue_bed) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Bett](#block-qtcraft-brown_bed) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Braustand](#block-qtcraft-brewing_stand) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Dschungelfalltür](#block-qtcraft-jungle_trapdoor) · [Dschungelholz](#block-qtcraft-jungle_wood) · [Dschungelholzbretter](#block-qtcraft-jungle_planks) · [Dschungellaub](#block-qtcraft-jungle_leaves) · [Dschungelschild](#block-qtcraft-jungle_sign) · [Dschungelsetzling](#block-qtcraft-jungle_sapling) · [Dschungelstamm](#block-qtcraft-jungle_log) · [Dschungeltür](#block-qtcraft-jungle_door) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichenschild](#block-qtcraft-oak_sign) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Entkoppelter klebriger Signalkolben](#block-qtcraft-decoupled_sticky_signal_piston) · [Entkoppelter Signalkolben](#block-qtcraft-decoupled_signal_piston) · [Entkoppelter Signalspender](#block-qtcraft-decoupled_signal_dispenser) · [Entkoppelter Signalwerfer](#block-qtcraft-decoupled_signal_dropper) · [Entrindete karmesinhyphen](#block-qtcraft-stripped_crimson_hyphae) · [Entrindete wirrhyphen](#block-qtcraft-stripped_warped_hyphae) · [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) · [Entrindeter Dschungelstamm](#block-qtcraft-stripped_jungle_log) · [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) · [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) · [Entrindeter karmesinstamm](#block-qtcraft-stripped_crimson_stem) · [Entrindeter wirrstamm](#block-qtcraft-stripped_warped_stem) · [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) · [Entrindetes Dschungelholz](#block-qtcraft-stripped_jungle_wood) · [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) · [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) · [Erde](#block-qtcraft-dirt) · [Erloschenes Lagerfeuer](#block-qtcraft-unlit_campfire) · [Fackel](#block-qtcraft-torch) · [Fallentruhe](#block-qtcraft-trapped_chest) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtenschild](#block-qtcraft-spruce_sign) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Bett](#block-qtcraft-yellow_bed) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelte Netherziegel](#block-qtcraft-chiseled_nether_bricks) · [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) · [Gemeißelter polierter Schwarzstein](#block-qtcraft-chiseled_polished_blackstone) · [Gemeißelter Quarzblock](#block-qtcraft-chiseled_quartz_block) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Basalt](#block-qtcraft-smooth_basalt) · [Glatter Quarzblock](#block-qtcraft-smooth_quartz) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glatter Stein](#block-qtcraft-smooth_stone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golddurchzogener Schwarzstein](#block-qtcraft-gilded_blackstone) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Bett](#block-qtcraft-gray_bed) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grobe Erde](#block-qtcraft-coarse_dirt) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Bett](#block-qtcraft-green_bed) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Bett](#block-qtcraft-light_blue_bed) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Bett](#block-qtcraft-light_gray_bed) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Bett](#block-qtcraft-lime_bed) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karmesin-Nylium](#block-qtcraft-crimson_nylium) · [Karmesinbretter](#block-qtcraft-crimson_planks) · [Karmesinfalltür](#block-qtcraft-crimson_trapdoor) · [Karmesinhyphen](#block-qtcraft-crimson_hyphae) · [Karmesinpilz](#block-qtcraft-crimson_fungus) · [Karmesinschild](#block-qtcraft-crimson_sign) · [Karmesinstamm](#block-qtcraft-crimson_stem) · [Karmesintür](#block-qtcraft-crimson_door) · [Karmesinwurzeln](#block-qtcraft-crimson_roots) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Knochenblock](#block-qtcraft-bone_block) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kuchen](#block-qtcraft-cake) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbislaterne](#block-qtcraft-jack_o_lantern) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lagerfeuer](#block-qtcraft-campfire) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Leuchtstein](#block-qtcraft-glowstone) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Bett](#block-qtcraft-magenta_bed) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Margerite](#block-qtcraft-oxeye_daisy) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Nethergolderz](#block-qtcraft-nether_gold_ore) · [Netherportal](#block-qtcraft-nether_portal) · [Netherquarzerz](#block-qtcraft-nether_quartz_ore) · [Netherrack](#block-qtcraft-netherrack) · [Nethersprossen](#block-qtcraft-nether_sprouts) · [Netherwarze (Pflanze)](#block-qtcraft-nether_wart_crop) · [Netherwarzenblock](#block-qtcraft-nether_wart_block) · [Netherziegel](#block-qtcraft-nether_bricks) · [Netherziegelzaun](#block-qtcraft-nether_brick_fence) · [Notenblock](#block-qtcraft-note_block) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orange Tulpe](#block-qtcraft-orange_tulip) · [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Bett](#block-qtcraft-orange_bed) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Pilzlicht](#block-qtcraft-shroomlight) · [Polierte Schwarzsteinziegel](#block-qtcraft-polished_blackstone_bricks) · [Polierter Basalt](#block-qtcraft-polished_basalt) · [Polierter Schwarzstein](#block-qtcraft-polished_blackstone) · [Quarzblock](#block-qtcraft-quartz_block) · [Quarzsäule](#block-qtcraft-quartz_pillar) · [Quarzziegel](#block-qtcraft-quartz_bricks) · [Ranken](#block-qtcraft-vines) · [Räucherofen](#block-qtcraft-smoker) · [Rissige Netherziegel](#block-qtcraft-cracked_nether_bricks) · [Rissige polierte Schwarzsteinziegel](#block-qtcraft-cracked_polished_blackstone_bricks) · [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosa Tulpe](#block-qtcraft-pink_tulip) · [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Bett](#block-qtcraft-pink_bed) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Netherziegel](#block-qtcraft-red_nether_bricks) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Rucksack](#block-qtcraft-backpack) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schilf](#block-qtcraft-reeds) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schmelzofen](#block-qtcraft-blast_furnace) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Bett](#block-qtcraft-black_bed) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Schwarzstein](#block-qtcraft-blackstone) · [Seelenanker](#block-qtcraft-soul_anchor) · [Seelenanker (1 von 4)](#block-qtcraft-soul_anchor_1) · [Seelenanker (2 von 4)](#block-qtcraft-soul_anchor_2) · [Seelenanker (3 von 4)](#block-qtcraft-soul_anchor_3) · [Seelenanker (4 von 4)](#block-qtcraft-soul_anchor_4) · [Seelenerde](#block-qtcraft-soul_soil) · [Seelenfackel](#block-qtcraft-soul_torch) · [Seelenfeuer](#block-qtcraft-soul_fire) · [Seelenlaterne](#block-qtcraft-soul_lantern) · [Seelensand](#block-qtcraft-soul_sand) · [Seerose](#block-qtcraft-lily_pad) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Kontrollleuchte](#block-qtcraft-signal_indicator_light) · [Signal-Kontrollleuchte (an)](#block-qtcraft-signal_indicator_light_lit) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signalstaubblock](#block-qtcraft-signal_dust_block) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinschneider](#block-qtcraft-stonecutter) · [Steinziegel](#block-qtcraft-stone_bricks) · [Stolperdraht](#block-qtcraft-tripwire) · [Stolperdrahthaken](#block-qtcraft-tripwire_hook) · [Strohballen](#block-qtcraft-hay_block) · [Tageslichtsensor](#block-qtcraft-daylight_sensor) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Trauerranken](#block-qtcraft-weeping_vines) · [Truhe](#block-qtcraft-chest) · [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Bett](#block-qtcraft-cyan_bed) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Verkohlter Schädel](#block-qtcraft-charred_skull) · [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Bett](#block-qtcraft-purple_bed) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Bett](#block-qtcraft-white_bed) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Wirr-Nylium](#block-qtcraft-warped_nylium) · [Wirrbretter](#block-qtcraft-warped_planks) · [Wirrfalltür](#block-qtcraft-warped_trapdoor) · [Wirrhyphen](#block-qtcraft-warped_hyphae) · [Wirrpilz](#block-qtcraft-warped_fungus) · [Wirrschild](#block-qtcraft-warped_sign) · [Wirrstamm](#block-qtcraft-warped_stem) · [Wirrtür](#block-qtcraft-warped_door) · [Wirrwarzenblock](#block-qtcraft-warped_wart_block) · [Wirrwurzeln](#block-qtcraft-warped_roots) · [Zaubertisch](#block-qtcraft-enchanting_table) · [Ziegel](#block-qtcraft-bricks) · [Zielscheibe](#block-qtcraft-target) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane) · [Zwirbelranken](#block-qtcraft-twisting_vines)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Amboss](#block-qtcraft-anvil) · [Angeschlagener Amboss](#block-qtcraft-chipped_anvil) · [Antiker Schrott](#block-qtcraft-ancient_debris) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Basalt](#block-qtcraft-basalt) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Beschädigter Amboss](#block-qtcraft-damaged_anvil) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkenschild](#block-qtcraft-birch_sign) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Bett](#block-qtcraft-blue_bed) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Bett](#block-qtcraft-brown_bed) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Braustand](#block-qtcraft-brewing_stand) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Dschungelfalltür](#block-qtcraft-jungle_trapdoor) · [Dschungelholz](#block-qtcraft-jungle_wood) · [Dschungelholzbretter](#block-qtcraft-jungle_planks) · [Dschungellaub](#block-qtcraft-jungle_leaves) · [Dschungelschild](#block-qtcraft-jungle_sign) · [Dschungelsetzling](#block-qtcraft-jungle_sapling) · [Dschungelstamm](#block-qtcraft-jungle_log) · [Dschungeltür](#block-qtcraft-jungle_door) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichenschild](#block-qtcraft-oak_sign) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Entkoppelter klebriger Signalkolben](#block-qtcraft-decoupled_sticky_signal_piston) · [Entkoppelter Signalkolben](#block-qtcraft-decoupled_signal_piston) · [Entkoppelter Signalspender](#block-qtcraft-decoupled_signal_dispenser) · [Entkoppelter Signalwerfer](#block-qtcraft-decoupled_signal_dropper) · [Entrindete karmesinhyphen](#block-qtcraft-stripped_crimson_hyphae) · [Entrindete wirrhyphen](#block-qtcraft-stripped_warped_hyphae) · [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) · [Entrindeter Dschungelstamm](#block-qtcraft-stripped_jungle_log) · [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) · [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) · [Entrindeter karmesinstamm](#block-qtcraft-stripped_crimson_stem) · [Entrindeter wirrstamm](#block-qtcraft-stripped_warped_stem) · [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) · [Entrindetes Dschungelholz](#block-qtcraft-stripped_jungle_wood) · [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) · [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) · [Erde](#block-qtcraft-dirt) · [Erloschenes Lagerfeuer](#block-qtcraft-unlit_campfire) · [Fackel](#block-qtcraft-torch) · [Fallentruhe](#block-qtcraft-trapped_chest) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtenschild](#block-qtcraft-spruce_sign) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Bett](#block-qtcraft-yellow_bed) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelte Netherziegel](#block-qtcraft-chiseled_nether_bricks) · [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) · [Gemeißelter polierter Schwarzstein](#block-qtcraft-chiseled_polished_blackstone) · [Gemeißelter Quarzblock](#block-qtcraft-chiseled_quartz_block) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Basalt](#block-qtcraft-smooth_basalt) · [Glatter Quarzblock](#block-qtcraft-smooth_quartz) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glatter Stein](#block-qtcraft-smooth_stone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golddurchzogener Schwarzstein](#block-qtcraft-gilded_blackstone) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Bett](#block-qtcraft-gray_bed) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grobe Erde](#block-qtcraft-coarse_dirt) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Bett](#block-qtcraft-green_bed) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Bett](#block-qtcraft-light_blue_bed) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Bett](#block-qtcraft-light_gray_bed) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Bett](#block-qtcraft-lime_bed) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karmesin-Nylium](#block-qtcraft-crimson_nylium) · [Karmesinbretter](#block-qtcraft-crimson_planks) · [Karmesinfalltür](#block-qtcraft-crimson_trapdoor) · [Karmesinhyphen](#block-qtcraft-crimson_hyphae) · [Karmesinpilz](#block-qtcraft-crimson_fungus) · [Karmesinschild](#block-qtcraft-crimson_sign) · [Karmesinstamm](#block-qtcraft-crimson_stem) · [Karmesintür](#block-qtcraft-crimson_door) · [Karmesinwurzeln](#block-qtcraft-crimson_roots) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Knochenblock](#block-qtcraft-bone_block) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kuchen](#block-qtcraft-cake) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbislaterne](#block-qtcraft-jack_o_lantern) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lagerfeuer](#block-qtcraft-campfire) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Leuchtstein](#block-qtcraft-glowstone) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Bett](#block-qtcraft-magenta_bed) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Margerite](#block-qtcraft-oxeye_daisy) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Nethergolderz](#block-qtcraft-nether_gold_ore) · [Netheritblock](#block-qtcraft-netherite_block) · [Netherportal](#block-qtcraft-nether_portal) · [Netherquarzerz](#block-qtcraft-nether_quartz_ore) · [Netherrack](#block-qtcraft-netherrack) · [Nethersprossen](#block-qtcraft-nether_sprouts) · [Netherwarze (Pflanze)](#block-qtcraft-nether_wart_crop) · [Netherwarzenblock](#block-qtcraft-nether_wart_block) · [Netherziegel](#block-qtcraft-nether_bricks) · [Netherziegelzaun](#block-qtcraft-nether_brick_fence) · [Notenblock](#block-qtcraft-note_block) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orange Tulpe](#block-qtcraft-orange_tulip) · [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Bett](#block-qtcraft-orange_bed) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Pilzlicht](#block-qtcraft-shroomlight) · [Polierte Schwarzsteinziegel](#block-qtcraft-polished_blackstone_bricks) · [Polierter Basalt](#block-qtcraft-polished_basalt) · [Polierter Schwarzstein](#block-qtcraft-polished_blackstone) · [Quarzblock](#block-qtcraft-quartz_block) · [Quarzsäule](#block-qtcraft-quartz_pillar) · [Quarzziegel](#block-qtcraft-quartz_bricks) · [Ranken](#block-qtcraft-vines) · [Räucherofen](#block-qtcraft-smoker) · [Rissige Netherziegel](#block-qtcraft-cracked_nether_bricks) · [Rissige polierte Schwarzsteinziegel](#block-qtcraft-cracked_polished_blackstone_bricks) · [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosa Tulpe](#block-qtcraft-pink_tulip) · [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Bett](#block-qtcraft-pink_bed) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Netherziegel](#block-qtcraft-red_nether_bricks) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Rucksack](#block-qtcraft-backpack) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schilf](#block-qtcraft-reeds) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schmelzofen](#block-qtcraft-blast_furnace) · [Schmiedetisch](#block-qtcraft-smithing_table) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Bett](#block-qtcraft-black_bed) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Schwarzstein](#block-qtcraft-blackstone) · [Seelenanker](#block-qtcraft-soul_anchor) · [Seelenanker (1 von 4)](#block-qtcraft-soul_anchor_1) · [Seelenanker (2 von 4)](#block-qtcraft-soul_anchor_2) · [Seelenanker (3 von 4)](#block-qtcraft-soul_anchor_3) · [Seelenanker (4 von 4)](#block-qtcraft-soul_anchor_4) · [Seelenerde](#block-qtcraft-soul_soil) · [Seelenfackel](#block-qtcraft-soul_torch) · [Seelenfeuer](#block-qtcraft-soul_fire) · [Seelenlaterne](#block-qtcraft-soul_lantern) · [Seelensand](#block-qtcraft-soul_sand) · [Seerose](#block-qtcraft-lily_pad) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Kontrollleuchte](#block-qtcraft-signal_indicator_light) · [Signal-Kontrollleuchte (an)](#block-qtcraft-signal_indicator_light_lit) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signalstaubblock](#block-qtcraft-signal_dust_block) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinschneider](#block-qtcraft-stonecutter) · [Steinziegel](#block-qtcraft-stone_bricks) · [Stolperdraht](#block-qtcraft-tripwire) · [Stolperdrahthaken](#block-qtcraft-tripwire_hook) · [Strohballen](#block-qtcraft-hay_block) · [Tageslichtsensor](#block-qtcraft-daylight_sensor) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Trauerranken](#block-qtcraft-weeping_vines) · [Truhe](#block-qtcraft-chest) · [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Bett](#block-qtcraft-cyan_bed) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Verkohlter Schädel](#block-qtcraft-charred_skull) · [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Bett](#block-qtcraft-purple_bed) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Bett](#block-qtcraft-white_bed) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Wirr-Nylium](#block-qtcraft-warped_nylium) · [Wirrbretter](#block-qtcraft-warped_planks) · [Wirrfalltür](#block-qtcraft-warped_trapdoor) · [Wirrhyphen](#block-qtcraft-warped_hyphae) · [Wirrpilz](#block-qtcraft-warped_fungus) · [Wirrschild](#block-qtcraft-warped_sign) · [Wirrstamm](#block-qtcraft-warped_stem) · [Wirrtür](#block-qtcraft-warped_door) · [Wirrwarzenblock](#block-qtcraft-warped_wart_block) · [Wirrwurzeln](#block-qtcraft-warped_roots) · [Zaubertisch](#block-qtcraft-enchanting_table) · [Ziegel](#block-qtcraft-bricks) · [Zielscheibe](#block-qtcraft-target) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane) · [Zwirbelranken](#block-qtcraft-twisting_vines)
 
 ## QtCraft
 
@@ -26,7 +26,7 @@ Bestellte Erde für Feldfrüchte. Wasser in bis zu vier Blöcken Entfernung häl
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-activator_rail"></a>Aktivierungsschiene
 
@@ -59,7 +59,7 @@ Schiene, die auf Loren wirkt, solange sie Strom bekommt: Der Fahrer steigt aus, 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-anvil"></a>Amboss
 
@@ -91,7 +91,7 @@ Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-chipped_anvil"></a>Angeschlagener Amboss
 
@@ -113,7 +113,43 @@ Ein schon benutzter Amboss; er arbeitet wie ein neuer und wird mit der Zeit zum 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-ancient_debris"></a>Antiker Schrott
+
+Tief im Nether, im Netherrack verborgen und nie an offener Luft. Es übersteht jede Explosion, braucht eine Spitzhacke der Stufe 4 oder besser und lässt sich selbst fallen; ein Ofen schmilzt es zu Netheritschrott. Es verbrennt nicht in Lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:ancient_debris` |
+| Härte | 30 |
+| Abbauen mit der Hand | 150 s |
+| Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
+| Beute | [Antiker Schrott](#block-qtcraft-ancient_debris) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Gruppen | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+
+**Wird im Ofen zu**
+
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Antiker Schrott](#block-qtcraft-ancient_debris) | [Netheritschrott](items.md#item-qtcraft-netherite_scrap) |
+
+[Ofen](#block-qtcraft-furnace), [Schmelzofen](#block-qtcraft-blast_furnace) (Tempo × 2)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+**Kommt vor in**
+
+[Antiker Schrott-Vorkommen](worldgen.md#ore-qtcraft-ancient_debris_large) (y 8–24), [Antiker Schrott-Vorkommen](worldgen.md#ore-qtcraft-ancient_debris_small) (y 8–119)
 
 ### <a id="block-qtcraft-powered_rail"></a>Antriebsschiene
 
@@ -146,7 +182,7 @@ Schiene, die Loren beschleunigt, solange sie Signal-Dust-Strom bekommt, und sie 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-basalt"></a>Basalt
 
@@ -192,7 +228,7 @@ Grauer Vulkanstein in Säulen. Wie ein Stamm liegt er entlang der angeklickten A
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -215,7 +251,7 @@ Sieht aus wie Steinziegel, doch darin lebt ein Silberfischchen. Der Block bricht
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-infested_cobblestone"></a>Befallener Bruchstein
 
@@ -234,7 +270,7 @@ Sieht aus wie Bruchstein, doch darin lebt ein Silberfischchen. Der Block bricht 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-infested_stone"></a>Befallener Stein
 
@@ -253,7 +289,7 @@ Sieht aus wie Stein, doch darin lebt ein Silberfischchen. Der Block bricht schne
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -326,7 +362,7 @@ Steinziegel, auf denen Moos wächst: Steinziegel und Ranken im Handwerksraster. 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone"></a>Bemooster Bruchstein
 
@@ -395,7 +431,7 @@ Bruchstein, auf dem Moos wächst. Verliese und ihre Gänge sind aus ihm und aus 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-damaged_anvil"></a>Beschädigter Amboss
 
@@ -417,7 +453,7 @@ Ein Amboss kurz vor dem Zerbrechen; er arbeitet wie ein neuer, aber die nächste
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-bed"></a>Bett
 
@@ -458,7 +494,7 @@ Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block wei
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_planks"></a>Birkenbretter
 
@@ -503,11 +539,11 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenboot](items.md#item-qtcraft-birch_boat), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenschild](#block-qtcraft-birch_sign), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenboot](items.md#item-qtcraft-birch_boat), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenschild](#block-qtcraft-birch_sign), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_trapdoor"></a>Birkenfalltür
 
@@ -538,7 +574,7 @@ Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_wood"></a>Birkenholz
 
@@ -574,7 +610,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_leaves"></a>Birkenlaub
 
@@ -626,7 +662,7 @@ Ein Schild aus Birkenholz.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_sapling"></a>Birkensetzling
 
@@ -689,7 +725,7 @@ Holz der Birke. Ergibt je vier Bretter; wird im Ofen zu Holzkohle.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -726,7 +762,7 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_glazed_terracotta"></a>Blaue glasierte Terrakotta
 
@@ -759,7 +795,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_stained_glass_pane"></a>Blaue Glasscheibe
 
@@ -850,7 +886,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_wool"></a>Blaue Wolle
 
@@ -900,7 +936,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_concrete_powder"></a>Blaues Betonpulver
 
@@ -930,7 +966,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_bed"></a>Blaues Bett
 
@@ -971,7 +1007,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_ice"></a>Blaues Eis
 
@@ -1000,7 +1036,7 @@ Neun Packeis, zum rutschigsten Block gepresst: Körper, Items und Loren rutschen
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_stained_glass"></a>Blaues Glas
 
@@ -1085,7 +1121,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brown_stained_glass_pane"></a>Braune Glasscheibe
 
@@ -1151,7 +1187,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brown_wool"></a>Braune Wolle
 
@@ -1201,7 +1237,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brown_mushroom"></a>Brauner Pilz
 
@@ -1255,7 +1291,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-brown_bed"></a>Braunes Bett
 
@@ -1296,7 +1332,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-brown_stained_glass"></a>Braunes Glas
 
@@ -1354,7 +1390,7 @@ Macht mit einer Zutat und Glutstaub als Brennstoff aus Flaschen Tränke.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cobblestone"></a>Bruchstein
 
@@ -1432,7 +1468,7 @@ Daraus wird Stein beim Abbauen. Material für Steinwerkzeuge und den Ofen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-bookshelf"></a>Bücherregal
 
@@ -1462,7 +1498,7 @@ Regale voller Bücher; abgebaut gibt es die drei Bücher zurück.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-chunk_loader"></a>Chunk-Lader
 
@@ -1474,7 +1510,7 @@ Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen C
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Chunk-Lader](#block-qtcraft-chunk_loader) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 7 von 15 |
@@ -1483,7 +1519,7 @@ Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen C
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-diamond_block"></a>Diamantblock
 
@@ -1495,7 +1531,7 @@ Neun Diamanten als Block; zurück ergibt er alle neun.
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Diamantblock](#block-qtcraft-diamond_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -1516,7 +1552,7 @@ Neun Diamanten als Block; zurück ergibt er alle neun.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-diamond_ore"></a>Diamanterz
 
@@ -1528,14 +1564,14 @@ Selten und tief. Braucht eine Spitzhacke der Stufe 3 oder besser.
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Diamant](items.md#item-qtcraft-diamond) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -1570,7 +1606,7 @@ Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_wood"></a>Dschungelholz
 
@@ -1606,7 +1642,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_planks"></a>Dschungelholzbretter
 
@@ -1651,11 +1687,11 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Dschungelfalltür](#block-qtcraft-jungle_trapdoor), [Dschungelholzdruckplatte](parts.md#block-qtcraft-jungle_pressure_plate), [Dschungelholzknopf](parts.md#block-qtcraft-jungle_button), [Dschungelschild](#block-qtcraft-jungle_sign), [Dschungelstufe](parts.md#block-qtcraft-jungle_slab), [Dschungeltreppe](parts.md#block-qtcraft-jungle_stairs), [Dschungeltür](#block-qtcraft-jungle_door), [Dschungelzaun](parts.md#block-qtcraft-jungle_fence), [Dschungelzauntor](parts.md#block-qtcraft-jungle_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Tropenholzboot](items.md#item-qtcraft-jungle_boat), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Dschungelfalltür](#block-qtcraft-jungle_trapdoor), [Dschungelholzdruckplatte](parts.md#block-qtcraft-jungle_pressure_plate), [Dschungelholzknopf](parts.md#block-qtcraft-jungle_button), [Dschungelschild](#block-qtcraft-jungle_sign), [Dschungelstufe](parts.md#block-qtcraft-jungle_slab), [Dschungeltreppe](parts.md#block-qtcraft-jungle_stairs), [Dschungeltür](#block-qtcraft-jungle_door), [Dschungelzaun](parts.md#block-qtcraft-jungle_fence), [Dschungelzauntor](parts.md#block-qtcraft-jungle_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Tropenholzboot](items.md#item-qtcraft-jungle_boat), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_leaves"></a>Dschungellaub
 
@@ -1707,7 +1743,7 @@ Ein Schild aus Dschungelholz.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_sapling"></a>Dschungelsetzling
 
@@ -1770,7 +1806,7 @@ Holz des Dschungelbaums. Ergibt je vier Bretter.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -1807,7 +1843,7 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_planks"></a>Eichenbretter
 
@@ -1852,11 +1888,11 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenboot](items.md#item-qtcraft-oak_boat), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenschild](#block-qtcraft-oak_sign), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenboot](items.md#item-qtcraft-oak_boat), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenschild](#block-qtcraft-oak_sign), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_trapdoor"></a>Eichenfalltür
 
@@ -1887,7 +1923,7 @@ Eine Luke am Boden oder an der Decke; Benutzen öffnet oder schließt sie.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_wood"></a>Eichenholz
 
@@ -1923,7 +1959,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_pressure_plate"></a>Eichenholzdruckplatte
 
@@ -1953,7 +1989,7 @@ Gibt ein Signal, solange irgendetwas darauf liegt oder steht, auch Gegenstände 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_button"></a>Eichenholzknopf
 
@@ -1984,7 +2020,7 @@ Gibt beim Drücken ein Signal von anderthalb Sekunden.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_leaves"></a>Eichenlaub
 
@@ -2036,7 +2072,7 @@ Trägt vier Zeilen Text, die alle lesen können. Auf dem Boden dreht es sich zu 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_sapling"></a>Eichensetzling
 
@@ -2099,7 +2135,7 @@ Holz der Eiche: das Erste, was man sammelt. Ergibt je vier Bretter.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -2136,7 +2172,7 @@ Zwei Blöcke hoch; Benutzen öffnet oder schließt sie.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-ice"></a>Eis
 
@@ -2160,7 +2196,7 @@ Bedeckt das Wasser kalter Biome. Rutschig: Wer darauf läuft, rutscht weiter und
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -2176,7 +2212,7 @@ Neun Eisenbarren als Block; zurück ergibt er alle neun.
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Eisenblock](#block-qtcraft-iron_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Metall |
@@ -2197,7 +2233,7 @@ Neun Eisenbarren als Block; zurück ergibt er alle neun.
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-iron_ore"></a>Eisenerz
 
@@ -2209,14 +2245,14 @@ Braucht eine Spitzhacke der Stufe 2 oder besser. Lässt Roheisen fallen, aus dem
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Roheisen](items.md#item-qtcraft-raw_iron) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -2250,7 +2286,7 @@ Eine schwere Klappe, die nur ein Signal öffnet.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-iron_bars"></a>Eisengitter
 
@@ -2281,7 +2317,7 @@ Gitterstäbe, die sich wie Glasscheiben mit ihren Nachbarn verbinden.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-iron_door"></a>Eisentür
 
@@ -2313,7 +2349,7 @@ Eine schwere Tür, die nur ein Signal öffnet: ein Hebel, ein Knopf, eine Druckp
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-decoupled_sticky_signal_piston"></a>Entkoppelter klebriger Signalkolben
 
@@ -2334,7 +2370,7 @@ Ein klebriger Signalkolben ohne Quasi-Konnektivität: Nur Signal direkt daneben 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-decoupled_signal_piston"></a>Entkoppelter Signalkolben
 
@@ -2355,7 +2391,7 @@ Ein Signalkolben ohne Quasi-Konnektivität: Nur Signal direkt daneben bewegt ihn
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-decoupled_signal_dispenser"></a>Entkoppelter Signalspender
 
@@ -2376,7 +2412,7 @@ Ein Signalspender ohne Quasi-Konnektivität: Nur Signal direkt daneben löst ihn
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-decoupled_signal_dropper"></a>Entkoppelter Signalwerfer
 
@@ -2397,7 +2433,7 @@ Ein Signalwerfer ohne Quasi-Konnektivität: Nur Signal direkt daneben löst ihn 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_crimson_hyphae"></a>Entrindete karmesinhyphen
 
@@ -2430,7 +2466,7 @@ Hyphen ohne Haut: mit der Axt auf Hyphen, oder vier entrindete Stämme zusammenl
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_warped_hyphae"></a>Entrindete wirrhyphen
 
@@ -2463,7 +2499,7 @@ Hyphen ohne Haut: mit der Axt auf Hyphen, oder vier entrindete Stämme zusammenl
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_birch_log"></a>Entrindeter Birkenstamm
 
@@ -2501,7 +2537,7 @@ Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der an
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_jungle_log"></a>Entrindeter Dschungelstamm
 
@@ -2539,7 +2575,7 @@ Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der an
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_oak_log"></a>Entrindeter Eichenstamm
 
@@ -2577,7 +2613,7 @@ Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der an
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_spruce_log"></a>Entrindeter Fichtenstamm
 
@@ -2615,7 +2651,7 @@ Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der an
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_crimson_stem"></a>Entrindeter karmesinstamm
 
@@ -2639,7 +2675,7 @@ Ein Stamm ohne Haut: mit der Axt auf einen Stamm. Er gibt Bretter wie der Stamm.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_warped_stem"></a>Entrindeter wirrstamm
 
@@ -2663,7 +2699,7 @@ Ein Stamm ohne Haut: mit der Axt auf einen Stamm. Er gibt Bretter wie der Stamm.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_birch_wood"></a>Entrindetes Birkenholz
 
@@ -2710,7 +2746,7 @@ Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusamme
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_jungle_wood"></a>Entrindetes Dschungelholz
 
@@ -2757,7 +2793,7 @@ Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusamme
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_oak_wood"></a>Entrindetes Eichenholz
 
@@ -2804,7 +2840,7 @@ Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusamme
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-stripped_spruce_wood"></a>Entrindetes Fichtenholz
 
@@ -2851,7 +2887,7 @@ Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusamme
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-dirt"></a>Erde
 
@@ -2879,7 +2915,7 @@ Einfache Erde unter dem Gras.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -2902,7 +2938,7 @@ Ein gelöschtes Lagerfeuer: kein Licht, keine Hitze. Feuerzeug zündet es wieder
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-torch"></a>Fackel
 
@@ -2963,7 +2999,7 @@ Eine Truhe, die ein Signal gibt, solange Spieler hineinschauen, eine Stufe je Sp
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-fern"></a>Farn
 
@@ -3016,7 +3052,7 @@ Fasst so viel wie eine Truhe und passt Seite an Seite in jede Reihe.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-fire"></a>Feuer
 
@@ -3080,11 +3116,11 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenboot](items.md#item-qtcraft-spruce_boat), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenschild](#block-qtcraft-spruce_sign), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenboot](items.md#item-qtcraft-spruce_boat), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenschild](#block-qtcraft-spruce_sign), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_trapdoor"></a>Fichtenfalltür
 
@@ -3115,7 +3151,7 @@ Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_wood"></a>Fichtenholz
 
@@ -3151,7 +3187,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_leaves"></a>Fichtennadeln
 
@@ -3203,7 +3239,7 @@ Ein Schild aus Fichtenholz.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_sapling"></a>Fichtensetzling
 
@@ -3266,7 +3302,7 @@ Holz der Fichte. Ergibt je vier Bretter.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -3303,7 +3339,7 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_glazed_terracotta"></a>Gelbe glasierte Terrakotta
 
@@ -3336,7 +3372,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_stained_glass_pane"></a>Gelbe Glasscheibe
 
@@ -3402,7 +3438,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_wool"></a>Gelbe Wolle
 
@@ -3452,7 +3488,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_concrete_powder"></a>Gelbes Betonpulver
 
@@ -3482,7 +3518,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_bed"></a>Gelbes Bett
 
@@ -3523,7 +3559,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_stained_glass"></a>Gelbes Glas
 
@@ -3588,7 +3624,7 @@ Zwei übereinander gelegte Netherziegelstufen ergeben diesen verzierten Block.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-chiseled_stone_bricks"></a>Gemeißelte Steinziegel
 
@@ -3634,7 +3670,7 @@ Ein verzierter Steinziegelblock aus zwei übereinander gelegten Steinziegelstufe
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-chiseled_polished_blackstone"></a>Gemeißelter polierter Schwarzstein
 
@@ -3680,7 +3716,7 @@ Zwei übereinander gelegte polierte Schwarzsteinstufen ergeben diesen verzierten
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-chiseled_quartz_block"></a>Gemeißelter Quarzblock
 
@@ -3718,7 +3754,7 @@ Zwei übereinander gelegte Quarzstufen ergeben diesen verzierten Block.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-carved_sandstone"></a>Gemeißelter Sandstein
 
@@ -3748,7 +3784,7 @@ Sandstein mit Gesicht: der Kopf, den ein Sandgolem zurücklässt, wenn er im Was
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cut_sandstone"></a>Geschnittener Sandstein
 
@@ -3812,7 +3848,7 @@ In große, ebene Platten geschnittener Sandstein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-carved_pumpkin"></a>Geschnitzter Kürbis
 
@@ -3835,7 +3871,7 @@ Ein Kürbis mit Gesicht, mit einer Schere geschnitzt. Auf vier Eisenblöcke in T
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-packed_mud"></a>Gestampfter Schlamm
 
@@ -3869,7 +3905,7 @@ Im Ofen hart getrockneter Schlamm.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-glass"></a>Glas
 
@@ -3957,7 +3993,7 @@ Im Ofen zu einem glatten grauen Block geschmolzener Basalt.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_quartz"></a>Glatter Quarzblock
 
@@ -4022,7 +4058,7 @@ Ein im Ofen geglätteter Quarzblock. Daraus entstehen Stufen und Treppen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_sandstone"></a>Glatter Sandstein
 
@@ -4095,7 +4131,7 @@ Im Ofen glatt gebrannter Sandstein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_stone"></a>Glatter Stein
 
@@ -4152,7 +4188,7 @@ Noch einmal geschmolzener Glattstein: eine glatte Fläche in einem dünnen Rahme
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_stone"></a>Glattstein
 
@@ -4229,7 +4265,7 @@ Im Ofen geglätteter Stein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-bell"></a>Glocke
 
@@ -4259,7 +4295,7 @@ Hängt über dem Treffpunkt in der Mitte jedes Dorfs.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-firefly_glass"></a>Glühwürmchenglas
 
@@ -4295,7 +4331,7 @@ Neun Goldbarren als Block; zurück ergibt er alle neun.
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Goldblock](#block-qtcraft-gold_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Metall |
@@ -4316,7 +4352,7 @@ Neun Goldbarren als Block; zurück ergibt er alle neun.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gilded_blackstone"></a>Golddurchzogener Schwarzstein
 
@@ -4335,7 +4371,7 @@ Schwarzstein mit Goldadern. Abgebaut lässt er sich selbst fallen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gold_ore"></a>Golderz
 
@@ -4347,14 +4383,14 @@ Tiefes Erz, das eine Spitzhacke der Stufe 3 oder besser braucht; lässt Rohgold 
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Rohgold](items.md#item-qtcraft-raw_gold) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -4378,7 +4414,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -4419,7 +4455,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
@@ -4485,7 +4521,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_wool"></a>Graue Wolle
 
@@ -4535,7 +4571,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_concrete_powder"></a>Graues Betonpulver
 
@@ -4565,7 +4601,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_bed"></a>Graues Bett
 
@@ -4606,7 +4642,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_stained_glass"></a>Graues Glas
 
@@ -4662,7 +4698,7 @@ Erde mit Kies vermischt: zwei Erde und zwei Kies ergeben vier. Gras wächst nie 
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-bedrock"></a>Grundgestein
 
@@ -4705,7 +4741,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-green_stained_glass_pane"></a>Grüne Glasscheibe
 
@@ -4771,7 +4807,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-green_wool"></a>Grüne Wolle
 
@@ -4821,7 +4857,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-green_concrete_powder"></a>Grünes Betonpulver
 
@@ -4851,7 +4887,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-green_bed"></a>Grünes Bett
 
@@ -4892,7 +4928,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-green_stained_glass"></a>Grünes Glas
 
@@ -4978,7 +5014,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_blue_stained_glass_pane"></a>Hellblaue Glasscheibe
 
@@ -5044,7 +5080,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_blue_wool"></a>Hellblaue Wolle
 
@@ -5094,7 +5130,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_blue_concrete_powder"></a>Hellblaues Betonpulver
 
@@ -5124,7 +5160,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-light_blue_bed"></a>Hellblaues Bett
 
@@ -5165,7 +5201,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_blue_stained_glass"></a>Hellblaues Glas
 
@@ -5225,7 +5261,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_gray_stained_glass_pane"></a>Hellgraue Glasscheibe
 
@@ -5291,7 +5327,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_gray_wool"></a>Hellgraue Wolle
 
@@ -5341,7 +5377,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_gray_concrete_powder"></a>Hellgraues Betonpulver
 
@@ -5371,7 +5407,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-light_gray_bed"></a>Hellgraues Bett
 
@@ -5412,7 +5448,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-light_gray_stained_glass"></a>Hellgraues Glas
 
@@ -5472,7 +5508,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-lime_stained_glass_pane"></a>Hellgrüne Glasscheibe
 
@@ -5538,7 +5574,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-lime_wool"></a>Hellgrüne Wolle
 
@@ -5588,7 +5624,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-lime_concrete_powder"></a>Hellgrünes Betonpulver
 
@@ -5618,7 +5654,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-lime_bed"></a>Hellgrünes Bett
 
@@ -5659,7 +5695,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-lime_stained_glass"></a>Hellgrünes Glas
 
@@ -5756,7 +5792,7 @@ Netherrack, überwachsen von einem karmesingeflecht. Knochenmehl lässt darauf d
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -5809,11 +5845,11 @@ Bauholz des Nethers; alle Bretter passen in Rezepte, die Bretter verlangen. Es b
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Karmesinfalltür](#block-qtcraft-crimson_trapdoor), [Karmesinholzdruckplatte](parts.md#block-qtcraft-crimson_pressure_plate), [Karmesinholzknopf](parts.md#block-qtcraft-crimson_button), [Karmesinschild](#block-qtcraft-crimson_sign), [Karmesinstufe](parts.md#block-qtcraft-crimson_slab), [Karmesintreppe](parts.md#block-qtcraft-crimson_stairs), [Karmesintür](#block-qtcraft-crimson_door), [Karmesinzaun](parts.md#block-qtcraft-crimson_fence), [Karmesinzauntor](parts.md#block-qtcraft-crimson_fence_gate), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Karmesinfalltür](#block-qtcraft-crimson_trapdoor), [Karmesinholzdruckplatte](parts.md#block-qtcraft-crimson_pressure_plate), [Karmesinholzknopf](parts.md#block-qtcraft-crimson_button), [Karmesinschild](#block-qtcraft-crimson_sign), [Karmesinstufe](parts.md#block-qtcraft-crimson_slab), [Karmesintreppe](parts.md#block-qtcraft-crimson_stairs), [Karmesintür](#block-qtcraft-crimson_door), [Karmesinzaun](parts.md#block-qtcraft-crimson_fence), [Karmesinzauntor](parts.md#block-qtcraft-crimson_fence_gate), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-crimson_trapdoor"></a>Karmesinfalltür
 
@@ -5843,7 +5879,7 @@ Eine Luke, die sich nach oben öffnet; sitzt hoch oder tief in ihrem Block. Sie 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-crimson_hyphae"></a>Karmesinhyphen
 
@@ -5877,7 +5913,7 @@ Ein Stamm mit Haut auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-crimson_fungus"></a>Karmesinpilz
 
@@ -5931,7 +5967,7 @@ Ein Schild aus karmesinholz. Es brennt nicht.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-crimson_stem"></a>Karmesinstamm
 
@@ -5956,7 +5992,7 @@ Der Stamm eines großen karmesinpilzes. Vier Bretter je Stück. Er brennt nicht.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -5992,7 +6028,7 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen. Sie brennt nic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-crimson_roots"></a>Karmesinwurzeln
 
@@ -6083,7 +6119,7 @@ Ein eiserner Topf auf kurzen Beinen, wie Hexen ihn in ihren Hütten haben. Vorer
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-chain"></a>Kette
 
@@ -6114,7 +6150,7 @@ Eine Eisenkette, die entlang der Fläche verläuft, auf die du sie setzt: aufrec
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gravel"></a>Kies
 
@@ -6137,7 +6173,7 @@ Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein 
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -6171,7 +6207,7 @@ Ein Kolben, der den Block vor sich beim Einfahren zurückzieht; bei einem zu kur
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-small_torch"></a>Kleine Fackel
 
@@ -6231,7 +6267,7 @@ Ein geschnitzter Kürbis mit einer kleinen Fackel darin: ein sanfteres Leuchten 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-small_signal_torch"></a>Kleine Signalfackel
 
@@ -6313,7 +6349,7 @@ Neun Knochenmehl zu einem Block gepresst, und wieder zurück zu neun. Wie ein St
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-coal_block"></a>Kohleblock
 
@@ -6348,7 +6384,7 @@ Neun Stück Kohle als Block; zurück ergibt er alle neun.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_piston_head"></a>Kolbenkopf
 
@@ -6368,7 +6404,7 @@ Der Kopf eines ausgefahrenen Kolbens.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-composter"></a>Komposter
 
@@ -6398,7 +6434,7 @@ Ein Holzkasten an den Feldern der Dörfer. Er ist der Arbeitsplatz der Bauern.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-cornflower"></a>Kornblume
 
@@ -6461,7 +6497,7 @@ Neun Kupferbarren als Block; zurück ergibt er alle neun.
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Kupferblock](#block-qtcraft-copper_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Metall |
@@ -6482,7 +6518,7 @@ Neun Kupferbarren als Block; zurück ergibt er alle neun.
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-copper_ore"></a>Kupfererz
 
@@ -6494,14 +6530,14 @@ Braucht eine Spitzhacke der Stufe 2 oder besser und lässt zwei bis fünf Stück
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Rohkupfer](items.md#item-qtcraft-raw_copper) (2–5×) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -6536,7 +6572,7 @@ Eine Metallklappe, die sich von Hand und mit einem Signal öffnet.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-copper_bars"></a>Kupfergitter
 
@@ -6567,7 +6603,7 @@ Kupfergitter, das sich wie Glasscheiben und Eisengitter mit seinen Nachbarn verb
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-copper_chain"></a>Kupferkette
 
@@ -6598,7 +6634,7 @@ Eine Kette aus Kupfer; sie verläuft, hängt und hält Laternen wie die Eisenket
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-copper_lantern"></a>Kupferlaterne
 
@@ -6631,7 +6667,7 @@ Eine Kupferlaterne um eine Fackelflamme mit grünlichem Schein; so hell wie die 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-copper_door"></a>Kupfertür
 
@@ -6664,7 +6700,7 @@ Eine Metalltür, die sich wie eine Holztür von Hand öffnet und auch mit einem 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-pumpkin"></a>Kürbis
 
@@ -6687,7 +6723,7 @@ Wächst neben einem Kürbisstängel und wild in Ebenen und Taiga. Gibt Kürbiske
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -6720,7 +6756,7 @@ Ein geschnitzter Kürbis mit einer Fackel darin (Kürbis über der Fackel): Er l
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-pumpkin_stem"></a>Kürbisstängel
 
@@ -6774,7 +6810,7 @@ Spendet Licht und gart: Rohes Fleisch, Fisch oder eine Kartoffel darauf benutzen
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Verarbeitet**
 
@@ -6844,7 +6880,7 @@ Neun Stücke Lapislazuli zu einem Block gepresst; zurückgecraftet gibt er alle 
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Lapislazuliblock](#block-qtcraft-lapis_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -6865,7 +6901,7 @@ Neun Stücke Lapislazuli zu einem Block gepresst; zurückgecraftet gibt er alle 
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-lapis_ore"></a>Lapislazulierz
 
@@ -6877,14 +6913,14 @@ Tiefblaue Flecken im Stein, selten über Höhe 30. Braucht eine Spitzhacke der S
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Lapislazuli](items.md#item-qtcraft-lapis_lazuli) (4–9×) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -6925,7 +6961,7 @@ Eine Eisenlaterne um eine Fackelflamme; das hellste Licht, das sich bauen lässt
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mud_bricks"></a>Lehmziegel
 
@@ -6995,7 +7031,7 @@ Ziegel aus gestampftem Schlamm; ein warmer, erdiger Baustein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-ladder"></a>Leiter
 
@@ -7028,7 +7064,7 @@ An eine Wand gehängt klettert man hinauf, indem man hineinläuft oder springt; 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-glowstone"></a>Leuchtstein
 
@@ -7112,7 +7148,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_stained_glass_pane"></a>Magentafarbene Glasscheibe
 
@@ -7178,7 +7214,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_wool"></a>Magentafarbene Wolle
 
@@ -7228,7 +7264,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_concrete_powder"></a>Magentafarbenes Betonpulver
 
@@ -7258,7 +7294,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_bed"></a>Magentafarbenes Bett
 
@@ -7299,7 +7335,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_stained_glass"></a>Magentafarbenes Glas
 
@@ -7348,7 +7384,7 @@ Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der 
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -7430,7 +7466,7 @@ Wächst neben einem Melonenstängel und wild in Wäldern und Sümpfen. Zerfällt
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -7529,7 +7565,7 @@ Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein S
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-nether_gold_ore"></a>Nethergolderz
 
@@ -7560,11 +7596,45 @@ Netherrack mit Goldflecken. Abgebaut gibt es zwei bis sechs Goldnuggets, geschmo
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
 [Nethergolderz-Vorkommen](worldgen.md#ore-qtcraft-nether_gold) (y 10–117)
+
+### <a id="block-qtcraft-netherite_block"></a>Netheritblock
+
+Neun Netheritbarren als Block; zurück ergibt er alle neun. Er übersteht jede Explosion.
+
+| | |
+|---|---|
+| ID | `qtcraft:netherite_block` |
+| Härte | 50 |
+| Abbauen mit der Hand | 250 s |
+| Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 8,33 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
+| Beute | [Netheritblock](#block-qtcraft-netherite_block) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Metall |
+| Gruppen | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritblock](#block-qtcraft-netherite_block) |
+| [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) |  |
+| [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) | [Netheritbarren](items.md#item-qtcraft-netherite_ingot) |  |
+
+**Wird verwendet für**
+
+[Netheritbarren](items.md#item-qtcraft-netherite_ingot)
+
+**Abbaubar mit**
+
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-nether_portal"></a>Netherportal
 
@@ -7610,7 +7680,7 @@ Netherrack mit weißen Quarzkristallen. Gibt Netherquarz und Erfahrung.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -7644,13 +7714,17 @@ Der weiche rote Stein des Nethers. Feuer darauf brennt ewig. Im Ofen wird daraus
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Wird verwendet für**
+
+[Netherit-Aufwertung](items.md#item-qtcraft-netherite_upgrade_smithing_template)
+
 **Droppt aus**
 
 [Karmesin-Nylium](#block-qtcraft-crimson_nylium), [Wirr-Nylium](#block-qtcraft-warped_nylium)
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -7722,7 +7796,7 @@ Das Fleisch eines Karmesinhuts, oder neun Netherwarzen zusammengepresst.
 
 **Schneller mit**
 
-[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4), [Netherithacke](tools.md#item-qtcraft-netherite_hoe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -7816,7 +7890,7 @@ Dunkle Ziegel aus vier Netherziegelsteinen. Feuer kann ihnen nichts anhaben. Dar
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-nether_brick_fence"></a>Netherziegelzaun
 
@@ -7847,7 +7921,7 @@ Ein Zaun aus Netherziegeln. Er verbindet sich mit anderen Netherziegelzäunen, Z
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-note_block"></a>Notenblock
 
@@ -7878,7 +7952,7 @@ Spielt einen Ton, wenn ein Signal ihn erreicht oder wenn man ihn benutzt; jedes 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
@@ -7890,7 +7964,7 @@ Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhac
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Obsidian](#block-qtcraft-obsidian) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -7901,7 +7975,7 @@ Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhac
 
 **Abbaubar mit**
 
-[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-furnace"></a>Ofen
 
@@ -7936,7 +8010,7 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Verarbeitet**
 
@@ -8276,6 +8350,14 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 [Ofen](#block-qtcraft-furnace)
 
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Antiker Schrott](#block-qtcraft-ancient_debris) | [Netheritschrott](items.md#item-qtcraft-netherite_scrap) |
+
+[Ofen](#block-qtcraft-furnace), [Schmelzofen](#block-qtcraft-blast_furnace) (Tempo × 2)
+
 *Ofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
@@ -8452,7 +8534,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-orange_stained_glass_pane"></a>Orangefarbene Glasscheibe
 
@@ -8518,7 +8600,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-orange_wool"></a>Orangefarbene Wolle
 
@@ -8568,7 +8650,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-orange_concrete_powder"></a>Orangefarbenes Betonpulver
 
@@ -8598,7 +8680,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-orange_bed"></a>Orangefarbenes Bett
 
@@ -8639,7 +8721,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-orange_stained_glass"></a>Orangefarbenes Glas
 
@@ -8699,7 +8781,7 @@ So fest gepresstes Eis, dass es weder Licht durchlässt noch schmilzt. Rutschig 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-shroomlight"></a>Pilzlicht
 
@@ -8718,7 +8800,7 @@ Ein leuchtender Lappen aus dem Hut eines großen Pilzes, so hell wie Glowstone.
 
 **Schneller mit**
 
-[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4), [Netherithacke](tools.md#item-qtcraft-netherite_hoe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_blackstone_bricks"></a>Polierte Schwarzsteinziegel
 
@@ -8818,7 +8900,7 @@ Polierter Schwarzstein, als Ziegel gelegt, mit eigenen Stufen, Treppen und Mauer
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_basalt"></a>Polierter Basalt
 
@@ -8857,7 +8939,7 @@ Vier Basalt zu glatten Säulen poliert; wie Basalt liegt er entlang der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_blackstone"></a>Polierter Schwarzstein
 
@@ -8985,7 +9067,7 @@ Vier Schwarzstein glatt poliert. Daraus entstehen Ziegel, gemeißelter Stein, St
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-quartz_block"></a>Quarzblock
 
@@ -9083,7 +9165,7 @@ Vier Netherquarz zu einem weißen Block gepresst. Lässt sich zu Säulen, Ziegel
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-quartz_pillar"></a>Quarzsäule
 
@@ -9122,7 +9204,7 @@ Eine Säule aus zwei Quarzblöcken. Wie ein Stamm liegt sie entlang der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-quartz_bricks"></a>Quarzziegel
 
@@ -9160,7 +9242,7 @@ Vier Quarzblöcke, als Ziegel gelegt.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-vines"></a>Ranken
 
@@ -9214,7 +9296,7 @@ Ein Ofen nur für Essen: Er gart Fleisch, Fisch und Kartoffeln doppelt so schnel
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Verarbeitet**
 
@@ -9303,7 +9385,7 @@ Im Ofen gesprungene Netherziegel.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cracked_polished_blackstone_bricks"></a>Rissige polierte Schwarzsteinziegel
 
@@ -9334,7 +9416,7 @@ Im Ofen gesprungene polierte Schwarzsteinziegel.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cracked_stone_bricks"></a>Rissige Steinziegel
 
@@ -9365,7 +9447,7 @@ Steinziegel, im Ofen gebrannt, bis sie reißen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-raw_iron_block"></a>Roheisenblock
 
@@ -9377,7 +9459,7 @@ Neun Stück Roheisen als Block zum Lagern; zurück ergibt er alle neun. Er läss
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Roheisenblock](#block-qtcraft-raw_iron_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -9398,7 +9480,7 @@ Neun Stück Roheisen als Block zum Lagern; zurück ergibt er alle neun. Er läss
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-raw_gold_block"></a>Rohgoldblock
 
@@ -9410,7 +9492,7 @@ Neun Stück Rohgold als Block zum Lagern; zurück ergibt er alle neun. Er lässt
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Rohgoldblock](#block-qtcraft-raw_gold_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -9431,7 +9513,7 @@ Neun Stück Rohgold als Block zum Lagern; zurück ergibt er alle neun. Er lässt
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-raw_copper_block"></a>Rohkupferblock
 
@@ -9443,7 +9525,7 @@ Neun Stück Rohkupfer als Block zum Lagern; zurück ergibt er alle neun. Er läs
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Rohkupferblock](#block-qtcraft-raw_copper_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -9464,7 +9546,7 @@ Neun Stück Rohkupfer als Block zum Lagern; zurück ergibt er alle neun. Er läs
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_tulip"></a>Rosa Tulpe
 
@@ -9522,7 +9604,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_stained_glass_pane"></a>Rosafarbene Glasscheibe
 
@@ -9588,7 +9670,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_wool"></a>Rosafarbene Wolle
 
@@ -9638,7 +9720,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_concrete_powder"></a>Rosafarbenes Betonpulver
 
@@ -9668,7 +9750,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_bed"></a>Rosafarbenes Bett
 
@@ -9709,7 +9791,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-pink_stained_glass"></a>Rosafarbenes Glas
 
@@ -9769,7 +9851,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-red_stained_glass_pane"></a>Rote Glasscheibe
 
@@ -9863,7 +9945,7 @@ Netherziegelsteine mit Netherwarze: dunkelrote Ziegel mit eigenen Stufen, Treppe
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-red_terracotta"></a>Rote Terrakotta
 
@@ -9905,7 +9987,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-red_wool"></a>Rote Wolle
 
@@ -9955,7 +10037,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-red_mushroom"></a>Roter Pilz
 
@@ -10009,7 +10091,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-red_stained_glass"></a>Rotes Glas
 
@@ -10100,7 +10182,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -10218,7 +10300,7 @@ Gepresster Sand, liegt unter Wüsten.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -10255,7 +10337,7 @@ Gleis für Loren. Sie braucht einen festen Block darunter, verbindet sich mit de
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-reeds"></a>Schilf
 
@@ -10317,7 +10399,7 @@ Durchnässte Erde an den Ufern von Sümpfen. Darauf geht man langsam und springt
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -10380,7 +10462,7 @@ Ein Ofen nur für Metall: Er schmilzt Roheisen, Rohgold und Rohkupfer doppelt so
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Verarbeitet**
 
@@ -10420,9 +10502,47 @@ Ein Ofen nur für Metall: Er schmilzt Roheisen, Rohgold und Rohkupfer doppelt so
 
 | 1 | → |
 |---|---|
+| [Antiker Schrott](#block-qtcraft-ancient_debris) | [Netheritschrott](items.md#item-qtcraft-netherite_scrap) |
+
+[Ofen](#block-qtcraft-furnace), [Schmelzofen](#block-qtcraft-blast_furnace) (Tempo × 2)
+
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Netherquarzerz](#block-qtcraft-nether_quartz_ore) | [Netherquarz](items.md#item-qtcraft-quartz) |
 
 [Ofen](#block-qtcraft-furnace), [Schmelzofen](#block-qtcraft-blast_furnace) (Tempo × 2)
+
+### <a id="block-qtcraft-smithing_table"></a>Schmiedetisch
+
+Wertet Werkzeuge und Rüstung aus Diamant zu Netherit auf: benutze ihn, lege eine Netherit-Aufwertung in den ersten Platz, das Diamantteil in den zweiten und einen Netheritbarren in den dritten und nimm das Ergebnis. Verzauberungen, Name und Abnutzung bleiben.
+
+| | |
+|---|---|
+| ID | `qtcraft:smithing_table` |
+| Härte | 2,5 |
+| Abbauen mit der Hand | 3,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,31 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Schmiedetisch](#block-qtcraft-smithing_table) |
+| Schmieden | öffnet den Schmiedetisch: Vorlage, Diamantteil und Netheritbarren ergeben das Netheritteil, mit Verzauberungen und Abnutzung |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Schmiedetisch](#block-qtcraft-smithing_table) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-snow_block"></a>Schneeblock
 
@@ -10454,7 +10574,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Abbaubar mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -10491,7 +10611,7 @@ Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von sel
 
 **Abbaubar mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -10528,7 +10648,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-black_stained_glass_pane"></a>Schwarze Glasscheibe
 
@@ -10594,7 +10714,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-black_wool"></a>Schwarze Wolle
 
@@ -10644,7 +10764,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-black_concrete_powder"></a>Schwarzes Betonpulver
 
@@ -10674,7 +10794,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-black_bed"></a>Schwarzes Bett
 
@@ -10715,7 +10835,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-black_stained_glass"></a>Schwarzes Glas
 
@@ -10892,7 +11012,7 @@ Schwarzer Stein, der wie Bruchstein dient: auch Steinwerkzeuge und der Ofen lass
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_anchor"></a>Seelenanker
 
@@ -10904,7 +11024,7 @@ Sechs Weinende Obsidian um drei Glowstone. Glowstone darauf lädt ihn, bis zu vi
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Seelenanker](#block-qtcraft-soul_anchor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -10925,7 +11045,7 @@ Sechs Weinende Obsidian um drei Glowstone. Glowstone darauf lädt ihn, bis zu vi
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_anchor_1"></a>Seelenanker (1 von 4)
 
@@ -10937,7 +11057,7 @@ Ein Seelenanker mit 1 von 4 Ladungen.
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Seelenanker](#block-qtcraft-soul_anchor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 3 von 15 |
@@ -10945,7 +11065,7 @@ Ein Seelenanker mit 1 von 4 Ladungen.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_anchor_2"></a>Seelenanker (2 von 4)
 
@@ -10957,7 +11077,7 @@ Ein Seelenanker mit 2 von 4 Ladungen.
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Seelenanker](#block-qtcraft-soul_anchor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 7 von 15 |
@@ -10965,7 +11085,7 @@ Ein Seelenanker mit 2 von 4 Ladungen.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_anchor_3"></a>Seelenanker (3 von 4)
 
@@ -10977,7 +11097,7 @@ Ein Seelenanker mit 3 von 4 Ladungen.
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Seelenanker](#block-qtcraft-soul_anchor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 11 von 15 |
@@ -10985,7 +11105,7 @@ Ein Seelenanker mit 3 von 4 Ladungen.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_anchor_4"></a>Seelenanker (4 von 4)
 
@@ -10997,7 +11117,7 @@ Ein Seelenanker mit 4 von 4 Ladungen.
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Seelenanker](#block-qtcraft-soul_anchor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 15 von 15 |
@@ -11005,7 +11125,7 @@ Ein Seelenanker mit 4 von 4 Ladungen.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_soil"></a>Seelenerde
 
@@ -11030,7 +11150,7 @@ Fester Seelenboden, der niemanden bremst. Feuer darauf brennt als Seelenfeuer, u
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11118,7 +11238,7 @@ Eine Laterne um eine Seelenfackel. Steht auf Böden oder hängt an Decken und W�
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-soul_sand"></a>Seelensand
 
@@ -11144,7 +11264,7 @@ Körniger Sand mit Gesichtern darin. Wer darüber läuft, wird langsamer. Feuer 
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11200,7 +11320,7 @@ Schiene, die ein Signal gibt, solange eine Lore auf ihr steht, wie eine Druckpla
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_indicator_light"></a>Signal-Kontrollleuchte
 
@@ -11304,7 +11424,7 @@ Beobachtet den Block vor seinem Gesicht und schickt einen kurzen Puls aus seiner
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_ore"></a>Signalerz
 
@@ -11316,14 +11436,14 @@ Erz tief unten, das Signalstaub gibt; braucht eine Eisenspitzhacke.
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 2 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Signalstaub](#block-qtcraft-signal_dust) (4×), [Signalstaub](#block-qtcraft-signal_dust) (50 %) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11414,7 +11534,7 @@ Schiebt, solange er versorgt ist, bis zu zwölf Blöcke vor sich her, Truhen und
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_comparator"></a>Signalkomparator
 
@@ -11509,7 +11629,7 @@ Wirft bei steigendem Signal ein Item aus einem zufälligen Feld aus: gießt und 
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_dust"></a>Signalstaub
 
@@ -11583,7 +11703,7 @@ Neun Signalstaub in einem Block, und wieder zurück zu neun. Er ist eine Quelle,
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_hopper"></a>Signaltrichter
 
@@ -11618,7 +11738,7 @@ Bewegt Items: Alle acht Ticks gibt er ein Item in den Behälter, auf den sein Au
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-signal_dropper"></a>Signalwerfer
 
@@ -11649,7 +11769,7 @@ Wirft bei steigendem Signal ein Item aus einem zufälligen Feld vorne aus oder l
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-emerald_block"></a>Smaragdblock
 
@@ -11661,7 +11781,7 @@ Neun Smaragde zu einem Block gepresst; zurückgecraftet gibt er alle neun.
 | Härte | 5 |
 | Abbauen mit der Hand | 25 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,83 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Smaragdblock](#block-qtcraft-emerald_block) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
@@ -11682,7 +11802,7 @@ Neun Smaragde zu einem Block gepresst; zurückgecraftet gibt er alle neun.
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-emerald_ore"></a>Smaragderz
 
@@ -11694,14 +11814,14 @@ Grüne Sprenkel in tiefem Stein, selten und in Adern zu ein oder zwei. Braucht e
 | Härte | 3 |
 | Abbauen mit der Hand | 15 s |
 | Werkzeug | Spitzhacke, Stufe 3 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 0,5 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Smaragd](items.md#item-qtcraft-emerald) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
 **Abbaubar mit**
 
-[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11873,7 +11993,7 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11911,7 +12031,7 @@ Gibt ein Signal, solange ein Spieler oder ein Wesen darauf steht.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_button"></a>Steinknopf
 
@@ -11942,7 +12062,7 @@ Gibt beim Drücken ein kurzes Signal von einer Sekunde.
 
 **Schneller mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-coal_ore"></a>Steinkohle
 
@@ -11961,7 +12081,7 @@ Das häufigste Erz; ergibt Kohle, den besten frühen Brennstoff.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -11996,7 +12116,7 @@ Schneidet Steinblöcke in Treppen, Stufen, senkrechte Stufen, Mauern und geschni
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_bricks"></a>Steinziegel
 
@@ -12096,7 +12216,7 @@ Sauber geschnittener Stein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-tripwire"></a>Stolperdraht
 
@@ -12185,7 +12305,7 @@ Neun Weizen zum Ballen gebunden, und wieder zu neun Weizen zerlegt. Fängt leich
 
 **Schneller mit**
 
-[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4), [Netherithacke](tools.md#item-qtcraft-netherite_hoe) (Stufe 5)
 
 ### <a id="block-qtcraft-daylight_sensor"></a>Tageslichtsensor
 
@@ -12215,7 +12335,7 @@ Eine Platte aus Glas und Quarz, die etwa einmal in der Sekunde den Himmel über 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-terracotta"></a>Terrakotta
 
@@ -12251,7 +12371,7 @@ Ein im Ofen gebrannter Tonblock: hart, glatt und färbbar.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-clay"></a>Ton
 
@@ -12290,7 +12410,7 @@ Liegt unter flachem Wasser. Vier Ton ergeben ein ungebranntes Lampengehäuse; Zi
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 **Kommt vor in**
 
@@ -12338,7 +12458,7 @@ Ein festgetretener Weg, etwas niedriger als der Boden daneben. Dörfer legen ihr
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-weeping_vines"></a>Trauerranken
 
@@ -12396,7 +12516,7 @@ Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_glazed_terracotta"></a>Türkise glasierte Terrakotta
 
@@ -12429,7 +12549,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_stained_glass_pane"></a>Türkise Glasscheibe
 
@@ -12495,7 +12615,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_wool"></a>Türkise Wolle
 
@@ -12545,7 +12665,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_concrete_powder"></a>Türkises Betonpulver
 
@@ -12575,7 +12695,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_bed"></a>Türkises Bett
 
@@ -12616,7 +12736,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_stained_glass"></a>Türkises Glas
 
@@ -12695,7 +12815,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-purple_stained_glass_pane"></a>Violette Glasscheibe
 
@@ -12761,7 +12881,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-purple_wool"></a>Violette Wolle
 
@@ -12811,7 +12931,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-purple_concrete_powder"></a>Violettes Betonpulver
 
@@ -12841,7 +12961,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-purple_bed"></a>Violettes Bett
 
@@ -12882,7 +13002,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-purple_stained_glass"></a>Violettes Glas
 
@@ -12921,7 +13041,7 @@ Obsidian mit leuchtenden violetten Tränen. Es gibt ihn nur in den Rahmen von Po
 | Härte | 25 |
 | Abbauen mit der Hand | 125 s |
 | Werkzeug | Spitzhacke, Stufe 4 oder besser (nötig für Beute) |
-| Abbauen mit dem besten Werkzeug | 4,69 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
+| Abbauen mit dem besten Werkzeug | 4,17 s: [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) |
 | Beute | [Weinender Obsidian](#block-qtcraft-crying_obsidian) |
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 10 von 15 |
@@ -12933,7 +13053,7 @@ Obsidian mit leuchtenden violetten Tränen. Es gibt ihn nur in den Rahmen von Po
 
 **Abbaubar mit**
 
-[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-wheat_crop"></a>Weizenpflanze
 
@@ -12986,7 +13106,7 @@ Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreh
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-white_stained_glass_pane"></a>Weiße Glasscheibe
 
@@ -13052,7 +13172,7 @@ Gefärbte Terrakotta in erdigen Tönen.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-white_wool"></a>Weiße Wolle
 
@@ -13107,7 +13227,7 @@ Hart, glatt und gleichmäßig gefärbt; entsteht, wenn Betonpulver nass wird.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-white_concrete_powder"></a>Weißes Betonpulver
 
@@ -13137,7 +13257,7 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 **Schneller mit**
 
-[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel) (Stufe 5)
 
 ### <a id="block-qtcraft-white_bed"></a>Weißes Bett
 
@@ -13178,7 +13298,7 @@ Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder a
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-white_stained_glass"></a>Weißes Glas
 
@@ -13234,7 +13354,7 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-wild_carrots"></a>Wilde Karotten
 
@@ -13285,7 +13405,7 @@ Netherrack, überwachsen von einem wirrgeflecht. Knochenmehl lässt darauf die P
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -13338,11 +13458,11 @@ Bauholz des Nethers; alle Bretter passen in Rezepte, die Bretter verlangen. Es b
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter), [Wirrfalltür](#block-qtcraft-warped_trapdoor), [Wirrholzdruckplatte](parts.md#block-qtcraft-warped_pressure_plate), [Wirrholzknopf](parts.md#block-qtcraft-warped_button), [Wirrschild](#block-qtcraft-warped_sign), [Wirrstufe](parts.md#block-qtcraft-warped_slab), [Wirrtreppe](parts.md#block-qtcraft-warped_stairs), [Wirrtür](#block-qtcraft-warped_door), [Wirrzaun](parts.md#block-qtcraft-warped_fence), [Wirrzauntor](parts.md#block-qtcraft-warped_fence_gate)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schmiedetisch](#block-qtcraft-smithing_table) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter), [Wirrfalltür](#block-qtcraft-warped_trapdoor), [Wirrholzdruckplatte](parts.md#block-qtcraft-warped_pressure_plate), [Wirrholzknopf](parts.md#block-qtcraft-warped_button), [Wirrschild](#block-qtcraft-warped_sign), [Wirrstufe](parts.md#block-qtcraft-warped_slab), [Wirrtreppe](parts.md#block-qtcraft-warped_stairs), [Wirrtür](#block-qtcraft-warped_door), [Wirrzaun](parts.md#block-qtcraft-warped_fence), [Wirrzauntor](parts.md#block-qtcraft-warped_fence_gate)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-warped_trapdoor"></a>Wirrfalltür
 
@@ -13372,7 +13492,7 @@ Eine Luke, die sich nach oben öffnet; sitzt hoch oder tief in ihrem Block. Sie 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-warped_hyphae"></a>Wirrhyphen
 
@@ -13406,7 +13526,7 @@ Ein Stamm mit Haut auf allen sechs Seiten, für Wände und Balken.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-warped_fungus"></a>Wirrpilz
 
@@ -13464,7 +13584,7 @@ Ein Schild aus wirrholz. Es brennt nicht.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-warped_stem"></a>Wirrstamm
 
@@ -13489,7 +13609,7 @@ Der Stamm eines großen wirrpilzes. Vier Bretter je Stück. Er brennt nicht.
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -13525,7 +13645,7 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen. Sie brennt nic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-warped_wart_block"></a>Wirrwarzenblock
 
@@ -13543,7 +13663,7 @@ Das Fleisch eines Wirrhuts, in gewundenen Falten.
 
 **Schneller mit**
 
-[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4), [Netherithacke](tools.md#item-qtcraft-netherite_hoe) (Stufe 5)
 
 **Kommt vor in**
 
@@ -13600,7 +13720,7 @@ Bietet Verzauberungen für Werkzeuge, Waffen, Rüstung und einzelne Bücher an (
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-bricks"></a>Ziegel
 
@@ -13670,7 +13790,7 @@ Gebrannter Ton, ein fester Baustein.
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-target"></a>Zielscheibe
 
@@ -13700,7 +13820,7 @@ Eine Zielscheibe aus Heu: Trifft ein Pfeil oder ein anderes Geschoss sie, gibt s
 
 **Schneller mit**
 
-[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4), [Netherithacke](tools.md#item-qtcraft-netherite_hoe) (Stufe 5)
 
 ### <a id="block-qtcraft-allium"></a>Zierlauch
 

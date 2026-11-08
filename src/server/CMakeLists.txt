@@ -216,6 +216,7 @@ target_sources(qc_server PRIVATE
     machines/QcServerEnchanting.h machines/QcServerEnchanting.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
+    machines/QcServerSmithing.h machines/QcServerSmithing.cpp
     machines/QcServerStonecutter.h machines/QcServerStonecutter.cpp
     machines/QcServerWorkstations.h
 )

@@ -560,9 +560,10 @@ private slots:
                 }
             }
         }
-        QVERIFY(pending.contains(u"netherite_scrap"_s));
-        QVERIFY(pending.contains(u"netherite_upgrade_smithing_template"_s));
-        QVERIFY(pending.contains(u"ancient_debris"_s));
+        // Netherite came with E-1119: its slots are entries now.
+        QVERIFY(!pending.contains(u"netherite_scrap"_s));
+        QVERIFY(!pending.contains(u"netherite_upgrade_smithing_template"_s));
+        QVERIFY(!pending.contains(u"ancient_debris"_s));
     }
 
     void locateFindsTheNearest()

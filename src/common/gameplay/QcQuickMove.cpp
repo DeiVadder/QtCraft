@@ -33,6 +33,9 @@ QList<int> intoOpenBlock(const Situation &situation)
     if (situation.containerSlots > 0) {
         return range(blockSlot, situation.containerSlots);
     }
+    if (situation.workstationSlot >= 0) {
+        return {situation.workstationSlot};
+    }
     QList<int> result;
     if (situation.brewing) {
         // The fuel of a stand is an ingredient too: the fuel slot first, as in the reference.

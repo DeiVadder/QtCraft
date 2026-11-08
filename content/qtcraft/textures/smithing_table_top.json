@@ -1,0 +1,30 @@
+{
+    "name": "smithing_table_top",
+    "pattern": "emblem",
+    "primary": "#3c3c44",
+    "variation": 0.07,
+    "seed": 8900,
+    "palette": {
+        "e": "#26262c",
+        "c": "#55555e",
+        "w": "#4a3426"
+    },
+    "bitmap": [
+        "eeeeeeeeeeeeeeee",
+        "ecccccccccccccce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ec............ce",
+        "ecccccccccccccce",
+        "eeeeeeeeeeeeeeee"
+    ]
+}

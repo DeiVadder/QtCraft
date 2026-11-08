@@ -1,0 +1,8 @@
+{
+    "name": "netherite_visor",
+    "pattern": "visor",
+    "primary": "#433b3d",
+    "secondary": "#6e6264",
+    "variation": 0.05,
+    "seed": 8892
+}

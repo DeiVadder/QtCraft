@@ -262,7 +262,8 @@ void QcStartupHooks::runAfterDelays(const DelayedSteps &steps)
 void QcStartupHooks::openStartupOverlay()
 {
     if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"brewing"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s
-        || m_startupOverlay == u"enchanting"_s || m_startupOverlay == u"anvil"_s) {
+        || m_startupOverlay == u"enchanting"_s || m_startupOverlay == u"anvil"_s
+        || m_startupOverlay == u"smithing"_s) {
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
         m_screens.handbook.open(m_startupHandbook);
@@ -627,6 +628,10 @@ void QcStartupHooks::machineOpened()
     // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
     session.inventoryMirror().moveItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
     session.inventoryMirror().moveItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
+    // A smithing table takes hotbar slot 3 as its addition (decision E-1115).
+    if (session.smithing().isOpen()) {
+        session.inventoryMirror().moveItem(2, QcMsg::MoveInventoryItem::machineOutputSlot);
+    }
     // A stand takes hotbar slots 3 to 5 as its bottles.
     if (session.machine().isBrewing()) {
         for (int bottle = 0; bottle < 3; ++bottle) {

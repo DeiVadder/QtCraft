@@ -1,0 +1,8 @@
+{
+    "name": "netherite_helmet",
+    "pattern": "helmet",
+    "primary": "#62585b",
+    "secondary": "#7a6c6e",
+    "variation": 0.06,
+    "seed": 8886
+}

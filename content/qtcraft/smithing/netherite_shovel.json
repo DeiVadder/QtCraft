@@ -1,0 +1,7 @@
+{
+    "name": "netherite_shovel",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_shovel",
+    "addition": "netherite_ingot",
+    "result": "netherite_shovel"
+}

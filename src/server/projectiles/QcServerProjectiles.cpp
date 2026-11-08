@@ -4,6 +4,7 @@
 #include "server/projectiles/QcServerProjectiles.h"
 
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcPetOwners.h"
@@ -295,7 +296,8 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     }
 
     if (take == QcHurtWindow::Take::Fresh) {
-        QcPlayerHealth::knock(client, along, impact.knockback);
+        // Worn armour holds back part of the push (decision E-1116).
+        QcPlayerHealth::knock(client, along, impact.knockback * (1.0 - QcArmour::knockbackResistance(m_state.content(), client.equipment)));
     }
     // The status effects when the hit counts: it took, or, without damage, it would have taken.
     if ((impact.damage > 0.0 ? dealt : take) != QcHurtWindow::Take::Ignored) {

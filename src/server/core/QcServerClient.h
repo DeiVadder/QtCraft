@@ -136,6 +136,8 @@ struct QcServerClient : QcEntity
     using Enchanting = QcOpenEnchanting;
     /*! The open anvil (QcOpenAnvil). */
     using Anvil = QcOpenAnvil;
+    /*! The open smithing table (QcOpenSmithing). */
+    using Smithing = QcOpenSmithing;
     /*! A portable container opened from the hand (QcHeldContainer). */
     using HeldContainer = QcHeldContainer;
     /*! The screens the player has open (QcPlayerScreen). */

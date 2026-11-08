@@ -1,0 +1,33 @@
+{
+    "name": "netherite_upgrade_smithing_template",
+    "pattern": "icon",
+    "primary": "#5c5452",
+    "variation": 0.06,
+    "seed": 8896,
+    "palette": {
+        "o": "#2a2224",
+        "s": "#6c625e",
+        "l": "#8a807a",
+        "n": "#4d4446",
+        "h": "#7a6c6e",
+        "r": "#9a3a2a"
+    },
+    "bitmap": [
+        "................",
+        "..oooooooooooo..",
+        "..ollllllllllo..",
+        "..olsssssssslo..",
+        "..olssnnnnsslo..",
+        "..olsnhhhnsslo..",
+        "..olsnhnnnsslo..",
+        "..olsnnnnnsslo..",
+        "..olssnnnssslo..",
+        "..olsssssssslo..",
+        "..olsrssssrslo..",
+        "..olsssssssslo..",
+        "..olsssssssslo..",
+        "..ollllllllllo..",
+        "..oooooooooooo..",
+        "................"
+    ]
+}

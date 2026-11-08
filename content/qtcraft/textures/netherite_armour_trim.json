@@ -1,0 +1,8 @@
+{
+    "name": "netherite_armour_trim",
+    "pattern": "armour_trim",
+    "primary": "#433b3d",
+    "secondary": "#8a7a6c",
+    "variation": 0.05,
+    "seed": 8891
+}

@@ -1,0 +1,15 @@
+{
+    "name": "netherite_pickaxe",
+    "texture": "netherite_pickaxe",
+    "maxStack": 1,
+    "durability": 2031,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "attackDamage": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 5,
+    "toolSpeed": 9.0,
+    "tags": [
+        "fire_resistant"
+    ]
+}

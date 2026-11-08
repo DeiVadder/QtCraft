@@ -6,9 +6,9 @@
             "entries": [
                 {"item": "diamond_shovel", "weight": 15},
                 {"item": "diamond_pickaxe", "weight": 12},
-                {"pending": "netherite_scrap", "weight": 8},
-                {"pending": "ancient_debris", "weight": 12},
-                {"pending": "ancient_debris", "weight": 5, "count": 2},
+                {"item": "netherite_scrap", "weight": 8},
+                {"item": "ancient_debris", "weight": 12},
+                {"item": "ancient_debris", "weight": 5, "count": 2},
                 {"item": "saddle", "weight": 12},
                 {"item": "gold_block", "weight": 16, "count": [2, 4]},
                 {"item": "golden_carrot", "weight": 12, "count": [8, 17]},
@@ -37,7 +37,7 @@
         {
             "rolls": 1,
             "entries": [
-                {"pending": "netherite_upgrade_smithing_template", "weight": 1},
+                {"item": "netherite_upgrade_smithing_template", "weight": 1},
                 {"weight": 9}
             ]
         }

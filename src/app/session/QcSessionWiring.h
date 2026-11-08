@@ -15,12 +15,10 @@ class QcHudState;
 class QcPlayerController;
 class QcScreenState;
 class QcStartupHooks;
-class QcStonecutterController;
-class QcAnvilController;
-class QcEnchantingController;
 class QcTradeController;
 class QcWorldAtlas;
 struct QcSessionParts;
+struct QcWorkstationControllers;
 
 // The one place where the signals of a new client session reach the GUI (decision E-530): chunks
 // and blocks go to the mesh scheduler and its meshes to the world view, sounds and ambience to the
@@ -40,9 +38,7 @@ public:
         QcHudState &hud;
         QcPlayerController &player;
         QcTradeController &trade;
-        QcStonecutterController &stonecutter;
-        QcEnchantingController &enchanting;
-        QcAnvilController &anvil;
+        QcWorkstationControllers &workstations;
         QcAdvancementTreeModel &advancements;
         QcScreenState &screens;
         QcStartupHooks &startup;
@@ -75,6 +71,8 @@ private:
     void connectEnchanting();
     // The anvil's screen (decision E-866).
     void connectAnvil();
+    // The smithing table's screen (decision E-1115).
+    void connectSmithing();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
     void onDimensionChanged();

@@ -16,6 +16,7 @@
 #include "common/content/recipes/QcLootTables.h"
 #include "common/content/recipes/QcRecipeDefinition.h"
 #include "common/content/recipes/QcSmeltingRecipe.h"
+#include "common/content/recipes/QcSmithingRecipe.h"
 #include "common/content/registry/QcAdvancementCatalog.h"
 #include "common/content/registry/QcAssetCatalog.h"
 #include "common/content/registry/QcCommandMacroDefinition.h"
@@ -189,6 +190,10 @@ public:
     /*! Returns the position in stonecuttingRecipes() of the recipe named \a name; none for an
         unknown name. */
     [[nodiscard]] std::optional<qsizetype> stonecuttingIndex(const QString &name) const;
+    /*! Registers the smithing \a recipe (decision E-1115), replacing one of the same name. */
+    void registerSmithingRecipe(QcSmithingRecipe recipe) { m_smithingRecipes.set(std::move(recipe)); }
+    /*! Returns the smithing recipes in registration order. */
+    const QList<QcSmithingRecipe> &smithingRecipes() const { return m_smithingRecipes.items(); }
 
     /*! Registers the handbook \a chapter about playing, replacing one of the same name (server
         side only, not synchronised). */
@@ -309,6 +314,7 @@ private:
     QcNamedList<QcRecipeDefinition> m_recipes;
     QcNamedList<QcSmeltingRecipe> m_smeltingRecipes;
     QcNamedList<QcSmeltingRecipe> m_stonecuttingRecipes;
+    QcNamedList<QcSmithingRecipe> m_smithingRecipes;
     QcNamedList<QcCommandMacroDefinition> m_commandMacros;
     QcWeatherDefinition m_weather;
     QcHoldDefaults m_holdDefaults;

@@ -1,0 +1,7 @@
+{
+    "name": "netherite_sword",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_sword",
+    "addition": "netherite_ingot",
+    "result": "netherite_sword"
+}

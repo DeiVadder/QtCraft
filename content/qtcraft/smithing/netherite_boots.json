@@ -1,0 +1,7 @@
+{
+    "name": "netherite_boots",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_boots",
+    "addition": "netherite_ingot",
+    "result": "netherite_boots"
+}

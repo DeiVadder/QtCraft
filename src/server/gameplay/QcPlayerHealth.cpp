@@ -150,8 +150,10 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
                       client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     }
 
-    if (fresh && knockback.length() > 0.0) {
-        knock(client, knockback);
+    // Worn armour holds back part of the push (decision E-1116).
+    const double held = QcArmour::knockbackResistance(m_state.content(), client.equipment);
+    if (fresh && knockback.length() > 0.0 && held < 1.0) {
+        knock(client, knockback, 1.0 - held);
     }
 
     if (client.health <= 0.0) {
@@ -240,10 +242,11 @@ double QcPlayerHealth::throughArmour(QcServerClient &client, double amount)
     // Protection enchantments take their share off what the armour lets through (decision E-864);
     // counted before the hit wears the armour, so a piece that breaks on this hit still protects.
     const int protection = QcEnchanting::protectionPoints(content, client.equipment, false);
+    const double toughness = QcArmour::toughness(content, client.equipment);
     QcEquipment worn = client.equipment;
     const bool broke = !worn.wear(content, amount, [this](const QcItemStack &piece) { return QcToolWear::armourKeeps(m_state, piece); }).isEmpty();
     m_inventory.equipmentWorn(client, worn, broke);
-    return QcEnchanting::reducedDamage(QcArmour::reducedDamage(amount, points), protection);
+    return QcEnchanting::reducedDamage(QcArmour::reducedDamage(amount, points, toughness), protection);
 }
 
 double QcPlayerHealth::throughEffects(QcServerClient &client, double amount) const

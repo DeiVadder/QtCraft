@@ -22,17 +22,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     // Items in the crafting grid and the stonecutter's input are stored in the inventory, as if the
     // screen had been closed; the open screen itself is not saved.
     QList<QcItemStack> held = client.crafting.grid;
-    if (client.screen.stonecutter) {
-        held.append(client.screen.stonecutter->input);
-    }
-    if (client.screen.enchanting) {
-        held.append(client.screen.enchanting->item);
-        held.append(client.screen.enchanting->lapis);
-    }
-    if (client.screen.anvil) {
-        held.append(client.screen.anvil->left);
-        held.append(client.screen.anvil->right);
-    }
+    held.append(client.screen.workstationStacks());
     for (const QcItemStack &cell : std::as_const(held)) {
         if (!cell.isEmpty()) {
             record.lost += player.inventory.add(cell, content);

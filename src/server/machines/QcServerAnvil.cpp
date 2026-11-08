@@ -20,7 +20,7 @@ QcServerAnvil::QcServerAnvil(QcServerState &state, QcServerSounds &sounds, QcSer
     , m_blocks(blocks)
 {
     // One screen at a time: a block's, cart's or villager's screen opening closes the anvil.
-    m_screens.setAnvilCloser([this](QcServerClient &client) { close(client, true); });
+    m_screens.setWorkstationCloser(QcWorkstation::Anvil, [this](QcServerClient &client) { close(client, true); });
 }
 
 bool QcServerAnvil::isAnvil(const QcServerState &state, QcBlockPos pos)
@@ -38,8 +38,7 @@ bool QcServerAnvil::open(QcServerClient &client, QcBlockPos pos)
     const bool same = client.screen.anvil && client.screen.anvil->pos == pos;
     m_screens.close(client, true);
     m_screens.endTrade(client);
-    m_screens.closeStonecutter(client);
-    m_screens.closeEnchanting(client);
+    m_screens.closeWorkstationsExcept(client, QcWorkstation::Anvil);
     if (!same) {
         m_inventory.returnScreenInputs(client);
         client.screen.anvil = QcServerClient::Anvil{pos, {}, {}, {}};

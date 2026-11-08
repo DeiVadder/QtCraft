@@ -1,0 +1,8 @@
+{
+    "name": "ancient_debris_side",
+    "pattern": "column_side",
+    "primary": "#654539",
+    "secondary": "#3a2520",
+    "variation": 0.08,
+    "seed": 8897
+}

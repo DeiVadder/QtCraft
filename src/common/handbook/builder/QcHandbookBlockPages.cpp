@@ -420,6 +420,9 @@ void BlockPage::addUseFacts()
     if (block.opensAnvil) {
         addFact(u"anvil"_s, label(u"value.anvilScreen"_s));
     }
+    if (block.opensSmithing) {
+        addFact(u"smithing"_s, label(u"value.smithingScreen"_s));
+    }
     addAnvilSwapFact();
     if (block.containerSlots > 0) {
         addFact(u"storage"_s, label(u"unit.slots"_s).arg(block.containerSlots));

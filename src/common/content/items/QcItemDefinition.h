@@ -84,6 +84,10 @@ struct QcItemDefinition
 {
     /*! Largest allowed maxStack. */
     static constexpr int maxStackLimit = 999;
+    /*! The tag of items that fire and lava do not burn when they lie in the world (netherite,
+        decision E-1118); a pack writes it as \c {"qtcraft:fire_resistant"} or, in the base
+        pack, \c {"fire_resistant"}. */
+    static constexpr auto fireResistantTag = "qtcraft:fire_resistant";
     /*! Food points of a full player. */
     static constexpr int maxFood = 20;
     /*! Saturation of a new and of a respawned player (the reference's 5, decision E-1001). */
@@ -181,6 +185,9 @@ struct QcItemDefinition
     QString boatBlock;
     /*! Returns whether it places a boat (\c {boatBlock} is set). */
     bool placesBoat() const { return !boatBlock.isEmpty(); }
+    /*! Returns whether fire and lava leave it alone where it lies (the tag \c fireResistantTag,
+        decision E-1118); compares without building a string. */
+    bool isFireResistant() const { return tags.contains(QLatin1StringView(fireResistantTag)); }
     /*! Used on a block with \c {tillsInto} (grass, dirt), turns it into that block (a hoe making
         farmland, decision E-290). Server side only. */
     bool tills = false;

@@ -145,7 +145,7 @@ private slots:
             metal += recipe.kind == u"metal"_s ? 1 : 0;
         }
         QCOMPARE(food, 7);
-        QCOMPARE(metal, 5);
+        QCOMPARE(metal, 6);
     }
 
     void smokerAndBlastFurnaceWorkTwiceAsFast()

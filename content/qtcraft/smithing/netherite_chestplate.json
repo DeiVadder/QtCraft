@@ -1,0 +1,7 @@
+{
+    "name": "netherite_chestplate",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_chestplate",
+    "addition": "netherite_ingot",
+    "result": "netherite_chestplate"
+}

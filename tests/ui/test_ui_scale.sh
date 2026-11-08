@@ -160,6 +160,9 @@ fi
 check enchanting $world --look 0,-89 --chat "/give lapis_lazuli 5" --chat "/xp add Player 30 levels" \
     --chat "/setblock ~ ~-1 ~ enchanting_table" --overlay enchanting
 # shellcheck disable=SC2086
+check smithing $world --look 0,-89 --chat "/give netherite_upgrade_smithing_template" --chat "/give diamond_sword" \
+    --chat "/give netherite_ingot" --chat "/setblock ~ ~-1 ~ smithing_table" --overlay smithing
+# shellcheck disable=SC2086
 check stonecutter $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ stonecutter" --overlay "@2500 key:use"
 # shellcheck disable=SC2086
 check trade $world --look 0,-20 --chat "/summon villager 1 noai" --chat "/profession smith" --overlay trade

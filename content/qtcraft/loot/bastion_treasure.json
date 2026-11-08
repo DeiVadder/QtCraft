@@ -4,10 +4,10 @@
         {
             "rolls": 3,
             "entries": [
-                {"pending": "netherite_ingot", "weight": 15},
-                {"pending": "ancient_debris", "weight": 10},
-                {"pending": "netherite_scrap", "weight": 8},
-                {"pending": "ancient_debris", "weight": 4, "count": 2},
+                {"item": "netherite_ingot", "weight": 15},
+                {"item": "ancient_debris", "weight": 10},
+                {"item": "netherite_scrap", "weight": 8},
+                {"item": "ancient_debris", "weight": 4, "count": 2},
                 {"item": "diamond_sword", "weight": 6},
                 {"item": "diamond_chestplate", "weight": 6},
                 {"item": "diamond_helmet", "weight": 6},
@@ -34,7 +34,7 @@
         {
             "rolls": 1,
             "entries": [
-                {"pending": "netherite_upgrade_smithing_template", "weight": 1}
+                {"item": "netherite_upgrade_smithing_template", "weight": 1}
             ]
         }
     ]

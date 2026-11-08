@@ -1135,12 +1135,12 @@ Als Nächstes: %3</translation>
         <translation>Name (leer: kein eigener Name)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="128"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="111"/>
         <source>Left: the item · right: its material or a second one</source>
         <translation>Links der Gegenstand · rechts sein Material oder ein zweiter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="149"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="132"/>
         <source>Forge</source>
         <translation>Schmieden</translation>
     </message>
@@ -6071,25 +6071,25 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="381"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="379"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="433"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="397"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="395"/>
         <source>Cannot create the world: unknown world type or game mode</source>
         <translation>Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="405"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="420"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="430"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="440"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="418"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="428"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="438"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -6098,12 +6098,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="459"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="457"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="459"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="457"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -6160,7 +6160,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="676"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="674"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -7113,17 +7113,17 @@ Jetzt: %2</translation>
         <translation>Hier nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="445"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="447"/>
         <source>Advancement made!</source>
         <translation>Fortschritt erzielt!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="447"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="449"/>
         <source>Goal reached!</source>
         <translation>Ziel erreicht!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="449"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="451"/>
         <source>Challenge complete!</source>
         <translation>Herausforderung gemeistert!</translation>
     </message>
@@ -8640,33 +8640,33 @@ Jetzt: %2</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="57"/>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="128"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="129"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="212"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="214"/>
         <source>%1 was shot by %2</source>
         <translation>%1 wurde von %2 erschossen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="213"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="215"/>
         <source>%1 was slain by %2</source>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="303"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="307"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="311"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="315"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="317"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="321"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -9663,7 +9663,7 @@ Jetzt: %2</translation>
         <translation>%1 hat den Fortschritt [%2] erzielt</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="172"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="173"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>
@@ -10428,6 +10428,24 @@ Jetzt: %2</translation>
         <location filename="../src/app/qml/inventory/SlotScreen.qml" line="189"/>
         <source>More in the handbook ›</source>
         <translation>Mehr im Handbuch ›</translation>
+    </message>
+</context>
+<context>
+    <name>SmithingScreen</name>
+    <message>
+        <location filename="../src/app/qml/inventory/SmithingScreen.qml" line="22"/>
+        <source>Smithing Table</source>
+        <translation>Schmiedetisch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/SmithingScreen.qml" line="51"/>
+        <source>Template · diamond tool or armour · netherite ingot</source>
+        <translation>Vorlage · Werkzeug oder Rüstung aus Diamant · Netheritbarren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/SmithingScreen.qml" line="60"/>
+        <source>Upgrade</source>
+        <translation>Aufwerten</translation>
     </message>
 </context>
 <context>

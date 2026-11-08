@@ -8,15 +8,25 @@
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/hooks/QcStartupHooks.h"
-#include "app/inventory/QcAnvilController.h"
-#include "app/inventory/QcEnchantingController.h"
-#include "app/inventory/QcStonecutterController.h"
 #include "app/inventory/QcTradeController.h"
+#include "app/inventory/QcWorkstationControllers.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldAtlas.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
+
+namespace {
+
+// The workstation `station` opening or closing shows or closes its screen `overlay`.
+template<typename Station>
+void connectScreen(const Station *station, QcScreenState &screens, QcScreenState::Overlay overlay)
+{
+    QObject::connect(station, &Station::opened, &screens, [&screens, overlay] { screens.workstationOpened(overlay); });
+    QObject::connect(station, &Station::closed, &screens, [&screens, overlay] { screens.workstationClosed(overlay); });
+}
+
+} // namespace
 
 QcSessionWiring::QcSessionWiring(QcSessionParts &parts, const Targets &targets)
     : m_parts(parts)
@@ -101,6 +111,7 @@ void QcSessionWiring::connectPlayer()
     connectStonecutter();
     connectEnchanting();
     connectAnvil();
+    connectSmithing();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
@@ -109,9 +120,8 @@ void QcSessionWiring::connectPlayer()
 void QcSessionWiring::connectStonecutter()
 {
     const QcClientSession *session = m_parts.session.get();
-    const QcStonecutterController *stonecutter = &m_targets.stonecutter;
-    connect(&session->stonecutter(), &QcClientStonecutter::opened, &m_targets.screens, &QcScreenState::stonecutterOpened);
-    connect(&session->stonecutter(), &QcClientStonecutter::closed, &m_targets.screens, &QcScreenState::stonecutterClosed);
+    const QcStonecutterController *stonecutter = m_targets.workstations.stonecutter.get();
+    connectScreen(&session->stonecutter(), m_targets.screens, QcScreenState::Overlay::Stonecutter);
     connect(&session->stonecutter(), &QcClientStonecutter::opened, stonecutter, &QcStonecutterController::update);
     connect(&session->stonecutter(), &QcClientStonecutter::closed, stonecutter, &QcStonecutterController::update);
     connect(&session->stonecutter(), &QcClientStonecutter::changed, stonecutter, &QcStonecutterController::update);
@@ -126,9 +136,8 @@ void QcSessionWiring::connectAnvil()
 {
     const QcClientSession *session = m_parts.session.get();
     const QcClientAnvil *anvil = &session->anvil();
-    const QcAnvilController *controller = &m_targets.anvil;
-    connect(anvil, &QcClientAnvil::opened, &m_targets.screens, &QcScreenState::anvilOpened);
-    connect(anvil, &QcClientAnvil::closed, &m_targets.screens, &QcScreenState::anvilClosed);
+    const QcAnvilController *controller = m_targets.workstations.anvil.get();
+    connectScreen(anvil, m_targets.screens, QcScreenState::Overlay::Anvil);
     connect(anvil, &QcClientAnvil::opened, controller, &QcAnvilController::update);
     connect(anvil, &QcClientAnvil::closed, controller, &QcAnvilController::update);
     connect(anvil, &QcClientAnvil::changed, controller, &QcAnvilController::update);
@@ -142,13 +151,29 @@ void QcSessionWiring::connectAnvil()
     connect(anvil, &QcClientAnvil::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
 }
 
+void QcSessionWiring::connectSmithing()
+{
+    const QcClientSmithing *smithing = &m_parts.session->smithing();
+    const QcSmithingController *controller = m_targets.workstations.smithing.get();
+    connectScreen(smithing, m_targets.screens, QcScreenState::Overlay::Smithing);
+    connect(smithing, &QcClientSmithing::opened, controller, &QcSmithingController::update);
+    connect(smithing, &QcClientSmithing::closed, controller, &QcSmithingController::update);
+    connect(smithing, &QcClientSmithing::changed, controller, &QcSmithingController::update);
+    // The template, base, addition and output slots live in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(smithing, &QcClientSmithing::opened, player, &QcPlayerController::updateInventory);
+    connect(smithing, &QcClientSmithing::changed, player, &QcPlayerController::updateInventory);
+    connect(smithing, &QcClientSmithing::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay smithing` fills the three slots from the hotbar.
+    connect(smithing, &QcClientSmithing::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
+}
+
 void QcSessionWiring::connectEnchanting()
 {
     const QcClientSession *session = m_parts.session.get();
     const QcClientEnchanting *table = &session->enchanting();
-    const QcEnchantingController *enchanting = &m_targets.enchanting;
-    connect(table, &QcClientEnchanting::opened, &m_targets.screens, &QcScreenState::enchantingOpened);
-    connect(table, &QcClientEnchanting::closed, &m_targets.screens, &QcScreenState::enchantingClosed);
+    const QcEnchantingController *enchanting = m_targets.workstations.enchanting.get();
+    connectScreen(table, m_targets.screens, QcScreenState::Overlay::Enchanting);
     connect(table, &QcClientEnchanting::opened, enchanting, &QcEnchantingController::update);
     connect(table, &QcClientEnchanting::closed, enchanting, &QcEnchantingController::update);
     connect(table, &QcClientEnchanting::changed, enchanting, &QcEnchantingController::update);

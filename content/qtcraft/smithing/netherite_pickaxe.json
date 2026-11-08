@@ -1,0 +1,7 @@
+{
+    "name": "netherite_pickaxe",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_pickaxe",
+    "addition": "netherite_ingot",
+    "result": "netherite_pickaxe"
+}

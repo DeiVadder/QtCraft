@@ -1,0 +1,34 @@
+{
+    "name": "netherite_armour",
+    "parent": "ancient_debris",
+    "icon": "netherite_chestplate",
+    "frame": "challenge",
+    "handbook": "chapter:netherite",
+    "criteria": {
+        "netherite_helmet": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "netherite_helmet"
+            }
+        },
+        "netherite_chestplate": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "netherite_chestplate"
+            }
+        },
+        "netherite_leggings": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "netherite_leggings"
+            }
+        },
+        "netherite_boots": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "netherite_boots"
+            }
+        }
+    },
+    "requirements": "all"
+}

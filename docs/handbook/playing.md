@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -780,6 +780,28 @@ A bed cannot be slept in where the dimension does not allow it: used in the Neth
 **See also**
 
 [Soul anchor](blocks.md#block-qtcraft-soul_anchor), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Glowstone](blocks.md#block-qtcraft-glowstone), [Crimson stem](blocks.md#block-qtcraft-crimson_stem), [Warped stem](blocks.md#block-qtcraft-warped_stem), [Blackstone](blocks.md#block-qtcraft-blackstone), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Bed](blocks.md#block-qtcraft-bed)
+
+### <a id="chapter-qtcraft-netherite"></a>Netherite
+
+**Ancient debris**
+
+The rarest find of the Nether lies deep down: **ancient debris**, in small clumps of one to three, most often between heights 8 and 24 and now and then up to height 119. It is always buried in netherrack, never beside open air, so dig tunnels low in the Nether rather than looking along the walls of caves. It needs a diamond pickaxe; explosions do not touch it, so explosives can clear the netherrack around it. Chests in bastion ruins hold some too.
+
+**Scrap and ingots**
+
+A furnace smelts ancient debris into **netherite scrap**. Four pieces of scrap and four gold ingots, anywhere in the crafting grid, make one **netherite ingot**; nine ingots pack into a block of netherite, which crafts back into nine.
+
+**The smithing table**
+
+Netherite tools and armour are not crafted but upgraded from diamond at the **smithing table** (two iron ingots over four planks). Put a **netherite upgrade** template into the first slot, the diamond tool or piece of armour into the second and a netherite ingot into the third, then press *Upgrade*: the piece becomes netherite and keeps its enchantments, its name and its wear. Each upgrade uses up one template and one ingot. Templates come from bastion ruins: the treasure hall always has one, other chests now and then. Seven diamonds and a block of netherrack around a template make two.
+
+**Stronger than diamond**
+
+Netherite tools last 2031 uses, mine faster than diamond and break blocks of level 5; the sword deals one point more. Netherite armour gives as many armour points as diamond, but is tougher, so hard hits pierce it less, and every piece holds back a tenth of each push. Nothing made of netherite burns: dropped into lava or fire, it floats up and waits to be picked up.
+
+**See also**
+
+[Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Smithing table](blocks.md#block-qtcraft-smithing_table), [Netherite upgrade](items.md#item-qtcraft-netherite_upgrade_smithing_template), [Netherite sword](tools.md#item-qtcraft-netherite_sword), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 

@@ -31,10 +31,31 @@ Vein grown(const QcTerrainDefinitions::Ore &ore, int vein, QcChunkPos pos)
     return cells;
 }
 
+namespace {
+
+// Whether a face of the chunk-local `cell` inside the chunk touches air.
+bool touchesAir(const QcChunk &chunk, QcBlockPos cell)
+{
+    static constexpr std::array<std::array<int, 3>, 6> faces{{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
+    for (const auto &face : faces) {
+        const int x = cell.x + face[0];
+        const int y = cell.y + face[1];
+        const int z = cell.z + face[2];
+        const bool inside = x >= 0 && x < QcWorld::chunkSize && z >= 0 && z < QcWorld::chunkSize && y >= 0 && y < QcWorld::worldHeight;
+        if (inside && chunk.block(x, y, z) == qcAirBlockId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+} // namespace
+
 void place(QcChunk &chunk, const QcTerrainDefinitions::Ore &ore, const Vein &cells)
 {
     for (const QcBlockPos &cell : cells) {
-        if (cell.y >= 0 && cell.y < QcWorld::worldHeight && chunk.block(cell.x, cell.y, cell.z) == ore.replaces) {
+        if (cell.y >= 0 && cell.y < QcWorld::worldHeight && chunk.block(cell.x, cell.y, cell.z) == ore.replaces
+            && !(ore.hidden && touchesAir(chunk, cell))) {
             chunk.setBlock(cell.x, cell.y, cell.z, ore.block);
         }
     }

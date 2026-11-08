@@ -47,6 +47,7 @@ void QcClientSession::connectParts()
     m_stonecutter.setSender(send);
     m_enchanting.setSender(send);
     m_anvil.setSender(send);
+    m_smithing.setSender(send);
     m_admin.setSender(send);
 }
 
@@ -153,7 +154,7 @@ void QcClientSession::handleMessage(const QcMessage &message)
 
     if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
         && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
-        && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_enchanting.handle(message) && !m_anvil.handle(message)
+        && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_enchanting.handle(message) && !m_anvil.handle(message) && !m_smithing.handle(message)
         && !m_admin.receive(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }

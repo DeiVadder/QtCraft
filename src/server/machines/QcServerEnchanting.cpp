@@ -22,7 +22,7 @@ QcServerEnchanting::QcServerEnchanting(QcServerState &state, QcServerSounds &sou
     , m_screens(screens)
 {
     // One screen at a time: a block's, cart's or villager's screen opening closes the table.
-    m_screens.setEnchantingCloser([this](QcServerClient &client) { close(client, true); });
+    m_screens.setWorkstationCloser(QcWorkstation::Enchanting, [this](QcServerClient &client) { close(client, true); });
 }
 
 bool QcServerEnchanting::isTable(const QcServerState &state, QcBlockPos pos)
@@ -40,8 +40,7 @@ bool QcServerEnchanting::open(QcServerClient &client, QcBlockPos pos)
     const bool same = client.screen.enchanting && client.screen.enchanting->pos == pos;
     m_screens.close(client, true);
     m_screens.endTrade(client);
-    m_screens.closeStonecutter(client);
-    m_screens.closeAnvil(client);
+    m_screens.closeWorkstationsExcept(client, QcWorkstation::Enchanting);
     if (!same) {
         m_inventory.returnScreenInputs(client);
         client.screen.enchanting = QcServerClient::Enchanting{pos, {}, {}, {}, -1};
@@ -81,7 +80,7 @@ void QcServerEnchanting::update()
         }
         if (!canStayOpen(*client)) {
             close(*client, true);
-        } else if (shelvesAt(m_state, client->screen.enchanting->pos) != client->screen.enchanting->shownShelves) {
+        } else if (const auto &table = client->screen.enchanting; table && shelvesAt(m_state, table->pos) != table->shownShelves) {
             // Someone placed or broke a bookshelf: the offers change, so the client hears them.
             m_inventory.send(*client);
         }

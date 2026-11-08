@@ -182,6 +182,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
     session/QcClientSession.h session/QcClientSession.cpp
     session/QcClientSignEditor.h session/QcClientSignEditor.cpp
+    session/QcClientSmithing.h session/QcClientSmithing.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientStonecutter.h session/QcClientStonecutter.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp

@@ -3,6 +3,7 @@
 
 #include "server/gameplay/QcEnvironmentDamage.h"
 
+#include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPose.h"
@@ -91,7 +92,12 @@ void QcEnvironmentDamage::applyContactDamage()
         }
     }
 
+    // Items with the tag fire_resistant (netherite, decision E-1118) lie in fire and float in lava.
     m_state.entities().items().removeWhere([this](const QcItemEntity &item) {
+        const QcContentRegistry &content = m_state.content();
+        if (content.isValidItem(item.stack.item) && content.item(item.stack.item).isFireResistant()) {
+            return false;
+        }
         return m_state.contactDamage().touching(m_state.world(), QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)).burnsItems;
     });
 }

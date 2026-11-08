@@ -210,16 +210,8 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
-    // The stonecutter (decision E-785).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.stonecutter.open(client, target)) {
-        return true;
-    }
-    // The enchanting table (decision E-864).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.enchanting.open(client, target)) {
-        return true;
-    }
-    // The anvil (decision E-866).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.anvil.open(client, target)) {
+    // The stonecutter, the enchanting table, the anvil and the smithing table.
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.open(client, target)) {
         return true;
     }
 

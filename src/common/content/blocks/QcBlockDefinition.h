@@ -200,6 +200,8 @@ struct QcBlockDefinition
     bool opensEnchanting = false;
     /*! Using the block opens the anvil's screen (decision E-866). */
     bool opensAnvil = false;
+    /*! Using the block opens the smithing table's screen (decision E-1115). */
+    bool opensSmithing = false;
     /*! The anvil this one wears into when used or after a fall (chipped, damaged); empty: it
         breaks. Server side only. */
     QString wearsInto;

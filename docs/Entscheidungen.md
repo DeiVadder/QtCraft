@@ -6668,3 +6668,61 @@ Das Feld `bedsExplode` der Dimension (seit E-1033 in den Daten, bisher ohne Wirk
 - **Handbuch:** Kapitel „Im Nether beginnen“ / „Starting in the Nether“ (Startwahl, erste Schritte ohne Wasser und Eisen, der Seelenanker, Betten), Beschreibungen der Ankerblöcke.
 - **Showcase:** In der Ankunftsstation des Nethers steht eine Reihe Anker von leer bis voll mit Schildern; die Startwahl zeigt die Weltanlage.
 - **Erreichbarkeit:** `test_progression_reachability` ist mit der neuen Spawn-Suche grün, der Zensus liegt um den neuen `spawnPoint()` (E-1097 bestätigt). Truhen aus `generatorChanges[].loot` und der Beute eines Dorfstils liest der Zensus schon: beide kommen über `furnishingIn` des Generators (`QcPieceVariation`, `QcVillageStyles`); `censusSeesTheChestsOfAVillage` zeigt es an einem gesuchten Dorf.
+
+## E-1115 Schmiedetisch: Schmiede-Rezepte und Bildschirm (Paket 84.8) — `QcSmithingRecipe`, `QcSmithing`, `QcServerSmithing`, `QcClientSmithing`, `QcSmithingController`
+
+- **Daten:** neuer Inhaltsordner `smithing/` mit `{template, base, addition, result}` je Rezept (`QcRecipeParser::parseSmithingRecipe`, im Content-Sync über `QcSmithingSerializer`, damit Bildschirm und Handbuch sie kennen). Der Basisinhalt hat neun: jedes Diamant-Werkzeug und jedes Diamant-Rüstungsteil mit der Vorlage `netherite_upgrade_smithing_template` und einem Netheritbarren zum Netherit-Gegenstück. Ein Block mit `"smithing": true` öffnet den Bildschirm (`QcBlockDefinition::opensSmithing`, Handbuch-Fakt „Schmieden“).
+- **Regel (`QcSmithing`):** drei Plätze Vorlage, Basis, Zusatz (Maschinenplätze 45–47 wie beim Amboss). Ein Rezept passt, wenn alle drei Items stimmen und die Basis genau ein Stück ist. Das Ergebnis ist der Basis-Stapel mit neuem Item: Verzauberungen, Name, Abnutzung und alle übrigen Daten bleiben (wie im Vorbild). Die Abnutzung bleibt als Zahl, das Netheritteil hat also dieselbe absolute Abnutzung bei höherer Haltbarkeit.
+- **Ablauf wie Amboss (E-866):** `OpenSmithing`, `SmithingState` (drei Plätze und Ausgabe), `ForgeSmithing` (der Client nennt die erwartete Ausgabe; der Server prüft sie, verbraucht je eine Vorlage und einen Zusatz und legt das Ergebnis in den Basisplatz, Klang wie beim Amboss), `CloseSmithing` (beide Seiten). Schließen und Verlassen geben die Plätze zurück, ein Absturz des Spielers bewahrt sie in der Spielerdatei wie die anderen Werkbänke. Shift-Klick sortiert Vorlage, Basis und Zusatz in ihren Platz (`QcQuickMove::Situation::workstationSlot`). Protokoll 94. Zuschauer dürfen nichts davon senden, Ratenbegrenzung wie der Amboss.
+- **Oberfläche:** `SmithingScreen.qml` (drei Plätze mit Platzhalter der Vorlage, Pfeil, Ausgabe, eine Zeile, was wohin gehört, Knopf „Aufwerten“); die Ausgabezeile des Ambosses ist jetzt die gemeinsame Komponente `WorkbenchOutput.qml`. Test-Hook `--overlay smithing`.
+- **Nicht wie im Vorbild:** keine Rüstungsverzierungen (Trims) und deren Vorlagen; Nehmen über den Knopf statt durch Klick auf die Ausgabe (wie unser Amboss). Der Tisch ist kein Arbeitsplatz eines Dorfbewohners (Werkzeugschmied fehlt).
+
+## E-1116 Zähigkeit und Rückstoßfestigkeit der Rüstung, Formel des Vorbilds (Paket 84.8) — `QcArmourDefinition::toughness`, `QcArmourDefinition::knockbackResistance`, `QcArmour::reducedDamage`
+
+- **Was:** Rüstung hat zwei neue Felder, `toughness` (0–20, Summe der getragenen Teile) und `knockbackResistance` (0–1, Summe höchstens 1). Diamant 2 je Teil, Netherit 3 je Teil und 0,1 Rückstoßfestigkeit je Teil, wie im Vorbild.
+- **Formel (ersetzt das Modell „4 % je Punkt“ aus E-234, das Zähigkeit verworfen hatte):** wirksame Punkte = `clamp(Punkte − Schaden / (2 + Zähigkeit / 4), Punkte / 5, 20)`, Minderung 4 % je wirksamem Punkt. Kleine Treffer bleiben fast wie vorher (1 Schaden gegen volle Diamantrüstung: 79 % statt 80 %), harte Treffer durchschlagen mehr (10 Schaden gegen 20 Punkte ohne Zähigkeit: 60 % statt 80 %, mit Zähigkeit 12: 72 %). Damit wird jede Rüstung gegen große Treffer schwächer als bisher; das ist die Regel des Vorbilds, **der Mensch sollte das Balancing prüfen**.
+- **Rückstoß:** Schläge und Geschosse stoßen mit `1 − Rückstoßfestigkeit`; Explosionen bleiben unverändert (im Vorbild unsicher, ob die Festigkeit dort wirkt; wir lassen es weg).
+- **Abnutzung:** unverändert, berechnet vom Schaden vor der Minderung.
+
+## E-1117 Antiker Schrott: verborgene Adern tief im Nether (Paket 84.8) — `QcOreDefinition::hidden`, `QcOreVeins`
+
+- **Was:** neues Feld `"hidden": true` einer Erzader: eine Zelle der Ader, die an einer Seite im selben Chunk an Luft grenzt, wird nicht gesetzt (Vorbild: `discard_chance_on_air_exposure` 1,0). Zwei Adern im Nether ersetzen nur Netherrack: `ancient_debris_large` (Höhe 8–24, eine Ader je Chunk, Größe 3) und `ancient_debris_small` (8–119, eine Ader, Größe 2).
+- **Abweichungen:** Das Vorbild ersetzt auch Basalt und Schwarzstein, die große Ader ist dort in der Höhe dreieckig um 16 verteilt und Adern wachsen ungleichmäßig; hier gleichmäßig in der Höhe und genau so groß, wie die Ader sagt. Luft im Nachbarchunk zählt nicht (die Ader sieht nur ihren Chunk).
+- **Block:** Härte 30, Sprengfestigkeit 1200, Diamantspitzhacke, lässt sich selbst fallen, feuerfest als Item (E-1118). Kolben-Verhalten wie jeder Block (im Vorbild unsicher).
+- **Generator:** Nether-Reihe 1 (offen) ändert ihre Ausgabe; Prüfsummen für darwin-arm64 neu aufgenommen (E-922), linux-arm64 und winnt-x86_64 stehen noch aus.
+
+## E-1118 Feuerfeste Items (Paket 84.8) — `QcItemDefinition::fireResistantTag`, `QcEnvironmentDamage`
+
+- **Was:** Ein Item mit dem Tag `qtcraft:fire_resistant` (im Basispaket `"fire_resistant"`) verbrennt als liegendes Item weder in Lava noch im Feuer. Blöcke bekommen es über ihr Feld `tags`, das an ihr Item geht. Netherit-Werkzeuge, -Rüstung, Schrott, Barren, Netheritblock und antiker Schrott tragen es.
+- **Aufschwimmen:** Items schwimmen schon in jeder Flüssigkeit nach oben; Lava zählt dazu, also schwimmt ein feuerfestes Item in Lava auf, wie im Vorbild. Kein eigenes Verhalten nötig.
+- **Nicht betroffen:** Ein Spieler in Netherit-Rüstung brennt wie vorher (im Vorbild auch).
+
+## E-1119 Werte des Netherits nach dem Vorbild, Bastions-Beute vollständig (Paket 84.8)
+
+Quelle: das Vorbild (Java-Ausgabe) aus Erinnerung, nichts nachgeschlagen. „Sicher“ heißt verlässliche Erinnerung, „unsicher“ sollte der Mensch prüfen.
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Haltbarkeit Netherit-Werkzeuge | – | 2031 | Vorbild, sicher |
+| Haltbarkeit Netherit-Rüstung (Helm/Brust/Beine/Stiefel) | – | 407/592/555/481 | Vorbild (37 × 11/16/15/13), sicher |
+| Rüstungspunkte Netherit | – | 3/8/6/3 wie Diamant | Vorbild, sicher |
+| Zähigkeit Diamant | 0 (gab es nicht) | 2 je Teil | Vorbild, sicher |
+| Zähigkeit Netherit | – | 3 je Teil | Vorbild, sicher |
+| Rückstoßfestigkeit Netherit | – | 0,1 je Teil | Vorbild, sicher |
+| Angriffsschaden Netherit (Schwert/Spitzhacke/Axt/Schaufel/Hacke) | – | 8/5/6/4,5/1 | Vorbild: Diamant + 1, Hacke gleich (sicher); auf unsere eigene Werkzeugtabelle angewandt (Diamant 7/4/5/3,5/1, dort 7/5/9/5,5/1) |
+| Abbaugeschwindigkeit | – | 9 | Vorbild, sicher |
+| Werkzeugstufe | – | 5 (eine über Diamant) | eigene Stufentabelle, Vorbild hat Netherit über Diamant |
+| Verzauberbarkeit | – | 15 Werkzeuge und Rüstung | Vorbild, sicher |
+| Antiker Schrott Härte, Sprengfestigkeit | – | 30, 1200 | Vorbild, sicher |
+| Netheritblock Härte, Sprengfestigkeit | – | 50, 1200 | Vorbild, sicher (hier nicht halbiert wie Obsidian, da Netherit-Spitzhacke schneller ist; unsicher, ob gewollt) |
+| Schmelzen Schrott | – | 10 s, 2,0 Erfahrung | Vorbild, sicher |
+| Netheritbarren | – | 4 Schrott + 4 Gold, formlos | Vorbild, sicher |
+| Netheritblock | – | 9 Barren, zurück 9 | Vorbild, sicher |
+| Schmiedetisch | – | 2 Eisenbarren über 4 Bretter, Härte 2,5, Axt, Brennstoff 15 s | Vorbild, sicher |
+| Vorlage kopieren | – | 7 Diamanten, Vorlage, Netherrack → 2 | Vorbild, sicher |
+| Schrott-Adern | – | siehe E-1117 | Vorbild, Verteilung abweichend |
+| Bastions-Beute | `pending` für Schrott, Barren, Schrott-Block, Vorlage | echte Einträge mit den Gewichten von E-1009 | Vorbild (Gewichte aus 84.6b), sicher |
+
+**Showcase:** Station `netherite` (Reihenfolge 110): Schmiedetisch, Truhe mit Vorlagen, Barren, Schrott, Gold, Diamantteilen (Schwert mit Schärfe III), Ofen und Lavaeimer, Netheritblock, antiker Schrott in Netherrack, Rüstungsständer in voller Netheritrüstung mit Netheritschwert. Der Ständerbereich des Showcase hat jetzt auch einen Netherit-Ständer.
+
+**Handbuch:** Kapitel „Netherit“ (Fund, Barren, Schmiedetisch, feuerfest), Beschreibungen aller neuen Blöcke und Items. **Fortschritte:** „Verborgen in der Tiefe“ (antiker Schrott erhalten, unter „Diamanten!“) und die Herausforderung „Ganz in Schrott gehüllt“ (alle vier Netherit-Teile).

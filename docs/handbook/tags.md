@@ -2,9 +2,21 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals) · [Cobblestone or blackstone](#tag-qtcraft-stone_crafting_materials) · [Soul sand or soul soil](#tag-qtcraft-soul_blocks)
+**QtCraft:** [#fire_resistant](#tag-qtcraft-fire_resistant) · [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals) · [Cobblestone or blackstone](#tag-qtcraft-stone_crafting_materials) · [Soul sand or soul soil](#tag-qtcraft-soul_blocks)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-fire_resistant"></a>#fire_resistant
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:fire_resistant` |
+
+**Items in this group**
+
+[Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Netherite axe](tools.md#item-qtcraft-netherite_axe), [Netherite boots](tools.md#item-qtcraft-netherite_boots), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate), [Netherite helmet](tools.md#item-qtcraft-netherite_helmet), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Netherite leggings](tools.md#item-qtcraft-netherite_leggings), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel), [Netherite sword](tools.md#item-qtcraft-netherite_sword)
 
 ### <a id="tag-qtcraft-wooden_slabs"></a>#wooden_slabs
 
@@ -116,7 +128,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Barrel](blocks.md#block-qtcraft-barrel), [Bed](blocks.md#block-qtcraft-bed), [Black bed](blocks.md#block-qtcraft-black_bed), [Blue bed](blocks.md#block-qtcraft-blue_bed), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Brown bed](blocks.md#block-qtcraft-brown_bed), [Chest](blocks.md#block-qtcraft-chest), [Composter](blocks.md#block-qtcraft-composter), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Cyan bed](blocks.md#block-qtcraft-cyan_bed), [Gray bed](blocks.md#block-qtcraft-gray_bed), [Green bed](blocks.md#block-qtcraft-green_bed), [Light blue bed](blocks.md#block-qtcraft-light_blue_bed), [Light gray bed](blocks.md#block-qtcraft-light_gray_bed), [Lime bed](blocks.md#block-qtcraft-lime_bed), [Magenta bed](blocks.md#block-qtcraft-magenta_bed), [Note Block](blocks.md#block-qtcraft-note_block), [Orange bed](blocks.md#block-qtcraft-orange_bed), [Pink bed](blocks.md#block-qtcraft-pink_bed), [Purple bed](blocks.md#block-qtcraft-purple_bed), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Stick](items.md#item-qtcraft-stick), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [White bed](blocks.md#block-qtcraft-white_bed), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword), [Yellow bed](blocks.md#block-qtcraft-yellow_bed)
+[Barrel](blocks.md#block-qtcraft-barrel), [Bed](blocks.md#block-qtcraft-bed), [Black bed](blocks.md#block-qtcraft-black_bed), [Blue bed](blocks.md#block-qtcraft-blue_bed), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Brown bed](blocks.md#block-qtcraft-brown_bed), [Chest](blocks.md#block-qtcraft-chest), [Composter](blocks.md#block-qtcraft-composter), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Cyan bed](blocks.md#block-qtcraft-cyan_bed), [Gray bed](blocks.md#block-qtcraft-gray_bed), [Green bed](blocks.md#block-qtcraft-green_bed), [Light blue bed](blocks.md#block-qtcraft-light_blue_bed), [Light gray bed](blocks.md#block-qtcraft-light_gray_bed), [Lime bed](blocks.md#block-qtcraft-lime_bed), [Magenta bed](blocks.md#block-qtcraft-magenta_bed), [Note Block](blocks.md#block-qtcraft-note_block), [Orange bed](blocks.md#block-qtcraft-orange_bed), [Pink bed](blocks.md#block-qtcraft-pink_bed), [Purple bed](blocks.md#block-qtcraft-purple_bed), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Smithing table](blocks.md#block-qtcraft-smithing_table), [Stick](items.md#item-qtcraft-stick), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [White bed](blocks.md#block-qtcraft-white_bed), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword), [Yellow bed](blocks.md#block-qtcraft-yellow_bed)
 
 ### <a id="tag-qtcraft-terracotta"></a>Any terracotta
 

@@ -81,8 +81,10 @@ target_sources(qc_app_core PRIVATE
     inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
     inventory/QcSlotActions.h
     inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
+    inventory/QcSmithingController.h inventory/QcSmithingController.cpp
     inventory/QcStonecutterController.h inventory/QcStonecutterController.cpp
     inventory/QcTradeController.h inventory/QcTradeController.cpp
+    inventory/QcWorkstationControllers.h
 )
 target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
@@ -321,8 +323,10 @@ qt_add_qml_module(qc_app_core
         qml/inventory/PlayerSlots.qml
         qml/inventory/SlotName.qml
         qml/inventory/SlotScreen.qml
+        qml/inventory/SmithingScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
+        qml/inventory/WorkbenchOutput.qml
         qml/menus/CharacterPage.qml
         qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml

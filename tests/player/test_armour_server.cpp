@@ -126,11 +126,12 @@ private slots:
         QVERIFY2(bare >= 3.0, qPrintable(QString::number(bare)));
         chat(u"/heal"_s);
 
-        // Full diamond: 20 points take 80 % off; every burn wears every piece by one.
+        // Full diamond: 20 points and toughness 8 against 1-point burns leave 19.75 points of the
+        // role model's formula (E-1116), 79 % off; every burn wears every piece by one.
         chat(u"/equip diamond"_s);
         QCOMPARE(QcArmour::points(*m_content, m_client->equipment), 20);
         const double armoured = burnOnMagma(40);
-        QVERIFY2(std::abs(armoured - bare * 0.2) < 0.01, qPrintable(u"%1 vs %2"_s.arg(armoured).arg(bare)));
+        QVERIFY2(std::abs(armoured - bare * 0.21) < 0.01, qPrintable(u"%1 vs %2"_s.arg(armoured).arg(bare)));
         const int hits = static_cast<int>(std::lround(bare));
         for (const QcItemStack &stack : m_client->equipment.stacks) {
             QCOMPARE(stack.damage, hits);

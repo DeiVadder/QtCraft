@@ -223,50 +223,27 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
     send(client, true);
 }
 
-void QcBlockScreens::setStonecutterCloser(std::function<void(QcServerClient &)> closer)
+void QcBlockScreens::setWorkstationCloser(QcWorkstation kind, std::function<void(QcServerClient &)> closer)
 {
-    m_closeStonecutter = std::move(closer);
-}
-
-void QcBlockScreens::setEnchantingCloser(std::function<void(QcServerClient &)> closer)
-{
-    m_closeEnchanting = std::move(closer);
-}
-
-void QcBlockScreens::setAnvilCloser(std::function<void(QcServerClient &)> closer)
-{
-    m_closeAnvil = std::move(closer);
+    m_workstationClosers.at(static_cast<std::size_t>(kind)) = std::move(closer);
 }
 
 void QcBlockScreens::closeOtherScreens(QcServerClient &client)
 {
-    closeStonecutter(client);
-    closeEnchanting(client);
-    closeAnvil(client);
+    closeWorkstationsExcept(client);
     endTrade(client);
 }
 
-void QcBlockScreens::closeStonecutter(QcServerClient &client)
+void QcBlockScreens::closeWorkstationsExcept(QcServerClient &client, std::optional<QcWorkstation> keep)
 {
-    // The stonecutter's input goes back to the player (QcServerStonecutter::close).
-    if (client.screen.stonecutter && m_closeStonecutter) {
-        m_closeStonecutter(client);
-    }
-}
-
-void QcBlockScreens::closeEnchanting(QcServerClient &client)
-{
-    // The table's item and lapis go back to the player (QcServerEnchanting::close).
-    if (client.screen.enchanting && m_closeEnchanting) {
-        m_closeEnchanting(client);
-    }
-}
-
-void QcBlockScreens::closeAnvil(QcServerClient &client)
-{
-    // The anvil's slots go back to the player (QcServerAnvil::close).
-    if (client.screen.anvil && m_closeAnvil) {
-        m_closeAnvil(client);
+    // Each closer gives the slots of its screen back and does nothing when it is not open.
+    std::size_t kind = 0;
+    for (const std::function<void(QcServerClient &)> &closer : m_workstationClosers) {
+        const bool kept = keep && static_cast<std::size_t>(*keep) == kind;
+        if (!kept && closer) {
+            closer(client);
+        }
+        ++kind;
     }
 }
 

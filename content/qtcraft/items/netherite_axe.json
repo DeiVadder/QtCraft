@@ -1,0 +1,16 @@
+{
+    "name": "netherite_axe",
+    "texture": "netherite_axe",
+    "maxStack": 1,
+    "durability": 2031,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "attackDamage": 6.0,
+    "tool": "axe",
+    "toolLevel": 5,
+    "toolSpeed": 9.0,
+    "strips": true,
+    "tags": [
+        "fire_resistant"
+    ]
+}

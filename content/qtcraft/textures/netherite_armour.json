@@ -1,0 +1,8 @@
+{
+    "name": "netherite_armour",
+    "pattern": "armour_plate",
+    "primary": "#433b3d",
+    "secondary": "#6e6264",
+    "variation": 0.05,
+    "seed": 8890
+}

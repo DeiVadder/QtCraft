@@ -8,6 +8,7 @@
 #include "common/content/items/QcHoldSerializer.h"
 #include "common/content/items/QcItemSerializer.h"
 #include "common/content/mobs/QcMobSerializer.h"
+#include "common/content/recipes/QcSmithingSerializer.h"
 #include "common/content/registry/QcAdvancementSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcStreamLimits.h"
@@ -573,6 +574,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     QcHoldSerializer::writeDefaults(stream, content.holdDefaults());
     QcEnchantmentSerializer::write(stream, content.enchantments());
     QcAdvancementSerializer::write(stream, content.advancements());
+    QcSmithingSerializer::write(stream, content.smithingRecipes());
 }
 
 QcStatus QcContentRegistry::readBlockTable(QDataStream &stream)
@@ -614,10 +616,11 @@ QcResult<QcContentRegistry> QcContentSerializer::read(QDataStream &stream)
     using ReadStep = QcStatus (*)(QDataStream &, QcContentRegistry &);
     // The order of the tables in the stream.
     constexpr ReadStep readBlocks = [](QDataStream &in, QcContentRegistry &registry) { return registry.readBlockTable(in); };
-    constexpr std::array<ReadStep, 15> steps{readBlocks,       &readItems,           &readMobs,   &readRecipes,
+    constexpr std::array<ReadStep, 16> steps{readBlocks,       &readItems,           &readMobs,   &readRecipes,
                                              &readTextures,    &readTranslations,    &readPacks,  &readModels,
                                              &readAppearances, &readSmeltingRecipes, &readSounds, &readEffects,
-                                             &readHoldDefaults, &QcEnchantmentSerializer::read, &QcAdvancementSerializer::read};
+                                             &readHoldDefaults, &QcEnchantmentSerializer::read, &QcAdvancementSerializer::read,
+                                             &QcSmithingSerializer::read};
 
     QcContentRegistry registry;
     for (const ReadStep step : steps) {

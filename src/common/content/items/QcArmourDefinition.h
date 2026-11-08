@@ -78,11 +78,19 @@ struct QcArmourDefinition
     static constexpr int maxCovers = 16;
     /*! Upper limit of QcArmourLayer::inflate, in metres. */
     static constexpr double maxInflate = 0.2;
+    /*! The largest toughness of a piece. */
+    static constexpr double maxToughness = 20.0;
 
     /*! Slot the item is worn in (\c {"slot"}, required). */
     QcEquipmentSlot slot = QcEquipmentSlot::Head;
     /*! Armour points it gives (\c {"points"}, 0 to maxPoints, default 0). */
     int points = 0;
+    /*! Toughness (\c {"toughness"}, decision E-1116): hard hits pierce armour less, as in the
+        reference game; 0 for none. */
+    double toughness = 0.0;
+    /*! The share of a push the piece holds back (\c {"knockbackResistance"}, 0 to 1, decision
+        E-1116); the pieces a player wears add up to at most all of it. */
+    double knockbackResistance = 0.0;
     /*! Qualified name of the set (\c {"set"}); defaults to the item's own name. */
     QString set;
     /*! Layer boxes copied from the humanoid model (\c {"layers"}). */

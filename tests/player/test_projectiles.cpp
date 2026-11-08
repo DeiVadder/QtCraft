@@ -210,7 +210,7 @@ private slots:
         QVERIFY(player().motion.velocity.x > 0.0);
         QVERIFY(m_client->health < QcServerClient::maxHealth);
 
-        // With a diamond chestplate (8 points: 32 % less) after the invulnerability.
+        // With a diamond chestplate (8 points, toughness 2) after the invulnerability.
         player().health = QcServerClient::maxHealth;
         player().hurt.clear();
         player().equipment.at(QcEquipmentSlot::Chest) = {item("qtcraft:diamond_chestplate"), 1, 0};
@@ -219,7 +219,7 @@ private slots:
         ticks(2);
         const int points = QcArmour::points(*m_content, player().equipment);
         QVERIFY(points > 0);
-        QCOMPARE(player().health, QcServerClient::maxHealth - QcArmour::reducedDamage(6.0, points));
+        QCOMPARE(player().health, QcServerClient::maxHealth - QcArmour::reducedDamage(6.0, points, QcArmour::toughness(*m_content, player().equipment)));
     }
 
     void arrowsStickFallAgainAndDespawn()

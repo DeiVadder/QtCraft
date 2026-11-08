@@ -94,10 +94,12 @@ private:
         QcServerClient::Stonecutter *stonecutter = nullptr;
         QcServerClient::Enchanting *enchanting = nullptr;
         QcServerClient::Anvil *anvil = nullptr;
+        QcServerClient::Smithing *smithing = nullptr;
         int blockSlots = 0;
         QcSlotList combined;
 
-        // Writes the block slots of the list back into the open stonecutter, enchanting table or anvil.
+        // Writes the block slots of the list back into the open stonecutter, enchanting table, anvil
+        // or smithing table.
         void storeWorkstationSlots() const;
     };
 

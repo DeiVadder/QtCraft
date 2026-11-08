@@ -204,6 +204,8 @@ struct QcTerrainDefinitions
         int veins = 8;
         /*! Blocks per vein, at most. */
         int veinSize = 6;
+        /*! Whether cells next to air stay as they are (QcOreDefinition::hidden). */
+        bool hidden = false;
         /*! Seed of the ore's veins, derived from its name. */
         quint64 seed = 0;
         /*! Biome indices a vein may start in; empty for all. */

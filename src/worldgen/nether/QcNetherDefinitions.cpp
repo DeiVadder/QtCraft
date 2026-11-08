@@ -141,6 +141,7 @@ private:
         ore.maxY = definition.maxY;
         ore.veins = definition.veinsPerChunk;
         ore.veinSize = definition.veinSize;
+        ore.hidden = definition.hidden;
         ore.seed = qcMixSeed(seed, qcNameSalt(definition.name));
         if (ore.block != qcAirBlockId) {
             ores.append(ore);

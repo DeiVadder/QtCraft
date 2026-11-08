@@ -1,0 +1,15 @@
+{
+    "name": "netherite_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "netherite_ingot"
+    },
+    "result": {
+        "item": "netherite_block"
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "name": "netherite_helmet",
+    "texture": "netherite_helmet",
+    "maxStack": 1,
+    "durability": 407,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "armour": {
+        "slot": "head",
+        "points": 3,
+        "set": "netherite",
+        "layers": [
+            {
+                "covers": [
+                    "head"
+                ],
+                "texture": "netherite_armour",
+                "front": "netherite_helmet_front",
+                "inflate": 0.04
+            }
+        ],
+        "parts": [
+            {
+                "bone": "head",
+                "from": [
+                    -0.245,
+                    1.44,
+                    -0.3
+                ],
+                "to": [
+                    0.245,
+                    1.7,
+                    -0.27
+                ],
+                "texture": "netherite_visor"
+            },
+            {
+                "bone": "head",
+                "from": [
+                    -0.035,
+                    1.84,
+                    -0.23
+                ],
+                "to": [
+                    0.035,
+                    1.96,
+                    0.24
+                ],
+                "texture": "netherite_armour_trim"
+            }
+        ],
+        "toughness": 3.0,
+        "knockbackResistance": 0.1
+    },
+    "dispense": "equip",
+    "tags": [
+        "fire_resistant"
+    ]
+}

@@ -352,6 +352,8 @@ void QcPlayerController::updateInventory()
         block = session.enchanting().slotStacks();
     } else if (session.anvil().isOpen()) {
         block = session.anvil().slotStacks();
+    } else if (session.smithing().isOpen()) {
+        block = session.smithing().slotStacks();
     }
     m_inventory->setInventory(session.inventory(), session.inventoryMirror().craftingGrid(), session.inventoryMirror().craftingResult(), block,
                               session.inventoryMirror().equipment());

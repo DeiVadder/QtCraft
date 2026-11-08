@@ -1,0 +1,12 @@
+{
+    "name": "netherite_sword",
+    "texture": "netherite_sword",
+    "maxStack": 1,
+    "durability": 2031,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "attackDamage": 8.0,
+    "tags": [
+        "fire_resistant"
+    ]
+}

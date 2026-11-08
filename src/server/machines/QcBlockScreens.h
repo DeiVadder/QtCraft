@@ -9,13 +9,29 @@
 #include "server/dimensions/QcPerDimension.h"
 #include "server/machines/QcContainerSounds.h"
 
+#include <array>
 #include <functional>
+#include <optional>
 
 class QcServerBlocks;
 class QcServerSounds;
 struct QcMinecart;
 struct QcServerClient;
 class QcServerState;
+
+/*! The block screens with slots of their own that QcServerWorkstations runs: the stonecutter
+    (decision E-785), the enchanting table (E-864), the anvil (E-866) and the smithing table
+    (E-1115). */
+enum class QcWorkstation : quint8 {
+    /*! The stonecutter. */
+    Stonecutter,
+    /*! The enchanting table. */
+    Enchanting,
+    /*! The anvil. */
+    Anvil,
+    /*! The smithing table. */
+    Smithing,
+};
 
 /*! \brief The screens of containers and machines the players have open (chests, hoppers,
     dispensers, furnaces, container minecarts): opening, closing, sending their state.
@@ -74,26 +90,18 @@ public:
     void send(QcServerClient &client, bool force = false);
     /*! Sends the state to every player looking into the machine or chest at \a pos. */
     void sendToViewers(QcBlockPos pos);
-    /*! Closes the open stonecutter of \a client (with notice; its input goes back), if any. */
-    void closeStonecutter(QcServerClient &client);
-    /*! Closes the open enchanting table of \a client (with notice; its slots go back), if any. */
-    void closeEnchanting(QcServerClient &client);
-    /*! Closes the open anvil of \a client (with notice; its slots go back), if any. */
-    void closeAnvil(QcServerClient &client);
+    /*! Closes the open workstation screen of \a client (with notice; its slots go back), if any,
+        unless it is of the kind \a keep. */
+    void closeWorkstationsExcept(QcServerClient &client, std::optional<QcWorkstation> keep = std::nullopt);
     /*! Ends the trading screen of \a client (with notice), if any; QcServerTrading::update releases
         the villager. */
     void endTrade(QcServerClient &client);
 
-    /*! Sets the \a closer, how an open stonecutter is closed (QcServerStonecutter::close with
-        notice, which gives its input back) when a block's, cart's or villager's screen opens;
-        set by QcServerStonecutter. */
-    void setStonecutterCloser(std::function<void(QcServerClient &)> closer);
-    /*! Sets the \a closer of an open enchanting table, as setStonecutterCloser(); set by
-        QcServerEnchanting (decision E-864). */
-    void setEnchantingCloser(std::function<void(QcServerClient &)> closer);
-    /*! Sets the \a closer of an open anvil, as setStonecutterCloser(); set by QcServerAnvil
-        (decision E-866). */
-    void setAnvilCloser(std::function<void(QcServerClient &)> closer);
+    /*! Sets the \a closer of the workstation screens of the \a kind: how one is closed (its
+        close with notice, which gives its slots back and does nothing when none is open) when
+        a block's, cart's, villager's or another workstation's screen opens; set by the
+        workstation. */
+    void setWorkstationCloser(QcWorkstation kind, std::function<void(QcServerClient &)> closer);
 
     /*! Once per tick: sends what changed, closes screens whose block is gone, whose chunk
         unloaded or whose player died or walked away; containers that count their viewers take
@@ -120,9 +128,7 @@ private:
     QcServerState &m_state;
     QcServerBlocks &m_blocks;
     QcContainerSounds m_containerSounds;
-    std::function<void(QcServerClient &)> m_closeStonecutter;
-    std::function<void(QcServerClient &)> m_closeEnchanting;
-    std::function<void(QcServerClient &)> m_closeAnvil;
+    std::array<std::function<void(QcServerClient &)>, 4> m_workstationClosers;
     // Who looks into the blocks of a dimension.
     struct Viewers
     {

@@ -66,6 +66,7 @@ using QcHoldParser::parseHoldDefaults;
 using QcProjectileParser::parseProjectile;
 using QcRecipeParser::parseSmeltingRecipe;
 using QcRecipeParser::parseStonecuttingRecipe;
+using QcRecipeParser::parseSmithingRecipe;
 using QcShowcaseParser::parseShowcase;
 using QcSoundParser::parseSound;
 using QcStructureParser::parseStructure;

@@ -18,10 +18,8 @@
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
-#include "app/inventory/QcAnvilController.h"
-#include "app/inventory/QcEnchantingController.h"
-#include "app/inventory/QcStonecutterController.h"
 #include "app/inventory/QcTradeController.h"
+#include "app/inventory/QcWorkstationControllers.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
@@ -114,6 +112,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcEnchantingController *enchanting READ enchanting CONSTANT FINAL)
     // The anvil's screen (decision E-866).
     Q_PROPERTY(QcAnvilController *anvil READ anvil CONSTANT FINAL)
+    // The smithing table's screen (decision E-1115).
+    Q_PROPERTY(QcSmithingController *smithing READ smithing CONSTANT FINAL)
     // The tree of the adventure guide (decision E-924).
     Q_PROPERTY(QcAdvancementTreeModel *advancements READ advancements CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
@@ -171,9 +171,11 @@ public:
     QcPlayerController *player() const { return m_player.get(); }
     QcTradeController *trade() const { return m_trade.get(); }
     QcSignController *sign() const { return m_sign.get(); }
-    QcStonecutterController *stonecutter() const { return m_stonecutter.get(); }
-    QcEnchantingController *enchanting() const { return m_enchanting.get(); }
-    QcAnvilController *anvil() const { return m_anvil.get(); }
+    const QcWorkstationControllers &workstations() const { return m_workstations; }
+    QcStonecutterController *stonecutter() const { return workstations().stonecutter.get(); }
+    QcEnchantingController *enchanting() const { return workstations().enchanting.get(); }
+    QcAnvilController *anvil() const { return workstations().anvil.get(); }
+    QcSmithingController *smithing() const { return workstations().smithing.get(); }
     QcAdvancementTreeModel *advancements() const { return m_advancements.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
@@ -300,9 +302,7 @@ private:
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcSignController> m_sign;
-    std::unique_ptr<QcStonecutterController> m_stonecutter;
-    std::unique_ptr<QcEnchantingController> m_enchanting;
-    std::unique_ptr<QcAnvilController> m_anvil;
+    QcWorkstationControllers m_workstations;
     std::unique_ptr<QcAdvancementTreeModel> m_advancements;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;

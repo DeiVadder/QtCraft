@@ -7,8 +7,8 @@
                 {"item": "diamond_pickaxe", "weight": 6},
                 {"item": "diamond_shovel", "weight": 6},
                 {"pending": "crossbow", "weight": 6},
-                {"pending": "ancient_debris", "weight": 12},
-                {"pending": "netherite_scrap", "weight": 4},
+                {"item": "ancient_debris", "weight": 12},
+                {"item": "netherite_scrap", "weight": 4},
                 {"pending": "spectral_arrow", "weight": 10, "count": [10, 22]},
                 {"pending": "banner_pattern", "weight": 9},
                 {"pending": "music_disc", "weight": 5},
@@ -54,7 +54,7 @@
         {
             "rolls": 1,
             "entries": [
-                {"pending": "netherite_upgrade_smithing_template", "weight": 1},
+                {"item": "netherite_upgrade_smithing_template", "weight": 1},
                 {"weight": 9}
             ]
         }

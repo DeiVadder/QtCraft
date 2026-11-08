@@ -27,6 +27,7 @@
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
 #include "clientcore/session/QcClientSignEditor.h"
+#include "clientcore/session/QcClientSmithing.h"
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientStonecutter.h"
 #include "clientcore/session/QcClientTrading.h"
@@ -211,6 +212,10 @@ public:
     QcClientAnvil &anvil() { return m_anvil; }
     /*! Returns the anvil's screen the server opened, read-only. */
     const QcClientAnvil &anvil() const { return m_anvil; }
+    /*! Returns the smithing table's screen the server opened (decision E-1115). */
+    QcClientSmithing &smithing() { return m_smithing; }
+    /*! Returns the smithing table's screen the server opened, read-only. */
+    const QcClientSmithing &smithing() const { return m_smithing; }
     /*! Sends \a text as a chat line, trimmed; blank text sends nothing. */
     void sendChat(const QString &text);
     /*! Asks the server to pause (\a paused) while the pause menu is open, or to run on (decision
@@ -417,6 +422,7 @@ private:
     QcClientStonecutter m_stonecutter;
     QcClientEnchanting m_enchanting;
     QcClientAnvil m_anvil;
+    QcClientSmithing m_smithing;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities, m_vitals},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

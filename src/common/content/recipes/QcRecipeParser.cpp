@@ -235,4 +235,27 @@ namespace QcRecipeParser {
     return recipe;
 }
 
+[[nodiscard]] QcResult<QcSmithingRecipe> parseSmithingRecipe(const QJsonObject &json, const QString &packNamespace)
+{
+    QcJsonFieldReader reader{json, u"smithing recipe"_s, {}};
+    QcSmithingRecipe recipe;
+    recipe.name = reader.name(u"name"_s, packNamespace);
+    if (recipe.name.isEmpty()) {
+        return qcError(reader.ok() ? u"smithing recipe: 'name' is required"_s : reader.error);
+    }
+
+    reader.context = u"smithing recipe '%1'"_s.arg(recipe.name);
+    recipe.templateItem = reader.name(u"template"_s, packNamespace);
+    recipe.base = reader.name(u"base"_s, packNamespace);
+    recipe.addition = reader.name(u"addition"_s, packNamespace);
+    recipe.result = reader.name(u"result"_s, packNamespace);
+    if (reader.ok() && (recipe.templateItem.isEmpty() || recipe.base.isEmpty() || recipe.addition.isEmpty() || recipe.result.isEmpty())) {
+        reader.fail(u"'template', 'base', 'addition' and 'result' are required"_s);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return recipe;
+}
+
 } // namespace QcRecipeParser

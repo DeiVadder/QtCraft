@@ -265,6 +265,9 @@ struct QcOreDefinition
     int veinsPerChunk = 8;
     /*! Blocks of a vein at most (\c {"veinSize"}, 1 to 64). */
     int veinSize = 6;
+    /*! Whether a vein leaves out the cells next to air (\c {"hidden"}, decision E-1117): the ore
+        is never seen from a cave, as ancient debris in the reference. */
+    bool hidden = false;
     /*! The dimension whose generator places the ore (\c {"dimension"}, decision E-1030); empty for
         the overworld's terrain, which leaves out all others. */
     QString dimension;
