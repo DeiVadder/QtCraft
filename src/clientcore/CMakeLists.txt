@@ -209,6 +209,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcWorldMirror.h session/QcWorldMirror.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    settings/QcAudioVolumes.h settings/QcAudioVolumes.cpp
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
@@ -233,6 +234,8 @@ target_sources(qc_clientcore PRIVATE
     sound/QcPositionalVoices.h sound/QcPositionalVoices.cpp
     sound/QcSampleBuffer.h
     sound/QcSoundBank.h sound/QcSoundBank.cpp
+    sound/QcSoundCategorizer.h sound/QcSoundCategorizer.cpp
+    sound/QcSoundCategory.h sound/QcSoundCategory.cpp
     sound/QcSoundCue.h
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp

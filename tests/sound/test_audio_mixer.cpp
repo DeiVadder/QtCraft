@@ -75,11 +75,11 @@ private slots:
         QCOMPARE(QcAudioMixer::limit(std::numeric_limits<float>::infinity()), 0.0f);
     }
 
-    void voiceGainBusMasterAndMuteMultiply()
+    void voiceGainCategoryMasterAndMuteMultiply()
     {
         QcAudioMixer mixer(1000);
-        QVERIFY(mixer.play(constant(0.5f, 100), {0.8f, 0.0f, 1.0, QcSoundBus::Effects, false}) != 0);
-        mixer.setBusVolume(QcSoundBus::Effects, 0.5f);
+        QVERIFY(mixer.play(constant(0.5f, 100), {0.8f, 0.0f, 1.0, QcSoundCategory::Blocks, false}) != 0);
+        mixer.setCategoryVolume(QcSoundCategory::Blocks, 0.5f);
         mixer.setMasterVolume(0.5f);
         const std::vector<float> out = mixFrames(mixer, 10);
         const float expected = 0.5f * 0.8f * 0.5f * 0.5f * centre;
@@ -87,29 +87,29 @@ private slots:
             QVERIFY(std::abs(sample - expected) < 1e-6f);
         }
 
-        // Other buses do not change this voice; muting silences everything.
-        mixer.setBusVolume(QcSoundBus::Music, 0.0f);
+        // Other categories do not change this voice; muting silences everything.
+        mixer.setCategoryVolume(QcSoundCategory::Music, 0.0f);
         QVERIFY(std::abs(mixFrames(mixer, 1)[0] - expected) < 1e-6f);
         mixer.setMuted(true);
         for (const float sample : mixFrames(mixer, 10)) {
             QCOMPARE(sample, 0.0f);
         }
         mixer.setMuted(false);
-        mixer.setBusVolume(QcSoundBus::Effects, 0.0f);
+        mixer.setCategoryVolume(QcSoundCategory::Blocks, 0.0f);
         QCOMPARE(mixFrames(mixer, 1)[1], 0.0f);
 
         // Volumes are clamped to 0..1.
         mixer.setMasterVolume(3.0f);
         QCOMPARE(mixer.masterVolume(), 1.0f);
-        mixer.setBusVolume(QcSoundBus::Ambient, std::numeric_limits<float>::quiet_NaN());
-        QCOMPARE(mixer.busVolume(QcSoundBus::Ambient), 0.0f);
+        mixer.setCategoryVolume(QcSoundCategory::Ambient, std::numeric_limits<float>::quiet_NaN());
+        QCOMPARE(mixer.categoryVolume(QcSoundCategory::Ambient), 0.0f);
     }
 
     void voicesPanAndAdd()
     {
         QcAudioMixer mixer(1000);
-        mixer.play(constant(0.2f, 50), {1.0f, -1.0f, 1.0, QcSoundBus::Effects, false});
-        mixer.play(constant(0.3f, 50), {1.0f, 1.0f, 1.0, QcSoundBus::Ambient, false});
+        mixer.play(constant(0.2f, 50), {1.0f, -1.0f, 1.0, QcSoundCategory::Blocks, false});
+        mixer.play(constant(0.3f, 50), {1.0f, 1.0f, 1.0, QcSoundCategory::Ambient, false});
         const std::vector<float> out = mixFrames(mixer, 4);
         QVERIFY(std::abs(out[0] - 0.2f) < 1e-6f);
         QVERIFY(std::abs(out[1] - 0.3f) < 1e-6f);
@@ -118,8 +118,8 @@ private slots:
     void voicesEndOrLoop()
     {
         QcAudioMixer mixer(1000);
-        const QcAudioMixer::VoiceId once = mixer.play(constant(0.5f, 10), {1.0f, -1.0f, 1.0, QcSoundBus::Effects, false});
-        const QcAudioMixer::VoiceId loop = mixer.play(constant(0.25f, 10), {1.0f, 1.0f, 1.0, QcSoundBus::Ambient, true});
+        const QcAudioMixer::VoiceId once = mixer.play(constant(0.5f, 10), {1.0f, -1.0f, 1.0, QcSoundCategory::Blocks, false});
+        const QcAudioMixer::VoiceId loop = mixer.play(constant(0.25f, 10), {1.0f, 1.0f, 1.0, QcSoundCategory::Ambient, true});
         const std::vector<float> out = mixFrames(mixer, 25);
 
         // The one-shot plays its ten samples, the loop keeps going.
@@ -140,7 +140,7 @@ private slots:
         // at an output rate of 2000 Hz.
         const auto framesUntilDone = [](int outputRate, double pitch) {
             QcAudioMixer mixer(outputRate);
-            const QcAudioMixer::VoiceId id = mixer.play(constant(0.1f, 100), {1.0f, 0.0f, pitch, QcSoundBus::Effects, false});
+            const QcAudioMixer::VoiceId id = mixer.play(constant(0.1f, 100), {1.0f, 0.0f, pitch, QcSoundCategory::Blocks, false});
             int frames = 0;
             while (mixer.isPlaying(id) && frames < 1000) {
                 mixFrames(mixer, 1);
@@ -160,7 +160,7 @@ private slots:
         ramp->samples = {0.0f, 0.4f, 0.8f};
         ramp->sampleRate = 1000;
         QcAudioMixer mixer(2000);
-        mixer.play(ramp, {1.0f, -1.0f, 1.0, QcSoundBus::Effects, false});
+        mixer.play(ramp, {1.0f, -1.0f, 1.0, QcSoundCategory::Blocks, false});
         const std::vector<float> out = mixFrames(mixer, 4);
         // Positions 0, 0.5, 1, 1.5 source samples.
         QVERIFY(std::abs(out[0] - 0.0f) < 1e-6f);
@@ -172,7 +172,7 @@ private slots:
     void gainChangesRampOverOneBlock()
     {
         QcAudioMixer mixer(1000);
-        const QcAudioMixer::VoiceId id = mixer.play(constant(1.0f, 1000), {0.0f, -1.0f, 1.0, QcSoundBus::Effects, true});
+        const QcAudioMixer::VoiceId id = mixer.play(constant(1.0f, 1000), {0.0f, -1.0f, 1.0, QcSoundCategory::Blocks, true});
         mixer.setGain(id, 0.5f);
         const std::vector<float> out = mixFrames(mixer, 10);
         // From 0 towards 0.5 in ten equal steps, no jump.
@@ -189,11 +189,11 @@ private slots:
         for (int i = 0; i < QcAudioMixer::maxVoices; ++i) {
             // Voice 5 is the quietest; voices 0..3 loop and are never replaced.
             const float gain = i == 5 ? 0.01f : 0.5f;
-            ids.append(mixer.play(constant(0.1f, 1000), {gain, 0.0f, 1.0, QcSoundBus::Effects, i < 4}));
+            ids.append(mixer.play(constant(0.1f, 1000), {gain, 0.0f, 1.0, QcSoundCategory::Blocks, i < 4}));
         }
 
         QCOMPARE(mixer.voiceCount(), QcAudioMixer::maxVoices);
-        const QcAudioMixer::VoiceId extra = mixer.play(constant(0.1f, 1000), {0.9f, 0.0f, 1.0, QcSoundBus::Effects, false});
+        const QcAudioMixer::VoiceId extra = mixer.play(constant(0.1f, 1000), {0.9f, 0.0f, 1.0, QcSoundCategory::Blocks, false});
         QVERIFY(extra != 0);
         QCOMPARE(mixer.voiceCount(), QcAudioMixer::maxVoices);
         QVERIFY(!mixer.isPlaying(ids[5]));
@@ -202,24 +202,24 @@ private slots:
         }
 
         // Quieter than every one-shot left (0.5): refused, nothing else stops.
-        QCOMPARE(mixer.play(constant(0.1f, 1000), {0.2f, 0.0f, 1.0, QcSoundBus::Effects, false}), QcAudioMixer::VoiceId(0));
+        QCOMPARE(mixer.play(constant(0.1f, 1000), {0.2f, 0.0f, 1.0, QcSoundCategory::Blocks, false}), QcAudioMixer::VoiceId(0));
         QVERIFY(mixer.isPlaying(extra));
 
         // Music is never replaced, even when it is the quietest voice.
         QcAudioMixer busy(1000);
-        const QcAudioMixer::VoiceId music = busy.play(constant(0.1f, 1000), {0.01f, 0.0f, 1.0, QcSoundBus::Music, false});
+        const QcAudioMixer::VoiceId music = busy.play(constant(0.1f, 1000), {0.01f, 0.0f, 1.0, QcSoundCategory::Music, false});
         for (int i = 1; i < QcAudioMixer::maxVoices; ++i) {
-            busy.play(constant(0.1f, 1000), {0.5f, 0.0f, 1.0, QcSoundBus::Effects, false});
+            busy.play(constant(0.1f, 1000), {0.5f, 0.0f, 1.0, QcSoundCategory::Blocks, false});
         }
-        QVERIFY(busy.play(constant(0.1f, 1000), {0.9f, 0.0f, 1.0, QcSoundBus::Effects, false}) != 0);
+        QVERIFY(busy.play(constant(0.1f, 1000), {0.9f, 0.0f, 1.0, QcSoundCategory::Blocks, false}) != 0);
         QVERIFY(busy.isPlaying(music));
 
         // When every voice loops, a new sound is refused instead.
         QcAudioMixer loops(1000);
         for (int i = 0; i < QcAudioMixer::maxVoices; ++i) {
-            loops.play(constant(0.1f, 10), {0.1f, 0.0f, 1.0, QcSoundBus::Ambient, true});
+            loops.play(constant(0.1f, 10), {0.1f, 0.0f, 1.0, QcSoundCategory::Ambient, true});
         }
-        QCOMPARE(loops.play(constant(0.1f, 10), {1.0f, 0.0f, 1.0, QcSoundBus::Effects, false}), QcAudioMixer::VoiceId(0));
+        QCOMPARE(loops.play(constant(0.1f, 10), {1.0f, 0.0f, 1.0, QcSoundCategory::Blocks, false}), QcAudioMixer::VoiceId(0));
         QCOMPARE(loops.voiceCount(), QcAudioMixer::maxVoices);
     }
 
@@ -227,7 +227,7 @@ private slots:
     {
         QcAudioMixer mixer(1000);
         for (int i = 0; i < QcAudioMixer::maxVoices; ++i) {
-            mixer.play(constant(0.9f, 100), {1.0f, 0.0f, 1.0, QcSoundBus::Effects, false});
+            mixer.play(constant(0.9f, 100), {1.0f, 0.0f, 1.0, QcSoundCategory::Blocks, false});
         }
         for (const float sample : mixFrames(mixer, 50)) {
             QVERIFY(sample > 0.75f && sample < 1.0f);
@@ -241,7 +241,7 @@ private slots:
         QCOMPARE(mixer.play(std::make_shared<QcSampleBuffer>(), {}), QcAudioMixer::VoiceId(0));
         const QcAudioMixer::VoiceId odd =
             mixer.play(constant(0.5f, 10), {std::numeric_limits<float>::quiet_NaN(), 9.0f, std::numeric_limits<double>::infinity(),
-                                            QcSoundBus::Effects, false});
+                                            QcSoundCategory::Blocks, false});
         QVERIFY(odd != 0);
         const QcAudioMixer::Voice &voice = mixer.voices().constFirst();
         QCOMPARE(voice.gain, 0.0f);
@@ -316,15 +316,15 @@ private slots:
     {
         QcAudioMixer mixer(44100);
         mixer.setMasterVolume(0.7f);
-        mixer.setBusVolume(QcSoundBus::Music, 0.2f);
+        mixer.setCategoryVolume(QcSoundCategory::Music, 0.2f);
         mixer.setMuted(true);
         QVERIFY(mixer.play(constant(0.5f, 100), {}) != 0);
 
         const QcAudioMixer other = mixer.withRate(48000);
         QCOMPARE(other.outputRate(), 48000);
         QCOMPARE(other.masterVolume(), 0.7f);
-        QCOMPARE(other.busVolume(QcSoundBus::Music), 0.2f);
-        QCOMPARE(other.busVolume(QcSoundBus::Effects), 1.0f);
+        QCOMPARE(other.categoryVolume(QcSoundCategory::Music), 0.2f);
+        QCOMPARE(other.categoryVolume(QcSoundCategory::Blocks), 1.0f);
         QVERIFY(other.isMuted());
         QCOMPARE(other.voiceCount(), 0);
     }
@@ -344,7 +344,7 @@ private slots:
     void panChangesRampOverOneBlock()
     {
         QcAudioMixer mixer(1000);
-        const QcAudioMixer::VoiceId id = mixer.play(constant(1.0f, 1000), {0.5f, -1.0f, 1.0, QcSoundBus::Effects, true});
+        const QcAudioMixer::VoiceId id = mixer.play(constant(1.0f, 1000), {0.5f, -1.0f, 1.0, QcSoundCategory::Blocks, true});
         mixer.setPan(id, 1.0f);
         const std::vector<float> out = mixFrames(mixer, 10);
         // The left gain falls from 1 to 0 and the right one rises in ten equal steps, no jump.
@@ -362,7 +362,7 @@ private slots:
     {
         // 5 ms at 2000 Hz: ten frames, over two blocks of six and four.
         QcAudioMixer mixer(2000);
-        const QcAudioMixer::VoiceId id = mixer.play(constant(0.5f, 2000), {1.0f, -1.0f, 1.0, QcSoundBus::Effects, false});
+        const QcAudioMixer::VoiceId id = mixer.play(constant(0.5f, 2000), {1.0f, -1.0f, 1.0, QcSoundCategory::Blocks, false});
         QCOMPARE(mixFrames(mixer, 1)[0], 0.5f);
         mixer.fadeOut(id);
         // Fading, it ignores new gains.
@@ -386,12 +386,12 @@ private slots:
         QVERIFY(!mixer.wouldPlay(nullptr, 1.0f));
         QVERIFY(mixer.wouldPlay(constant(0.1f, 10), 0.0f));
         for (int i = 0; i < QcAudioMixer::maxVoices; ++i) {
-            mixer.play(constant(0.1f, 1000), {0.5f, 0.0f, 1.0, QcSoundBus::Effects, false});
+            mixer.play(constant(0.1f, 1000), {0.5f, 0.0f, 1.0, QcSoundCategory::Blocks, false});
         }
         QVERIFY(!mixer.wouldPlay(constant(0.1f, 10), 0.2f));
-        QCOMPARE(mixer.play(constant(0.1f, 10), {0.2f, 0.0f, 1.0, QcSoundBus::Effects, false}), QcAudioMixer::VoiceId(0));
+        QCOMPARE(mixer.play(constant(0.1f, 10), {0.2f, 0.0f, 1.0, QcSoundCategory::Blocks, false}), QcAudioMixer::VoiceId(0));
         QVERIFY(mixer.wouldPlay(constant(0.1f, 10), 0.6f));
-        QVERIFY(mixer.play(constant(0.1f, 10), {0.6f, 0.0f, 1.0, QcSoundBus::Effects, false}) != 0);
+        QVERIFY(mixer.play(constant(0.1f, 10), {0.6f, 0.0f, 1.0, QcSoundCategory::Blocks, false}) != 0);
     }
 };
 

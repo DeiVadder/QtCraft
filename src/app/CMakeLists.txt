@@ -180,6 +180,7 @@ target_sources(qc_app_core PRIVATE
     settings/QcRenderSettings.h settings/QcRenderSettings.cpp
     settings/QcSceneOverrides.h settings/QcSceneOverrides.cpp
     settings/QcSettingsController.h settings/QcSettingsController.cpp
+    settings/QcSoundVolumeModel.h settings/QcSoundVolumeModel.cpp
     settings/QcTexturePackController.h settings/QcTexturePackController.cpp
 )
 # The mouse capture talks to the platform (AppKit on macOS).

@@ -209,7 +209,7 @@ Umgesetzt in `src/app/qml/settings/` (`SettingsScreen.qml`, Seiten nach `GameCon
 Kategorien (Seitenleiste), in dieser Reihenfolge; in jeder Kategorie die Gruppen von häufig nach selten:
 
 1. **Grafik:** *Anzeige* (Anzeigemodus, Monitor, VSync, Bildraten-Limit, Limit im Menü und im Hintergrund – 74.3) · *Welt* (Sichtweite, Sichtfeld) · *Bewegung und Komfort* (Sichtfeld beim Sprinten, Kamerawackeln) · *Qualität* (Texturfilterung; 45 Render-Modus) · später *Erweitert* eingeklappt.
-2. **Audio:** Gesamtlautstärke, Stumm (als Schalter direkt darunter; dimmt die Regler), Musik, Effekte, Umgebung.
+2. **Audio:** Gesamtlautstärke, Stumm (als Schalter direkt darunter; dimmt die Regler), dann je Klangart ein Regler in der Reihenfolge des Vorbilds: Musik, Wetter, Blöcke, feindliche Wesen, freundliche Wesen, Spieler, Umgebung, Oberfläche (E-1150).
 3. **Steuerung:** *Maus* (Empfindlichkeit, Umkehren) · *Tastenbelegung* (die Tabelle).
 4. **Controller:** wie heute, aber gegliedert in *Profil* · *Sticks und Trigger* · *Tasten*.
 5. **Oberfläche:** *Sprache und Größe* (Sprache, Größe der Oberfläche mit der wirksamen Größe als Hilfe, wenn das Fenster sie begrenzt: „Wirksam: 113 % (begrenzt durch die Fenstergröße)“) · *Ansicht* (Kamera, Beschriftungen in der Welt, Hand beim Ausblenden der Anzeige, Pause bei Fokusverlust).

@@ -20,6 +20,14 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// Replaces the file at `path` with `text`.
+void writeText(const QString &path, const char *text)
+{
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    file.write(text);
+}
+
 // A German translation of one preset name, without a .qm file.
 class PresetTranslator : public QTranslator
 {
@@ -86,9 +94,10 @@ private slots:
         settings.appearance.pantsColor = 0x000000;
         settings.appearance.cape = u"mod:red_cape"_s;
         settings.audio.master = 0.25;
-        settings.audio.effects = 0.0;
-        settings.audio.music = 1.0;
-        settings.audio.ambient = 0.4;
+        settings.audio.categories.setVolume(QcSoundCategory::Blocks, 0.0);
+        settings.audio.categories.setVolume(QcSoundCategory::Music, 1.0);
+        settings.audio.categories.setVolume(QcSoundCategory::Ambient, 0.4);
+        settings.audio.categories.setVolume(QcSoundCategory::Hostile, 0.3);
         settings.audio.muted = true;
         settings.characterPresets = {{u"Cave look"_s, {u"qtcraft:miner"_s, u"qtcraft:cap"_s, 0x111111, 0x222222, 0x333333, 0x444444, u"qtcraft:green_cape"_s}},
                                      {u"Bald"_s, {u"qtcraft:tunic"_s, QString(), 0xabcdef, 0, 0xffffff, 0x010101}}};
@@ -290,24 +299,63 @@ private slots:
     {
         const QcGameSettings defaults;
         QCOMPARE(defaults.audio.master, 0.8);
-        QCOMPARE(defaults.audio.effects, 1.0);
-        QCOMPARE(defaults.audio.music, 0.5);
-        QCOMPARE(defaults.audio.ambient, 0.7);
+        QCOMPARE(defaults.audio.categories.volume(QcSoundCategory::Music), 0.5);
+        QCOMPARE(defaults.audio.categories.volume(QcSoundCategory::Ambient), 0.7);
+        for (const QcSoundCategory category : {QcSoundCategory::Weather, QcSoundCategory::Blocks, QcSoundCategory::Hostile,
+                                               QcSoundCategory::Friendly, QcSoundCategory::Players, QcSoundCategory::Interface}) {
+            QCOMPARE(defaults.audio.categories.volume(category), 1.0);
+        }
         QVERIFY(!defaults.audio.muted);
 
         QTemporaryDir dir;
         const QString path = dir.filePath(u"settings.ini"_s);
-        QFile file(path);
-        QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("[audio]\nmaster=1.5\neffects=-2\nmusic=loud\nambient=nan\nmuted=true\n");
-        file.close();
-
+        writeText(path, "[audio]\nmaster=1.5\nblocks=-2\nmusic=loud\nambient=nan\nplayers=0.25\nmuted=true\n");
         const QcGameSettings settings = QcGameSettings::load(path);
         QCOMPARE(settings.audio.master, 1.0);
-        QCOMPARE(settings.audio.effects, 0.0);
-        QCOMPARE(settings.audio.music, defaults.audio.music);
-        QCOMPARE(settings.audio.ambient, defaults.audio.ambient);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Blocks), 0.0);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Players), 0.25);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Music), 0.5);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Ambient), 0.7);
         QVERIFY(settings.audio.muted);
+    }
+
+    // Settings from before the sound categories (decision E-1150): the effects volume goes to every
+    // effect category without its own key, the ambience volume also to the weather; music and
+    // ambience keep their keys. Saving keeps an effects key (the blocks volume) for an older game.
+    void oldEffectsVolumeMovesToTheCategories()
+    {
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        writeText(path, "[audio]\nmaster=0.6\neffects=0.3\nmusic=0.2\nambient=0.4\n");
+        const QcGameSettings settings = QcGameSettings::load(path);
+        QCOMPARE(settings.audio.master, 0.6);
+        for (const QcSoundCategory category : {QcSoundCategory::Blocks, QcSoundCategory::Hostile, QcSoundCategory::Friendly,
+                                               QcSoundCategory::Players, QcSoundCategory::Interface}) {
+            QCOMPARE(settings.audio.categories.volume(category), 0.3);
+        }
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Weather), 0.4);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Music), 0.2);
+        QCOMPARE(settings.audio.categories.volume(QcSoundCategory::Ambient), 0.4);
+
+        // A category's own key wins over the old one; music and ambience never take the effects
+        // volume, without their keys they keep the default.
+        writeText(path, "[audio]\neffects=0.3\nhostile=0.9\n");
+        const QcAudioVolumes effectsOnly = QcGameSettings::load(path).audio;
+        QCOMPARE(effectsOnly.categories.volume(QcSoundCategory::Hostile), 0.9);
+        QCOMPARE(effectsOnly.categories.volume(QcSoundCategory::Friendly), 0.3);
+        QCOMPARE(effectsOnly.categories.volume(QcSoundCategory::Music), 0.5);
+        QCOMPARE(effectsOnly.categories.volume(QcSoundCategory::Ambient), 0.7);
+        QCOMPARE(effectsOnly.categories.volume(QcSoundCategory::Weather), 1.0);
+
+        // Saved again: every category has its key, the old effects key holds the blocks volume for
+        // an older game, and the values stay.
+        const QcStatus saved = settings.save(path);
+        QVERIFY2(saved.has_value(), qcErrorText(saved));
+        const QSettings file(path, QSettings::IniFormat);
+        QCOMPARE(file.value(u"audio/effects"_s).toDouble(), 0.3);
+        QCOMPARE(file.value(u"audio/friendly"_s).toDouble(), 0.3);
+        QCOMPARE(file.value(u"audio/weather"_s).toDouble(), 0.4);
+        QCOMPARE(QcGameSettings::load(path).audio, settings.audio);
     }
 
     void badCharacterAndViewValuesFallBack()

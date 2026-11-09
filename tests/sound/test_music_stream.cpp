@@ -170,7 +170,7 @@ private slots:
     {
         QcAudioMixer mixer(1000);
         const QcAudioMixer::VoiceId id = mixer.playStream(std::make_shared<QcStreamCursor>(std::make_shared<CountingStream>(100, 500, 0.01f)),
-                                                          {0.5f, 0.0f, 1.0, QcSoundBus::Music, true});
+                                                          {0.5f, 0.0f, 1.0, QcSoundCategory::Music, true});
         QVERIFY(id != 0);
         QCOMPARE(mixer.voices().constFirst().loop, false);
         const std::span<const float> mixed = mixer.mix(10);
@@ -189,7 +189,7 @@ private slots:
     {
         QcAudioMixer mixer(48000);
         const QcAudioMixer::VoiceId id = mixer.playStream(std::make_shared<QcStreamCursor>(std::make_shared<CountingStream>(44100, 44100, 0.00001f)),
-                                                          {1.0f, 0.0f, 1.0, QcSoundBus::Music, false});
+                                                          {1.0f, 0.0f, 1.0, QcSoundCategory::Music, false});
         QVERIFY(id != 0);
         const std::span<const float> mixed = mixer.mix(4800);
         for (const std::size_t frame : {std::size_t{1}, std::size_t{480}, std::size_t{4799}}) {
@@ -205,7 +205,7 @@ private slots:
     {
         QcAudioMixer mixer(1000);
         const QcAudioMixer::VoiceId id = mixer.playStream(std::make_shared<QcStreamCursor>(std::make_shared<CountingStream>(10000, 1000, 0.0001f)),
-                                                          {1.0f, 0.0f, 1.0, QcSoundBus::Music, false});
+                                                          {1.0f, 0.0f, 1.0, QcSoundCategory::Music, false});
         mixer.fadeOut(id, 400);
         const std::vector<float> first = [&] {
             const std::span<const float> block = mixer.mix(200);

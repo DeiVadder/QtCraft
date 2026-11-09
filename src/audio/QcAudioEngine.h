@@ -54,9 +54,9 @@ public:
     const QcContentRegistry *content() const { return m_content.get(); }
     /*! Returns whether the sound bank of the content is rendered (bankReady()). */
     bool isBankReady() const { return m_bank != nullptr; }
-    /*! Sets the volumes of the buses, each from 0 to 1: \a master over all, \a effects, \a music
-        and \a ambient; \a muted silences everything. */
-    void setVolumes(double master, double effects, double music, double ambient, bool muted);
+    /*! Sets the volumes, each from 0 to 1: \a master over all and \a volumes of the sound
+        categories (decision E-1150); \a muted silences everything. */
+    void setVolumes(double master, const QcSoundVolumes &volumes, bool muted);
 
     /*! Plays \a cue as \a listener hears it; its voice follows the listener until it ends
         (moveListener). */

@@ -30,12 +30,15 @@ float finiteGain(float gain)
 QcAudioMixer::QcAudioMixer(int outputRate)
     : m_outputRate(std::max(1, outputRate))
 {
+    m_categoryVolumes.fill(1.0f);
 }
 
 QcAudioMixer QcAudioMixer::withRate(int outputRate) const
 {
     QcAudioMixer mixer(outputRate);
-    mixer.m_busVolumes = m_busVolumes;
+    for (const QcSoundCategory category : QcSoundCategories::all()) {
+        mixer.setCategoryVolume(category, categoryVolume(category));
+    }
     mixer.m_master = m_master;
     mixer.m_muted = m_muted;
     return mixer;
@@ -48,7 +51,7 @@ qsizetype QcAudioMixer::victimFor(float gain) const
     qsizetype victim = -1;
     for (qsizetype i = 0; i < m_voices.size(); ++i) {
         const Voice &candidate = m_voices[i];
-        if (!candidate.loop && candidate.bus != QcSoundBus::Music && (victim < 0 || candidate.gain < m_voices[victim].gain)) {
+        if (!candidate.loop && candidate.category != QcSoundCategory::Music && (victim < 0 || candidate.gain < m_voices[victim].gain)) {
             victim = i;
         }
     }
@@ -98,7 +101,7 @@ QcAudioMixer::VoiceId QcAudioMixer::start(Voice voice, const PlayParameters &par
     voice.pitch = std::isfinite(parameters.pitch) ? std::clamp(parameters.pitch, 0.1, 10.0) : 1.0;
     voice.gain = voice.appliedGain = gain;
     voice.pan = voice.appliedPan = std::isfinite(parameters.pan) ? std::clamp(parameters.pan, -1.0f, 1.0f) : 0.0f;
-    voice.bus = parameters.bus;
+    voice.category = parameters.category;
     m_voices.append(std::move(voice));
     return m_voices.constLast().id;
 }
@@ -149,10 +152,10 @@ bool QcAudioMixer::isPlaying(VoiceId id) const
     return std::ranges::any_of(m_voices, [id](const Voice &voice) { return voice.id == id; });
 }
 
-void QcAudioMixer::setBusVolume(QcSoundBus bus, float volume)
+void QcAudioMixer::setCategoryVolume(QcSoundCategory category, float volume)
 {
-    if (static_cast<std::size_t>(bus) < m_busVolumes.size()) {
-        m_busVolumes[static_cast<std::size_t>(bus)] = clampVolume(volume);
+    if (static_cast<std::size_t>(category) < m_categoryVolumes.size()) {
+        m_categoryVolumes[static_cast<std::size_t>(category)] = clampVolume(volume);
     }
 }
 
@@ -276,7 +279,7 @@ std::span<const float> QcAudioMixer::mix(int frames)
     m_output.assign(static_cast<std::size_t>(frames) * 2, 0.0f);
     const float master = m_muted ? 0.0f : m_master;
     for (Voice &voice : m_voices) {
-        mixVoice(voice, m_output, m_outputRate, m_busVolumes[static_cast<std::size_t>(voice.bus)] * master);
+        mixVoice(voice, m_output, m_outputRate, categoryVolume(voice.category) * master);
     }
 
     m_voices.removeIf([](const Voice &voice) { return finished(voice); });

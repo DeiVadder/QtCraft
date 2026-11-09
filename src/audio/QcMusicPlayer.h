@@ -17,7 +17,7 @@
 
 class QcAudioOutput;
 
-/*! \brief Plays the background music on the music bus as QcMusicDirector decides (decision
+/*! \brief Plays the background music in the music category as QcMusicDirector decides (decision
     E-1137): tracks of the content packs streamed from their Ogg Vorbis files (QcVorbisStream,
     opened on a worker thread, decoded on the audio thread), or pieces of QcMusicComposer rendered
     on a worker thread.
@@ -29,7 +29,7 @@ class QcMusicPlayer : public QObject
     Q_OBJECT
 
 public:
-    /*! Level of the music relative to its bus volume. */
+    /*! Level of the music relative to the volume of its category. */
     static constexpr float musicGain = 0.6f;
     /*! How often the director's time advances. */
     static constexpr int tickMilliseconds = 250;

@@ -3,6 +3,7 @@
 
 #include "clientcore/sound/QcSoundBank.h"
 
+#include "clientcore/sound/QcSoundCategorizer.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
 
 #include <cmath>
@@ -11,6 +12,7 @@ QcSoundBank QcSoundBank::build(const QcContentRegistry &content, int sampleRate)
 {
     QcSoundBank bank;
     bank.m_sampleRate = sampleRate;
+    const QcSoundCategorizer categorizer(content);
 
     for (const QcSoundDefinition &sound : content.assets().sounds()) {
         // Checked before rendering, so an oversized mod sound costs no time either.
@@ -22,6 +24,7 @@ QcSoundBank QcSoundBank::build(const QcContentRegistry &content, int sampleRate)
 
         Entry entry;
         entry.definition = sound;
+        entry.category = categorizer.category(sound);
         for (int variant = 0; variant < sound.variants; ++variant) {
             auto buffer = std::make_shared<QcSampleBuffer>(QcSoundSynthesizer::render(sound, variant, sampleRate));
             bank.m_totalSamples += static_cast<qsizetype>(buffer->samples.size());

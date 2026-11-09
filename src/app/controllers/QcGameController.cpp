@@ -375,6 +375,7 @@ void QcGameController::setLanguage(const QString &language)
     // Key and action names are translated.
     m_settings->keys()->retranslate();
     m_settings->gamepadOptions()->retranslate();
+    m_settings->audio()->retranslate();
     m_handbook->refreshIfOpen();
     m_worldOptions->retranslate();
 }

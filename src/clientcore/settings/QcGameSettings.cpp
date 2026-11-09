@@ -104,7 +104,7 @@ double QcGameSettings::clampMouseSensitivity(double sensitivity)
 
 double QcGameSettings::clampVolume(double volume, double fallback)
 {
-    return std::isfinite(volume) ? std::clamp(volume, 0.0, 1.0) : fallback;
+    return QcSoundVolumes::clamped(volume, fallback);
 }
 
 QString QcGameSettings::cleanLanguage(const QString &language)
@@ -158,18 +158,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.appearance = QcCharacterProfile::loadAppearance(file, u"character"_s);
     settings.characterPresets = QcCharacterProfile::loadPresets(file);
 
-    const auto volume = [&file](const QString &key, double fallback) {
-        bool ok = false;
-        const double value = file.value(key).toDouble(&ok);
-        return ok ? clampVolume(value, fallback) : fallback;
-    };
-
-    settings.audio.master = volume(u"audio/master"_s, defaultMasterVolume);
-    settings.audio.effects = volume(u"audio/effects"_s, defaultEffectsVolume);
-    settings.audio.music = volume(u"audio/music"_s, defaultMusicVolume);
-    settings.audio.ambient = volume(u"audio/ambient"_s, defaultAmbientVolume);
-    settings.audio.muted = file.value(u"audio/muted"_s, false).toBool();
-    settings.audio.musicSource = QcMusicSources::fromName(file.value(u"audio/musicSource"_s).toString()).value_or(QcMusicSource::Tracks);
+    settings.audio = QcAudioVolumes::load(file);
     settings.keys = loadKeys(file);
     settings.gamepad = QcGamepadSettings::load(file);
     settings.texturePacks = loadTexturePacks(file);
@@ -202,12 +191,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     QcCharacterProfile::saveAppearance(file, u"character"_s, appearance);
     QcCharacterProfile::savePresets(file, characterPresets);
 
-    file.setValue(u"audio/master"_s, audio.master);
-    file.setValue(u"audio/effects"_s, audio.effects);
-    file.setValue(u"audio/music"_s, audio.music);
-    file.setValue(u"audio/ambient"_s, audio.ambient);
-    file.setValue(u"audio/muted"_s, audio.muted);
-    file.setValue(u"audio/musicSource"_s, QcMusicSources::name(audio.musicSource));
+    audio.save(file);
     gamepad.save(file);
 
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {

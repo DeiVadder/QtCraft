@@ -96,13 +96,13 @@ void QcAudioEngine::mixerReset()
     buildBank();
 }
 
-void QcAudioEngine::setVolumes(double master, double effects, double music, double ambient, bool muted)
+void QcAudioEngine::setVolumes(double master, const QcSoundVolumes &volumes, bool muted)
 {
     m_output.withMixer([=](QcAudioMixer &mixer) {
         mixer.setMasterVolume(static_cast<float>(master));
-        mixer.setBusVolume(QcSoundBus::Effects, static_cast<float>(effects));
-        mixer.setBusVolume(QcSoundBus::Music, static_cast<float>(music));
-        mixer.setBusVolume(QcSoundBus::Ambient, static_cast<float>(ambient));
+        for (const QcSoundCategory category : QcSoundCategories::all()) {
+            mixer.setCategoryVolume(category, static_cast<float>(volumes.volume(category)));
+        }
         mixer.setMuted(muted);
     });
 }
@@ -158,7 +158,7 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcSoundSpatial::Listener &
     const double pitch = cue.pitch * (1.0 + sound.pitchVariation * (2.0 * m_random.generateDouble() - 1.0));
     std::shared_ptr<const QcSampleBuffer> buffer = pickVariant(*entry);
     m_output.withMixer([&](QcAudioMixer &mixer) {
-        m_positional.start(mixer, std::move(buffer), cue.key, source, {placement.gain, placement.pan, pitch, sound.bus, false});
+        m_positional.start(mixer, std::move(buffer), cue.key, source, {placement.gain, placement.pan, pitch, entry->category, false});
     });
 }
 
@@ -185,7 +185,7 @@ void QcAudioEngine::playUi(const QString &key)
     }
 
     const double pitch = 1.0 + entry->definition.pitchVariation * (2.0 * m_random.generateDouble() - 1.0);
-    startVoice(*entry, {static_cast<float>(entry->definition.volume), 0.0f, pitch, entry->definition.bus, false});
+    startVoice(*entry, {static_cast<float>(entry->definition.volume), 0.0f, pitch, entry->category, false});
 }
 
 void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
@@ -209,7 +209,7 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
         if (voice == 0) {
             // Levels fade in from zero, so the loop starts quietly.
             if (gain >= audibleGain) {
-                voice = startVoice(*entry, {gain, 0.0f, 1.0, entry->definition.bus, true});
+                voice = startVoice(*entry, {gain, 0.0f, 1.0, entry->category, true});
             }
         } else {
             m_output.withMixer([voice, gain](QcAudioMixer &mixer) { mixer.setGain(voice, gain); });
@@ -238,7 +238,7 @@ void QcAudioEngine::setBiomeAmbience(const QString &key, float level)
     const float gain = level * static_cast<float>(entry->definition.volume);
     if (biomeVoice() == 0) {
         if (gain >= audibleGain) {
-            setBiomeVoice(startVoice(*entry, {gain, 0.0f, 1.0, entry->definition.bus, true}));
+            setBiomeVoice(startVoice(*entry, {gain, 0.0f, 1.0, entry->category, true}));
         }
     } else {
         const QcAudioMixer::VoiceId voice = biomeVoice();

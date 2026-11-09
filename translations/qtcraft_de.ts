@@ -1192,66 +1192,62 @@ Als Nächstes: %3</translation>
 <context>
     <name>AudioPage</name>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="16"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="17"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="19"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="20"/>
         <source>Volume</source>
         <translation>Lautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="22"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="23"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="27"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="43"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="53"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="63"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="28"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="54"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="55"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="32"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="33"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="38"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="72"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="65"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="48"/>
         <source>Effects</source>
-        <translation>Effekte</translation>
+        <translation type="vanished">Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="58"/>
         <source>Ambience</source>
-        <translation>Umgebung</translation>
+        <translation type="vanished">Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="69"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="62"/>
         <source>Soundtrack</source>
         <translation>Musikauswahl</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="74"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="67"/>
         <source>Scott Buckley tracks</source>
         <translation>Stücke von Scott Buckley</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="75"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="68"/>
         <source>Generated</source>
         <translation>Erzeugt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="83"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="76"/>
         <source>Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.</source>
         <translation>Videos oder Streams mit diesen Stücken können auf YouTube eine Content-ID-Meldung bekommen. Wer aufnimmt oder streamt, stellt auf erzeugte Musik um.</translation>
     </message>
@@ -3134,62 +3130,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="493"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="501"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="496"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="504"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="498"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="506"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="521"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="529"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="522"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="530"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="523"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="531"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="524"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="532"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="526"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="534"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="527"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="535"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="528"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="536"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="529"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="537"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="530"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="538"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -6120,25 +6116,25 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="385"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="439"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="386"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="440"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="401"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="402"/>
         <source>Cannot create the world: unknown world type or game mode</source>
         <translation>Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="411"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="412"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="424"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="434"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="444"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="425"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="445"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -6147,12 +6143,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="463"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="464"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="463"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="464"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -6209,7 +6205,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="681"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="682"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -6517,26 +6513,26 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="82"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="85"/>
         <source>%1 (%2)</source>
         <comment>item frame with its item</comment>
         <extracomment>An item frame in the target text: %1 the frame, %2 the item it holds.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="96"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="99"/>
         <source>%1 (%2)</source>
         <comment>named creature</comment>
         <extracomment>A named creature in the target text: %1 its name, %2 its kind.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="134"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="137"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="134"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="137"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -8704,18 +8700,18 @@ Jetzt: %2</translation>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="295"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="296"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="303"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="304"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="309"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="310"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -9733,6 +9729,49 @@ Jetzt: %2</translation>
         <location filename="../src/server/dimensions/QcServerAnchors.cpp" line="183"/>
         <source>You have no charged soul anchor, or it was blocked</source>
         <translation>Du hast keinen geladenen Seelenanker, oder er war zugestellt</translation>
+    </message>
+</context>
+<context>
+    <name>QcSoundVolumeModel</name>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="19"/>
+        <source>Music</source>
+        <translation>Musik</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="20"/>
+        <source>Weather</source>
+        <translation>Wetter</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="21"/>
+        <source>Blocks</source>
+        <translation>Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="22"/>
+        <source>Hostile creatures</source>
+        <translation>Feindliche Wesen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="23"/>
+        <source>Friendly creatures</source>
+        <translation>Freundliche Wesen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="24"/>
+        <source>Players</source>
+        <translation>Spieler</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="25"/>
+        <source>Ambience</source>
+        <translation>Umgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/settings/QcSoundVolumeModel.cpp" line="26"/>
+        <source>Interface</source>
+        <translation>Oberfläche</translation>
     </message>
 </context>
 <context>

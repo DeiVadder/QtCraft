@@ -132,7 +132,7 @@ void QcMusicPlayer::trackOpened()
     release();
     setStream(std::move(opened->cursor));
     QcAudioMixer::VoiceId played = 0;
-    m_output.withMixer([this, &played](QcAudioMixer &mixer) { played = mixer.playStream(stream(), {musicGain, 0.0f, 1.0, QcSoundBus::Music, false}); });
+    m_output.withMixer([this, &played](QcAudioMixer &mixer) { played = mixer.playStream(stream(), {musicGain, 0.0f, 1.0, QcSoundCategory::Music, false}); });
     begin(played, opened->seconds);
 }
 
@@ -177,6 +177,6 @@ void QcMusicPlayer::pieceRendered()
 
     release();
     QcAudioMixer::VoiceId played = 0;
-    m_output.withMixer([&piece, &played](QcAudioMixer &mixer) { played = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundBus::Music, false}); });
+    m_output.withMixer([&piece, &played](QcAudioMixer &mixer) { played = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundCategory::Music, false}); });
     begin(played, piece->seconds());
 }

@@ -71,12 +71,49 @@ private slots:
         {
             Fixture fixture;
             fixture.settings.setInvertMouse(true);
-            fixture.settings.audio()->setMusicVolume(0.25);
+            fixture.settings.audio()->setVolume(QcAudioSettings::SoundCategory::Music, 0.25);
             QVERIFY(fixture.settings.savePending());
         }
         Fixture again;
         QVERIFY(again.settings.invertMouse());
-        QCOMPARE(again.settings.audio()->musicVolume(), 0.25);
+        QCOMPARE(again.settings.audio()->volume(QcAudioSettings::SoundCategory::Music), 0.25);
+    }
+
+    // The volume of a sound category (decision E-1150) reaches the mixer at once, shows in the
+    // page's model and is stored; a pause silences music, weather and ambience only. Values from
+    // outside are corrected or refused with a warning.
+    void categoryVolumeReachesTheMixerAndIsStored()
+    {
+        {
+            Fixture fixture;
+            QcAudioSettings &audio = *fixture.settings.audio();
+            audio.setVolume(QcAudioSettings::SoundCategory::Hostile, 0.25);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Hostile), 0.25f);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Friendly), 1.0f);
+            const QModelIndex row = audio.categories()->index(static_cast<int>(QcSoundCategory::Hostile));
+            QCOMPARE(row.data(QcSoundVolumeModel::VolumeRole).toDouble(), 0.25);
+            QCOMPARE(row.data(QcSoundVolumeModel::NameRole).toString(), u"Hostile creatures"_s);
+            QCOMPARE(audio.categories()->rowCount(), qcSoundCategoryCount);
+
+            audio.setWorldPaused(true);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Weather), 0.0f);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Ambient), 0.0f);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Music), 0.0f);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Hostile), 0.25f);
+            audio.setWorldPaused(false);
+            QCOMPARE(mixerVolume(fixture, QcSoundCategory::Ambient), 0.7f);
+
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Volume 3 is not in 0..1: using 1"_s));
+            audio.setVolume(QcAudioSettings::SoundCategory::Blocks, 3.0);
+            QCOMPARE(audio.volume(QcAudioSettings::SoundCategory::Blocks), 1.0);
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown sound category 9"_s));
+            audio.setVolume(static_cast<QcAudioSettings::SoundCategory>(9), 0.5);
+            QVERIFY(fixture.settings.savePending());
+        }
+        QCOMPARE(stored().audio.categories.volume(QcSoundCategory::Hostile), 0.25);
+        Fixture again;
+        QCOMPARE(again.settings.audio()->volume(QcAudioSettings::SoundCategory::Hostile), 0.25);
+        QCOMPARE(mixerVolume(again, QcSoundCategory::Hostile), 0.25f);
     }
 
     // Where the music comes from (decision E-1137): the tracks by default; the switch to
@@ -258,6 +295,14 @@ private:
     };
 
     static QcGameSettings stored() { return QcGameSettings::load(QcSettingsController::settingsPath()); }
+
+    // The volume the mixer of `fixture`'s audio uses for `category`.
+    static float mixerVolume(Fixture &fixture, QcSoundCategory category)
+    {
+        float volume = -1.0f;
+        fixture.audio.output().withMixer([&volume, category](QcAudioMixer &mixer) { volume = mixer.categoryVolume(category); });
+        return volume;
+    }
 
     QTemporaryDir m_data;
 };

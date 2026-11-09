@@ -4,7 +4,7 @@
 #pragma once
 
 #include "clientcore/camera/QcViewCamera.h"
-#include "clientcore/music/QcMusicSource.h"
+#include "clientcore/settings/QcAudioVolumes.h"
 #include "clientcore/settings/QcCharacterProfile.h"
 #include "clientcore/settings/QcDebugOptions.h"
 #include "clientcore/settings/QcGamepadSettings.h"
@@ -46,11 +46,6 @@ struct QcGameSettings
     /*! Most samples the block shader takes along a slanted footprint (decision E-721): 1 (off),
         2, 4 or 8. */
     static constexpr int defaultTextureFiltering = 4;
-    /*! Volumes are shares in 0..1. \qcshared */
-    static constexpr double defaultMasterVolume = 0.8;
-    static constexpr double defaultEffectsVolume = 1.0;
-    static constexpr double defaultMusicVolume = 0.5;
-    static constexpr double defaultAmbientVolume = 0.7;
 
     /*! Chunks to stream around the player (minViewDistance..maxViewDistance). */
     int viewDistance = defaultViewDistance;
@@ -90,25 +85,8 @@ struct QcGameSettings
     QcAppearance appearance;
     /*! Looks the player saved under a name (at most QcCharacterProfile::maxPresets). */
     QList<QcCharacterPreset> characterPresets;
-    /*! \brief The volumes of the sound and whether it is muted, stored as audio/<key>. */
-    struct AudioVolumes
-    {
-        /*! Volume of everything. */
-        double master = defaultMasterVolume;
-        /*! Volume of the sound effects. */
-        double effects = defaultEffectsVolume;
-        /*! Volume of the music. */
-        double music = defaultMusicVolume;
-        /*! Volume of the ambience loops. */
-        double ambient = defaultAmbientVolume;
-        /*! Whether the sound is muted (the volumes stay). */
-        bool muted = false;
-        /*! Where the music comes from (decision E-1137); an unknown name in the file gives the
-            tracks. */
-        QcMusicSource musicSource = QcMusicSource::Tracks;
-
-        bool operator==(const AudioVolumes &) const = default;
-    };
+    /*! The volumes of the sound and whether it is muted (QcAudioVolumes). */
+    using AudioVolumes = QcAudioVolumes;
     /*! The volumes of the sound. */
     AudioVolumes audio;
     /*! Stored as "keys/<action>" (primary) and "keys/<action>.2" (secondary) with portable key

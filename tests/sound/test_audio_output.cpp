@@ -145,7 +145,7 @@ private slots:
             return;
         }
 
-        engine.setVolumes(0.0, 0.0, 0.0, 0.0, true);
+        engine.setVolumes(0.0, QcSoundVolumes{}, true);
         QSignalSpy ready(&engine, &QcAudioEngine::bankReady);
         engine.setContent(QcTestUtil::loadContent());
         // Rendering the bank takes about 4 s under the thread sanitizer with other tests running.

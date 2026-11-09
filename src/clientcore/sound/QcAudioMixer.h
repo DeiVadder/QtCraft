@@ -4,8 +4,8 @@
 #pragma once
 
 #include "clientcore/sound/QcSampleBuffer.h"
+#include "clientcore/sound/QcSoundCategory.h"
 #include "clientcore/sound/QcStreamCursor.h"
-#include "common/content/registry/QcSoundDefinition.h"
 
 #include <QList>
 
@@ -16,7 +16,8 @@
 #include <vector>
 
 /*! \brief Software mixer: plays sample buffers as voices with their own gain, stereo position and
-    speed, grouped into buses with a volume each, under a master volume and a mute switch.
+    speed, grouped into sound categories with a volume each (decision E-1150), under a master
+    volume and a mute switch.
 
     Produces interleaved stereo float frames. Not thread-safe; the audio output guards it with a
     lock. */
@@ -62,8 +63,8 @@ public:
         /*! Frames left until a voice stopped with fadeOut() is silent and removed; -1 while it
             plays on. */
         int fadeFrames = -1;
-        /*! Bus whose volume applies. */
-        QcSoundBus bus = QcSoundBus::Effects;
+        /*! Category whose volume applies. */
+        QcSoundCategory category = QcSoundCategory::Players;
         /*! Starts over at the end instead of ending. */
         bool loop = false;
     };
@@ -77,8 +78,8 @@ public:
         float pan = 0.0f;
         /*! Playback speed; 1 is the buffer's own. */
         double pitch = 1.0;
-        /*! Bus whose volume applies. */
-        QcSoundBus bus = QcSoundBus::Effects;
+        /*! Category whose volume applies. */
+        QcSoundCategory category = QcSoundCategory::Players;
         /*! Starts over at the end instead of ending. */
         bool loop = false;
     };
@@ -87,8 +88,8 @@ public:
 
     /*! Returns the output rate in frames per second. */
     int outputRate() const { return m_outputRate; }
-    /*! Returns a mixer at \a outputRate without voices, with this one's bus and master volumes
-        and mute (for an output device that runs at another rate). */
+    /*! Returns a mixer at \a outputRate without voices, with this one's category and master
+        volumes and mute (for an output device that runs at another rate). */
     [[nodiscard]] QcAudioMixer withRate(int outputRate) const;
     /*! Starts a voice playing \a buffer with \a parameters and returns its id; 0 when the buffer
         is empty or every voice loops and none can be replaced. */
@@ -121,10 +122,14 @@ public:
     /*! Returns the voices. */
     const QList<Voice> &voices() const { return m_voices; }
 
-    /*! Sets the volume of \a bus to \a volume (clamped to 0..1; not finite: 0). */
-    void setBusVolume(QcSoundBus bus, float volume);
-    /*! Returns the volume of \a bus. */
-    float busVolume(QcSoundBus bus) const { return m_busVolumes[static_cast<std::size_t>(bus)]; }
+    /*! Sets the volume of \a category to \a volume (clamped to 0..1; not finite: 0). */
+    void setCategoryVolume(QcSoundCategory category, float volume);
+    /*! Returns the volume of \a category. */
+    float categoryVolume(QcSoundCategory category) const
+    {
+        Q_ASSERT(static_cast<std::size_t>(category) < m_categoryVolumes.size());
+        return m_categoryVolumes[static_cast<std::size_t>(category)];
+    }
     /*! Sets the master volume to \a volume (clamped to 0..1; not finite: 0). */
     void setMasterVolume(float volume);
     /*! Returns the master volume. */
@@ -152,7 +157,7 @@ private:
     [[nodiscard]] qsizetype victimFor(float gain) const;
     // Starts `voice` (with its source set) with `parameters`; its id, or 0 when no voice is free.
     VoiceId start(Voice voice, const PlayParameters &parameters);
-    // Adds `voice` to `out` (`frames` interleaved stereo frames) at the bus and master volume
+    // Adds `voice` to `out` (`frames` interleaved stereo frames) at the category and master volume
     // `level`, and advances it.
     static void mixVoice(Voice &voice, std::span<float> out, double outputRate, float level);
     // Returns whether `voice` played to its end or faded out.
@@ -162,7 +167,9 @@ private:
     QList<Voice> m_voices;
     std::vector<float> m_output;
     VoiceId m_nextId = 1;
-    std::array<float, qcSoundBusCount> m_busVolumes{1.0f, 1.0f, 1.0f};
+    // Read and written only through categoryVolume() and setCategoryVolume(); every category
+    // starts at full volume (constructor).
+    std::array<float, qcSoundCategoryCount> m_categoryVolumes{};
     float m_master = 1.0f;
     bool m_muted = false;
 };

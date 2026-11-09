@@ -45,7 +45,7 @@ MusicVoices musicVoices(QcAudioOutput &output)
     MusicVoices found;
     output.withMixer([&found](QcAudioMixer &mixer) {
         for (const QcAudioMixer::Voice &voice : mixer.voices()) {
-            if (voice.bus == QcSoundBus::Music) {
+            if (voice.category == QcSoundCategory::Music) {
                 found.streams += voice.stream ? 1 : 0;
                 found.buffers += voice.buffer ? 1 : 0;
                 found.fading += voice.fadeFrames >= 0 ? 1 : 0;
