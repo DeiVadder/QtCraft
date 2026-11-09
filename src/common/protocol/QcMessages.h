@@ -5,6 +5,7 @@
 
 #include "common/protocol/QcAdminMessages.h"
 #include "common/protocol/QcAdvancementMessages.h"
+#include "common/protocol/QcBeaconMessages.h"
 #include "common/protocol/QcBossBarMessages.h"
 #include "common/protocol/QcDebugMessages.h"
 #include "common/protocol/QcDimensionMessages.h"
@@ -50,4 +51,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho,
                                QcMsg::AdvancementProgress, QcMsg::PlayerAir, QcMsg::DimensionChange,
                                QcMsg::OpenSmithing, QcMsg::SmithingState, QcMsg::ForgeSmithing, QcMsg::CloseSmithing,
-                               QcMsg::Atmosphere, QcMsg::BossBar>;
+                               QcMsg::Atmosphere, QcMsg::BossBar, QcMsg::OpenBeacon, QcMsg::BeaconState,
+                               QcMsg::ChooseBeaconEffects, QcMsg::CloseBeacon, QcMsg::BeaconBeam>;

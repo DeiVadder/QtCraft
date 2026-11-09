@@ -211,7 +211,7 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
-    // The stonecutter, the enchanting table, the anvil and the smithing table.
+    // The stonecutter, the enchanting table, the anvil, the smithing table and the beacon.
     if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.open(client, target)) {
         return true;
     }

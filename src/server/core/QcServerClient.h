@@ -140,6 +140,8 @@ struct QcServerClient : QcEntity
     using Anvil = QcOpenAnvil;
     /*! The open smithing table (QcOpenSmithing). */
     using Smithing = QcOpenSmithing;
+    /*! The open beacon (QcOpenBeacon). */
+    using Beacon = QcOpenBeacon;
     /*! A portable container opened from the hand (QcHeldContainer). */
     using HeldContainer = QcHeldContainer;
     /*! The screens the player has open (QcPlayerScreen). */

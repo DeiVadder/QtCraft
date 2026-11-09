@@ -261,10 +261,8 @@ void QcStartupHooks::runAfterDelays(const DelayedSteps &steps)
 
 void QcStartupHooks::openStartupOverlay()
 {
-    if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"brewing"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s
-        || m_startupOverlay == u"enchanting"_s || m_startupOverlay == u"anvil"_s
-        || m_startupOverlay == u"smithing"_s) {
-        openMachineInView();
+    if (isMachineOverlay(m_startupOverlay)) {
+        openMachineInView(m_startupOverlay);
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
         m_screens.handbook.open(m_startupHandbook);
     } else if (m_startupOverlay == u"players"_s) {
@@ -275,7 +273,14 @@ void QcStartupHooks::openStartupOverlay()
     }
 }
 
-void QcStartupHooks::openMachineInView()
+bool QcStartupHooks::isMachineOverlay(const QString &name)
+{
+    static const QStringList machines{u"furnace"_s,    u"brewing"_s, u"chest"_s,    u"trade"_s,
+                                      u"enchanting"_s, u"anvil"_s,   u"smithing"_s, u"beacon"_s};
+    return machines.contains(name);
+}
+
+void QcStartupHooks::openMachineInView(const QString &name)
 {
     m_fillMachineOnOpen = true;
     holdScreenshot();
@@ -285,12 +290,12 @@ void QcStartupHooks::openMachineInView()
         }
     });
     // Without a machine in view the screen never opens; take the screenshot anyway.
-    QTimer::singleShot(6000, this, [this] {
+    QTimer::singleShot(6000, this, [this, name] {
         if (!m_fillMachineOnOpen) {
             return;
         }
         m_fillMachineOnOpen = false;
-        qCWarning(lcGame) << "--overlay" << m_startupOverlay << ": no block in view opened";
+        qCWarning(lcGame) << "--overlay" << name << ": no block in view opened";
         releaseScreenshot();
     });
 }
@@ -359,6 +364,9 @@ void QcStartupHooks::runOverlayStep(const QString &step)
     } else if (step == u"fly"_s) {
         // Creative flight as after a double tap of jump (decision E-284).
         m_parts.session->gameMode().setFlightWanted(true);
+    } else if (isMachineOverlay(step)) {
+        // A machine's screen opens through the block in view, as at the start.
+        openMachineInView(step);
     } else {
         // "@<ms> " closes the screen and the handbook.
         openOverlay(step);
@@ -625,8 +633,12 @@ void QcStartupHooks::machineOpened()
         return;
     }
 
-    // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
+    // Hotbar slot 1 goes into the input (a beacon's payment), slot 2 onto the fuel.
     session.inventoryMirror().moveItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
+    if (session.beacon().isOpen()) {
+        QTimer::singleShot(1000, this, [this] { releaseScreenshot(); });
+        return;
+    }
     session.inventoryMirror().moveItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
     // A smithing table takes hotbar slot 3 as its addition (decision E-1115).
     if (session.smithing().isOpen()) {

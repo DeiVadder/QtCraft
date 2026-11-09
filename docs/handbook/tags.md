@@ -2,9 +2,33 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [#fire_resistant](#tag-qtcraft-fire_resistant) · [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals) · [Cobblestone or blackstone](#tag-qtcraft-stone_crafting_materials) · [Soul sand or soul soil](#tag-qtcraft-soul_blocks)
+**QtCraft:** [#beacon_base](#tag-qtcraft-beacon_base) · [#beacon_payment](#tag-qtcraft-beacon_payment) · [#fire_resistant](#tag-qtcraft-fire_resistant) · [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals) · [Cobblestone or blackstone](#tag-qtcraft-stone_crafting_materials) · [Soul sand or soul soil](#tag-qtcraft-soul_blocks)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-beacon_base"></a>#beacon_base
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:beacon_base` |
+
+**Items in this group**
+
+[Block of diamond](blocks.md#block-qtcraft-diamond_block), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Block of gold](blocks.md#block-qtcraft-gold_block), [Block of iron](blocks.md#block-qtcraft-iron_block), [Block of netherite](blocks.md#block-qtcraft-netherite_block)
+
+### <a id="tag-qtcraft-beacon_payment"></a>#beacon_payment
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:beacon_payment` |
+
+**Items in this group**
+
+[Diamond](items.md#item-qtcraft-diamond), [Emerald](items.md#item-qtcraft-emerald), [Gold ingot](items.md#item-qtcraft-gold_ingot), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Netherite ingot](items.md#item-qtcraft-netherite_ingot)
 
 ### <a id="tag-qtcraft-fire_resistant"></a>#fire_resistant
 

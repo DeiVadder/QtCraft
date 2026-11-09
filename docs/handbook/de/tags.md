@@ -2,9 +2,33 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [#fire_resistant](#tag-qtcraft-fire_resistant) · [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige glasierte Terrakotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Beliebiger Stamm oder beliebiges Holz](#tag-qtcraft-logs) · [Beliebiges Bett](#tag-qtcraft-beds) · [Bruchstein oder Schwarzstein](#tag-qtcraft-stone_crafting_materials) · [Kohle oder Holzkohle](#tag-qtcraft-coals) · [Seelensand oder Seelenerde](#tag-qtcraft-soul_blocks)
+**QtCraft:** [#beacon_base](#tag-qtcraft-beacon_base) · [#beacon_payment](#tag-qtcraft-beacon_payment) · [#fire_resistant](#tag-qtcraft-fire_resistant) · [#wooden_slabs](#tag-qtcraft-wooden_slabs) · [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige glasierte Terrakotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Beliebiger Stamm oder beliebiges Holz](#tag-qtcraft-logs) · [Beliebiges Bett](#tag-qtcraft-beds) · [Bruchstein oder Schwarzstein](#tag-qtcraft-stone_crafting_materials) · [Kohle oder Holzkohle](#tag-qtcraft-coals) · [Seelensand oder Seelenerde](#tag-qtcraft-soul_blocks)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-beacon_base"></a>#beacon_base
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:beacon_base` |
+
+**Items dieser Gruppe**
+
+[Diamantblock](blocks.md#block-qtcraft-diamond_block), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Goldblock](blocks.md#block-qtcraft-gold_block), [Netheritblock](blocks.md#block-qtcraft-netherite_block), [Smaragdblock](blocks.md#block-qtcraft-emerald_block)
+
+### <a id="tag-qtcraft-beacon_payment"></a>#beacon_payment
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:beacon_payment` |
+
+**Items dieser Gruppe**
+
+[Diamant](items.md#item-qtcraft-diamond), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Goldbarren](items.md#item-qtcraft-gold_ingot), [Netheritbarren](items.md#item-qtcraft-netherite_ingot), [Smaragd](items.md#item-qtcraft-emerald)
 
 ### <a id="tag-qtcraft-fire_resistant"></a>#fire_resistant
 

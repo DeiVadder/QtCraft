@@ -78,6 +78,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     inventory/QcAnvilController.h inventory/QcAnvilController.cpp
+    inventory/QcBeaconController.h inventory/QcBeaconController.cpp
     inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
     inventory/QcSlotActions.h
     inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
@@ -141,6 +142,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
+    rendering/QcEntityFrameBeams.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
     rendering/QcEntityFramePuffs.cpp
     rendering/QcForcedPose.h rendering/QcForcedPose.cpp
@@ -310,6 +312,8 @@ qt_add_qml_module(qc_app_core
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/AnvilScreen.qml
+        qml/inventory/BeaconEffectButton.qml
+        qml/inventory/BeaconScreen.qml
         qml/inventory/BrewingScreen.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
@@ -601,6 +605,27 @@ qt_add_shaders(qtcraft "qtcraft_entity_shadow_shaders"
         shaders/block_shadow.vert.qsb
         shaders/entity_shadow.vert.qsb
         shaders/hand_shadow.vert.qsb
+)
+
+# The glows of the beacon beams are added to the colour behind them (decision E-1143), also as
+# receivers of the sun shadows.
+qt_add_shaders(qtcraft "qtcraft_glow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_GLOW=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_glow.frag.qsb
+)
+qt_add_shaders(qtcraft "qtcraft_glow_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_GLOW=1 QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_glow_shadow.frag.qsb
 )
 
 qt_add_translations(qtcraft

@@ -70,6 +70,9 @@ struct QcWorldDeviceResources
     QcGpuBuffers entityBuffers;
     QcGpuBuffers handBuffers;
     QcGpuBuffers framedMapBuffers;
+    // The cores and glows of the beacon beams (decision E-1143), kept out of the shadow casters.
+    QcGpuBuffers beamBuffers;
+    QcGpuBuffers beamGlowBuffers;
     // The framed-map texture; its bindings refer to frameUniforms (declared after it, released first).
     QcFramedMapTexture framedMaps;
     // The bindings refer to the resources above and are declared after them (released first).
@@ -125,6 +128,8 @@ struct QcWorldPassResources
     std::unique_ptr<QRhiGraphicsPipeline> outlinePipeline;
     std::unique_ptr<QRhiGraphicsPipeline> entityPipeline;
     std::unique_ptr<QRhiGraphicsPipeline> handPipeline;
+    // The glows of the beacon beams: entity meshes added to the colour without writing depth.
+    std::unique_ptr<QRhiGraphicsPipeline> glowPipeline;
     QcSkyRenderer skyRenderer;
     QcDebugLineRenderer debugLineRenderer;
     // Rain and snow, one instance per particle (decisions E-395, E-397).

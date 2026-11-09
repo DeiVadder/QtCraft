@@ -88,6 +88,10 @@ public:
         // The maps in item frames and the tiles of the texture they are drawn with (decision E-809).
         std::shared_ptr<const QcEntityMesh> framedMapMesh;
         std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles;
+        // The beacon beams (decision E-1143): their cores, without sun shadows, and their glows,
+        // added without depth.
+        std::shared_ptr<const QcEntityMesh> beamMesh;
+        std::shared_ptr<const QcEntityMesh> beamGlowMesh;
         // The debug lines and the precipitation, each relative to its origin (decision E-883).
         std::shared_ptr<const QList<QcDebugLineVertex>> debugLines;
         QcVec3 debugLinesOrigin;
@@ -126,6 +130,8 @@ public:
     void setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // The maps in item frames for this frame and the tiles of their texture (decision E-809).
     void setFramedMaps(std::shared_ptr<const QcEntityMesh> mesh, std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> tiles);
+    // The cores and glows of the beacon beams (decision E-1143).
+    void setBeams(std::shared_ptr<const QcEntityMesh> core, std::shared_ptr<const QcEntityMesh> glow);
     // First-person arm and held item; drawn in front of everything else. Null hides it.
     void setHandMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.

@@ -1,0 +1,8 @@
+{
+    "name": "beacon_core",
+    "pattern": "metal_block",
+    "primary": "#7fe9e0",
+    "secondary": "#dafffa",
+    "variation": 0.08,
+    "seed": 1143
+}

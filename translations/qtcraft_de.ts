@@ -1253,6 +1253,60 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>BeaconEffectButton</name>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconEffectButton.qml" line="30"/>
+        <source>%1 II</source>
+        <translation>%1 II</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconEffectButton.qml" line="31"/>
+        <source>needs a pyramid of level %1</source>
+        <translation>braucht eine Pyramide der Stufe %1</translation>
+    </message>
+</context>
+<context>
+    <name>BeaconScreen</name>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="21"/>
+        <source>Beacon</source>
+        <translation>Leuchtfeuer</translation>
+    </message>
+    <message>
+        <source>Pyramid level %1 of 4</source>
+        <translation type="vanished">Pyramide Stufe %1 von 4</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="26"/>
+        <source>No pyramid or no sky: the beacon is dark</source>
+        <translation>Keine Pyramide oder kein Himmel: das Leuchtfeuer ist dunkel</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="26"/>
+        <source>Pyramid level %1 of %2</source>
+        <translation>Pyramide Stufe %1 von %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="39"/>
+        <source>Primary power</source>
+        <translation>Primäre Kraft</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="67"/>
+        <source>Secondary power</source>
+        <translation>Sekundäre Kraft</translation>
+    </message>
+    <message>
+        <source>Iron, gold, emerald, diamond or netherite</source>
+        <translation type="vanished">Eisen, Gold, Smaragd, Diamant oder Netherit</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/BeaconScreen.qml" line="111"/>
+        <source>Confirm</source>
+        <translation>Bestätigen</translation>
+    </message>
+</context>
+<context>
     <name>BrewingScreen</name>
     <message>
         <location filename="../src/app/qml/inventory/BrewingScreen.qml" line="21"/>
@@ -7158,17 +7212,17 @@ Jetzt: %2</translation>
         <translation>Hier nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="447"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="449"/>
         <source>Advancement made!</source>
         <translation>Fortschritt erzielt!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="449"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="451"/>
         <source>Goal reached!</source>
         <translation>Ziel erreicht!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="451"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="453"/>
         <source>Challenge complete!</source>
         <translation>Herausforderung gemeistert!</translation>
     </message>

@@ -1140,5 +1140,11 @@
     "advancement.qtcraft.summon_hydra.description": "Beschwöre die Verkohlte Hydra",
     "advancement.qtcraft.kill_hydra": "Stern des Nethers",
     "advancement.qtcraft.kill_hydra.description": "Besiege die Verkohlte Hydra",
-    "structure.qtcraft.hydra_arena": "Verkohlte Hydra: ihr Beschwörungs-T (ein Schädel fehlt) und eine Hydra hinter Glas"
+    "structure.qtcraft.hydra_arena": "Verkohlte Hydra: ihr Beschwörungs-T (ein Schädel fehlt) und eine Hydra hinter Glas",
+    "block.qtcraft.beacon": "Leuchtfeuer",
+    "advancement.qtcraft.beacon": "Ein Licht für zu Hause",
+    "advancement.qtcraft.beacon.description": "Baue ein Leuchtfeuer auf eine Pyramide und entzünde es",
+    "advancement.qtcraft.beaconator": "Leuchtturmwärter",
+    "advancement.qtcraft.beaconator.description": "Betreibe ein Leuchtfeuer mit einer vollen Pyramide aus vier Stufen",
+    "structure.qtcraft.beacon_pyramid": "Leuchtfeuer: eine volle Pyramide aus vier Stufen gemischter Blöcke, das Leuchtfeuer strahlt"
 }

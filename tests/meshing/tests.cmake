@@ -40,3 +40,5 @@ qc_add_test(test_mesher_signal_shapes SOURCES meshing/test_mesher_signal_shapes.
 qc_add_test(test_mesh_measure SOURCES meshing/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
 # Headless measurement of the mesh of many dropped items (decision E-991); QTCRAFT_DROP_MEASURE=full for the recorded sizes.
 qc_add_test(test_drop_measure SOURCES meshing/test_drop_measure.cpp LIBRARIES qc_base_content qc_clientcore)
+# The beam of a beacon: core, glow, segments, faces looking out (decision E-1143).
+qc_add_test(test_beam_mesher SOURCES meshing/test_beam_mesher.cpp LIBRARIES qc_clientcore)

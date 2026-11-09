@@ -6,6 +6,7 @@
 #include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcSoundKeys.h"
 #include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcBeacon.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcPortableContainers.h"
 #include "common/gameplay/QcQuickMove.h"
@@ -17,6 +18,7 @@
 #include "server/items/QcServerExperience.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcServerAnvil.h"
+#include "server/machines/QcServerBeacons.h"
 #include "server/machines/QcServerEnchanting.h"
 #include "server/machines/QcServerSmithing.h"
 
@@ -90,6 +92,9 @@ void QcServerInventory::send(QcServerClient &client)
     if (client.screen.smithing) {
         client.connection->send(QcServerSmithing::stateOf(m_state, client));
     }
+    if (client.screen.beacon) {
+        client.connection->send(QcServerBeacons::stateOf(m_state, client));
+    }
 }
 
 void QcServerInventory::OpenSlots::storeWorkstationSlots() const
@@ -110,11 +115,14 @@ void QcServerInventory::OpenSlots::storeWorkstationSlots() const
             smithing->inputs[static_cast<std::size_t>(slot)] = combined.stacks[machineSlot + slot];
         }
     }
+    if (beacon) {
+        beacon->payment = combined.stacks[machineSlot];
+    }
 }
 
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
-    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), nullptr, nullptr, nullptr, nullptr, 0, {}};
+    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), nullptr, nullptr, nullptr, nullptr, nullptr, 0, {}};
     open.combined.stacks = client.inventory.allSlots();
     open.combined.stacks.append(client.crafting.grid);
     if (open.machine) {
@@ -147,6 +155,11 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
         open.smithing = &*client.screen.smithing;
         open.combined.stacks.append(QList<QcItemStack>(open.smithing->inputs.begin(), open.smithing->inputs.end()));
         open.blockSlots = QcSmithing::slotCount;
+    } else if (client.screen.beacon) {
+        // The payment slot (decision E-1142); the effects are chosen through QcServerBeacons.
+        open.beacon = &*client.screen.beacon;
+        open.combined.stacks.append(open.beacon->payment);
+        open.blockSlots = 1;
     }
     // The armour slots follow at their own numbers; the cells between them stay unusable.
     open.combined.stacks.resize(equipmentSlot);
@@ -156,7 +169,7 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
 
 void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
 {
-    if (!armourFits(open.combined.stacks) || !containerAccepts(open) || !enchantingAccepts(open)) {
+    if (!armourFits(open.combined.stacks) || !containerAccepts(open) || !workstationAccepts(open)) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -227,7 +240,9 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
     }
 
     // Both slots are usable and differ (checked above), so the move cannot fail.
-    [[maybe_unused]] const bool moved = open.combined.moveBetween(move.from, move.to, std::max(0, move.count), m_state.content());
+    // The beacon's payment slot holds one item (decision E-1142).
+    const int count = open.beacon && move.to == machineSlot ? 1 : std::max(0, move.count);
+    [[maybe_unused]] const bool moved = open.combined.moveBetween(move.from, move.to, count, m_state.content());
     applyOpenSlots(client, open);
 }
 
@@ -249,7 +264,7 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     }
     situation.hotbarOnly = client.screen.held.has_value();
     situation.machineOpen = open.machine != nullptr || open.stonecutter != nullptr || open.enchanting != nullptr || open.anvil != nullptr
-                           || open.smithing != nullptr;
+                           || open.smithing != nullptr || open.beacon != nullptr;
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined.stacks[move.slot]);
     if (open.stonecutter) {
         // Stone goes into the stonecutter's input like smeltable items into a furnace's.
@@ -272,6 +287,12 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
         // Into the slot the recipes take it in (decision E-1115).
         const std::optional<QcSmithing::Slot> slot = QcSmithing::slotFor(m_state.content(), open.combined.stacks[move.slot]);
         situation.workstationSlot = slot ? machineSlot + static_cast<int>(*slot) : -1;
+    }
+    if (open.beacon && QcBeacon::isPayment(m_state.content(), open.combined.stacks[move.slot].item) && open.combined.stacks[machineSlot].isEmpty()) {
+        // One payment item into the empty payment slot, which holds one (decision E-1142).
+        [[maybe_unused]] const bool paid = open.combined.moveBetween(move.slot, machineSlot, 1, m_state.content());
+        applyOpenSlots(client, open);
+        return;
     }
     if (open.machine) {
         const QcItemId item = open.combined.stacks[move.slot].item;
@@ -309,14 +330,17 @@ bool QcServerInventory::containerAccepts(const OpenSlots &open) const
     return open.container->heldSlot < 0 || open.combined.stacks[open.container->heldSlot].tryWithContents(cells).has_value();
 }
 
-bool QcServerInventory::enchantingAccepts(const OpenSlots &open) const
+bool QcServerInventory::workstationAccepts(const OpenSlots &open) const
 {
+    const QcItemStack &first = open.combined.stacks[machineSlot];
+    if (open.beacon) {
+        return first.isEmpty() || (first.count == 1 && QcBeacon::isPayment(m_state.content(), first.item));
+    }
     if (!open.enchanting) {
         return true;
     }
-    const QcItemStack &item = open.combined.stacks[machineSlot];
     const QcItemStack &lapis = open.combined.stacks[machineSlot + 1];
-    return (item.isEmpty() || item.count == 1) && (lapis.isEmpty() || m_state.content().itemId(QString(QcEnchantingTable::lapisItem)) == lapis.item);
+    return (first.isEmpty() || first.count == 1) && (lapis.isEmpty() || m_state.content().itemId(QString(QcEnchantingTable::lapisItem)) == lapis.item);
 }
 
 void QcServerInventory::noteBrewedTaken(QcServerClient &client, const QcBlockEntities::Machine &machine, const QList<QcItemStack> &before)

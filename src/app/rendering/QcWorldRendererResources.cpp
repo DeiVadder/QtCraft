@@ -247,6 +247,7 @@ void QcWorldPassResources::createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *tar
     const QShader entityFragment = shader(u"entity"_s);
     entityPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings, vertexShader(u"entity"_s), entityFragment);
     handPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings, vertexShader(u"hand"_s), entityFragment);
+    glowPipeline = QcRenderPipelines::createGlowPipeline(rhi, target, atlasBindings, vertexShader(u"entity"_s), shader(u"entity_glow"_s));
     renderPass.reset(target->renderPassDescriptor()->newCompatibleRenderPassDescriptor());
     sampleCount = target->sampleCount();
 }
@@ -290,5 +291,6 @@ void QcWorldPassResources::releaseAtlasPipelines()
     waterPipeline.reset();
     entityPipeline.reset();
     handPipeline.reset();
+    glowPipeline.reset();
     atlasPipelinesTried = false;
 }

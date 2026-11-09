@@ -44,6 +44,8 @@ qc_add_test(test_world_map_preview SOURCES screens/test_world_map_preview.cpp LI
 # The nether on the map preview: the server's nether biomes, its fortresses, the choice kept (E-1077).
 qc_add_test(test_world_map_nether SOURCES screens/test_world_map_nether.cpp LIBRARIES qc_base_content qc_app_core qc_worlds qc_server TIMEOUT 330)
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
+# The beacon's screen follows the opened beacon (decision E-1142).
+qc_add_test(test_beacon_controller SOURCES screens/test_beacon_controller.cpp LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
 qc_add_test(test_sign_controller SOURCES screens/test_sign_controller.cpp fixtures/QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.

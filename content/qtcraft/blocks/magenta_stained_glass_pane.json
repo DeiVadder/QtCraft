@@ -4,6 +4,7 @@
     "shape": "pane",
     "render": "translucent",
     "lightOpacity": 0,
+    "beamColour": "#c74ebd",
     "hardness": 0.3,
     "drops": [],
     "connects": {

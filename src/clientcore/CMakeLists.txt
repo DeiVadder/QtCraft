@@ -48,6 +48,7 @@ target_sources(qc_clientcore PRIVATE
     debug/QcStatsLog.h debug/QcStatsLog.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    entitymeshes/QcBeamMesher.h entitymeshes/QcBeamMesher.cpp
     entitymeshes/QcBoatModel.h entitymeshes/QcBoatModel.cpp
     entitymeshes/QcBoatRiders.h entitymeshes/QcBoatRiders.cpp
     entitymeshes/QcEnchantingMesher.h entitymeshes/QcEnchantingMesher.cpp
@@ -178,6 +179,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientAnvil.h session/QcClientAnvil.cpp
+    session/QcClientBeacon.h session/QcClientBeacon.cpp
     session/QcClientBlockScreen.h session/QcClientBlockScreen.cpp
     session/QcClientBossBars.h session/QcClientBossBars.cpp
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp

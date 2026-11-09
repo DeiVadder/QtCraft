@@ -1273,6 +1273,7 @@ The hardest material, for the best tools.
 |---|---|
 | ID | `qtcraft:diamond` |
 | Stack size | 64 |
+| Groups | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **How to make it**
 
@@ -1350,6 +1351,7 @@ A green gem and the money of the villagers: they pay in emeralds for what they b
 |---|---|
 | ID | `qtcraft:emerald` |
 | Stack size | 64 |
+| Groups | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **How to make it**
 
@@ -1648,6 +1650,7 @@ Smelted gold.
 |---|---|
 | ID | `qtcraft:gold_ingot` |
 | Stack size | 64 |
+| Groups | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **How to make it**
 
@@ -1831,6 +1834,7 @@ Smelted iron for tools, buckets and more.
 |---|---|
 | ID | `qtcraft:iron_ingot` |
 | Stack size | 64 |
+| Groups | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **How to make it**
 
@@ -2585,6 +2589,10 @@ All that is left of the Charred Hydra. Neither fire, lava nor explosions harm it
 | Stack size | 64 |
 | Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
 
+**Used in**
+
+[Beacon](blocks.md#block-qtcraft-beacon)
+
 **Dropped by**
 
 [Charred Hydra](creatures.md#mob-qtcraft-charred_hydra)
@@ -2615,7 +2623,7 @@ The strongest metal. The smithing table turns diamond tools and armour into neth
 |---|---|
 | ID | `qtcraft:netherite_ingot` |
 | Stack size | 64 |
-| Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+| Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant), [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **How to make it**
 

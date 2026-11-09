@@ -1,0 +1,27 @@
+{
+    "name": "block.beacon.activate",
+    "volume": 0.9,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 1.6,
+            "frequency": 220,
+            "endFrequency": 660,
+            "attack": 0.05,
+            "curve": 2,
+            "gain": 0.5
+        },
+        {
+            "wave": "sine",
+            "duration": 1.6,
+            "frequency": 330,
+            "endFrequency": 990,
+            "attack": 0.1,
+            "curve": 2,
+            "gain": 0.3
+        }
+    ]
+}

@@ -267,6 +267,8 @@ void BlockReader::readMiningFields()
     m_block.opensEnchanting = m_reader.boolean(u"enchanting"_s, false);
     m_block.opensAnvil = m_reader.boolean(u"anvil"_s, false);
     m_block.opensSmithing = m_reader.boolean(u"smithing"_s, false);
+    m_block.opensBeacon = m_reader.boolean(u"beacon"_s, false);
+    m_block.beamColour = m_reader.colour(u"beamColour"_s);
     m_block.wearsInto = m_reader.name(u"wearsInto"_s, m_namespace);
     m_block.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }

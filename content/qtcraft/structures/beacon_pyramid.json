@@ -1,0 +1,130 @@
+{
+    "name": "beacon_pyramid",
+    "showcase": {
+        "order": 120
+    },
+    "palette": {
+        "P": "polished_stone",
+        "I": "iron_block",
+        "G": "gold_block",
+        "E": "emerald_block",
+        "D": "diamond_block",
+        "N": "netherite_block",
+        "B": "beacon"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP"
+        ],
+        [
+            "             ",
+            "             ",
+            "  IGEDNIGED  ",
+            "  GEDNIGEDN  ",
+            "  EDNIGEDNI  ",
+            "  DNIGEDNIG  ",
+            "  NIGEDNIGE  ",
+            "  IGEDNIGED  ",
+            "  GEDNIGEDN  ",
+            "  EDNIGEDNI  ",
+            "  DNIGEDNIG  ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "             ",
+            "   DNIGEDN   ",
+            "   NIGEDNI   ",
+            "   IGEDNIG   ",
+            "   GEDNIGE   ",
+            "   EDNIGED   ",
+            "   DNIGEDN   ",
+            "   NIGEDNI   ",
+            "             ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "    GEDNI    ",
+            "    EDNIG    ",
+            "    DNIGE    ",
+            "    NIGED    ",
+            "    IGEDN    ",
+            "             ",
+            "             ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "     NIG     ",
+            "     IGE     ",
+            "     GED     ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "      B      ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                6,
+                5,
+                6
+            ],
+            "effects": [
+                "speed",
+                "regeneration"
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                6.5,
+                3.0,
+                1.0
+            ],
+            "text": "block.qtcraft.beacon"
+        }
+    ]
+}

@@ -51,8 +51,10 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     armour (decisions E-1115, E-1116), 95 the atmosphere of the player's biome (Atmosphere) and
     the particles of blocks in the content (decisions E-1120, E-1121), 96 the charred hydra: boss
     bars (BossBar), the Armoured flag and armour model parts in the content (decisions E-1126,
-    E-1127). */
-inline constexpr quint32 version = 96;
+    E-1127), 97 the beacon: its screen (OpenBeacon, BeaconState, ChooseBeaconEffects,
+    CloseBeacon), its beam (BeaconBeam) and \c {beacon} of blocks in the content (decisions
+    E-1142, E-1143). */
+inline constexpr quint32 version = 97;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

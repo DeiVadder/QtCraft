@@ -25,9 +25,14 @@ struct QcEntityVertex
     float shade = 1.0f;
     /*! Sky light in [0, 1]. */
     float skyLight = 1.0f;
-    /*! Block light (torches) in [0, 1]. */
+    /*! Block light (torches) in [0, 1]; emissiveLight marks a vertex that glows by itself. */
     float blockLight = 0.0f;
     /*! RGB multiplies the texture (255 = unchanged); an alpha below 255 mixes in red by
         1 - alpha / 255, the overlay of a hurt (decision E-971). */
     std::array<quint8, 4> tint = {255, 255, 255, 255};
+
+    /*! The block light of a vertex that glows by itself, as an emissive block face (a beacon's
+        beam, decision E-1143): lit by the frame's emissive factor, beyond white in the realistic
+        mode so that it blooms, without the warm colour of torches and without sun shadows. */
+    static constexpr float emissiveLight = 2.0f;
 };

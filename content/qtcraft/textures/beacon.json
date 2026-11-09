@@ -1,0 +1,8 @@
+{
+    "name": "beacon",
+    "pattern": "glass",
+    "primary": "#bfeff0",
+    "secondary": "#e6fbfb",
+    "variation": 0.05,
+    "seed": 1142
+}

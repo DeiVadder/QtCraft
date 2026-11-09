@@ -239,6 +239,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcAirSupply.h gameplay/QcAirSupply.cpp
     gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
+    gameplay/QcBeacon.h gameplay/QcBeacon.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
     gameplay/QcEffectRules.h gameplay/QcEffectRules.cpp
@@ -316,6 +317,8 @@ target_sources(qc_common PRIVATE
     protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
     protocol/QcAdvancementCodec.cpp
     protocol/QcAdvancementMessages.h
+    protocol/QcBeaconCodec.h protocol/QcBeaconCodec.cpp
+    protocol/QcBeaconMessages.h
     protocol/QcBossBarCodec.cpp
     protocol/QcBossBarMessages.h
     protocol/QcChatText.h protocol/QcChatText.cpp

@@ -153,6 +153,7 @@ Das härteste Material, für die besten Werkzeuge.
 |---|---|
 | ID | `qtcraft:diamond` |
 | Stapelgröße | 64 |
+| Gruppen | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **Herstellung**
 
@@ -239,6 +240,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 |---|---|
 | ID | `qtcraft:iron_ingot` |
 | Stapelgröße | 64 |
+| Gruppen | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **Herstellung**
 
@@ -607,6 +609,7 @@ Geschmolzenes Gold.
 |---|---|
 | ID | `qtcraft:gold_ingot` |
 | Stapelgröße | 64 |
+| Gruppen | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **Herstellung**
 
@@ -1461,7 +1464,7 @@ Das stärkste Metall. Der Schmiedetisch macht damit Werkzeuge und Rüstung aus D
 |---|---|
 | ID | `qtcraft:netherite_ingot` |
 | Stapelgröße | 64 |
-| Gruppen | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+| Gruppen | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant), [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **Herstellung**
 
@@ -1547,6 +1550,10 @@ Alles, was von der Verkohlten Hydra bleibt. Weder Feuer noch Lava noch Explosion
 | ID | `qtcraft:nether_star` |
 | Stapelgröße | 64 |
 | Gruppen | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+
+**Wird verwendet für**
+
+[Leuchtfeuer](blocks.md#block-qtcraft-beacon)
 
 **Droppt aus**
 
@@ -2685,6 +2692,7 @@ Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden fü
 |---|---|
 | ID | `qtcraft:emerald` |
 | Stapelgröße | 64 |
+| Gruppen | [#beacon_payment](tags.md#tag-qtcraft-beacon_payment) |
 
 **Herstellung**
 

@@ -92,13 +92,15 @@ struct QcStructureDefinition
 
     /*! \brief Contents of the chest or machine at \c {at} (machines: input, fuel, output);
         \c {name} gives the chest or machine a custom name (decision E-873), its screen's title;
-        \c {items} are the stacks, at most maxItemsPerContainer. The JSON keys are the field names.
-        \qcfields */
+        \c {items} are the stacks, at most maxItemsPerContainer; \c {effects} are the primary
+        and secondary effect of a beacon there (decision E-1142, at most two names). The JSON keys
+        are the field names. \qcfields */
     struct Contents
     {
         QcBlockPos at;
         QList<Stack> items;
         QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        QStringList effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     };
 
     /*! \brief A minecart on the rail at \c {at}, placed from \c {item} (a chest or hopper cart

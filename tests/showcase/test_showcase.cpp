@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/gameplay/QcBeacon.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
@@ -278,11 +279,12 @@ private slots:
         for (const QcWorldSetup::Contents &contents : setup.contents) {
             const QcBlockDefinition &block = m_content->block(blockAt(m_chunks, contents.at));
             // Contents at a rail go into the container cart standing there (decision E-386), at a
-            // campfire onto the fire (decision E-772).
+            // campfire onto the fire (decision E-772), at a beacon only its effects (decision E-1142).
             const bool cart = std::ranges::any_of(setup.minecarts, [&contents](const QcWorldSetup::Cart &placed) {
                 return placed.at == contents.at && placed.item != u"qtcraft:minecart"_s;
             });
-            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine() || block.campfire.slotCount >= contents.items.size(),
+            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine() || block.campfire.slotCount >= contents.items.size()
+                         || (block.opensBeacon && contents.items.isEmpty()),
                      qPrintable(block.name));
             for (const QcStructureDefinition::Stack &stack : contents.items) {
                 items.insert(stack.item);
@@ -483,6 +485,21 @@ private slots:
         }
         QCOMPARE(fires, 9);
         QVERIFY(hay);
+    }
+
+    void theBeaconShinesAtLevelFourWithItsEffects()
+    {
+        // The beacon pyramid (decision E-1142): a full pyramid of four layers, open sky, and the
+        // beacon set to speed and regeneration.
+        const auto contents = std::ranges::find_if(m_generator->plan().setup.contents, [this](const QcWorldSetup::Contents &placed) {
+            return m_content->block(blockAt(m_chunks, placed.at)).opensBeacon;
+        });
+        QVERIFY(contents != m_generator->plan().setup.contents.end());
+        const QcBeacon::BlockAt at = [this](QcBlockPos pos) -> std::optional<QcBlockId> { return blockAt(m_chunks, pos); };
+        QCOMPARE(QcBeacon::levelAt(*m_content, contents->at, at), QcBeacon::maxLevel);
+        QVERIFY(!QcBeacon::beamAt(*m_content, contents->at, at).isEmpty());
+        QCOMPARE(contents->effects, (QStringList{u"qtcraft:speed"_s, u"qtcraft:regeneration"_s}));
+        QVERIFY(QcBeacon::mayChoose(QcBeacon::maxLevel, contents->effects.value(0), contents->effects.value(1)));
     }
 
     void modBlocksAppearWithoutExtraData()

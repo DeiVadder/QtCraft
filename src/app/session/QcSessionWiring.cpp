@@ -115,6 +115,7 @@ void QcSessionWiring::connectPlayer()
     connectEnchanting();
     connectAnvil();
     connectSmithing();
+    connectBeacon();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
@@ -169,6 +170,23 @@ void QcSessionWiring::connectSmithing()
     connect(smithing, &QcClientSmithing::closed, player, &QcPlayerController::updateInventory);
     // `--overlay smithing` fills the three slots from the hotbar.
     connect(smithing, &QcClientSmithing::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
+}
+
+void QcSessionWiring::connectBeacon()
+{
+    const QcClientBeacon *beacon = &m_parts.session->beacon();
+    const QcBeaconController *controller = m_targets.workstations.beacon.get();
+    connectScreen(beacon, m_targets.screens, QcScreenState::Overlay::Beacon);
+    connect(beacon, &QcClientBeacon::opened, controller, &QcBeaconController::opened);
+    connect(beacon, &QcClientBeacon::closed, controller, &QcBeaconController::update);
+    connect(beacon, &QcClientBeacon::changed, controller, &QcBeaconController::update);
+    // The payment slot lives in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(beacon, &QcClientBeacon::opened, player, &QcPlayerController::updateInventory);
+    connect(beacon, &QcClientBeacon::changed, player, &QcPlayerController::updateInventory);
+    connect(beacon, &QcClientBeacon::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay beacon` puts the first hotbar slot into the payment slot.
+    connect(beacon, &QcClientBeacon::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
 }
 
 void QcSessionWiring::connectEnchanting()

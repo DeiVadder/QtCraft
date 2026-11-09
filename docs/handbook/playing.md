@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs) · [Music](#chapter-qtcraft-music)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [The Beacon](#chapter-qtcraft-beacon) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs) · [Music](#chapter-qtcraft-music)
 
 ## QtCraft
 
@@ -824,6 +824,28 @@ A defeated hydra leaves a **Nether Star** and plenty of experience. The star doe
 **See also**
 
 [Charred Hydra](creatures.md#mob-qtcraft-charred_hydra), [Charred Skull](blocks.md#block-qtcraft-charred_skull), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Nether Star](items.md#item-qtcraft-nether_star)
+
+### <a id="chapter-qtcraft-beacon"></a>The Beacon
+
+**Building a beacon**
+
+Craft a **beacon** from five glass on top, a **Nether Star** in the middle and three obsidian below; the star comes from the Charred Hydra. On its own a beacon is only a light.
+
+**The pyramid**
+
+Put the beacon on a **pyramid** of blocks of iron, gold, emerald, diamond or netherite, in any mix: a 3 × 3 layer right under it gives level 1, then 5 × 5 for level 2, 7 × 7 for level 3 and 9 × 9 for level 4. Each layer must be full. The beacon looks at its pyramid every four seconds.
+
+**Powers**
+
+Use the beacon, put an iron ingot, a gold ingot, an emerald, a diamond or a netherite ingot into its slot, choose a power and confirm. Level 1 offers **speed** and **haste**, level 2 also **resistance** and **jump boost**, level 3 **strength**. At level 4 a second power is added: **regeneration**, or the first power at level II. Every player within 20 blocks per level plus 10 gets the powers, at any height above, for 9 seconds plus 2 per level, renewed every four seconds.
+
+**The beam**
+
+A beacon shines only with **open sky** above: glass and other clear blocks let the beam through, solid blocks stop it. **Stained glass** or panes in the beam colour it; several colours mix. Without a beam the beacon gives no powers.
+
+**See also**
+
+[Beacon](blocks.md#block-qtcraft-beacon), [Nether Star](items.md#item-qtcraft-nether_star), [Block of iron](blocks.md#block-qtcraft-iron_block), [Block of gold](blocks.md#block-qtcraft-gold_block), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Block of diamond](blocks.md#block-qtcraft-diamond_block), [Block of netherite](blocks.md#block-qtcraft-netherite_block)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 

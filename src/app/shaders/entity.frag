@@ -161,14 +161,21 @@ void main()
     vec3 light = vLight;
     // Entities have no normal here: the lookup moves towards the light only. Without shadows the
     // light of the vertex as without them.
-    if (shadow.toLight.w > 0.0)
+    // Glowing vertices (a negative block light part) keep their light.
+    if (shadow.toLight.w > 0.0 && vLightParts.w >= 0.0)
         light = max(shadowedLight(vLightParts, skyColour(vShadowAt, vec3(0.0), length(vShadowAt))), vMoving);
     vec3 lit = texel.rgb * light;
 #else
     vec3 lit = texel.rgb * vLight;
     float fog = clamp((vDistance - frame.params.x) / max(frame.params.y - frame.params.x, 0.001), 0.0, 1.0);
 #endif
+#ifdef QC_GLOW
+    // Added to the colour behind (the glow of a beacon's beam, decision E-1143): the fog hides it
+    // by taking its share away, not by adding its own colour.
+    fragColor = vec4(lit * (1.0 - fog), 1.0);
+#else
     // Drawn without blending: a drawn texel is opaque, whatever alpha its mip level gives it
     // (decision E-332; a screenshot or the transparent target of a preview reads the alpha).
     fragColor = vec4(mix(lit, frame.fogColor.rgb, fog), 1.0);
+#endif
 }

@@ -97,6 +97,8 @@ void QcWorldRenderer::replaceDevice()
     m_entityOrigin = origins.add({});
     m_framedMapOrigin = origins.add({});
     m_handOrigin = origins.add({});
+    m_beamOrigin = origins.add({});
+    m_beamGlowOrigin = origins.add({});
     // The pass group first: its pipelines refer to the device's bindings.
     dropPass();
     const QcWorldDeviceResources retired = std::exchange(m_device, QcWorldDeviceResources::create(rhi()));
@@ -260,6 +262,8 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     m_device.uploadOutline(updates, m_frame.selection, m_frame.camera.position);
     m_sample.uploadBytes += m_device.entityBuffers.uploadDynamic(m_device.rhi, updates, m_frame.entityMesh.get());
     m_sample.uploadBytes += m_device.handBuffers.uploadDynamic(m_device.rhi, updates, m_frame.handMesh.get());
+    m_sample.uploadBytes += m_device.beamBuffers.uploadDynamic(m_device.rhi, updates, m_frame.beamMesh.get());
+    m_sample.uploadBytes += m_device.beamGlowBuffers.uploadDynamic(m_device.rhi, updates, m_frame.beamGlowMesh.get());
     const QcEntityMesh *framedMaps = m_frame.framedMapMesh && m_frame.framedMapTiles ? m_frame.framedMapMesh.get() : nullptr;
     m_sample.uploadBytes += m_device.framedMapBuffers.uploadDynamic(m_device.rhi, updates, framedMaps);
     if (framedMaps && !framedMaps->indices.isEmpty()) {
@@ -491,6 +495,8 @@ const QcWorldRenderer::FrameView &QcWorldRenderer::cull(const QMatrix4x4 &viewPr
     origins.move(m_entityOrigin, m_device.entityBuffers.origin);
     origins.move(m_framedMapOrigin, m_device.framedMapBuffers.origin);
     origins.move(m_handOrigin, m_device.handBuffers.origin);
+    origins.move(m_beamOrigin, m_device.beamBuffers.origin);
+    origins.move(m_beamGlowOrigin, m_device.beamGlowBuffers.origin);
 
     const QcGpuMeshStore::Meshes &meshes = m_meshStore.meshes();
     // Each with its page, so the sort below compares a dense array instead of the scattered meshes.
@@ -559,6 +565,21 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
         && fitsLayout(m_pass.entityPipeline.get(), framedMaps)) {
         usePipeline(commandBuffer, m_pass.entityPipeline.get(), framedMaps);
         drawBuffers(commandBuffer, m_device.framedMapBuffers.list(), m_framedMapOrigin);
+    }
+    drawBeams(commandBuffer);
+}
+
+void QcWorldRenderer::drawBeams(QRhiCommandBuffer *commandBuffer)
+{
+    // The beacon beams (decision E-1143): the cores like entities, then the glows added on top; the
+    // shadow pass leaves both out.
+    if (m_device.beamBuffers.indexCount > 0 && m_pass.entityPipeline) {
+        usePipeline(commandBuffer, m_pass.entityPipeline.get());
+        drawBuffers(commandBuffer, m_device.beamBuffers.list(), m_beamOrigin);
+    }
+    if (m_device.beamGlowBuffers.indexCount > 0 && m_pass.glowPipeline) {
+        usePipeline(commandBuffer, m_pass.glowPipeline.get());
+        drawBuffers(commandBuffer, m_device.beamGlowBuffers.list(), m_beamGlowOrigin);
     }
 }
 

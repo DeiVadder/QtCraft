@@ -214,6 +214,7 @@ target_sources(qc_server PRIVATE
     login/QcServerLogin.h login/QcServerLogin.cpp
 )
 target_sources(qc_server PRIVATE
+    machines/QcBeacons.h machines/QcBeacons.cpp
     machines/QcBlockScreens.h machines/QcBlockScreens.cpp
     machines/QcBrewingRules.h machines/QcBrewingRules.cpp
     machines/QcCampfires.h machines/QcCampfires.cpp
@@ -221,6 +222,7 @@ target_sources(qc_server PRIVATE
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     machines/QcServerAnvil.h machines/QcServerAnvil.cpp
+    machines/QcServerBeacons.h machines/QcServerBeacons.cpp
     machines/QcServerEnchanting.h machines/QcServerEnchanting.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
@@ -351,6 +353,7 @@ target_sources(qc_server PRIVATE
     storage/QcBlockEntityFormat.h
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
+    storage/QcBlockEntityWriter.h storage/QcBlockEntityWriter.cpp
     storage/QcBoatCodec.h storage/QcBoatCodec.cpp
     storage/QcChunkCodec.h storage/QcChunkCodec.cpp
     storage/QcChunkIo.h storage/QcChunkIo.cpp

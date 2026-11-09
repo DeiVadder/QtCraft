@@ -73,6 +73,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
     if (std::shared_ptr<QcEntityMesh> mesh = m_entities.buildEntities(alpha, mode, m_parts.view->animationTicks())) {
         m_parts.view->setEntityMesh(std::move(mesh));
         m_parts.view->setFramedMaps(m_entities.framedMaps(), m_entities.framedMapTiles());
+        m_parts.view->setBeams(m_entities.beams().core, m_entities.beams().glow);
     }
 }
 

@@ -6934,3 +6934,45 @@ Die übrigen Werte der Biome (Tempo, Melodieklang, Bordun) bleiben; Ödland und 
 ## E-1159 Länge erzeugter Stücke höchstens 300 s (Paket 88.3) — `QcMusicArrangement::longestPiece`
 
 **Entscheidung:** Die Buckley-Stücke dauern 200–590 s (Menü rund 400 s, Ödland 590 s); erzeugte Stücke dauern höchstens 300 s. Ein erzeugtes Stück wird als Ganzes in einen `QcSampleBuffer` gerendert (Mono-Float, bei 48 kHz rund 58 MB für 300 s), während Stücke aus Dateien gestreamt werden. Plätze mit längerem Ziel (Menü, Nacht, Höhle, Nether) ziehen deshalb 254–300 s. Rendern dauert im Debug-Build einige Sekunden auf einem Worker-Thread. **Später:** erzeugte Stücke in Abschnitten rendern und als `QcAudioStream` streamen, dann auch die volle Länge.
+
+## E-1142 Leuchtfeuer: Block, Pyramide, Bildschirm und Speichern (Paket 86.2)
+
+**Kontext:** Das Leuchtfeuer (Vorbild Beacon) braucht den Netherstern aus 86.1 und schließt die Nether-Reihe ab: ein Block mit Blockentität, eine Pyramide unter ihm, ein Bildschirm mit Zahlplatz und eine Wahl der Kräfte.
+
+**Entscheidung:** Ein Block mit `"beacon": true` (`QcBlockDefinition::opensBeacon`) ist ein Leuchtfeuer. Die Regeln stehen GUI-frei in `QcBeacon` (`src/common/gameplay`): Stufe aus vollen Schichten von Blöcken mit dem Tag `qtcraft:beacon_base` (`levelAt`, Schicht n = Quadrat der Seite 2n + 1 n Blöcke tiefer, beliebig gemischt; die erste unvollständige oder nicht geladene Schicht beendet die Zählung), Angebot je Stufe (`primaryEffects`, `secondaryEffect`, `mayChoose`), Zahlung über das Item-Tag `qtcraft:beacon_payment` (`isPayment`). Der Server führt die Leuchtfeuer einer Dimension in `QcBeacons` (in `QcServerWorld`, wie Lagerfeuer und Spawner aus der Palette der Chunks gefunden; Wirkung, Stufe und Strahl je Position) und betreibt sie in `QcServerBeacons` (Teil von `QcServerWorkstations`, weil `QcServer.h` an der Grenze von 220 Zeilen steht): Bildschirm nach dem Muster des Schmiedetischs (`QcWorkstation::Beacon`, `QcOpenBeacon` mit dem Zahlplatz in `QcPlayerScreen`, Platz `machineInputSlot`, immer genau ein Item; Schnellverschieben legt eines hinein), `ChooseBeaconEffects` prüft der Server gegen die Stufe des leuchtenden Leuchtfeuers und den Zahlplatz und lehnt sonst mit `qCWarning` ab (E-688), nimmt das Item und spielt `block.beacon.power_select`. Gespeichert wird nur die Wahl (Primär- und Sekundärkraft) als Tabelle `Beacons = 14` der Blockentitäten (`QcBlockEntityRecord`); Stufe und Strahl ermittelt der nächste Blick neu. Der Schreibteil des Codecs zog nach `QcBlockEntityWriter` um (Dateigrenze). Eine Struktur setzt die Wahl mit `contents` `"effects"`. Der Client hat `QcClientBeacon`, `QcBeaconController` und `BeaconScreen.qml` mit `BeaconEffectButton.qml`; die Auswahl bleibt bis zum Bezahlen auf dem Bildschirm.
+
+**Begründung:** Eigene Bildschirm-Nachrichten statt Maschinen-Mechanik, weil der Zahlplatz kein Rezept und keine Ausgabe hat; der Codec bleibt in der Form der übrigen Tabellen (Version, Länge, Felder), damit spätere Felder anhängen können.
+
+## E-1143 Leuchtfeuer: Strahl, Farben und Darstellung (Paket 86.2)
+
+**Kontext:** Der Strahl braucht freien Himmel, gefärbtes Glas färbt ihn, und der Client soll ihn zeichnen, ohne die ganze Säule selbst zu prüfen. Die Entity-Flags sind voll (86.1).
+
+**Entscheidung:** `QcBeacon::beamAt` folgt dem Vorbild: vom Leuchtfeuer bis zur Welthöhe beginnt jeder Block mit `beamColour` (16 gefärbte Gläser und 16 Scheiben, Farben der Farbstoffe des Vorbilds) einen Abschnitt (der erste in eigener Farbe, gleiche Farbe verlängert, andere Farbe halb gemischt), jeder Block mit Lichtdurchlässigkeit 15 außer Grundgestein oder ein nicht geladener Block löscht den Strahl. Der Server prüft Strahl und (nur mit Strahl) Pyramide gemeinsam alle 80 Ticks der Weltuhr und schickt jedem Spieler, der den Chunk sieht, die neue Nachricht `BeaconBeam` (Position und Abschnitte, keine: dunkel), wenn sich Strahl oder Zustand ändern, und mit jedem Chunk die Strahlen seiner leuchtenden Leuchtfeuer; der Client führt sie in `QcChunkExtras` und vergisst sie mit dem Chunk. Kein Entity-Flag. `QcBeamMesher` zeichnet je Abschnitt einen Ring aus vier Quads (Halbbreite 0,2, Drehung 45 °/s, Textur `beacon_beam` mit Bändern längs, Farbe als Tint, volle Blocklichtstärke) im Entity-Mesh, der letzte Abschnitt reicht 256 Blöcke über die Welthöhe; `QcEntityFrameBuilder::appendBeacons` (`QcEntityFrameBeams.cpp`) prüft das Sichtvolumen und zeichnet nur, solange der Block des Clients noch ein Leuchtfeuer ist. Protokoll 97: `OpenBeacon`, `BeaconState`, `ChooseBeaconEffects`, `CloseBeacon`, `BeaconBeam` und `opensBeacon` im Block-Abgleich.
+
+**Begründung:** Der Strahl ist eine Sache der Blöcke des Servers; die kleine Nachricht hält den Client frei von Säulenprüfungen über ungeladene Höhen. Das Entity-Mesh ist alpha-getestet: Der halbdurchsichtige äußere Schein des Vorbilds fehlt (siehe E-1145).
+
+## E-1144 Leuchtfeuer: Wirkung und Fortschritte (Paket 86.2)
+
+**Entscheidung:** Ein leuchtendes Leuchtfeuer gibt bei jedem Blick allen lebenden Spielern im Spiel-Zustand innerhalb seiner Reichweite (`QcBeacon::reaches`: waagrecht von −Reichweite bis +1 + Reichweite um die Blockecke, senkrecht ab Reichweite unter ihm bis ganz nach oben) die Kräfte aus `QcBeacon::effectsOf` über `QcServerEffects::givePlayer` (Dauer aus `durationTicksOf`, also über die 80 Ticks hinaus; Erneuerung durch den nächsten Blick), summt (`block.beacon.ambient`) und spielt beim Angehen und Ausgehen `block.beacon.activate`/`deactivate`. Neuer Fortschritts-Auslöser `beacon_constructed` mit der Bedingung `level` (mindestens): beim Angehen und beim Steigen der Stufe für alle Spieler im Kasten des Vorbilds (10 waagrecht, 9 darunter, 5 darüber). Fortschritte „Ein Licht für zu Hause“ (`beacon`, Stufe 1, nach `kill_hydra`) und „Leuchtturmwärter“ (`beaconator`, Stufe 4, Herausforderung). Showcase-Station `beacon_pyramid` (Reihenfolge 120): volle Pyramide aus vier Stufen gemischter Blöcke, das Leuchtfeuer mit Schnelligkeit und Regeneration. Handbuch-Kapitel „Das Leuchtfeuer“ (Bauen, Pyramide, Kräfte, Strahl).
+
+## E-1145 Werte des Leuchtfeuers nach dem Vorbild (Paket 86.2)
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Rezept | – | 5 Glas, Netherstern, 3 Obsidian (GGG/GSG/OOO) | Vorbild, sicher |
+| Härte, Sprengfestigkeit | – | 3, 3 | Vorbild, sicher |
+| Licht | – | 15 | Vorbild, sicher |
+| Pyramide | – | 1–4 Schichten 3 × 3 bis 9 × 9 aus Eisen-, Gold-, Smaragd-, Diamant-, Netheritblöcken, gemischt | Vorbild (Tag `beacon_base_blocks`), sicher |
+| Prüfung | – | alle 80 Ticks Strahl und Pyramide zusammen | Vorbild alle 80 Ticks; Strahl dort schrittweise je Tick über 10 Blöcke, Abweichung: hier in einem Durchgang |
+| Strahl gesperrt durch | – | Lichtdurchlässigkeit 15, außer Grundgestein | Vorbild (Lichtundurchlässigkeit ≥ 15, Grundgestein ausgenommen), sicher |
+| Strahlfarben | – | Farbstofffarben (weiß F9FFFE … schwarz 1D1D21), Mischung halb und halb | Vorbild (`DyeColor.getTextureDiffuseColor`, Mittelwert), sicher |
+| Zahlung | – | Eisenbarren, Goldbarren, Smaragd, Diamant, Netheritbarren, je eines | Vorbild, sicher |
+| Kräfte | – | Stufe 1 Schnelligkeit, Eile; 2 Resistenz, Sprungkraft; 3 Stärke; 4 Regeneration oder Primärkraft II | Vorbild, sicher |
+| Wahl prüfen | – | Server lehnt Kräfte über der Stufe ab | Abweichung: Vorbild prüft nur, dass die Kraft zum Leuchtfeuer gehört |
+| Reichweite | – | 10 + 10 je Stufe (20–50), ganz nach oben; es zählt, ob der Kasten des Spielers den Bereich berührt | Vorbild (Kasten des Spielers schneidet den Bereich), sicher |
+| Dauer | – | (9 + 2 × Stufe) s | Vorbild, sicher |
+| Fortschritt-Kasten | – | ±10 waagrecht, 9 darunter, 5 darüber | Vorbild, sicher |
+| Fortschritt löst aus | – | beim Angehen und beim Steigen der Stufe | Abweichung: Vorbild nur beim Angehen (eine nachträglich erhöhte Pyramide gäbe dort „Leuchtturmwärter“ erst nach Neubau) |
+| Strahl-Darstellung | – | innere Säule 0,2, 45 °/s, äußerer Schein 0,25 mit 1/8 der Farbe hinzugefügt, nicht drehend; beide leuchten selbst (blühen im realistischen Modus), werfen und empfangen keine Sonnenschatten; Textur in Stücken von 2 Blöcken, 1 Block/s nach oben; nur Außenseiten, die Kamera in einer Säule sieht diese Säule nicht; bis 256 über die Welthöhe | Vorbild (innere Säule 0,2, 2,25 ° je Tick, äußerer Schein 0,25 mit Alpha 0,125, bis Höhe 1024); Abweichung: Schein addiert statt gemischt, Ende 256 über dem letzten Abschnitt |
+| Laute | – | `block.beacon.activate`, `deactivate`, `ambient`, `power_select` | Vorbild-Namen, eigene Synthese |
+| Umgebungslaut | – | einmal bei jedem Blick (alle 80 Ticks), solange es leuchtet | Vorbild (`BEACON_AMBIENT` in der 80-Tick-Prüfung), nach Gedächtnis; die Lautstärke über die Entfernung folgt unserem Klangsystem |

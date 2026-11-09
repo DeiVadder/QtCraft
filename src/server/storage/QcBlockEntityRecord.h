@@ -7,6 +7,7 @@
 #include "server/blockentities/QcSignTexts.h"
 #include "server/blocks/QcFireQueue.h"
 #include "server/entities/QcEntityComponent.h"
+#include "server/machines/QcBeacons.h"
 #include "server/machines/QcCampfires.h"
 #include "server/signal/QcSignalSchedule.h"
 #include "server/spawners/QcSpawners.h"
@@ -88,6 +89,9 @@ struct QcBlockEntityRecord
         Campfires = 12,
         /*! The text on signs (decision E-766): the lines per sign with text. */
         Signs = 13,
+        /*! The effects chosen for beacons (decision E-1142): primary and secondary effect per
+            beacon that has one. */
+        Beacons = 14,
     };
 
     /*! \brief What a circuit component remembers; torches' recent switching is not saved. */
@@ -145,6 +149,8 @@ struct QcBlockEntityRecord
     QList<QcCampfires::Entry> campfires;
     /*! Signs with text (decision E-766). */
     QList<QcSignTexts::Entry> signs;
+    /*! Beacons with chosen effects (decision E-1142). */
+    QList<QcBeacons::Saved> beacons;
     /*! The generator's chest loot and spawner kinds were put into the chunk (QcFurnishing); a
         chunk without the mark gets them when it arrives. */
     bool furnished = false;
@@ -156,7 +162,7 @@ struct QcBlockEntityRecord
     {
         return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty() && scheduled.isEmpty()
                && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty()
-               && fires.isEmpty() && spawners.isEmpty() && campfires.isEmpty() && signs.isEmpty() && !furnished && kept.isEmpty();
+               && fires.isEmpty() && spawners.isEmpty() && campfires.isEmpty() && signs.isEmpty() && beacons.isEmpty() && !furnished && kept.isEmpty();
     }
 
     /*! Fills the record of a chunk that leaves the world (decision E-374), \c {chunk}, with

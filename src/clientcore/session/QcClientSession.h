@@ -4,8 +4,8 @@
 #pragma once
 
 // NOLINT(qc-file-length): the session is the client's facade (E-717); one line over with the
-// dimension signal (E-1002); moving the screen parts behind an owner of their own is noted as a
-// follow-up of package 83.2.
+// dimension signal (E-1002) and five over with the beacon's screen (E-1142); moving the screen
+// parts behind an owner of their own is noted as a follow-up of package 83.2.
 
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
@@ -21,6 +21,7 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/player/QcRefusalThrottle.h"
 #include "clientcore/session/QcClientAnvil.h"
+#include "clientcore/session/QcClientBeacon.h"
 #include "clientcore/session/QcClientBossBars.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEnchanting.h"
@@ -217,6 +218,10 @@ public:
     QcClientSmithing &smithing() { return m_smithing; }
     /*! Returns the smithing table's screen the server opened, read-only. */
     const QcClientSmithing &smithing() const { return m_smithing; }
+    /*! Returns the beacon's screen the server opened (decision E-1142). */
+    QcClientBeacon &beacon() { return m_beacon; }
+    /*! Returns the beacon's screen the server opened, read-only. */
+    const QcClientBeacon &beacon() const { return m_beacon; }
     /*! Returns the boss bars the server shows the player (decision E-1127). */
     const QcClientBossBars &bossBars() const { return m_bossBars; }
     /*! Sends \a text as a chat line, trimmed; blank text sends nothing. */
@@ -426,6 +431,7 @@ private:
     QcClientEnchanting m_enchanting;
     QcClientAnvil m_anvil;
     QcClientSmithing m_smithing;
+    QcClientBeacon m_beacon;
     QcClientBossBars m_bossBars;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities, m_vitals},
                          m_gameMode,

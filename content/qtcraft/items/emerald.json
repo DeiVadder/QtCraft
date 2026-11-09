@@ -1,3 +1,6 @@
 {
-    "name": "emerald"
+    "name": "emerald",
+    "tags": [
+        "beacon_payment"
+    ]
 }

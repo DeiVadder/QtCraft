@@ -604,6 +604,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
 
     m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
     m_framedMapMesh = buildFramedMaps(frame);
+    m_beams = buildBeams(frame, planes);
     return mesh;
 }
 

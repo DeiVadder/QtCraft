@@ -4,13 +4,15 @@
 #pragma once
 
 #include "server/machines/QcServerAnvil.h"
+#include "server/machines/QcServerBeacons.h"
 #include "server/machines/QcServerEnchanting.h"
 #include "server/machines/QcServerSmithing.h"
 #include "server/machines/QcServerStonecutter.h"
 
 /*! \brief The block screens with slots of their own that the player fills from the inventory and
     that give their items back on closing: the stonecutter (decision E-785), the enchanting table
-    (decision E-864), the anvil (decision E-866) and the smithing table (decision E-1115).
+    (decision E-864), the anvil (decision E-866), the smithing table (decision E-1115) and the
+    beacon (decision E-1142), whose effects also run here.
 
     At most one of them is open per player. */
 struct QcServerWorkstations
@@ -20,6 +22,7 @@ struct QcServerWorkstations
         , enchanting(state, sounds, inventory, screens)
         , anvil(state, sounds, inventory, screens, blocks)
         , smithing(state, sounds, inventory, screens)
+        , beacon(state, sounds, inventory, screens)
     {
     }
 
@@ -27,16 +30,19 @@ struct QcServerWorkstations
         Returns \c false for another block. */
     bool open(QcServerClient &client, QcBlockPos pos)
     {
-        return stonecutter.open(client, pos) || enchanting.open(client, pos) || anvil.open(client, pos) || smithing.open(client, pos);
+        return stonecutter.open(client, pos) || enchanting.open(client, pos) || anvil.open(client, pos) || smithing.open(client, pos)
+               || beacon.open(client, pos);
     }
 
-    /*! Once per tick: closes the screens that may not stay open. */
+    /*! Once per tick: closes the screens that may not stay open; the beacons look around on
+        their schedule. */
     void update()
     {
         stonecutter.update();
         enchanting.update();
         anvil.update();
         smithing.update();
+        beacon.update();
     }
 
     /*! The player \a client left: the slots go back, nothing is sent. */
@@ -46,6 +52,7 @@ struct QcServerWorkstations
         enchanting.close(client, false);
         anvil.close(client, false);
         smithing.close(client, false);
+        beacon.close(client, false);
     }
 
     /*! Handles the choices and closes of the workstation screens in \a message of \a client.
@@ -70,6 +77,10 @@ struct QcServerWorkstations
             smithing.forge(client, *smith);
         } else if (std::holds_alternative<QcMsg::CloseSmithing>(message)) {
             smithing.close(client, false);
+        } else if (const auto *choice = std::get_if<QcMsg::ChooseBeaconEffects>(&message)) {
+            beacon.choose(client, *choice);
+        } else if (std::holds_alternative<QcMsg::CloseBeacon>(message)) {
+            beacon.close(client, false);
         } else {
             return false;
         }
@@ -84,4 +95,6 @@ struct QcServerWorkstations
     QcServerAnvil anvil;
     /*! The smithing table screens. */
     QcServerSmithing smithing;
+    /*! The beacons: their screens and effects. */
+    QcServerBeacons beacon;
 };

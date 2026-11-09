@@ -26,6 +26,6 @@ struct QcAdvancementEvent
     QString vehicle = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The status effect received. */
     QString effect = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
-    /*! The experience level reached. */
+    /*! The experience level reached, or the level of the beacon (decision E-1144). */
     int level = 0;
 };

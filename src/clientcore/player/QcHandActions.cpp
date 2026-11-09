@@ -77,7 +77,7 @@ bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entit
 bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
 {
     return block && !sneaking
-           && (block->opensCrafting || block->opensStonecutter || block->opensEnchanting || block->opensAnvil || block->opensSmithing || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
+           && (block->opensCrafting || block->opensStonecutter || block->opensEnchanting || block->opensAnvil || block->opensSmithing || block->opensBeacon || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
                || block->signal.isUsable() || block->sign.isSign());
 }
 

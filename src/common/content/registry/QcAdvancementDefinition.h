@@ -50,6 +50,9 @@ enum class QcAdvancementTrigger : quint8 {
     LevelReached, // The player reached at least experience level \c {level}.
     PotionBrewed, // The player took a potion matching \c {item} out of a brewing stand (decision E-1107).
     EntitySummoned, // A creature of kind \c {entity} was summoned near the player (decision E-1125).
+    /*! A beacon near the player began to shine or rose to at least \c {level} (decision
+        E-1144). */
+    BeaconConstructed,
 };
 
 /*! \brief What an event must show for a criterion to be met; empty fields accept anything.
@@ -78,7 +81,8 @@ struct QcAdvancementConditions
     std::optional<int> maxY = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! Items the inventory must hold (ItemObtained). */
     int count = 1;
-    /*! The experience level reached at least (LevelReached). */
+    /*! The experience level reached at least (LevelReached), the beacon's level at least
+        (BeaconConstructed). */
     int level = 0;
 };
 

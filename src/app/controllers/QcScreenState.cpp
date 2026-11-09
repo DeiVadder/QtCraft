@@ -16,7 +16,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 26> overlayNames{
+constexpr std::array<QStringView, 27> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -43,8 +43,9 @@ constexpr std::array<QStringView, 26> overlayNames{
     u"advancements",
     u"brewing",
     u"smithing",
+    u"beacon",
 };
-static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Smithing) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Beacon) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -129,6 +130,7 @@ bool QcScreenState::isSettingsPage(Overlay overlay)
     case Overlay::Enchanting:
     case Overlay::Anvil:
     case Overlay::Smithing:
+    case Overlay::Beacon:
     case Overlay::Admin:
     case Overlay::Advancements:
         return false;
@@ -149,6 +151,7 @@ bool QcScreenState::isSlotScreen(Overlay overlay)
     case Overlay::Enchanting:
     case Overlay::Anvil:
     case Overlay::Smithing:
+    case Overlay::Beacon:
         return true;
     // No default: a new overlay must be placed here (-Wswitch).
     case Overlay::None:
@@ -358,6 +361,9 @@ void QcScreenState::closeSessionScreens() const
     }
     if (m_overlay != Overlay::Smithing) {
         m_parts.session->smithing().close();
+    }
+    if (m_overlay != Overlay::Beacon) {
+        m_parts.session->beacon().close();
     }
     // A sign editor closed another way (another screen) sends the lines as typed so far
     // (QcSignController::edit; the server cleans them). On death the typed text is lost: the

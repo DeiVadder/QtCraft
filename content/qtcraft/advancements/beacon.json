@@ -1,0 +1,15 @@
+{
+    "name": "beacon",
+    "parent": "kill_hydra",
+    "icon": "beacon",
+    "frame": "task",
+    "handbook": "chapter:beacon",
+    "criteria": {
+        "constructed": {
+            "trigger": "beacon_constructed",
+            "conditions": {
+                "level": 1
+            }
+        }
+    }
+}

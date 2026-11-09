@@ -141,8 +141,11 @@ private:
     // Windows a coarse timer's last one first).
     void runAfterDelays(const DelayedSteps &steps);
     void openStartupOverlay();
-    // Uses the block in view once the startup commands have placed it.
-    void openMachineInView();
+    // Whether `name` is a machine's screen (furnace, chest, beacon, ...), opened through the block
+    // in view.
+    static bool isMachineOverlay(const QString &name);
+    // Uses the block in view once the startup commands have placed it; `name` is the screen.
+    void openMachineInView(const QString &name);
     // menuSteps: only the steps that run in the main menu (menuShown()), else every step not yet run.
     void scheduleOverlaySteps(bool menuSteps);
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.

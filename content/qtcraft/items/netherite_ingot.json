@@ -1,6 +1,7 @@
 {
     "name": "netherite_ingot",
     "tags": [
-        "fire_resistant"
+        "fire_resistant",
+        "beacon_payment"
     ]
 }

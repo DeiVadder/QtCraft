@@ -1,0 +1,17 @@
+{
+    "name": "beacon",
+    "type": "shaped",
+    "pattern": [
+        "GGG",
+        "GSG",
+        "OOO"
+    ],
+    "key": {
+        "G": "glass",
+        "S": "nether_star",
+        "O": "obsidian"
+    },
+    "result": {
+        "item": "beacon"
+    }
+}

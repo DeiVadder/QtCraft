@@ -114,6 +114,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcAnvilController *anvil READ anvil CONSTANT FINAL)
     // The smithing table's screen (decision E-1115).
     Q_PROPERTY(QcSmithingController *smithing READ smithing CONSTANT FINAL)
+    // The beacon's screen (decision E-1142).
+    Q_PROPERTY(QcBeaconController *beacon READ beacon CONSTANT FINAL)
     // The tree of the adventure guide (decision E-924).
     Q_PROPERTY(QcAdvancementTreeModel *advancements READ advancements CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
@@ -176,6 +178,7 @@ public:
     QcEnchantingController *enchanting() const { return workstations().enchanting.get(); }
     QcAnvilController *anvil() const { return workstations().anvil.get(); }
     QcSmithingController *smithing() const { return workstations().smithing.get(); }
+    QcBeaconController *beacon() const { return workstations().beacon.get(); }
     QcAdvancementTreeModel *advancements() const { return m_advancements.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }

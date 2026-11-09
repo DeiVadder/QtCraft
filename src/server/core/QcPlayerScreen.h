@@ -86,6 +86,14 @@ struct QcOpenSmithing
     QcSmithing::Inputs inputs;
 };
 
+/*! \brief The open beacon (QcServerBeacons, decision E-1142): where it stands and the stack in
+    its payment slot. \qcfields */
+struct QcOpenBeacon
+{
+    QcBlockPos pos;
+    QcItemStack payment;
+};
+
 /*! \brief The machine, container or villager whose screen the player has open, and what the
     client was last told about it.
 
@@ -126,12 +134,15 @@ struct QcPlayerScreen
     std::optional<QcOpenAnvil> anvil;
     /*! The smithing table whose screen is open; never together with any of the above. */
     std::optional<QcOpenSmithing> smithing;
+    /*! The beacon whose screen is open; never together with any of the above. */
+    std::optional<QcOpenBeacon> beacon;
     /*! The sign whose editor the server opened for the player (QcServerSigns, decision
         E-766). */
     std::optional<QcBlockPos> sign;
 
     /*! Returns the stacks in the slots of the open workstation screen (stonecutter, enchanting
-        table, anvil or smithing table), empty ones included; none without such a screen. */
+        table, anvil, smithing table or beacon), empty ones included; none without such a
+        screen. */
     QList<QcItemStack> workstationStacks() const
     {
         QList<QcItemStack> stacks;
@@ -146,6 +157,9 @@ struct QcPlayerScreen
         }
         if (smithing) {
             stacks.append(QList<QcItemStack>(smithing->inputs.begin(), smithing->inputs.end()));
+        }
+        if (beacon) {
+            stacks.append(beacon->payment);
         }
         return stacks;
     }
@@ -168,6 +182,9 @@ struct QcPlayerScreen
         }
         if (smithing) {
             smithing->inputs = {};
+        }
+        if (beacon) {
+            beacon->payment = {};
         }
         return stacks;
     }

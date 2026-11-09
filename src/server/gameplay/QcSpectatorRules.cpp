@@ -29,7 +29,7 @@ bool acts(const QcMessage &message)
            || std::holds_alternative<QcMsg::PickBlock>(message) || std::holds_alternative<QcMsg::EditSign>(message)
            || std::holds_alternative<QcMsg::SelectStonecutterRecipe>(message) || std::holds_alternative<QcMsg::ChooseEnchantment>(message)
            || std::holds_alternative<QcMsg::RenameAnvil>(message) || std::holds_alternative<QcMsg::ForgeAnvil>(message)
-           || std::holds_alternative<QcMsg::ForgeSmithing>(message);
+           || std::holds_alternative<QcMsg::ForgeSmithing>(message) || std::holds_alternative<QcMsg::ChooseBeaconEffects>(message);
 }
 
 } // namespace

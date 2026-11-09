@@ -5,6 +5,9 @@
     "blastResistance": 6.0,
     "tool": "pickaxe",
     "toolLevel": 3,
+    "tags": [
+        "beacon_base"
+    ],
     "textures": {
         "all": "gold_block"
     }

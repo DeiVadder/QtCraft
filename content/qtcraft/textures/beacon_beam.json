@@ -1,0 +1,8 @@
+{
+    "name": "beacon_beam",
+    "pattern": "flow_bands",
+    "primary": "#ffffff",
+    "secondary": "#d4d4d4",
+    "variation": 0.05,
+    "seed": 1144
+}

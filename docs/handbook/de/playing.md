@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Netherit](#chapter-qtcraft-netherite) · [Die Verkohlte Hydra](#chapter-qtcraft-charred_hydra) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs) · [Musik](#chapter-qtcraft-music)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Netherit](#chapter-qtcraft-netherite) · [Die Verkohlte Hydra](#chapter-qtcraft-charred_hydra) · [Das Leuchtfeuer](#chapter-qtcraft-beacon) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs) · [Musik](#chapter-qtcraft-music)
 
 ## QtCraft
 
@@ -824,6 +824,28 @@ Eine besiegte Hydra hinterlässt einen **Netherstern** und viel Erfahrung. Der S
 **Siehe auch**
 
 [Verkohlte Hydra](creatures.md#mob-qtcraft-charred_hydra), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Netherstern](items.md#item-qtcraft-nether_star)
+
+### <a id="chapter-qtcraft-beacon"></a>Das Leuchtfeuer
+
+**Ein Leuchtfeuer bauen**
+
+Stelle ein **Leuchtfeuer** her aus fünf Glas oben, einem **Netherstern** in der Mitte und drei Obsidian unten; der Stern stammt von der Verkohlten Hydra. Allein ist ein Leuchtfeuer nur ein Licht.
+
+**Die Pyramide**
+
+Stelle das Leuchtfeuer auf eine **Pyramide** aus Eisen-, Gold-, Smaragd-, Diamant- oder Netheritblöcken, beliebig gemischt: eine Schicht von 3 × 3 direkt darunter gibt Stufe 1, dann 5 × 5 für Stufe 2, 7 × 7 für Stufe 3 und 9 × 9 für Stufe 4. Jede Schicht muss voll sein. Das Leuchtfeuer prüft seine Pyramide alle vier Sekunden.
+
+**Kräfte**
+
+Benutze das Leuchtfeuer, lege einen Eisenbarren, einen Goldbarren, einen Smaragd, einen Diamanten oder einen Netheritbarren in seinen Platz, wähle eine Kraft und bestätige. Stufe 1 bietet **Schnelligkeit** und **Eile**, Stufe 2 dazu **Resistenz** und **Sprungkraft**, Stufe 3 **Stärke**. Auf Stufe 4 kommt eine zweite Kraft hinzu: **Regeneration** oder die erste Kraft auf Stufe II. Jeder Spieler bis 10 Blöcke plus 10 je Stufe entfernt bekommt die Kräfte, in jeder Höhe darüber, für 9 Sekunden plus 2 je Stufe, alle vier Sekunden erneuert.
+
+**Der Strahl**
+
+Ein Leuchtfeuer strahlt nur unter **freiem Himmel**: Glas und andere klare Blöcke lassen den Strahl durch, feste Blöcke halten ihn auf. **Gefärbtes Glas** oder Scheiben im Strahl färben ihn; mehrere Farben mischen sich. Ohne Strahl gibt das Leuchtfeuer keine Kräfte.
+
+**Siehe auch**
+
+[Leuchtfeuer](blocks.md#block-qtcraft-beacon), [Netherstern](items.md#item-qtcraft-nether_star), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Goldblock](blocks.md#block-qtcraft-gold_block), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Netheritblock](blocks.md#block-qtcraft-netherite_block)
 
 ### <a id="chapter-qtcraft-creatures"></a>Wesen
 

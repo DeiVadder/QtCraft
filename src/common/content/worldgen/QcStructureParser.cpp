@@ -297,7 +297,16 @@ void StructureReader::parseContents()
             m_reader.fail(u"a 'contents' name has at most %1 characters"_s.arg(QcItemData::maxNameLength));
             return;
         }
-        Structure::Contents placed{*at, {}, name};
+        QStringList effects;
+        const QJsonArray effectNames = object.value(u"effects"_s).toArray();
+        for (const auto &effect : effectNames) {
+            effects.append(effect.isString() ? QcContentNames::qualify(effect.toString(), m_namespace) : QString());
+        }
+        if (effects.size() > 2 || effects.contains(QString())) {
+            m_reader.fail(u"a 'contents' entry names at most two 'effects' (a beacon's primary and secondary one), each a name"_s);
+            return;
+        }
+        Structure::Contents placed{*at, {}, name, effects};
         for (const auto &item : items) {
             const std::optional<Structure::Stack> stack = readStack(item, m_namespace);
             if (!stack) {

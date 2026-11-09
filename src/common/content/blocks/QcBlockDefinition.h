@@ -203,6 +203,14 @@ struct QcBlockDefinition
     bool opensAnvil = false;
     /*! Using the block opens the smithing table's screen (decision E-1115). */
     bool opensSmithing = false;
+    /*! The block is a beacon (decision E-1142): using it opens the beacon's screen, and on a
+        pyramid of beacon base blocks under open sky it gives the players around it status
+        effects (QcBeacon). */
+    bool opensBeacon = false;
+    /*! The colour a beacon beam passing through the block takes (decision E-1143, stained glass
+        and its panes; \c {"beamColour": "#rrggbb"}); none for blocks that do not colour it.
+        Server side only. */
+    std::optional<quint32> beamColour;
     /*! The anvil this one wears into when used or after a fall (chipped, damaged); empty: it
         breaks. Server side only. */
     QString wearsInto;

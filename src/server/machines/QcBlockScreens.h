@@ -20,8 +20,8 @@ struct QcServerClient;
 class QcServerState;
 
 /*! The block screens with slots of their own that QcServerWorkstations runs: the stonecutter
-    (decision E-785), the enchanting table (E-864), the anvil (E-866) and the smithing table
-    (E-1115). */
+    (decision E-785), the enchanting table (E-864), the anvil (E-866), the smithing table
+    (E-1115) and the beacon (E-1142). */
 enum class QcWorkstation : quint8 {
     /*! The stonecutter. */
     Stonecutter,
@@ -31,6 +31,8 @@ enum class QcWorkstation : quint8 {
     Anvil,
     /*! The smithing table. */
     Smithing,
+    /*! The beacon (decision E-1142). */
+    Beacon,
 };
 
 /*! \brief The screens of containers and machines the players have open (chests, hoppers,
@@ -128,7 +130,7 @@ private:
     QcServerState &m_state;
     QcServerBlocks &m_blocks;
     QcContainerSounds m_containerSounds;
-    std::array<std::function<void(QcServerClient &)>, 4> m_workstationClosers;
+    std::array<std::function<void(QcServerClient &)>, 5> m_workstationClosers;
     // Who looks into the blocks of a dimension.
     struct Viewers
     {

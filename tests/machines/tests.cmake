@@ -29,3 +29,6 @@ qc_add_test(test_hopper_lines SOURCES machines/test_hopper_lines.cpp fixtures/Qc
 # The brewing stand, potions and the cauldron (decisions E-1061 to E-1066).
 qc_add_test(test_brewing SOURCES machines/test_brewing.cpp fixtures/QcMachineFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 240)
 qc_add_test(test_brewing_screen SOURCES machines/test_brewing_screen.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+
+# The beacon (decisions E-1142 to E-1144).
+qc_add_test(test_beacon SOURCES machines/test_beacon.cpp machines/QcEnchantingFixture.h fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)

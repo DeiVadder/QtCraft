@@ -87,6 +87,12 @@ Item {
         screen: SmithingScreen { game: screens.game }
     }
 
+    OverlayScreen {
+        overlay: GameController.Overlay.Beacon
+
+        screen: BeaconScreen { game: screens.game }
+    }
+
     // A moment after the world starts to play, the pause menu is made in the background (decision
     // E-875): after the world's first frames and the creative screen, before the first Esc.
     Timer {

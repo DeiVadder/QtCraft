@@ -73,6 +73,8 @@ private:
     void connectAnvil();
     // The smithing table's screen (decision E-1115).
     void connectSmithing();
+    // The beacon's screen (decision E-1142).
+    void connectBeacon();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
     void onDimensionChanged();

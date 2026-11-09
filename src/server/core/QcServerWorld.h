@@ -19,6 +19,7 @@
 #include "server/chunks/QcChunkLoaders.h"
 #include "server/chunks/QcChunkSaveState.h"
 #include "server/chunks/QcSectionMarks.h"
+#include "server/machines/QcBeacons.h"
 #include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
@@ -112,6 +113,10 @@ public:
     QcSignTexts &signs() { return m_signs; }
     /*! Returns the text on the signs, read-only. */
     const QcSignTexts &signs() const { return m_signs; }
+    /*! Returns the beacons of the loaded chunks (decision E-1142), kept in step like the signs. */
+    QcBeacons &beacons() { return m_beacons; }
+    /*! Returns the beacons, read-only. */
+    const QcBeacons &beacons() const { return m_beacons; }
     /*! Returns which loaded chunks were furnished and the parts of their saved block entities this
         version does not read (decisions E-520, E-440); kept in step with every block set here. */
     QcBlockEntityExtras &blockEntityExtras() { return m_blockEntityExtras; }
@@ -267,6 +272,7 @@ private:
     QcSpawners m_spawners;
     QcCampfires m_campfires;
     QcSignTexts m_signs;
+    QcBeacons m_beacons;
     QcBlockEntityExtras m_blockEntityExtras;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).
