@@ -90,7 +90,7 @@ QString liquidColour(const QcContentRegistry &registry, const QcPotionDefinition
 {
     const QcEffectDefinition *effect = potion.effects.isEmpty() ? nullptr : registry.effect(potion.effects.constFirst().effect);
     const quint32 colour = potion.colour.value_or(effect ? effect->colour : waterColour);
-    return u"#%1"_s.arg(colour, 6, 16, u'0');
+    return u"#%1"_s.arg(colour, 6, 16, QChar{u'0'});
 }
 
 // Gives the item `name` of `potion` the texture `pattern`, with `primary` and the colour of the
