@@ -36,7 +36,7 @@ Column {
                 width: Ui.hudPx(364)
                 height: Ui.hudPx(10)
                 color: Theme.hudBackdrop
-                border.color: Qt.darker(bar.barColour, 2.2)
+                border.color: Theme.textOutline
                 border.width: Ui.hudPx(1)
                 radius: Ui.hudPx(2)
 

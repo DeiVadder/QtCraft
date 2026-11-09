@@ -116,10 +116,10 @@ private slots:
             // Who stands in a portal, in each dimension, then the journeys (decision E-1024).
             {Minecarts, simulating},  {Minecarts, simulating}, {Machines, simulating},
             // Chunk loading notes the tick, held maps are revealed, the time goes out in a step of a
-            // frozen world, sign texts, the clients, the adventure guide (decision E-923), the admin
-            // channel (decision E-848).
+            // frozen world, sign texts, the atmosphere of each dimension, the clients, the adventure
+            // guide (decision E-923), the admin channel (decision E-848).
             {ClientSync, always},     {ClientSync, simulating}, {ClientSync, simulating}, {ClientSync, always},
-            {ClientSync, always},     {ClientSync, always},     {ClientSync, always},
+            {ClientSync, always},     {ClientSync, always},     {ClientSync, always},     {ClientSync, always},
             {Streaming, always},
         };
 
