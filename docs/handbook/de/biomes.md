@@ -331,7 +331,7 @@ Rote Geflechte auf den Böden, große Pilze mit hohlen Kuppeln, Warzen an den De
 
 **Gräser**
 
-[Karmesinwurzeln](blocks.md#block-qtcraft-crimson_roots) (63,64 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (18,18 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (9,09 %), [Nethersprossen](blocks.md#block-qtcraft-nether_sprouts) (9,09 %)
+[Karmesinwurzeln](blocks.md#block-qtcraft-crimson_roots) (87,88 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (11,11 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (1,01 %)
 
 **Monster (Anteil an der Monsterliste)**
 

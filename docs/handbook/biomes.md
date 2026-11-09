@@ -82,7 +82,7 @@ Red mats on the floors, huge fungi with hollow domes, wart hanging from the roof
 
 **Grasses**
 
-[Crimson roots](blocks.md#block-qtcraft-crimson_roots) (63.64 %), [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) (18.18 %), [Warped fungus](blocks.md#block-qtcraft-warped_fungus) (9.09 %), [Nether sprouts](blocks.md#block-qtcraft-nether_sprouts) (9.09 %)
+[Crimson roots](blocks.md#block-qtcraft-crimson_roots) (87.88 %), [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) (11.11 %), [Warped fungus](blocks.md#block-qtcraft-warped_fungus) (1.01 %)
 
 **Monsters (share of the monster list)**
 

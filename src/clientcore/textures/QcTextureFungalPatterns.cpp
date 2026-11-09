@@ -27,7 +27,9 @@ double ridge(double waves)
     return std::abs(std::sin(std::numbers::pi * waves / tile));
 }
 
-// Felt: two layers of threads crossing at angles of their own, with fleshy knobs on top.
+// Felt: two layers of threads crossing at angles of their own, with fleshy knobs on top. The
+// threads are a soft, shallow weave with light furrows, so a floor of felt reads calm from a
+// distance and the knobs carry the pattern.
 Surface paintFungalFelt(const QcTextureSpec &spec, QPointF point)
 {
     const QPointF bent = warped(spec.seed + 1, point, 8.0, 2.8);
@@ -39,9 +41,9 @@ Surface paintFungalFelt(const QcTextureSpec &spec, QPointF point)
     const double raised = knob.id % 3 == 0 ? 1.0 - smooth(0.2, 1.3, knob.distance) : 0.0;
     const double cloud = fractal(spec.seed + 4, point, 8.0, 2);
 
-    const double height = 0.9 * threads + 1.9 * raised + cloud;
-    const QColor flesh = scaled(spec.primary, 1.0 + 0.3 * raised + 0.25 * cloud);
-    return {height, mixed(flesh, spec.secondary, smooth(0.75, 0.2, threads) * (1.0 - raised))};
+    const double height = 0.4 * threads + 1.6 * raised + 0.6 * cloud;
+    const QColor flesh = scaled(spec.primary, 1.0 + 0.22 * raised + 0.1 * cloud);
+    return {height, mixed(flesh, spec.secondary, 0.45 * smooth(0.75, 0.2, threads) * (1.0 - raised))};
 }
 
 // Cushions: round pads of fine tufts, of many sizes, close together.

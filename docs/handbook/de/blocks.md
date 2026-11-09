@@ -7749,7 +7749,7 @@ Winziger Bewuchs auf den Böden des Nethers; er hinterlässt nichts.
 
 **Kommt vor in**
 
-[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest) (Gräser), [Wirrwald](biomes.md#biome-qtcraft-warped_forest) (Gräser)
+[Wirrwald](biomes.md#biome-qtcraft-warped_forest) (Gräser)
 
 ### <a id="block-qtcraft-nether_wart_crop"></a>Netherwarze (Pflanze)
 

@@ -20,22 +20,18 @@
     ],
     "vegetation": {
         "grass": {
-            "density": 0.22,
+            "density": 0.14,
             "plants": [
                 {
                     "block": "crimson_roots",
-                    "weight": 7
+                    "weight": 87
                 },
                 {
                     "block": "crimson_fungus",
-                    "weight": 2
+                    "weight": 11
                 },
                 {
                     "block": "warped_fungus",
-                    "weight": 1
-                },
-                {
-                    "block": "nether_sprouts",
                     "weight": 1
                 }
             ]

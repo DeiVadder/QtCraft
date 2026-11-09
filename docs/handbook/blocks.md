@@ -7953,7 +7953,7 @@ Tiny growth on the floors of the nether; it leaves nothing behind.
 
 **Found in**
 
-[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
 
 ### <a id="block-qtcraft-nether_wart_crop"></a>Nether wart (plant)
 
