@@ -169,6 +169,44 @@ if(NOT WIN32)
         "${PROJECT_SOURCE_DIR}/scripts/qc_doc_comments.py;${PROJECT_SOURCE_DIR}/scripts/qc_doc_format.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()
 
+# Limits raised after the chain verify of 1.1.0 (TSan at least 15 x the fastest debug time).
+foreach(entry IN ITEMS
+        app_offscreen_admin_layout:TIMEOUT:810
+        app_offscreen_hud_layout:TIMEOUT:1200
+        app_offscreen_menu_layout:TIMEOUT:960
+        app_offscreen_menu_pad:TIMEOUT:870
+        app_offscreen_ui_scale_100:TIMEOUT:2640
+        app_offscreen_ui_scale_100_1920x1080:TIMEOUT:2790
+        app_offscreen_ui_scale_100_2560x1440:TIMEOUT:2850
+        app_offscreen_ui_scale_100_3840x2160:TIMEOUT:3120
+        app_offscreen_ui_scale_200:TIMEOUT:2670
+        script_check_large_files:TIMEOUT:120
+        test_block_entity_compare:TIMEOUT:150
+        test_character_screen_qml:TIMEOUT:510
+        test_daylight_sensor:TIMEOUT:150
+        test_invulnerability:TIMEOUT:150
+        test_minecart_momentum:COST:60
+        test_nether_generator:TIMEOUT:750
+        test_pet_rules:COST:70
+        test_progression_reachability:TIMEOUT:660
+        test_server_login:COST:80
+        test_showcase_world:TIMEOUT:330
+        test_signal_hoppers:COST:60
+        test_signal_showcase:TIMEOUT:300
+        test_taming:COST:70
+        test_texture_atlas:TIMEOUT:180
+        test_world_map_nether:TIMEOUT:360
+        test_world_map_preview:TIMEOUT:750
+)
+    string(REPLACE ":" ";" parts "${entry}")
+    list(GET parts 0 name)
+    list(GET parts 1 property)
+    list(GET parts 2 value)
+    if(TEST ${name})
+        set_tests_properties(${name} PROPERTIES ${property} ${value})
+    endif()
+endforeach()
+
 # Tests whose result depends on wall time or machine load: label `timing`, run by scripts/verify.sh
 # in a phase of their own with few jobs on a quiet machine (decision E-550).
 include(${CMAKE_CURRENT_SOURCE_DIR}/timing.cmake)
