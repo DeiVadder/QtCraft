@@ -259,6 +259,9 @@ struct QcServerClient : QcEntity
     bool hurtThisTick = false;
     /*! The weather last sent to the client (QcServerWeather); none before the first message. */
     std::optional<QcMsg::Weather> sentWeather;
+    /*! The atmosphere last sent to the client (QcServerWeather, decision E-1120); none before the
+        first message. */
+    std::optional<QcMsg::Atmosphere> sentAtmosphere;
     /*! Experience (QcServerExperience, decision E-398). */
     QcExperience experience;
     /*! Fixes the enchanting table's offers until the player enchants (decision E-864); saved

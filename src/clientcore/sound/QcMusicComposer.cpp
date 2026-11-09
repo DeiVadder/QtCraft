@@ -66,15 +66,19 @@ double QcMusicComposer::frequency(int midiPitch)
     return 440.0 * std::pow(2.0, (midiPitch - 69) / 12.0);
 }
 
-QcMusicComposer::Piece QcMusicComposer::compose(quint64 seed)
+QcMusicComposer::Piece QcMusicComposer::compose(quint64 seed, const QcMusicStyle &style)
 {
     const std::array<quint32, 2> seedWords = {static_cast<quint32>(seed), static_cast<quint32>(seed >> 32)};
     QRandomGenerator random(seedWords.data(), seedWords.data() + seedWords.size());
 
     Piece piece;
-    piece.minor = random.bounded(2) == 1;
-    piece.root = 43 + random.bounded(7);
-    piece.beatsPerMinute = 66.0 + random.bounded(25);
+    // The draw of the scale comes first in every style, so the default style keeps its pieces.
+    const bool drawnMinor = random.bounded(2) == 1;
+    piece.minor = style.scale == QcMusicStyle::Scale::Any ? drawnMinor : style.scale == QcMusicStyle::Scale::Minor;
+    piece.root = style.lowestRoot + random.bounded(style.highestRoot - style.lowestRoot + 1);
+    piece.beatsPerMinute = style.slowestTempo + random.bounded(style.fastestTempo - style.slowestTempo + 1);
+    piece.lead = style.lead;
+    piece.leadLowpass = style.leadLowpass;
 
     const double beat = 60.0 / piece.beatsPerMinute;
     const std::array<int, 5> steps = scale(piece.minor);
@@ -117,6 +121,9 @@ QcMusicComposer::Piece QcMusicComposer::compose(quint64 seed)
     }
 
     piece.seconds = end + last;
+    if (style.drone) {
+        piece.notes.append({0.0, piece.seconds, piece.root - 12, 0.5f, Voice::Drone});
+    }
     return piece;
 }
 
@@ -131,11 +138,11 @@ QcSampleBuffer QcMusicComposer::render(const Piece &piece, int sampleRate)
 
         switch (note.voice) {
         case Voice::Lead:
-            layer.wave = QcSoundWave::Triangle;
+            layer.wave = piece.lead;
             layer.duration = note.duration + 0.3;
             layer.attack = 0.02;
             layer.curve = 1.2;
-            layer.lowpass = 3000.0;
+            layer.lowpass = piece.leadLowpass;
             layer.gain = 0.5 * note.velocity;
             break;
         case Voice::Bass:
@@ -154,6 +161,17 @@ QcSampleBuffer QcMusicComposer::render(const Piece &piece, int sampleRate)
             layer.tremoloRate = 0.3;
             layer.tremoloDepth = 0.2;
             layer.gain = 0.25 * note.velocity;
+            break;
+        case Voice::Drone:
+            // A dark, slowly breathing hum that fades in and out with the piece.
+            layer.wave = QcSoundWave::Saw;
+            layer.duration = note.duration;
+            layer.attack = std::min(4.0, note.duration / 4.0);
+            layer.curve = 0.5;
+            layer.lowpass = 220.0;
+            layer.tremoloRate = 0.15;
+            layer.tremoloDepth = 0.35;
+            layer.gain = 0.35 * note.velocity;
             break;
         }
 

@@ -7,6 +7,7 @@
 #include "common/content/items/QcHoldSerializer.h"
 #include "common/content/items/QcItemDefinition.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <cmath>
 
@@ -407,6 +408,8 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     // The material and family of a building part, "<material>/<family>" (the creative tab Building
     // parts sorts by it, decision E-874).
     stream << block.partOf;
+    // What the client lets the block give off (decision E-1121).
+    QcAtmosphere::writeEmitters(stream, block.particles);
 }
 
 std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
@@ -441,9 +444,11 @@ std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
     }
     block->hold = *hold;
     stream >> block->partOf;
-    if (stream.status() != QDataStream::Ok) {
+    std::optional<QList<QcParticleEmitter>> particles = QcAtmosphere::readEmitters(stream);
+    if (!particles || stream.status() != QDataStream::Ok) {
         return std::nullopt;
     }
+    block->particles = std::move(*particles);
     return block;
 }
 

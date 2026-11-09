@@ -1,6 +1,6 @@
 {
     "name": "warped_planks",
-    "sound": "wood",
+    "sound": "nether_wood",
     "hardness": 2.0,
     "tool": "axe",
     "tags": [

@@ -1,6 +1,6 @@
 {
     "name": "nether_bricks",
-    "sound": "stone",
+    "sound": "nether_bricks",
     "hardness": 2.0,
     "tool": "pickaxe",
     "toolLevel": 1,

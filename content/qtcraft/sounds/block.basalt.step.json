@@ -1,0 +1,39 @@
+{
+    "name": "block.basalt.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 1080,
+            "resonance": 1.2,
+            "lowpass": 3240,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 252,
+            "resonance": 1.2,
+            "lowpass": 756,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

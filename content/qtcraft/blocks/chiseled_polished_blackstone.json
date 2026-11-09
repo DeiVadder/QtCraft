@@ -1,6 +1,6 @@
 {
     "name": "chiseled_polished_blackstone",
-    "sound": "stone",
+    "sound": "blackstone",
     "hardness": 1.5,
     "tool": "pickaxe",
     "toolLevel": 1,

@@ -57,6 +57,8 @@ struct QcRawWorldRecord
             weather = *weatherState;
         } else if (const auto *ack = std::get_if<QcMsg::BlockAck>(&message)) {
             blockAcks.append({ack->sequence, items.size()});
+        } else if (const auto *atmosphere = std::get_if<QcMsg::Atmosphere>(&message)) {
+            atmospheres.append(*atmosphere);
         } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
             lightning.append(strike->position);
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
@@ -119,6 +121,8 @@ struct QcRawWorldRecord
     std::optional<QcMsg::Weather> weather;
     int weatherMessages = 0;
     QList<QcVec3> lightning;
+    // The atmospheres of the biomes the player stood in, oldest first (decision E-1120).
+    QList<QcMsg::Atmosphere> atmospheres;
     bool timeRunning = true;
     // Server ticks per client tick for the time of day (decision E-249).
     double timeSpeed = 1.0;

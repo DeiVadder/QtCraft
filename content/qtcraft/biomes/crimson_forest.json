@@ -40,5 +40,33 @@
                 }
             ]
         }
+    },
+    "atmosphere": {
+        "fog": {
+            "colour": "#330303",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "crimson_spore",
+                "chance": 0.025
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.crimson_forest.loop",
+            "additions": "ambient.crimson_forest.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "minor",
+            "lowestRoot": 40,
+            "highestRoot": 45,
+            "slowestTempo": 60,
+            "fastestTempo": 70,
+            "lead": "saw",
+            "leadLowpass": 1400,
+            "drone": false
+        }
     }
 }

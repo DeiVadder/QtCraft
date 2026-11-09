@@ -1,0 +1,57 @@
+{
+    "name": "block.basalt.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1800,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1368,
+            "resonance": 2.0,
+            "lowpass": 4104,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 324,
+            "resonance": 1.6,
+            "lowpass": 972,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 94,
+            "resonance": 0.96,
+            "lowpass": 281,
+            "gain": 0.9
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 {
     "name": "polished_blackstone_bricks",
-    "sound": "stone",
+    "sound": "blackstone",
     "hardness": 1.5,
     "tool": "pickaxe",
     "toolLevel": 1,

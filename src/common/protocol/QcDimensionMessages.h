@@ -7,6 +7,7 @@
 // (QcMessages.h).
 
 #include "common/content/worldgen/QcDimensionDefinition.h"
+#include "common/world/QcAtmosphere.h"
 
 namespace QcMsg {
 
@@ -24,6 +25,20 @@ struct DimensionChange
 {
     /*! The dimension, its client's part. */
     QcDimensionDefinition dimension;
+};
+
+/*! \brief Server -> client: the atmosphere of the biome where the player stands (decision
+    E-1120): fog, ambient particles, ambience and music.
+
+    Sent once the player plays, again whenever he walks into a biome with another atmosphere and
+    after every move to another dimension; an empty one (overworld biomes) keeps the dimension's
+    fog and the usual ambience. The client blends from the old to the new one. */
+struct Atmosphere
+{
+    /*! The atmosphere where the player stands. */
+    QcBiomeAtmosphere atmosphere;
+
+    friend bool operator==(const Atmosphere &, const Atmosphere &) = default;
 };
 
 } // namespace QcMsg

@@ -1,0 +1,47 @@
+{
+    "name": "block.shroomlight.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 990,
+            "gain": 0.024
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 286,
+            "resonance": 13.2,
+            "lowpass": 858,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 632,
+            "resonance": 15.4,
+            "lowpass": 1898,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 88,
+            "resonance": 2.64,
+            "lowpass": 264,
+            "gain": 0.8
+        }
+    ]
+}

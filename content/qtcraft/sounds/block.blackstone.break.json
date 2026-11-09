@@ -1,0 +1,79 @@
+{
+    "name": "block.blackstone.break",
+    "volume": 0.85,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1720,
+            "gain": 0.04
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1462,
+            "resonance": 2.2,
+            "lowpass": 4386,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 344,
+            "resonance": 1.98,
+            "lowpass": 1032,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 95,
+            "resonance": 1.32,
+            "lowpass": 284,
+            "gain": 0.8
+        },
+        {
+            "wave": "crackle",
+            "start": 0.01,
+            "duration": 0.25,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4300,
+            "highpass": 860,
+            "density": 700,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "start": 0.06,
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2236,
+            "resonance": 3.3,
+            "lowpass": 6708,
+            "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.08,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 3000,
+            "highpass": 900,
+            "density": 500,
+            "gain": 0.25
+        }
+    ]
+}

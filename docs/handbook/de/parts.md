@@ -2400,7 +2400,7 @@ Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auc
 | Braucht Halt | einen festen Block darunter |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Pressure plate |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | powered (false, true) |
 
 **Herstellung**
@@ -2433,7 +2433,7 @@ Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzar
 | Wird von Flüssigkeiten weggespült | ja |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Button |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | attach (floor, ceiling, north, east, south, west); powered (false, true) |
 
 **Herstellung**
@@ -2463,7 +2463,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Stufe |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | type (bottom, top, double) |
 | Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
@@ -2504,7 +2504,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Vertical slab |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -2540,7 +2540,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Treppe |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -2573,7 +2573,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Zaun |
 | Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **Herstellung**
@@ -2605,7 +2605,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Öffnet und schließt beim Benutzen | ja |
 | Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
 | Art des Bauteils | Zauntor |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | facing (north, east, south, west); open (false, true) |
 
 **Herstellung**
@@ -2848,7 +2848,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
 | Art des Bauteils | Mauer |
 | Verbindet sich mit | Mauern, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **Herstellung**
@@ -2890,7 +2890,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
 | Art des Bauteils | Stufe |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | type (bottom, top, double) |
 
 **Herstellung**
@@ -2941,7 +2941,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
 | Art des Bauteils | Vertical slab |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -2988,7 +2988,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
 | Art des Bauteils | Treppe |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -3058,7 +3058,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
 | Art des Bauteils | Mauer |
 | Verbindet sich mit | Mauern, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **Herstellung**
@@ -3108,7 +3108,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
 | Art des Bauteils | Stufe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | type (bottom, top, double) |
 
 **Herstellung**
@@ -3167,7 +3167,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
 | Art des Bauteils | Vertical slab |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -3222,7 +3222,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
 | Art des Bauteils | Treppe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -3274,7 +3274,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Art des Bauteils | Mauer |
 | Verbindet sich mit | Mauern, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **Herstellung**
@@ -3332,7 +3332,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Art des Bauteils | Stufe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | type (bottom, top, double) |
 
 **Herstellung**
@@ -3399,7 +3399,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Art des Bauteils | Vertical slab |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -3462,7 +3462,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Art des Bauteils | Treppe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -3689,7 +3689,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
 | Art des Bauteils | Mauer |
 | Verbindet sich mit | Mauern, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **Herstellung**
@@ -3731,7 +3731,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
 | Art des Bauteils | Stufe |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | type (bottom, top, double) |
 
 **Herstellung**
@@ -3782,7 +3782,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
 | Art des Bauteils | Vertical slab |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -3829,7 +3829,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
 | Art des Bauteils | Treppe |
-| Klang | Stein |
+| Klang | Netherziegel |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -4109,7 +4109,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
 | Art des Bauteils | Mauer |
 | Verbindet sich mit | Mauern, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **Herstellung**
@@ -4151,7 +4151,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
 | Art des Bauteils | Stufe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | type (bottom, top, double) |
 
 **Herstellung**
@@ -4202,7 +4202,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
 | Art des Bauteils | Vertical slab |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -4249,7 +4249,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
 | Art des Bauteils | Treppe |
-| Klang | Stein |
+| Klang | Schwarzstein |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -4728,7 +4728,7 @@ Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auc
 | Braucht Halt | einen festen Block darunter |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Pressure plate |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | powered (false, true) |
 
 **Herstellung**
@@ -4761,7 +4761,7 @@ Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzar
 | Wird von Flüssigkeiten weggespült | ja |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Button |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | attach (floor, ceiling, north, east, south, west); powered (false, true) |
 
 **Herstellung**
@@ -4791,7 +4791,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Stufe |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | type (bottom, top, double) |
 | Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
@@ -4832,7 +4832,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Vertical slab |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | double (false, true); facing (north, east, south, west) |
 
 **Herstellung**
@@ -4868,7 +4868,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Treppe |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **Herstellung**
@@ -4901,7 +4901,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Zaun |
 | Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **Herstellung**
@@ -4933,7 +4933,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Öffnet und schließt beim Benutzen | ja |
 | Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
 | Art des Bauteils | Zauntor |
-| Klang | Holz |
+| Klang | Netherholz |
 | Zustände | facing (north, east, south, west); open (false, true) |
 
 **Herstellung**

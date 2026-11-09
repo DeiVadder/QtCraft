@@ -1,6 +1,6 @@
 {
     "name": "warped_nylium",
-    "sound": "netherrack",
+    "sound": "nylium",
     "hardness": 0.4,
     "tool": "pickaxe",
     "toolLevel": 1,

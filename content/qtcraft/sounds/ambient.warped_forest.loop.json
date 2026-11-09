@@ -1,0 +1,48 @@
+{
+    "name": "ambient.warped_forest.loop",
+    "bus": "ambient",
+    "volume": 0.55,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 100,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.3
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 220,
+            "tremoloRate": 0.5,
+            "tremoloDepth": 0.7,
+            "gain": 0.08
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 329.6,
+            "tremoloRate": 0.375,
+            "tremoloDepth": 0.7,
+            "gain": 0.06
+        },
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "bandpass": 2200,
+            "resonance": 2,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.8,
+            "gain": 0.05
+        }
+    ]
+}

@@ -8,7 +8,7 @@
             "scale": 0.4
         }
     },
-    "sound": "wood",
+    "sound": "nether_wood",
     "shape": "door",
     "render": "cutout",
     "lightOpacity": 0,

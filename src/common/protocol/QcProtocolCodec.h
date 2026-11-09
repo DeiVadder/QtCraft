@@ -454,6 +454,10 @@ void encode(QDataStream &stream, const QcMsg::MapUpdate &m);
 void encode(QDataStream &stream, const QcMsg::DimensionChange &m);
 /*! Returns the QcMsg::DimensionChange read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DimensionChange>, QDataStream &stream);
+/*! Writes the payload of \a m (QcMsg::Atmosphere) to \a stream. */
+void encode(QDataStream &stream, const QcMsg::Atmosphere &m);
+/*! Returns the QcMsg::Atmosphere read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Atmosphere>, QDataStream &stream);
 
 // The smithing table (QcSmithingCodec.cpp)
 

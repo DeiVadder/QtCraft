@@ -1,0 +1,55 @@
+{
+    "name": "block.netherite.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.005,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2160,
+            "gain": 0.01
+        },
+        {
+            "wave": "noise",
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 684,
+            "resonance": 21.6,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 1872,
+            "resonance": 24.0,
+            "gain": 0.4
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 115,
+            "resonance": 1.44,
+            "lowpass": 346,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

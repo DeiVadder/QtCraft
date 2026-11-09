@@ -1,6 +1,6 @@
 {
     "name": "basalt",
-    "sound": "stone",
+    "sound": "basalt",
     "hardness": 1.25,
     "tool": "pickaxe",
     "toolLevel": 1,

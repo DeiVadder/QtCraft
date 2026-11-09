@@ -105,6 +105,8 @@ void QcRenderBridge::updateSky(double alpha)
     // without weather has none even before the server's clear weather arrives.
     const QcDimensionDefinition &dimension = session.worldMirror().dimension();
     QcSkyState sky = QcSky::withCloudDrift(QcSky::forDimension(dimension, session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
+    // The biome's fog, blended when the player walks into another (decision E-1120).
+    sky = QcSky::withAtmosphere(sky, session.worldMirror().atmosphere().fog());
     if (dimension.weather) {
         sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
     }
@@ -137,13 +139,20 @@ void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
     }
 
     m_precipitation.update(*session.world(), session.worldMirror().weather(), eye, frameSeconds);
-    if (m_precipitation.particles().isEmpty()) {
+    if (session.worldMirror().dimension().name != m_particleDimension) {
+        m_particleDimension = session.worldMirror().dimension().name;
+        m_atmosphere.clear();
+    }
+    // While the world is paused nothing new drifts in; what floats stays where it is.
+    const double atmosphereSeconds = session.serverPaused() ? 0.0 : frameSeconds;
+    m_atmosphere.update(*session.world(), session.worldMirror().atmosphere().current(), eye, atmosphereSeconds);
+    if (m_precipitation.particles().isEmpty() && m_atmosphere.particles().isEmpty()) {
         m_parts.view->setPrecipitation(nullptr, QcVec3{});
         return;
     }
 
     const QcVec3 origin = QcRenderOrigin::blockNear(eye);
-    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain(), origin), origin);
+    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain(), m_atmosphere, origin), origin);
 }
 
 void QcRenderBridge::updateSelection()

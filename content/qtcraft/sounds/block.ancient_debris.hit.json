@@ -1,0 +1,47 @@
+{
+    "name": "block.ancient_debris.hit",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1860,
+            "gain": 0.032
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 1426,
+            "resonance": 4.5,
+            "lowpass": 4278,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 372,
+            "resonance": 3.0,
+            "lowpass": 1116,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2600,
+            "resonance": 12,
+            "lowpass": 7800,
+            "gain": 0.3
+        }
+    ]
+}

@@ -11,6 +11,7 @@
 #include "clientcore/sound/QcSoundCue.h"
 #include "clientcore/sound/QcSoundSpatial.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QFutureWatcher>
 #include <QObject>
@@ -73,8 +74,14 @@ public:
     const QcSoundSpatial::Listener &listener() const { return m_listener; }
     /*! Plays the sound \a key without a position (menu clicks). */
     void playUi(const QString &key);
-    /*! Sets the \a levels of the ambience loops; a loop starts with its first audible level. */
+    /*! Sets the \a levels of the ambience loops; a loop starts with its first audible level. The
+        biome's loop (setBiomeAmbience) takes the place of wind and cave by its level. */
     void setAmbience(QcAmbience::Levels levels);
+    /*! Plays the ambience loop \a key of the biome the listener stands in at \a level (0..1;
+        decision E-1122); another key stops the old loop. An empty key plays none. */
+    void setBiomeAmbience(const QString &key, float level);
+    /*! The pieces from the next one on follow \a style (a biome's music, decision E-1123). */
+    void setMusicStyle(const QcMusicStyle &style) { m_musicStyle = style; }
     /*! Background music plays while \a enabled (in a world), with pauses between pieces. */
     void setMusicEnabled(bool enabled);
     /*! Stops ambience, music and effects (leaving a world). */
@@ -104,6 +111,17 @@ private:
     QcAudioMixer::VoiceId m_musicVoice = 0;
     std::array<QcAudioMixer::VoiceId, 4> m_ambienceVoices{};
     QcAmbience::Levels m_ambience;
+    // The biome's ambience loop (decision E-1122): its key, level and voice (0: none).
+    const QString &biomeLoop() const { return m_biomeLoop; }
+    void setBiomeLoop(const QString &key) { m_biomeLoop = key; }
+    float biomeLevel() const { return m_biomeLevel; }
+    void setBiomeLevel(float level) { m_biomeLevel = level; }
+    QcAudioMixer::VoiceId biomeVoice() const { return m_biomeVoice; }
+    void setBiomeVoice(QcAudioMixer::VoiceId voice) { m_biomeVoice = voice; }
+    QString m_biomeLoop;
+    float m_biomeLevel = 0.0f;
+    QcAudioMixer::VoiceId m_biomeVoice = 0;
+    QcMusicStyle m_musicStyle;
     QcPositionalVoices m_positional;
     QcSoundSpatial::Listener m_listener;
     QRandomGenerator m_random;

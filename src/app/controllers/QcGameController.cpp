@@ -578,12 +578,13 @@ void QcGameController::beginSession()
     m_parts.meshes->setSectionLight(QcFramePlan::selected().sectionLight);
     m_parts.session->setIntent(m_startup->initialIntent());
     m_render.setForcedPose(m_startup->forcedPose());
+    m_render.forgetParticles();
     m_hud->debug()->syncSubscription();
     m_wiring.connectSession();
     if (m_parts.view) {
         m_parts.view->clearMeshes();
         const int viewDistance = m_settings->viewDistance();
-        m_parts.view->setFogRange(static_cast<float>(viewDistance * QcWorld::chunkSize) * 0.6f, static_cast<float>(viewDistance * QcWorld::chunkSize));
+        m_parts.view->setFogDistance(static_cast<float>(viewDistance * QcWorld::chunkSize));
     }
     m_frame.startTickClock();
 }

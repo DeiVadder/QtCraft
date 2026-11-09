@@ -1,6 +1,6 @@
 {
     "name": "shroomlight",
-    "sound": "grass",
+    "sound": "shroomlight",
     "hardness": 1.0,
     "tool": "hoe",
     "light": 15,

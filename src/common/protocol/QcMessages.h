@@ -48,4 +48,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil,
                                QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho,
                                QcMsg::AdvancementProgress, QcMsg::PlayerAir, QcMsg::DimensionChange,
-                               QcMsg::OpenSmithing, QcMsg::SmithingState, QcMsg::ForgeSmithing, QcMsg::CloseSmithing>;
+                               QcMsg::OpenSmithing, QcMsg::SmithingState, QcMsg::ForgeSmithing, QcMsg::CloseSmithing,
+                               QcMsg::Atmosphere>;

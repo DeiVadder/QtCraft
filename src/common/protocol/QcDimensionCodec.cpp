@@ -80,3 +80,21 @@ void encode(QDataStream &stream, const QcMsg::DimensionChange &m)
 }
 
 } // namespace QcProtocolCodec
+
+namespace QcProtocolCodec {
+
+void encode(QDataStream &stream, const QcMsg::Atmosphere &m)
+{
+    QcAtmosphere::write(stream, m.atmosphere);
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Atmosphere>, QDataStream &stream)
+{
+    std::optional<QcBiomeAtmosphere> atmosphere = QcAtmosphere::read(stream);
+    if (!atmosphere) {
+        return qcError(u"Invalid atmosphere"_s);
+    }
+    return QcMsg::Atmosphere{std::move(*atmosphere)};
+}
+
+} // namespace QcProtocolCodec

@@ -1,0 +1,50 @@
+{
+    "name": "block.wart_block.break",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 90,
+            "resonance": 1.56,
+            "lowpass": 270,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.14,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 330,
+            "resonance": 1.56,
+            "lowpass": 990,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "start": 0.07,
+            "duration": 0.08,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 132,
+            "resonance": 1.56,
+            "lowpass": 396,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

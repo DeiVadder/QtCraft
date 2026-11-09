@@ -1,0 +1,57 @@
+{
+    "name": "block.nether_bricks.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2950,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2242,
+            "resonance": 4.25,
+            "lowpass": 6726,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 531,
+            "resonance": 3.4,
+            "lowpass": 1593,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 153,
+            "resonance": 2.04,
+            "lowpass": 460,
+            "gain": 0.9
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 3400,
+            "resonance": 18,
+            "lowpass": 9000,
+            "gain": 0.28
+        }
+    ]
+}

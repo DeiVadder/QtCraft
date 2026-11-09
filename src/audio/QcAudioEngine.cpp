@@ -107,6 +107,7 @@ void QcAudioEngine::mixerReset()
     // The new mixer is silent: the voices are gone. Ambience loops start again with the next
     // setAmbience once the bank is ready, music with its next piece.
     m_ambienceVoices = {};
+    setBiomeVoice(0);
     m_musicVoice = 0;
     m_positional.clear();
     buildBank();
@@ -214,7 +215,9 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
         return;
     }
 
-    const std::array<float, 4> values = {levels.wind, levels.cave, levels.water, levels.rain};
+    // The biome's loop takes the place of wind and cave (the nether has neither, decision E-1122).
+    const float open = 1.0f - std::clamp(biomeLevel(), 0.0f, 1.0f);
+    const std::array<float, 4> values = {levels.wind * open, levels.cave * open, levels.water, levels.rain};
     for (std::size_t i = 0; i < values.size(); ++i) {
         const QcSoundBank::Entry *entry = m_bank->find(ambienceKeys()[i]);
         if (!entry) {
@@ -231,6 +234,35 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
         } else {
             m_output.withMixer([voice, gain](QcAudioMixer &mixer) { mixer.setGain(voice, gain); });
         }
+    }
+}
+
+void QcAudioEngine::setBiomeAmbience(const QString &key, float level)
+{
+    setBiomeLevel(key.isEmpty() ? 0.0f : level);
+    if (key != biomeLoop()) {
+        const QcAudioMixer::VoiceId old = biomeVoice();
+        setBiomeVoice(0);
+        m_output.withMixer([old](QcAudioMixer &mixer) { mixer.stop(old); });
+        setBiomeLoop(key);
+    }
+    if (!isActive() || !m_bank || key.isEmpty()) {
+        return;
+    }
+
+    const QcSoundBank::Entry *entry = m_bank->find(key);
+    if (!entry) {
+        warnUnknown(key);
+        return;
+    }
+    const float gain = level * static_cast<float>(entry->definition.volume);
+    if (biomeVoice() == 0) {
+        if (gain >= audibleGain) {
+            setBiomeVoice(startVoice(*entry, {gain, 0.0f, 1.0, entry->definition.bus, true}));
+        }
+    } else {
+        const QcAudioMixer::VoiceId voice = biomeVoice();
+        m_output.withMixer([voice, gain](QcAudioMixer &mixer) { mixer.setGain(voice, gain); });
     }
 }
 
@@ -265,8 +297,9 @@ void QcAudioEngine::renderMusic()
 
     const quint64 seed = m_random.generate64();
     const int rate = m_output.sampleRate();
-    m_musicWatcher.setFuture(QtConcurrent::run([seed, rate] {
-        return std::make_shared<const QcSampleBuffer>(QcMusicComposer::render(QcMusicComposer::compose(seed), rate));
+    const QcMusicStyle style = m_musicStyle;
+    m_musicWatcher.setFuture(QtConcurrent::run([seed, rate, style] {
+        return std::make_shared<const QcSampleBuffer>(QcMusicComposer::render(QcMusicComposer::compose(seed, style), rate));
     }));
 }
 
@@ -276,5 +309,8 @@ void QcAudioEngine::stopWorldSounds()
     m_ambienceVoices = {};
     m_musicVoice = 0;
     m_ambience = {};
+    setBiomeVoice(0);
+    setBiomeLoop({});
+    setBiomeLevel(0.0f);
     m_positional.clear();
 }

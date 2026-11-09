@@ -300,7 +300,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
 | Kind of part | Slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | type (bottom, top, double) |
 
 **How to make it**
@@ -351,7 +351,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
 | Kind of part | Stairs |
-| Sound | stone |
+| Sound | blackstone |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -394,7 +394,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
 | Kind of part | Vertical slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -442,7 +442,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
 | Kind of part | Wall |
 | Connects to | walls, full solid blocks |
-| Sound | stone |
+| Sound | blackstone |
 | States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **How to make it**
@@ -906,7 +906,7 @@ A wooden button gives a signal of one and a half seconds when pressed. Every kin
 | Washed away by liquids | yes |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Button |
-| Sound | wood |
+| Sound | nether wood |
 | States | attach (floor, ceiling, north, east, south, west); powered (false, true) |
 
 **How to make it**
@@ -937,7 +937,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Fence |
 | Connects to | fences, fence gates, full solid blocks |
-| Sound | wood |
+| Sound | nether wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **How to make it**
@@ -969,7 +969,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Opens and closes when used | yes |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Fence gate |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); open (false, true) |
 
 **How to make it**
@@ -1002,7 +1002,7 @@ A wooden pressure plate gives a signal while anything stands or lies on it, item
 | Needs support | a solid block below |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Pressure plate |
-| Sound | wood |
+| Sound | nether wood |
 | States | powered (false, true) |
 
 **How to make it**
@@ -1032,7 +1032,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Slab |
-| Sound | wood |
+| Sound | nether wood |
 | States | type (bottom, top, double) |
 | Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
@@ -1073,7 +1073,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Stairs |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -1105,7 +1105,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
 | Kind of part | Vertical slab |
-| Sound | wood |
+| Sound | nether wood |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -2242,7 +2242,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
 | Kind of part | Slab |
-| Sound | stone |
+| Sound | nether bricks |
 | States | type (bottom, top, double) |
 
 **How to make it**
@@ -2293,7 +2293,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
 | Kind of part | Stairs |
-| Sound | stone |
+| Sound | nether bricks |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -2336,7 +2336,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
 | Kind of part | Vertical slab |
-| Sound | stone |
+| Sound | nether bricks |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -2384,7 +2384,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
 | Kind of part | Wall |
 | Connects to | walls, full solid blocks |
-| Sound | stone |
+| Sound | nether bricks |
 | States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **How to make it**
@@ -2661,7 +2661,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Kind of part | Slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | type (bottom, top, double) |
 
 **How to make it**
@@ -2728,7 +2728,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Kind of part | Stairs |
-| Sound | stone |
+| Sound | blackstone |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -2787,7 +2787,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Kind of part | Vertical slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -2851,7 +2851,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
 | Kind of part | Wall |
 | Connects to | walls, full solid blocks |
-| Sound | stone |
+| Sound | blackstone |
 | States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **How to make it**
@@ -2909,7 +2909,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
 | Kind of part | Slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | type (bottom, top, double) |
 
 **How to make it**
@@ -2968,7 +2968,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
 | Kind of part | Stairs |
-| Sound | stone |
+| Sound | blackstone |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -3019,7 +3019,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
 | Kind of part | Vertical slab |
-| Sound | stone |
+| Sound | blackstone |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -3075,7 +3075,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
 | Kind of part | Wall |
 | Connects to | walls, full solid blocks |
-| Sound | stone |
+| Sound | blackstone |
 | States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **How to make it**
@@ -3459,7 +3459,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
 | Kind of part | Slab |
-| Sound | stone |
+| Sound | nether bricks |
 | States | type (bottom, top, double) |
 
 **How to make it**
@@ -3510,7 +3510,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
 | Kind of part | Stairs |
-| Sound | stone |
+| Sound | nether bricks |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -3553,7 +3553,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
 | Kind of part | Vertical slab |
-| Sound | stone |
+| Sound | nether bricks |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**
@@ -3601,7 +3601,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
 | Kind of part | Wall |
 | Connects to | walls, full solid blocks |
-| Sound | stone |
+| Sound | nether bricks |
 | States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
 
 **How to make it**
@@ -4861,7 +4861,7 @@ A wooden button gives a signal of one and a half seconds when pressed. Every kin
 | Washed away by liquids | yes |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Button |
-| Sound | wood |
+| Sound | nether wood |
 | States | attach (floor, ceiling, north, east, south, west); powered (false, true) |
 
 **How to make it**
@@ -4892,7 +4892,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Fence |
 | Connects to | fences, fence gates, full solid blocks |
-| Sound | wood |
+| Sound | nether wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **How to make it**
@@ -4924,7 +4924,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Opens and closes when used | yes |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Fence gate |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); open (false, true) |
 
 **How to make it**
@@ -4957,7 +4957,7 @@ A wooden pressure plate gives a signal while anything stands or lies on it, item
 | Needs support | a solid block below |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Pressure plate |
-| Sound | wood |
+| Sound | nether wood |
 | States | powered (false, true) |
 
 **How to make it**
@@ -4987,7 +4987,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Slab |
-| Sound | wood |
+| Sound | nether wood |
 | States | type (bottom, top, double) |
 | Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
@@ -5028,7 +5028,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Stairs |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
 
 **How to make it**
@@ -5060,7 +5060,7 @@ Half a block standing upright against one side of its cell: it leans against the
 | Light blocked | only at the sides its shape covers fully |
 | Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
 | Kind of part | Vertical slab |
-| Sound | wood |
+| Sound | nether wood |
 | States | double (false, true); facing (north, east, south, west) |
 
 **How to make it**

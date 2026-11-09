@@ -1,6 +1,6 @@
 {
     "name": "nether_brick_fence",
-    "sound": "stone",
+    "sound": "nether_bricks",
     "shape": "fence",
     "lightOpacity": 0,
     "hardness": 2.0,

@@ -53,10 +53,28 @@ struct QcSkyState
     double overcast = 0.0;
     /*! Factor on the fog's distances: 1 clear, smaller in rain (the fog comes closer). */
     double fogScale = 1.0;
+    /*! Where the fog starts and where it hides everything, as shares of the view distance before
+        fogScale (the end moves half as much with it); a biome's atmosphere may set them
+        (QcSky::withAtmosphere, decision E-1120). \qcshared */
+    double fogStart = 0.6;
+    double fogEnd = 1.0;
 
     /*! Returns the fog colour: the horizon, so terrain at the fog's end has the colour of the
         sky behind it. */
     QVector3D fogColor() const { return horizon; }
+};
+
+/*! \brief The fog of a biome's atmosphere as the client shows it (QcClientAtmosphere, decision
+    E-1120): a colour and the fog's start and end as shares of the view distance, each with the
+    share (0..1) by which it replaces the dimension's. \qcfields */
+struct QcAtmosphereFog
+{
+    QVector3D colour;
+    double colourShare = 0.0;
+    double start = 0.6;
+    double startShare = 0.0;
+    double end = 1.0;
+    double endShare = 0.0;
 };
 
 /*! \brief The sky as a function of the world time and the weather. */
@@ -81,6 +99,12 @@ inline constexpr double fixedNoon = QcDayCycle::dayLength * 0.25;
     sun, moon, stars and clouds. Without sky light the daylight is 0; the ambient light (0..15)
     lifts the shaders' floor; a fog colour replaces the horizon. */
 QcSkyState forDimension(const QcDimensionDefinition &dimension, double worldTime);
+/*! Returns the linear colour (0..1 each) of \a rgb, 0xRRGGBB. */
+QVector3D colourOf(quint32 rgb);
+/*! Returns \a sky in the \a fog of a biome's atmosphere (decision E-1120): its colour replaces
+    the horizon by its share (the whole vault of a sky without sun), its start and end replace
+    the fog's distances by theirs, so that they hold whatever fogScale the dimension has. */
+QcSkyState withAtmosphere(QcSkyState sky, const QcAtmosphereFog &fog);
 /*! Returns \a sky with its clouds drifted for \a seconds of the world's animation clock
     (QcWorldMirror::animationSeconds, decision E-968): they drift whether the time of day runs or
     not and stand while the server pauses or is frozen. */

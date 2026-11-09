@@ -1,6 +1,6 @@
 {
     "name": "warped_fungus",
-    "sound": "grass",
+    "sound": "fungus",
     "shape": "cross",
     "render": "cutout",
     "hardness": 0.0,

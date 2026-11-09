@@ -1,5 +1,12 @@
 {
     "name": "lava",
+    "particles": [
+        {
+            "kind": "dripping_lava",
+            "chance": 0.1,
+            "from": "through"
+        }
+    ],
     "render": "cutout",
     "solid": false,
     "liquid": true,

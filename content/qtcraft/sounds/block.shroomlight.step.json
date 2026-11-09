@@ -1,0 +1,37 @@
+{
+    "name": "block.shroomlight.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 209,
+            "resonance": 8.8,
+            "lowpass": 627,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 77,
+            "resonance": 2.64,
+            "lowpass": 231,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "duration": 0.005,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1375,
+            "gain": 0.008
+        }
+    ]
+}

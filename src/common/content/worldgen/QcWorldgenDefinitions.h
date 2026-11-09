@@ -12,6 +12,7 @@
 #include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "common/content/worldgen/QcVegetationDefinition.h"
 #include "common/core/QcWorldConstants.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QList>
 #include <QString>
@@ -167,6 +168,9 @@ struct QcBiomeDefinition
     QList<QcFeaturePlacement> features;
     /*! Grass and flowers (decision E-814): placed after the listed features, used by bone meal. */
     QcVegetationDefinition vegetation;
+    /*! Fog, particles, ambience and music where a player stands in the biome (\c {"atmosphere"},
+        decision E-1120). The server sends it to the player (QcMsg::Atmosphere). */
+    QcBiomeAtmosphere atmosphere;
 };
 
 /*! \brief A terrain feature (a feature file of a pack): a tree, a column, a single plant or a

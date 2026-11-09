@@ -283,6 +283,8 @@ target_sources(qc_clientcore PRIVATE
     tick/QcTickTiming.h tick/QcTickTiming.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    weather/QcAtmosphereParticles.h weather/QcAtmosphereParticles.cpp
+    weather/QcClientAtmosphere.h weather/QcClientAtmosphere.cpp
     weather/QcClientWeather.h weather/QcClientWeather.cpp
     weather/QcDropPool.h weather/QcDropPool.cpp
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp

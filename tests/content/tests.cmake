@@ -22,6 +22,8 @@ target_compile_definitions(test_bundled_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${
 qc_add_test(test_cart_content SOURCES content/test_cart_content.cpp LIBRARIES qc_worlds)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_base_content qc_worlds)
 target_compile_definitions(test_sound_content PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+# The atmosphere of biomes and the particles of blocks (decisions E-1120 to E-1122).
+qc_add_test(test_atmosphere_content SOURCES content/test_atmosphere_content.cpp LIBRARIES qc_base_content)
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_base_content qc_worlds)
 qc_add_test(test_handbook_files SOURCES content/test_handbook_files.cpp LIBRARIES qc_common)

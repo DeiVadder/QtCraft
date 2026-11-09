@@ -239,6 +239,14 @@ QStringList check(const QcContentRegistry &content)
         warnings.append(checkBlockReferences(content, block));
     }
     warnings.append(checkCartReferences(content));
+    // The ambience of a biome's atmosphere (decision E-1122).
+    for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
+        for (const QString &name : {biome.atmosphere.loop, biome.atmosphere.additions}) {
+            if (!knowsSound(content, name)) {
+                warnings.append(u"biome %1: unknown ambience sound '%2'"_s.arg(biome.name, name));
+            }
+        }
+    }
 
     for (const QcItemDefinition &definition : content.items()) {
         if (!knowsTexture(content, definition.texture)) {

@@ -48,8 +48,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     E-1056), 93 the bottle and bucket of cauldrons in the content (decision E-1065), 94 the
     smithing table (OpenSmithing, SmithingState, ForgeSmithing, CloseSmithing, \c {smithing} of
     blocks and the smithing recipes in the content) and toughness and knockback resistance of
-    armour (decisions E-1115, E-1116). */
-inline constexpr quint32 version = 94;
+    armour (decisions E-1115, E-1116), 95 the atmosphere of the player's biome (Atmosphere) and
+    the particles of blocks in the content (decisions E-1120, E-1121). */
+inline constexpr quint32 version = 95;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

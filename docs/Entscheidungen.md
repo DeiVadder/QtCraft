@@ -6726,3 +6726,59 @@ Quelle: das Vorbild (Java-Ausgabe) aus Erinnerung, nichts nachgeschlagen. „Sic
 **Showcase:** Station `netherite` (Reihenfolge 110): Schmiedetisch, Truhe mit Vorlagen, Barren, Schrott, Gold, Diamantteilen (Schwert mit Schärfe III), Ofen und Lavaeimer, Netheritblock, antiker Schrott in Netherrack, Rüstungsständer in voller Netheritrüstung mit Netheritschwert. Der Ständerbereich des Showcase hat jetzt auch einen Netherit-Ständer.
 
 **Handbuch:** Kapitel „Netherit“ (Fund, Barren, Schmiedetisch, feuerfest), Beschreibungen aller neuen Blöcke und Items. **Fortschritte:** „Verborgen in der Tiefe“ (antiker Schrott erhalten, unter „Diamanten!“) und die Herausforderung „Ganz in Schrott gehüllt“ (alle vier Netherit-Teile).
+
+## E-1120 Atmosphäre eines Bioms: Nebel und Partikel aus den Daten, der Server sendet sie (Paket 84.9) — `QcBiomeAtmosphere`, `QcAtmosphereParser`, `QcMsg::Atmosphere`, `QcServerWeather::syncAtmospheres`, `QcClientAtmosphere`, `QcSky::withAtmosphere`, `QcAtmosphereParticles`
+
+**Frage:** Woher kennt der Client Nebel, Partikel und Klang des Bioms, in dem der Spieler steht, und wie wechselt der Nebel zwischen Biomen?
+
+**Entscheidung:** Ein Biom trägt `"atmosphere"` (`fog`, `particles`, `ambience`, `music`; `docs/Modding.md`, Nether); unbekannte Schlüssel darin und in den Partikeln eines Blocks werden mit einer Warnung übergangen (`QcJsonFieldReader::warnUnknownKeys`). Die Biome gehören nicht zum Inhaltsabgleich, und die Biomkarte kennt nur der Server; deshalb sendet `QcServerWeather::syncAtmospheres` (System der Phase `ClientSync`, `Always`, also auch in einer angehaltenen Welt) die Atmosphäre des Bioms unter den Füßen in jedem Tick, aber nur, wenn sie sich von der zuletzt gesendeten unterscheidet (`QcServerClient::sentAtmosphere`, beim Wechsel der Dimension geleert). Neue Nachricht `QcMsg::Atmosphere`, **Protokollversion 94 → 95**. Der Biom-Cache des Wetters hält jetzt die Definition statt des Klimas (`biomeAt`), das Klima liest daraus.
+
+Der Client (`QcClientAtmosphere` im `QcWorldMirror`) hält Farbe, Start und Ende des Nebels je mit einem Anteil, mit dem sie die der Dimension ersetzen, und blendet linear über 5 s vom gezeigten zum neuen Stand (das Vorbild blendet die Nebelfarbe ebenso über 5 s). Ein Wert, der vorher nichts ersetzte (Anteil 0), springt sofort auf den neuen Wert, nur sein Anteil blendet; so wandert die Farbe nie über die der Dimension. Nach dem Betreten einer Dimension (Portal, `/tp … in`) beginnt der Client ohne Atmosphäre und zeigt den Nebel der Dimension; der des Bioms blendet dann ebenfalls über 5 s ein, statt beim Ankommen zu springen. `QcSky::withAtmosphere` wendet ihn nach `forDimension` an: Horizont, in Dimensionen ohne Himmelskörper auch Zenit und Wolken, und die Entfernungen so, dass die gezeigten Werte die des Bioms sind, gleich welcher `fogScale`. Dazu hat `QcSkyState` jetzt `fogStart` (0,6) und `fogEnd` (1,0) als Anteile der Sichtweite; der Renderer rechnet `fogEnd(Sichtweite) × fogStart × fogScale` und `… × fogEnd × (0,5 + 0,5 × fogScale)` (vorher fest in `QcWorldView::setFogRange`, jetzt `setFogDistance`). Ohne Atmosphäre bleibt alles wie zuvor.
+
+Partikel: `QcAtmosphereParticles` tastet je Client-Tick wie das Vorbild 667 Zellen im Umkreis 16 und 667 im Umkreis 32 ab (je Achse Differenz zweier gleichverteilter Ziehungen, nahe Zellen öfter); Zellen weiter als 48 m vom Auge werden verworfen (die Ecken des äußeren Würfels; dort Entstandenes fiele sofort weg); eine freie Zelle (geladen, keine Flüssigkeit, kein Kollisionskörper) bekommt jedes Partikel des Bioms mit seiner Wahrscheinlichkeit, ein abgetasteter Block gibt seine Partikel ab (E-1121). Höchstens 4000 Partikel, über 48 m Abstand fallen sie weg; in der Pause entstehen keine, beim Wechsel der Dimension und mit einer neuen Sitzung werden sie geleert. Gezeichnet werden sie mit dem Niederschlag (`QcDropPool`, `QcPrecipitationRenderer`): ein Tropfen trägt jetzt einen Palettenindex und eine Deckkraft, der Shader nimmt Farbe und Eigenleuchten aus `palette[8]` im Uniform-Block (Eintrag 0 bleibt Regen und Schnee).
+
+**Gründe:** Eine Nachricht nur bei Änderung kostet fast nichts und braucht keine Biomkarte auf dem Client; die zeitliche Blende ist unabhängig vom Grundhimmel und macht beim Überschreiten einer Biomgrenze keinen Sprung. Partikel als Niederschlagstropfen brauchen keinen neuen Renderer.
+
+**Offen:** Wassertropfen unter Wasser durch Decken, die Kappe des Vorbilds (Nebelende höchstens 192 Blöcke) und die Stimmungsklänge (`mood`) des Vorbilds sind nicht umgesetzt.
+
+## E-1121 Partikel von Blöcken (Paket 84.9) — `QcParticleEmitter`, `QcBlockDefinition::particles`, `QcAtmosphereParticles::sampleBlock`
+
+**Entscheidung:** Ein Block nennt `"particles": [{"kind", "chance", "from"}]` (höchstens 4); `from` ist `top` (freie Zelle darüber), `bottom` (Standard, freie Zelle darunter), `faces` (eine zufällige Seite außer oben, die kein undurchsichtiger Nachbar deckt) oder `through` (durch einen undurchsichtigen Block darunter in die freie Zelle unter ihm, wie Flüssigkeit durch eine Decke sickert). Die Liste geht mit dem Inhaltsabgleich zum Client (`QcBlockSerializer`). Tropfen hängen 40 (Lava) bzw. 100 (Träne) Ticks und fallen dann mit 24 m/s² (0,06 Blöcke/Tick²) und Luftwiderstand 0,98 je Tick, bis sie eine feste Zelle treffen; das sind die Zahlen des Vorbilds. Weinender Obsidian: Träne 0,2 je Abtastung auf einer Seite (Vorbild); Lava: Lavatropfen 0,1 durch den Block darunter (Vorbild, dort nur bei Lava über einem festen Block, wie hier); Seelensand und Seelenerde: aufsteigende Seele 0,002 oben (eigener Wert: im Vorbild nur Seelenfeuer-Flammen und die Seelengeschwindigkeit).
+
+**Gründe:** Daten statt Sonderfälle im Code; die Abtastung des Bioms (E-1120) findet die Blöcke ohnehin.
+
+## E-1122 Klangkulisse je Biom und eigene Klangmaterialien der Netherblöcke (Paket 84.9) — `QcClientSounds::updateBiomeAmbience`, `QcAudioEngine::setBiomeAmbience`
+
+**Entscheidung:** `ambience.loop` eines Bioms ersetzt Wind und Höhle: `QcClientSounds` blendet die Schleife mit `QcAmbience::fadePerSecond` (0,5 je Sekunde) ein; eine andere Schleife wartet, bis die alte ausgeblendet ist (Überblendung nacheinander, nie zwei Kulissen voll zugleich). Die Audio-Engine spielt sie als eigene Stimme und senkt Wind und Höhle um ihren Pegel (1 − Pegel); der Höhlenpegel selbst bleibt, weil das Rendering ihn für den Nebel liest. `ambience.additions` spielt mit `additionsChance` je Tick (Vorbild 0,0111) 6 m vom Spieler in zufälliger Richtung; Wurf und Winkel kommen aus zwei getrennten splitmix64-Wörtern des Client-Ticks (reproduzierbar, testbar, ohne die Korrelation einer einfachen Weyl-Folge). Fünf prozedurale Schleifen (8 s) und je drei Varianten der Zusätze: Ödland ein tiefes Grollen fernen Feuers mit einzelnem Knistern, dazu ein fallender Ton; Seelensandtal ein kalter, hohler Wind mit fernem Pfeifen und klagenden Gleittönen; Karmesinwald ein warmes Summen mit leisem Insektenschwirren und weichen Knacklauten; Wirrwald ein Schimmern zweier langsamer Töne über tiefem Murmeln und glockige Zusätze; Basaltdeltas ein mahlendes Rumpeln mit Zischen von Asche und Lava und harten Schlägen.
+
+Netherblöcke bekommen eigene Klangmaterialien (je `break`, `hit`, `place`, `step`), abgeleitet aus den Rauschkörpern vorhandener Materialien mit Frequenz- und Resonanzfaktoren und einer Zusatzschicht: `nether_bricks` (Stein, heller und klingender), `basalt` (Stein, tiefer, dumpfer Schlag), `blackstone` (Stein, dunkler, mit Körnung), `soul_soil` (Seelensand, fester), `nylium` (Netherrack mit Rascheln), `stem` (Holz, tiefer und weicher), `nether_wood` (Holz, trockener), `wart_block` (Erde, feucht und weich), `shroomlight` (Holz, schwammig hohl), `ancient_debris` (Stein, schwer mit metallischem Klang), `netherite` (Metall, tief und dicht), `fungus` und `roots` (Gras, weich bzw. trocken) und `nether_ore` (Netherrack mit Mineralklicken). Das schließt die Notiz aus 84.1b (eigene Klänge für Netherziegel, Basalt, Schwarzstein). Die Kreaturen des Nethers hatten ihre Klänge schon; keiner fehlte.
+
+**Gründe:** Wie die übrigen Klänge prozedural (E-879), ohne Aufnahmen des Vorbilds. Abweichung: Schwarzstein klingt im Vorbild wie Stein, hier eigenes Material, wie in 84.1b notiert.
+
+## E-1123 Musikstil je Biom (Paket 84.9) — `QcMusicStyle`, `QcMusicComposer::compose`, `QcAudioEngine::setMusicStyle`
+
+**Entscheidung:** `music` eines Bioms bestimmt Tonart (`any`, `major`, `minor`), Grundton- und Tempobereich, Klang der Melodie (Welle und Tiefpass) und einen Bordun (eine tiefe Säge auf dem Grundton eine Oktave unter dem Bass, über das ganze Stück, mit langsamem Tremolo). Die Engine nimmt den Stil des Bioms ab dem nächsten Stück. Der Standardstil zieht in derselben Reihenfolge wie bisher (Tonart, Grundton 43–49, Tempo 66–90, Dreieck mit 3000 Hz), so bleiben die Stücke der Oberwelt dieselben. Nether: Ödland Moll, Grundton 38–42, 54–62 bpm, Dreieck 1800 Hz, Bordun; Seelensandtal Moll 36–40, 46–54, Sinus 1200 Hz, Bordun; Karmesinwald Moll 40–45, 60–70, Säge 1400 Hz, ohne Bordun; Wirrwald Dur 41–46, 56–64, Sinus 2400 Hz, Bordun; Basaltdeltas Moll 36–39, 50–58, Rechteck 1000 Hz, Bordun (alles eigene Werte; das Vorbild hat je Biom eigene aufgenommene Stücke).
+
+## E-1124 Werte der Nether-Atmosphäre nach dem Vorbild; Showcase (Paket 84.9)
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Nebelfarbe Ödland / Seelensandtal / Karmesinwald / Wirrwald / Basaltdeltas | eine Farbe der Dimension (`#3a0c0c`, bleibt außerhalb der Biome) | `#330808` / `#1b4745` / `#330303` / `#1a051a` / `#685f70` | Vorbild, sicher |
+| Nebel im Nether, Start / Ende (Anteil der Sichtweite) | 0,3 / 0,75 (0,6 und 1,0 mal `netherFogScale` 0,5 bzw. 0,75) | 0,05 / 0,5 | Vorbild (Start 5 %, Ende 50 %), sicher; Kappe 192 Blöcke nicht übernommen |
+| Blende der Nebelfarbe | – (ein Nebel je Dimension) | 5 s linear | Vorbild, sicher |
+| Asche im Seelensandtal | – | 0,00625 je freie Abtastzelle | Vorbild, sicher |
+| Karmesinsporen | – | 0,025, Farbe 0,9/0,4/0,5 | Vorbild, sicher |
+| Wirrsporen | – | 0,01428, Farbe 0,25/0,7/0,75 | Wahrscheinlichkeit Vorbild; Farbe eigen (Vorbild dunkelblau 0,1/0,1/0,7, im lila Nebel kaum sichtbar) |
+| Weiße Asche Basaltdeltas | – | 0,118093334, Farbe 0,73/0,69/0,76 | Vorbild, sicher |
+| Abtastung je Tick | – | 667 Zellen in 16, 667 in 32 | Vorbild, sicher |
+| Tränen weinender Obsidian | – | 0,2 je Abtastung, Seite außer oben, 100 Ticks hängen, Farbe 0,51/0,03/0,89 | Vorbild, sicher |
+| Lavatropfen durch Decke | – | 0,1, 40 Ticks hängen, Farbe 1/0,29/0,08 | Vorbild, sicher |
+| Fall der Tropfen | – | 24 m/s², 0,98 je Tick | Vorbild (0,06 Blöcke/Tick², 0,98), sicher |
+| Größe der Tropfen (Träne, Lava) | – | 1,75 × Schneeflocke (0,21 m, auf dem Bild 2,6–7,9 px Radius bei 1080 Zeilen), hängt unter ihrem Punkt | eigen (Mensch 2026-11-09: etwas größer, sichtbar, aber klein) |
+| Seelen über Seelensand und -erde | – | 0,002, steigen 0,6 m/s | eigen |
+| Lebensdauer, Sinken, Schwanken der Partikel | – | `QcAtmosphereParticles` (Tabelle `looks`) | eigen, ungefähr nach Augenschein |
+| Zusatzklänge je Tick | – | 0,0111 | Vorbild, sicher |
+| Klangschleifen, Zusätze, Musikstile | Wind und Höhle | je Biom (E-1122, E-1123) | eigen, prozedural |
+| Klangmaterialien Netherblöcke | Stein, Holz, Netherrack, Seelensand, Erde, Gras, Metall | 14 eigene (E-1122) | eigen; Vorbild hat eigene Materialien für dieselben Gruppen (Schwarzstein dort wie Stein) |
+
+**Showcase:** Die Ankunft im Nether (`nether_arrival`) hat jetzt einen Bogen aus weinendem Obsidian (Tränen von Unterseite und Seiten) und ein Lavabecken auf einer Netherrack-Decke (Lavatropfen darunter), beide beschriftet; Seelen steigen aus dem Seelensand der Blockreihe. Nebel, Biompartikel und Klang zeigt jedes Netherbiom selbst (`/locate biome`).

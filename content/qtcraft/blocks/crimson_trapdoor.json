@@ -1,6 +1,6 @@
 {
     "name": "crimson_trapdoor",
-    "sound": "wood",
+    "sound": "nether_wood",
     "shape": "trapdoor",
     "render": "cutout",
     "lightOpacity": 0,

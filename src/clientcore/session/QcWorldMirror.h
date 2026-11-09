@@ -9,6 +9,7 @@
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEffectClock.h"
 #include "clientcore/session/QcInkClouds.h"
+#include "clientcore/weather/QcClientAtmosphere.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/protocol/QcMessages.h"
 
@@ -75,6 +76,9 @@ public:
     QcClientWeather &weather() { return m_weather; }
     /*! Returns the weather as shown, read-only. */
     const QcClientWeather &weather() const { return m_weather; }
+    /*! Returns the atmosphere of the biome the player stands in, its fog blended (decision
+        E-1120). */
+    const QcClientAtmosphere &atmosphere() const { return m_atmosphere; }
     /*! Returns the labels (E-222), spinning spawner creatures (E-520), campfire items (E-772),
         sign texts (E-766) and explosions (E-604) of the loaded chunks. */
     const QcChunkExtras &extras() const { return m_extras; }
@@ -93,7 +97,7 @@ public:
     }
 
 private:
-    // Another dimension: forgets the chunk extras, ink and weather of the old one.
+    // Another dimension: forgets the chunk extras, ink, weather and atmosphere of the old one.
     void enter(const QcDimensionDefinition &dimension);
     // Labels, spawners, explosions, maps, time and weather; false for other messages.
     bool handleSkyMessage(const QcMessage &message, const QcVec3 &eye, quint64 now);
@@ -106,5 +110,6 @@ private:
     QcDimensionDefinition m_dimension = QcDimensionDefinition::defaultOverworld();
     QcEffectClock m_effects;
     QcClientWeather m_weather;
+    QcClientAtmosphere m_atmosphere;
     QcInkClouds m_ink;
 };

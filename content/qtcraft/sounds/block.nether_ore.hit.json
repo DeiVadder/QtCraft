@@ -1,0 +1,57 @@
+{
+    "name": "block.nether_ore.hit",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2100,
+            "gain": 0.032
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 1610,
+            "resonance": 3.0,
+            "lowpass": 4830,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 420,
+            "resonance": 2.0,
+            "lowpass": 1260,
+            "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 2400,
+            "highpass": 400,
+            "density": 900,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 3400,
+            "resonance": 18,
+            "lowpass": 9000,
+            "gain": 0.28
+        }
+    ]
+}

@@ -456,6 +456,7 @@ void QcClientSession::updateSounds()
     const QcVec3 eye = playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const double rain = m_worldMirror.weather().rainAt(static_cast<int>(std::floor(eye.y)));
     m_sounds.updateAmbience(*m_worldMirror.world(), eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
+    m_sounds.updateBiomeAmbience(m_worldMirror.atmosphere().current(), eye, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
     const QList<QcSoundCue> thunder = m_worldMirror.weather().tick(m_tickCount);
     for (const QcSoundCue &sound : thunder) {
         cue(sound);

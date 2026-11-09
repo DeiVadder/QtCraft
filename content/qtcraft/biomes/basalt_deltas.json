@@ -16,5 +16,33 @@
             "block": "blackstone",
             "share": 0.32
         }
-    ]
+    ],
+    "atmosphere": {
+        "fog": {
+            "colour": "#685f70",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "white_ash",
+                "chance": 0.118093334
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.basalt_deltas.loop",
+            "additions": "ambient.basalt_deltas.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "minor",
+            "lowestRoot": 36,
+            "highestRoot": 39,
+            "slowestTempo": 50,
+            "fastestTempo": 58,
+            "lead": "square",
+            "leadLowpass": 1000,
+            "drone": true
+        }
+    }
 }

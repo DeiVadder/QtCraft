@@ -64,7 +64,8 @@ public:
         quint64 materials = 0;
         // Sky dome, fog colour and the daylight factor of the shaders.
         QcSkyState sky = QcSky::at(QcDayCycle::startTime);
-        float fogStart = 80.0f;
+        // The view distance in blocks: where the clear fog ends; the sky tells where the fog
+        // starts and ends as shares of it (QcSkyState::fogStart, fogEnd).
         float fogEnd = 128.0f;
         // Most samples along a slanted footprint (decision E-721); 1 is plain mip mapping.
         int anisotropicSamples = QcGameSettings::defaultTextureFiltering;
@@ -129,7 +130,9 @@ public:
     void setHandMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.
     void setSky(const QcSkyState &sky);
-    void setFogRange(float start, float end);
+    // The view distance in blocks, the end of the clear fog (QcSkyState::fogStart and fogEnd are
+    // shares of it).
+    void setFogDistance(float distance);
     // Texture filtering of the blocks (decision E-721): 1, 2, 4 or 8 samples.
     void setAnisotropicSamples(int samples);
     // Render mode, quality and exposure (decision E-899).

@@ -155,6 +155,7 @@ void QcServerState::moveClient(QcServerClient &client, QcServerDimension &dimens
     client.view.known.clear();
     client.view.stale.clear();
     client.sentWeather.reset();
+    client.sentAtmosphere.reset();
 }
 
 QcPermission QcServerState::permissionOf(const QcServerClient &client) const

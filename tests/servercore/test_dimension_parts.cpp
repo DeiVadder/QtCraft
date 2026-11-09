@@ -1,15 +1,13 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/worldgen/QcDimensionParser.h"
 #include "common/maps/QcMapPixel.h"
 #include "common/world/QcDayCycle.h"
 #include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestDimensions.h"
 #include "server/maps/QcMapStore.h"
 #include "server/maps/QcMapSurvey.h"
 #include "server/maps/QcServerMaps.h"
-
-#include <QJsonObject>
 
 using namespace Qt::StringLiterals;
 
@@ -20,16 +18,7 @@ constexpr auto emptyName = "test:empty";
 // The base content with an empty test dimension: a stone platform at the origin, no weather.
 std::shared_ptr<QcContentRegistry> contentWithDimension()
 {
-    const QJsonObject json{{u"name"_s, QString::fromLatin1(emptyName)},
-                           {u"generator"_s, QJsonObject{{u"type"_s, u"void"_s}, {u"options"_s, u"platform=qtcraft:stone,radius=1,y=1"_s}}},
-                           {u"weather"_s, false}};
-    QcResult<QcDimensionDefinition> dimension = QcDimensionParser::parseDimension(json, u"test"_s);
-    if (!dimension) {
-        qFatal("test dimension does not parse: %s", qPrintable(dimension.error()));
-    }
-    std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-    content->worldgen().registerDimension(std::move(*dimension));
-    return content;
+    return QcTestUtil::contentWithVoidDimension(QString::fromLatin1(emptyName), u"platform=qtcraft:stone,radius=1,y=1"_s);
 }
 
 } // namespace

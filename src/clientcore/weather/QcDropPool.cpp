@@ -5,7 +5,8 @@
 
 #include <algorithm>
 
-std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPrecipitationField &field, float strength, const QcVec3 &origin)
+std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPrecipitationField &field, float strength,
+                                                                    const QcAtmosphereParticles &atmosphere, const QcVec3 &origin)
 {
     const auto slot = std::ranges::find_if(m_lists, [](const auto &list) { return !list || list.use_count() == 1; });
     std::shared_ptr<QList<QcPrecipitationDrop>> drops = slot != m_lists.end() ? *slot : nullptr;
@@ -21,9 +22,12 @@ std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPreci
 
     // Cleared with its capacity kept: a reused list allocates nothing.
     drops->clear();
-    drops->reserve(field.particles().size());
+    drops->reserve(field.particles().size() + atmosphere.particles().size());
     for (const QcPrecipitationField::Particle &particle : field.particles()) {
         drops->append(QcPrecipitationField::dropOf(particle, strength, origin));
+    }
+    for (const QcAtmosphereParticles::Particle &particle : atmosphere.particles()) {
+        drops->append(QcAtmosphereParticles::dropOf(particle, origin));
     }
     return drops;
 }

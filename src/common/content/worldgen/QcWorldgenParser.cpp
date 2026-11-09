@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
+#include "common/content/worldgen/QcAtmosphereParser.h"
 #include "common/content/worldgen/QcCoastalTowerParser.h"
 #include "common/content/worldgen/QcVegetationParser.h"
 #include "common/core/QcWorldConstants.h"
@@ -243,6 +244,18 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     return biome;
 }
 
+// The biome's nested objects: what grows on its floors and its atmosphere (decision E-1120).
+QcBiomeDefinition withNestedParts(QcBiomeDefinition biome, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
+    });
+    reader.nestedObject(u"atmosphere"_s, [&biome, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
+        biome.atmosphere = QcAtmosphereParser::parseAtmosphere(object, nested, packNamespace);
+    });
+    return biome;
+}
+
 } // namespace
 
 namespace QcWorldgenParser {
@@ -296,9 +309,7 @@ namespace QcWorldgenParser {
     if (biome.river && biome.delta) {
         reader.fail(u"a biome is either a river or a delta biome"_s);
     }
-    reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
-    });
+    biome = withNestedParts(std::move(biome), reader, packNamespace);
 
     if (biome.surfaceBlock.isEmpty()) {
         reader.fail(u"'surface' is required"_s);

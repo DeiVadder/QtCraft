@@ -286,8 +286,10 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.fogColor[2] = fog.z();
     uniforms.fogColor[3] = 1.0f;
     // Rain brings the fog closer (QcSkyState::fogScale); the far plane stays where the clear fog ends.
-    uniforms.params[0] = m_frame.fogStart * static_cast<float>(m_frame.sky.fogScale);
-    uniforms.params[1] = m_frame.fogEnd * static_cast<float>(0.5 + 0.5 * m_frame.sky.fogScale);
+    // The start and end are shares of the view distance (QcSkyState::fogStart, fogEnd; a biome's
+    // atmosphere sets them, decision E-1120).
+    uniforms.params[0] = m_frame.fogEnd * static_cast<float>(m_frame.sky.fogStart * m_frame.sky.fogScale);
+    uniforms.params[1] = m_frame.fogEnd * static_cast<float>(m_frame.sky.fogEnd * (0.5 + 0.5 * m_frame.sky.fogScale));
     uniforms.params[2] = static_cast<float>(m_frame.sky.daylight);
     // The floor with a blast's flash, kept so that floor and its sky-light share stay at most 1.
     uniforms.params[3] = std::min(minimumLight + static_cast<float>(m_frame.sky.flashLight), 1.0f - QcRenderPipelines::skyLightFloor);

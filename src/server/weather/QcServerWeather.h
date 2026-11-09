@@ -55,6 +55,10 @@ public:
     void advance();
     /*! One tick of a simulated dimension: strikes and what its players are sent. */
     void tick();
+    /*! Sends each playing client of the current dimension the atmosphere of the biome at his feet
+        when it is not the one he has (decision E-1120); runs in every tick, also in a frozen
+        world. */
+    void syncAtmospheres();
     /*! Sends \a client the weather where its player stands, now (joining). */
     void sendTo(QcServerClient &client);
 
@@ -66,6 +70,9 @@ public:
 
     /*! Returns the climate of the column (\a x, \a z) from its biome. */
     QcWeather::Climate climateAt(int x, int z) const;
+    /*! Returns the biome of the column (\a x, \a z); null without one (flat, void and showcase
+        worlds). */
+    const QcBiomeDefinition *biomeAt(int x, int z) const;
     /*! Returns the highest cell of the column (\a x, \a z) that keeps rain and snow out;
         QcWorld::worldHeight for a column that is not loaded. */
     int columnTop(int x, int z) const;
@@ -100,6 +107,8 @@ private:
     // Whether `next` differs enough from what the client got to be sent.
     static bool worthSending(const std::optional<QcMsg::Weather> &sent, QcMsg::Weather next);
     void syncClients();
+    // Sends `client` the atmosphere of the biome at its feet when it is not the one it has.
+    void syncAtmosphere(QcServerClient &client) const;
     // During a thunderstorm: maybe one strike near each player.
     void strikeNearPlayers();
 
@@ -108,16 +117,16 @@ private:
     StrikeHook m_strikeHook;
     quint64 m_strikes = 0;
     int m_meanStrikeTicks = 1;
-    // Climate by column, filled on demand (the biome of a column never changes), in two
+    // Biome by column, filled on demand (the biome of a column never changes), in two
     // generations: when the recent one is full it becomes the older one and the oldest is dropped;
     // a column found in the older one moves back to the recent one. So the columns around the
     // players stay cached while they move, and the cache holds at most 2 × climateGeneration.
     static constexpr qsizetype climateGeneration = 32768;
-    // The climates of the columns of a dimension (the generators differ).
+    // The biomes of the columns of a dimension (the generators differ); null for none.
     struct Climates
     {
-        QHash<quint64, QcWeather::Climate> climates;
-        QHash<quint64, QcWeather::Climate> olderClimates;
+        QHash<quint64, const QcBiomeDefinition *> biomes;
+        QHash<quint64, const QcBiomeDefinition *> olderBiomes;
     };
     // Of the current dimension.
     Climates &here() const;

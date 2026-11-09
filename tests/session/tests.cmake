@@ -36,6 +36,8 @@ qc_add_test(test_block_prediction SOURCES session/test_block_prediction.cpp fixt
 qc_add_test(test_block_prediction_measure SOURCES session/test_block_prediction_measure.cpp fixtures/QcPredictionFixture.h fixtures/QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_moving_lights SOURCES session/test_moving_lights.cpp LIBRARIES qc_base_content qc_clientcore)
+# The atmosphere of the biome on the client (decisions E-1120 to E-1123): fog blend, particles, ambience, music.
+qc_add_test(test_atmosphere_client SOURCES session/test_atmosphere_client.cpp fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES session/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 # The session's sounds reach the audio engine each tick (QcSessionAudio, part of QcSessionWiring).
 qc_add_test(test_session_audio SOURCES session/test_session_audio.cpp LIBRARIES qc_server qc_app_core qc_worlds)

@@ -52,12 +52,6 @@ double duskShare(double sunHeight)
     return std::max(0.0, 1.0 - std::abs(sunHeight + 0.05) / 0.3);
 }
 
-// The fog colour 0xRRGGBB as linear RGB in 0..1.
-QVector3D colourOf(quint32 rgb)
-{
-    return QVector3D(static_cast<float>((rgb >> 16) & 0xFF), static_cast<float>((rgb >> 8) & 0xFF), static_cast<float>(rgb & 0xFF)) / 255.0f;
-}
-
 // A sky without sun, moon, stars and clouds: `horizon` all around, `zenith` above.
 QcSkyState vault(QVector3D zenith, QVector3D horizon)
 {
@@ -73,6 +67,28 @@ QcSkyState vault(QVector3D zenith, QVector3D horizon)
 }
 
 } // namespace
+
+QVector3D colourOf(quint32 rgb)
+{
+    return QVector3D(static_cast<float>((rgb >> 16) & 0xFF), static_cast<float>((rgb >> 8) & 0xFF), static_cast<float>(rgb & 0xFF)) / 255.0f;
+}
+
+QcSkyState withAtmosphere(QcSkyState sky, const QcAtmosphereFog &fog)
+{
+    sky.horizon = mix(sky.horizon, fog.colour, fog.colourShare);
+    if (!sky.celestial) {
+        // A vault without sun is the fog all around.
+        sky.zenith = mix(sky.zenith, fog.colour, fog.colourShare);
+        sky.cloudColor = sky.horizon;
+    }
+
+    // The shares are taken before fogScale; the shown distances are the atmosphere's.
+    const double scale = std::max(sky.fogScale, 0.01);
+    sky.fogStart = sky.fogStart + (fog.start / scale - sky.fogStart) * std::clamp(fog.startShare, 0.0, 1.0);
+    const double endScale = 0.5 + 0.5 * scale;
+    sky.fogEnd = sky.fogEnd + (fog.end / endScale - sky.fogEnd) * std::clamp(fog.endShare, 0.0, 1.0);
+    return sky;
+}
 
 QcSkyState forDimension(const QcDimensionDefinition &dimension, double worldTime)
 {

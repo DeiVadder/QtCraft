@@ -1,0 +1,47 @@
+{
+    "name": "ambient.basalt_deltas.loop",
+    "bus": "ambient",
+    "volume": 0.6,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 160,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.45
+        },
+        {
+            "wave": "crackle",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "highpass": 700,
+            "lowpass": 6000,
+            "density": 45,
+            "gain": 0.22
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 36,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.5,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "highpass": 3500,
+            "tremoloRate": 0.375,
+            "tremoloDepth": 0.6,
+            "gain": 0.05
+        }
+    ]
+}

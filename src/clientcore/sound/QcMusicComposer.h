@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/sound/QcSampleBuffer.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QList>
 
@@ -11,7 +12,8 @@
 
 /*! \brief Background music composed from a seed: a calm piece on a pentatonic scale with a
     melody of varied motifs (A A' B A), a slow bass line and soft held chords, ending on the
-    root. */
+    root. A style (QcMusicStyle, a biome's music, decision E-1123) bounds the scale, the root and
+    the tempo, picks the melody's sound and may hold a drone under the piece. */
 class QcMusicComposer
 {
 public:
@@ -19,7 +21,8 @@ public:
     enum class Voice {
         Lead, // The melody
         Bass, // The slow bass line
-        Pad   // The soft held chords
+        Pad,  // The soft held chords
+        Drone // A low root held under the whole piece (QcMusicStyle::drone)
     };
 
     /*! \brief One note of a piece. */
@@ -52,6 +55,9 @@ public:
             \qcshared */
         int root = 45;
         bool minor = false;
+        /*! The melody's wave and the cut-off of its low-pass (QcMusicStyle). \qcshared */
+        QcSoundWave lead = QcSoundWave::Triangle;
+        double leadLowpass = 3000.0;
     };
 
     /*! Beats per bar. */
@@ -64,8 +70,9 @@ public:
     static std::array<int, 5> scale(bool minor);
     /*! Returns the frequency in Hz of MIDI note \a midiPitch (equal temperament, 69 = 440 Hz). */
     static double frequency(int midiPitch);
-    /*! Returns the piece composed from \a seed; the same seed gives the same piece. */
-    static Piece compose(quint64 seed);
+    /*! Returns the piece composed from \a seed in \a style; the same seed and style give the same
+        piece, the default style the overworld's pieces. */
+    static Piece compose(quint64 seed, const QcMusicStyle &style = {});
     /*! Returns \a piece rendered at \a sampleRate. */
     static QcSampleBuffer render(const Piece &piece, int sampleRate);
 };

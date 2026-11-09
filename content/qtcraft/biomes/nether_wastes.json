@@ -6,5 +6,27 @@
     "temperature": 0.5,
     "humidity": 0.5,
     "surface": "netherrack",
-    "subsurface": "netherrack"
+    "subsurface": "netherrack",
+    "atmosphere": {
+        "fog": {
+            "colour": "#330808",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "ambience": {
+            "loop": "ambient.nether_wastes.loop",
+            "additions": "ambient.nether_wastes.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "minor",
+            "lowestRoot": 38,
+            "highestRoot": 42,
+            "slowestTempo": 54,
+            "fastestTempo": 62,
+            "lead": "triangle",
+            "leadLowpass": 1800,
+            "drone": true
+        }
+    }
 }

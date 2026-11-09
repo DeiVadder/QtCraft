@@ -18,6 +18,7 @@
 #include "common/content/recipes/QcFarmingDefinitions.h"
 #include "common/content/recipes/QcMachineDefinition.h"
 #include "common/core/QcBlockFace.h"
+#include "common/world/QcAtmosphere.h"
 #include "common/world/QcSignText.h"
 
 #include <QList>
@@ -226,6 +227,9 @@ struct QcBlockDefinition
         QcBlockSoundAction that replace the material's sound (see QcSoundKeys). \qcshared */
     QString soundMaterial;
     std::array<QString, qcBlockSoundActionCount> soundKeys;
+    /*! Particles the client lets the block give off now and then (\c {"particles"}, decision
+        E-1121): tears under crying obsidian, lava soaking through the block under it. */
+    QList<QcParticleEmitter> particles;
     /*! Texture names indexed by QcBlockFace. */
     std::array<QString, qcBlockFaceCount> faceTextures;
     /*! Further named textures that shape parts refer to (door halves), as slot -> texture. */

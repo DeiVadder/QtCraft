@@ -1,0 +1,37 @@
+{
+    "name": "block.nether_wood.hit",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.006,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2240,
+            "gain": 0.02
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 784,
+            "resonance": 5.4,
+            "lowpass": 2352,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1680,
+            "resonance": 6.3,
+            "lowpass": 5040,
+            "gain": 0.5
+        }
+    ]
+}

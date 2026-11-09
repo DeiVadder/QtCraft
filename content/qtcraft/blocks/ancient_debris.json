@@ -1,6 +1,6 @@
 {
     "name": "ancient_debris",
-    "sound": "stone",
+    "sound": "ancient_debris",
     "hardness": 30.0,
     "blastResistance": 1200.0,
     "tool": "pickaxe",

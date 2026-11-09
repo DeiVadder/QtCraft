@@ -1,0 +1,47 @@
+{
+    "name": "block.nether_bricks.hit",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 3540,
+            "gain": 0.032
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 2714,
+            "resonance": 5.1,
+            "lowpass": 8142,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 708,
+            "resonance": 3.4,
+            "lowpass": 2124,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 3400,
+            "resonance": 18,
+            "lowpass": 9000,
+            "gain": 0.28
+        }
+    ]
+}

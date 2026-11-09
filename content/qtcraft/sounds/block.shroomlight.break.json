@@ -1,0 +1,59 @@
+{
+    "name": "block.shroomlight.break",
+    "volume": 0.85,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 825,
+            "gain": 0.03
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 264,
+            "resonance": 11.0,
+            "lowpass": 792,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "start": 0.03,
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 578,
+            "resonance": 13.2,
+            "lowpass": 1733,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 82,
+            "resonance": 2.64,
+            "lowpass": 248,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "start": 0.07,
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 341,
+            "resonance": 11.0,
+            "lowpass": 1023,
+            "gain": 0.6
+        }
+    ]
+}

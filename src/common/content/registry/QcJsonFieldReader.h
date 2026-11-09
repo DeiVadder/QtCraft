@@ -7,6 +7,7 @@
 #include <QJsonValue>
 #include <QString>
 
+#include <initializer_list>
 #include <optional>
 
 /*! \brief Reads typed fields of one untrusted JSON object.
@@ -27,6 +28,9 @@ struct QcJsonFieldReader
     bool ok() const { return error.isEmpty(); }
     /*! Records \a message, prefixed with the context, as the error unless there already is one. */
     void fail(const QString &message);
+    /*! Warns (category lcRegistry) about each key of the object that is not in \a known; such
+        keys are ignored, so a misplaced field does not go unnoticed. */
+    void warnUnknownKeys(std::initializer_list<QStringView> known) const;
     /*! Takes over the error of the reader \a nested for a nested object, if it has one and this
         reader has none yet. The nested reader's context names the place in full (it starts with
         this reader's context), so its error is kept as it is, without a second prefix. */

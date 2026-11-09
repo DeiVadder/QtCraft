@@ -13,5 +13,33 @@
             "block": "soul_soil",
             "share": 0.35
         }
-    ]
+    ],
+    "atmosphere": {
+        "fog": {
+            "colour": "#1b4745",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "ash",
+                "chance": 0.00625
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.soul_sand_valley.loop",
+            "additions": "ambient.soul_sand_valley.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "minor",
+            "lowestRoot": 36,
+            "highestRoot": 40,
+            "slowestTempo": 46,
+            "fastestTempo": 54,
+            "lead": "sine",
+            "leadLowpass": 1200,
+            "drone": true
+        }
+    }
 }

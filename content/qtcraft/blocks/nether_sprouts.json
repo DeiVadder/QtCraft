@@ -1,6 +1,6 @@
 {
     "name": "nether_sprouts",
-    "sound": "grass",
+    "sound": "roots",
     "shape": "cross",
     "render": "cutout",
     "hardness": 0.0,

@@ -46,6 +46,8 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
         m_weather.receive(*weather);
     } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
         m_weather.lightning(*strike, eye, now);
+    } else if (const auto *atmosphere = std::get_if<QcMsg::Atmosphere>(&message)) {
+        m_atmosphere.receive(*atmosphere);
     } else {
         return false;
     }
@@ -54,12 +56,14 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
 
 void QcWorldMirror::enter(const QcDimensionDefinition &dimension)
 {
-    // What the chunks carried, the clouds of ink and the weather belong to the old dimension; the
-    // weather of the new one comes from the server (decision E-1002). Maps are items of the world.
+    // What the chunks carried, the clouds of ink, the weather and the atmosphere belong to the old
+    // dimension; those of the new one come from the server (decisions E-1002, E-1120), so no fog of
+    // the old one blends into the new. Maps are items of the world.
     m_dimension = dimension;
     m_extras = {};
     m_ink = {};
     m_weather = {};
+    m_atmosphere = {};
 }
 
 double QcWorldMirror::timeAt(double alpha) const
@@ -75,6 +79,7 @@ void QcWorldMirror::tick(quint64 now)
     m_extras.pruneExplosions(now);
     m_ink.prune(now);
     m_effects.tick(m_worldTime.speed);
+    m_atmosphere.tick(QcPhysics::tickDuration);
     if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
         m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;

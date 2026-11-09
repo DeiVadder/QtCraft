@@ -1,0 +1,57 @@
+{
+    "name": "block.ancient_debris.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1550,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1178,
+            "resonance": 3.75,
+            "lowpass": 3534,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 279,
+            "resonance": 3.0,
+            "lowpass": 837,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 81,
+            "resonance": 1.8,
+            "lowpass": 242,
+            "gain": 0.9
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2600,
+            "resonance": 12,
+            "lowpass": 7800,
+            "gain": 0.3
+        }
+    ]
+}

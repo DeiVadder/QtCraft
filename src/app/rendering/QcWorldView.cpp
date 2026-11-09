@@ -162,10 +162,9 @@ void QcWorldView::setSky(const QcSkyState &sky)
     requestFrame();
 }
 
-void QcWorldView::setFogRange(float start, float end)
+void QcWorldView::setFogDistance(float distance)
 {
-    m_frame.fogStart = start;
-    m_frame.fogEnd = end;
+    m_frame.fogEnd = distance;
     requestFrame();
 }
 

@@ -17,6 +17,7 @@
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/content/worldgen/QcAtmosphereParser.h"
 
 #include <QJsonArray>
 
@@ -648,6 +649,7 @@ QcResult<QcBlockDefinition> BlockReader::read()
     });
     m_block.soundMaterial = m_reader.name(u"sound"_s, m_namespace, QcSoundKeys::defaultMaterialFor(m_block));
     m_reader.nestedObject(u"sounds"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readSounds(nested); });
+    m_block.particles = QcAtmosphereParser::parseEmitters(m_json.value(u"particles"_s), m_reader);
 
     readTextures();
     m_block.itemTexture = m_reader.name(u"itemTexture"_s, m_namespace);

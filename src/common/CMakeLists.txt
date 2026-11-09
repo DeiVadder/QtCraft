@@ -151,6 +151,7 @@ target_sources(qc_common PRIVATE
     content/villages/QcVillagerParser.h content/villages/QcVillagerParser.cpp
 )
 target_sources(qc_common PRIVATE
+    content/worldgen/QcAtmosphereParser.h content/worldgen/QcAtmosphereParser.cpp
     content/worldgen/QcCoastalTowerDefinition.h
     content/worldgen/QcCoastalTowerParser.h content/worldgen/QcCoastalTowerParser.cpp
     content/worldgen/QcDimensionDefinition.h
@@ -351,6 +352,7 @@ target_sources(qc_common PRIVATE
     protocol/QcWorldMessages.h
 )
 target_sources(qc_common PRIVATE
+    world/QcAtmosphere.h world/QcAtmosphere.cpp
     world/QcBlendWidth.h
     world/QcBlockAccess.h
     world/QcBoatBody.h

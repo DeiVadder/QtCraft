@@ -1,6 +1,6 @@
 {
     "name": "warped_sign",
-    "sound": "wood",
+    "sound": "nether_wood",
     "shape": "sign",
     "render": "cutout",
     "solid": false,

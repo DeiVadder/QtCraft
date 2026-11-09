@@ -13,7 +13,9 @@
 layout(location = 0) in vec2 corner;
 // The drop relative to the origin of the frame's drops (shape.origin).
 layout(location = 1) in vec3 dropPosition;
-// x: above 0 for a snowflake (QcPrecipitationDrop::snow), 0 for a raindrop; y: opacity
+// x: above 0 for a dot (QcPrecipitationDrop::snow), 0 for a raindrop; y: opacity; z: the palette
+// entry (QcPrecipitationDrop::palette) over 255; w: how much larger than a flake a dot is, in
+// quarters of a flake, over 255 (QcPrecipitationDrop::grow)
 layout(location = 2) in vec4 kind;
 
 layout(location = 0) out vec4 vColor;
@@ -42,6 +44,9 @@ layout(std140, binding = 1) uniform Shape {
     // xyz: the offset of the drops' origin from the camera (decision E-883); the drops are relative
     // to it, so `dropPosition + shape.origin.xyz` is relative to the camera.
     vec4 origin;
+    // The ambient particles (decision E-1120): rgb their colour, a the least light they show in;
+    // entry 0 is unused (rain and snow take their own colours).
+    vec4 palette[8];
 } shape;
 
 const float nearW = 0.01;
@@ -84,7 +89,8 @@ vec4 rainCorner(vec2 halfViewport)
 
 vec4 snowCorner(vec2 halfViewport)
 {
-    float radius = shape.flake.x * 0.5;
+    float size = 1.0 + kind.w * 255.0 / 4.0;
+    float radius = shape.flake.x * 0.5 * size;
     vec3 middle = position + vec3(0.0, radius, 0.0);
     vec4 centre = frame.viewProjection * vec4(middle, 1.0);
     if (centre.w < nearW) {
@@ -96,7 +102,7 @@ vec4 snowCorner(vec2 halfViewport)
     vec3 side = normalize(cross(toFlake, vec3(0.0, 1.0, 0.0)) + vec3(1e-6, 0.0, 0.0));
     vec4 edge = frame.viewProjection * vec4(middle + side * radius, 1.0);
     float pixels = length((edge.xy / max(edge.w, nearW) - centre.xy / centre.w) * halfViewport);
-    pixels = clamp(pixels, shape.flake.y * pixelScale(), shape.flake.z * pixelScale());
+    pixels = clamp(pixels, shape.flake.y * size * pixelScale(), shape.flake.z * size * pixelScale());
     centre.xy += corner * pixels / halfViewport * centre.w;
     return centre;
 }
@@ -108,9 +114,16 @@ void main()
     vSnow = kind.x > 0.0 ? 1.0 : 0.0;
     vShape = kind.x > 0.0 ? corner : vec2(0.0);
     vDistance = length(position - frame.cameraPosition.xyz);
-    // The particles take the sky's light (night, overcast, a flash), never darker than the minimum.
+    // The particles take the sky's light (night, overcast, a flash), never darker than the minimum;
+    // an ambient particle (its palette entry in kind.z) never darker than its own least light.
     float light = max(frame.params.z, frame.params.w);
+    int entry = int(kind.z * 255.0 + 0.5);
     vec3 colour = kind.x > 0.0 ? shape.snowColor.rgb : shape.rainColor.rgb;
+    if (entry > 0) {
+        vec4 look = shape.palette[min(entry, 7)];
+        colour = look.rgb;
+        light = max(light, look.a);
+    }
     vColor = vec4(colour * light, kind.y);
     gl_Position = kind.x > 0.0 ? snowCorner(halfViewport) : rainCorner(halfViewport);
 }

@@ -36,7 +36,8 @@
         "1": "soul_anchor_1",
         "2": "soul_anchor_2",
         "3": "soul_anchor_3",
-        "4": "soul_anchor_4"
+        "4": "soul_anchor_4",
+        "Y": "crying_obsidian"
     },
     "layers": [
         [
@@ -79,7 +80,7 @@
             "          0 1 2 3 4  ",
             "                     ",
             "      b              ",
-            "                     ",
+            " Y   Y               ",
             "                     ",
             "  f   F              ",
             "                     ",
@@ -102,7 +103,7 @@
             "                     ",
             "                     ",
             "      b              ",
-            "                     ",
+            " Y   Y               ",
             "                     ",
             "                     ",
             "                     ",
@@ -125,7 +126,7 @@
             "                     ",
             "                     ",
             "                     ",
-            "                     ",
+            " YYYYY               ",
             "                     ",
             "                     ",
             "                     ",
@@ -147,9 +148,9 @@
             "                     ",
             "                     ",
             "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
+            "               NNNNN ",
+            "               NNNNN ",
+            "               NNNNN ",
             "                     ",
             "                     ",
             "                     "
@@ -170,9 +171,9 @@
             "                     ",
             "                     ",
             "                     ",
-            "                     ",
-            "                     ",
-            "                     ",
+            "               BBBBB ",
+            "               BLLLB ",
+            "               BBBBB ",
             "                     ",
             "                     ",
             "                     "
@@ -518,6 +519,22 @@
                 13.5
             ],
             "text": "chapter.qtcraft.nether_start"
+        },
+        {
+            "at": [
+                3.5,
+                4.6,
+                16.5
+            ],
+            "text": "block.qtcraft.crying_obsidian"
+        },
+        {
+            "at": [
+                17.5,
+                6.6,
+                16.5
+            ],
+            "text": "block.qtcraft.lava"
         }
     ]
 }

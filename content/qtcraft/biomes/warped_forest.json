@@ -40,5 +40,33 @@
                 }
             ]
         }
+    },
+    "atmosphere": {
+        "fog": {
+            "colour": "#1a051a",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "warped_spore",
+                "chance": 0.01428
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.warped_forest.loop",
+            "additions": "ambient.warped_forest.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "major",
+            "lowestRoot": 41,
+            "highestRoot": 46,
+            "slowestTempo": 56,
+            "fastestTempo": 64,
+            "lead": "sine",
+            "leadLowpass": 2400,
+            "drone": true
+        }
     }
 }

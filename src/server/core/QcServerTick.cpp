@@ -287,6 +287,8 @@ void QcServer::addClientSystems()
     });
     // Sign texts written since the last tick, also in a frozen world (decision E-766).
     m_tickSystems.add(ClientSync, When::Always, eachDimension, [this] { QcServerSigns(m_state).announceChanges(); });
+    // The atmosphere of the biome at each player's feet, also in a frozen world (decision E-1120).
+    m_tickSystems.add(ClientSync, When::Always, eachDimension, [this] { m_weather.syncAtmospheres(); });
     m_tickSystems.add(ClientSync, When::Always, [this] {
         const QcClientSyncPace::Due sync = m_syncPace.next(m_state.clock(), m_ticks.sprinting());
         for (const auto &client : m_state.allClients()) {

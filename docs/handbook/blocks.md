@@ -77,7 +77,7 @@ Deep in the Nether, hidden in netherrack and never next to open air. It withstan
 | Breaking with the best tool | 5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Ancient debris](#block-qtcraft-ancient_debris) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | ancient debris |
 | Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
 
 **Smelts into**
@@ -201,7 +201,7 @@ Grey volcanic rock in columns. Placed like a log, it lies along the clicked axis
 | Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Basalt](#block-qtcraft-basalt) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | basalt |
 | States | axis (y, x, z) |
 
 **Smelts into**
@@ -847,7 +847,7 @@ Black rock that serves like cobblestone: stone tools and the furnace can be made
 | Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Blackstone](#block-qtcraft-blackstone) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 | Groups | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |
 
 **Building parts**
@@ -1312,7 +1312,7 @@ Nine netherite ingots packed into a block; crafting it back gives all nine. It w
 | Breaking with the best tool | 8.33 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of netherite](#block-qtcraft-netherite_block) |
 | Drops without the right tool | nothing |
-| Sound | metal |
+| Sound | netherite |
 | Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
 
 **How to make it**
@@ -2669,7 +2669,7 @@ Two nether brick slabs stacked into one decorated block.
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | nether bricks |
 
 **How to make it**
 
@@ -2707,7 +2707,7 @@ Two polished blackstone slabs stacked into one decorated block.
 | Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 
 **How to make it**
 
@@ -3288,7 +3288,7 @@ Nether bricks cracked in the furnace.
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | nether bricks |
 
 **Made in a furnace**
 
@@ -3319,7 +3319,7 @@ Polished blackstone bricks cracked in the furnace.
 | Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 
 **Made in a furnace**
 
@@ -3412,7 +3412,7 @@ Two blocks tall; open and close it with the use button. It does not burn.
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
 | Two blocks tall | yes |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **How to make it**
@@ -3445,7 +3445,7 @@ Bone meal grows it into a huge fungus, but only on crimson nylium; it never grow
 | Washed away by liquids | yes |
 | Grows into | 120–300 s: [Huge crimson fungus](worldgen.md#feature-qtcraft-huge_crimson_fungus) |
 | Can be planted on | [Crimson nylium](#block-qtcraft-crimson_nylium) |
-| Sound | grass and plants |
+| Sound | fungi |
 
 **Found in**
 
@@ -3464,7 +3464,7 @@ A stem with skin on all six sides, for walls and beams.
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Crimson hyphae](#block-qtcraft-crimson_hyphae) |
 | Axe makes | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -3498,7 +3498,7 @@ Netherrack overgrown by a crimson mat. Bone meal grows the plants of the forest 
 | Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Netherrack](#block-qtcraft-netherrack) |
 | Drops without the right tool | nothing |
-| Sound | Netherrack |
+| Sound | nylium |
 
 **Mined with**
 
@@ -3520,7 +3520,7 @@ Building wood of the nether; any planks fit recipes that ask for planks. It neit
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Crimson planks](#block-qtcraft-crimson_planks) |
-| Sound | wood |
+| Sound | nether wood |
 | Groups | [Any planks](tags.md#tag-qtcraft-planks) |
 
 **Building parts**
@@ -3576,7 +3576,7 @@ Low growth on the floors of the nether forests.
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
 | Washed away by liquids | yes |
-| Sound | grass and plants |
+| Sound | roots and sprouts |
 
 **Found in**
 
@@ -3597,7 +3597,7 @@ A sign of crimson wood. It does not burn.
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Needs support | a solid face it hangs on |
-| Sound | wood |
+| Sound | nether wood |
 | States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
 
 **How to make it**
@@ -3627,7 +3627,7 @@ The stem of a huge crimson fungus. Four planks each. It does not burn.
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Crimson stem](#block-qtcraft-crimson_stem) |
 | Axe makes | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -3657,7 +3657,7 @@ A hatch that opens upwards; sits high or low in its block. It does not burn.
 | Drops | [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) |
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **How to make it**
@@ -5005,7 +5005,7 @@ Blackstone with veins of gold. Mined, it drops itself.
 | Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Gilded blackstone](#block-qtcraft-gilded_blackstone) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 
 **Mined with**
 
@@ -7743,7 +7743,7 @@ A fence of nether bricks. It joins other nether brick fences, fence gates and so
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Connects to | Nether brick fence, fence gates, full solid blocks |
-| Sound | stone |
+| Sound | nether bricks |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **How to make it**
@@ -7772,7 +7772,7 @@ Dark bricks of four nether bricks. Fire does not harm them. Slabs, stairs, walls
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Nether bricks](#block-qtcraft-nether_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | nether bricks |
 
 **Building parts**
 
@@ -7862,7 +7862,7 @@ Netherrack with flecks of gold. Mined, it gives two to six gold nuggets; smelted
 | Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Gold nugget](items.md#item-qtcraft-gold_nugget) (2–6×) |
 | Drops without the right tool | nothing |
-| Sound | Netherrack |
+| Sound | nether ore |
 
 **Smelts into**
 
@@ -7912,7 +7912,7 @@ Netherrack with white quartz crystals. Gives nether quartz and experience.
 | Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Nether quartz](items.md#item-qtcraft-quartz) |
 | Drops without the right tool | nothing |
-| Sound | Netherrack |
+| Sound | nether ore |
 
 **Smelts into**
 
@@ -7949,7 +7949,7 @@ Tiny growth on the floors of the nether; it leaves nothing behind.
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Netherrack](#block-qtcraft-netherrack) |
 | Washed away by liquids | yes |
-| Sound | grass and plants |
+| Sound | roots and sprouts |
 
 **Found in**
 
@@ -7986,7 +7986,7 @@ The flesh of a crimson cap, or nine nether warts pressed together.
 | Tool | Hoe (faster, not needed) |
 | Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
 | Drops | [Nether wart block](#block-qtcraft-nether_wart_block) |
-| Sound | grass and plants |
+| Sound | wart blocks |
 
 **How to make it**
 
@@ -8020,7 +8020,7 @@ The soft red rock of the Nether. Fire lit on top of it burns forever. Smelted, i
 | Drops | [Netherrack](#block-qtcraft-netherrack) |
 | Drops without the right tool | nothing |
 | Fire on it burns forever | yes |
-| Sound | Netherrack |
+| Sound | netherrack |
 
 **Smelts into**
 
@@ -9102,7 +9102,7 @@ Four basalt polished into clean columns; like basalt it lies along the clicked a
 | Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Polished basalt](#block-qtcraft-polished_basalt) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | basalt |
 | States | axis (y, x, z) |
 
 **How to make it**
@@ -9141,7 +9141,7 @@ Four blackstone polished flat. It gives bricks, chiseled stone, slabs, stairs an
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Polished blackstone](#block-qtcraft-polished_blackstone) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 
 **Building parts**
 
@@ -9269,7 +9269,7 @@ Polished blackstone laid as bricks, with slabs, stairs and walls of their own.
 | Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | blackstone |
 
 **Building parts**
 
@@ -10040,7 +10040,7 @@ Nether bricks with nether wart: dark red bricks with slabs, stairs and walls of 
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Red nether bricks](#block-qtcraft-red_nether_bricks) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | nether bricks |
 
 **Building parts**
 
@@ -10417,7 +10417,7 @@ A glowing lobe from the cap of a huge fungus, as bright as glowstone.
 | Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
 | Drops | [Shroomlight](#block-qtcraft-shroomlight) |
 | Light | 15 of 15 |
-| Sound | grass and plants |
+| Sound | shroomlight |
 
 **Faster with**
 
@@ -11107,7 +11107,7 @@ Basalt smelted into a smooth grey block.
 | Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Smooth basalt](#block-qtcraft-smooth_basalt) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | basalt |
 
 **Made in a furnace**
 
@@ -11573,7 +11573,7 @@ Grainy sand with faces in it. Whoever walks on it is slowed down. Fire lit on it
 | Fire on it burns forever | yes |
 | Fire lit on it becomes | [Soul fire](#block-qtcraft-soul_fire) |
 | Walking speed on top | 40 % |
-| Sound | Soul sand |
+| Sound | soul sand |
 | Groups | [Soul sand or soul soil](tags.md#tag-qtcraft-soul_blocks) |
 
 **Used in**
@@ -11602,7 +11602,7 @@ Firm soul ground that does not slow anyone down. Fire lit on it burns as soul fi
 | Drops | [Soul soil](#block-qtcraft-soul_soil) |
 | Fire on it burns forever | yes |
 | Fire lit on it becomes | [Soul fire](#block-qtcraft-soul_fire) |
-| Sound | Soul sand |
+| Sound | soul soil |
 | Groups | [Soul sand or soul soil](tags.md#tag-qtcraft-soul_blocks) |
 
 **Used in**
@@ -12369,7 +12369,7 @@ Hyphae without their skin: use an axe on hyphae, or put four stripped stems toge
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -12402,7 +12402,7 @@ A stem without its skin: use an axe on a stem. It gives planks like the stem.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -12681,7 +12681,7 @@ Hyphae without their skin: use an axe on hyphae, or put four stripped stems toge
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -12714,7 +12714,7 @@ A stem without its skin: use an axe on a stem. It gives planks like the stem.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -13035,7 +13035,7 @@ Two blocks tall; open and close it with the use button. It does not burn.
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
 | Two blocks tall | yes |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **How to make it**
@@ -13068,7 +13068,7 @@ Bone meal grows it into a huge fungus, but only on warped nylium; it never grows
 | Washed away by liquids | yes |
 | Grows into | 120–300 s: [Huge warped fungus](worldgen.md#feature-qtcraft-huge_warped_fungus) |
 | Can be planted on | [Warped nylium](#block-qtcraft-warped_nylium) |
-| Sound | grass and plants |
+| Sound | fungi |
 
 **Used in**
 
@@ -13091,7 +13091,7 @@ A stem with skin on all six sides, for walls and beams.
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Warped hyphae](#block-qtcraft-warped_hyphae) |
 | Axe makes | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -13125,7 +13125,7 @@ Netherrack overgrown by a warped mat. Bone meal grows the plants of the forest o
 | Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Netherrack](#block-qtcraft-netherrack) |
 | Drops without the right tool | nothing |
-| Sound | Netherrack |
+| Sound | nylium |
 
 **Mined with**
 
@@ -13147,7 +13147,7 @@ Building wood of the nether; any planks fit recipes that ask for planks. It neit
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Warped planks](#block-qtcraft-warped_planks) |
-| Sound | wood |
+| Sound | nether wood |
 | Groups | [Any planks](tags.md#tag-qtcraft-planks) |
 
 **Building parts**
@@ -13203,7 +13203,7 @@ Low growth on the floors of the nether forests.
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
 | Washed away by liquids | yes |
-| Sound | grass and plants |
+| Sound | roots and sprouts |
 
 **Found in**
 
@@ -13224,7 +13224,7 @@ A sign of warped wood. It does not burn.
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Needs support | a solid face it hangs on |
-| Sound | wood |
+| Sound | nether wood |
 | States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
 
 **How to make it**
@@ -13254,7 +13254,7 @@ The stem of a huge warped fungus. Four planks each. It does not burn.
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Warped stem](#block-qtcraft-warped_stem) |
 | Axe makes | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
-| Sound | wood |
+| Sound | stems |
 | States | axis (y, x, z) |
 | Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
 
@@ -13284,7 +13284,7 @@ A hatch that opens upwards; sits high or low in its block. It does not burn.
 | Drops | [Warped trapdoor](#block-qtcraft-warped_trapdoor) |
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
-| Sound | wood |
+| Sound | nether wood |
 | States | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **How to make it**
@@ -13312,7 +13312,7 @@ The flesh of a warped cap, in winding folds.
 | Tool | Hoe (faster, not needed) |
 | Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
 | Drops | [Warped wart block](#block-qtcraft-warped_wart_block) |
-| Sound | grass and plants |
+| Sound | wart blocks |
 
 **Faster with**
 
