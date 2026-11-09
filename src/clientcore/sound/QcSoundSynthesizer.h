@@ -9,6 +9,9 @@
 #include <QList>
 #include <QString>
 
+#include <atomic>
+#include <vector>
+
 /*! \brief Renders sound definitions into PCM.
 
     Deterministic: the same definition, variant and sample rate always give the same samples.
@@ -37,4 +40,14 @@ public:
         at \a sampleRate (music is many notes); only the values' finiteness is required. */
     static QcSampleBuffer renderLayers(const QList<QcSoundLayer> &layers, quint32 seed, bool loop,
                                        int sampleRate = defaultSampleRate);
+    /*! Returns \a layers mixed with the noise of \a seed at \a sampleRate, not normalised: the
+        building block of renderLayers() for music that is processed further (reverb). The mix is
+        \a seconds long (layers cut off there), or as long as the layers when \a seconds is 0, so
+        a caller can mix straight into the final length. When \a stop is set (checked before each
+        layer), mixing stops and the result is empty. */
+    [[nodiscard]] static std::vector<float> mixLayers(const QList<QcSoundLayer> &layers, quint32 seed, int sampleRate, double seconds,
+                                                      const std::atomic<bool> *stop = nullptr);
+    /*! Returns \a samples scaled so that the loudest is \c {peak}; samples that are not finite
+        become 0. */
+    [[nodiscard]] static std::vector<float> normalised(std::vector<float> samples);
 };

@@ -4,8 +4,10 @@
 // The atmosphere of the biome on the client (decisions E-1120 to E-1123): the fog blend, the sky
 // it gives, the particles of biomes and blocks, the biome's ambience and its music.
 
+#include "clientcore/music/QcMusicDirector.h"
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcWorldMirror.h"
+#include "clientcore/sound/QcMusicArrangement.h"
 #include "clientcore/sound/QcMusicComposer.h"
 #include "clientcore/weather/QcAtmosphereParticles.h"
 #include "clientcore/weather/QcClientAtmosphere.h"
@@ -435,18 +437,18 @@ private slots:
         QCOMPARE(plain, 0);
     }
 
-    // The default style composes the overworld's pieces exactly as before biomes had music: the
-    // fingerprints were taken from the composer without styles (dev 9218842). A change of the
-    // order of the draws fails here.
+    // The day's pieces stay what they are: the fingerprints were taken from the composer tuned to
+    // the traits of the tracks (88.3, decision E-1157; before that from dev 9218842). A change of
+    // the order of the draws fails here; a wanted change of the music records them anew.
     void overworldMusicStaysTheSame_data()
     {
         QTest::addColumn<quint64>("seed");
         QTest::addColumn<quint64>("fingerprint");
         QTest::addColumn<qsizetype>("notes");
-        QTest::newRow("1") << quint64{1} << quint64{0x1e7469f2c1e067c3ULL} << qsizetype{42};
-        QTest::newRow("42") << quint64{42} << quint64{0x36351c6a1aef3906ULL} << qsizetype{39};
-        QTest::newRow("20261109") << quint64{20261109} << quint64{0x483ccc873614f24cULL} << qsizetype{43};
-        QTest::newRow("deadbeef") << quint64{0xDEADBEEF} << quint64{0x8567e5142c0b8540ULL} << qsizetype{42};
+        QTest::newRow("1") << quint64{1} << quint64{0x9924d9818d2832a3ULL} << qsizetype{406};
+        QTest::newRow("42") << quint64{42} << quint64{0xd8c8a62c648f39abULL} << qsizetype{406};
+        QTest::newRow("20261109") << quint64{20261109} << quint64{0xed4faaaeb6c94f83ULL} << qsizetype{452};
+        QTest::newRow("deadbeef") << quint64{0xDEADBEEF} << quint64{0xe5264276cdbe634aULL} << qsizetype{480};
     }
 
     void overworldMusicStaysTheSame()
@@ -454,10 +456,98 @@ private slots:
         QFETCH(quint64, seed);
         QFETCH(quint64, fingerprint);
         QFETCH(qsizetype, notes);
-        const QcMusicComposer::Piece piece = QcMusicComposer::compose(seed);
+        const QcMusicArrangement &day = QcMusicArrangement::forPlaces(QcMusicDirector::world(u"qtcraft:overworld"_s, {}, 150.0, 0.0f).places);
+        QCOMPARE(day.place, u"day"_s);
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(seed, day.styleFor({}), day);
+        qInfo("seed %llu: %lld notes, fingerprint 0x%llx", static_cast<unsigned long long>(seed), static_cast<long long>(piece.notes.size()),
+              static_cast<unsigned long long>(::fingerprint(piece)));
         QCOMPARE(piece.notes.size(), notes);
         QCOMPARE(::fingerprint(piece), fingerprint);
-        QCOMPARE(::fingerprint(QcMusicComposer::compose(seed, QcMusicStyle{})), fingerprint);
+    }
+
+    // Every place's arrangement lies within the general traits measured from its tracks
+    // (docs/Musik-Merkmale.md, scripts/music-traits.py; decision E-1156): mode, chord changes per
+    // minute over the style's tempos, reverb time and length (capped at longestPiece).
+    void arrangementsFollowTheMeasuredTraits_data()
+    {
+        QTest::addColumn<QString>("place");
+        QTest::addColumn<QString>("mode");
+        QTest::addColumn<double>("changesLow");
+        QTest::addColumn<double>("changesHigh");
+        QTest::addColumn<double>("reverbLow");
+        QTest::addColumn<double>("reverbHigh");
+        QTest::addColumn<double>("lengthLow");
+        QTest::addColumn<double>("lengthHigh");
+        // Measured: chord changes per minute, reverb time and length, min and max over the tracks.
+        QTest::newRow("menu") << u"menu"_s << u"major"_s << 8.5 << 9.2 << 3.2 << 3.4 << 392.0 << 418.0;
+        QTest::newRow("day") << u"day"_s << u"major"_s << 6.8 << 15.5 << 1.5 << 2.9 << 200.0 << 313.0;
+        QTest::newRow("night") << u"night"_s << u"minor"_s << 9.6 << 10.9 << 2.7 << 3.9 << 254.0 << 444.0;
+        QTest::newRow("cave") << u"cave"_s << u"any"_s << 8.7 << 10.2 << 2.6 << 4.1 << 258.0 << 445.0;
+        QTest::newRow("nether_wastes") << u"biome:qtcraft:nether_wastes"_s << u"minor"_s << 12.8 << 12.8 << 4.3 << 4.3 << 590.0 << 590.0;
+        QTest::newRow("soul_sand_valley") << u"biome:qtcraft:soul_sand_valley"_s << u"major"_s << 6.2 << 6.2 << 4.4 << 4.4 << 408.0 << 408.0;
+        QTest::newRow("crimson_forest") << u"biome:qtcraft:crimson_forest"_s << u"minor"_s << 9.7 << 9.7 << 4.6 << 4.6 << 338.0 << 338.0;
+        QTest::newRow("warped_forest") << u"biome:qtcraft:warped_forest"_s << u"major"_s << 8.2 << 8.2 << 4.0 << 4.0 << 302.0 << 302.0;
+        QTest::newRow("basalt_deltas") << u"biome:qtcraft:basalt_deltas"_s << u"major"_s << 3.8 << 3.8 << 3.5 << 3.5 << 291.0 << 291.0;
+    }
+
+    void arrangementsFollowTheMeasuredTraits()
+    {
+        QFETCH(QString, place);
+        QFETCH(QString, mode);
+        QFETCH(double, changesLow);
+        QFETCH(double, changesHigh);
+        QFETCH(double, reverbLow);
+        QFETCH(double, reverbHigh);
+        QFETCH(double, lengthLow);
+        QFETCH(double, lengthHigh);
+        const QcMusicArrangement *arrangement = QcMusicArrangement::find(place);
+        QVERIFY(arrangement);
+        const QString biome = place.startsWith(u"biome:"_s) ? place.mid(6) : QString();
+        const QcMusicStyle style = arrangement->styleFor(biome.isEmpty() ? std::nullopt : atmosphereOf(biome).music);
+
+        static const QStringList modes = {u"any"_s, u"major"_s, u"minor"_s};
+        QCOMPARE(modes.at(static_cast<qsizetype>(style.scale)), mode);
+        // A chord holds barsPerChord bars of four beats; a quarter of slack, since the measurement
+        // of a single track is no range.
+        const double slowest = style.slowestTempo / (4.0 * arrangement->barsPerChord);
+        const double fastest = style.fastestTempo / (4.0 * arrangement->barsPerChord);
+        QVERIFY2(slowest >= changesLow * 0.75 && fastest <= changesHigh * 1.25, qPrintable(u"%1–%2"_s.arg(slowest).arg(fastest)));
+        QVERIFY(arrangement->reverbSeconds >= reverbLow - 1e-9 && arrangement->reverbSeconds <= reverbHigh + 1e-9);
+        QVERIFY(arrangement->longestSeconds <= std::min(lengthHigh, QcMusicArrangement::longestPiece));
+        QVERIFY(arrangement->shortestSeconds >= std::min(lengthLow, QcMusicArrangement::longestPiece - 20.0));
+
+        // The pieces keep to it, seed after seed.
+        for (quint64 seed = 1; seed <= 5; ++seed) {
+            const QcMusicComposer::Piece piece = QcMusicComposer::compose(seed, style, *arrangement);
+            const double music = piece.seconds - QcMusicComposer::tailSeconds(piece);
+            const double cycle = 16.0 * arrangement->barsPerChord * 60.0 / piece.beatsPerMinute;
+            QVERIFY(music <= arrangement->longestSeconds + 1e-9);
+            QVERIFY(music > std::min(arrangement->shortestSeconds - cycle, 2.0 * cycle - 1e-9));
+            QCOMPARE(piece.reverbSeconds, arrangement->reverbSeconds);
+            QCOMPARE(piece.minor && style.scale != QcMusicStyle::Scale::Any, style.scale == QcMusicStyle::Scale::Minor);
+        }
+    }
+
+    // The client picks the arrangement of the most specific place it knows, the day's otherwise.
+    void arrangementFollowsThePlace()
+    {
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::menu().places).place, u"menu"_s);
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::world(u"qtcraft:overworld"_s, u"qtcraft:plains"_s, 450.0, 0.0f).places).place,
+                 u"night"_s);
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::world(u"qtcraft:overworld"_s, {}, 150.0, 1.0f).places).place, u"cave"_s);
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::world(u"qtcraft:nether"_s, u"qtcraft:basalt_deltas"_s, 0.0, 0.0f).places).place,
+                 u"biome:qtcraft:basalt_deltas"_s);
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::world(u"qtcraft:nether"_s, u"mod:ash_fields"_s, 0.0, 0.0f).places).place,
+                 u"dimension:qtcraft:nether"_s);
+        QCOMPARE(QcMusicArrangement::forPlaces(QcMusicDirector::world(u"mod:moon"_s, {}, 0.0, 0.0f).places).place, u"day"_s);
+
+        // A biome's own style wins; without one the place brings its own.
+        const QcMusicArrangement &night = *QcMusicArrangement::find(u"night"_s);
+        QCOMPARE(night.styleFor({}).scale, QcMusicStyle::Scale::Minor);
+        const QcMusicStyle wastes = *atmosphereOf(u"qtcraft:nether_wastes"_s).music;
+        QCOMPARE(night.styleFor(wastes), wastes);
+        // A biome whose music equals the default style still has music of its own.
+        QCOMPARE(night.styleFor(QcMusicStyle{}), QcMusicStyle{});
     }
 
     // The world mirror takes the atmosphere the server sends and forgets it with the dimension,
@@ -487,7 +577,7 @@ private slots:
         QVERIFY(style.drone);
         for (quint64 seed = 1; seed <= 40; ++seed) {
             const QcMusicComposer::Piece piece = QcMusicComposer::compose(seed, style);
-            QVERIFY(piece.minor);
+            QCOMPARE(piece.minor, style.scale == QcMusicStyle::Scale::Minor);
             QVERIFY(piece.root >= style.lowestRoot && piece.root <= style.highestRoot);
             QVERIFY(piece.beatsPerMinute >= style.slowestTempo && piece.beatsPerMinute <= style.fastestTempo);
             QCOMPARE(piece.lead, style.lead);
@@ -496,7 +586,7 @@ private slots:
             QCOMPARE(drones, 1);
             const auto drone = std::ranges::find_if(piece.notes, [](const auto &note) { return note.voice == QcMusicComposer::Voice::Drone; });
             QCOMPARE(drone->pitch, piece.root - 12);
-            QCOMPARE(drone->duration, piece.seconds);
+            QCOMPARE(drone->duration, piece.seconds - QcMusicComposer::tailSeconds(piece));
         }
 
         // The default style is the overworld's: either scale, its roots and tempos, no drone.

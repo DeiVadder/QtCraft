@@ -6886,3 +6886,51 @@ Die Einstellung „Musik: Stücke von Scott Buckley / erzeugt“ (`Q_ENUM` `Musi
 ## E-1151 Gespeicherte Lautstärken je Kategorie und Übernahme der alten Werte (Paket 88.2) — `QcAudioVolumes`, `QcAudioSettings::setVolume`
 
 **Entscheidung:** `QcAudioVolumes` (vorher `QcGameSettings::AudioVolumes`, der Name bleibt als Alias) speichert jede Kategorie als `audio/<name>` (`music`, `weather`, `blocks`, `hostile`, `friendly`, `players`, `ambient`, `interface`) neben `audio/master`, `audio/muted` und `audio/musicSource`. Musik und Umgebung behalten ihre alten Schlüssel. Fehlt der Schlüssel einer Kategorie, nimmt sie den alten Wert: Wetter den von `audio/ambient`, Blöcke, Wesen, Spieler und Oberfläche den von `audio/effects`; Musik und Umgebung ohne Schlüssel nehmen den Standard (nie `audio/effects`); ein eigener Schlüssel gewinnt immer. Beim Speichern stehen alle Kategorien in der Datei und dazu `audio/effects` mit der Lautstärke der Blöcke, damit eine ältere Version (1.0) nach einem Zurückgehen einen passenden Effekt-Wert liest; sonst wäre die Übernahme nur in eine Richtung möglich. QML setzt eine Kategorie mit `AudioSettings.setVolume(AudioSettings.SoundCategory.<Wert>, v)` (`Q_ENUM` `SoundCategory`, in der Reihenfolge von `QcSoundCategory`); ein Wert außerhalb 0..1 wird mit Warnung begrenzt, eine unbekannte Kategorie mit Warnung abgelehnt (E-688). Die Namen der Regler übersetzt das Modell (`QT_TRANSLATE_NOOP`, Kontext `QcSoundVolumeModel`) und meldet sie beim Sprachwechsel neu.
+
+## E-1155 Merkmale der Musik messen: `scripts/music-traits.py` (Paket 88.3) — `QcSoundExporter`
+
+**Entscheidung:** Ein Python-Skript (stdlib, numpy, FFmpeg zum Dekodieren) misst je Stück und je Platz allgemeine Merkmale: Länge, Tempo-Schätzung mit Sicherheit, Tonart und Modus (Chroma, Krumhansl-Profile), Akkordwechsel je Minute (ähnlichster Dreiklang je Sekunde, Mehrheit über 5 s), Tonklassen, Einsätze je Sekunde, Register (Perzentile der Tonhöhe), Schwerpunkt und Helligkeit, Nachhall (steilste freie Abfälle), Dynamikbogen je Zehntel, Ein- und Ausblenden. `--tracks` liest die Stücke eines Inhaltspakets (Gruppe = erster Platz), `--pieces` die erzeugten; `qtcraft-headless --export-sounds` schreibt dafür je Platz ein erzeugtes Stück (`music-<platz>-<seed>.wav`, Plätze aus `QcMusicArrangement::all()`). Ergebnis und Grenzen jeder Spalte in `docs/Musik-Merkmale.md`.
+
+**Grenzen:** Die Buckley-Stücke haben fast nie einen festen Puls (Sicherheit unter 0,2); das Tempo ist kein Ziel, der harmonische Rhythmus und die Einsätze je Sekunde sind es. Das Nachhall-Maß misst den freien Abfall des ganzen Satzes; durchgehende Flächen messen länger als ihr Raum. Das Skript liefert nur Zahlen, keine Tonfolgen.
+
+## E-1156 Anordnung je Platz: `QcMusicArrangement` (Paket 88.3) — `QcMusicArrangement`, `QcMusicReverb`, `QcMusicPlayer::playGenerated`
+
+**Entscheidung:** Neben dem Stil (`QcMusicStyle`, vom Server mit der Atmosphäre, E-1123) bestimmt eine Anordnung je Platz Länge, Takte je Akkord, Melodiedichte und -anteil, Lage der Melodie, Dichte eines gezupften, klavierähnlichen Arpeggios (`Voice::Keys`), Helligkeit der Flächen, Hallzeit und -anteil, Lage des lautesten Punkts und Ein-/Ausblenden. Sie ist Sache des Clients: eine Tabelle im Code für die Plätze der Basis (`menu`, `day`, `night`, `cave`, die fünf Netherbiome, `dimension:qtcraft:nether` für Biome ohne eigene), gewählt nach dem ersten passenden Platz der Lage (`QcMusicDirector::Situation::places`), sonst die des Tages. Menü, Tag, Nacht und Höhle bringen auch einen eigenen Stil mit (bisher hatten sie alle den Standardstil, klangen also gleich); ein Biom mit eigener Musik behält seinen (`styleFor`). Kein Protokollwechsel: der Server sendet weiter nur den Stil. Der Hall (`QcMusicReverb`, vier gedämpfte Kammfilter und zwei Allpässe, Hallzeit bis −60 dB) läuft beim Rendern auf dem ganzen Stück; danach wird wieder auf `QcSoundSynthesizer::peak` normiert. `piece.seconds` enthält den Ausklang (Hallzeit, höchstens 4 s).
+
+**Werte** (Ziel = Messung der Buckley-Stücke, `docs/Musik-Merkmale.md`; `test_atmosphere_client::arrangementsFollowTheMeasuredTraits` prüft Modus, Akkordwechsel über die Tempi des Stils, Hallzeit und Länge):
+
+| Platz | Tonleiter, Grundton, Tempo | Takte/Akkord (Wechsel/min) | Melodie Noten/Takt, Anteil | Arpeggio/Takt | Hall s | lautester Punkt | Ein/Aus s | Länge s |
+|-------|-----------------------------|----------------------------|----------------------------|---------------|--------|-----------------|-----------|---------|
+| menu | Dur, 43–49, 60–72 | 2 (7,5–9) | 1,25, 0,6 | 3 | 3,3 | 0,7 | 15/20 | 280–300 |
+| day | Dur, 43–49, 66–80 | 2 (8,3–10) | 1,5, 0,7 | 2,5 | 2,3 | 0,55 | 3/12 | 200–300 |
+| night | Moll, 41–46, 58–70 | 2 (7,3–8,8) | 1,25, 0,6 (Melodie eine Oktave höher) | 3 | 3,3 | 0,4 | 7/12 | 254–300 |
+| cave | je Stück, 41–46, 54–64 | 2 (6,8–8) | 1,0, 0,5 | 2,5 | 3,3 | 0,8 | 20/18 | 258–300 |
+| Netherödland | Stil des Bioms | 1 (13,5–15,5) | 1,0, 0,5 | 2 | 4,3 | 0,15 | 5/7 | 280–300 |
+| Seelensandtal | Stil des Bioms | 2 (5,8–6,8) | 0,5, 0,15 | – | 4,4 | 0,35 | 25/19 | 280–300 |
+| Karmesinwald | Stil des Bioms | 2 (7,5–8,8) | 1,25, 0,6 | 1,5 | 4,6 | 0,65 | 16/11 | 280–300 |
+| Wirrwald | Stil des Bioms | 2 (7–8) | 0,75, 0,5 | 2 | 4,0 | 0,95 | 14/4 | 280–300 |
+| Basaltdeltas | Stil des Bioms | 4 (3,1–3,6) | 1,0, 0,5 | 3 | 3,5 | 0,75 | 1/7 | 280–300 |
+
+**Später sauberer:** die Anordnung als Daten (in der Musik-Angabe des Bioms, dann mit Protokollwechsel, oder als Client-Inhalt neben `music/*.json`), damit Mods ihre Biome anordnen können; bis dahin bekommen Mod-Biome im Nether die Anordnung der Dimension, anderswo die des Tages.
+
+## E-1157 Form und Harmonie des Komponisten; keine Übernahme aus den Stücken (Paket 88.3) — `QcMusicComposer::compose`
+
+**Entscheidung:** Statt pentatonischer Melodie über einem Bass je Takt (rund 30–45 s) komponiert der Komponist jetzt diatonisch (Dur bzw. natürliches Moll): gehaltene Flächen (Dreiklang plus leise None) und ein Bass je Akkord, Akkorde aus zwei Zyklen von vier Akkorden in der Form A A B A …, einzelne Akkorde zufällig ersetzt, Schluss auf der Tonika. Die Zyklen zieht eine Tabelle allgemeiner Fortschreitungs-Neigungen der tonalen Harmonik (z. B. I zu IV, vi, V; V zu I, vi), mit Gewichten. Die Melodie bleibt motivisch (A A' B A, Varianten), spielt nur in einem Anteil der Phrasen zwischen Ein- und Ausblenden, nimmt auf jeder Takt-Eins den nächsten Akkordton und endet auf dem Grundton. Darüber für die meisten Plätze ein leises gebrochenes Arpeggio. Ein Dynamikbogen (Pegel 0,4 bis 1 zum lautesten Punkt und zurück, dazu Ein- und Ausblenden) liegt auf allen Stimmen außer dem Bordun. Die Stimmen sind leiser im Bass und heller in den Flächen als vorher, damit Register und Schwerpunkt dem Ziel entsprechen. Ziehung in derselben Reihenfolge wie bisher (Tonleiter, Grundton, Tempo), dann Länge, Akkorde, Melodie.
+
+**Regel (Mensch 2026-11-09): nur allgemeine Merkmale, nie Melodien, Motive oder Akkordfolgen der Stücke.** Sonst wäre die erzeugte Musik eine Bearbeitung der Buckley-Stücke und könnte selbst Content-ID-Meldungen auslösen. Eingehalten so: Das Analyseskript misst nur Zahlen je Stück (Mittelwerte, Raten, Perzentile, Bogen je Zehntel) und schreibt keine Ton- oder Akkordfolgen (die Dreiklangs-Erkennung zählt nur Wechsel, Namen werden verworfen). Der Komponist enthält keine Daten aus den Stücken außer den Zahlen der Anordnungen (E-1156) und Tonleiter, Grundton- und Tempobereich; seine Akkordtabelle sind Lehrbuch-Neigungen der tonalen Harmonik, die Melodien zieht er aus dem Seed. Kein Stück wurde zum Komponieren angehört, transkribiert oder als MIDI gelesen.
+
+**Fingerabdrücke:** `test_atmosphere_client::overworldMusicStaysTheSame` prüft jetzt die Stücke des Tages (Anordnung und Stil des Tages) mit neu aufgenommenen Fingerabdrücken; die alten (dev 9218842) galten dem Komponisten vor 88.3. Gewollte Änderung. Keine eingefrorenen Daten betroffen: Der Komponist ist Client-Code (`qc_clientcore`), nur Spieler, Export und Tests nutzen ihn; Welten, Speicherstände, Protokoll und Generator-Prüfsummen hängen nicht von ihm ab.
+
+## E-1158 Tonleiter und Grundton zweier Netherbiome nach der Messung (Paket 88.3)
+
+| Wert | alt (E-1123) | neu | Quelle |
+|------|--------------|-----|--------|
+| Seelensandtal Tonleiter | Moll | Dur | Messung „Shadows and Dust“: C-Dur, Stärke 0,70 |
+| Seelensandtal Grundton | 36–40 | 40–44 | Register des Ziels 43/60/79 (vorher 37/45/73) |
+| Basaltdeltas Tonleiter | Moll | Dur | Messung „Machina“: G#-Dur, Stärke 0,61 (unsicher, elektronisch) |
+
+Die übrigen Werte der Biome (Tempo, Melodieklang, Bordun) bleiben; Ödland und Karmesinwald sind Moll, Wirrwald Dur wie gemessen.
+
+## E-1159 Länge erzeugter Stücke höchstens 300 s (Paket 88.3) — `QcMusicArrangement::longestPiece`
+
+**Entscheidung:** Die Buckley-Stücke dauern 200–590 s (Menü rund 400 s, Ödland 590 s); erzeugte Stücke dauern höchstens 300 s. Ein erzeugtes Stück wird als Ganzes in einen `QcSampleBuffer` gerendert (Mono-Float, bei 48 kHz rund 58 MB für 300 s), während Stücke aus Dateien gestreamt werden. Plätze mit längerem Ziel (Menü, Nacht, Höhle, Nether) ziehen deshalb 254–300 s. Rendern dauert im Debug-Build einige Sekunden auf einem Worker-Thread. **Später:** erzeugte Stücke in Abschnitten rendern und als `QcAudioStream` streamen, dann auch die volle Länge.

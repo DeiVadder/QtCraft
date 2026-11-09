@@ -18,7 +18,7 @@ void QcSessionAudio::connectSession(const QcClientSession &session)
         m_audio.setBiomeAmbience(session.sounds().biomeLoop(), session.sounds().biomeLevel());
         m_audio.setAmbience(session.sounds().ambience());
         // The music of the biome the player stands in, from its next piece on (decision E-1123).
-        m_audio.setMusicStyle(session.worldMirror().atmosphere().current().music.value_or(QcMusicStyle{}));
+        m_audio.setMusicStyle(session.worldMirror().atmosphere().current().music);
         QcMusicDirector &director = m_audio.music().director();
         director.setSituation(musicSituationOf(session, director.library().get()));
         m_audio.moveListener(listenerOf(session));

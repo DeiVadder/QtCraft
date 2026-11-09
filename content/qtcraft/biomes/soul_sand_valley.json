@@ -32,9 +32,9 @@
             "additionsChance": 0.0111
         },
         "music": {
-            "scale": "minor",
-            "lowestRoot": 36,
-            "highestRoot": 40,
+            "scale": "major",
+            "lowestRoot": 40,
+            "highestRoot": 44,
             "slowestTempo": 46,
             "fastestTempo": 54,
             "lead": "sine",

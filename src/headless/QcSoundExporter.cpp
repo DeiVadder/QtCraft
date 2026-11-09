@@ -3,9 +3,13 @@
 
 #include "headless/QcSoundExporter.h"
 
+#include "clientcore/music/QcMusicLibrary.h"
+#include "clientcore/sound/QcMusicArrangement.h"
 #include "clientcore/sound/QcMusicComposer.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcWorldgenCatalog.h"
+#include "common/content/worldgen/QcWorldgenDefinitions.h"
 
 #include <QDataStream>
 #include <QDir>
@@ -54,6 +58,15 @@ QString describe(const QString &name, const QcSampleBuffer &buffer)
     return u"%1 %2 s peak %3"_s.arg(name).arg(buffer.seconds(), 0, 'f', 3).arg(peak, 0, 'f', 3);
 }
 
+// The style a piece at `arrangement`'s place has: a biome's own (from the content) or the place's.
+QcMusicStyle styleAt(const QcContentRegistry &content, const QcMusicArrangement &arrangement)
+{
+    const QString prefix = QLatin1StringView(QcMusicLibrary::biomePrefix);
+    const QString place = arrangement.place;
+    const QcBiomeDefinition *biome = place.startsWith(prefix) ? content.worldgen().biome(place.mid(prefix.size())) : nullptr;
+    return arrangement.styleFor(biome ? biome->atmosphere.music : std::nullopt);
+}
+
 } // namespace
 
 namespace QcSoundExporter {
@@ -75,13 +88,15 @@ namespace QcSoundExporter {
         report.append(describe(sound.name, buffer));
     }
 
-    const QcSampleBuffer music =
-        QcMusicComposer::render(QcMusicComposer::compose(musicSeed), QcSoundSynthesizer::defaultSampleRate);
-    const QString musicName = u"music-%1"_s.arg(musicSeed);
-    if (const QcStatus written = writeWav(QDir(directory).filePath(musicName + u".wav"_s), music); !written) {
-        return qcError(written.error());
+    for (const QcMusicArrangement &arrangement : QcMusicArrangement::all()) {
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(musicSeed, styleAt(content, arrangement), arrangement);
+        const QcSampleBuffer music = QcMusicComposer::render(piece, QcSoundSynthesizer::defaultSampleRate);
+        const QString musicName = u"music-%1-%2"_s.arg(arrangement.place.section(u':', -1)).arg(musicSeed);
+        if (const QcStatus written = writeWav(QDir(directory).filePath(musicName + u".wav"_s), music); !written) {
+            return qcError(written.error());
+        }
+        report.append(describe(musicName, music));
     }
-    report.append(describe(musicName, music));
     return report;
 }
 

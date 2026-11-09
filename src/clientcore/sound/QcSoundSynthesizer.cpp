@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numbers>
+#include <tuple>
 
 namespace {
 
@@ -240,7 +241,31 @@ struct Mix
             samples[first + i] += static_cast<float>(layer.gain * voice.envelope(i) * x);
         }
     }
+
+    // Adds every layer, each with its own noise from `seed`; false when `stop` was set first.
+    [[nodiscard]] bool addLayers(const QList<QcSoundLayer> &layers, quint32 seed, bool loop, int sampleRate, const std::atomic<bool> *stop)
+    {
+        for (qsizetype index = 0; index < layers.size(); ++index) {
+            if (stop && stop->load(std::memory_order_relaxed)) {
+                return false;
+            }
+            addLayer(layers[index], seed ^ (static_cast<quint32>(index + 1) * 0x85EBCA6Bu), loop, sampleRate);
+        }
+        return true;
+    }
 };
+
+// The end of the last layer in seconds (only finite values count).
+double layersSeconds(const QList<QcSoundLayer> &layers)
+{
+    double seconds = 0.0;
+    for (const QcSoundLayer &layer : layers) {
+        if (std::isfinite(layer.start) && std::isfinite(layer.duration)) {
+            seconds = std::max(seconds, layer.start + layer.duration);
+        }
+    }
+    return seconds;
+}
 
 } // namespace
 
@@ -265,22 +290,13 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
     QcSampleBuffer buffer;
     buffer.sampleRate = sampleRate;
     buffer.loop = loop;
-
-    double seconds = 0.0;
-    for (const QcSoundLayer &layer : layers) {
-        if (std::isfinite(layer.start) && std::isfinite(layer.duration)) {
-            seconds = std::max(seconds, layer.start + layer.duration);
-        }
-    }
-
+    const double seconds = layersSeconds(layers);
     if (sampleRate <= 0 || seconds <= 0.0) {
         return buffer;
     }
 
     Mix mix{std::vector<float>(static_cast<std::size_t>(std::llround(seconds * sampleRate)), 0.0f)};
-    for (qsizetype index = 0; index < layers.size(); ++index) {
-        mix.addLayer(layers[index], seed ^ (static_cast<quint32>(index + 1) * 0x85EBCA6Bu), loop, sampleRate);
-    }
+    std::ignore = mix.addLayers(layers, seed, loop, sampleRate, nullptr);
     buffer.samples = std::move(mix.samples);
     std::vector<float> &out = buffer.samples;
 
@@ -298,8 +314,29 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
         }
     }
 
+    buffer.samples = normalised(std::move(buffer.samples));
+    return buffer;
+}
+
+std::vector<float> QcSoundSynthesizer::mixLayers(const QList<QcSoundLayer> &layers, quint32 seed, int sampleRate, double seconds,
+                                                 const std::atomic<bool> *stop)
+{
+    const double length = seconds > 0.0 ? seconds : layersSeconds(layers);
+    if (sampleRate <= 0 || length <= 0.0) {
+        return {};
+    }
+
+    Mix mix{std::vector<float>(static_cast<std::size_t>(std::llround(length * sampleRate)), 0.0f)};
+    if (!mix.addLayers(layers, seed, false, sampleRate, stop)) {
+        return {};
+    }
+    return std::move(mix.samples);
+}
+
+std::vector<float> QcSoundSynthesizer::normalised(std::vector<float> samples)
+{
     float loudest = 0.0f;
-    for (float &sample : out) {
+    for (float &sample : samples) {
         if (!std::isfinite(sample)) {
             sample = 0.0f;
         }
@@ -308,10 +345,9 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
 
     if (loudest > 0.0f) {
         const float scale = peak / loudest;
-        for (float &sample : out) {
+        for (float &sample : samples) {
             sample *= scale;
         }
     }
-
-    return buffer;
+    return samples;
 }

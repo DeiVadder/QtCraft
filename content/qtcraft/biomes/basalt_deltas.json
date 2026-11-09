@@ -35,7 +35,7 @@
             "additionsChance": 0.0111
         },
         "music": {
-            "scale": "minor",
+            "scale": "major",
             "lowestRoot": 36,
             "highestRoot": 39,
             "slowestTempo": 50,

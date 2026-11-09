@@ -72,8 +72,8 @@ struct QcMusicStyle
     /*! The scale of a piece. */
     enum class Scale : quint8 {
         Any, // Major or minor, drawn per piece ("any").
-        Major, // The major pentatonic ("major").
-        Minor, // The minor pentatonic ("minor").
+        Major, // The major scale ("major").
+        Minor, // The natural minor scale ("minor").
     };
 
     /*! The scale. */

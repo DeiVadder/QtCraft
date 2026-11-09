@@ -75,8 +75,8 @@ public:
         decision E-1122); another key stops the old loop. An empty key plays none. */
     void setBiomeAmbience(const QString &key, float level);
     /*! The composed pieces from the next one on follow \a style (a biome's music, decision
-        E-1123). */
-    void setMusicStyle(const QcMusicStyle &style) { m_music.setStyle(style); }
+        E-1123); none: the place's own style (E-1156). */
+    void setMusicStyle(const std::optional<QcMusicStyle> &style) { m_music.setStyle(style); }
     /*! Background music plays while \a enabled (in the menus and in a world), with pauses
         between pieces (QcMusicDirector, decision E-1137). */
     void setMusicEnabled(bool enabled) { m_music.setEnabled(enabled); }

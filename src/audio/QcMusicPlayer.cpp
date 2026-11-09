@@ -6,6 +6,7 @@
 #include "audio/QcAudioLogging.h"
 #include "audio/QcAudioOutput.h"
 #include "clientcore/music/QcVorbisStream.h"
+#include "clientcore/sound/QcMusicArrangement.h"
 #include "clientcore/sound/QcMusicComposer.h"
 
 #include <QRandomGenerator>
@@ -29,7 +30,8 @@ QcMusicPlayer::QcMusicPlayer(QcAudioOutput &output, QObject *parent)
 QcMusicPlayer::~QcMusicPlayer()
 {
     // The workers hold only copies of what they need; waiting keeps their results from outliving
-    // the watchers.
+    // the watchers. A piece being rendered stops at its next note.
+    stopRendering();
     m_trackWatcher.waitForFinished();
     m_pieceWatcher.waitForFinished();
     release();
@@ -45,14 +47,39 @@ void QcMusicPlayer::setEnabled(bool enabled)
     }
 
     m_timer.stop();
+    stopRendering();
     release();
+}
+
+void QcMusicPlayer::stopRendering()
+{
+    m_stopRendering->store(true, std::memory_order_relaxed);
+}
+
+void QcMusicPlayer::dropEndedPiece()
+{
+    if (!piece()) {
+        return;
+    }
+    const QcAudioMixer::VoiceId playing = voice();
+    bool ended = true;
+    m_output.withMixer([playing, &ended](QcAudioMixer &mixer) { ended = playing == 0 || !mixer.isPlaying(playing); });
+    if (ended) {
+        setPiece(nullptr);
+    }
+}
+
+QcMusicArrangement QcMusicPlayer::nextArrangement() const
+{
+    return m_arrangement ? *m_arrangement : QcMusicArrangement::forPlaces(director().situation().places);
 }
 
 void QcMusicPlayer::interrupted()
 {
-    // The voice is gone with the mixer's: only the stream is left to drop.
+    // The voice is gone with the mixer's: only the stream or piece is left to drop.
     setVoice(0);
     setStream(nullptr);
+    setPiece(nullptr);
     director().interrupted();
 }
 
@@ -63,6 +90,7 @@ void QcMusicPlayer::tick()
 
 void QcMusicPlayer::advance(double seconds)
 {
+    dropEndedPiece();
     const QcMusicDirector::Action action = director().advance(seconds);
     switch (action.kind) {
     case QcMusicDirector::Action::Kind::None:
@@ -85,6 +113,7 @@ void QcMusicPlayer::release()
     m_output.withMixer([playing](QcAudioMixer &mixer) { mixer.stop(playing); });
     setVoice(0);
     setStream(nullptr);
+    setPiece(nullptr);
 }
 
 void QcMusicPlayer::fadeOut()
@@ -158,25 +187,38 @@ void QcMusicPlayer::playGenerated()
 
     const quint64 seed = QRandomGenerator::global()->generate64();
     const int rate = m_output.sampleRate();
-    const QcMusicStyle style = m_style;
-    m_pieceWatcher.setFuture(QtConcurrent::run([seed, rate, style] {
-        return std::make_shared<const QcSampleBuffer>(QcMusicComposer::render(QcMusicComposer::compose(seed, style), rate));
+    // The place's layout and, where the biome brings no music of its own, its style (E-1156).
+    const QcMusicArrangement arrangement = nextArrangement();
+    const QcMusicStyle style = arrangement.styleFor(m_style);
+    m_stopRendering = std::make_shared<std::atomic<bool>>(false);
+    m_pieceWatcher.setFuture(QtConcurrent::run([seed, rate, style, arrangement, stop = m_stopRendering] {
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(seed, style, arrangement);
+        return std::make_shared<const QcSampleBuffer>(QcMusicComposer::render(piece, rate, stop.get()));
     }));
 }
 
 void QcMusicPlayer::pieceRendered()
 {
-    const std::shared_ptr<const QcSampleBuffer> piece = m_pieceWatcher.result();
+    // Take the piece out of the future and let the future go, so that only this player (and the
+    // mixer while it plays) holds the piece, not the watcher through the pause after it. The
+    // empty future set here reports itself finished too: nothing to take then.
+    using RenderedPiece = std::shared_ptr<const QcSampleBuffer>;
+    if (m_pieceWatcher.future().resultCount() == 0) {
+        return;
+    }
+    RenderedPiece rendered = m_pieceWatcher.result();
+    m_pieceWatcher.setFuture(QFuture<RenderedPiece>());
     if (director().state() != QcMusicDirector::State::Asking || !m_output.isActive()) {
         return;
     }
-    if (!piece || piece->samples.empty()) {
+    if (!rendered || rendered->samples.empty()) {
         director().failed();
         return;
     }
 
     release();
+    setPiece(std::move(rendered));
     QcAudioMixer::VoiceId played = 0;
-    m_output.withMixer([&piece, &played](QcAudioMixer &mixer) { played = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundCategory::Music, false}); });
-    begin(played, piece->seconds());
+    m_output.withMixer([this, &played](QcAudioMixer &mixer) { played = mixer.play(piece(), {musicGain, 0.0f, 1.0, QcSoundCategory::Music, false}); });
+    begin(played, piece()->seconds());
 }

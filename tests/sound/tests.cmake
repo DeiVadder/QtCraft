@@ -5,7 +5,7 @@
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
-qc_add_test(test_sound_synthesis SOURCES sound/test_sound_synthesis.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_sound_synthesis SOURCES sound/test_sound_synthesis.cpp sound/QcMusicTestUtil.h LIBRARIES qc_clientcore)
 qc_add_test(test_audio_mixer SOURCES sound/test_audio_mixer.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_sound_world SOURCES sound/test_sound_world.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_sound_events SOURCES sound/test_sound_events.cpp LIBRARIES qc_server TIMEOUT 180)
@@ -26,5 +26,5 @@ target_compile_definitions(test_music_library PRIVATE QTCRAFT_SOURCE_DIR="${PROJ
 qc_add_test(test_music_director SOURCES sound/test_music_director.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_music_stream SOURCES sound/test_music_stream.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_music_stream PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
-qc_add_test(test_music_player SOURCES sound/test_music_player.cpp LIBRARIES qc_audio)
+qc_add_test(test_music_player SOURCES sound/test_music_player.cpp sound/QcMusicTestUtil.h LIBRARIES qc_audio TIMEOUT 30)
 target_compile_definitions(test_music_player PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")

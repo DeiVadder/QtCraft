@@ -53,7 +53,7 @@ struct Options
     QCommandLineOption mods{u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s};
     QCommandLineOption noMods{u"no-mods"_s, u"Load only the base game."_s};
     QCommandLineOption sounds{u"export-sounds"_s,
-                              u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
+                              u"Write every sound and one music piece per place (seeded by --seed) as WAV files into a directory and exit."_s,
                               u"dir"_s};
     QCommandLineOption handbook{u"export-handbook"_s,
                                 u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,

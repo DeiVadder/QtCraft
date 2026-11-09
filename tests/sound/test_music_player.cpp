@@ -3,6 +3,8 @@
 
 #include "audio/QcAudioOutput.h"
 #include "audio/QcMusicPlayer.h"
+#include "clientcore/sound/QcMusicArrangement.h"
+#include "sound/QcMusicTestUtil.h"
 
 #include <QDir>
 #include <QFile>
@@ -144,19 +146,39 @@ private slots:
         player.director().setLibrary(std::make_shared<const QcMusicLibrary>(QcMusicLibrary::load({m_pack.path()})));
         player.director().setSource(QcMusicSource::Generated);
         player.director().setSituation(QcMusicDirector::world(u"qtcraft:overworld"_s, {}, 150.0, 0.0f));
+        // A short layout keeps rendering quick (the day's pieces last minutes).
+        player.setArrangement(QcMusicTestUtil::shortArrangement());
         player.director().setEnabled(true);
 
         player.advance(QcMusicDirector::firstDelay.longest);
-        QTRY_COMPARE_WITH_TIMEOUT(player.director().state(), QcMusicDirector::State::Playing, 30000);
+        QTRY_COMPARE_WITH_TIMEOUT(player.director().state(), QcMusicDirector::State::Playing, 15000);
         const MusicVoices voices = musicVoices(output);
         QCOMPARE(voices.buffers, 1);
         QCOMPARE(voices.streams, 0);
+        // The piece follows the arrangement it was given: two cycles of one-bar chords and the
+        // reverb's tail, under a minute (the place's own would be several).
+        QVERIFY2(player.director().remaining() < 60.0, qPrintable(QString::number(player.director().remaining())));
 
         // The mixer's voices stopped from outside (leaving a world): the next piece follows after
         // the first delay.
         output.withMixer([](QcAudioMixer &mixer) { mixer.stopAll(); });
         player.interrupted();
         QCOMPARE(player.director().state(), QcMusicDirector::State::Waiting);
+    }
+
+    // Without an arrangement set, a composed piece is laid out for the place the player is in.
+    void composedPiecesAreLaidOutForThePlace()
+    {
+        QcAudioOutput output(std::make_unique<SilentAudio>());
+        QcMusicPlayer player(output);
+        player.director().setSituation(QcMusicDirector::world(u"qtcraft:nether"_s, u"qtcraft:basalt_deltas"_s, 0.0, 0.0f));
+        QCOMPARE(player.nextArrangement().place, u"biome:qtcraft:basalt_deltas"_s);
+        player.director().setSituation(QcMusicDirector::world(u"qtcraft:overworld"_s, {}, 450.0, 1.0f));
+        QCOMPARE(player.nextArrangement().place, u"cave"_s);
+        player.setArrangement(QcMusicTestUtil::shortArrangement());
+        QCOMPARE(player.nextArrangement(), QcMusicTestUtil::shortArrangement());
+        player.setArrangement(std::nullopt);
+        QCOMPARE(player.nextArrangement().place, u"cave"_s);
     }
 
     void aBrokenFileIsSkipped()
