@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/sound/QcSampleBuffer.h"
+#include "clientcore/sound/QcStreamCursor.h"
 #include "common/content/registry/QcSoundDefinition.h"
 
 #include <QList>
@@ -38,9 +39,13 @@ public:
     {
         /*! Id play() returned for it. */
         VoiceId id = 0;
-        /*! The samples it plays. */
+        /*! The samples it plays; null for a stream. */
         std::shared_ptr<const QcSampleBuffer> buffer;
-        /*! Read position in source samples; advances by \c {pitch} scaled to the output rate. */
+        /*! The stream it plays instead (a music track, decision E-1135; it never loops); null for
+            a buffer. */
+        std::shared_ptr<QcStreamCursor> stream;
+        /*! Read position in source samples (frames of a stream); advances by \c {pitch} scaled to
+            the output rate. */
         double position = 0.0;
         /*! Playback speed; 1 is the buffer's own. */
         double pitch = 1.0;
@@ -88,15 +93,21 @@ public:
     /*! Starts a voice playing \a buffer with \a parameters and returns its id; 0 when the buffer
         is empty or every voice loops and none can be replaced. */
     VoiceId play(std::shared_ptr<const QcSampleBuffer> buffer, const PlayParameters &parameters);
+    /*! Starts a voice playing \a stream (stereo, decoded while it plays; decision E-1135) with
+        \a parameters (\c {loop} is ignored) and returns its id; 0 when \a stream is null or every
+        voice loops and none can be replaced. */
+    VoiceId playStream(std::shared_ptr<QcStreamCursor> stream, const PlayParameters &parameters);
     /*! Returns whether play() would start a voice for \a buffer at \a gain now. */
     [[nodiscard]] bool wouldPlay(const std::shared_ptr<const QcSampleBuffer> &buffer, float gain) const;
     /*! Stops the voice \a id at once. */
     void stop(VoiceId id);
-    /*! Lets the voice \a id fall silent over fadeOutMilliseconds, then removes it; it keeps its
-        place until then and ignores setGain. */
-    void fadeOut(VoiceId id);
+    /*! Lets the voice \a id fall silent over \a milliseconds (at least one frame), then removes
+        it; it keeps its place until then and ignores setGain. */
+    void fadeOut(VoiceId id, int milliseconds = fadeOutMilliseconds);
     /*! Stops every voice at once. */
     void stopAll() { m_voices.clear(); }
+    /*! Stops every voice except \a kept (0: none kept) at once. */
+    void stopAllExcept(VoiceId kept);
     /*! Sets the gain of voice \a id to \a gain (at least 0; not finite: 0); ignored while it fades
         out. */
     void setGain(VoiceId id, float gain);
@@ -139,9 +150,13 @@ public:
 private:
     // When every voice is busy: the voice a new sound at `gain` replaces; -1 when it is refused.
     [[nodiscard]] qsizetype victimFor(float gain) const;
+    // Starts `voice` (with its source set) with `parameters`; its id, or 0 when no voice is free.
+    VoiceId start(Voice voice, const PlayParameters &parameters);
     // Adds `voice` to `out` (`frames` interleaved stereo frames) at the bus and master volume
     // `level`, and advances it.
     static void mixVoice(Voice &voice, std::span<float> out, double outputRate, float level);
+    // Returns whether `voice` played to its end or faded out.
+    [[nodiscard]] static bool finished(const Voice &voice);
 
     int m_outputRate = 44100;
     QList<Voice> m_voices;

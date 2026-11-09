@@ -358,6 +358,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml
         qml/menus/WorldTile.qml
+        qml/settings/AboutPage.qml
         qml/settings/AdvancedPage.qml
         qml/settings/AudioPage.qml
         qml/settings/ControlsPage.qml
@@ -472,6 +473,8 @@ else()
 endif()
 
 target_link_libraries(qtcraft PRIVATE qc_app_qml)
+# The music tracks (content/CMakeLists.txt, decision E-1136).
+target_link_libraries(qtcraft PRIVATE qc_music)
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
     BASE ${CMAKE_CURRENT_SOURCE_DIR}

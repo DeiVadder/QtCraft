@@ -4,7 +4,6 @@
 #include "audio/QcAudioEngine.h"
 
 #include "audio/QcAudioLogging.h"
-#include "clientcore/sound/QcMusicComposer.h"
 #include "clientcore/sound/QcSoundSpatial.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
 #include "common/content/registry/QcSoundKeys.h"
@@ -32,27 +31,12 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
     : QObject(parent)
     , m_random(QRandomGenerator::global()->generate())
 {
-    m_musicTimer.setSingleShot(true);
-    connect(&m_musicTimer, &QTimer::timeout, this, &QcAudioEngine::renderMusic);
-
     connect(&m_bankWatcher, &QFutureWatcherBase::finished, this, [this] {
         m_bank = m_bankWatcher.result();
         for (const QString &name : m_bank->skipped()) {
             qCWarning(lcAudio) << "Sound left out (memory budget):" << name;
         }
         emit bankReady();
-    });
-
-    connect(&m_musicWatcher, &QFutureWatcherBase::finished, this, [this] {
-        const std::shared_ptr<const QcSampleBuffer> piece = m_musicWatcher.result();
-        if (!m_musicEnabled || !isActive() || !piece || piece->samples.empty()) {
-            return;
-        }
-
-        m_output.withMixer([this, &piece](QcAudioMixer &mixer) {
-            m_musicVoice = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundBus::Music, false});
-        });
-        scheduleMusic(static_cast<int>(piece->seconds()) + m_random.bounded(minMusicPause, maxMusicPause + 1));
     });
 
     connect(&m_output, &QcAudioOutput::mixerReset, this, &QcAudioEngine::mixerReset);
@@ -63,7 +47,6 @@ QcAudioEngine::~QcAudioEngine()
     // The workers only hold copies of what they need; waiting keeps their results from outliving
     // the watchers.
     m_bankWatcher.waitForFinished();
-    m_musicWatcher.waitForFinished();
     m_output.stop();
 }
 
@@ -108,12 +91,9 @@ void QcAudioEngine::mixerReset()
     // setAmbience once the bank is ready, music with its next piece.
     m_ambienceVoices = {};
     setBiomeVoice(0);
-    m_musicVoice = 0;
     m_positional.clear();
+    m_music.interrupted();
     buildBank();
-    if (m_musicEnabled) {
-        scheduleMusic(firstMusicDelay);
-    }
 }
 
 void QcAudioEngine::setVolumes(double master, double effects, double music, double ambient, bool muted)
@@ -266,48 +246,12 @@ void QcAudioEngine::setBiomeAmbience(const QString &key, float level)
     }
 }
 
-void QcAudioEngine::setMusicEnabled(bool enabled)
-{
-    if (m_musicEnabled == enabled) {
-        return;
-    }
-
-    m_musicEnabled = enabled;
-    if (enabled) {
-        scheduleMusic(firstMusicDelay + m_random.bounded(firstMusicDelay + 1));
-        return;
-    }
-
-    m_musicTimer.stop();
-    const QcAudioMixer::VoiceId voice = m_musicVoice;
-    m_output.withMixer([voice](QcAudioMixer &mixer) { mixer.stop(voice); });
-    m_musicVoice = 0;
-}
-
-void QcAudioEngine::scheduleMusic(int seconds)
-{
-    m_musicTimer.start(std::max(1, seconds) * 1000);
-}
-
-void QcAudioEngine::renderMusic()
-{
-    if (!m_musicEnabled || !isActive()) {
-        return;
-    }
-
-    const quint64 seed = m_random.generate64();
-    const int rate = m_output.sampleRate();
-    const QcMusicStyle style = m_musicStyle;
-    m_musicWatcher.setFuture(QtConcurrent::run([seed, rate, style] {
-        return std::make_shared<const QcSampleBuffer>(QcMusicComposer::render(QcMusicComposer::compose(seed, style), rate));
-    }));
-}
-
 void QcAudioEngine::stopWorldSounds()
 {
-    m_output.withMixer([](QcAudioMixer &mixer) { mixer.stopAll(); });
+    // The music plays on: the director fades it when the place's family changes (decision E-1137).
+    const QcAudioMixer::VoiceId music = m_music.voice();
+    m_output.withMixer([music](QcAudioMixer &mixer) { mixer.stopAllExcept(music); });
     m_ambienceVoices = {};
-    m_musicVoice = 0;
     m_ambience = {};
     setBiomeVoice(0);
     setBiomeLoop({});

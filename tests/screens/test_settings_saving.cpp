@@ -3,6 +3,7 @@
 
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcAudioSettings.h"
 #include "app/settings/QcCharacterSettings.h"
 #include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
@@ -13,6 +14,7 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QRegularExpression>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -75,6 +77,29 @@ private slots:
         Fixture again;
         QVERIFY(again.settings.invertMouse());
         QCOMPARE(again.settings.audio()->musicVolume(), 0.25);
+    }
+
+    // Where the music comes from (decision E-1137): the tracks by default; the switch to
+    // generated music reaches the music at once, is stored and comes back with the next start.
+    void musicSourceSwitchesAndIsStored()
+    {
+        {
+            Fixture fixture;
+            QCOMPARE(fixture.settings.audio()->musicSource(), QcAudioSettings::MusicSource::Tracks);
+            QCOMPARE(fixture.audio.music().director().source(), QcMusicSource::Tracks);
+            fixture.settings.audio()->setMusicSource(QcAudioSettings::MusicSource::Generated);
+            QCOMPARE(fixture.audio.music().director().source(), QcMusicSource::Generated);
+            QVERIFY(fixture.settings.savePending());
+        }
+        QCOMPARE(stored().audio.musicSource, QcMusicSource::Generated);
+        Fixture again;
+        QCOMPARE(again.settings.audio()->musicSource(), QcAudioSettings::MusicSource::Generated);
+        QCOMPARE(again.audio.music().director().source(), QcMusicSource::Generated);
+
+        // A value from outside the choices is refused with a warning.
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown music source 7"_s));
+        again.settings.audio()->setMusicSource(static_cast<QcAudioSettings::MusicSource>(7));
+        QCOMPARE(again.settings.audio()->musicSource(), QcAudioSettings::MusicSource::Generated);
     }
 
     // The session's end and the game's quit store a waiting change at once.

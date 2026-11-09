@@ -2,6 +2,34 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de" sourcelanguage="en">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <location filename="../src/app/qml/settings/AboutPage.qml" line="18"/>
+        <source>About</source>
+        <translation>Über</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AboutPage.qml" line="21"/>
+        <source>QtCraft %1</source>
+        <translation>QtCraft %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AboutPage.qml" line="25"/>
+        <source>Free software under the GNU General Public License, version 3 or later. The handbook lists the music and its licences in the chapter "Music".</source>
+        <translation>Freie Software unter der GNU General Public License, Version 3 oder später. Das Handbuch nennt die Musik und ihre Lizenzen im Kapitel „Musik“.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AboutPage.qml" line="33"/>
+        <source>Music</source>
+        <translation>Musik</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AboutPage.qml" line="53"/>
+        <source>Tracks released under CC-BY 4.0 are licensed under the Creative Commons Attribution 4.0 International licence: %1. Its text comes with the game as CC-BY-4.0.txt.</source>
+        <translation>Stücke mit CC-BY 4.0 stehen unter der Lizenz Creative Commons Namensnennung 4.0 International: %1. Ihr Text liegt dem Spiel als CC-BY-4.0.txt bei.</translation>
+    </message>
+</context>
+<context>
     <name>AdminActionDialog</name>
     <message>
         <location filename="../src/app/qml/admin/AdminActionDialog.qml" line="31"/>
@@ -1164,47 +1192,68 @@ Als Nächstes: %3</translation>
 <context>
     <name>AudioPage</name>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="14"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="16"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="17"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="19"/>
         <source>Volume</source>
         <translation>Lautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="20"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="22"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="25"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="41"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="51"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="27"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="43"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="53"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="63"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="30"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="32"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="36"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="38"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="72"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="46"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="48"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="56"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="58"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="69"/>
+        <source>Soundtrack</source>
+        <translation>Musikauswahl</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="74"/>
+        <source>Scott Buckley tracks</source>
+        <translation>Stücke von Scott Buckley</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="75"/>
+        <source>Generated</source>
+        <translation>Erzeugt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="83"/>
+        <source>Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.</source>
+        <translation>Videos oder Streams mit diesen Stücken können auf YouTube eine Content-ID-Meldung bekommen. Wer aufnimmt oder streamt, stellt auf erzeugte Musik um.</translation>
     </message>
 </context>
 <context>
@@ -6071,25 +6120,25 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="379"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="433"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="385"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="439"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="395"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="401"/>
         <source>Cannot create the world: unknown world type or game mode</source>
         <translation>Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="405"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="411"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="418"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="428"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="438"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="424"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="434"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="444"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -6098,12 +6147,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="457"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="463"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="457"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="463"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -6160,7 +6209,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="674"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="681"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -8594,7 +8643,7 @@ Jetzt: %2</translation>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="338"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="340"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -8655,18 +8704,18 @@ Jetzt: %2</translation>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="307"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="295"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="193"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="315"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="303"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="321"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="309"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="213"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -9923,17 +9972,17 @@ Jetzt: %2</translation>
 <context>
     <name>QcWorldLibraryController</name>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="94"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="95"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="158"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="159"/>
         <source>Today, %1</source>
         <translation>Heute, %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="161"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="162"/>
         <source>Yesterday, %1</source>
         <translation>Gestern, %1</translation>
     </message>
@@ -10247,6 +10296,11 @@ Jetzt: %2</translation>
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="121"/>
         <source>Advanced</source>
         <translation>Erweitert</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="121"/>
+        <source>About</source>
+        <translation>Über</translation>
     </message>
     <message>
         <source>Close</source>

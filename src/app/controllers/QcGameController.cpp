@@ -16,6 +16,7 @@
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/music/QcMusicLibrary.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/core/QcBlockPos.h"
@@ -329,6 +330,11 @@ void QcGameController::startAudio(bool enabled)
 {
     m_audio->start(enabled);
     m_settings->audio()->apply();
+    // The music of the base game and the mods (decision E-1136), from the menus on.
+    m_settings->audio()->setMusicLibrary(std::make_shared<const QcMusicLibrary>(QcMusicLibrary::load(m_library->musicPackDirectories())));
+    m_audio->music().director().setSituation(QcMusicDirector::menu());
+    // Without an output (audio off or no device) the music's timer stays off.
+    m_audio->setMusicEnabled(m_audio->isActive());
     if (m_audio->isActive() && !m_parts.session) {
         // Menu clicks come from the content as well; the base game and mods are loaded once here.
         m_library->content();
@@ -638,8 +644,8 @@ QcStatus QcGameController::stopSession()
     // A start that has not reached its next step stops here.
     afterFrame().cancel();
     m_input->releaseMouse();
-    m_audio->setMusicEnabled(false);
     m_audio->stopWorldSounds();
+    m_audio->music().director().setSituation(QcMusicDirector::menu());
     if (m_parts.meshes) {
         m_parts.meshes->waitForJobs();
         m_parts.meshes.reset();

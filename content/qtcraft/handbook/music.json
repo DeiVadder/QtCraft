@@ -1,0 +1,10 @@
+{
+    "name": "music",
+    "order": 136,
+    "icon": "note_block",
+    "sections": [
+        "choice",
+        "places",
+        "credits"
+    ]
+}

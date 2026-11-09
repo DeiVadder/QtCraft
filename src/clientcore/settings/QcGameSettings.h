@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/music/QcMusicSource.h"
 #include "clientcore/settings/QcCharacterProfile.h"
 #include "clientcore/settings/QcDebugOptions.h"
 #include "clientcore/settings/QcGamepadSettings.h"
@@ -102,6 +103,9 @@ struct QcGameSettings
         double ambient = defaultAmbientVolume;
         /*! Whether the sound is muted (the volumes stay). */
         bool muted = false;
+        /*! Where the music comes from (decision E-1137); an unknown name in the file gives the
+            tracks. */
+        QcMusicSource musicSource = QcMusicSource::Tracks;
 
         bool operator==(const AudioVolumes &) const = default;
     };

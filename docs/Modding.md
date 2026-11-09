@@ -460,6 +460,30 @@ Blocks name a sound **material**: `"sound": "stone"` makes the block use `<names
 
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
 
+### Music (stage 88.1)
+
+Music tracks are Ogg Vorbis files (mono or stereo, any sample rate, at most 64 MB) in `music/` of a pack, each with a description of the same name (decisions E-1136, E-1137):
+
+```json
+{
+    "title": "Glade Song",
+    "artist": "Someone",
+    "licence": "CC-BY-4.0",
+    "source": "https://example.org/glade-song",
+    "attribution": "'Glade Song' by Someone - CC-BY 4.0",
+    "slots": ["day", "biome:glade"]
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `file` | The music file in `music/` (default `<name>.ogg`). |
+| `title`, `artist`, `licence`, `source` | Information about the track; `title` defaults to the file's name, `licence` is an SPDX id. |
+| `attribution` | The credit line the licence asks for, shown in Settings → About (the base game also lists its lines in the handbook chapter "Music"). |
+| `slots` | Where the track plays: `menu`, `day`, `night`, `cave`, `biome:<biome>`, `dimension:<dimension>` (without a namespace the pack's own). |
+
+The game picks a track of the first place that has one, in this order: in the menu `menu`; in a world `biome:<the biome around the player>`, then `dimension:<the dimension>`, and in the overworld `cave` underground, else `day` or `night`. Between tracks it pauses 10–20 minutes like the role model (in the menu up to 30 s). A track keeps playing while the player moves between places of one dimension and fades out when the dimension changes. Where no track fits, or when the player chose generated music in the audio settings, the game composes a piece in the biome's music style (`music` of a biome, decision E-1123). A track of a later pack with the same name replaces the earlier one. The biome is recognised by its ambience loop (`atmosphere.ambience.loop` of the biome), so a biome without one plays the dimension's tracks, and one loop names one biome: biomes that share a loop share the tracks of whichever of them the game read last, so give a biome with its own music its own loop. The game reads the music of the mods loaded at its start; switching mods on or off changes the music after a restart. Unknown keys, unknown places and missing files are reported in the log.
+
 ### Handbook (stage 15)
 
 The handbook (F1 in the game, `qtcraft-headless --export-handbook <dir>` as Markdown) is built from the loaded content, so every block, item, recipe, smelting recipe, creature, biome, liquid, ore, feature and item tag of a mod appears automatically, in its own section after the base game (grouped by the namespace of its names). What a mod can add:

@@ -1,0 +1,11 @@
+{
+    "title": "Machina",
+    "artist": "Scott Buckley",
+    "licence": "CC-BY-4.0",
+    "source": "https://www.scottbuckley.com.au/library/machina/",
+    "attribution": "'Machina' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au",
+    "slots": [
+        "biome:basalt_deltas",
+        "dimension:nether"
+    ]
+}

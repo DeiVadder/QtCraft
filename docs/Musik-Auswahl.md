@@ -28,6 +28,29 @@ Jede Seite nennt CC-BY 4.0, Download als MP3. Nennung genau so: `'<Titel>' by Sc
 | Menü | Hymn To The Dawn | warme Synthesizer und Streicher | https://www.scottbuckley.com.au/library/hymn-to-the-dawn/ |
 | Menü | Borealis | langsam, nachdenklich, leicht aufhellend | https://www.scottbuckley.com.au/library/borealis/ |
 
+### Übernommen in 88.1 (2026-11-09)
+
+14 Stücke: ohne „Hour Of The Witch“ (ob die Fassung Gesang enthält, war von der Seite aus nicht zu klären; für die Basaltdeltas reicht „Machina“) und, nach Wahl des Menschen (Größe Möglichkeit B, 2026-11-09), ohne „Life Is“ und „With These Hands“. Lizenz CC-BY 4.0 auf jeder Seite am 2026-11-09 erneut geprüft. Umgewandelt von den MP3-Dateien der Seiten nach Ogg Vorbis (libvorbis, Qualität 0,3, Stereo, auf 48 kHz umgetastet, rund 91–109 kbit/s); von „Intervention“ die Fassung ohne Melodie. Dateien und Zuordnung in `content/qtcraft/music/<name>.ogg` und `<name>.json` (E-1136, E-1139).
+
+| Platz (Slot) | Datei | Größe |
+|--------------|-------|-------|
+| `day` | `in_this_moment.ogg` | 2,71 MB |
+| `day` | `cobalt.ogg` | 2,99 MB |
+| `day` | `she_moved_mountains.ogg` | 3,86 MB |
+| `night` | `moonlight.ogg` | 3,22 MB |
+| `night` | `unraveling.ogg` | 5,86 MB |
+| `cave` | `intervention.ogg` | 3,27 MB |
+| `cave` | `in_search_of_solitude.ogg` | 5,66 MB |
+| `biome:nether_wastes`, `dimension:nether` | `katabasis_i.ogg` | 7,92 MB |
+| `biome:soul_sand_valley`, `dimension:nether` | `shadows_and_dust.ogg` | 5,05 MB |
+| `biome:crimson_forest`, `dimension:nether` | `ephemera.ogg` | 4,46 MB |
+| `biome:warped_forest`, `dimension:nether` | `the_old_ones.ogg` | 3,62 MB |
+| `biome:basalt_deltas`, `dimension:nether` | `machina.ogg` | 3,75 MB |
+| `menu` | `hymn_to_the_dawn.ogg` | 5,37 MB |
+| `menu` | `borealis.ogg` | 4,47 MB |
+
+Zusammen 62,2 MB. Mit allen 16 Stücken waren es 70,4 MB; der Mensch wählte, „Life Is“ und „With These Hands“ zu streichen, statt die Qualität zu senken.
+
 ## B. Ohne Content-ID-Hinweis (Free Music Archive)
 
 | Platz (Vorschlag) | Titel | Künstler | Länge | Lizenz | Seite |

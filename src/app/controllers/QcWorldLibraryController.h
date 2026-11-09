@@ -88,6 +88,9 @@ public:
 
     // The mods a world just loaded: failures are shown in the mod list, the loaded ones logged.
     void recordLoadedMods(const QList<QcModStatus> &mods);
+    // The folders whose music plays (decision E-1136): the base game, then the mods that load, in
+    // load order.
+    [[nodiscard]] QStringList musicPackDirectories() const;
     // Base game plus enabled mods with the server-side data (world generation, chapters): the content
     // of the running world or, in the menu, loaded on demand.
     const QcContentRegistry &content() const;

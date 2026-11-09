@@ -135,6 +135,12 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    music/QcMusicDirector.h music/QcMusicDirector.cpp
+    music/QcMusicLibrary.h music/QcMusicLibrary.cpp
+    music/QcMusicSource.h
+    music/QcVorbisStream.h music/QcVorbisStream.cpp
+)
+target_sources(qc_clientcore PRIVATE
     network/QcKnownServers.h network/QcKnownServers.cpp
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
@@ -221,6 +227,7 @@ target_sources(qc_clientcore PRIVATE
 target_sources(qc_clientcore PRIVATE
     sound/QcAmbience.h sound/QcAmbience.cpp
     sound/QcAudioMixer.h sound/QcAudioMixer.cpp
+    sound/QcAudioStream.h
     sound/QcLocalSounds.h sound/QcLocalSounds.cpp
     sound/QcMusicComposer.h sound/QcMusicComposer.cpp
     sound/QcPositionalVoices.h sound/QcPositionalVoices.cpp
@@ -229,6 +236,7 @@ target_sources(qc_clientcore PRIVATE
     sound/QcSoundCue.h
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
+    sound/QcStreamCursor.h sound/QcStreamCursor.cpp
 )
 target_sources(qc_clientcore PRIVATE
     texturepacks/QcTexturePack.h
@@ -295,6 +303,8 @@ qc_configure_target(qc_clientcore)
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_clientcore PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)
+# The music's Ogg Vorbis decoder (QcVorbisStream, decision E-1135).
+target_link_libraries(qc_clientcore PRIVATE qc_stb_vorbis)
 
 # Procedural textures must be bit-identical on every architecture (decision E-300): no fused
 # multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).

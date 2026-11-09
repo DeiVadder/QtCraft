@@ -14,6 +14,7 @@ target_sources(qc_audio PRIVATE
     QcAudioRoute.h QcAudioRoute.cpp
     QcAudioSinkHost.h QcAudioSinkHost.cpp
     QcMixerDevice.h QcMixerDevice.cpp
+    QcMusicPlayer.h QcMusicPlayer.cpp
     QcSystemAudio.h QcSystemAudio.cpp
 )
 qc_configure_target(qc_audio)

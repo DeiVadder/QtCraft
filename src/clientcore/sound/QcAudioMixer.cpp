@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numbers>
+#include <optional>
 
 namespace {
 
@@ -65,6 +66,25 @@ QcAudioMixer::VoiceId QcAudioMixer::play(std::shared_ptr<const QcSampleBuffer> b
         return 0;
     }
 
+    Voice voice;
+    voice.buffer = std::move(buffer);
+    voice.loop = parameters.loop;
+    return start(std::move(voice), parameters);
+}
+
+QcAudioMixer::VoiceId QcAudioMixer::playStream(std::shared_ptr<QcStreamCursor> stream, const PlayParameters &parameters)
+{
+    if (!stream || stream->sampleRate() <= 0) {
+        return 0;
+    }
+
+    Voice voice;
+    voice.stream = std::move(stream);
+    return start(std::move(voice), parameters);
+}
+
+QcAudioMixer::VoiceId QcAudioMixer::start(Voice voice, const PlayParameters &parameters)
+{
     const float gain = finiteGain(parameters.gain);
     if (m_voices.size() >= maxVoices) {
         const qsizetype victim = victimFor(gain);
@@ -74,14 +94,11 @@ QcAudioMixer::VoiceId QcAudioMixer::play(std::shared_ptr<const QcSampleBuffer> b
         m_voices.removeAt(victim);
     }
 
-    Voice voice;
     voice.id = m_nextId++;
-    voice.buffer = std::move(buffer);
     voice.pitch = std::isfinite(parameters.pitch) ? std::clamp(parameters.pitch, 0.1, 10.0) : 1.0;
     voice.gain = voice.appliedGain = gain;
     voice.pan = voice.appliedPan = std::isfinite(parameters.pan) ? std::clamp(parameters.pan, -1.0f, 1.0f) : 0.0f;
     voice.bus = parameters.bus;
-    voice.loop = parameters.loop;
     m_voices.append(std::move(voice));
     return m_voices.constLast().id;
 }
@@ -91,9 +108,14 @@ void QcAudioMixer::stop(VoiceId id)
     m_voices.removeIf([id](const Voice &voice) { return voice.id == id; });
 }
 
-void QcAudioMixer::fadeOut(VoiceId id)
+void QcAudioMixer::stopAllExcept(VoiceId kept)
 {
-    const int frames = std::max(1, m_outputRate * fadeOutMilliseconds / 1000);
+    m_voices.removeIf([kept](const Voice &voice) { return voice.id != kept; });
+}
+
+void QcAudioMixer::fadeOut(VoiceId id, int milliseconds)
+{
+    const int frames = std::max(1, static_cast<int>(static_cast<qint64>(m_outputRate) * std::max(0, milliseconds) / 1000));
     for (Voice &voice : m_voices) {
         if (voice.id == id && voice.fadeFrames < 0) {
             voice.fadeFrames = frames;
@@ -160,11 +182,50 @@ float QcAudioMixer::limit(float sample)
     return std::copysign(std::min(bent, 0.9999f), sample);
 }
 
-void QcAudioMixer::mixVoice(Voice &voice, std::span<float> out, double outputRate, float level)
+namespace {
+
+// One source sample (a buffer's: mono on both sides) or frame (a stream's) at the voice's
+// position; none at its end.
+std::optional<std::array<float, 2>> sourceFrame(QcAudioMixer::Voice &voice)
 {
+    if (voice.stream) {
+        return voice.stream->frameAt(voice.position);
+    }
+
     const std::vector<float> &samples = voice.buffer->samples;
     const auto length = static_cast<double>(samples.size());
-    const double step = voice.pitch * voice.buffer->sampleRate / outputRate;
+    if (voice.position >= length && !voice.loop) {
+        return std::nullopt;
+    }
+    if (voice.position >= length) {
+        voice.position = std::fmod(voice.position, length);
+    }
+
+    const auto index = static_cast<std::size_t>(voice.position);
+    const double fraction = voice.position - static_cast<double>(index);
+    // Linear interpolation; a loop's last sample leads into its first.
+    const std::size_t next = index + 1 < samples.size() ? index + 1 : (voice.loop ? 0 : index);
+    const auto sample = static_cast<float>(samples[index] + (samples[next] - samples[index]) * fraction);
+    return std::array<float, 2>{sample, sample};
+}
+
+} // namespace
+
+bool QcAudioMixer::finished(const Voice &voice)
+{
+    if (voice.fadeFrames == 0) {
+        return true;
+    }
+    if (voice.stream) {
+        return voice.stream->ended();
+    }
+    return !voice.loop && voice.position >= static_cast<double>(voice.buffer->samples.size());
+}
+
+void QcAudioMixer::mixVoice(Voice &voice, std::span<float> out, double outputRate, float level)
+{
+    const int sourceRate = voice.stream ? voice.stream->sampleRate() : voice.buffer->sampleRate;
+    const double step = voice.pitch * sourceRate / outputRate;
     const auto frames = static_cast<int>(out.size() / 2);
     // A fading voice reaches silence at the end of its fade, else gain and stereo position reach
     // their targets at the end of this block.
@@ -175,31 +236,26 @@ void QcAudioMixer::mixVoice(Voice &voice, std::span<float> out, double outputRat
     const auto [leftTo, rightTo] = panGains(voice.pan);
     const float leftStep = (leftTo - leftFrom) / static_cast<float>(targetFrames);
     const float rightStep = (rightTo - rightFrom) / static_cast<float>(targetFrames);
+    // A stream is stereo already: its sides keep their level in the centre (the pan gains are
+    // 1/sqrt(2) there).
+    const float sides = voice.stream ? std::numbers::sqrt2_v<float> : 1.0f;
     float gain = voice.appliedGain;
     float left = leftFrom;
     float right = rightFrom;
 
     int frame = 0;
     for (; frame < rampFrames; ++frame) {
-        if (voice.position >= length && !voice.loop) {
+        const std::optional<std::array<float, 2>> source = sourceFrame(voice);
+        if (!source) {
             break;
         }
-        if (voice.position >= length) {
-            voice.position = std::fmod(voice.position, length);
-        }
-
-        const auto index = static_cast<std::size_t>(voice.position);
-        const double fraction = voice.position - static_cast<double>(index);
-        // Linear interpolation; a loop's last sample leads into its first.
-        const std::size_t next = index + 1 < samples.size() ? index + 1 : (voice.loop ? 0 : index);
-        const auto sample = static_cast<float>(samples[index] + (samples[next] - samples[index]) * fraction);
 
         gain += gainStep;
         left += leftStep;
         right += rightStep;
-        const float value = sample * gain * level;
-        out[2 * static_cast<std::size_t>(frame)] += value * left;
-        out[2 * static_cast<std::size_t>(frame) + 1] += value * right;
+        const float value = gain * level * sides;
+        out[2 * static_cast<std::size_t>(frame)] += (*source)[0] * value * left;
+        out[2 * static_cast<std::size_t>(frame) + 1] += (*source)[1] * value * right;
         voice.position += step;
     }
 
@@ -223,9 +279,7 @@ std::span<const float> QcAudioMixer::mix(int frames)
         mixVoice(voice, m_output, m_outputRate, m_busVolumes[static_cast<std::size_t>(voice.bus)] * master);
     }
 
-    m_voices.removeIf([](const Voice &voice) {
-        return voice.fadeFrames == 0 || (!voice.loop && voice.position >= static_cast<double>(voice.buffer->samples.size()));
-    });
+    m_voices.removeIf([](const Voice &voice) { return finished(voice); });
     for (float &sample : m_output) {
         sample = limit(sample);
     }

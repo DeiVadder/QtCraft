@@ -43,6 +43,7 @@ if(QC_BUILD_TESTS)
     enable_testing()
 endif()
 
+add_subdirectory(3rdparty/stb_vorbis)
 add_subdirectory(content)
 add_subdirectory(src/common)
 add_subdirectory(src/network)

@@ -169,6 +169,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.audio.music = volume(u"audio/music"_s, defaultMusicVolume);
     settings.audio.ambient = volume(u"audio/ambient"_s, defaultAmbientVolume);
     settings.audio.muted = file.value(u"audio/muted"_s, false).toBool();
+    settings.audio.musicSource = QcMusicSources::fromName(file.value(u"audio/musicSource"_s).toString()).value_or(QcMusicSource::Tracks);
     settings.keys = loadKeys(file);
     settings.gamepad = QcGamepadSettings::load(file);
     settings.texturePacks = loadTexturePacks(file);
@@ -206,6 +207,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"audio/music"_s, audio.music);
     file.setValue(u"audio/ambient"_s, audio.ambient);
     file.setValue(u"audio/muted"_s, audio.muted);
+    file.setValue(u"audio/musicSource"_s, QcMusicSources::name(audio.musicSource));
     gamepad.save(file);
 
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {

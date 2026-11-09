@@ -204,7 +204,6 @@ void QcSessionWiring::onContentReady()
     m_targets.atlas.enterWorld();
     m_targets.player.useContent();
     m_targets.audio.setContent(m_parts.session->content());
-    m_targets.audio.setMusicEnabled(true);
 }
 
 void QcSessionWiring::onMachineOpened()

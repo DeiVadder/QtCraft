@@ -7,3 +7,19 @@ docs/Entscheidungen.md
 # Benchmark scenes of stage 28 that document pixel artefacts (docs/Performance-Verlauf.md): PNG on purpose.
 docs/screenshots/28-bench-far-fix-64.png
 docs/screenshots/28-bench-forest-fix-64.png
+
+# The music tracks of the base game (Ogg Vorbis, about 100 kbit/s; decision E-1136).
+content/qtcraft/music/borealis.ogg
+content/qtcraft/music/cobalt.ogg
+content/qtcraft/music/ephemera.ogg
+content/qtcraft/music/hymn_to_the_dawn.ogg
+content/qtcraft/music/in_search_of_solitude.ogg
+content/qtcraft/music/in_this_moment.ogg
+content/qtcraft/music/intervention.ogg
+content/qtcraft/music/katabasis_i.ogg
+content/qtcraft/music/machina.ogg
+content/qtcraft/music/moonlight.ogg
+content/qtcraft/music/shadows_and_dust.ogg
+content/qtcraft/music/she_moved_mountains.ogg
+content/qtcraft/music/the_old_ones.ogg
+content/qtcraft/music/unraveling.ogg

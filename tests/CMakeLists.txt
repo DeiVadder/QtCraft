@@ -57,7 +57,8 @@ set(qc_concurrency_tests
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_generator_upgrade test_generator_blend test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
-    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_world_map_nether test_web_handbook)
+    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_world_map_nether test_web_handbook
+    test_music_player)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -145,6 +146,8 @@ set_tests_properties(test_ui_palette PROPERTIES
 set_tests_properties(test_content_pack PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/common/content/loader/QcContentPackLoader.cpp")
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/frames/LazyScreen.qml;${PROJECT_SOURCE_DIR}/src/app/qml/frames/KeepAlive.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
+set_tests_properties(test_music_library PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/content/qtcraft/music")
+set_tests_properties(test_music_stream test_music_player PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/tests/data/music/stereo_tone.ogg;${PROJECT_SOURCE_DIR}/tests/data/music/mono_tone.ogg")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
 set_tests_properties(test_generator_versions PROPERTIES REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")

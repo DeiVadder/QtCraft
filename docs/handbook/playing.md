@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs) · [Music](#chapter-qtcraft-music)
 
 ## QtCraft
 
@@ -1151,3 +1151,47 @@ A pack is a folder with a **texturepack.json** and PNG images (or texture descri
 **When something is wrong**
 
 A damaged image or one of the wrong size is skipped and listed under its pack; that texture then comes from the next pack. Very large packs are shown at a lower resolution when the graphics card or the memory would not take them, and the settings say so.
+
+### <a id="chapter-qtcraft-music"></a>Music
+
+**Tracks or generated music**
+
+Now and then music plays, with a pause of several minutes between two pieces. **Settings → Audio → Music** chooses where it comes from: the **Scott Buckley tracks** (the default) or **generated** pieces the game composes itself.
+
+Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.
+
+**Where which music plays**
+
+In the overworld the tracks follow the day, the night and the caves; each biome of the nether has its own, and the menus have theirs. Walking from day into a cave lets a piece play to its end, the next one fits the new place. Going through a portal or back to the menu fades the piece out, and the next one starts soon. Where no track fits, a generated piece plays. Mods can bring tracks of their own.
+
+**Credits**
+
+The tracks are licensed under the Creative Commons Attribution 4.0 International licence (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/ The game ships its text as **CC-BY-4.0.txt** with the other licences. They were converted to Ogg Vorbis; nothing else was changed.
+
+'Borealis' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Cobalt' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Ephemera' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Hymn To The Dawn' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In Search Of Solitude' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In This Moment' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Intervention' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Katabasis I (The Weight of Air)' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Machina' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Moonlight' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Shadows and Dust' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'She Moved Mountains' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'The Old Ones' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Unraveling' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au

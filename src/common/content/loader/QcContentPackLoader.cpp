@@ -47,11 +47,9 @@ QcResult<QByteArray> QcContentPackLoader::readPackFile(const QString &path)
     return data;
 }
 
-namespace {
-
-[[nodiscard]] QcResult<QJsonObject> readJsonObject(const QString &path)
+QcResult<QJsonObject> QcContentPackLoader::readJsonObject(const QString &path)
 {
-    const QcResult<QByteArray> data = QcContentPackLoader::readPackFile(path);
+    const QcResult<QByteArray> data = readPackFile(path);
     if (!data) {
         return qcError(data.error());
     }
@@ -67,6 +65,8 @@ namespace {
     }
     return document.object();
 }
+
+namespace {
 
 QStringList filesIn(const QString &directory, const QString &filter)
 {
@@ -104,7 +104,7 @@ QVersionNumber QcContentPackLoader::parseVersion(const QString &text)
 
 QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &directory)
 {
-    const QcResult<QJsonObject> manifest = readJsonObject(QDir(directory).filePath(u"pack.json"_s));
+    const QcResult<QJsonObject> manifest = QcContentPackLoader::readJsonObject(QDir(directory).filePath(u"pack.json"_s));
     if (!manifest) {
         return qcError(manifest.error());
     }
@@ -242,7 +242,7 @@ void PackReader::loadDefinitions(const QString &folder, Parser parse, Register r
 {
     const QStringList files = filesIn(m_root.filePath(folder), u"*.json"_s);
     for (const QString &path : files) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
             continue;
@@ -276,7 +276,7 @@ auto PackReader::readSettingsFile(const QString &file, Parse parse)
         return std::nullopt;
     }
 
-    const QcResult<QJsonObject> json = readJsonObject(path);
+    const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
     if (!json) {
         m_warnings.append(u"%1: %2"_s.arg(path, json.error()));
         return std::nullopt;
@@ -294,7 +294,7 @@ void PackReader::loadTextures()
 {
     const QStringList textureFiles = filesIn(m_root.filePath(u"textures"_s), u"*.json"_s);
     for (const QString &path : textureFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         const QcResult<QcTextureDefinition> texture =
             json ? QcContentParser::parseProceduralTexture(*json, m_packId) : QcResult<QcTextureDefinition>(qcError(json.error()));
         if (!texture) {
@@ -344,7 +344,7 @@ void PackReader::loadBlocks()
 {
     const QStringList blockFiles = filesIn(m_root.filePath(u"blocks"_s), u"*.json"_s);
     for (const QString &path : blockFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
             continue;
@@ -414,7 +414,7 @@ void PackReader::loadVillageStyles()
     QList<std::pair<QString, QJsonObject>> extensions;
     const QStringList files = filesIn(m_root.filePath(u"villages"_s), u"*.json"_s);
     for (const QString &path : files) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
         } else if (json->contains(u"extends"_s)) {
@@ -597,7 +597,7 @@ void PackReader::loadTranslations()
 {
     const QStringList languageFiles = filesIn(m_root.filePath(u"lang"_s), u"*.json"_s);
     for (const QString &path : languageFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         const QcResult<QHash<QString, QString>> entries =
             json ? QcContentParser::parseTranslations(*json) : QcResult<QHash<QString, QString>>(qcError(json.error()));
         if (!entries) {

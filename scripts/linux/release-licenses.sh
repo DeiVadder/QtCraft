@@ -140,6 +140,7 @@ write_licenses() {
         cp "$PROJECT_DIR/$file" "$licenses/QtCraft-$file" || return 1
     done
     cp "$PROJECT_DIR/src/app/fonts/OFL.txt" "$licenses/PixelifySans-OFL.txt" &&
+        cp "$PROJECT_DIR/LICENSES/CC-BY-4.0.txt" "$licenses/CC-BY-4.0.txt" &&
         cp "$SDL_PREFIX/LICENSE.txt" "$licenses/SDL3-LICENSE.txt" &&
         cp "$SDL_PREFIX/HIDAPI-LICENSE.txt" "$licenses/HIDAPI-LICENSE.txt" &&
         cp "$SDL_PREFIX/LIBM-NOTICE.txt" "$licenses/SDL3-LIBM-NOTICE.txt" &&

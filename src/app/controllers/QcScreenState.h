@@ -94,7 +94,7 @@ public:
     // The pages of the settings in the order of their side bar (GameController.SettingsPage in QML,
     // decision E-845): graphics (with the display options), audio, controls (the key table),
     // controller, interface, texture packs and advanced (with the debug options).
-    enum class SettingsPage { Graphics, Audio, Controls, Controller, Interface, TexturePacks, Advanced };
+    enum class SettingsPage { Graphics, Audio, Controls, Controller, Interface, TexturePacks, Advanced, About };
     Q_ENUM(SettingsPage)
 
     explicit QcScreenState(const QcSessionParts &parts, QObject *parent = nullptr);

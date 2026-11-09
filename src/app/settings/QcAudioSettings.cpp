@@ -5,6 +5,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "audio/QcAudioEngine.h"
+#include "clientcore/music/QcMusicLibrary.h"
 
 QcAudioSettings::QcAudioSettings(QcAudioEngine *audio, QObject *parent)
     : QObject(parent)
@@ -71,6 +72,33 @@ void QcAudioSettings::setMuted(bool muted)
     }
 }
 
+void QcAudioSettings::setMusicSource(MusicSource source)
+{
+    if (source != MusicSource::Tracks && source != MusicSource::Generated) {
+        qCWarning(lcGame) << "Ignoring unknown music source" << static_cast<int>(source);
+        return;
+    }
+
+    const auto checked = static_cast<QcMusicSource>(source);
+    if (m_musicSource != checked) {
+        m_musicSource = checked;
+        apply();
+        emit changed();
+    }
+}
+
+QStringList QcAudioSettings::musicCredits() const
+{
+    const std::shared_ptr<const QcMusicLibrary> &library = m_audio->music().director().library();
+    return library ? library->attributions() : QStringList{};
+}
+
+void QcAudioSettings::setMusicLibrary(std::shared_ptr<const QcMusicLibrary> library)
+{
+    m_audio->music().director().setLibrary(std::move(library));
+    emit musicCreditsChanged();
+}
+
 void QcAudioSettings::load(const QcGameSettings::AudioVolumes &volumes)
 {
     m_masterVolume = volumes.master;
@@ -78,13 +106,14 @@ void QcAudioSettings::load(const QcGameSettings::AudioVolumes &volumes)
     m_musicVolume = volumes.music;
     m_ambientVolume = volumes.ambient;
     m_muted = volumes.muted;
+    m_musicSource = volumes.musicSource;
     apply();
     emit changed();
 }
 
 QcGameSettings::AudioVolumes QcAudioSettings::volumes() const
 {
-    return {m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted};
+    return {m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted, m_musicSource};
 }
 
 void QcAudioSettings::apply() const
@@ -92,6 +121,7 @@ void QcAudioSettings::apply() const
     const double music = m_worldPaused ? 0.0 : m_musicVolume;
     const double ambient = m_worldPaused ? 0.0 : m_ambientVolume;
     m_audio->setVolumes(m_masterVolume, m_effectsVolume, music, ambient, m_muted);
+    m_audio->music().director().setSource(m_musicSource);
 }
 
 void QcAudioSettings::setWorldPaused(bool paused)

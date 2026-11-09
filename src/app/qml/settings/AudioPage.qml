@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import QtQuick
+import QtQuick.Layouts
 import QtCraft
 
 // The audio page of the settings (decision E-845): the master volume with the mute switch right
-// below it (muted, the volumes dim but stay adjustable), then music, effects and ambience.
+// below it (muted, the volumes dim but stay adjustable), then music, effects and ambience; below
+// them where the music comes from (decision E-1137) with the note about Content ID.
 SettingsPage {
     id: page
 
@@ -60,6 +62,25 @@ SettingsPage {
             value: page.game.settings.audio.ambientVolume
             valueText: qsTr("%1 %").arg(Math.round(value * 100))
             onMoved: page.game.settings.audio.ambientVolume = value
+        }
+    }
+
+    SettingGroup {
+        title: qsTr("Soundtrack")
+
+        SettingChoice {
+            label: qsTr("Music")
+            model: [
+                { text: qsTr("Scott Buckley tracks"), value: AudioSettings.MusicSource.Tracks },
+                { text: qsTr("Generated"), value: AudioSettings.MusicSource.Generated }
+            ]
+            currentValue: page.game.settings.audio.musicSource
+            onActivated: value => page.game.settings.audio.musicSource = value
+        }
+
+        Hint {
+            Layout.fillWidth: true
+            text: qsTr("Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.")
         }
     }
 }
