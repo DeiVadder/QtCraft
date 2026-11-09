@@ -6782,3 +6782,63 @@ Netherblöcke bekommen eigene Klangmaterialien (je `break`, `hit`, `place`, `ste
 | Klangmaterialien Netherblöcke | Stein, Holz, Netherrack, Seelensand, Erde, Gras, Metall | 14 eigene (E-1122) | eigen; Vorbild hat eigene Materialien für dieselben Gruppen (Schwarzstein dort wie Stein) |
 
 **Showcase:** Die Ankunft im Nether (`nether_arrival`) hat jetzt einen Bogen aus weinendem Obsidian (Tränen von Unterseite und Seiten) und ein Lavabecken auf einer Netherrack-Decke (Lavatropfen darunter), beide beschriftet; Seelen steigen aus dem Seelensand der Blockreihe. Nebel, Biompartikel und Klang zeigt jedes Netherbiom selbst (`/locate biome`).
+## E-1125 Verkohlte Hydra: Beschwörung aus Seelenblöcken und verkohlten Schädeln (Paket 86.1) — `QcHydraDefinition`, `QcHydraSummoning`, `QcServerHydras`, `QcAdvancementTrigger::EntitySummoned`
+
+- **Name (E-894):** Der Wither des Vorbilds heißt hier **Verkohlte Hydra** / *Charred Hydra* (`charred_hydra`), seine Schädel `hydra_skull` (schwarz) und `charged_hydra_skull` (blau), die Beute **Netherstern** (`nether_star`). Der Schädelblock ist der vorhandene `charred_skull` (84.5b), das Witherskelett das verkohlte Skelett. „Verdorren“/*wither* bleibt der Name des Effekts.
+- **Daten:** Eine Kreatur mit `"ai": "hydra"` braucht ein Objekt `"hydra"` (und umgekehrt), dazu `"hostile": true` und `"hover"` (`QcMobReader::parseBoss`, eigene Datei `QcMobReaderBoss.cpp`). `summon: {body: [Blöcke], head: Block}` beschreibt das T. Die übrigen Felder stehen in `docs/Modding.md`.
+- **Form:** ein aufrechtes T entlang x oder z: drei Körperblöcke in einer Reihe, ein vierter darunter in der Mitte mit Luft auf beiden Seiten, auf jedem der drei ein Kopfblock. Der zuletzt gesetzte Kopf darf jeder der drei sein, auch im Kreativmodus. Die sieben Blöcke verschwinden ohne Beute; die Hydra steht dauerhaft (`persistent`) am Fuß des T, blickt quer zum T, hat ein Drittel ihrer Gesundheit und lädt (`QcHydraState::chargeTicks`).
+- **Auslöser:** nur ein Spieler, der den Block setzt (`QcServerInteraction::applyPlacement` neben dem Golembau). Werfer und Befehle (`/setblock`) beschwören nicht. Das Vorbild prüft auch die Muster mit Dispensern; hier nicht.
+- **Fortschritt:** neuer Auslöser `entity_summoned` (Bedingung `entity`). Jeder Spieler mit Körper im Umkreis von 50 Blöcken (Vorbild) bekommt ihn.
+- **Abweichung:** Das Vorbild findet das Muster in jeder Lage (auch liegend oder kopfüber); hier nur aufrecht in beiden waagrechten Richtungen.
+
+## E-1126 Verkohlte Hydra: Laden, Kampf, Schädel, Rüstung (Paket 86.1) — `QcHydraBrain`, `QcHydraState`, `QcHydraRules`, `QcServerHydras`, `QcMsg::Armoured`
+
+- **Laden (220 Ticks):** unverwundbar (jeder Treffer `Ignored`), bewegt sich nicht, heilt 10 je 10 Ticks (`QcHydraDefinition::chargeHealSeconds`), am Ende eine Explosion der Stärke 7 in Kopfhöhe, die Blöcke nur bricht, wenn Explosionen Blöcke brechen und `mobGriefing` gilt; sie verschont die eigene Art (`QcServerExplosions::Blast::spares`). Dazu der Laut `mob.charred_hydra.spawn` (Reichweite 128; im Vorbild global für alle Spieler).
+- **Ziele:** Hauptkopf: wer sie zuletzt traf, sonst das nächste Ziel in 40 m waagrecht und 4 m auf und ab, gehalten bis 40 m. Ziele sind lebende, angreifbare Spieler und jede wache Kreatur, die nicht `undead` ist. Seitenköpfe: alle 10–20 Ticks ein Blick; sehen sie ihr Ziel in 30 m, schießen sie und warten 40–60 Ticks, sonst wählen sie ein zufälliges Ziel in 20/8/20 m; nach mehr als 15 Blicken ohne Schuss ein blauer Schädel an eine zufällige Stelle (±10, ±5, ±10). Ein frischer Treffer zählt bei beiden Seitenköpfen 3 Blicke dazu.
+- **Schüsse:** Hauptkopf alle 2 s auf sein Ziel in 20 m, wenn er es sieht; mit 0,1 % ein blauer Schädel. Schwarz 16 m/s, blau 5 m/s. Schaden: `amount` 10 bzw. 32 (je 20 m/s), also 8 Schaden für beide, wie im Vorbild. Beide: Verdorren II für 10 s, Explosion Stärke 1, die Blöcke unter denselben Regeln wie der Feuerball bricht. Der blaue Schädel rechnet die Sprengfestigkeit zerbrechlicher Blöcke höchstens als 0,8 (`QcProjectileDefinition::blastResistanceLimit`, `QcExplosionRays`): Obsidian bricht, Grundgestein nicht.
+- **Schutz (`QcHydraRules::shields`):** Geschosse von untoten Kreaturen (auch die eigenen Schädel) treffen sie nie. In der Rüstung prallen Geschosse ab, die in Blöcken stecken bleiben und Schaden machen (`sticks` und `damage` > 0): die Pfeile, wie im Vorbild alle `AbstractArrow` (Pfeile und Dreizack; einen Dreizack gibt es hier noch nicht, er fiele von selbst darunter).
+- **Flug:** Hover ohne Pfade. Mit Ziel hält sie die Füße 5 über denen des Ziels, in der Rüstung auf derselben Höhe, und fliegt bis 3 m waagrecht heran (8,6 m/s waagrecht, Steigen 7,7 m/s, abgeleitet vom Vorbild). Ohne Ziel wandert sie mit 3 m/s.
+- **Rüstung:** ab Gesundheit ≤ der Hälfte (`armourShare` 0,5). Der Client zeichnet Modellteile mit `"armour": true` nur mit dem neuen Flag `Armoured` (Bit 32768, das letzte freie Bit der 16 Bit breiten Flags: das nächste Flag, etwa für 86.2, braucht ein breiteres Feld und eine neue Protokollversion), durchscheinend als Gitter (Alpha-Test) und schimmernd (die Helligkeit wellt mit der Zeit, `QcEntityMesher`). Beim Laden leuchtet sie die ganze Zeit und blinkt in den letzten 80 Ticks alle 5 Ticks (wie das Vorbild seine blaue Haut).
+- **Erholung:** 1 Gesundheit je Sekunde (alle 20 Ticks). 20 Ticks nach einem frischen Treffer bricht sie alle Blöcke in 3 × 3 × 4 ab ihren Füßen außer Luft, Flüssigkeiten und unzerbrechlichen (ein Portal bricht, wie im Vorbild, dessen Wither nur die Blöcke seines Tags `wither_immune` verschont), mit Beute, nur unter `mobGriefing` und nicht in einem Gehege (`confined`); dazu der Laut `mob.charred_hydra.break`.
+- **Abweichungen:** Die Seitenköpfe drehen mit dem Körper (das Protokoll kennt keine Kopfwinkel je Kopf); ihr Blick ist nur für Ziel und Schuss eigen. Vom Zustand der Hydra wird nur das Laden gespeichert (Komponente `Hydra`, die restlichen Ticks; begrenzt auf die Dauer einer Beschwörung): geladen lädt sie weiter und explodiert danach; Ziele und Zeitgeber beginnen neu. Die Heilung um 5, wenn ein Schädel ein Ziel tötet, fehlt. Es gibt keine Schwierigkeitsgrade: es gelten die Werte von „Normal“. Kreaturen haben hier keine Rüstungspunkte; die 4 Punkte des Vorbilds fehlen. Flüssigkeiten bleiben beim Blockbrechen stehen (das Vorbild entfernt auch Wasser).
+
+## E-1127 Allgemeine Bossleiste (Paket 86.1) — `QcBossBarDefinition`, `QcServerBossBars`, `QcMsg::BossBar`, `QcClientBossBars`, `QcBossBarModel`, `BossBars.qml`
+
+- **Daten:** `"bossBar": {"colour": "purple", "range": 160}` an jeder Kreatur (Farben wie im Vorbild: pink, blue, red, green, yellow, purple, white; Reichweite 1–512 m). Damit kann der Drache (86.2) dieselbe Leiste nutzen.
+- **Server:** In jeder Dimension sieht jeder Spieler die Leiste jeder solchen Kreatur in Reichweite; ohne Verstand (`noAi`) oder in ihrem Gehege (`confined`), also als Vitrine des Showcase, keine. Gesendet wird nur, was kommt, sich ändert oder geht (`QcServerClient::View::bossBars`, beim Dimensionswechsel geleert). Der Füllstand ist die Gesundheit durch die höchste; eine ladende Hydra heilt, ihre Leiste füllt sich (wie im Vorbild).
+- **Protokoll 96** (95 nahm 84.9): `BossBar {entity, kind, name, progress, colour, shown}` vom Server; der Client vergisst alle Leisten bei `DimensionChange`. Dazu das Flag `Armoured` und `armour` der Modellteile im Content-Sync.
+- **Client:** `QcClientBossBars` (höchstens 4 gezeigt, in der Reihenfolge ihres Kommens), `GameController.hud.bossBars` (Name übersetzt, Namensschild geht vor), `BossBars.qml` oben mittig, auch hinter offenen Bildschirmen.
+
+## E-1128 Netherstern und Beute der Hydra (Paket 86.1) — `QcBlastBodies`
+
+- **Beute:** immer ein Netherstern (`nether_star`, Tag `fire_resistant`: brennt nicht in Lava oder Feuer) und 50 Erfahrung.
+- **Explosionen:** Item-Entities nehmen hier ohnehin keinen Schaden durch Explosionen; der Stern übersteht sie also wie im Vorbild. Die längere Lebensdauer des Vorbilds für den Stern fehlt.
+- **Fortschritte:** „Drei Köpfe erheben sich“ (beschwören, unter „Verborgen in der Tiefe“) und die Herausforderung „Stern des Nethers“ (töten).
+
+## E-1129 Werte der Hydra nach dem Vorbild (Paket 86.1)
+
+| Wert | alt | neu | Quelle |
+|------|-----|-----|--------|
+| Gesundheit | – | 300 | Vorbild, sicher |
+| Größe | – | 0,9 × 3,5 | Vorbild, sicher |
+| Rüstungspunkte | – | keine (Vorbild 4) | Abweichung: Kreaturen ohne Rüstung |
+| Folgereichweite | – | 40 m | Vorbild, sicher |
+| Laden | – | 220 Ticks, Start mit 1/3 Gesundheit, +10 je 10 Ticks | Vorbild, sicher |
+| Explosion am Ende | – | Stärke 7 in Kopfhöhe, mobGriefing | Vorbild, sicher |
+| Erholung | – | 1 je 20 Ticks | Vorbild, sicher |
+| Zweite Phase | – | Gesundheit ≤ 1/2: Pfeile prallen ab, Höhe des Ziels statt +5 | Vorbild, sicher |
+| Was abprallt | Item-Tag `arrows` | Geschosse mit `sticks` und Schaden (Pfeile; ein späterer Dreizack auch) | Vorbild: `AbstractArrow` (Pfeil, Spektralpfeil, Dreizack), sicher |
+| Blöcke, die sie bricht | alle außer Luft, Flüssigkeit, unzerbrechlich | dazu das Netherportal | Vorbild: alles außer Tag `wither_immune` (Grundgestein, Endportal, Befehlsblöcke …), sicher |
+| Geschwindigkeit | – | 8,6 m/s waagrecht, Steigen 7,7 m/s, 3 m Abstand | abgeleitet aus Flug und Bewegungscode des Vorbilds, unsicher |
+| Hauptkopf | – | alle 40 Ticks bis 20 m, blau mit 0,001 | Vorbild, sicher |
+| Seitenköpfe | – | Blick alle 10–20 Ticks, Schuss bis 30 m, dann 40–60 Ticks, Suche 20/8/20, ab 15 leeren Blicken blau an zufällige Stelle | Vorbild, sicher |
+| Blöcke brechen | – | 20 Ticks nach Treffer, 3 × 3 × 4, mit Beute | Vorbild, sicher |
+| Schwarzer Schädel | – | 16 m/s, 8 Schaden, Explosion 1 | Vorbild (Geschwindigkeit gemittelt, im Vorbild beschleunigt er), unsicher |
+| Blauer Schädel | – | 5 m/s, 8 Schaden, Sprengfestigkeit höchstens 0,8 | Vorbild, sicher |
+| Verdorren | – | Stufe II, 10 s | Vorbild „Normal“ (Schwer: 40 s), sicher |
+| Immun | – | Ertrinken, Feuer, Verdorren, eigene Schädel, Angriffe Untoter | Vorbild, sicher |
+| Erfahrung | – | 50 | Vorbild, sicher |
+| Fortschritt Reichweite | – | 50 Blöcke | Vorbild, sicher |
+| Bossleiste | – | lila, 160 m | Vorbild (Verfolgungsreichweite 10 Chunks), sicher |
+
+**Showcase:** Station `hydra_arena` (Reihenfolge 119): das Beschwörungs-T aus Seelensand und Seelenerde mit zwei der drei verkohlten Schädel (der dritte fehlt, damit nichts aufwacht) und eine Hydra ohne Verstand in einem Glasgehege. **Handbuch:** Kapitel „Die Verkohlte Hydra“ (Beschwörung, Kampf, Hälfte der Gesundheit, Netherstern), Beschreibungen der Hydra, des Sterns und der Schädel. Prozedurale Texturen (Knochen, Rippen, Schädel, Gesicht, blaue Rüstung, Item-Bilder) und Laute (Grollen, Treffer, Tod, Beschwörung, Blockbrechen, Schädel).

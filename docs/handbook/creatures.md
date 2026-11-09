@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Charred Skeleton](#mob-qtcraft-charred_skeleton) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Ember Wraith](#mob-qtcraft-ember_wraith) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Tuskling Bruiser](#mob-qtcraft-tuskling_bruiser) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Bristleboar](#mob-qtcraft-bristleboar) · [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Charred Hydra](#mob-qtcraft-charred_hydra) · [Charred Skeleton](#mob-qtcraft-charred_skeleton) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Ember Wraith](#mob-qtcraft-ember_wraith) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Lava Wader](#mob-qtcraft-lava_wader) · [Little Kjut](#mob-qtcraft-kjut_child) · [Little Magma Slime](#mob-qtcraft-magma_slime_small) · [Magma Slime](#mob-qtcraft-magma_slime) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Rottusk](#mob-qtcraft-rottusk) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Tuskling](#mob-qtcraft-tuskling) · [Tuskling Bruiser](#mob-qtcraft-tuskling_bruiser) · [Villager](#mob-qtcraft-villager) · [Wailer](#mob-qtcraft-wailer) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -87,6 +87,22 @@ A small, blue spider of caves and mine shafts, where spawners bring it forth. It
 | Sees players within | 16 m |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | [String](items.md#item-qtcraft-string), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
+
+### <a id="mob-qtcraft-charred_hydra"></a>Charred Hydra
+
+A boss of black bone with three skulls on its shoulders, summoned and never born. It floats above its foes and spits skulls at players and at every creature that is not undead; now and then a slow blue skull that breaks even obsidian. Each skull withers. Hurt it and it smashes the blocks around it. Below half its health it puts on armour: arrows glance off, and it comes down to fight close. It heals slowly all the time. It leaves a Nether Star.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_hydra` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 300 health points |
+| Size | 0.9 m wide, 3.5 m tall |
+| Speed | 3 m/s walking, 8.6 m/s chasing |
+| Sees players within | 40 m |
+| Appears | never by itself (/summon, showcase world) |
+| Glows | 2 of 15 |
+| Drops | [Nether Star](items.md#item-qtcraft-nether_star) |
 
 ### <a id="mob-qtcraft-charred_skeleton"></a>Charred Skeleton
 

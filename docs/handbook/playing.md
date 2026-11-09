@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -802,6 +802,28 @@ Netherite tools last 2031 uses, mine faster than diamond and break blocks of lev
 **See also**
 
 [Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Smithing table](blocks.md#block-qtcraft-smithing_table), [Netherite upgrade](items.md#item-qtcraft-netherite_upgrade_smithing_template), [Netherite sword](tools.md#item-qtcraft-netherite_sword), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate)
+
+### <a id="chapter-qtcraft-charred_hydra"></a>The Charred Hydra
+
+**Summoning**
+
+Build a **T** of four blocks of soul sand or soul soil: three in a row and one under the middle, with air on both sides of that foot. Then place three **charred skulls** on top of the row, from the Charred Skeletons of the fortresses. The last skull wakes the hydra, in creative mode too, and every player within 50 blocks gets the advancement. Build it far from your home.
+
+**The fight**
+
+For eleven seconds the hydra gathers its strength: it cannot be hurt and fills its health. Then it bursts with a blast stronger than any explosive, which breaks blocks unless the rule mobGriefing forbids it. After that it flies above whoever it fights and spits **skulls** from its three heads: the middle head at its target, the side heads at targets of their own. The skulls explode and give **wither**: the hearts go dark and drain. Undead creatures are safe from it. Every hurt makes it smash the blocks around it, and it heals a point every second.
+
+**Half its health**
+
+Below half its health the hydra wears **armour**: arrows glance off, so finish it with a sword. It stops keeping its distance and comes down to the level of its target.
+
+**The Nether Star**
+
+A defeated hydra leaves a **Nether Star** and plenty of experience. The star does not burn and survives explosions.
+
+**See also**
+
+[Charred Hydra](creatures.md#mob-qtcraft-charred_hydra), [Charred Skull](blocks.md#block-qtcraft-charred_skull), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Nether Star](items.md#item-qtcraft-nether_star)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 

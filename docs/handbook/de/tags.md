@@ -16,7 +16,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Antiker Schrott](blocks.md#block-qtcraft-ancient_debris), [Netheritaxt](tools.md#item-qtcraft-netherite_axe), [Netheritbarren](items.md#item-qtcraft-netherite_ingot), [Netheritbeinschutz](tools.md#item-qtcraft-netherite_leggings), [Netheritblock](blocks.md#block-qtcraft-netherite_block), [Netheritbrustplatte](tools.md#item-qtcraft-netherite_chestplate), [Netherithacke](tools.md#item-qtcraft-netherite_hoe), [Netherithelm](tools.md#item-qtcraft-netherite_helmet), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel), [Netheritschrott](items.md#item-qtcraft-netherite_scrap), [Netheritschwert](tools.md#item-qtcraft-netherite_sword), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe), [Netheritstiefel](tools.md#item-qtcraft-netherite_boots)
+[Antiker Schrott](blocks.md#block-qtcraft-ancient_debris), [Netheritaxt](tools.md#item-qtcraft-netherite_axe), [Netheritbarren](items.md#item-qtcraft-netherite_ingot), [Netheritbeinschutz](tools.md#item-qtcraft-netherite_leggings), [Netheritblock](blocks.md#block-qtcraft-netherite_block), [Netheritbrustplatte](tools.md#item-qtcraft-netherite_chestplate), [Netherithacke](tools.md#item-qtcraft-netherite_hoe), [Netherithelm](tools.md#item-qtcraft-netherite_helmet), [Netheritschaufel](tools.md#item-qtcraft-netherite_shovel), [Netheritschrott](items.md#item-qtcraft-netherite_scrap), [Netheritschwert](tools.md#item-qtcraft-netherite_sword), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe), [Netheritstiefel](tools.md#item-qtcraft-netherite_boots), [Netherstern](items.md#item-qtcraft-nether_star)
 
 ### <a id="tag-qtcraft-wooden_slabs"></a>#wooden_slabs
 

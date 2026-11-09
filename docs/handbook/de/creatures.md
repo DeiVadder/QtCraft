@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hauerling-Recke](#mob-qtcraft-tuskling_bruiser) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hauerling-Recke](#mob-qtcraft-tuskling_bruiser) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohlte Hydra](#mob-qtcraft-charred_hydra) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -947,6 +947,22 @@ Ein harmloses Wesen der Flüsse, Seen und Meere unter dem Meeresspiegel. Es schw
 **Erscheint in Biomen**
 
 Alle Biome.
+
+### <a id="mob-qtcraft-charred_hydra"></a>Verkohlte Hydra
+
+Ein Boss aus schwarzem Gebein mit drei Schädeln auf den Schultern, beschworen und nie geboren. Er schwebt über seinen Gegnern und spuckt Schädel auf Spieler und auf jedes Wesen, das nicht untot ist; ab und zu einen langsamen blauen Schädel, der sogar Obsidian bricht. Jeder Schädel lässt verdorren. Wer ihn verletzt, sieht ihn die Blöcke um sich zerschlagen. Unter der Hälfte seiner Gesundheit legt er Rüstung an: Pfeile prallen ab, und er kommt zum Nahkampf herunter. Er heilt ständig langsam. Er hinterlässt einen Netherstern.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_hydra` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 300 Lebenspunkte |
+| Größe | 0,9 m breit, 3,5 m hoch |
+| Geschwindigkeit | 3 m/s beim Gehen, 8,6 m/s beim Verfolgen |
+| Sieht Spieler bis | 40 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 2 von 15 |
+| Beute | [Netherstern](items.md#item-qtcraft-nether_star) |
 
 ### <a id="mob-qtcraft-charred_skeleton"></a>Verkohltes Skelett
 

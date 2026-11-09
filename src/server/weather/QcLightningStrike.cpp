@@ -84,7 +84,7 @@ void QcLightningStrike::hitCreatures(QcBlockPos pos)
         // Like a hit: the hurt sound when the damage takes, the death sound and the loot when it dies.
         const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
         const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-        const bool fresh = mob->hurt.wouldTake(lightning.damage) == QcHurtWindow::Take::Fresh;
+        const bool fresh = mob->wouldTake(lightning.damage) == QcHurtWindow::Take::Fresh;
         if (const std::optional<QList<QcItemDrop>> drops = m_state.entities().creatures().damage({.creature = id, .damage = lightning.damage, .from = from})) {
             m_sounds.play(definition.deathSound, centre);
             m_state.entities().noteDeath(id);

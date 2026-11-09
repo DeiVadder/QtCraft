@@ -3,7 +3,10 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
+
+#include <optional>
 
 class QcBlastField;
 class QcPlayerHealth;
@@ -37,8 +40,9 @@ public:
     QcBlastBodies(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health);
 
     /*! Hurts and pushes the players and creatures around a blast of \a power at \a centre, their
-        sight read from \a field. Returns the bodies hurt. */
-    Hits hurt(QcBlastField &field, const QcVec3 &centre, double power);
+        sight read from \a field, but no creature of the kind \a spares (decision E-1126). Returns
+        the bodies hurt. */
+    Hits hurt(QcBlastField &field, const QcVec3 &centre, double power, std::optional<QcCreatureKindId> spares = std::nullopt);
 
     /*! Returns the impact on a body \a distance from the centre of a blast of \a power that sees
         it with \a exposure (0 beyond reach). */
@@ -48,7 +52,7 @@ public:
 
 private:
     int hurtPlayers(QcBlastField &field, const QcVec3 &centre, double power);
-    int hurtCreatures(QcBlastField &field, const QcVec3 &centre, double power);
+    int hurtCreatures(QcBlastField &field, const QcVec3 &centre, double power, std::optional<QcCreatureKindId> spares);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

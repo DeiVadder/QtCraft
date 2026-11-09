@@ -11,6 +11,7 @@
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPose.h"
 #include "server/animals/QcBarterState.h"
+#include "server/bosses/QcHydraState.h"
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
 #include "server/entities/QcHurtWindow.h"
@@ -23,6 +24,8 @@
 #include "server/villages/QcVillager.h"
 
 #include <optional>
+
+struct QcMobDefinition;
 
 /*! \brief A creature (decision E-364): a mob of the content's definitions (\c {type} indexes them)
     with its health, behaviour timers and breeding state.
@@ -157,6 +160,9 @@ struct QcCreature : QcEntity
     quint32 vehicle = 0;
     /*! The heading and charge of a drifter (QcMobDefinition::Ai::Drifter, decision E-1053). */
     QcComponent<QcDrifterState> drifter;
+    /*! The charge, heads and targets of a charred hydra (QcMobDefinition::Ai::Hydra, decision
+        E-1126). */
+    QcComponent<QcHydraState> hydra;
     /*! What a creature that barters holds and looks at (QcMobDefinition::barter, decision
         E-1081): a component only creatures of such a kind have. */
     QcComponent<QcBarterState> barter;
@@ -237,4 +243,23 @@ struct QcCreature : QcEntity
         harvesting, a villager picking up food). A confined creature and one without a mind
         change nothing. */
     bool mayGrief(bool rule) const { return rule && !confined && !noAi; }
+    /*! Returns how a hit of \a amount would take now (QcHurtWindow::wouldTake); a charging hydra
+        takes none (decision E-1126). */
+    [[nodiscard]] QcHurtWindow::Take wouldTake(double amount) const
+    {
+        return hydra && hydra->charging() ? QcHurtWindow::Take::Ignored : hurt.wouldTake(amount);
+    }
+    /*! A fresh hurt took: it shows (hurtThisTick, hurtUnsent), and a hydra notes it
+        (QcHydraState::noteHurt). */
+    void noteFreshHurt()
+    {
+        hurtThisTick = true;
+        hurtUnsent = true;
+        if (hydra) {
+            hydra->noteHurt();
+        }
+    }
+    /*! Gives it the state the brain of the kind \a definition keeps (archers, drifters, hydras,
+        golems). */
+    void addBrainState(const QcMobDefinition &definition);
 };

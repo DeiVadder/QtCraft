@@ -19,6 +19,7 @@
 #include "server/blocks/QcOpeners.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/boats/QcServerBoats.h"
+#include "server/bosses/QcHydraSummoning.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/dimensions/QcServerPortals.h"
@@ -362,6 +363,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     QcServerSigns(m_state).openEditor(client, target);
     // A golem's head on its body brings it to life (decision E-471).
     m_parts.golems.build(target);
+    // Three charred skulls on a T of soul blocks summon the charred hydra (decision E-1125).
+    QcHydraSummoning(m_state, m_parts.blocks).summon(target);
     // A fish bucket lets its fish out into the water it pours, kept with the world (decision E-501).
     QcServerAnimals::release(m_state, held, QcServerAnimals::releasePoint(target));
 

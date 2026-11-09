@@ -1,0 +1,260 @@
+{
+    "name": "charred_hydra",
+    "sounds": {
+        "ambient": "mob.charred_hydra.ambient",
+        "hurt": "mob.charred_hydra.hurt",
+        "death": "mob.charred_hydra.death"
+    },
+    "breathesUnderWater": true,
+    "health": 300,
+    "width": 0.9,
+    "height": 3.5,
+    "walkSpeed": 3.0,
+    "chaseSpeed": 8.6,
+    "hostile": true,
+    "ai": "hydra",
+    "fireImmune": true,
+    "undead": true,
+    "immuneTo": [
+        "wither",
+        "poison",
+        "regeneration"
+    ],
+    "attackDamage": 0,
+    "attackRange": 0.5,
+    "attackCooldown": 1.0,
+    "sightRange": 40,
+    "hover": {
+        "height": 4.0,
+        "bob": 0.1,
+        "bobSeconds": 3.0,
+        "maxHeight": 24.0,
+        "turnSpeed": 180,
+        "climbSpeed": 7.7
+    },
+    "hydra": {
+        "summon": {
+            "body": [
+                "soul_sand",
+                "soul_soil"
+            ],
+            "head": "charred_skull"
+        },
+        "chargeSeconds": 11,
+        "chargeHeal": 10,
+        "blastPower": 7,
+        "summonSound": "mob.charred_hydra.spawn",
+        "regeneration": 1,
+        "armourShare": 0.5,
+        "hoverAbove": 5,
+        "attackRange": 20,
+        "attackSeconds": 2,
+        "skull": "hydra_skull",
+        "chargedSkull": "charged_hydra_skull",
+        "skullSpeed": 16,
+        "chargedSkullSpeed": 5,
+        "chargedChance": 0.001,
+        "breakSound": "mob.charred_hydra.break"
+    },
+    "bossBar": {
+        "colour": "purple",
+        "range": 160
+    },
+    "spawn": {
+        "weight": 0
+    },
+    "glow": 2,
+    "model": [
+        {
+            "from": [
+                -0.15,
+                0.55,
+                -0.1
+            ],
+            "to": [
+                0.15,
+                1.95,
+                0.2
+            ],
+            "texture": "charred_hydra_bone"
+        },
+        {
+            "from": [
+                -0.5,
+                1.2,
+                -0.25
+            ],
+            "to": [
+                0.5,
+                1.9,
+                0.25
+            ],
+            "texture": "charred_hydra_ribs"
+        },
+        {
+            "from": [
+                -0.1,
+                0.0,
+                0.05
+            ],
+            "to": [
+                0.1,
+                0.6,
+                0.25
+            ],
+            "texture": "charred_hydra_bone"
+        },
+        {
+            "from": [
+                -1.6,
+                1.75,
+                -0.15
+            ],
+            "to": [
+                1.6,
+                2.0,
+                0.15
+            ],
+            "texture": "charred_hydra_bone"
+        },
+        {
+            "from": [
+                -0.12,
+                2.0,
+                -0.1
+            ],
+            "to": [
+                0.12,
+                2.6,
+                0.1
+            ],
+            "texture": "charred_hydra_bone"
+        },
+        {
+            "from": [
+                -0.375,
+                2.6,
+                -0.375
+            ],
+            "to": [
+                0.375,
+                3.35,
+                0.375
+            ],
+            "texture": "charred_hydra_skull"
+        },
+        {
+            "from": [
+                -0.30000000000000004,
+                2.7125,
+                -0.387
+            ],
+            "to": [
+                0.30000000000000004,
+                3.2375,
+                -0.375
+            ],
+            "texture": "charred_hydra_face"
+        },
+        {
+            "from": [
+                -1.5750000000000002,
+                2.0,
+                -0.275
+            ],
+            "to": [
+                -1.025,
+                2.55,
+                0.275
+            ],
+            "texture": "charred_hydra_skull"
+        },
+        {
+            "from": [
+                -1.52,
+                2.0825,
+                -0.28700000000000003
+            ],
+            "to": [
+                -1.08,
+                2.4675000000000002,
+                -0.275
+            ],
+            "texture": "charred_hydra_face"
+        },
+        {
+            "from": [
+                1.025,
+                2.0,
+                -0.275
+            ],
+            "to": [
+                1.5750000000000002,
+                2.55,
+                0.275
+            ],
+            "texture": "charred_hydra_skull"
+        },
+        {
+            "from": [
+                1.08,
+                2.0825,
+                -0.28700000000000003
+            ],
+            "to": [
+                1.52,
+                2.4675000000000002,
+                -0.275
+            ],
+            "texture": "charred_hydra_face"
+        },
+        {
+            "from": [
+                -0.56,
+                1.14,
+                -0.31
+            ],
+            "to": [
+                0.56,
+                1.96,
+                0.31
+            ],
+            "texture": "charred_hydra_armour",
+            "armour": true
+        },
+        {
+            "from": [
+                -1.6600000000000001,
+                1.69,
+                -0.21
+            ],
+            "to": [
+                1.6600000000000001,
+                2.06,
+                0.21
+            ],
+            "texture": "charred_hydra_armour",
+            "armour": true
+        },
+        {
+            "from": [
+                -0.435,
+                2.54,
+                -0.435
+            ],
+            "to": [
+                0.435,
+                3.41,
+                0.435
+            ],
+            "texture": "charred_hydra_armour",
+            "armour": true
+        }
+    ],
+    "drops": [
+        {
+            "item": "nether_star"
+        }
+    ],
+    "experience": 50
+}

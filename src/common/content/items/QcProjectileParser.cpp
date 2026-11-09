@@ -104,6 +104,7 @@ namespace QcProjectileParser {
     projectile.floats = reader.boolean(u"floats"_s, projectile.floats);
     projectile.deflectable = reader.boolean(u"deflectable"_s, projectile.deflectable);
     projectile.launchSound = reader.name(u"launchSound"_s, packNamespace);
+    projectile.blastResistanceLimit = reader.number(u"blastResistanceLimit"_s, projectile.blastResistanceLimit, 0.0, 100.0);
     projectile.onHit = parseOnHit(packNamespace, projectile.damage, reader);
     // The damage of the hit is that of the damage effects.
     projectile.damage = 0.0;

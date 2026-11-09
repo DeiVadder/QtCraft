@@ -89,10 +89,12 @@ target_sources(qc_common PRIVATE
     content/mobs/QcAppearance.h
     content/mobs/QcAppearanceDefinition.h
     content/mobs/QcBarterDefinition.h
+    content/mobs/QcBossBarDefinition.h
+    content/mobs/QcHydraDefinition.h
     content/mobs/QcMobDefinition.h
     content/mobs/QcMobDrinkDefinition.h
     content/mobs/QcMobParser.h content/mobs/QcMobParser.cpp
-    content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderTraits.cpp
+    content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderBoss.cpp content/mobs/QcMobReaderTraits.cpp
     content/mobs/QcMobSerializer.h content/mobs/QcMobSerializer.cpp
     content/mobs/QcMobTraits.h
     content/mobs/QcMobTraitsContent.h content/mobs/QcMobTraitsContent.cpp
@@ -314,6 +316,8 @@ target_sources(qc_common PRIVATE
     protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
     protocol/QcAdvancementCodec.cpp
     protocol/QcAdvancementMessages.h
+    protocol/QcBossBarCodec.cpp
+    protocol/QcBossBarMessages.h
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcChunkCodec.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp

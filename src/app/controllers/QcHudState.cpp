@@ -43,7 +43,10 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     , m_heldMap(new QcHeldMap(parts, this))
     , m_labels(new QcWorldLabelModel(this))
     , m_debug(new QcDebugHud(parts, settings, this))
+    , m_bossBars(new QcBossBarModel(this))
 {
+    // The bars' names are in the content's language.
+    connect(&m_settings, &QcSettingsController::contentLanguageChanged, this, &QcHudState::updateBossBars);
 }
 
 bool QcHudState::viewShown() const
@@ -230,4 +233,14 @@ void QcHudState::updateLabels()
 
     const QcLabelProjector::View view{m_parts.view->camera(), m_parts.view->width(), m_parts.view->height()};
     m_labels->update(QcLabelProjector::visible(labels, view, session.world()), *session.content(), m_settings.contentLanguage());
+}
+
+void QcHudState::updateBossBars()
+{
+    if (!m_parts.session) {
+        m_bossBars->update({}, nullptr, m_settings.contentLanguage());
+        return;
+    }
+    const QcClientSession &session = *m_parts.session;
+    m_bossBars->update(session.bossBars().bars(), session.content().get(), m_settings.contentLanguage());
 }

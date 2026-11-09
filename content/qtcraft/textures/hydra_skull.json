@@ -1,0 +1,30 @@
+{
+    "name": "hydra_skull",
+    "pattern": "icon",
+    "primary": "#2e2a27",
+    "variation": 0.0,
+    "seed": 8616,
+    "palette": {
+        "B": "#2e2a27",
+        "D": "#151210",
+        "E": "#050404"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "    DDDDDDDD",
+        "   DBBBBBBBBD",
+        "   DBBBBBBBBD",
+        "   DBEEBBEEBD",
+        "   DBEEBBEEBD",
+        "   DBBBBBBBBD",
+        "   DBBBEEBBBD",
+        "    DBBBBBBD",
+        "    DEBEBEBD",
+        "     DDDDDD",
+        "",
+        "",
+        ""
+    ]
+}

@@ -21,6 +21,7 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/player/QcRefusalThrottle.h"
 #include "clientcore/session/QcClientAnvil.h"
+#include "clientcore/session/QcClientBossBars.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEnchanting.h"
 #include "clientcore/session/QcClientEntities.h"
@@ -216,6 +217,8 @@ public:
     QcClientSmithing &smithing() { return m_smithing; }
     /*! Returns the smithing table's screen the server opened, read-only. */
     const QcClientSmithing &smithing() const { return m_smithing; }
+    /*! Returns the boss bars the server shows the player (decision E-1127). */
+    const QcClientBossBars &bossBars() const { return m_bossBars; }
     /*! Sends \a text as a chat line, trimmed; blank text sends nothing. */
     void sendChat(const QString &text);
     /*! Asks the server to pause (\a paused) while the pause menu is open, or to run on (decision
@@ -423,6 +426,7 @@ private:
     QcClientEnchanting m_enchanting;
     QcClientAnvil m_anvil;
     QcClientSmithing m_smithing;
+    QcClientBossBars m_bossBars;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities, m_vitals},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

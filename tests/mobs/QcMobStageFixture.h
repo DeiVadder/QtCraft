@@ -40,13 +40,14 @@ protected:
         ticks(1);
     }
 
-    // A floor of `block` below the feet level, `size` blocks to every side, open above.
-    void floorOf(const char *block, int size)
+    // A floor of `block` below the feet level, `size` blocks to every side, with air above it up
+    // to `height`.
+    void floorOf(const char *block, int size, int height = 4)
     {
         for (int dx = -size; dx <= size; ++dx) {
             for (int dz = -size; dz <= size; ++dz) {
                 m_server->world().setBlock(m_feet.offset(dx, -1, dz), id(block));
-                for (int dy = 0; dy <= 4; ++dy) {
+                for (int dy = 0; dy <= height; ++dy) {
                     m_server->world().setBlock(m_feet.offset(dx, dy, dz), qcAirBlockId);
                 }
             }

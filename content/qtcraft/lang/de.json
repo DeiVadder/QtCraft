@@ -1131,5 +1131,14 @@
     "advancement.qtcraft.ancient_debris": "Verborgen in der Tiefe",
     "advancement.qtcraft.ancient_debris.description": "Finde antiken Schrott tief im Nether",
     "advancement.qtcraft.netherite_armour": "Ganz in Schrott gehüllt",
-    "advancement.qtcraft.netherite_armour.description": "Halte eine ganze Netheritrüstung"
+    "advancement.qtcraft.netherite_armour.description": "Halte eine ganze Netheritrüstung",
+    "mob.qtcraft.charred_hydra": "Verkohlte Hydra",
+    "item.qtcraft.nether_star": "Netherstern",
+    "item.qtcraft.hydra_skull": "Hydraschädel",
+    "item.qtcraft.charged_hydra_skull": "Geladener Hydraschädel",
+    "advancement.qtcraft.summon_hydra": "Drei Köpfe erheben sich",
+    "advancement.qtcraft.summon_hydra.description": "Beschwöre die Verkohlte Hydra",
+    "advancement.qtcraft.kill_hydra": "Stern des Nethers",
+    "advancement.qtcraft.kill_hydra.description": "Besiege die Verkohlte Hydra",
+    "structure.qtcraft.hydra_arena": "Verkohlte Hydra: ihr Beschwörungs-T (ein Schädel fehlt) und eine Hydra hinter Glas"
 }

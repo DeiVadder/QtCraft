@@ -4,6 +4,7 @@
 #pragma once
 
 #include "server/animals/QcMobFamilies.h"
+#include "server/bosses/QcServerHydras.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"
 #include "server/mobs/QcCreatureTraits.h"
@@ -14,6 +15,7 @@
 #include "server/villages/QcServerVillagers.h"
 
 class QcPlayerHealth;
+class QcServerExplosions;
 class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
@@ -39,7 +41,7 @@ public:
         ticks. */
     static constexpr quint64 foeTicks = 100;
 
-    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
+    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks, QcServerExplosions &explosions);
 
     /*! Runs the creatures' tick: their minds, then what they did to the world and the players. */
     void tick();
@@ -87,4 +89,5 @@ private:
     QcCrumbling m_crumbling;
     QcMobDrinking m_drinking;
     QcMobFamilies m_families;
+    QcServerHydras m_hydras;
 };

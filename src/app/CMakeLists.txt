@@ -88,6 +88,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
+    models/QcBossBarModel.h models/QcBossBarModel.cpp
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     models/QcDurationText.h models/QcDurationText.cpp
@@ -293,6 +294,7 @@ qt_add_qml_module(qc_app_core
         qml/handbook/HandbookScreen.qml
         qml/hud/AdvancementToast.qml
         qml/hud/AirBar.qml
+        qml/hud/BossBars.qml
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
         qml/hud/DialDisplay.qml

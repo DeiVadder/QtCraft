@@ -52,6 +52,20 @@ QcEntityLight glowingLight(QcEntityLight light, const QcMobDefinition &mob, doub
     return QcEntityLight(light.sky, std::max(light.block, glow));
 }
 
+// The highest y of `column` whose block holds back sky light, -1 for none: glass and other blocks
+// with a lightOpacity of 0 let the sky through, so a creature in a glass pen is not in shade.
+int highestShading(const QcChunk &chunk, const QcContentRegistry &content, QcBlockPos column)
+{
+    int y = chunk.highestNonAir(column.localX(), column.localZ());
+    for (; y >= 0; --y) {
+        const QcBlockId block = chunk.block(column.localX(), y, column.localZ());
+        if (block != qcAirBlockId && (!content.isValidBlock(block) || content.block(block).lightOpacity > 0)) {
+            return y;
+        }
+    }
+    return y;
+}
+
 } // namespace
 
 QcEntityFrameBuilder::QcEntityFrameBuilder(const QcSessionParts &parts, const QcSettingsController &settings)
@@ -97,7 +111,7 @@ float QcEntityFrameBuilder::skyExposure(const QcClientWorld &world, QcBlockPos p
         for (int dz = -1; dz <= 1; ++dz) {
             const QcBlockPos column = pos.offset(dx, 0, dz);
             const std::shared_ptr<const QcChunk> chunk = world.chunk(column.chunk());
-            open += !chunk || chunk->highestNonAir(column.localX(), column.localZ()) < pos.y ? 1 : 0;
+            open += !chunk || highestShading(*chunk, world.content(), column) < pos.y ? 1 : 0;
         }
     }
     return covered + (1.0f - covered) * static_cast<float>(open) / 9.0f;
@@ -213,7 +227,8 @@ void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientE
     const bool pulses = ownParts && creature->pulse;
     const QcBoxLegs *legs = !sitting && !pulses && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
     const QcSwimmerPose::Look swum = pulses ? QcSwimmerPose::of(*creature, entity, frame.alpha, frame.seconds, m_forcedPose.pulse()) : QcSwimmerPose::Look{};
-    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, (entity.flags & QcMsg::Saddled) != 0, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread, frame.seconds});
+    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, (entity.flags & QcMsg::Saddled) != 0, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread, frame.seconds,
+                                                                    (entity.flags & QcMsg::Armoured) != 0});
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)

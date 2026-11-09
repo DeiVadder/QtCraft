@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Netherit](#chapter-qtcraft-netherite) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Netherit](#chapter-qtcraft-netherite) · [Die Verkohlte Hydra](#chapter-qtcraft-charred_hydra) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -802,6 +802,28 @@ Werkzeuge aus Netherit halten 2031 Einsätze, bauen schneller ab als Diamant und
 **Siehe auch**
 
 [Antiker Schrott](blocks.md#block-qtcraft-ancient_debris), [Netheritschrott](items.md#item-qtcraft-netherite_scrap), [Netheritbarren](items.md#item-qtcraft-netherite_ingot), [Netheritblock](blocks.md#block-qtcraft-netherite_block), [Schmiedetisch](blocks.md#block-qtcraft-smithing_table), [Netherit-Aufwertung](items.md#item-qtcraft-netherite_upgrade_smithing_template), [Netheritschwert](tools.md#item-qtcraft-netherite_sword), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe), [Netheritbrustplatte](tools.md#item-qtcraft-netherite_chestplate)
+
+### <a id="chapter-qtcraft-charred_hydra"></a>Die Verkohlte Hydra
+
+**Beschwörung**
+
+Baue ein **T** aus vier Blöcken Seelensand oder Seelenerde: drei in einer Reihe und einen unter der Mitte, mit Luft zu beiden Seiten dieses Fußes. Setze dann drei **verkohlte Schädel** oben auf die Reihe, von den Verkohlten Skeletten der Festungen. Der letzte Schädel weckt die Hydra, auch im Kreativmodus, und jeder Spieler im Umkreis von 50 Blöcken bekommt den Fortschritt. Baue sie weit weg von deinem Zuhause.
+
+**Der Kampf**
+
+Elf Sekunden lang sammelt die Hydra ihre Kraft: Sie ist unverwundbar und füllt ihre Gesundheit auf. Dann zerbirst sie in einer Explosion, stärker als jeder Sprengstoff, die Blöcke bricht, sofern die Regel mobGriefing es nicht verbietet. Danach fliegt sie über dem, den sie bekämpft, und spuckt **Schädel** aus ihren drei Köpfen: der mittlere Kopf auf ihr Ziel, die Seitenköpfe auf eigene Ziele. Die Schädel explodieren und geben **Verdorren**: Die Herzen werden dunkel und schwinden. Untote Wesen sind vor ihr sicher. Jede Verletzung lässt sie die Blöcke um sich zerschlagen, und sie heilt jede Sekunde einen Punkt.
+
+**Die Hälfte ihrer Gesundheit**
+
+Unter der Hälfte ihrer Gesundheit trägt die Hydra **Rüstung**: Pfeile prallen ab, also gib ihr mit dem Schwert den Rest. Sie hält keinen Abstand mehr und kommt auf die Höhe ihres Ziels herunter.
+
+**Der Netherstern**
+
+Eine besiegte Hydra hinterlässt einen **Netherstern** und viel Erfahrung. Der Stern brennt nicht und übersteht Explosionen.
+
+**Siehe auch**
+
+[Verkohlte Hydra](creatures.md#mob-qtcraft-charred_hydra), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Netherstern](items.md#item-qtcraft-nether_star)
 
 ### <a id="chapter-qtcraft-creatures"></a>Wesen
 

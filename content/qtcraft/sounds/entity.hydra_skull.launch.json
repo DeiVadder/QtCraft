@@ -1,0 +1,27 @@
+{
+    "name": "entity.hydra_skull.launch",
+    "volume": 0.8,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "range": 32,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.4,
+            "attack": 0.02,
+            "curve": 1.4,
+            "bandpass": 700,
+            "gain": 0.35
+        },
+        {
+            "wave": "saw",
+            "duration": 0.3,
+            "frequency": 200,
+            "endFrequency": 110,
+            "attack": 0.02,
+            "curve": 1.4,
+            "lowpass": 1000,
+            "gain": 0.2
+        }
+    ]
+}

@@ -152,7 +152,8 @@ void QcClientSession::handleMessage(const QcMessage &message)
         return;
     }
 
-    if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
+    // The boss bars only watch for a DimensionChange; the others handle it too.
+    if (!m_bossBars.handle(message) && !handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
         && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
         && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_enchanting.handle(message) && !m_anvil.handle(message) && !m_smithing.handle(message)
         && !m_admin.receive(message)) {

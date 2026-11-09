@@ -91,7 +91,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
-    , m_creatures(m_state, m_sounds, m_health, m_blocks)
+    , m_creatures(m_state, m_sounds, m_health, m_blocks, m_explosions)
     , m_projectiles(m_state, m_sounds, m_health, m_inventory, m_explosions)
     , m_trading(m_state, m_sounds, m_inventory, m_screens)
     , m_environment(m_state, m_sounds, m_health)

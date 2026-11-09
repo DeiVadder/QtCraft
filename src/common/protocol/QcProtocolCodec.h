@@ -478,4 +478,11 @@ void encode(QDataStream &stream, QcMsg::CloseSmithing m);
 /*! Returns the QcMsg::CloseSmithing read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseSmithing>, QDataStream &stream);
 
+// The boss bars (QcBossBarCodec.cpp)
+
+/*! Writes the payload of \a m (QcMsg::BossBar) to \a stream. */
+void encode(QDataStream &stream, const QcMsg::BossBar &m);
+/*! Returns the QcMsg::BossBar read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BossBar>, QDataStream &stream);
+
 } // namespace QcProtocolCodec

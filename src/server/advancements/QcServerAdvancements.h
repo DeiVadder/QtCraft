@@ -66,7 +66,7 @@ private:
         qsizetype advancement = 0;
         qsizetype criterion = 0;
     };
-    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::PotionBrewed) + 1;
+    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::EntitySummoned) + 1;
 
     // The advancement `ref` points to; refs come from the trigger index built over the same
     // catalog (see the constructor), so it exists.

@@ -173,6 +173,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcChunkExtras.h
     session/QcClientAnvil.h session/QcClientAnvil.cpp
     session/QcClientBlockScreen.h session/QcClientBlockScreen.cpp
+    session/QcClientBossBars.h session/QcClientBossBars.cpp
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEnchanting.h session/QcClientEnchanting.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp

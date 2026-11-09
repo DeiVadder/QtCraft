@@ -16,7 +16,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Netherite axe](tools.md#item-qtcraft-netherite_axe), [Netherite boots](tools.md#item-qtcraft-netherite_boots), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate), [Netherite helmet](tools.md#item-qtcraft-netherite_helmet), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Netherite leggings](tools.md#item-qtcraft-netherite_leggings), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel), [Netherite sword](tools.md#item-qtcraft-netherite_sword)
+[Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Nether Star](items.md#item-qtcraft-nether_star), [Netherite axe](tools.md#item-qtcraft-netherite_axe), [Netherite boots](tools.md#item-qtcraft-netherite_boots), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate), [Netherite helmet](tools.md#item-qtcraft-netherite_helmet), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Netherite leggings](tools.md#item-qtcraft-netherite_leggings), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel), [Netherite sword](tools.md#item-qtcraft-netherite_sword)
 
 ### <a id="tag-qtcraft-wooden_slabs"></a>#wooden_slabs
 

@@ -7,6 +7,8 @@
 #include "common/content/items/QcItemDefinition.h"
 #include "common/content/mobs/QcAppearanceDefinition.h"
 #include "common/content/mobs/QcBarterDefinition.h"
+#include "common/content/mobs/QcBossBarDefinition.h"
+#include "common/content/mobs/QcHydraDefinition.h"
 #include "common/content/mobs/QcMobDrinkDefinition.h"
 #include "common/content/mobs/QcMobTraits.h"
 #include "common/core/QcCreatureKindId.h"
@@ -43,6 +45,9 @@ struct QcMobPart
     /*! Shown only while the creature wears a saddle (\c {"saddled"}, QcMsg::Saddled, decision
         E-1054). */
     bool saddled = false;
+    /*! Shown only while the creature wears its armour (\c {"armour"}, QcMsg::Armoured, decision
+        E-1126; the charred hydra in its second phase and while it charges). */
+    bool armour = false;
     /*! Degrees a second the box turns about the upright axis through the feet (\c {"spin"},
         decision E-1056; negative: the other way), at most maxSpin either way. */
     double spin = 0.0;
@@ -150,7 +155,9 @@ struct QcMobDefinition
         with \c {gaze}) and then chase that player (decision E-460), golems guard villagers
         against hostile creatures (only without \c {hostile}, with \c {golem}, decision E-471),
         guardians keep to the zone they guard and chase only players who come within
-        \c {guardLeash} of it (only with \c {hostile}, decision E-594). Server side only. */
+        \c {guardLeash} of it (only with \c {hostile}, decision E-594), the hydra flies with three
+        heads and shoots skulls at whatever lives and is not undead (only with \c {hostile} and
+        \c {hydra}, decision E-1126). Server side only. */
     enum class Ai : quint8 {
         Passive, // wanders and flees
         Hostile, // chases players
@@ -159,7 +166,8 @@ struct QcMobDefinition
         Neutral, // passive until a player provokes it
         Golem, // guards villagers
         Guardian, // guards a zone
-        Drifter // drifts without paths; a hostile one shoots what it sees
+        Drifter, // drifts without paths; a hostile one shoots what it sees
+        Hydra // the three-headed boss: flies and shoots skulls
     };
     /*! Its AI (\c {"ai"}); without the key: Villager for villagers, Hostile for hostile
         creatures, else Passive. */
@@ -190,6 +198,10 @@ struct QcMobDefinition
     QcDriftDefinition drift;
     /*! How players ride it (\c {ride}, decision E-1054); none for no rider. Reaches the client. */
     std::optional<QcRideDefinition> ride;
+    /*! The three-headed boss (\c {"hydra"}, Ai::Hydra, decision E-1125). */
+    std::optional<QcHydraDefinition> hydra;
+    /*! Its boss bar (\c {"bossBar"}, decision E-1127); none for an ordinary creature. */
+    std::optional<QcBossBarDefinition> bossBar;
     /*! What it falls apart into (\c {splits}, decision E-1055). Server side only. */
     std::optional<QcSplitDefinition> splits;
     /*! Jumps whenever it moves, like a slime (\c {hops}, decision E-1055). Server side only. */

@@ -61,6 +61,8 @@ struct QcRawWorldRecord
             atmospheres.append(*atmosphere);
         } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
             lightning.append(strike->position);
+        } else if (const auto *bar = std::get_if<QcMsg::BossBar>(&message)) {
+            bossBars.append(*bar);
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
             receivedMoves(*moves);
         }
@@ -93,6 +95,8 @@ struct QcRawWorldRecord
     QList<QcChunkPos> unloaded;
     // The dimensions the server put the player in (decision E-1002), oldest first.
     QStringList dimensions;
+    // The boss bar messages (decision E-1127), oldest first.
+    QList<QcMsg::BossBar> bossBars;
     // The kind of each entity the client knows.
     QHash<quint32, QcEntityKind> entities;
     // Item entities the client was told about, with their latest stack.

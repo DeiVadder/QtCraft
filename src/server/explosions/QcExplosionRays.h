@@ -32,13 +32,15 @@ inline constexpr double stepCost = 0.225;
 /*! Bodies feel a blast up to twice its power away. */
 inline constexpr double reachFactor = 2.0;
 
-/*! \brief One explosion as the rays see it: its \c {centre}, \c {power} and the world's
-    \c {seed} for the dice. \qcfields */
+/*! \brief One explosion as the rays see it: its \c {centre}, \c {power}, the world's \c {seed}
+    for the dice and the most any breakable block soaks up of it (\c {resistanceLimit}, below 0 for
+    no limit; a charged skull, decision E-1128). \qcfields */
 struct Blast
 {
     QcVec3 centre;
     double power = 4.0;
     quint64 seed = 0;
+    double resistanceLimit = -1.0;
 };
 
 /*! Returns the farthest a ray of \a power can break a block, in whole blocks (the size of a

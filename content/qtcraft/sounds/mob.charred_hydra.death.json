@@ -1,0 +1,29 @@
+{
+    "name": "mob.charred_hydra.death",
+    "volume": 1.0,
+    "variants": 1,
+    "pitchVariation": 0.08,
+    "range": 64,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 2.4,
+            "frequency": 120,
+            "endFrequency": 30,
+            "attack": 0.05,
+            "curve": 0.7,
+            "tremoloRate": 5,
+            "tremoloDepth": 0.5,
+            "lowpass": 1100,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 2.2,
+            "attack": 0.3,
+            "curve": 0.8,
+            "bandpass": 300,
+            "gain": 0.3
+        }
+    ]
+}

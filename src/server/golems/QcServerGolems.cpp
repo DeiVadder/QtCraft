@@ -79,12 +79,8 @@ std::optional<quint32> QcServerGolems::build(QcBlockPos pos)
             continue;
         }
 
-        // The blocks give their life to the golem: they vanish without drops.
-        for (const QcBlockPos cell : shape->cells) {
-            m_blocks.setAndBroadcast(cell, qcAirBlockId);
-        }
+        const quint32 id = wake(m_state, m_blocks, type, shape->cells, shape->foot);
         const QcVec3 feet{shape->foot.x + 0.5, static_cast<double>(shape->foot.y), shape->foot.z + 0.5};
-        const quint32 id = m_state.entities().creatures().spawn(type, feet, m_state.entities().newId(), false, true);
         if (QcCreature *golem = m_state.entities().creatures().find(id); golem && golem->golem) {
             golem->golem->playerBuilt = true;
         }
@@ -92,6 +88,16 @@ std::optional<quint32> QcServerGolems::build(QcBlockPos pos)
         return id;
     }
     return std::nullopt;
+}
+
+quint32 QcServerGolems::wake(QcServerState &state, QcServerBlocks &blocks, QcCreatureKindId type, std::span<const QcBlockPos> cells, QcBlockPos foot)
+{
+    // The blocks give their life to the creature: they vanish without drops.
+    for (const QcBlockPos cell : cells) {
+        blocks.setAndBroadcast(cell, qcAirBlockId);
+    }
+    const QcVec3 feet{foot.x + 0.5, static_cast<double>(foot.y), foot.z + 0.5};
+    return state.entities().creatures().spawn(type, feet, state.entities().newId(), false, true);
 }
 
 bool QcServerGolems::repair(QcServerClient &client, quint32 entityId, const QcItemDefinition *held)

@@ -22,6 +22,7 @@
 #include <QHash>
 
 #include <algorithm>
+#include <cmath>
 
 namespace {
 
@@ -35,6 +36,21 @@ QSet<quint64> loadedUids(const QList<QcCreature> &mobs)
         }
     }
     return uids;
+}
+
+// Gives `mob` the state of the brain of its kind `definition` with what `stored` kept of it: a
+// golem's builder, a summoned hydra's charge (its other state starts afresh).
+void restoreBrainState(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::Stored &stored)
+{
+    mob.addBrainState(definition);
+    if (mob.golem) {
+        mob.golem->playerBuilt = stored.playerBuilt;
+    }
+    if (mob.hydra && definition.hydra) {
+        // A damaged save cannot make it charge, and so stay unhurt, longer than a summoning does.
+        const auto charge = static_cast<qint32>(std::lround(definition.hydra->chargeSeconds / QcPhysics::tickDuration));
+        mob.hydra->chargeTicks = std::clamp(stored.hydraCharge, 0, charge);
+    }
 }
 
 } // namespace
@@ -132,15 +148,7 @@ quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint
         mob.villager->look = static_cast<quint32>(qcMixSeed(m_seed, 4101 + static_cast<quint64>(id)));
         mob.persistent = true;
     }
-    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Archer) {
-        mob.archer.emplace();
-    }
-    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Drifter) {
-        mob.drifter.emplace();
-    }
-    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Golem) {
-        mob.golem.emplace();
-    }
+    mob.addBrainState(m_content->mobs()[type]);
     if (m_content->mobs()[type].barter) {
         mob.barter.emplace();
     }
@@ -167,7 +175,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
 {
     const auto it = std::ranges::find(m_mobs, blow.creature, &QcCreature::id);
     const double amount = it == m_mobs.end() ? blow.damage : resisted(*it, blow.damage);
-    const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->hurt.wouldTake(amount);
+    const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->wouldTake(amount);
     if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
     }
@@ -191,8 +199,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
         mob.pose = QcPose::Standing;
     }
     if (take == QcHurtWindow::Take::Fresh) {
-        mob.hurtThisTick = true;
-        mob.hurtUnsent = true;
+        mob.noteFreshHurt();
         // A push or a player's blow strikes it; a status effect's damage does not (decision E-974).
         mob.struckUnsent = mob.struckUnsent || blow.knockback > 0.0 || blow.attacker != 0;
         if (blow.knockback > 0.0 && resisted > 0.0) {
@@ -272,14 +279,15 @@ std::optional<QList<QcItemDrop>> QcMobManager::wound(quint32 mobId, double amoun
 std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double amount)
 {
     const auto it = m_mobs.begin() + index;
-    const QcHurtWindow::Take take = it->hurt.wouldTake(amount);
+    const QcHurtWindow::Take take = it->wouldTake(amount);
     if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
     }
     const double taken = it->hurt.take(amount, m_hurtTicks);
     it->health -= taken;
-    it->hurtThisTick = it->hurtThisTick || take == QcHurtWindow::Take::Fresh;
-    it->hurtUnsent = it->hurtUnsent || take == QcHurtWindow::Take::Fresh;
+    if (take == QcHurtWindow::Take::Fresh) {
+        it->noteFreshHurt();
+    }
     it->woundedThisTick = it->woundedThisTick || (take == QcHurtWindow::Take::Fresh && taken > 0.0);
     if (it->health > 0.0) {
         return std::nullopt;
@@ -597,6 +605,7 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.layTimer = mob.layTimer;
     stored.kept = mob.kept;
     stored.playerBuilt = mob.golem && mob.golem->playerBuilt;
+    stored.hydraCharge = mob.hydra ? mob.hydra->chargeTicks : 0;
     stored.carried = mob.carried;
     stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
     stored.confined = mob.confined;
@@ -667,15 +676,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         *m_nextUid = std::max(*m_nextUid, stored.uid + 1);
         mob.uid = uniqueUid(stored.uid, uids);
         uids.insert(mob.uid);
-        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {
-            mob.archer.emplace();
-        }
-        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Drifter) {
-            mob.drifter.emplace();
-        }
-        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Golem) {
-            mob.golem.emplace().playerBuilt = stored.playerBuilt;
-        }
+        restoreBrainState(mob, m_content->mobs()[stored.type], stored);
         if (m_content->mobs()[stored.type].barter) {
             mob.barter.emplace(stored.barter.value_or(QcBarterState{}));
         }

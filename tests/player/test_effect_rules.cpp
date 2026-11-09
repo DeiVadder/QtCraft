@@ -676,7 +676,7 @@ private slots:
 
     void theWireCarriesCountAndExtraHealth()
     {
-        QCOMPARE(QcProtocol::version, 94u);
+        QCOMPARE(QcProtocol::version, 96u);
         QcMsg::PlayerHealth health;
         health.absorption = 6.5;
         health.movementEpoch = 300;

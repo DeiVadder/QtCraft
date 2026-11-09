@@ -64,6 +64,10 @@ struct QcProjectileDefinition
     bool deflectable = false;
     /*! Sound key played when a creature shoots it (\c {"launchSound"}); empty for none. */
     QString launchSound;
+    /*! The most any breakable block soaks up of the explosion of its \c {explode} effect
+        (\c {"blastResistanceLimit"}, 0 to 100; below 0, the default, no limit): a charged skull
+        breaks obsidian (decision E-1128). */
+    double blastResistanceLimit = -1.0;
 
     /*! Returns the first effect of \a type in onHit, if any. */
     const QcHitEffect *effect(const char *type) const

@@ -60,6 +60,9 @@ auto field(auto &value)
     if (mob.playerBuilt) {
         components.add(static_cast<quint16>(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
     }
+    if (mob.hydraCharge > 0) {
+        components.add(static_cast<quint16>(Component::Hydra), kindVersion, [&mob](QDataStream &out) { out << mob.hydraCharge; });
+    }
     // Only a creature whose laying timer runs (a timer below 0 is chosen anew when it wakes).
     if (mob.layTimer >= 0.0) {
         components.add(static_cast<quint16>(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
@@ -147,7 +150,7 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob, QcStackR
                                          known(Component::Laying, layingVersion, field(mob.layTimer)), known(Component::Tame, kindVersion, tame),
                                          known(Component::NoAi, kindVersion, mark(mob.noAi)), known(Component::Family, kindVersion, family),
                                          known(Component::Name, kindVersion, name), known(Component::Saddle, kindVersion, mark(mob.saddled)),
-                                         known(Component::Barter, kindVersion, bartered)});
+                                         known(Component::Barter, kindVersion, bartered), known(Component::Hydra, kindVersion, field(mob.hydraCharge))});
     if (!components) {
         return std::nullopt;
     }

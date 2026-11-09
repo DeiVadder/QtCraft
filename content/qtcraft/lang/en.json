@@ -1131,5 +1131,14 @@
     "advancement.qtcraft.ancient_debris": "Hidden in the Depths",
     "advancement.qtcraft.ancient_debris.description": "Find ancient debris deep in the Nether",
     "advancement.qtcraft.netherite_armour": "Cover Me in Debris",
-    "advancement.qtcraft.netherite_armour.description": "Hold a whole set of netherite armour"
+    "advancement.qtcraft.netherite_armour.description": "Hold a whole set of netherite armour",
+    "mob.qtcraft.charred_hydra": "Charred Hydra",
+    "item.qtcraft.nether_star": "Nether Star",
+    "item.qtcraft.hydra_skull": "Hydra Skull",
+    "item.qtcraft.charged_hydra_skull": "Charged Hydra Skull",
+    "advancement.qtcraft.summon_hydra": "Three Heads Rise",
+    "advancement.qtcraft.summon_hydra.description": "Summon the Charred Hydra",
+    "advancement.qtcraft.kill_hydra": "Star of the Nether",
+    "advancement.qtcraft.kill_hydra.description": "Defeat the Charred Hydra",
+    "structure.qtcraft.hydra_arena": "Charred hydra: its summoning T (one skull short) and a hydra behind glass"
 }

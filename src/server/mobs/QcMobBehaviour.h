@@ -5,6 +5,7 @@
 
 #include "common/core/QcCreatureKindId.h"
 #include "common/physics/QcBodyPush.h"
+#include "server/bosses/QcHydraBrain.h"
 #include "server/golems/QcGolemBrain.h"
 #include "server/guardians/QcGuardianBrain.h"
 #include "server/mobbrains/QcArcherBrain.h"
@@ -147,6 +148,7 @@ private:
     QcTameBrain m_tamePassive;
     QcTameBrain m_tameNeutral;
     QcDrifterBrain m_drifters;
+    QcHydraBrain m_hydras;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;

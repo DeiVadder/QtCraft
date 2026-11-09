@@ -49,8 +49,10 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     smithing table (OpenSmithing, SmithingState, ForgeSmithing, CloseSmithing, \c {smithing} of
     blocks and the smithing recipes in the content) and toughness and knockback resistance of
     armour (decisions E-1115, E-1116), 95 the atmosphere of the player's biome (Atmosphere) and
-    the particles of blocks in the content (decisions E-1120, E-1121). */
-inline constexpr quint32 version = 95;
+    the particles of blocks in the content (decisions E-1120, E-1121), 96 the charred hydra: boss
+    bars (BossBar), the Armoured flag and armour model parts in the content (decisions E-1126,
+    E-1127). */
+inline constexpr quint32 version = 96;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

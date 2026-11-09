@@ -39,7 +39,8 @@ int armourPieces(const QcServerClient &client)
 
 } // namespace
 
-QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks)
+QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks,
+                                     QcServerExplosions &explosions)
     : m_state(state)
     , m_sounds(sounds)
     , m_health(health)
@@ -51,6 +52,7 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
     , m_crumbling(state, sounds, blocks)
     , m_drinking(state, sounds)
     , m_families(state, sounds)
+    , m_hydras(state, blocks, sounds, explosions)
 {
 }
 
@@ -113,6 +115,7 @@ void QcServerCreatures::tick()
     m_guardians.tick();
     m_crumbling.tick();
     m_drinking.tick();
+    m_hydras.tick();
 }
 
 void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits)

@@ -41,6 +41,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_tamePassive(m_random, m_paths, m_passive)
     , m_tameNeutral(m_random, m_paths, m_neutral)
     , m_drifters(m_random)
+    , m_hydras(m_random)
     , m_fish(m_random)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
@@ -69,6 +70,9 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
             break;
         case QcMobDefinition::Ai::Drifter:
             m_brains.push_back(&m_drifters);
+            break;
+        case QcMobDefinition::Ai::Hydra:
+            m_brains.push_back(&m_hydras);
             break;
         }
         // A tameable kind (passive or neutral, QcMobReader) thinks tame or wild (decision E-480).
@@ -346,7 +350,8 @@ void QcMobBehaviour::hover(QcCreature &mob, const QcMobDefinition &definition, c
     }
     const double seconds = static_cast<double>(m_tick) * QcPhysics::tickDuration;
     // A drifter that rises to its target keeps the height its brain gave (decision E-1056).
-    QcMobHover::Course course{steering, mob.drifter ? mob.drifter->feetY : std::nullopt};
+    // So does a hydra with a target (decision E-1126).
+    QcMobHover::Course course{steering, mob.drifter ? mob.drifter->feetY : mob.hydra ? mob.hydra->feetY : std::nullopt};
     // Only a child that chases nobody looks for its parent among the creatures.
     if (mob.parent != 0 && mob.chasing == 0) {
         const auto parent = std::ranges::find(context.mobs, mob.parent, &QcCreature::id);

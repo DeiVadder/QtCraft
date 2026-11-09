@@ -63,6 +63,9 @@ inline constexpr quint16 Saddled = 16384;
 /*! On a projectile the saddle bit tells that a player can strike it (decision E-1053): the
     crosshair finds it. */
 inline constexpr quint16 Deflectable = Saddled;
+/*! A charred hydra in its armour (decision E-1126): its QcMobPart::armour parts are drawn; while it
+    charges the bit blinks. */
+inline constexpr quint16 Armoured = 32768;
 
 /*! Returns the flag bits of \a pose: Lying, Sitting or none for standing. */
 inline quint16 poseFlags(QcPose pose)

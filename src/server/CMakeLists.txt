@@ -57,6 +57,14 @@ target_sources(qc_server PRIVATE
     boats/QcServerBoats.h boats/QcServerBoats.cpp
 )
 target_sources(qc_server PRIVATE
+    bosses/QcHydraBrain.h bosses/QcHydraBrain.cpp
+    bosses/QcHydraRules.h bosses/QcHydraRules.cpp
+    bosses/QcHydraState.h
+    bosses/QcHydraSummoning.h bosses/QcHydraSummoning.cpp
+    bosses/QcServerBossBars.h bosses/QcServerBossBars.cpp
+    bosses/QcServerHydras.h bosses/QcServerHydras.cpp
+)
+target_sources(qc_server PRIVATE
     chunks/QcBlockIndex.h chunks/QcBlockIndex.cpp
     chunks/QcChunkGroups.h chunks/QcChunkGroups.cpp
     chunks/QcChunkLinks.h chunks/QcChunkLinks.cpp
@@ -130,7 +138,7 @@ target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
     entities/QcBoat.h
     entities/QcComponent.h
-    entities/QcCreature.h
+    entities/QcCreature.h entities/QcCreature.cpp
     entities/QcEntities.h entities/QcEntities.cpp
     entities/QcEntity.h
     entities/QcEntityChecks.h entities/QcEntityChecks.cpp

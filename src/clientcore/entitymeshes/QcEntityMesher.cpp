@@ -44,6 +44,14 @@ Tint multiply(Tint a, Tint b)
         static_cast<quint8>(a[3] * b[3] / 255)};
 }
 
+// An armour shell (QcMobPart::armour, decision E-1126) shimmers: its brightness waves with the
+// animation clock `seconds`, each part a little out of step by its `index`.
+Tint shimmer(double seconds, qsizetype index)
+{
+    const auto level = static_cast<quint8>(std::lround(205.0 + 50.0 * std::sin(seconds * 5.0 + static_cast<double>(index))));
+    return {level, level, 255, 255};
+}
+
 Tint fromRgb(quint32 rgb)
 {
     return {static_cast<quint8>((rgb >> 16) & 0xFF), static_cast<quint8>((rgb >> 8) & 0xFF), static_cast<quint8>(rgb & 0xFF), 255};
@@ -526,11 +534,12 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const bool swimming = look.tilt != 0.0 || look.spread != 0.0;
     for (qsizetype index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
-        if (part.saddled && !look.saddled) {
+        if ((part.saddled && !look.saddled) || (part.armour && !look.armoured)) {
             continue;
         }
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
-        const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light};
+        const Tint tint = part.armour ? multiply(shimmer(look.seconds, index), overlay) : overlay;
+        const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), tint), placement.light};
         if (part.spin != 0.0) {
             const Turn spin(static_cast<float>(std::fmod(part.spin * look.seconds, 360.0)));
             emitBox(mesh, {part.from + offset, part.to + offset}, [&](const QcVec3 &p) { return place(spin(p)); }, surface);

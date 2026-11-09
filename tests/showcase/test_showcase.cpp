@@ -270,8 +270,9 @@ private slots:
         }
         QCOMPARE(free, 2);
         // Without a mind: the figure of the character stand, the Kjut of its station and the husk,
-        // stray and drowned of the station monster_variants (decision E-838).
-        QCOMPARE(withoutMind, 5);
+        // stray and drowned of the station monster_variants (decision E-838) and the charred hydra
+        // of the station hydra_arena (decision E-1129).
+        QCOMPARE(withoutMind, 6);
 
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {

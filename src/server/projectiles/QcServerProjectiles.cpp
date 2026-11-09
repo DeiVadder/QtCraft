@@ -9,6 +9,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcPetOwners.h"
 #include "server/animals/QcServerAnimals.h"
+#include "server/bosses/QcHydraRules.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -106,9 +107,11 @@ void QcServerProjectiles::tick()
             }
             if (const QcHitEffect *blast = definition.effect(QcHitEffect::explode)) {
                 // Goes off after the pass: an explosion reaches the bodies the pass is walking past.
+                // A hydra's skull spares its kind and soaks a hard block's resistance (E-1126).
                 m_blasts.append({projectile.motion.position, blast->number,
                                  m_explosions.breaksBlocks() && (byPresentPlayer(projectile.shooter) || m_state.info().mobGriefing),
-                                 definition.effect(QcHitEffect::ignite) != nullptr});
+                                 definition.effect(QcHitEffect::ignite) != nullptr, definition.blastResistanceLimit,
+                                 QcHydraRules::sparedBy(m_state.content(), m_state.entities().creatures(), projectile.shooter)});
             }
         },
         m_blockHit};
@@ -226,6 +229,10 @@ bool QcServerProjectiles::hitCreature(const QcProjectileManager::Hit &hit, const
     const QcMobDefinition &definition = m_state.content().mobs()[target->type];
     // A player's arrow leaves the pets of other players unhurt (decision E-480).
     if (QcPetOwners::isOthersPet(m_state, *target, projectile.shooter)) {
+        return false;
+    }
+    // A charred hydra takes no shot of the undead and, in its armour, none of arrows (E-1126).
+    if (QcHydraRules::shields(m_state.content(), m_state.entities().creatures(), *target, hit.definition, projectile.shooter)) {
         return false;
     }
     if (definition.teleport && definition.teleport->dodgesProjectiles) {

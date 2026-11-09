@@ -462,6 +462,14 @@ Item {
         y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y) - height - Ui.hudPx(4)
     }
 
+    // The boss bars at the top, behind open screens too (decision E-1127).
+    BossBars {
+        hudState: hud.hudState
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: Ui.hudPx(8)
+    }
+
     // A held compass or clock (decision E-769) right of the hotbar.
     DialDisplay {
         hudState: hud.hudState

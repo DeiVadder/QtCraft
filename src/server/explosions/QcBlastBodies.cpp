@@ -44,11 +44,11 @@ double QcBlastBodies::damageOf(double impact, double power)
     return (impact * impact + impact) / 2.0 * 7.0 * QcExplosionRays::reachFactor * power + 1.0;
 }
 
-QcBlastBodies::Hits QcBlastBodies::hurt(QcBlastField &field, const QcVec3 &centre, double power)
+QcBlastBodies::Hits QcBlastBodies::hurt(QcBlastField &field, const QcVec3 &centre, double power, std::optional<QcCreatureKindId> spares)
 {
     Hits hits;
     hits.players = hurtPlayers(field, centre, power);
-    hits.creatures = hurtCreatures(field, centre, power);
+    hits.creatures = hurtCreatures(field, centre, power, spares);
     return hits;
 }
 
@@ -84,12 +84,12 @@ int QcBlastBodies::hurtPlayers(QcBlastField &field, const QcVec3 &centre, double
     return hit;
 }
 
-int QcBlastBodies::hurtCreatures(QcBlastField &field, const QcVec3 &centre, double power)
+int QcBlastBodies::hurtCreatures(QcBlastField &field, const QcVec3 &centre, double power, std::optional<QcCreatureKindId> spares)
 {
     // Hurting may remove a creature, so the blows are worked out first.
     QList<QcServerCombat::Blow> blows;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
-        if (mob.dormant || (mob.motion.position - centre).length() >= QcExplosionRays::reachFactor * power + 2.0) {
+        if (mob.dormant || mob.type == spares || (mob.motion.position - centre).length() >= QcExplosionRays::reachFactor * power + 2.0) {
             continue;
         }
         const std::optional<QcAabb> box = m_state.entities().boxOf(mob);

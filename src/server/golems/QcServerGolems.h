@@ -4,11 +4,13 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcCreatureKindId.h"
 
 #include <QtGlobal>
 
 #include <array>
 #include <optional>
+#include <span>
 
 class QcBlockAccess;
 class QcServerBlocks;
@@ -54,6 +56,10 @@ public:
     /*! Returns the T of \a definition's body blocks in \a world under its head at \a head, if
         complete (the head itself is not checked). */
     static std::optional<Shape> shapeAt(const QcBlockAccess &world, QcBlockPos head, const QcMobDefinition &definition);
+    /*! The blocks \a cells of a creature built from blocks (a golem, the charred hydra) give it
+        their life in the world of \a state: \a blocks removes them without drops, and a
+        persistent creature of \a type stands in the middle of \a foot. Returns its entity id. */
+    static quint32 wake(QcServerState &state, QcServerBlocks &blocks, QcCreatureKindId type, std::span<const QcBlockPos> cells, QcBlockPos foot);
 
 private:
     QcServerState &m_state;

@@ -139,14 +139,15 @@ private slots:
     // texel in a body texture is a hole through which the inside and the far side show. The smith's
     // apron once used the leather item icon, whose transparent margin made the torso look half
     // transparent. Only the textures made to be see-through may have such texels: the eyes in front
-    // of a head (slot "face"), the skeleton's ribs and the Kjut's eye ring.
+    // of a head (slot "face"), the skeleton's ribs, the Kjut's eye ring and the hydra's armour lattice.
     void bodyTexturesOfCreaturesAreOpaque()
     {
         const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
         const QcContentRegistry &registry = *content->registry;
         const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
-        const QSet<QString> seeThrough{u"qtcraft:skeleton_ribs"_s, u"qtcraft:charred_ribs"_s, u"qtcraft:kjut_eye_ring"_s};
+        const QSet<QString> seeThrough{u"qtcraft:skeleton_ribs"_s, u"qtcraft:charred_ribs"_s, u"qtcraft:kjut_eye_ring"_s,
+                                     u"qtcraft:charred_hydra_armour"_s};
 
         QList<std::pair<QString, QString>> uses;
         for (const QcMobDefinition &mob : registry.mobs()) {

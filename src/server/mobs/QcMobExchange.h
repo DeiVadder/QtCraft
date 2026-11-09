@@ -58,6 +58,9 @@ struct Stored
     double layTimer = -1.0;
     /*! A golem a player built (decision E-471). */
     bool playerBuilt = false;
+    /*! The ticks a summoned charred hydra still charges (QcHydraState::chargeTicks, decision
+        E-1126); 0 for none. */
+    qint32 hydraCharge = 0;
     /*! The block it carries, whether it is kept only for that block and whether it stays in its
         enclosure (decision E-460). \qcshared */
     QcBlockId carried = qcAirBlockId;

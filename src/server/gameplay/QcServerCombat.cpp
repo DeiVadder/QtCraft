@@ -87,7 +87,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
 
     // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
     // are stronger: those deal the difference, silently (decision E-429).
-    const QcHurtWindow::Take take = mob->hurt.wouldTake(blow.damage);
+    const QcHurtWindow::Take take = mob->wouldTake(blow.damage);
     if (take != QcHurtWindow::Take::Ignored) {
         const auto attacker = std::ranges::find_if(state.clients(), [&](const auto &client) { return client->id == blow.attacker; });
         const QString name = attacker != state.clients().end() ? (*attacker)->name : QString();
@@ -141,7 +141,7 @@ void QcServerCombat::woundCreature(QcServerState &state, QcServerSounds &sounds,
     // still invulnerable from the last, decision E-429), the death sound and the loot when it dies.
     const QcMobDefinition &definition = state.content().mobs()[mob->type];
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-    const bool fresh = mob->hurt.wouldTake(amount) == QcHurtWindow::Take::Fresh;
+    const bool fresh = mob->wouldTake(amount) == QcHurtWindow::Take::Fresh;
     if (const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().wound(id, amount)) {
         sounds.play(definition.deathSound, centre);
         state.entities().noteDeath(id);

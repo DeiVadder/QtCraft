@@ -1,0 +1,18 @@
+{
+    "name": "charred_hydra",
+    "order": 93,
+    "icon": "nether_star",
+    "sections": [
+        "summoning",
+        "fight",
+        "armour",
+        "star"
+    ],
+    "related": [
+        "charred_hydra",
+        "charred_skull",
+        "soul_sand",
+        "soul_soil",
+        "nether_star"
+    ]
+}

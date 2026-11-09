@@ -4,6 +4,7 @@
 #include "server/core/QcEntitySync.h"
 
 #include "common/gameplay/QcEffectRules.h"
+#include "server/bosses/QcHydraRules.h"
 #include "server/core/QcServerState.h"
 #include "server/villages/QcVillagerLooks.h"
 
@@ -127,6 +128,7 @@ quint16 flagsOf(const QcProjectile &projectile, const QcContentRegistry &content
 
 QcEntitySync::QcEntitySync(QcServerState &state)
     : m_state(state)
+    , m_bossBars(state)
 {
 }
 
@@ -140,6 +142,7 @@ void QcEntitySync::sync(QcServerClient &client)
         pass.moves.timeMs = m_state.clock().playerTimeNs() / 1'000'000;
         client.connection->send(pass.moves);
     }
+    m_bossBars.update(client);
 }
 
 QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
@@ -151,6 +154,9 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now = creatureMove(now, creature, m_state.content().mobs()[creature.type]);
         if (creature.saddled) {
             now.flags = static_cast<quint16>(now.flags | QcMsg::Saddled);
+        }
+        if (creature.hydra && QcHydraRules::showsArmour(creature, m_state.content().mobs()[creature.type])) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Armoured);
         }
         if (creature.effects && QcEffectRules::invisible(m_state.content(), creature.effects->all())) {
             now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);

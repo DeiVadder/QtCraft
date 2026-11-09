@@ -1,0 +1,15 @@
+{
+    "name": "kill_hydra",
+    "parent": "summon_hydra",
+    "icon": "nether_star",
+    "frame": "challenge",
+    "handbook": "chapter:charred_hydra",
+    "criteria": {
+        "killed": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "charred_hydra"
+            }
+        }
+    }
+}

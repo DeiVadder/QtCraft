@@ -8,6 +8,8 @@
 qc_add_test(test_protocol SOURCES protocol/test_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk_protocol SOURCES protocol/test_chunk_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_entity_protocol SOURCES protocol/test_entity_protocol.cpp LIBRARIES qc_common)
+# The boss bar: message, client bars, armour parts in the content sync (decisions E-1126, E-1127).
+qc_add_test(test_boss_bars SOURCES protocol/test_boss_bars.cpp LIBRARIES qc_clientcore qc_base_content)
 qc_add_test(test_game_mode_protocol SOURCES protocol/test_game_mode_protocol.cpp LIBRARIES qc_common)
 # Multiplayer (stage 25, decisions E-251 to E-256).
 qc_add_test(test_login_protocol SOURCES protocol/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)

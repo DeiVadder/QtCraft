@@ -107,7 +107,8 @@ struct QcServerClient : QcEntity
     /*! \brief What the client has been told about the world: chunks streamed around the player
         within \c {distance}, entities it knows (SentEntity), known entities whose spawn data
         changed and must be sent again, and the debug data it subscribed to
-        (QcMsg::DebugSubscribe) and when that was last sent. \qcfields */
+        (QcMsg::DebugSubscribe) and when that was last sent, and the boss bars it shows by the
+        entity id of their creature (QcServerBossBars). \qcfields */
     struct View
     {
         int distance = 0;
@@ -119,6 +120,7 @@ struct QcServerClient : QcEntity
         QSet<quint32> stale;
         quint8 debugFlags = 0;
         std::optional<quint64> debugSentTick;
+        QHash<quint32, QcMsg::BossBar> bossBars;
     };
 
     /*! \brief The crafting grid, row-major with three cells per row; a 2 x 2 grid uses the

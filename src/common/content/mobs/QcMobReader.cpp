@@ -39,6 +39,7 @@ namespace {
     // A tentacle of a creature that swims in pulses (decision E-974).
     part.tentacle = json.value(u"tentacle"_s).toBool(false);
     part.saddled = json.value(u"saddled"_s).toBool(false);
+    part.armour = json.value(u"armour"_s).toBool(false);
     part.spin = json.value(u"spin"_s).toDouble(0.0);
     if (std::abs(part.spin) > QcMobPart::maxSpin) {
         reader.fail(u"a model part's 'spin' must lie within %1 degrees a second"_s.arg(QcMobPart::maxSpin));
@@ -398,6 +399,7 @@ QcResult<QcMobDefinition> QcMobReader::read()
     m_mob.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     parseMobSounds();
     parseFamily();
+    parseBoss();
     if (m_reader.ok() && (m_mob.ai == QcMobDefinition::Ai::Drifter) != (m_mob.hover && m_json.contains(u"drift"_s))) {
         m_reader.fail(u"the drifter AI goes with 'hover' and 'drift', and 'drift' with it"_s);
     }
@@ -433,19 +435,20 @@ void QcMobReader::parseAi()
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
         {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
-        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}, {u"drifter"_s, Ai::Drifter}};
+        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}, {u"drifter"_s, Ai::Drifter},
+        {u"hydra"_s, Ai::Hydra}};
     const Ai fallback = m_mob.villager ? Ai::Villager : m_mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = m_reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        m_reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral, golem or guardian"_s);
+        m_reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral, golem, guardian, drifter or hydra"_s);
         return;
     }
 
     m_mob.ai = names.value(name);
     if ((m_mob.ai == Ai::Villager) != m_mob.villager) {
         m_reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
-    } else if ((m_mob.ai == Ai::Hostile || m_mob.ai == Ai::Archer || m_mob.ai == Ai::Guardian) && !m_mob.hostile) {
-        m_reader.fail(u"the hostile, archer and guardian AIs need 'hostile': true"_s);
+    } else if ((m_mob.ai == Ai::Hostile || m_mob.ai == Ai::Archer || m_mob.ai == Ai::Guardian || m_mob.ai == Ai::Hydra) && !m_mob.hostile) {
+        m_reader.fail(u"the hostile, archer, guardian and hydra AIs need 'hostile': true"_s);
     } else if (m_mob.ai == Ai::Golem && (m_mob.hostile || m_mob.flying)) {
         m_reader.fail(u"the golem AI is for peaceful walkers"_s);
     }

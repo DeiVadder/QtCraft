@@ -154,6 +154,7 @@ void QcServerState::moveClient(QcServerClient &client, QcServerDimension &dimens
     ++client.view.sentChanges;
     client.view.known.clear();
     client.view.stale.clear();
+    client.view.bossBars.clear();
     client.sentWeather.reset();
     client.sentAtmosphere.reset();
 }

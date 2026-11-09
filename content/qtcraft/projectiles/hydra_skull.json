@@ -1,0 +1,31 @@
+{
+    "name": "hydra_skull",
+    "item": "hydra_skull",
+    "gravity": 0.0,
+    "drag": 0.0,
+    "waterDrag": 0.0,
+    "onHit": [
+        {
+            "type": "damage",
+            "amount": 10
+        },
+        {
+            "type": "effect",
+            "effect": "wither",
+            "seconds": 10,
+            "level": 2
+        },
+        {
+            "type": "explode",
+            "power": 1.0
+        },
+        {
+            "type": "break",
+            "sound": "entity.hydra_skull.burst"
+        }
+    ],
+    "size": 0.4,
+    "flightSeconds": 12.0,
+    "sticks": false,
+    "launchSound": "entity.hydra_skull.launch"
+}

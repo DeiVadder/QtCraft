@@ -1,0 +1,27 @@
+{
+    "name": "mob.charred_hydra.hurt",
+    "volume": 1.0,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "range": 32,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.35,
+            "frequency": 140,
+            "endFrequency": 80,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 1400,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 0.3,
+            "attack": 0.01,
+            "curve": 1.5,
+            "bandpass": 900,
+            "gain": 0.25
+        }
+    ]
+}

@@ -59,6 +59,9 @@ void QcSessionWiring::connectWorld()
     // After the tick above: the sounds follow the player of this tick.
     m_audio.connectSession(*session);
     connect(session, &QcClientSession::chatReceived, &m_targets.hud, &QcHudState::addChatLine);
+    // The boss bars follow what the server tells; a new session starts without the old ones.
+    connect(&session->bossBars(), &QcClientBossBars::changed, &m_targets.hud, &QcHudState::updateBossBars);
+    m_targets.hud.updateBossBars();
     connect(session, &QcClientSession::stateChanged, this, &QcSessionWiring::onSessionState);
 
     connect(m_parts.meshes.get(), &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {

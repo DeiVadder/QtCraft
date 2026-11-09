@@ -1,0 +1,29 @@
+{
+    "name": "charred_hydra_armour",
+    "pattern": "icon",
+    "primary": "#8fb3ff",
+    "variation": 0.0,
+    "seed": 8615,
+    "palette": {
+        "a": "#7f9fe8",
+        "B": "#d6e6ff"
+    },
+    "bitmap": [
+        "Ba  a   Ba  a",
+        "a    a Ba    a B",
+        "      Ba      Ba",
+        "     Baa     Baa",
+        "a   Ba  a   Ba",
+        " a Ba    a Ba",
+        "  Ba      Ba",
+        " Baa     Baa",
+        "Ba  a   Ba  a",
+        "a    a Ba    a B",
+        "      Ba      Ba",
+        "     Baa     Baa",
+        "a   Ba  a   Ba",
+        " a Ba    a Ba",
+        "  Ba      Ba",
+        " Baa     Baa"
+    ]
+}
