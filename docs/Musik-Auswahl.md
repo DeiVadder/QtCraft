@@ -1,6 +1,6 @@
 # Musik-Auswahl für 88.1 (Stand 2026-11-09)
 
-Liste zum Anhören für das Paket 88.1 „Musik aus Dateien“. Lizenzen sind auf der Seite jedes einzelnen Stücks geprüft. Erlaubt: CC0, CC-BY, OGA-BY; ausgeschlossen: NC, ND, eigene Lizenzen ohne Weitergabe der Datei. Keine Quelle bietet Ogg an; die Stücke werden beim Übernehmen nach Ogg umgewandelt (CC-BY erlaubt das). Die Auswahl trifft der Mensch nach Anhören.
+Liste zum Anhören für das Paket 88.1 „Musik aus Dateien“. Lizenzen sind auf der Seite jedes einzelnen Stücks geprüft. Erlaubt: CC0, CC-BY, OGA-BY; ausgeschlossen: NC, ND, eigene Lizenzen ohne Weitergabe der Datei. Keine Quelle bietet Ogg an; die Stücke werden beim Übernehmen nach Ogg umgewandelt (CC-BY erlaubt das). **Entscheidung (Mensch 2026-11-09): Liste A, als Option mit Content-ID-Hinweis; prozedurale Musik bleibt wählbar (88.1), und 88.3 lehnt sie an die allgemeinen Merkmale dieser Stücke an.**
 
 ## A. Scott Buckley (CC-BY 4.0), ein einheitlicher Stil für alle Plätze
 
