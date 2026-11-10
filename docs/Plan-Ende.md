@@ -30,8 +30,8 @@ Inhaltspaket für das Release **1.2.0**. Geplant im Gespräch mit dem Menschen a
 - Generator des Endes: Hauptinsel, Obsidiansäulen mit Kristallen, Ausgangsportal, äußere Inseln ab 1000 Blöcken mit eigenen Biomen.
 - Drache als Boss mit Flugphasen, Kristall-Heilung, Atem und Wiederbelebung.
 - Endtransitportal, Chorus-Pflanze, Purpur, Endstab, Endstein-Familie, Endstädte mit Schiffen.
-- Shulker, Schwebe-Effekt, Shulkerkiste, Elytren mit Gleitflug, Feuerwerksrakete als Antrieb, Endertruhe.
-- Musik, Klang, Partikel und Himmel des Endes; Abspann nach dem Sieg (eigener Text).
+- Shulker, Schwebe-Effekt, Shulkerkiste, Leere-Membran, Elytren mit Gleitflug, Feuerwerksrakete als Antrieb, Endertruhe.
+- Musik, Klang, Partikel und Himmel des Endes; Abspann nach dem Sieg (eigener kurzer Text).
 
 ## Architektur
 
@@ -87,7 +87,7 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 
 | Paket | Inhalt | Hängt ab von | Größe |
 |-------|--------|--------------|-------|
-| 91.1 | Drache: Wesen, Trefferbox aus Teilen, Phasen-Automat, Kristall-Heilung, Feuerball und Atem-Wolke (Schaden), Sieg (Erfahrung, Ei, Ausgangsportal, Abspann mit eigenem Text), Bossleiste, Kampf-Zustand in den Weltdaten; Drachenkopf als Beute der Endstädte (Block, mit 92.3) | 90.3 | L |
+| 91.1 | Drache: Wesen, Trefferbox aus Teilen, Phasen-Automat, Kristall-Heilung, Feuerball und Atem-Wolke (Schaden), Sieg (Erfahrung, Ei, Ausgangsportal, eigener kurzer Abspann, überspringbar), Zerstörung unter `mobGriefing`, Bossleiste, Kampf-Zustand in den Weltdaten; Drachenkopf als Beute der Endstädte (Block, mit 92.3) | 90.3 | L |
 | 91.2 | Wiederbelebung mit vier Endkristallen (Rezept Glas + Endauge + Ghastträne), Säulen und Kristalle neu aufbauen; Endtransitportale je Sieg (Block, Teleport zu den äußeren Inseln, Plattform am Ziel erzeugen); Drachenei (teleportiert beim Anklicken) | 91.1 | M |
 | 91.3 | Verweiltränke: Drachenatem in Flaschen (aus der Atem-Wolke), Verweiltrank-Items für alle Trank-Arten aus der Registry, Wolke als Entität (Radius, Dauer, Wirkung je Kontakt), getränkte Pfeile aus Verweiltränken wie im Vorbild (ersetzt den Weg aus 85.3 oder ergänzt ihn) | 91.1 | M |
 
@@ -97,14 +97,14 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 |-------|--------|--------------|-------|
 | 92.1 | Äußere Inseln im Generator des Endes (Rauschen ab 1000 Blöcken, Biome Hochland, Mittelland, Barren, kleine Inseln), Kartenvorschau des Endes | 90.3, 91.2 (Weg dorthin) | M |
 | 92.2 | Chorus-Pflanze (Wachstum nach Vorbild, nur auf Endstein), Chorusfrucht (zufälliger Teleport), geplatzte Chorusfrucht, Purpur-Familie (Block, Säule, Stufe, Treppe), Endstab (Licht), Endstein-Ziegel-Familie | 92.1 | M |
-| 92.3 | Endstädte: Türme in Teilen nach Vorbild, Endschiffe mit Elytren im Rahmen und Drachenkopf, Truhen-Beute (Diamant, Eisen, Gold, verzauberte Ausrüstung, Sattel), Shulker in den Türmen (mit 93.1) | 92.2, 93.1 | L |
+| 92.3 | Endstädte: Türme in Teilen nach Vorbild, Endschiffe mit einem Paar Elytren im Rahmen und Drachenkopf, Truhen-Beute (Diamant, Eisen, Gold, verzauberte Ausrüstung, Sattel), Shulker in den Türmen (mit 93.1) | 92.2, 93.1 | L |
 
 ### Etappe 93: Shulker, Elytren, Endertruhe
 
 | Paket | Inhalt | Hängt ab von | Größe |
 |-------|--------|--------------|-------|
-| 93.1 | Shulker (eigener Name und Aussehen; Schale, öffnet sich, Geschoss mit Schwebe-Effekt, teleportiert bei Schaden, Schale als Beute), Effekt Schweben; Shulkerkiste (Rezept, behält Inhalt beim Abbauen in den Item-Daten, Färben, 16 Farben) | 90.3 | M |
-| 93.2 | Elytren: Gleitflug (Server und Vorhersage), Haltbarkeit, Reparatur, Sturzschaden, Feuerwerksrakete als Schub; Kamera; Fortschritte „Höhenflug“; Steuerung mit Gamepad | 92.3 (Fundort) | L |
+| 93.1 | Shulker (eigener Name und Aussehen; Schale, öffnet sich, Geschoss mit Schwebe-Effekt, teleportiert bei Schaden, Schale und Schalensplitter als Beute), Effekt Schweben; Leere-Membran (Rezept, Brau-Zutat für den Trank Sanfter Fall); Shulkerkiste (Rezept, behält Inhalt beim Abbauen in den Item-Daten, Färben, 16 Farben) | 90.3 | M |
+| 93.2 | Elytren: Gleitflug (Server und Vorhersage), Haltbarkeit, Reparatur am Amboss mit Leere-Membran, Sturzschaden, Feuerwerksrakete als Schub; Kamera; Fortschritte „Höhenflug“; Steuerung mit Gamepad | 92.3 (Fundort) | L |
 | 93.3 | Endertruhe (Obsidian + Endauge): ein Inventar je Spieler über alle Endertruhen und Dimensionen, in der Spielerdatei | 90.2 | S |
 
 ### Etappe 94: Atmosphäre und Release
@@ -128,10 +128,10 @@ Höchstens drei Agenten zugleich (Regel des Menschen).
 
 Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Flug mit Vorhersage über Netz): beide beginnen mit einer kurzen Karte der berührten Stellen (Trefferbox und Kollision bei 91.1, Bewegung und Vorhersage bei 93.2) und teilen bei Bedarf weiter.
 
-## Offene Fragen
+## Entscheidungen des Menschen (2026-11-10, zweite Runde)
 
-1. **Phantom und Reparatur der Elytren:** Im Vorbild repariert die Phantomhaut Elytren am Amboss; Phantome gibt es noch nicht (Frage 4 des Nether-Plans: eigene kleine Wesen-Pakete). Phantom als Paket in 1.2.0 (dann auch der Trank „Sanfter Fall“ über die Haut), oder Reparatur nur mit Verzauberung „Reparatur“ bis dahin?
-2. **Abspann nach dem Sieg:** Das Vorbild zeigt ein langes Gedicht und den Abspann; das Gedicht ist nicht übernehmbar. Eigener kurzer Text mit den Namen des Projekts und der Musik, oder kein Abspann (nur die Rückkehr zum Spawn)?
-3. **Zerstörung durch den Drachen:** Der Drache zerstört im Vorbild alle Blöcke außer denen des Endes beim Durchfliegen. Unter `mobGriefing` wie die Hydra, oder eine eigene Regel?
-4. **Endschiff-Elytren im Mehrspieler:** ein Paar je Schiff (wie im Vorbild); keine Sonderregel?
-5. **Texturen:** wie beim Nether gesammelt in 94.2, oder je Block-Paket?
+1. **Kein Phantom.** Elytren repariert eine Ersatz-Zutat aus dem Ende: die **Leere-Membran** (neues Item, Rezept: geplatzte Chorusfrucht + Shulker-Schalensplitter, ergibt 2). Sie repariert Elytren am Amboss wie die Phantomhaut im Vorbild und ist die Brau-Zutat für den Trank „Sanfter Fall“ (fehlt bisher als Trank). Schalensplitter: Beute der Shulker und der Truhen in Endstädten.
+2. **Eigener kurzer Abspann** nach dem Drachensieg: eigener Text, dann die Namen des Projekts und der Musik (Scott Buckley), überspringbar; danach Rückkehr zum Spawn wie im Vorbild.
+3. **Zerstörung durch den Drachen unter `mobGriefing`** wie die Hydra; Endstein, Obsidian, Grundgestein und Eisengitter bleiben immer.
+4. **Ein Paar Elytren je Endschiff**, auch im Mehrspieler (wer zuerst kommt).
+5. **Texturen gesammelt in 94.2** (HD-Paket und realistischer Modus), wie beim Nether.
