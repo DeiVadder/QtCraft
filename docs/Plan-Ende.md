@@ -16,7 +16,7 @@ Inhaltspaket für das Release **1.2.0**. Geplant im Gespräch mit dem Menschen a
 
 - **Dimensionen und Portale aus Daten** (Etappe 83): Himmel-Art `end`, Boden `void` mit Leere-Schaden, fester Ankunftspunkt mit erzeugter Plattform, Portal-Form „waagrechter Ring mit Einsätzen“, Verknüpfung `fixed`, Rückkehr `spawn`; die Testdimension „endartig“ in `test_dimensions` beweist die Formate.
 - **Generator-Version je Dimension** (E-922 erweitert), Index der erzeugten Chunks (79.52), Generator-Umstieg `hard`/`blend` mit Vorab-Umwandlung (Etappe 87).
-- **Schattengänger** (`shadewalker`, Gegenstück des Vorbilds): Blick-Zorn, Teleport, weicht Geschossen aus, nimmt Wasserschaden, trägt Blöcke; **Schattenperle** (`shade_pearl`) als Wurf-Item mit Projektil.
+- **Schattenwandler** (`shadewalker`, Gegenstück des Vorbilds): Blick-Zorn, Teleport, weicht Geschossen aus, nimmt Wasserschaden, trägt Blöcke; **Schattenperle** (`shade_pearl`) als Wurf-Item mit Projektil.
 - **Silberfischchen** und befallene Steinblöcke, Steinziegel-Familie (rissig, bemoost, gemeißelt): Bausteine der Festung.
 - **Bossleiste** (86.1) allgemein, Flieger-Boss mit Schädel-Geschossen (Verkohlte Hydra), Spielregel `mobGriefing`.
 - **Brauen** (85.2/85.3): Trank-Arten aus Daten, die Registry erzeugt Trink- und Wurftränke; getränkte Pfeile aus Wurftränken. Verweiltränke fehlen (warten auf Drachenatem).
@@ -81,7 +81,7 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 |-------|--------|--------------|-------|
 | 90.1 | Oberwelt-Version 4: Festung (Lage in Ringen, Netz-Planer, Räume, Portalraum mit Rahmen, Silberfischchen-Spawner, Bibliothek mit Büchern, Truhen-Beute nach Vorbild); Delta-Fix 79.97 in Version 4; `/locate stronghold`; Kartenvorschau zeigt Festungen nicht (unterirdisch) | – | L |
 | 90.2 | Endauge (Rezept, Flug zur nächsten Festung, Zerbrechen), Endportalrahmen-Block, Endportal-Block und Portal-Daten `end`, Rückweg über Ausgangsportal; Fortschritte „Augen auf“, „Festung“ | 90.1, 90.3 (Ziel) | M |
-| 90.3 | Generator des Endes Version 1: Hauptinsel, Säulen mit Kristallen und Käfigen, Ausgangsportal inaktiv, Ankunftsplattform; Endstein; Himmel, Licht und Nebel des Endes; Schattengänger spawnen dort in Mengen; Kartenvorschau-Umschalter um das Ende erweitern | – | L |
+| 90.3 | Generator des Endes Version 1: Hauptinsel, Säulen mit Kristallen und Käfigen, Ausgangsportal inaktiv, Ankunftsplattform; Endstein; Himmel, Licht und Nebel des Endes; Schattenwandler spawnen dort in Mengen; Kartenvorschau-Umschalter um das Ende erweitern | – | L |
 
 ### Etappe 91: Drache
 
@@ -140,7 +140,7 @@ Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Fl
 7. **Flugtempo wie im Vorbild** (rund 30 Blöcke/s mit Raketen). 93.2 misst headless und im Fenster, ob Chunk-Laden und Meshing mitkommen; reicht es nicht, folgt ein eigenes Leistungspaket (Laden in Flugrichtung bevorzugt), das Spieltempo bleibt.
 8. **Fortschritte in Reitern** (Oberwelt, Nether, Ende, eventuell Abenteuer und Landwirtschaft) ab 1.2.0, eigenes Paket 94.4; für 1.1.0 hängt 79.98 den Nether-Zweig in den einen Baum. **Mod-Kompatibilität:** der Reiter ist ein Datenfeld des Fortschritts (bzw. der Wurzel); Mods ohne das Feld landen in einem Standard-Reiter, Mods können eigene Reiter anlegen; die Namen der Fortschritte bleiben stabil (gespeicherter Fortschritt).
 9. **Reihenfolge:** zuerst die Speicher-Pakete aus 79.96 (Klangbank int16, Menü-Registry, Partikel-Abschnitte), dann das Ende; QDoc 72.x und das Aufräumen 79.47/79.49 verschränkt nebenher.
-10. **Milbe** (Gegenstück der Endermilbe, eigener Name und Aussehen): entsteht mit 5 % beim Werfen einer Schattenperle, Werte nach Vorbild, Schattengänger greifen sie an; Beute **Leerstaub** (Zutat der Leere-Membran). Chorus lässt sich nach dem ersten Besuch zu Hause pflanzen, danach geht die Reparatur ohne weitere Reisen ins Ende.
+10. **Milbe** (Gegenstück der Endermilbe, eigener Name und Aussehen): entsteht mit 5 % beim Werfen einer Schattenperle, Werte nach Vorbild, Schattenwandler greifen sie an; Beute **Leerstaub** (Zutat der Leere-Membran). Chorus lässt sich nach dem ersten Besuch zu Hause pflanzen, danach geht die Reparatur ohne weitere Reisen ins Ende.
 11. **Nichts ineinander:** keine Shulkerkiste in einer Shulkerkiste, kein Rucksack in einer Shulkerkiste und keine Shulkerkiste im Rucksack.
 12. **Vorführwelt mit Endportal:** fertiges Portal, Ankunft mit Stationen (Drache als Schaustück ohne Kampf, Shulker, Chorus, Endstadt-Ausschnitt); im Kreativmodus zusätzlich `/tp … in end`.
 13. **Endertruhe je Spieler je Welt**, in der Spielerdatei der Welt.
