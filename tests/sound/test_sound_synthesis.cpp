@@ -384,12 +384,12 @@ private slots:
     // The reverb keeps the dry sound and adds a tail that dies away in about its reverb time.
     void reverbDecaysInItsTime()
     {
-        const int rate = 22050;
-        std::vector<float> samples(static_cast<std::size_t>(4 * rate), 0.0f);
+        const int musicRate = 22050;
+        std::vector<float> samples(static_cast<std::size_t>(4 * musicRate), 0.0f);
         samples[0] = 1.0f;
-        samples = QcMusicReverb(1.0, 0.5, rate).processed(std::move(samples));
+        samples = QcMusicReverb(1.0, 0.5, musicRate).processed(std::move(samples));
         QCOMPARE(samples[0], 1.0f);
-        const auto oneSecond = static_cast<std::size_t>(rate);
+        const auto oneSecond = static_cast<std::size_t>(musicRate);
         const double early = rms(samples, oneSecond / 20, oneSecond / 10);
         const double late = rms(samples, oneSecond, oneSecond + oneSecond / 20);
         QVERIFY(early > 0.0);
@@ -406,20 +406,20 @@ private slots:
         const QcMusicComposer::Piece wet = QcMusicComposer::compose(5, arrangement.styleFor({}), arrangement);
         QcMusicComposer::Piece dry = wet;
         dry.reverbMix = 0.0;
-        const int rate = 22050;
-        const QcSampleBuffer wetBuffer = QcMusicComposer::render(wet, rate);
-        const QcSampleBuffer dryBuffer = QcMusicComposer::render(dry, rate);
+        const int musicRate = 22050;
+        const QcSampleBuffer wetBuffer = QcMusicComposer::render(wet, musicRate);
+        const QcSampleBuffer dryBuffer = QcMusicComposer::render(dry, musicRate);
         QCOMPARE(wetBuffer.samples.size(), dryBuffer.samples.size());
 
         // The middle of the tail, after every note and its release have ended, against the music's
         // last seconds: the reverb rings on there, about 30 dB down by the middle of its time.
         const auto end = wetBuffer.samples.size();
-        const auto tail = static_cast<std::size_t>(QcMusicComposer::tailSeconds(wet) * rate);
+        const auto tail = static_cast<std::size_t>(QcMusicComposer::tailSeconds(wet) * musicRate);
         const auto from = end - tail / 2;
         const auto to = from + tail / 4;
         const double wetTail = rms(wetBuffer.samples, from, to);
         const double dryTail = rms(dryBuffer.samples, from, to);
-        const double music = rms(wetBuffer.samples, end - tail - static_cast<std::size_t>(2 * rate), end - tail);
+        const double music = rms(wetBuffer.samples, end - tail - static_cast<std::size_t>(2 * musicRate), end - tail);
         QVERIFY2(wetTail > music * 1e-3, qPrintable(u"%1 %2"_s.arg(wetTail).arg(music)));
         QVERIFY2(wetTail > 3.0 * dryTail, qPrintable(u"%1 %2"_s.arg(wetTail).arg(dryTail)));
     }
