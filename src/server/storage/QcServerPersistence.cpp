@@ -10,12 +10,16 @@
 #include "server/boats/QcServerBoats.h"
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
+#include "server/core/QcServerSetup.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcDimensions.h"
 #include "server/maps/QcMapSaveCodec.h"
 #include "server/minecarts/QcServerMinecarts.h"
+#include "server/mobs/QcServerMounts.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcSaveFile.h"
+#include "server/versions/QcVersionMapFile.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
@@ -59,6 +63,24 @@ QString optionsDifference(const QJsonObject &stored, const QJsonObject &given)
     return u"The world was made with other world generation options than given"_s;
 }
 
+// Where the player in a vehicle is saved: where he would get out, for he is not saved with it and
+// comes back on foot. The seat of a cart lies inside the block under the rail (decision E-383), a
+// boat puts him beside it (decision E-920), a creature on firm ground (decision E-1054).
+std::optional<QcVec3> exitOfVehicle(const QcServerState &state, const QcServerClient &client)
+{
+    const QcEntities &entities = state.entities();
+    if (const QcMinecart *cart = entities.minecarts().ridden(client.id)) {
+        return QcServerMinecarts::exitSpot(state.world(), *cart);
+    }
+    if (const QcBoat *boat = entities.boats().drivenBy(client.id)) {
+        return QcServerBoats::exitSpot(state.world(), *boat);
+    }
+    if (const QcCreature *mob = entities.creatures().riddenBy(client.id)) {
+        return QcServerMounts::exitSpot(state.world(), *mob);
+    }
+    return std::nullopt;
+}
+
 } // namespace
 
 QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcChunkLoading &loading)
@@ -67,16 +89,23 @@ QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &b
     , m_updates(updates)
     , m_loading(loading)
 {
+    m_state.setDimensionStorage([this](QcServerDimension &dimension) { return openDimension(dimension); });
 }
 
 QcServerPersistence::~QcServerPersistence()
 {
     // The world must not read or keep chunks through a storage that is gone.
-    m_state.world().setStorage(nullptr, {});
+    m_state.setDimensionStorage({});
+    for (const std::unique_ptr<QcServerDimension> &dimension : m_state.dimensions().all()) {
+        dimension->world().setStorage(nullptr, {});
+    }
 }
 
 QcStatus QcServerPersistence::open()
 {
+    m_openWarnings.clear();
+    noteWarnings(QcDimensions::definitionWarnings(m_state.content()));
+
     // The world is generated as its version or not at all (decision E-922).
     if (const int generates = m_state.world().generator().version(); generates != versionOf(m_state.config())) {
         return qcError(u"The world generator generates as version %1, not as the world's version %2"_s.arg(generates).arg(versionOf(m_state.config())));
@@ -89,7 +118,9 @@ QcStatus QcServerPersistence::open()
     m_state.info().generator = m_state.config().generator;
     m_state.info().generatorOptions = m_state.config().generatorOptions;
     m_state.info().worldOptions = m_state.config().worldOptions;
+    m_state.info().startDimension = m_state.config().startDimension;
     m_state.info().generatorVersion = versionOf(m_state.config());
+    m_state.info() = QcDimensions::withVersionsForNewWorld(m_state.content(), std::move(m_state.info()));
     m_state.info().setupDone = false;
 
     if (m_state.config().worldDirectory.isEmpty()) {
@@ -113,7 +144,6 @@ QcStatus QcServerPersistence::open()
 
     const QcWorldStorage &storage = m_storage.emplace(m_state.config().worldDirectory, m_state.contentPointer());
     // Before world.json is read: a save that broke off after its journal is finished first.
-    m_openWarnings.clear();
     if (const QcStatus opened = openChunks(m_state.config().worldDirectory); !opened) {
         return opened;
     }
@@ -127,13 +157,17 @@ QcStatus QcServerPersistence::open()
         return qcError(warnings.error());
     }
     noteWarnings(*warnings);
+    if (const QcStatus mapped = applyVersionMap(m_state.dimensions().overworld(), m_state.config().worldDirectory); !mapped) {
+        return mapped;
+    }
 
     // A save writes world.json, the chunks and their entities as one (decision E-373): a world whose
     // setup is not done has nothing of it stored, so the setup simply runs.
     if (const QcStatus read = readBlockUpdates(storage); !read) {
         return read;
     }
-    restoreVillages(storage);
+    m_villagesSaved = restoreVillages(storage);
+    restorePortals(storage.directory());
 
     qCInfo(lcServer) << "Opened world" << m_state.info().name << "with" << m_state.world().saves().storedChunkCount() << "stored chunks";
     return {};
@@ -199,7 +233,83 @@ void QcServerPersistence::openMaps()
         next);
 }
 
-void QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
+QcStatus QcServerPersistence::openDimension(QcServerDimension &dimension)
+{
+    // A server without a world open yet (tools, tests of the state) has no storage to open.
+    if (!m_io) {
+        return {};
+    }
+
+    const QString directory = m_storage ? QcWorldStorage::dimensionDirectory(m_storage->directory(), dimension.definition()) : QString();
+    auto io = std::make_unique<QcChunkIo>(directory, m_state.contentPointer(), m_io.get());
+    QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> catalog = io->open();
+    if (!catalog) {
+        return qcError(u"The dimension '%1' cannot be read: %2"_s.arg(dimension.name(), catalog.error()));
+    }
+    noteWarnings(io->openWarnings());
+    dimension.world().setStorage(io.get(), std::move(*catalog));
+    m_state.entities().creatures().setNextUid(m_state.info().nextCreatureId);
+
+    std::optional<quint64> villagesSaved;
+    bool setupDone = false;
+    if (m_storage) {
+        const QcWorldStorage storage(directory, m_state.contentPointer());
+        QcResult<QcWorldStorage::DimensionFile> stored = storage.readDimensionFile();
+        if (!stored) {
+            dimension.world().setStorage(nullptr, {});
+            return qcError(u"The dimension '%1' cannot be read: %2"_s.arg(dimension.name(), stored.error()));
+        }
+        setupDone = stored->setupDone;
+        if (const QcStatus mapped = applyVersionMap(dimension, directory); !mapped) {
+            dimension.world().setStorage(nullptr, {});
+            return qcError(u"The dimension '%1' cannot be read: %2"_s.arg(dimension.name(), mapped.error()));
+        }
+        dimension.world().loaders().restore(stored->chunkLoaders);
+        if (const QcStatus read = readBlockUpdates(storage); !read) {
+            dimension.world().setStorage(nullptr, {});
+            return read;
+        }
+        villagesSaved = restoreVillages(storage);
+        restorePortals(directory);
+    }
+    dimensionStores().push_back({&dimension, std::move(io), villagesSaved});
+
+    if (!setupDone) {
+        QcServerSetup::applyContents(m_state, m_updates, dimension.world().generator().setup());
+    }
+    return {};
+}
+
+QcStatus QcServerPersistence::applyVersionMap(QcServerDimension &dimension, const QString &directory)
+{
+    const QcResult<QcGeneratorVersionMap> map = QcVersionMapFile::read(directory);
+    if (!map) {
+        return qcError(u"%1; without it the chunks generated before a generator switch would change"_s.arg(map.error()));
+    }
+    if (map->isEmpty()) {
+        return {};
+    }
+
+    // The chunks of other versions are generated like the dimension's own chunks, only older.
+    const QcDimensionDefinition &definition = dimension.definition();
+    const QString type = QcDimensions::generatorTypeIn(m_state.info(), definition);
+    const QString options = definition.isOverworld() ? m_state.info().generatorOptions : definition.generatorOptions;
+    const auto create = [content = m_state.contentPointer(), seed = m_state.config().seed, type, options](int version) {
+        return QcWorldGenerators::create(type, content, seed, options, version);
+    };
+    const QStringList before = dimension.world().generator().warnings();
+    if (const QcStatus set = dimension.world().setGeneratorVersionMap(*map, create); !set) {
+        return set;
+    }
+    // What the generators of the older versions could not resolve (the base's was reported when
+    // it was made).
+    QStringList added = dimension.world().generator().warnings();
+    added.removeIf([&before](const QString &warning) { return before.contains(warning); });
+    noteWarnings(added);
+    return {};
+}
+
+std::optional<quint64> QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
 {
     QcVillages &villages = m_state.world().villages();
     const QcVillages::Limits &limits = villages.limits();
@@ -209,24 +319,34 @@ void QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
     const QcResult<QList<QcVillage>> stored = storage.readVillages(read);
     if (stored) {
         villages.restore(*stored);
-        m_villagesSaved = villages.changes();
-        return;
+        return villages.changes();
     }
 
     // The villages follow from the generator's plans again as their chunks load; what only the file
     // knew (claims, population) starts over. The next save writes a new file.
     villages.restore({});
-    m_villagesSaved.reset();
-    const QString path = QDir(m_state.config().worldDirectory).filePath(QString::fromLatin1(QcWorldStorage::villagesFileName));
+    const QString path = QDir(storage.directory()).filePath(QString::fromLatin1(QcWorldStorage::villagesFileName));
     const QString copy = QcSaveFile::keepAside(path);
     if (copy.isEmpty()) {
         noteWarnings({u"%1; the villages start anew from the world generator, and the file could not be kept aside: the next save replaces it"_s.arg(
             stored.error())});
-        return;
+        return std::nullopt;
     }
     QFile::remove(path);
     noteWarnings({u"%1; the villages start anew from the world generator, the damaged file was kept as %2"_s.arg(stored.error(),
                                                                                                                QFileInfo(copy).fileName())});
+    return std::nullopt;
+}
+
+void QcServerPersistence::restorePortals(const QString &directory)
+{
+    const QcResult<QList<QcPortalIndex::Entry>> stored = QcPortalIndex::read(directory);
+    if (stored) {
+        m_state.current().portals().restore(*stored);
+        return;
+    }
+    // Portals light again and are found again as they are used; the next save writes a new file.
+    noteWarnings({u"%1; the portals of the dimension are found again as they are used"_s.arg(stored.error())});
 }
 
 QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
@@ -264,6 +384,11 @@ QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storag
     }
 
     m_state.info() = *info;
+    // QcWorldLibrary writes world.json of a new world without the content, so without its dimensions.
+    if (!m_state.info().setupDone) {
+        m_state.info() = QcDimensions::withVersionsForNewWorld(m_state.content(), std::move(m_state.info()));
+    }
+    warnings.append(QcDimensions::versionWarnings(m_state.content(), m_state.info()));
     m_state.world().loaders().restore(m_state.info().chunkLoaders);
     m_state.entities().creatures().setNextUid(m_state.info().nextCreatureId);
     // Ids of maps kept aside or lost stay used (decision E-799).
@@ -352,22 +477,15 @@ QcPlayerStorage::Result QcServerPersistence::readPlayer(const QString &name) con
     return m_storage->parsePlayer(name, *file);
 }
 
-QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &storage, const QcServerClient &client) const
+QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &storage, QcServerClient &client)
 {
     // Only joined players are saved, and their names are never empty (QcProfileValidation).
     Q_ASSERT(client.joined && !client.name.isEmpty());
+    const QcServerState::Scope scope(m_state, m_state.dimensionOf(client));
     QcPlayerRecords::Record record = QcPlayerRecords::of(client, m_state.content());
     QcPlayerData &player = record.player;
-    // A rider is saved where he would get out: the seat lies inside the block under the rail, and the
-    // rider is not saved with the cart (decision E-383).
-    if (const QcMinecart *cart = m_state.entities().minecarts().ridden(client.id)) {
-        player.motion.position = QcServerMinecarts::exitSpot(m_state.world(), *cart);
-        player.motion.velocity = {};
-        player.motion.onGround = false;
-    }
-    // A driver likewise, beside his boat (decision E-920).
-    if (const QcBoat *boat = m_state.entities().boats().drivenBy(client.id)) {
-        player.motion.position = QcServerBoats::exitSpot(m_state.world(), *boat);
+    if (const std::optional<QcVec3> exit = exitOfVehicle(m_state, client)) {
+        player.motion.position = *exit;
         player.motion.velocity = {};
         player.motion.onGround = false;
     }
@@ -378,32 +496,70 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
     return {QcPlayerStorage::relativePath(client.name), storage.playerBytes(player)};
 }
 
+QcResult<QList<QcChunkStore::WholeFile>> QcServerPersistence::dimensionFiles(std::optional<quint64> villagesSaved) const
+{
+    QList<QcChunkStore::WholeFile> files;
+    // villages.json only after a change since it was last written.
+    if (villagesSaved != m_state.world().villages().changes()) {
+        files.append({QString::fromLatin1(QcWorldStorage::villagesFileName), QcWorldStorage::villagesBytes(m_state.world().villages().villages())});
+    }
+    const QcResult<std::optional<QByteArray>> updates = blockUpdateBytes();
+    if (!updates) {
+        return qcError(updates.error());
+    }
+    files.append({QString::fromLatin1(QcWorldStorage::blockUpdatesFileName), *updates});
+    // The lit portals (decision E-1023), once the dimension knew one.
+    const QcPortalIndex &portals = m_state.current().portals();
+    if (!portals.entries().isEmpty() || portals.changes() > 0) {
+        files.append({QString::fromLatin1(QcPortalIndex::fileName), portals.bytes()});
+    }
+    return files;
+}
+
+QcStatus QcServerPersistence::handDimensions()
+{
+    QcStatus result;
+    for (DimensionStore &store : dimensionStores()) {
+        const QcServerState::Scope scope(m_state, *store.dimension);
+        m_blocks.dropSpills();
+        m_loading.loadStraysNow();
+        QcResult<QList<QcChunkStore::WholeFile>> files = dimensionFiles(store.villagesSaved);
+        if (files) {
+            store.villagesSaved = m_state.world().villages().changes();
+        } else {
+            result = qcError(files.error());
+            files = QList<QcChunkStore::WholeFile>();
+        }
+        files->append({QString::fromLatin1(QcWorldStorage::dimensionFileName),
+                       QcWorldStorage::dimensionFileBytes({true, m_state.world().loaders().loaders()})});
+        store.io->hand(m_loading.departuresForSave(), std::move(*files));
+    }
+    return result;
+}
+
 std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
 {
+    // A command of a player elsewhere may ask for the save: what follows is the overworld's.
+    const QcServerState::Scope scope(m_state, m_state.dimensions().overworld());
     // Contents spilled since the last tick lie on the ground before the items are kept.
     m_blocks.dropSpills();
     // Every entity is in a loaded chunk, so each one is kept with its chunk.
     m_loading.loadStraysNow();
-    QcStatus result;
+    QcStatus result = handDimensions();
     m_state.info().lastPlayed = QDateTime::currentDateTimeUtc();
     m_state.info().chunkLoaders = m_state.world().loaders().loaders();
     m_state.info().nextCreatureId = m_state.entities().creatures().nextUid();
     m_state.info().nextMapId = m_state.maps().nextId();
     QList<QcChunkStore::WholeFile> files{{QString::fromLatin1(QcWorldStorage::infoFileName), QcWorldStorage::infoBytes(m_state.info())}};
-    // villages.json only after a change since it was last written.
-    const quint64 villageChanges = m_state.world().villages().changes();
-    if (m_villagesSaved != villageChanges) {
-        files.append({QString::fromLatin1(QcWorldStorage::villagesFileName), QcWorldStorage::villagesBytes(m_state.world().villages().villages())});
-        m_villagesSaved = villageChanges;
-    }
-    const QcResult<std::optional<QByteArray>> updates = blockUpdateBytes();
-    if (updates) {
-        files.append({QString::fromLatin1(QcWorldStorage::blockUpdatesFileName), *updates});
+    const QcResult<QList<QcChunkStore::WholeFile>> own = dimensionFiles(m_villagesSaved);
+    if (own) {
+        m_villagesSaved = m_state.world().villages().changes();
+        files.append(*own);
     } else {
-        result = qcError(updates.error());
+        result = qcError(own.error());
     }
     // The players with the world: an item between a chest and an inventory is never in both or none.
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->joined && m_storage) {
             files.append(playerFile(*m_storage, *client));
         }
@@ -423,7 +579,11 @@ std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
         }
         files.append({QcMapSaveCodec::fileName(map), std::move(bytes)});
     }
-    const quint64 id = m_io->save(m_loading.departuresForSave(), std::move(files));
+    QList<QcChunkIo *> linked;
+    for (const DimensionStore &store : dimensionStores()) {
+        linked.append(store.io.get());
+    }
+    const quint64 id = m_io->save(m_loading.departuresForSave(), std::move(files), std::move(linked));
     if (!maps.isEmpty()) {
         m_mapsBySave.insert(id, maps);
     }
@@ -445,6 +605,9 @@ void QcServerPersistence::noteResult(quint64 save, const QcStatus &status)
     }
     // What the failed save held may be missing on disk: the next save writes villages.json again.
     m_villagesSaved.reset();
+    for (DimensionStore &store : dimensionStores()) {
+        store.villagesSaved.reset();
+    }
     m_failing = true;
     qCWarning(lcServer) << "Saving failed:" << status.error();
 }
@@ -503,7 +666,11 @@ void QcServerPersistence::waitForStorage()
 
 bool QcServerPersistence::manyUnsavedChunks() const
 {
-    return m_io && m_io->pendingChunks() > static_cast<qsizetype>(m_state.config().limits.unsavedChunks);
+    qsizetype pending = m_io ? m_io->pendingChunks() : 0;
+    for (const DimensionStore &store : dimensionStores()) {
+        pending += store.io->pendingChunks();
+    }
+    return pending > static_cast<qsizetype>(m_state.config().limits.unsavedChunks);
 }
 
 QcResult<std::optional<QByteArray>> QcServerPersistence::blockUpdateBytes() const

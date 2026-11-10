@@ -1,0 +1,44 @@
+{
+    "name": "daylight_sensor",
+    "sound": "wood",
+    "shape": "daylight_sensor",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 0.2,
+    "tool": "axe",
+    "states": {
+        "power": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ],
+        "inverted": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "oak_planks",
+        "slots": {
+            "day": "daylight_sensor_top",
+            "night": "daylight_sensor_inverted_top"
+        }
+    },
+    "signal": {
+        "type": "daylight",
+        "movable": "immovable"
+    }
+}

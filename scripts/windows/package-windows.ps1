@@ -535,6 +535,8 @@ foreach ($file in @("LICENSE", "THIRD_PARTY.md", "CREDITS.md")) {
     Copy-Required (Join-Path $Source $file) (Join-Path $package $file)
 }
 Copy-Required (Join-Path $Source "src\app\fonts\OFL.txt") (Join-Path $licenses "PixelifySans-OFL.txt")
+# The music tracks (CC BY 4.0) travel with their licence text (decision E-1138).
+Copy-Required (Join-Path $Source "LICENSES\CC-BY-4.0.txt") (Join-Path $licenses "CC-BY-4.0.txt")
 Copy-Required (Join-Path $openssl "LICENSE.txt") (Join-Path $licenses "OpenSSL-LICENSE.txt")
 $qtVersion = "$(& (Join-Path $QtDir "bin\qtpaths.exe") --query QT_VERSION)".Trim()
 if ($qtVersion -notmatch '^6\.') {
@@ -663,6 +665,7 @@ if ($Ci) {
 $required = @("qtcraft.exe", "qtcraft-headless.exe", "qt.conf", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
     "platforms\qwindows.dll", "multimedia\windowsmediaplugin.dll", "qml\QtQuick\Controls", "qml\QtQuick\Layouts",
     "mods\rubies\pack.json", "LICENSE", "THIRD_PARTY.md", "CREDITS.md", "README-Windows.txt", "licenses\PixelifySans-OFL.txt",
+    "licenses\CC-BY-4.0.txt",
     "licenses\Qt-NOTICE.txt", "licenses\OpenSSL-LICENSE.txt",
     "tls\qopensslbackend.dll") + $crtDlls + $opensslDlls
 if ($localOnly) {

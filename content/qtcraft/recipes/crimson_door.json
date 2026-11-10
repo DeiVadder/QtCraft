@@ -1,0 +1,16 @@
+{
+    "name": "crimson_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "crimson_planks"
+    },
+    "result": {
+        "item": "crimson_door",
+        "count": 3
+    }
+}

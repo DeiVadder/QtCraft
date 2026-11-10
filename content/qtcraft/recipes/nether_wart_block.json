@@ -1,0 +1,16 @@
+{
+    "name": "nether_wart_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "nether_wart"
+    },
+    "result": {
+        "item": "nether_wart_block",
+        "count": 1
+    }
+}

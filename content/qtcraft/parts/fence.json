@@ -4,7 +4,7 @@
     "block": {
         "shape": "fence",
         "lightOpacity": 0,
-        "connects": { "group": "fence" },
+        "connects": { "group": "fence", "to": ["fence", "fence_gate"] },
         "states": { "north": [false, true], "east": [false, true], "south": [false, true], "west": [false, true] }
     },
     "recipe": { "pattern": ["#|#", "#|#"], "key": { "#": "@", "|": "stick" }, "count": 3 },

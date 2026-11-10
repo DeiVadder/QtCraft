@@ -1,0 +1,8 @@
+{
+    "name": "rottusk_eye",
+    "pattern": "noise",
+    "primary": "#e6d640",
+    "secondary": "#cdbb30",
+    "variation": 0.04,
+    "seed": 7107
+}

@@ -1,0 +1,12 @@
+{
+    "name": "strong_speed",
+    "variantOf": "speed",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "speed",
+            "seconds": 90,
+            "level": 2
+        }
+    ]
+}

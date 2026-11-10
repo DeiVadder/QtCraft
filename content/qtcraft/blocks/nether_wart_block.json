@@ -1,0 +1,9 @@
+{
+    "name": "nether_wart_block",
+    "sound": "wart_block",
+    "hardness": 1.0,
+    "tool": "hoe",
+    "textures": {
+        "all": "nether_wart_block"
+    }
+}

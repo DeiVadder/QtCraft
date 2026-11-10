@@ -1,0 +1,11 @@
+{
+    "name": "netherite_ingot_from_netherite_block",
+    "type": "shapeless",
+    "ingredients": [
+        "netherite_block"
+    ],
+    "result": {
+        "item": "netherite_ingot",
+        "count": 9
+    }
+}

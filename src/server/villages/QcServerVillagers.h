@@ -55,5 +55,4 @@ private:
     // kind (QcVillagerBreedingSettings::foods).
     QSet<QcItemId> m_foods;
     QHash<QcCreatureKindId, QHash<QcItemId, int>> m_worth;
-    int m_foodTick = 0;
 };

@@ -38,6 +38,12 @@ public:
 
     /*! Returns the village of the region that holds \a chunk; null when it has none. */
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> planFor(QcChunkPos chunk) const;
+    /*! Returns planFor() of \a chunk when the terrain builds it
+        (QcWorldGenerator::buildsStructure with its bounds), else null: the village the chunk, the
+        server and the searches see. */
+    [[nodiscard]] std::shared_ptr<const QcVillagePlan> builtPlanFor(QcChunkPos chunk) const { return built(planFor(chunk)); }
+    /*! Returns \a plan when the terrain builds it, else null (see builtPlanFor()). */
+    [[nodiscard]] std::shared_ptr<const QcVillagePlan> built(std::shared_ptr<const QcVillagePlan> plan) const;
     /*! Returns the village of the region \a regionX, \a regionZ from the cache, planning it
         there first if needed; null when the region has none. */
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> regionPlan(int regionX, int regionZ) const;
@@ -99,6 +105,7 @@ private:
     // Solid ground a post, foundation or road can stand on; not frozen water (decision E-815).
     bool isGround(QcBlockId block) const;
 
+    const QcTerrainGenerator &m_terrain;
     std::shared_ptr<const QcContentRegistry> m_content;
     QcVillageStyles m_styles;
     QcVillagePlanner m_planner;

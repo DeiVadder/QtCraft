@@ -91,12 +91,12 @@ void QcServerExplosions::explode(const Blast &blast)
     QcBlastField field(m_state.world(), m_table, centre, radius);
 
     if (blast.breaksBlocks) {
-        const QcExplosionRays::Blast rays{blast.centre, blast.power, static_cast<quint64>(m_state.config().seed)};
+        const QcExplosionRays::Blast rays{blast.centre, blast.power, static_cast<quint64>(m_state.config().seed), blast.resistanceLimit};
         const qsizetype limit = static_cast<qsizetype>(m_state.config().limits.explosionBlocks);
         m_blocks.add(QcExplosionRays::broken(field, rays, limit), {centre, 1.0 / blast.power, blast.fire});
     }
 
-    const QcBlastBodies::Hits hits = m_bodies.hurt(field, blast.centre, blast.power);
+    const QcBlastBodies::Hits hits = m_bodies.hurt(field, blast.centre, blast.power, blast.spares);
     m_numbers.playersHit += static_cast<quint64>(hits.players);
     m_numbers.creaturesHit += static_cast<quint64>(hits.creatures);
     announce(blast);

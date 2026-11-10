@@ -3,6 +3,7 @@
 
 #include "server/mobs/QcServerCreatures.h"
 
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcPetOwners.h"
 #include "server/core/QcServerSounds.h"
@@ -13,9 +14,33 @@
 #include "server/mobs/QcMobCramming.h"
 #include "server/projectiles/QcProjectileFlight.h"
 
+#include <algorithm>
 #include <cmath>
 
-QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks)
+namespace {
+
+// The items of the armour `client` wears.
+QList<QcItemId> wornBy(const QcServerClient &client)
+{
+    QList<QcItemId> worn;
+    for (const QcItemStack &stack : client.equipment.stacks) {
+        if (!stack.isEmpty()) {
+            worn.append(stack.item);
+        }
+    }
+    return worn;
+}
+
+// The pieces of armour `client` wears.
+int armourPieces(const QcServerClient &client)
+{
+    return static_cast<int>(std::ranges::count_if(client.equipment.stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
+}
+
+} // namespace
+
+QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks,
+                                     QcServerExplosions &explosions)
     : m_state(state)
     , m_sounds(sounds)
     , m_health(health)
@@ -27,6 +52,7 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
     , m_crumbling(state, sounds, blocks)
     , m_drinking(state, sounds)
     , m_families(state, sounds)
+    , m_hydras(state, blocks, sounds, explosions)
 {
 }
 
@@ -50,12 +76,16 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .hurtBy = fresh(client->foes.hurtBy, client->foes.hurtTick),
                             .struck = fresh(client->foes.struck, client->foes.struckTick),
                             .held = held.isEmpty() ? qcNoItem : held.item,
+                            .worn = wornBy(*client),
                             .effects = &client->effects,
+                            .health = client->health,
                             .speed = std::hypot(velocity.x, velocity.z),
                             .hurtTick = client->foes.hurtTick,
                             .struckTick = client->foes.struckTick,
                             .seated = m_state.entities().minecarts().ridden(client->id) != nullptr
-                                      || m_state.entities().boats().drivenBy(client->id) != nullptr});
+                                      || m_state.entities().boats().drivenBy(client->id) != nullptr
+                                      || m_state.entities().creatures().riddenBy(client->id) != nullptr,
+                            .sightShare = QcEffectRules::sightShare(m_state.content(), client->effects.all(), armourPieces(*client))});
         }
     }
     return players;
@@ -66,7 +96,8 @@ void QcServerCreatures::tick()
     const double dt = QcPhysics::tickDuration;
     const QList<QcMobManager::PlayerView> players = playerViews();
     m_state.entities().creatures().setGriefing(m_state.info().mobGriefing);
-    m_state.entities().creatures().setWeather(m_state.info().weather.rain, m_state.info().weather.thunder);
+    const bool weather = m_state.current().definition().weather;
+    m_state.entities().creatures().setWeather(weather ? m_state.info().weather.rain : 0.0, weather ? m_state.info().weather.thunder : 0.0);
     // Before the creatures move, which forgets who was hurt.
     m_infestation.tick();
     m_families.tick();
@@ -75,6 +106,7 @@ void QcServerCreatures::tick()
     m_villagers.apply();
     m_traits.apply();
     playAmbientSounds(dt);
+    playWarnings();
     applyCreatureHits();
     applyCramming();
     applyPlayerHits(hits);
@@ -83,6 +115,7 @@ void QcServerCreatures::tick()
     m_guardians.tick();
     m_crumbling.tick();
     m_drinking.tick();
+    m_hydras.tick();
 }
 
 void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits)
@@ -113,15 +146,24 @@ void QcServerCreatures::applyCreatureHits()
         }
         const QString sound = m_state.content().mobs()[attacker->type].golem.attackSound;
         const QcVec3 at = target->motion.position + QcVec3{0.0, m_state.content().mobs()[target->type].height * 0.5, 0.0};
-        if (QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = hit.target, .damage = hit.damage, .from = hit.from, .lift = hit.lift}) && !sound.isEmpty()) {
+        if (QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = hit.target, .damage = blowOf(hit.attacker, hit.damage), .from = hit.from, .lift = hit.lift}) && !sound.isEmpty()) {
             m_sounds.play(sound, at);
         }
     }
 }
 
+double QcServerCreatures::blowOf(quint32 creature, double damage) const
+{
+    const QcCreature *attacker = m_state.entities().creatures().find(creature);
+    if (!attacker || !attacker->effects) {
+        return damage;
+    }
+    return std::max(0.0, damage + QcEffectRules::attackBonus(m_state.content(), attacker->effects->all()));
+}
+
 void QcServerCreatures::strike(QcServerClient &client, const QcMobManager::PlayerHit &hit)
 {
-    const QcHurtWindow::Take take = m_health.damage(client, hit.damage, hit.knockback, QcPlayerHealth::DamageKind::Blow, hit.mob);
+    const QcHurtWindow::Take take = m_health.damage(client, blowOf(hit.mob, hit.damage), hit.knockback, QcPlayerHealth::DamageKind::Blow, hit.mob);
     // A golem's blow throws higher than the usual push lifts.
     if (take == QcHurtWindow::Take::Fresh && hit.lift != 1.0 && hit.knockback.length() > 0.0) {
         client.motion.velocity.y = QcMobManager::knockbackLift * hit.lift;
@@ -143,6 +185,20 @@ void QcServerCreatures::playAmbientSounds(double dt)
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
         if (!mob.dormant && !definition.ambientSound.isEmpty() && m_state.soundRandom().generateDouble() < dt / ambientSeconds) {
             m_sounds.play(definition.ambientSound, mob.motion.position + QcVec3{0.0, definition.height * 0.8, 0.0});
+        }
+    }
+}
+
+void QcServerCreatures::playWarnings()
+{
+    for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
+        if (!mob.drifter || !mob.drifter->warns) {
+            continue;
+        }
+        mob.drifter->warns = false;
+        const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
+        if (!definition.archer.warnSound.isEmpty()) {
+            m_sounds.play(definition.archer.warnSound, mob.motion.position + QcVec3{0.0, definition.height * 0.5, 0.0});
         }
     }
 }

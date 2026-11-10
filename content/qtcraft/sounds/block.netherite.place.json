@@ -1,0 +1,64 @@
+{
+    "name": "block.netherite.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.06,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1800,
+            "gain": 0.03
+        },
+        {
+            "wave": "noise",
+            "duration": 0.25,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 590,
+            "resonance": 30.0,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 1591,
+            "resonance": 30.0,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 2570,
+            "resonance": 30.0,
+            "gain": 0.4
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 108,
+            "resonance": 1.44,
+            "lowpass": 324,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

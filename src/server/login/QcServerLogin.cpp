@@ -161,7 +161,7 @@ std::optional<QcMsg::Disconnect> QcServerLogin::admission(const QcServerClient &
     const QString nameKey = QcAccessList::key(client.name);
     int players = 0;
     bool nameTaken = false;
-    for (const auto &other : m_state.clients()) {
+    for (const auto &other : m_state.allClients()) {
         if (other.get() != &client && other->state == QcServerClient::State::Playing) {
             ++players;
             nameTaken = nameTaken || QcAccessList::key(other->name) == nameKey;
@@ -201,7 +201,7 @@ void QcServerLogin::admit(QcServerClient &client, const QByteArray &newIdentity)
 
 void QcServerLogin::expire()
 {
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         // The local player of the in-process host has no login to wait for (a slow start of the
         // game must not shut its owner out).
         const bool waiting = client->state == QcServerClient::State::AwaitingHello || client->state == QcServerClient::State::AwaitingLogin;

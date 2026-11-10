@@ -69,7 +69,7 @@ check_contents() {
     licenses="$RUN/usr/share/doc/qtcraft/licenses"
     qt_texts="Qt-NOTICE.txt"
     [ "$LOCAL_ONLY" -eq 0 ] && qt_texts="$qt_texts Qt-LGPL-3.0.txt Qt-GPL-3.0.txt"
-    for licence in QtCraft-LICENSE QtCraft-THIRD_PARTY.md QtCraft-CREDITS.md PixelifySans-OFL.txt SDL3-LICENSE.txt \
+    for licence in QtCraft-LICENSE QtCraft-THIRD_PARTY.md QtCraft-CREDITS.md PixelifySans-OFL.txt CC-BY-4.0.txt SDL3-LICENSE.txt \
         HIDAPI-LICENSE.txt SDL3-LIBM-NOTICE.txt FFmpeg-LGPL-2.1.txt $qt_texts; do
         [ -s "$licenses/$licence" ] && ok "contains $licence" || problem "missing $licence"
     done

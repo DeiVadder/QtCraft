@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/sound/QcSampleBuffer.h"
+#include "clientcore/sound/QcSoundCategory.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcSoundDefinition.h"
 
@@ -28,6 +29,8 @@ public:
     {
         /*! The content's definition of the sound. */
         QcSoundDefinition definition;
+        /*! The volume slider it follows (QcSoundCategorizer). */
+        QcSoundCategory category = QcSoundCategory::Players;
         /*! The rendered variants; one is picked per play. */
         QList<std::shared_ptr<const QcSampleBuffer>> variants;
     };

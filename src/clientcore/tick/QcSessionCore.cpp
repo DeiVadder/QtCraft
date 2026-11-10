@@ -3,7 +3,7 @@
 
 #include "clientcore/tick/QcSessionCore.h"
 
-#include "common/gameplay/QcStatusEffects.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcProtocol.h"
@@ -134,7 +134,7 @@ bool QcSessionCore::tick()
     // A paused server takes no input (decision E-877): the player rests where the server has him.
     if (!m_vitals.isDead() && !m_serverPaused) {
         const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
-        m_prediction.setSpeedFactor(content ? static_cast<float>(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
+        m_prediction.setMovementEffects(content ? QcEffectRules::movement(*content, m_vitals.effects()) : QcMovementEffects{}, m_vitals.movementEpoch());
         const QcMovement movement = m_gameMode.rules().movement();
         const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), movement, push(movement));
         if (!m_prediction.riding().isRiding()) {
@@ -187,6 +187,10 @@ void QcSessionCore::onMessage(QcMessage &&message)
         intent.yaw = welcome->yaw;
         intent.pitch = welcome->pitch;
         m_prediction.setIntent(intent);
+    } else if (std::holds_alternative<QcMsg::DimensionChange>(message) && m_playing) {
+        // No step into a world without chunks: the ticks wait for the place in the new dimension
+        // (PlayerState, decision E-1002).
+        m_playing = false;
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
     } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {

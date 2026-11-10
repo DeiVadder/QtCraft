@@ -33,7 +33,7 @@ private:
         join();
         chat(u"/gamemode survival"_s);
         ticks(1);
-        player().hunger.restore(10, 0.0);
+        player().hunger.restore(10, 0.0, 0.0);
     }
 
     // Health of the player after `count` ticks of poison at `level` given for `seconds`; -1 when
@@ -127,6 +127,16 @@ private slots:
         }
         QVERIFY(effects.tick());
         QVERIFY(effects.isEmpty());
+    }
+
+    void twoInstantEffectsOfOneTickKeepTheStronger()
+    {
+        // Two splashes in one tick: the nearer one counts, whichever came first.
+        QcStatusEffects effects;
+        QVERIFY(effects.give({poison, 1, 1, 0.5}));
+        QVERIFY(effects.give({poison, 1, 1, 0.9}));
+        QVERIFY(!effects.give({poison, 1, 1, 0.4}));
+        QCOMPARE(effects.all().front().strength, 0.9);
     }
 
     void effectCommandGivesAndClears()

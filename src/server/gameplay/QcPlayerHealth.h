@@ -5,6 +5,7 @@
 
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcSessionMessages.h"
+#include "server/dimensions/QcPortalLinks.h"
 #include "server/entities/QcHurtWindow.h"
 
 #include <QtGlobal>
@@ -72,10 +73,15 @@ public:
         projectile's knockback, decision E-427, also without damage). */
     static void knock(QcServerClient &client, const QcVec3 &direction, double strength = 1.0);
     /*! Applies the fall damage of \a client after a movement step that started at height
-        \a previousY, \a wasOnGround and \a wasInWater telling where it stood before. */
-    void afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY);
-    /*! Brings the dead player \a client back at the spawn. */
-    void respawn(QcServerClient &client);
+        \a previousY, \a wasOnGround and \a wasInWater telling where it stood before;
+        \a maxFallSpeed is the fall limit of the effects the step ran with (0: none). */
+    void afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY, float maxFallSpeed);
+    /*! Returns whether a fall limit of \a maxFallSpeed m/s (0: none) holds a fall below the speed
+        it reaches at fallDamageThreshold blocks, so that it never hurts (decision E-992). */
+    [[nodiscard]] static bool fallHeldBack(float maxFallSpeed);
+    /*! Brings the dead player \a client back: \a atAnchor at his soul anchor, else at the world
+        spawn (decisions E-1110, E-1112). */
+    void respawn(QcServerClient &client, const std::optional<QcPortalLinks::Destination> &atAnchor = std::nullopt);
     /*! Eats the food \a client holds or puts on the held armour. */
     void consume(QcServerClient &client);
     /*! Drinks the drink \a held by \a client (milk clears the status effects, decision E-500)
@@ -99,6 +105,9 @@ private:
     void forgetTeleports(const QcServerClient &client);
     // The part of a hit the player's armour lets through; the armour wears down.
     double throughArmour(QcServerClient &client, double amount);
+    // The part of a hit that resistance and the extra health of absorption let through (decision
+    // E-992); absorption wears down.
+    double throughEffects(QcServerClient &client, double amount) const;
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

@@ -295,7 +295,7 @@ QcServerClient *QcServerMinecarts::rider(const QcMinecart &cart) const
     }
     for (const auto &client : m_state.clients()) {
         if (client->id == cart.rider) {
-            return client.get();
+            return client;
         }
     }
     return nullptr;

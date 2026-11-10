@@ -1,0 +1,85 @@
+{
+    "name": "block.netherite.break",
+    "volume": 0.85,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1440,
+            "gain": 0.04
+        },
+        {
+            "wave": "noise",
+            "duration": 0.4,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 504,
+            "resonance": 30.0,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.3,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 1390,
+            "resonance": 30.0,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "duration": 0.22,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 2376,
+            "resonance": 30.0,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 86,
+            "resonance": 1.44,
+            "lowpass": 259,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "start": 0.09,
+            "duration": 0.25,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 792,
+            "resonance": 30.0,
+            "gain": 0.6
+        },
+        {
+            "wave": "crackle",
+            "start": 0.02,
+            "duration": 0.2,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4320,
+            "highpass": 1080,
+            "density": 600,
+            "gain": 0.3
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

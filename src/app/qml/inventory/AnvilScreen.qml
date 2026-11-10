@@ -98,27 +98,10 @@ SlotScreen {
             }
         }
 
-        Repeater {
-            model: SlotRange {
-                source: screen.game.player.inventory
-                first: screen.leftRow + 2
-                count: 1
-            }
-
-            ItemSlot {
-                required property string icon
-                required property int count
-                required property real durability
-                required property bool empty
-                required property string label
-                objectName: "anvilOutput"
-                slotIcon: icon
-                slotCount: count
-                slotDurability: durability
-                slotEmpty: empty
-                slotLabel: label
-                infoEnabled: false
-            }
+        WorkbenchOutput {
+            owner: screen
+            row: screen.leftRow + 2
+            slotName: "anvilOutput"
         }
     }
 

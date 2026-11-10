@@ -53,7 +53,19 @@
     "spawn": {
         "maxGroup": 1,
         "weight": 10,
-        "caves": false
+        "caves": false,
+        "also": [
+            {
+                "biomes": [
+                    "nether_wastes",
+                    "soul_sand_valley",
+                    "warped_forest"
+                ],
+                "weight": 1,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
     },
     "skeleton": "shadewalker",
     "outfit": "shadewalker",

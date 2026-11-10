@@ -271,7 +271,7 @@ private slots:
         QVERIFY(std::ranges::none_of(sites.guards, [&](const QcGuardSite &s) { return s.contains(inside); }));
         const auto area = std::ranges::find_if(sites.spawnAreas, [&](const QcSpawnArea &a) { return a.containsColumn(inside.x, inside.z); });
         QVERIFY(area != sites.spawnAreas.cend());
-        QCOMPARE(area->monsters, QStringList{u"qtcraft:witch"_s});
+        QCOMPARE(area->monsters, (QList<QcStructureDefinition::SpawnArea::Monster>{{u"qtcraft:witch"_s, 1, std::nullopt}}));
         QCOMPARE(area->min.y, 0);
         QCOMPARE(area->max.y, QcWorld::worldHeight - 1);
         QCOMPARE(area->max.x - area->min.x + 1, plan.sizeX());

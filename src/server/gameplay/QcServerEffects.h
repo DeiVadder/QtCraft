@@ -9,6 +9,8 @@
 
 class QcContentRegistry;
 class QcMobManager;
+struct QcCreature;
+struct QcEffectDefinition;
 class QcPlayerHealth;
 class QcServerSounds;
 class QcServerState;
@@ -20,6 +22,11 @@ struct QcServerClient;
     through QcPlayerHealth::damage (unblockable), creatures through QcServerCombat::hurtCreature (no
     push, QcMobManager::damage); hunger exhausts players' food (decision E-838; slowness acts where
     bodies move, QcStatusEffects::speedFactor).
+
+    Regeneration heals like poison hurts; instant effects last the one tick after they were given,
+    on undead creatures reversed if their kind says so; absorption gives extra health when given,
+    which ends with the effect and ends it when used up (decision E-992). What acts elsewhere
+    stands in QcEffectRules.
 
     Dead players lose their effects. A player hears of their own with their health
     (QcMsg::PlayerHealth::effects) whenever they change and every second while they have any, so the
@@ -48,7 +55,22 @@ public:
 
 private:
     void tickPlayer(QcServerClient &client);
+    // What `effect` of kind `definition` does to the living `client` in this tick.
+    void actOnPlayer(QcServerClient &client, const QcEffectDefinition &definition, const QcStatusEffect &effect);
+    // Keeps the extra health within what the effects give; used up, it ends them.
+    void settleAbsorption(QcServerClient &client) const;
     void tickCreatures();
+    // What the effects of a creature do to it in a tick, and who gets the kill.
+    struct CreatureHurt
+    {
+        quint32 creature = 0;
+        double damage = 0.0;
+        quint32 attacker = 0;
+    };
+
+    // What the effects of `mob` do to it in this tick and their countdown; returns the damage they
+    // deal, which may kill it and so waits until the list of creatures is walked through.
+    CreatureHurt tickCreature(QcCreature &mob);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

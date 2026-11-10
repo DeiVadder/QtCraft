@@ -176,7 +176,7 @@ private slots:
         QVERIFY(!m_server->mobs().find(pig) || m_server->mobs().find(pig)->health < 10.0);
 
         // Food is eaten as in survival, also a carrot aimed at grass it may not be planted on.
-        m_server->entities().clients().front()->hunger.restore(10, 0.0);
+        m_server->entities().clients().front()->hunger.restore(10, 0.0, 0.0);
         hold("qtcraft:carrot");
         send(QcMsg::UseItem{m_feet.offset(2, -1, 0), QcBlockFace::Up});
         QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 0)), qcAirBlockId);

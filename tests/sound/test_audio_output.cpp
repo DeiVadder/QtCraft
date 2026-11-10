@@ -145,7 +145,7 @@ private slots:
             return;
         }
 
-        engine.setVolumes(0.0, 0.0, 0.0, 0.0, true);
+        engine.setVolumes(0.0, QcSoundVolumes{}, true);
         QSignalSpy ready(&engine, &QcAudioEngine::bankReady);
         engine.setContent(QcTestUtil::loadContent());
         // Rendering the bank takes about 4 s under the thread sanitizer with other tests running.
@@ -172,6 +172,18 @@ private slots:
         QCOMPARE(voices(), 2);
         engine.stopWorldSounds();
         QCOMPARE(voices(), 0);
+
+        // A biome's loop takes the place of wind and cave (decision E-1122): at its full level the
+        // wind stays silent, without it the wind starts.
+        engine.setBiomeAmbience(u"qtcraft:ambient.nether_wastes.loop"_s, 1.0f);
+        QCOMPARE(voices(), 1);
+        engine.setAmbience({0.5f, 0.0f, 0.0f});
+        QCOMPARE(voices(), 1);
+        engine.setBiomeAmbience({}, 0.0f);
+        QCOMPARE(voices(), 0);
+        engine.setAmbience({0.5f, 0.0f, 0.0f});
+        QCOMPARE(voices(), 1);
+        engine.stopWorldSounds();
     }
 };
 

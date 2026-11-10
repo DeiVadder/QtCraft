@@ -1,0 +1,22 @@
+{
+    "name": "stripped_crimson_stem",
+    "tags": [
+        "logs"
+    ],
+    "sound": "stem",
+    "hardness": 2.0,
+    "tool": "axe",
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "stripped_crimson_stem_top",
+        "bottom": "stripped_crimson_stem_top",
+        "side": "stripped_crimson_stem"
+    }
+}

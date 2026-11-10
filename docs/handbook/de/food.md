@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratener Kabeljau](#item-qtcraft-cooked_cod) · [Gebratener Lachs](#item-qtcraft-cooked_salmon) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Roher Kabeljau](#item-qtcraft-raw_cod) · [Roher Lachs](#item-qtcraft-raw_salmon) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Rindfleisch](#item-qtcraft-raw_beef) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Steak](#item-qtcraft-cooked_beef) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratener Kabeljau](#item-qtcraft-cooked_cod) · [Gebratener Lachs](#item-qtcraft-cooked_salmon) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Goldene Karotte](#item-qtcraft-golden_carrot) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Roher Kabeljau](#item-qtcraft-raw_cod) · [Roher Lachs](#item-qtcraft-raw_salmon) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Rindfleisch](#item-qtcraft-raw_beef) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Steak](#item-qtcraft-cooked_beef) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -148,6 +148,26 @@ Gutes Essen, das die Nahrungsleiste weit füllt.
 
 [Brennstoffe](tables.md#table-fuels)
 
+### <a id="item-qtcraft-golden_carrot"></a>Goldene Karotte
+
+Eine Karotte in acht Goldnuggets. Sie macht gut satt und ist die Zutat für Tränke der Nachtsicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_carrot` |
+| Stapelgröße | 64 |
+| Nahrung | 6 Nahrungspunkte |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Goldene Karotte](#item-qtcraft-golden_carrot) |
+| [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Karotte](#item-qtcraft-carrot) | [Goldnugget](items.md#item-qtcraft-gold_nugget) |  |
+| [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Goldnugget](items.md#item-qtcraft-gold_nugget) | [Goldnugget](items.md#item-qtcraft-gold_nugget) |  |
+
 ### <a id="item-qtcraft-carrot"></a>Karotte
 
 Ein Happen und die Saat von Karottenpflanzen. Schweine lieben sie.
@@ -158,6 +178,10 @@ Ein Happen und die Saat von Karottenpflanzen. Schweine lieben sie.
 | Stapelgröße | 64 |
 | Nahrung | 3 Nahrungspunkte |
 | Setzt | [Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) |
+
+**Wird verwendet für**
+
+[Goldene Karotte](#item-qtcraft-golden_carrot)
 
 **Droppt aus**
 
@@ -221,7 +245,7 @@ Ein saftiger Bissen; neun ergeben wieder eine ganze Melone.
 
 **Wird verwendet für**
 
-[Melone](blocks.md#block-qtcraft-melon), [Melonenkerne](items.md#item-qtcraft-melon_seeds)
+[Melone](blocks.md#block-qtcraft-melon), [Melonenkerne](items.md#item-qtcraft-melon_seeds), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice)
 
 **Droppt aus**
 
@@ -423,7 +447,7 @@ Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.
 
 **Droppt aus**
 
-[Schwein](creatures.md#mob-qtcraft-pig) (2×)
+[Borstenkeiler](creatures.md#mob-qtcraft-bristleboar) (2–4×), [Schwein](creatures.md#mob-qtcraft-pig) (2×)
 
 ### <a id="item-qtcraft-cooked_beef"></a>Steak
 
@@ -471,4 +495,4 @@ Fällt von Zombies. Kaum Nahrung.
 
 **Droppt aus**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned), [Moderhauer](creatures.md#mob-qtcraft-rottusk), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)

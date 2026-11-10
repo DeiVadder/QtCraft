@@ -1,0 +1,12 @@
+{
+    "name": "brewing",
+    "parent": "iron",
+    "icon": "brewing_stand",
+    "frame": "task",
+    "handbook": "chapter:brewing",
+    "criteria": {
+        "potion": {
+            "trigger": "potion_brewed"
+        }
+    }
+}

@@ -6,6 +6,7 @@
 #include "server/chunks/QcChunkGroups.h"
 #include "server/chunks/QcChunkTickets.h"
 #include "server/chunks/QcSignalChunks.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/storage/QcChunkIo.h"
 
 #include <QHash>
@@ -100,7 +101,7 @@ public:
     /*! Returns the numbers as they are now. */
     Numbers numbers() const;
     /*! Returns the load tickets of the circuits. */
-    const QcChunkTickets &tickets() const { return m_tickets; }
+    const QcChunkTickets &tickets() const { return here().tickets; }
 
 private:
     // Lets the waiting chunk at `pos` in with its group if the whole group is there; asks for the rest.
@@ -162,19 +163,33 @@ private:
     QcServerState &m_state;
     QcServerBlocks &m_blocks;
     QcBlockUpdateQueue &m_updates;
-    QcChunkTickets m_tickets;
-    QcSignalChunks m_signals;
-    // Arrived chunks waiting for the rest of their group.
-    QHash<QcChunkPos, QcChunkIo::Arrival> m_waiting;
-    QHash<QcChunkPos, quint16> m_waitingMarks;
-    // Groups over the limit seen lately (by their first chunk), warned about once.
-    QSet<QcChunkPos> m_oversizeWarned;
-    qsizetype m_oversizeGroups = 0;
-    quint64 m_unloaded = 0;
-    // circuitChunks() at the last pass: a chunk the circuits kept until this tick may hold a signal.
-    QSet<QcChunkPos> m_circuitChunks;
-    // The inputs of the last pass that let no chunk leave.
-    std::optional<NeededInputs> m_settled;
     // The current tick has simulated (or none started yet).
     bool m_simulated = true;
+    // What the loading of a dimension keeps.
+    struct Loading
+    {
+        Loading(QcServerState &state, const QcBlockUpdateQueue &updates)
+            : signalChunks(state, tickets, updates)
+        {
+        }
+
+        // Arrived chunks waiting for the rest of their group.
+        QHash<QcChunkPos, QcChunkIo::Arrival> waiting;
+        QHash<QcChunkPos, quint16> waitingMarks;
+        // Groups over the limit seen lately (by their first chunk), warned about once.
+        QSet<QcChunkPos> oversizeWarned;
+        qsizetype oversizeGroups = 0;
+        quint64 unloaded = 0;
+        // circuitChunks() at the last pass: a chunk the circuits kept until this tick may hold a
+        // signal.
+        QSet<QcChunkPos> circuitChunks;
+        // The inputs of the last pass that let no chunk leave.
+        std::optional<NeededInputs> settled;
+        QcChunkTickets tickets;
+        QcSignalChunks signalChunks;
+    };
+    // Of the current dimension.
+    Loading &here() const;
+
+    QcPerDimension<Loading> m_loading;
 };

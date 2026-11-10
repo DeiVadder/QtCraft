@@ -68,3 +68,39 @@ QList<QcItemStack> QcLootTables::scatter(const QList<QcItemStack> &stacks, int s
     }
     return chest;
 }
+
+QList<QcItemDrop> QcLootTables::shownDrops(const QList<QcItemDrop> &drops) const
+{
+    QList<QcItemDrop> shown;
+    for (const QcItemDrop &drop : drops) {
+        if (drop.table.isEmpty()) {
+            shown.append(drop);
+            continue;
+        }
+        const QList<QcItemDrop> entries = tableDrops(drop);
+        for (const QcItemDrop &entry : entries) {
+            const bool listed = std::ranges::any_of(shown, [&entry](const QcItemDrop &known) { return known.item == entry.item; });
+            if (!listed) {
+                shown.append(entry);
+            }
+        }
+    }
+    return shown;
+}
+
+QList<QcItemDrop> QcLootTables::tableDrops(const QcItemDrop &drop) const
+{
+    QList<QcItemDrop> drops;
+    const QcLootTableDefinition *table = find(drop.table);
+    if (!table) {
+        return drops;
+    }
+    for (const QcLootTableDefinition::Pool &pool : table->pools) {
+        for (const QcLootTableDefinition::Entry &entry : pool.entries) {
+            if (!entry.item.isEmpty()) {
+                drops.append({.item = entry.item, .count = entry.minCount, .chance = drop.chance, .maxCount = entry.maxCount, .byPlayer = drop.byPlayer});
+            }
+        }
+    }
+    return drops;
+}

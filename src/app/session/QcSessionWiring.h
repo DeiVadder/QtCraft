@@ -15,12 +15,10 @@ class QcHudState;
 class QcPlayerController;
 class QcScreenState;
 class QcStartupHooks;
-class QcStonecutterController;
-class QcAnvilController;
-class QcEnchantingController;
 class QcTradeController;
 class QcWorldAtlas;
 struct QcSessionParts;
+struct QcWorkstationControllers;
 
 // The one place where the signals of a new client session reach the GUI (decision E-530): chunks
 // and blocks go to the mesh scheduler and its meshes to the world view, sounds and ambience to the
@@ -40,9 +38,7 @@ public:
         QcHudState &hud;
         QcPlayerController &player;
         QcTradeController &trade;
-        QcStonecutterController &stonecutter;
-        QcEnchantingController &enchanting;
-        QcAnvilController &anvil;
+        QcWorkstationControllers &workstations;
         QcAdvancementTreeModel &advancements;
         QcScreenState &screens;
         QcStartupHooks &startup;
@@ -62,6 +58,9 @@ signals:
     void disconnected(const QString &reason);
     // The session ran a tick.
     void ticked();
+    // The player is in another dimension, or in the one he joined in (decision E-1002); the meshes
+    // of the old one are gone.
+    void dimensionChanged();
 
 private:
     void connectWorld();
@@ -72,8 +71,13 @@ private:
     void connectEnchanting();
     // The anvil's screen (decision E-866).
     void connectAnvil();
+    // The smithing table's screen (decision E-1115).
+    void connectSmithing();
+    // The beacon's screen (decision E-1142).
+    void connectBeacon();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
+    void onDimensionChanged();
     void onMachineOpened();
     void onMachineClosed();
     void onTradeOpened();

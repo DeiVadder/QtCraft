@@ -1,0 +1,8 @@
+{
+    "name": "brewing_stand_item",
+    "pattern": "bottle",
+    "primary": "#8a8a94",
+    "secondary": "#e8b040",
+    "variation": 0.1,
+    "seed": 8507
+}

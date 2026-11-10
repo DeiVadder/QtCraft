@@ -17,6 +17,7 @@
     },
     "light": 15,
     "contactDamage": 1,
+    "contactFire": true,
     "burnsItems": false,
     "campfire": {
         "slots": 4,

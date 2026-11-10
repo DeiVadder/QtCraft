@@ -55,6 +55,17 @@ inline constexpr quint16 Sitting = 1024;
 inline constexpr quint16 Drawing = 2048;
 /*! A projectile stuck in a block: it no longer turns with its flight. */
 inline constexpr quint16 Stuck = 4096;
+/*! Under an invisibility effect (decision E-992): the body is not drawn, what it wears and holds
+    is. */
+inline constexpr quint16 Invisible = 8192;
+/*! A creature wearing a saddle (decision E-1054): its QcMobPart::saddled parts are drawn. */
+inline constexpr quint16 Saddled = 16384;
+/*! On a projectile the saddle bit tells that a player can strike it (decision E-1053): the
+    crosshair finds it. */
+inline constexpr quint16 Deflectable = Saddled;
+/*! A charred hydra in its armour (decision E-1126): its QcMobPart::armour parts are drawn; while it
+    charges the bit blinks. */
+inline constexpr quint16 Armoured = 32768;
 
 /*! Returns the flag bits of \a pose: Lying, Sitting or none for standing. */
 inline quint16 poseFlags(QcPose pose)

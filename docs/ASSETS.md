@@ -1,10 +1,16 @@
 # Third-party assets
 
-QtCraft contains one third-party asset, the logo's pixel font Pixelify Sans (SIL Open Font License 1.1, `src/app/fonts`, listed in [THIRD_PARTY.md](../THIRD_PARTY.md) and [CREDITS.md](../CREDITS.md)). The game's textures are generated procedurally at runtime from the content definitions (`content/*/textures/*.json`); the only image files are the project's own texture pack files below (exported from those textures and hand-tuned). All sounds are synthesized from `content/*/sounds/*.json` and the music is composed algorithmically at runtime; the repository contains no audio files.
+QtCraft contains two kinds of third-party assets: the logo's pixel font Pixelify Sans (SIL Open Font License 1.1, `src/app/fonts`, listed in [THIRD_PARTY.md](../THIRD_PARTY.md) and [CREDITS.md](../CREDITS.md)) and 14 music tracks by Scott Buckley (CC-BY 4.0, `content/qtcraft/music`, see below). The game's textures are generated procedurally at runtime from the content definitions (`content/*/textures/*.json`); the only image files are the project's own texture pack files below (exported from those textures and hand-tuned). All sounds are synthesized from `content/*/sounds/*.json`; the music is either one of the tracks below or, by setting and where no track fits, composed algorithmically at runtime. Apart from the tracks and two short test tones (`tests/data/music`, made by the project), the repository contains no audio files.
 
 ## Third-party code
 
 Code of other projects is listed in [THIRD_PARTY.md](../THIRD_PARTY.md) with version, licence and where the licence text is shipped: Qt (LGPL 3) with the FFmpeg libraries of Qt Multimedia (LGPL 2.1 or later), SDL3 for gamepads (zlib licence, with HIDAPI under its BSD option and SunPro's maths routines) and OpenSSL 3 for encrypted multiplayer (Apache License 2.0).
+
+## Music
+
+| Files | Source | Author | Licence | Date | Changes |
+|-------|--------|--------|---------|------|---------|
+| `content/qtcraft/music/*.ogg` (14 tracks, list with places and sizes in `docs/Musik-Auswahl.md`) | the MP3 download of each track's page in the artist's library (scottbuckley.com.au) | Scott Buckley | CC-BY 4.0, checked on each track's page | 2026-11-09 | Converted to Ogg Vorbis (libvorbis quality 0.3, stereo, resampled to 48 kHz); otherwise unchanged. Attribution lines in each track's `.json`, the handbook chapter "Music", Settings → About and `CREDITS.md`; the licence address in the handbook and under About, its text as `CC-BY-4.0.txt` in every release package's licence folder (decisions E-1136, E-1138, E-1139) |
 
 ## Texture packs
 

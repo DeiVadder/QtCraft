@@ -65,9 +65,11 @@ void QcWorldRenderer::useCaster(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPi
 
 void QcWorldRenderer::drawShadowMap(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates)
 {
-    // Depth only: the colour of the clear is never used.
+    // Depth only: the colour of the clear is never used. A sky without sun and moon has no
+    // casters, the map stays cleared (decision E-1003).
     commandBuffer->beginPass(m_shadows.target(), Qt::black, {1.0f, 0}, updates);
-    if (const std::optional<QcShadowMap::Casters> casters = m_shadows.casters(m_device)) {
+    const std::optional<QcShadowMap::Casters> casters = m_frame.sky.celestial ? m_shadows.casters(m_device) : std::nullopt;
+    if (casters) {
         for (int i = 0; i < m_shadows.cascadeCount(); ++i) {
             drawCascade(commandBuffer, *casters, i);
         }

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Anvil](#block-qtcraft-anvil) · [Backpack](#block-qtcraft-backpack) · [Barrel](#block-qtcraft-barrel) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch Sign](#block-qtcraft-birch_sign) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black bed](#block-qtcraft-black_bed) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black glazed terracotta](#block-qtcraft-black_glazed_terracotta) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Blast furnace](#block-qtcraft-blast_furnace) · [Block of coal](#block-qtcraft-coal_block) · [Block of copper](#block-qtcraft-copper_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Block of raw copper](#block-qtcraft-raw_copper_block) · [Block of raw gold](#block-qtcraft-raw_gold_block) · [Block of raw iron](#block-qtcraft-raw_iron_block) · [Block of Signal Dust](#block-qtcraft-signal_dust_block) · [Blue bed](#block-qtcraft-blue_bed) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue glazed terracotta](#block-qtcraft-blue_glazed_terracotta) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bone block](#block-qtcraft-bone_block) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown bed](#block-qtcraft-brown_bed) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown glazed terracotta](#block-qtcraft-brown_glazed_terracotta) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Cake](#block-qtcraft-cake) · [Campfire](#block-qtcraft-campfire) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chain](#block-qtcraft-chain) · [Chest](#block-qtcraft-chest) · [Chipped Anvil](#block-qtcraft-chipped_anvil) · [Chiseled stone bricks](#block-qtcraft-chiseled_stone_bricks) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Coarse dirt](#block-qtcraft-coarse_dirt) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Copper bars](#block-qtcraft-copper_bars) · [Copper chain](#block-qtcraft-copper_chain) · [Copper door](#block-qtcraft-copper_door) · [Copper lantern](#block-qtcraft-copper_lantern) · [Copper ore](#block-qtcraft-copper_ore) · [Copper trapdoor](#block-qtcraft-copper_trapdoor) · [Cornflower](#block-qtcraft-cornflower) · [Cracked stone bricks](#block-qtcraft-cracked_stone_bricks) · [Crafting table](#block-qtcraft-crafting_table) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan bed](#block-qtcraft-cyan_bed) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan glazed terracotta](#block-qtcraft-cyan_glazed_terracotta) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Damaged Anvil](#block-qtcraft-damaged_anvil) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Decoupled Signal Dispenser](#block-qtcraft-decoupled_signal_dispenser) · [Decoupled Signal Dropper](#block-qtcraft-decoupled_signal_dropper) · [Decoupled Signal Piston](#block-qtcraft-decoupled_signal_piston) · [Decoupled Sticky Signal Piston](#block-qtcraft-decoupled_sticky_signal_piston) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Enchanting Table](#block-qtcraft-enchanting_table) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray bed](#block-qtcraft-gray_bed) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray glazed terracotta](#block-qtcraft-gray_glazed_terracotta) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green bed](#block-qtcraft-green_bed) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green glazed terracotta](#block-qtcraft-green_glazed_terracotta) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Jack o'lantern](#block-qtcraft-jack_o_lantern) · [Jungle door](#block-qtcraft-jungle_door) · [Jungle leaves](#block-qtcraft-jungle_leaves) · [Jungle log](#block-qtcraft-jungle_log) · [Jungle planks](#block-qtcraft-jungle_planks) · [Jungle sapling](#block-qtcraft-jungle_sapling) · [Jungle sign](#block-qtcraft-jungle_sign) · [Jungle trapdoor](#block-qtcraft-jungle_trapdoor) · [Jungle wood](#block-qtcraft-jungle_wood) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue bed](#block-qtcraft-light_blue_bed) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue glazed terracotta](#block-qtcraft-light_blue_glazed_terracotta) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray bed](#block-qtcraft-light_gray_bed) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray glazed terracotta](#block-qtcraft-light_gray_glazed_terracotta) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lily pad](#block-qtcraft-lily_pad) · [Lime bed](#block-qtcraft-lime_bed) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime glazed terracotta](#block-qtcraft-lime_glazed_terracotta) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta bed](#block-qtcraft-magenta_bed) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta glazed terracotta](#block-qtcraft-magenta_glazed_terracotta) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Note Block](#block-qtcraft-note_block) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak Sign](#block-qtcraft-oak_sign) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange bed](#block-qtcraft-orange_bed) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange glazed terracotta](#block-qtcraft-orange_glazed_terracotta) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange tulip](#block-qtcraft-orange_tulip) · [Orange wool](#block-qtcraft-orange_wool) · [Oxeye daisy](#block-qtcraft-oxeye_daisy) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink bed](#block-qtcraft-pink_bed) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink glazed terracotta](#block-qtcraft-pink_glazed_terracotta) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink tulip](#block-qtcraft-pink_tulip) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple bed](#block-qtcraft-purple_bed) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple glazed terracotta](#block-qtcraft-purple_glazed_terracotta) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red glazed terracotta](#block-qtcraft-red_glazed_terracotta) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Reeds](#block-qtcraft-reeds) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Indicator Light](#block-qtcraft-signal_indicator_light) · [Signal Indicator Light (lit)](#block-qtcraft-signal_indicator_light_lit) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small jack o'lantern](#block-qtcraft-small_jack_o_lantern) · [Small Signal Torch](#block-qtcraft-small_signal_torch) · [Small Signal Torch (off)](#block-qtcraft-small_signal_torch_off) · [Small torch](#block-qtcraft-small_torch) · [Smoker](#block-qtcraft-smoker) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Smooth stone](#block-qtcraft-smooth_stone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce Sign](#block-qtcraft-spruce_sign) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Stonecutter](#block-qtcraft-stonecutter) · [Stripped birch log](#block-qtcraft-stripped_birch_log) · [Stripped birch wood](#block-qtcraft-stripped_birch_wood) · [Stripped jungle log](#block-qtcraft-stripped_jungle_log) · [Stripped jungle wood](#block-qtcraft-stripped_jungle_wood) · [Stripped oak log](#block-qtcraft-stripped_oak_log) · [Stripped oak wood](#block-qtcraft-stripped_oak_wood) · [Stripped spruce log](#block-qtcraft-stripped_spruce_log) · [Stripped spruce wood](#block-qtcraft-stripped_spruce_wood) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Target](#block-qtcraft-target) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Trapped chest](#block-qtcraft-trapped_chest) · [Tripwire](#block-qtcraft-tripwire) · [Tripwire hook](#block-qtcraft-tripwire_hook) · [Unlit campfire](#block-qtcraft-unlit_campfire) · [Vines](#block-qtcraft-vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White bed](#block-qtcraft-white_bed) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White glazed terracotta](#block-qtcraft-white_glazed_terracotta) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow bed](#block-qtcraft-yellow_bed) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow glazed terracotta](#block-qtcraft-yellow_glazed_terracotta) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Ancient debris](#block-qtcraft-ancient_debris) · [Anvil](#block-qtcraft-anvil) · [Backpack](#block-qtcraft-backpack) · [Barrel](#block-qtcraft-barrel) · [Basalt](#block-qtcraft-basalt) · [Beacon](#block-qtcraft-beacon) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch Sign](#block-qtcraft-birch_sign) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black bed](#block-qtcraft-black_bed) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black glazed terracotta](#block-qtcraft-black_glazed_terracotta) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Blackstone](#block-qtcraft-blackstone) · [Blast furnace](#block-qtcraft-blast_furnace) · [Block of coal](#block-qtcraft-coal_block) · [Block of copper](#block-qtcraft-copper_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Block of netherite](#block-qtcraft-netherite_block) · [Block of quartz](#block-qtcraft-quartz_block) · [Block of raw copper](#block-qtcraft-raw_copper_block) · [Block of raw gold](#block-qtcraft-raw_gold_block) · [Block of raw iron](#block-qtcraft-raw_iron_block) · [Block of Signal Dust](#block-qtcraft-signal_dust_block) · [Blue bed](#block-qtcraft-blue_bed) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue glazed terracotta](#block-qtcraft-blue_glazed_terracotta) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bone block](#block-qtcraft-bone_block) · [Bookshelf](#block-qtcraft-bookshelf) · [Brewing stand](#block-qtcraft-brewing_stand) · [Bricks](#block-qtcraft-bricks) · [Brown bed](#block-qtcraft-brown_bed) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown glazed terracotta](#block-qtcraft-brown_glazed_terracotta) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Cake](#block-qtcraft-cake) · [Campfire](#block-qtcraft-campfire) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chain](#block-qtcraft-chain) · [Charred Skull](#block-qtcraft-charred_skull) · [Chest](#block-qtcraft-chest) · [Chipped Anvil](#block-qtcraft-chipped_anvil) · [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) · [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) · [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) · [Chiseled stone bricks](#block-qtcraft-chiseled_stone_bricks) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Coarse dirt](#block-qtcraft-coarse_dirt) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Copper bars](#block-qtcraft-copper_bars) · [Copper chain](#block-qtcraft-copper_chain) · [Copper door](#block-qtcraft-copper_door) · [Copper lantern](#block-qtcraft-copper_lantern) · [Copper ore](#block-qtcraft-copper_ore) · [Copper trapdoor](#block-qtcraft-copper_trapdoor) · [Cornflower](#block-qtcraft-cornflower) · [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) · [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) · [Cracked stone bricks](#block-qtcraft-cracked_stone_bricks) · [Crafting table](#block-qtcraft-crafting_table) · [Crimson door](#block-qtcraft-crimson_door) · [Crimson fungus](#block-qtcraft-crimson_fungus) · [Crimson hyphae](#block-qtcraft-crimson_hyphae) · [Crimson nylium](#block-qtcraft-crimson_nylium) · [Crimson planks](#block-qtcraft-crimson_planks) · [Crimson roots](#block-qtcraft-crimson_roots) · [Crimson sign](#block-qtcraft-crimson_sign) · [Crimson stem](#block-qtcraft-crimson_stem) · [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan bed](#block-qtcraft-cyan_bed) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan glazed terracotta](#block-qtcraft-cyan_glazed_terracotta) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Damaged Anvil](#block-qtcraft-damaged_anvil) · [Dandelion](#block-qtcraft-dandelion) · [Daylight Sensor](#block-qtcraft-daylight_sensor) · [Dead bush](#block-qtcraft-dead_bush) · [Decoupled Signal Dispenser](#block-qtcraft-decoupled_signal_dispenser) · [Decoupled Signal Dropper](#block-qtcraft-decoupled_signal_dropper) · [Decoupled Signal Piston](#block-qtcraft-decoupled_signal_piston) · [Decoupled Sticky Signal Piston](#block-qtcraft-decoupled_sticky_signal_piston) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Enchanting Table](#block-qtcraft-enchanting_table) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Gilded blackstone](#block-qtcraft-gilded_blackstone) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Glowstone](#block-qtcraft-glowstone) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray bed](#block-qtcraft-gray_bed) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray glazed terracotta](#block-qtcraft-gray_glazed_terracotta) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green bed](#block-qtcraft-green_bed) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green glazed terracotta](#block-qtcraft-green_glazed_terracotta) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Jack o'lantern](#block-qtcraft-jack_o_lantern) · [Jungle door](#block-qtcraft-jungle_door) · [Jungle leaves](#block-qtcraft-jungle_leaves) · [Jungle log](#block-qtcraft-jungle_log) · [Jungle planks](#block-qtcraft-jungle_planks) · [Jungle sapling](#block-qtcraft-jungle_sapling) · [Jungle sign](#block-qtcraft-jungle_sign) · [Jungle trapdoor](#block-qtcraft-jungle_trapdoor) · [Jungle wood](#block-qtcraft-jungle_wood) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue bed](#block-qtcraft-light_blue_bed) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue glazed terracotta](#block-qtcraft-light_blue_glazed_terracotta) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray bed](#block-qtcraft-light_gray_bed) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray glazed terracotta](#block-qtcraft-light_gray_glazed_terracotta) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lily pad](#block-qtcraft-lily_pad) · [Lime bed](#block-qtcraft-lime_bed) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime glazed terracotta](#block-qtcraft-lime_glazed_terracotta) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta bed](#block-qtcraft-magenta_bed) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta glazed terracotta](#block-qtcraft-magenta_glazed_terracotta) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Nether brick fence](#block-qtcraft-nether_brick_fence) · [Nether bricks](#block-qtcraft-nether_bricks) · [Nether gold ore](#block-qtcraft-nether_gold_ore) · [Nether portal](#block-qtcraft-nether_portal) · [Nether quartz ore](#block-qtcraft-nether_quartz_ore) · [Nether sprouts](#block-qtcraft-nether_sprouts) · [Nether wart (plant)](#block-qtcraft-nether_wart_crop) · [Nether wart block](#block-qtcraft-nether_wart_block) · [Netherrack](#block-qtcraft-netherrack) · [Note Block](#block-qtcraft-note_block) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak Sign](#block-qtcraft-oak_sign) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange bed](#block-qtcraft-orange_bed) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange glazed terracotta](#block-qtcraft-orange_glazed_terracotta) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange tulip](#block-qtcraft-orange_tulip) · [Orange wool](#block-qtcraft-orange_wool) · [Oxeye daisy](#block-qtcraft-oxeye_daisy) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink bed](#block-qtcraft-pink_bed) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink glazed terracotta](#block-qtcraft-pink_glazed_terracotta) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink tulip](#block-qtcraft-pink_tulip) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished basalt](#block-qtcraft-polished_basalt) · [Polished blackstone](#block-qtcraft-polished_blackstone) · [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple bed](#block-qtcraft-purple_bed) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple glazed terracotta](#block-qtcraft-purple_glazed_terracotta) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Quartz bricks](#block-qtcraft-quartz_bricks) · [Quartz pillar](#block-qtcraft-quartz_pillar) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red glazed terracotta](#block-qtcraft-red_glazed_terracotta) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red nether bricks](#block-qtcraft-red_nether_bricks) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Reeds](#block-qtcraft-reeds) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Shroomlight](#block-qtcraft-shroomlight) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Indicator Light](#block-qtcraft-signal_indicator_light) · [Signal Indicator Light (lit)](#block-qtcraft-signal_indicator_light_lit) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small jack o'lantern](#block-qtcraft-small_jack_o_lantern) · [Small Signal Torch](#block-qtcraft-small_signal_torch) · [Small Signal Torch (off)](#block-qtcraft-small_signal_torch_off) · [Small torch](#block-qtcraft-small_torch) · [Smithing table](#block-qtcraft-smithing_table) · [Smoker](#block-qtcraft-smoker) · [Smooth basalt](#block-qtcraft-smooth_basalt) · [Smooth quartz block](#block-qtcraft-smooth_quartz) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Smooth stone](#block-qtcraft-smooth_stone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Soul anchor](#block-qtcraft-soul_anchor) · [Soul anchor (1 of 4)](#block-qtcraft-soul_anchor_1) · [Soul anchor (2 of 4)](#block-qtcraft-soul_anchor_2) · [Soul anchor (3 of 4)](#block-qtcraft-soul_anchor_3) · [Soul anchor (4 of 4)](#block-qtcraft-soul_anchor_4) · [Soul fire](#block-qtcraft-soul_fire) · [Soul lantern](#block-qtcraft-soul_lantern) · [Soul sand](#block-qtcraft-soul_sand) · [Soul soil](#block-qtcraft-soul_soil) · [Soul torch](#block-qtcraft-soul_torch) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce Sign](#block-qtcraft-spruce_sign) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Stonecutter](#block-qtcraft-stonecutter) · [Stripped birch log](#block-qtcraft-stripped_birch_log) · [Stripped birch wood](#block-qtcraft-stripped_birch_wood) · [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) · [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) · [Stripped jungle log](#block-qtcraft-stripped_jungle_log) · [Stripped jungle wood](#block-qtcraft-stripped_jungle_wood) · [Stripped oak log](#block-qtcraft-stripped_oak_log) · [Stripped oak wood](#block-qtcraft-stripped_oak_wood) · [Stripped spruce log](#block-qtcraft-stripped_spruce_log) · [Stripped spruce wood](#block-qtcraft-stripped_spruce_wood) · [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) · [Stripped warped stem](#block-qtcraft-stripped_warped_stem) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Target](#block-qtcraft-target) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Trapped chest](#block-qtcraft-trapped_chest) · [Tripwire](#block-qtcraft-tripwire) · [Tripwire hook](#block-qtcraft-tripwire_hook) · [Twisting vines](#block-qtcraft-twisting_vines) · [Unlit campfire](#block-qtcraft-unlit_campfire) · [Vines](#block-qtcraft-vines) · [Warped door](#block-qtcraft-warped_door) · [Warped fungus](#block-qtcraft-warped_fungus) · [Warped hyphae](#block-qtcraft-warped_hyphae) · [Warped nylium](#block-qtcraft-warped_nylium) · [Warped planks](#block-qtcraft-warped_planks) · [Warped roots](#block-qtcraft-warped_roots) · [Warped sign](#block-qtcraft-warped_sign) · [Warped stem](#block-qtcraft-warped_stem) · [Warped trapdoor](#block-qtcraft-warped_trapdoor) · [Warped wart block](#block-qtcraft-warped_wart_block) · [Weeping vines](#block-qtcraft-weeping_vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White bed](#block-qtcraft-white_bed) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White glazed terracotta](#block-qtcraft-white_glazed_terracotta) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow bed](#block-qtcraft-yellow_bed) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow glazed terracotta](#block-qtcraft-yellow_glazed_terracotta) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
 
@@ -37,7 +37,7 @@ Rail that acts on carts while it gets power: the rider gets out and a hopper car
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-allium"></a>Allium
 
@@ -63,6 +63,42 @@ A purple ball of blossoms on meadows and mountains; gives magenta dye.
 **Found in**
 
 [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Mountains](biomes.md#biome-qtcraft-mountains) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
+
+### <a id="block-qtcraft-ancient_debris"></a>Ancient debris
+
+Deep in the Nether, hidden in netherrack and never next to open air. It withstands any explosion, needs a pickaxe of level 4 or better and drops itself; a furnace smelts it into netherite scrap. It does not burn in lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:ancient_debris` |
+| Hardness | 30 |
+| Breaking by hand | 150 s |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
+| Breaking with the best tool | 5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Ancient debris](#block-qtcraft-ancient_debris) |
+| Drops without the right tool | nothing |
+| Sound | ancient debris |
+| Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant) |
+
+**Smelts into**
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Ancient debris](#block-qtcraft-ancient_debris) | [Netherite scrap](items.md#item-qtcraft-netherite_scrap) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Ancient debris veins](worldgen.md#ore-qtcraft-ancient_debris_large) (y 8–24), [Ancient debris veins](worldgen.md#ore-qtcraft-ancient_debris_small) (y 8–119)
 
 ### <a id="block-qtcraft-anvil"></a>Anvil
 
@@ -94,7 +130,7 @@ Repairs, combines and renames: use it, put an item into the left slot and its ma
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-backpack"></a>Backpack
 
@@ -150,7 +186,82 @@ Holds as much as a chest and fits in a single block row next to others.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-basalt"></a>Basalt
+
+Grey volcanic rock in columns. Placed like a log, it lies along the clicked axis; polished it shows clean faces, smelted it becomes smooth basalt.
+
+| | |
+|---|---|
+| ID | `qtcraft:basalt` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Basalt](#block-qtcraft-basalt) |
+| Drops without the right tool | nothing |
+| Sound | basalt |
+| States | axis (y, x, z) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Smooth basalt](#block-qtcraft-smooth_basalt) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Polished basalt](#block-qtcraft-polished_basalt) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished basalt](#block-qtcraft-polished_basalt)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Basalt deltas](biomes.md#biome-qtcraft-basalt_deltas) (Surface, Below the surface, Under water, Beaches)
+
+### <a id="block-qtcraft-beacon"></a>Beacon
+
+A block of glass around a core that shines a beam into the sky when it stands on a pyramid of iron, gold, emerald, diamond or netherite blocks with open sky above. It gives the players nearby a power they choose, paid for with an iron ingot, a gold ingot, an emerald, a diamond or a netherite ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:beacon` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Drops | [Beacon](#block-qtcraft-beacon) |
+| Light | 15 of 15 |
+| Light blocked | 0 of 15 |
+| Beacon | on a pyramid of metal or gem blocks under open sky it shines and gives the powers chosen on its screen, paid with an ingot, an emerald or a diamond |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Beacon](#block-qtcraft-beacon) |
+| [Glass](#block-qtcraft-glass) | [Nether Star](items.md#item-qtcraft-nether_star) | [Glass](#block-qtcraft-glass) |  |
+| [Obsidian](#block-qtcraft-obsidian) | [Obsidian](#block-qtcraft-obsidian) | [Obsidian](#block-qtcraft-obsidian) |  |
 
 ### <a id="block-qtcraft-bed"></a>Bed
 
@@ -191,7 +302,7 @@ Two blocks long: placed from the foot, the head lies one block further in the di
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-bedrock"></a>Bedrock
 
@@ -231,7 +342,7 @@ Hangs over the meeting point in the middle of every village.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-birch_door"></a>Birch door
 
@@ -264,7 +375,7 @@ Two blocks tall; open and close it with the use button.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_leaves"></a>Birch leaves
 
@@ -321,7 +432,7 @@ Wood of the birch. Four planks each; burns in the furnace into charcoal.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -370,11 +481,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Birch Boat](items.md#item-qtcraft-birch_boat), [Birch button](parts.md#block-qtcraft-birch_button), [Birch door](#block-qtcraft-birch_door), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch pressure plate](parts.md#block-qtcraft-birch_pressure_plate), [Birch Sign](#block-qtcraft-birch_sign), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Birch trapdoor](#block-qtcraft-birch_trapdoor), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Birch Boat](items.md#item-qtcraft-birch_boat), [Birch button](parts.md#block-qtcraft-birch_button), [Birch door](#block-qtcraft-birch_door), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch pressure plate](parts.md#block-qtcraft-birch_pressure_plate), [Birch Sign](#block-qtcraft-birch_sign), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Birch trapdoor](#block-qtcraft-birch_trapdoor), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_sapling"></a>Birch sapling
 
@@ -432,7 +543,7 @@ A sign of birch wood.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_trapdoor"></a>Birch trapdoor
 
@@ -463,7 +574,7 @@ A hatch that opens upwards; sits high or low in its block.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_wood"></a>Birch wood
 
@@ -499,7 +610,7 @@ A log with bark on all six sides, for walls and beams.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-black_bed"></a>Black bed
 
@@ -540,7 +651,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-black_concrete"></a>Black concrete
 
@@ -559,7 +670,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-black_concrete_powder"></a>Black concrete powder
 
@@ -589,7 +700,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-black_glazed_terracotta"></a>Black glazed terracotta
 
@@ -622,7 +733,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-black_stained_glass"></a>Black stained glass
 
@@ -715,7 +826,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-black_wool"></a>Black wool
 
@@ -748,6 +859,156 @@ Wool coloured with a dye. Two wool make three carpets.
 
 [Black bed](#block-qtcraft-black_bed), [Black carpet](parts.md#block-qtcraft-black_wool_carpet), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Painting](items.md#item-qtcraft-painting) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
+### <a id="block-qtcraft-blackstone"></a>Blackstone
+
+Black rock that serves like cobblestone: stone tools and the furnace can be made of it too. Polished, it becomes bricks and chiseled stone.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blackstone](#block-qtcraft-blackstone) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+| Groups | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |
+
+**Building parts**
+
+[Blackstone slab](parts.md#block-qtcraft-blackstone_slab), [Blackstone stairs](parts.md#block-qtcraft-blackstone_stairs), [Blackstone vertical slab](parts.md#block-qtcraft-blackstone_vertical_slab), [Blackstone wall](parts.md#block-qtcraft-blackstone_wall)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone](#block-qtcraft-polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Blackstone slab](parts.md#block-qtcraft-blackstone_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Blackstone stairs](parts.md#block-qtcraft-blackstone_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Blackstone wall](parts.md#block-qtcraft-blackstone_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Blackstone vertical slab](parts.md#block-qtcraft-blackstone_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Polished blackstone brick slab](parts.md#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone brick stairs](parts.md#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone brick wall](parts.md#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Polished blackstone brick vertical slab](parts.md#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone stairs](parts.md#block-qtcraft-polished_blackstone_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone wall](parts.md#block-qtcraft-polished_blackstone_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | 2 × [Polished blackstone vertical slab](parts.md#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Blackstone slab](parts.md#block-qtcraft-blackstone_slab), [Blackstone stairs](parts.md#block-qtcraft-blackstone_stairs), [Blackstone wall](parts.md#block-qtcraft-blackstone_wall), [Brewing stand](#block-qtcraft-brewing_stand) (Cobblestone or blackstone), [Furnace](#block-qtcraft-furnace) (Cobblestone or blackstone), [Polished blackstone](#block-qtcraft-polished_blackstone), [Stone axe](tools.md#item-qtcraft-stone_axe) (Cobblestone or blackstone), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (Cobblestone or blackstone), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (Cobblestone or blackstone), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (Cobblestone or blackstone), [Stone sword](tools.md#item-qtcraft-stone_sword) (Cobblestone or blackstone)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
 ### <a id="block-qtcraft-blast_furnace"></a>Blast furnace
 
 A furnace for metal only: it smelts raw iron, gold and copper twice as fast and burns its fuel twice as fast too. Made from a furnace, five iron ingots and three smooth stone.
@@ -778,7 +1039,7 @@ A furnace for metal only: it smelts raw iron, gold and copper twice as fast and 
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Processes**
 
@@ -802,7 +1063,31 @@ A furnace for metal only: it smelts raw iron, gold and copper twice as fast and 
 
 | 1 | → |
 |---|---|
+| [Nether gold ore](#block-qtcraft-nether_gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Raw iron](items.md#item-qtcraft-raw_iron) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Ancient debris](#block-qtcraft-ancient_debris) | [Netherite scrap](items.md#item-qtcraft-netherite_scrap) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether quartz ore](#block-qtcraft-nether_quartz_ore) | [Nether quartz](items.md#item-qtcraft-quartz) |
 
 [Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
 
@@ -839,7 +1124,7 @@ Nine pieces of coal packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-copper_block"></a>Block of copper
 
@@ -851,7 +1136,7 @@ Nine copper ingots packed into a block; crafting it back gives all nine.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of copper](#block-qtcraft-copper_block) |
 | Drops without the right tool | nothing |
 | Sound | metal |
@@ -872,7 +1157,7 @@ Nine copper ingots packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-diamond_block"></a>Block of diamond
 
@@ -884,10 +1169,11 @@ Nine diamonds packed into a block; crafting it back gives all nine.
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of diamond](#block-qtcraft-diamond_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
+| Groups | [#beacon_base](tags.md#tag-qtcraft-beacon_base) |
 
 **How to make it**
 
@@ -905,7 +1191,7 @@ Nine diamonds packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-emerald_block"></a>Block of emerald
 
@@ -917,10 +1203,11 @@ Nine emeralds packed into a block; crafting it back gives all nine.
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of emerald](#block-qtcraft-emerald_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
+| Groups | [#beacon_base](tags.md#tag-qtcraft-beacon_base) |
 
 **How to make it**
 
@@ -938,7 +1225,7 @@ Nine emeralds packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-gold_block"></a>Block of gold
 
@@ -950,10 +1237,11 @@ Nine gold ingots packed into a block; crafting it back gives all nine.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of gold](#block-qtcraft-gold_block) |
 | Drops without the right tool | nothing |
 | Sound | metal |
+| Groups | [#beacon_base](tags.md#tag-qtcraft-beacon_base) |
 
 **How to make it**
 
@@ -971,7 +1259,7 @@ Nine gold ingots packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-iron_block"></a>Block of iron
 
@@ -983,10 +1271,11 @@ Nine iron ingots packed into a block; crafting it back gives all nine.
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of iron](#block-qtcraft-iron_block) |
 | Drops without the right tool | nothing |
 | Sound | metal |
+| Groups | [#beacon_base](tags.md#tag-qtcraft-beacon_base) |
 
 **How to make it**
 
@@ -1004,7 +1293,7 @@ Nine iron ingots packed into a block; crafting it back gives all nine.
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-lapis_block"></a>Block of lapis lazuli
 
@@ -1016,7 +1305,7 @@ Nine pieces of lapis lazuli packed into a block; crafting it back gives all nine
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of lapis lazuli](#block-qtcraft-lapis_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1037,7 +1326,139 @@ Nine pieces of lapis lazuli packed into a block; crafting it back gives all nine
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-netherite_block"></a>Block of netherite
+
+Nine netherite ingots packed into a block; crafting it back gives all nine. It withstands any explosion.
+
+| | |
+|---|---|
+| ID | `qtcraft:netherite_block` |
+| Hardness | 50 |
+| Breaking by hand | 250 s |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
+| Breaking with the best tool | 8.33 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Block of netherite](#block-qtcraft-netherite_block) |
+| Drops without the right tool | nothing |
+| Sound | netherite |
+| Groups | [#fire_resistant](tags.md#tag-qtcraft-fire_resistant), [#beacon_base](tags.md#tag-qtcraft-beacon_base) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Block of netherite](#block-qtcraft-netherite_block) |
+| [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) |  |
+| [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) | [Netherite ingot](items.md#item-qtcraft-netherite_ingot) |  |
+
+**Used in**
+
+[Netherite ingot](items.md#item-qtcraft-netherite_ingot)
+
+**Mined with**
+
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-quartz_block"></a>Block of quartz
+
+Four nether quartz pressed into a white block. Cut into pillars, bricks, slabs and stairs, or smelt it smooth.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_block` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Block of quartz](#block-qtcraft-quartz_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Building parts**
+
+[Quartz slab](parts.md#block-qtcraft-quartz_slab), [Quartz stairs](parts.md#block-qtcraft-quartz_stairs), [Quartz vertical slab](parts.md#block-qtcraft-quartz_vertical_slab)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Nether quartz](items.md#item-qtcraft-quartz) | [Nether quartz](items.md#item-qtcraft-quartz) | [Block of quartz](#block-qtcraft-quartz_block) |
+| [Nether quartz](items.md#item-qtcraft-quartz) | [Nether quartz](items.md#item-qtcraft-quartz) |  |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Smooth quartz block](#block-qtcraft-smooth_quartz) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Quartz bricks](#block-qtcraft-quartz_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Quartz pillar](#block-qtcraft-quartz_pillar) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | 2 × [Quartz slab](parts.md#block-qtcraft-quartz_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Quartz stairs](parts.md#block-qtcraft-quartz_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | 2 × [Quartz vertical slab](parts.md#block-qtcraft-quartz_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Quartz bricks](#block-qtcraft-quartz_bricks), [Quartz pillar](#block-qtcraft-quartz_pillar), [Quartz slab](parts.md#block-qtcraft-quartz_slab), [Quartz stairs](parts.md#block-qtcraft-quartz_stairs)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-raw_copper_block"></a>Block of raw copper
 
@@ -1049,7 +1470,7 @@ Nine pieces of raw copper packed into a block for storage; crafting it back give
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of raw copper](#block-qtcraft-raw_copper_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1070,7 +1491,7 @@ Nine pieces of raw copper packed into a block for storage; crafting it back give
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-raw_gold_block"></a>Block of raw gold
 
@@ -1082,7 +1503,7 @@ Nine pieces of raw gold packed into a block for storage; crafting it back gives 
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of raw gold](#block-qtcraft-raw_gold_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1103,7 +1524,7 @@ Nine pieces of raw gold packed into a block for storage; crafting it back gives 
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-raw_iron_block"></a>Block of raw iron
 
@@ -1115,7 +1536,7 @@ Nine pieces of raw iron packed into a block for storage; crafting it back gives 
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Block of raw iron](#block-qtcraft-raw_iron_block) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1136,7 +1557,7 @@ Nine pieces of raw iron packed into a block for storage; crafting it back gives 
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_dust_block"></a>Block of Signal Dust
 
@@ -1169,7 +1590,7 @@ Nine Signal Dust in one block, and back into nine. It is a source that is always
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_bed"></a>Blue bed
 
@@ -1210,7 +1631,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-blue_concrete"></a>Blue concrete
 
@@ -1229,7 +1650,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_concrete_powder"></a>Blue concrete powder
 
@@ -1259,7 +1680,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-blue_glazed_terracotta"></a>Blue glazed terracotta
 
@@ -1292,7 +1713,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_ice"></a>Blue ice
 
@@ -1321,7 +1742,7 @@ Nine packed ice pressed into the most slippery block: bodies, items and minecart
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_orchid"></a>Blue orchid
 
@@ -1439,7 +1860,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_wool"></a>Blue wool
 
@@ -1504,7 +1925,7 @@ Nine bone meal pressed into a block, and back into nine. Like a log it lies alon
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-bookshelf"></a>Bookshelf
 
@@ -1534,7 +1955,38 @@ Shelves full of books; breaking it gives the three books back.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-brewing_stand"></a>Brewing stand
+
+Turns bottles into potions with an ingredient and Ember Dust as fuel.
+
+| | |
+|---|---|
+| ID | `qtcraft:brewing_stand` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Brewing stand](#block-qtcraft-brewing_stand) |
+| Light | 1 of 15 |
+| Light blocked | 0 of 15 |
+| Machine | brewing, speed × 1: [Fuels](tables.md#table-fuels) |
+| Sound | metal |
+| States | bottle_0 (false, true); bottle_1 (false, true); bottle_2 (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | [Ember Rod](items.md#item-qtcraft-ember_rod) | · | [Brewing stand](#block-qtcraft-brewing_stand) |
+| [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-bricks"></a>Bricks
 
@@ -1604,7 +2056,7 @@ Fired clay, a sturdy building block.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brown_bed"></a>Brown bed
 
@@ -1645,7 +2097,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-brown_concrete"></a>Brown concrete
 
@@ -1664,7 +2116,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brown_concrete_powder"></a>Brown concrete powder
 
@@ -1694,7 +2146,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-brown_glazed_terracotta"></a>Brown glazed terracotta
 
@@ -1727,7 +2179,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brown_mushroom"></a>Brown mushroom
 
@@ -1747,7 +2199,7 @@ Grows in the shade of forests and swamps.
 
 **Used in**
 
-[Brown dye](items.md#item-qtcraft-brown_dye), [Mushroom stew](food.md#item-qtcraft-mushroom_stew)
+[Brown dye](items.md#item-qtcraft-brown_dye), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Mushroom stew](food.md#item-qtcraft-mushroom_stew)
 
 **Found in**
 
@@ -1844,7 +2296,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brown_wool"></a>Brown wool
 
@@ -1962,7 +2414,7 @@ Gives light and cooks: use raw meat, fish or a potato on it to lay it on the fir
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Processes**
 
@@ -2063,7 +2515,7 @@ A pumpkin with a face, carved with shears. Put it on four iron blocks in a T to 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-carved_sandstone"></a>Carved sandstone
 
@@ -2093,7 +2545,7 @@ Sandstone with a face: the head that a sand golem leaves behind when it crumbles
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cauldron"></a>Cauldron
 
@@ -2109,6 +2561,7 @@ An iron pot on short legs, as witches keep them in their huts. For now it only s
 | Drops | [Cauldron](#block-qtcraft-cauldron) |
 | Light blocked | 0 of 15 |
 | Sound | metal |
+| States | level (0, 1, 2, 3) |
 
 **How to make it**
 
@@ -2122,7 +2575,7 @@ An iron pot on short legs, as witches keep them in their huts. For now it only s
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-chain"></a>Chain
 
@@ -2153,7 +2606,26 @@ An iron chain that runs along the face you place it on: upright, or lying east t
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-charred_skull"></a>Charred Skull
+
+The blackened skull of a charred skeleton, a rare find: it comes only from one brought down by a player, and only seldom. Placed on a block it looks at the one who set it there.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_skull` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Drops | [Charred Skull](#block-qtcraft-charred_skull) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Sound | stone |
+| States | facing (north, east, south, west) |
+
+**Dropped by**
+
+[Charred Skeleton](creatures.md#mob-qtcraft-charred_skeleton) (2.5 %, player kills only)
 
 ### <a id="block-qtcraft-chest"></a>Chest
 
@@ -2189,7 +2661,7 @@ Stores 27 stacks. Its contents drop when it is broken.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-chipped_anvil"></a>Chipped Anvil
 
@@ -2211,7 +2683,129 @@ An anvil that has seen some use; it works like a new one and wears into a damage
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-chiseled_nether_bricks"></a>Chiseled nether bricks
+
+Two nether brick slabs stacked into one decorated block.
+
+| | |
+|---|---|
+| ID | `qtcraft:chiseled_nether_bricks` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) |
+| Drops without the right tool | nothing |
+| Sound | nether bricks |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Nether brick slab](parts.md#block-qtcraft-nether_brick_slab) | [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) |
+| [Nether brick slab](parts.md#block-qtcraft-nether_brick_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-chiseled_polished_blackstone"></a>Chiseled polished blackstone
+
+Two polished blackstone slabs stacked into one decorated block.
+
+| | |
+|---|---|
+| ID | `qtcraft:chiseled_polished_blackstone` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab) | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+| [Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-chiseled_quartz_block"></a>Chiseled quartz block
+
+Two quartz slabs stacked into one decorated block.
+
+| | |
+|---|---|
+| ID | `qtcraft:chiseled_quartz_block` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Quartz slab](parts.md#block-qtcraft-quartz_slab) | [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) |
+| [Quartz slab](parts.md#block-qtcraft-quartz_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Chiseled quartz block](#block-qtcraft-chiseled_quartz_block) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-chiseled_stone_bricks"></a>Chiseled stone bricks
 
@@ -2257,11 +2851,11 @@ A carved stone brick block from two stone brick slabs on top of each other.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-chunk_loader"></a>Chunk Loader
 
-Keeps its chunk loaded while no player is near, with every chunk its circuits connect to, so farms and machines go on working. Each player may place a few (chunkLoadersPerPlayer, 4 by default); only so many work in a world (chunkLoaders, 64).
+Keeps its chunk loaded while no player is near, with every chunk its circuits connect to, so farms and machines go on working. Each player may place a few (chunkLoadersPerPlayer, 4 by default); only so many work in a world (chunkLoaders, 64). This block cannot be crafted: it comes from the creative catalog or `/give`, and loaders already placed go on working.
 
 | | |
 |---|---|
@@ -2269,26 +2863,16 @@ Keeps its chunk loaded while no player is near, with every chunk its circuits co
 | Hardness | 5 |
 | Breaking by hand | 25 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.83 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Chunk Loader](#block-qtcraft-chunk_loader) |
 | Drops without the right tool | nothing |
 | Light | 7 of 15 |
 | Sound | stone |
 | Groups | [Any chunk loader](tags.md#tag-qtcraft-chunk_loaders) |
 
-**How to make it**
-
-*Crafting table (3 × 3)*
-
-| 1 | 2 | 3 | → |
-|---|---|---|---|
-| [Obsidian](#block-qtcraft-obsidian) | [Diamond](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) | [Chunk Loader](#block-qtcraft-chunk_loader) |
-| [Signal Dust](#block-qtcraft-signal_dust) | [Signal Lamp](#block-qtcraft-signal_lamp) | [Signal Dust](#block-qtcraft-signal_dust) |  |
-| [Obsidian](#block-qtcraft-obsidian) | [Diamond](items.md#item-qtcraft-diamond) | [Obsidian](#block-qtcraft-obsidian) |  |
-
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-clay"></a>Clay
 
@@ -2327,7 +2911,7 @@ Found under shallow water. Four clay make an unfired lamp shell; bricks come fro
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -2350,7 +2934,7 @@ The most common ore; drops coal, the best early fuel.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -2383,7 +2967,7 @@ Dirt mixed with gravel: two dirt and two gravel give four. Grass never grows on 
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-cobblestone"></a>Cobblestone
 
@@ -2399,6 +2983,7 @@ What stone becomes when mined. Material for stone tools and the furnace.
 | Drops | [Cobblestone](#block-qtcraft-cobblestone) |
 | Drops without the right tool | nothing |
 | Sound | stone |
+| Groups | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |
 
 **Building parts**
 
@@ -2452,7 +3037,7 @@ What stone becomes when mined. Material for stone tools and the furnace.
 
 **Used in**
 
-[Cobblestone slab](parts.md#block-qtcraft-cobblestone_slab), [Cobblestone stairs](parts.md#block-qtcraft-cobblestone_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Furnace](#block-qtcraft-furnace), [Lever](#block-qtcraft-lever), [Mossy cobblestone](#block-qtcraft-mossy_cobblestone), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword)
+[Brewing stand](#block-qtcraft-brewing_stand) (Cobblestone or blackstone), [Cobblestone slab](parts.md#block-qtcraft-cobblestone_slab), [Cobblestone stairs](parts.md#block-qtcraft-cobblestone_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Furnace](#block-qtcraft-furnace) (Cobblestone or blackstone), [Lever](#block-qtcraft-lever), [Mossy cobblestone](#block-qtcraft-mossy_cobblestone), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Stone axe](tools.md#item-qtcraft-stone_axe) (Cobblestone or blackstone), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (Cobblestone or blackstone), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (Cobblestone or blackstone), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (Cobblestone or blackstone), [Stone sword](tools.md#item-qtcraft-stone_sword) (Cobblestone or blackstone)
 
 **Dropped by**
 
@@ -2460,7 +3045,7 @@ What stone becomes when mined. Material for stone tools and the furnace.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cobweb"></a>Cobweb
 
@@ -2510,7 +3095,7 @@ A wooden bin at the fields of villages. It is the farmers' workstation.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-copper_bars"></a>Copper bars
 
@@ -2541,7 +3126,7 @@ Copper bars that connect to their neighbours like glass panes and iron bars.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-copper_chain"></a>Copper chain
 
@@ -2572,7 +3157,7 @@ A chain of copper; it runs, hangs and holds lanterns like the iron chain.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-copper_door"></a>Copper door
 
@@ -2605,7 +3190,7 @@ A metal door that opens by hand like a wooden one and also with a signal: a leve
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-copper_lantern"></a>Copper lantern
 
@@ -2638,7 +3223,7 @@ A copper lantern around a torch flame with a greenish glow; as bright as the iro
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-copper_ore"></a>Copper ore
 
@@ -2650,14 +3235,14 @@ Needs a pickaxe of level 2 or better and drops two to five pieces of raw copper.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Raw copper](items.md#item-qtcraft-raw_copper) (2–5×) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -2692,7 +3277,7 @@ A metal hatch that opens by hand and with a signal.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cornflower"></a>Cornflower
 
@@ -2718,6 +3303,68 @@ A blue flower of the plains; gives blue dye.
 **Found in**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Mountains](biomes.md#biome-qtcraft-mountains) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
+
+### <a id="block-qtcraft-cracked_nether_bricks"></a>Cracked nether bricks
+
+Nether bricks cracked in the furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:cracked_nether_bricks` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) |
+| Drops without the right tool | nothing |
+| Sound | nether bricks |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-cracked_polished_blackstone_bricks"></a>Cracked polished blackstone bricks
+
+Polished blackstone bricks cracked in the furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:cracked_polished_blackstone_bricks` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cracked_stone_bricks"></a>Cracked stone bricks
 
@@ -2748,7 +3395,7 @@ Stone bricks burnt in a furnace until they crack.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-crafting_table"></a>Crafting table
 
@@ -2777,7 +3424,283 @@ Opens the 3 × 3 crafting grid that bigger recipes need.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_door"></a>Crimson door
+
+Two blocks tall; open and close it with the use button. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson door](#block-qtcraft-crimson_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 3 × [Crimson door](#block-qtcraft-crimson_door) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_fungus"></a>Crimson fungus
+
+Bone meal grows it into a huge fungus, but only on crimson nylium; it never grows by itself.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fungus` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Crimson fungus](#block-qtcraft-crimson_fungus) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Grows into | 120–300 s: [Huge crimson fungus](worldgen.md#feature-qtcraft-huge_crimson_fungus) |
+| Can be planted on | [Crimson nylium](#block-qtcraft-crimson_nylium) |
+| Sound | fungi |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-crimson_hyphae"></a>Crimson hyphae
+
+A stem with skin on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson hyphae](#block-qtcraft-crimson_hyphae) |
+| Axe makes | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Crimson stem](#block-qtcraft-crimson_stem) | [Crimson stem](#block-qtcraft-crimson_stem) | 3 × [Crimson hyphae](#block-qtcraft-crimson_hyphae) |
+| [Crimson stem](#block-qtcraft-crimson_stem) | [Crimson stem](#block-qtcraft-crimson_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_nylium"></a>Crimson nylium
+
+Netherrack overgrown by a crimson mat. Bone meal grows the plants of the forest on it; bone meal on bare netherrack next to it spreads the mat. It breaks into netherrack.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_nylium` |
+| Hardness | 0.4 |
+| Breaking by hand | 2 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Netherrack](#block-qtcraft-netherrack) |
+| Drops without the right tool | nothing |
+| Sound | nylium |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Surface, Beaches)
+
+### <a id="block-qtcraft-crimson_planks"></a>Crimson planks
+
+Building wood of the nether; any planks fit recipes that ask for planks. It neither burns nor heats a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_planks` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson planks](#block-qtcraft-crimson_planks) |
+| Sound | nether wood |
+| Groups | [Any planks](tags.md#tag-qtcraft-planks) |
+
+**Building parts**
+
+[Crimson button](parts.md#block-qtcraft-crimson_button), [Crimson fence](parts.md#block-qtcraft-crimson_fence), [Crimson fence gate](parts.md#block-qtcraft-crimson_fence_gate), [Crimson pressure plate](parts.md#block-qtcraft-crimson_pressure_plate), [Crimson slab](parts.md#block-qtcraft-crimson_slab), [Crimson stairs](parts.md#block-qtcraft-crimson_stairs), [Crimson vertical slab](parts.md#block-qtcraft-crimson_vertical_slab)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Crimson stem](#block-qtcraft-crimson_stem) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Crimson hyphae](#block-qtcraft-crimson_hyphae) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | 4 × [Crimson planks](#block-qtcraft-crimson_planks) |
+
+**Used in**
+
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Crimson button](parts.md#block-qtcraft-crimson_button), [Crimson door](#block-qtcraft-crimson_door), [Crimson fence](parts.md#block-qtcraft-crimson_fence), [Crimson fence gate](parts.md#block-qtcraft-crimson_fence_gate), [Crimson pressure plate](parts.md#block-qtcraft-crimson_pressure_plate), [Crimson sign](#block-qtcraft-crimson_sign), [Crimson slab](parts.md#block-qtcraft-crimson_slab), [Crimson stairs](parts.md#block-qtcraft-crimson_stairs), [Crimson trapdoor](#block-qtcraft-crimson_trapdoor), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_roots"></a>Crimson roots
+
+Low growth on the floors of the nether forests.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_roots` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Crimson roots](#block-qtcraft-crimson_roots) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | roots and sprouts |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses)
+
+### <a id="block-qtcraft-crimson_sign"></a>Crimson sign
+
+A sign of crimson wood. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_sign` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson sign](#block-qtcraft-crimson_sign) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | nether wood |
+| States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 3 × [Crimson sign](#block-qtcraft-crimson_sign) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+| · | [Stick](items.md#item-qtcraft-stick) | · |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_stem"></a>Crimson stem
+
+The stem of a huge crimson fungus. Four planks each. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson stem](#block-qtcraft-crimson_stem) |
+| Axe makes | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson hyphae](#block-qtcraft-crimson_hyphae), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Huge crimson fungus)
+
+### <a id="block-qtcraft-crimson_trapdoor"></a>Crimson trapdoor
+
+A hatch that opens upwards; sits high or low in its block. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | 2 × [Crimson trapdoor](#block-qtcraft-crimson_trapdoor) |
+| [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) | [Crimson planks](#block-qtcraft-crimson_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-crying_obsidian"></a>Crying obsidian
 
@@ -2788,16 +3711,20 @@ Obsidian with glowing violet tears. Found only in the frames of ruined portals; 
 | ID | `qtcraft:crying_obsidian` |
 | Hardness | 25 |
 | Breaking by hand | 125 s |
-| Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 4.69 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Crying obsidian](#block-qtcraft-crying_obsidian) |
 | Drops without the right tool | nothing |
 | Light | 10 of 15 |
 | Sound | stone |
 
+**Used in**
+
+[Soul anchor](#block-qtcraft-soul_anchor)
+
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cut_sandstone"></a>Cut sandstone
 
@@ -2861,7 +3788,7 @@ Sandstone cut into large even slabs.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cyan_bed"></a>Cyan bed
 
@@ -2902,7 +3829,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-cyan_concrete"></a>Cyan concrete
 
@@ -2921,7 +3848,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cyan_concrete_powder"></a>Cyan concrete powder
 
@@ -2951,7 +3878,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-cyan_glazed_terracotta"></a>Cyan glazed terracotta
 
@@ -2984,7 +3911,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cyan_stained_glass"></a>Cyan stained glass
 
@@ -3077,7 +4004,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cyan_wool"></a>Cyan wool
 
@@ -3130,7 +4057,7 @@ An anvil close to breaking; it works like a new one, but the next wear breaks it
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-dandelion"></a>Dandelion
 
@@ -3156,6 +4083,36 @@ A yellow flower; gives yellow dye.
 **Found in**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Flowers), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
+
+### <a id="block-qtcraft-daylight_sensor"></a>Daylight Sensor
+
+A slab of glass and quartz that reads the sky above it about once a second and gives dust and components around it a signal: strongest at noon, weaker in the morning and evening, in rain and under anything that shades it, none at night. Use it to turn it round: it then gives more the darker the sky above it is, 11 at midnight and 15 in a closed room; a single block overhead hardly shades it, as light comes in from the sides. It powers no block.
+
+| | |
+|---|---|
+| ID | `qtcraft:daylight_sensor` |
+| Hardness | 0.2 |
+| Breaking by hand | 0.3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.05 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Drops | [Daylight Sensor](#block-qtcraft-daylight_sensor) |
+| Light blocked | 0 of 15 |
+| Sound | wood |
+| States | inverted (false, true); power (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Daylight Sensor](#block-qtcraft-daylight_sensor) |
+| [Nether quartz](items.md#item-qtcraft-quartz) | [Nether quartz](items.md#item-qtcraft-quartz) | [Nether quartz](items.md#item-qtcraft-quartz) |  |
+| [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-dead_bush"></a>Dead bush
 
@@ -3199,7 +4156,7 @@ A Signal Dispenser without quasi-connectivity: only power next to it sets it off
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-decoupled_signal_dropper"></a>Decoupled Signal Dropper
 
@@ -3220,7 +4177,7 @@ A Signal Dropper without quasi-connectivity: only power next to it sets it off, 
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-decoupled_signal_piston"></a>Decoupled Signal Piston
 
@@ -3241,7 +4198,7 @@ A Signal Piston without quasi-connectivity: only power next to it moves it, neve
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-decoupled_sticky_signal_piston"></a>Decoupled Sticky Signal Piston
 
@@ -3262,7 +4219,7 @@ A Sticky Signal Piston without quasi-connectivity: only power next to it moves i
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-detector_rail"></a>Detector Rail
 
@@ -3295,7 +4252,7 @@ Rail that gives a signal while a minecart is on it, like a pressure plate. A Sig
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-diamond_ore"></a>Diamond ore
 
@@ -3307,14 +4264,14 @@ Rare and deep. Needs a pickaxe of level 3 or better.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Diamond](items.md#item-qtcraft-diamond) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -3346,7 +4303,7 @@ Plain earth below the grass.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -3371,7 +4328,7 @@ A trodden path, a little lower than the ground beside it. Villages lay their sid
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-emerald_ore"></a>Emerald ore
 
@@ -3383,14 +4340,14 @@ Green specks in deep stone, rare and in veins of one or two. Needs a pickaxe of 
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Emerald](items.md#item-qtcraft-emerald) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -3426,7 +4383,7 @@ Offers enchantments for tools, weapons, armour and single books (which become en
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-explosive"></a>Explosive
 
@@ -3471,7 +4428,7 @@ Tilled earth for crops. Water within four blocks keeps it wet, and crops grow tw
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-fern"></a>Fern
 
@@ -3586,9 +4543,9 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 | 1 | 2 | 3 | → |
 |---|---|---|---|
-| [Cobblestone](#block-qtcraft-cobblestone) | [Cobblestone](#block-qtcraft-cobblestone) | [Cobblestone](#block-qtcraft-cobblestone) | [Furnace](#block-qtcraft-furnace) |
-| [Cobblestone](#block-qtcraft-cobblestone) | · | [Cobblestone](#block-qtcraft-cobblestone) |  |
-| [Cobblestone](#block-qtcraft-cobblestone) | [Cobblestone](#block-qtcraft-cobblestone) | [Cobblestone](#block-qtcraft-cobblestone) |  |
+| [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Furnace](#block-qtcraft-furnace) |
+| [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | · | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |  |
+| [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) | [Cobblestone or blackstone](tags.md#tag-qtcraft-stone_crafting_materials) |  |
 
 **Used in**
 
@@ -3596,7 +4553,7 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Processes**
 
@@ -3796,6 +4753,22 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 | 1 | → |
 |---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Stone bricks](#block-qtcraft-stone_bricks) | [Cracked stone bricks](#block-qtcraft-cracked_stone_bricks) |
 
 [Furnace](#block-qtcraft-furnace)
@@ -3829,6 +4802,14 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 | 1 | → |
 |---|---|
 | [Raw gold](items.md#item-qtcraft-raw_gold) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether gold ore](#block-qtcraft-nether_gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
 
 [Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
 
@@ -3908,6 +4889,22 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 | 1 | → |
 |---|---|
+| [Netherrack](#block-qtcraft-netherrack) | [Nether brick](items.md#item-qtcraft-nether_brick) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Ancient debris](#block-qtcraft-ancient_debris) | [Netherite scrap](items.md#item-qtcraft-netherite_scrap) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Orange terracotta](#block-qtcraft-orange_terracotta) | [Orange glazed terracotta](#block-qtcraft-orange_glazed_terracotta) |
 
 [Furnace](#block-qtcraft-furnace)
@@ -3944,11 +4941,35 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 [Furnace](#block-qtcraft-furnace)
 
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether quartz ore](#block-qtcraft-nether_quartz_ore) | [Nether quartz](items.md#item-qtcraft-quartz) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
 *Furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Red terracotta](#block-qtcraft-red_terracotta) | [Red glazed terracotta](#block-qtcraft-red_glazed_terracotta) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Smooth basalt](#block-qtcraft-smooth_basalt) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Smooth quartz block](#block-qtcraft-smooth_quartz) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -4000,6 +5021,25 @@ Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below
 
 [Furnace](#block-qtcraft-furnace)
 
+### <a id="block-qtcraft-gilded_blackstone"></a>Gilded blackstone
+
+Blackstone with veins of gold. Mined, it drops itself.
+
+| | |
+|---|---|
+| ID | `qtcraft:gilded_blackstone` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Gilded blackstone](#block-qtcraft-gilded_blackstone) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
 ### <a id="block-qtcraft-glass"></a>Glass
 
 Clear block made from sand in the furnace.
@@ -4027,7 +5067,7 @@ Clear block made from sand in the furnace.
 
 **Used in**
 
-[Black stained glass](#block-qtcraft-black_stained_glass), [Blue stained glass](#block-qtcraft-blue_stained_glass), [Brown stained glass](#block-qtcraft-brown_stained_glass), [Cyan stained glass](#block-qtcraft-cyan_stained_glass), [Firefly glass](#block-qtcraft-firefly_glass), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Glass pane](#block-qtcraft-glass_pane), [Gray stained glass](#block-qtcraft-gray_stained_glass), [Green stained glass](#block-qtcraft-green_stained_glass), [Light blue stained glass](#block-qtcraft-light_blue_stained_glass), [Light gray stained glass](#block-qtcraft-light_gray_stained_glass), [Lime stained glass](#block-qtcraft-lime_stained_glass), [Magenta stained glass](#block-qtcraft-magenta_stained_glass), [Orange stained glass](#block-qtcraft-orange_stained_glass), [Pink stained glass](#block-qtcraft-pink_stained_glass), [Purple stained glass](#block-qtcraft-purple_stained_glass), [Red stained glass](#block-qtcraft-red_stained_glass), [White stained glass](#block-qtcraft-white_stained_glass), [Yellow stained glass](#block-qtcraft-yellow_stained_glass)
+[Beacon](#block-qtcraft-beacon), [Black stained glass](#block-qtcraft-black_stained_glass), [Blue stained glass](#block-qtcraft-blue_stained_glass), [Brown stained glass](#block-qtcraft-brown_stained_glass), [Cyan stained glass](#block-qtcraft-cyan_stained_glass), [Daylight Sensor](#block-qtcraft-daylight_sensor), [Firefly glass](#block-qtcraft-firefly_glass), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Glass pane](#block-qtcraft-glass_pane), [Gray stained glass](#block-qtcraft-gray_stained_glass), [Green stained glass](#block-qtcraft-green_stained_glass), [Light blue stained glass](#block-qtcraft-light_blue_stained_glass), [Light gray stained glass](#block-qtcraft-light_gray_stained_glass), [Lime stained glass](#block-qtcraft-lime_stained_glass), [Magenta stained glass](#block-qtcraft-magenta_stained_glass), [Orange stained glass](#block-qtcraft-orange_stained_glass), [Pink stained glass](#block-qtcraft-pink_stained_glass), [Purple stained glass](#block-qtcraft-purple_stained_glass), [Red stained glass](#block-qtcraft-red_stained_glass), [White stained glass](#block-qtcraft-white_stained_glass), [Yellow stained glass](#block-qtcraft-yellow_stained_glass)
 
 ### <a id="block-qtcraft-glass_pane"></a>Glass pane
 
@@ -4057,6 +5097,32 @@ A thin glass wall that connects to its neighbours.
 
 [Signal Indicator Light](#block-qtcraft-signal_indicator_light)
 
+### <a id="block-qtcraft-glowstone"></a>Glowstone
+
+A bright cluster of crystals. Mined, it falls apart into two to four glowstone dust; four dust make a block again.
+
+| | |
+|---|---|
+| ID | `qtcraft:glowstone` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | [Glowstone dust](items.md#item-qtcraft-glowstone_dust) (2–4×) |
+| Light | 15 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Glowstone dust](items.md#item-qtcraft-glowstone_dust) | [Glowstone dust](items.md#item-qtcraft-glowstone_dust) | [Glowstone](#block-qtcraft-glowstone) |
+| [Glowstone dust](items.md#item-qtcraft-glowstone_dust) | [Glowstone dust](items.md#item-qtcraft-glowstone_dust) |  |
+
+**Used in**
+
+[Soul anchor](#block-qtcraft-soul_anchor)
+
 ### <a id="block-qtcraft-gold_ore"></a>Gold ore
 
 Deep ore that needs a pickaxe of level 3 or better; drops raw gold, which smelts into gold ingots.
@@ -4067,14 +5133,14 @@ Deep ore that needs a pickaxe of level 3 or better; drops raw gold, which smelts
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Raw gold](items.md#item-qtcraft-raw_gold) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -4098,7 +5164,7 @@ Earth covered with grass, the surface of most land.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -4129,7 +5195,7 @@ Loose stones that fall when nothing holds them. Now and then it drops a flint as
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -4174,7 +5240,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-gray_concrete"></a>Gray concrete
 
@@ -4193,7 +5259,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-gray_concrete_powder"></a>Gray concrete powder
 
@@ -4223,7 +5289,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-gray_glazed_terracotta"></a>Gray glazed terracotta
 
@@ -4256,7 +5322,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-gray_stained_glass"></a>Gray stained glass
 
@@ -4349,7 +5415,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-gray_wool"></a>Gray wool
 
@@ -4421,7 +5487,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-green_concrete"></a>Green concrete
 
@@ -4440,7 +5506,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-green_concrete_powder"></a>Green concrete powder
 
@@ -4470,7 +5536,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-green_glazed_terracotta"></a>Green glazed terracotta
 
@@ -4503,7 +5569,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-green_stained_glass"></a>Green stained glass
 
@@ -4596,7 +5662,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-green_wool"></a>Green wool
 
@@ -4660,7 +5726,7 @@ Nine wheat bound into a bale, and back into nine wheat. It catches fire easily.
 
 **Faster with**
 
-[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe) (level 5)
 
 ### <a id="block-qtcraft-ice"></a>Ice
 
@@ -4684,7 +5750,7 @@ Covers the water of cold biomes. Slippery: whoever walks on it keeps sliding, an
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -4707,7 +5773,7 @@ Looks just like cobblestone, but a silverfish lives inside. It breaks quickly, d
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-infested_stone"></a>Infested stone
 
@@ -4726,7 +5792,7 @@ Looks just like stone, but a silverfish lives inside. It breaks quickly even by 
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -4749,7 +5815,7 @@ Looks just like stone bricks, but a silverfish lives inside. It breaks quickly, 
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-iron_bars"></a>Iron bars
 
@@ -4780,7 +5846,7 @@ Bars that connect to their neighbours like glass panes.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-iron_door"></a>Iron door
 
@@ -4812,7 +5878,7 @@ A heavy door that only a signal opens: a lever, a button, a plate or Signal Dust
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-iron_ore"></a>Iron ore
 
@@ -4824,14 +5890,14 @@ Needs a pickaxe of level 2 or better. Drops raw iron, which a furnace smelts int
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Raw iron](items.md#item-qtcraft-raw_iron) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -4865,7 +5931,7 @@ A heavy hatch that only a signal opens.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-jack_o_lantern"></a>Jack o'lantern
 
@@ -4894,7 +5960,7 @@ A carved pumpkin with a torch inside (pumpkin above the torch): it shines as bri
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_door"></a>Jungle door
 
@@ -4927,7 +5993,7 @@ Two blocks high; open and close it with the use key.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_leaves"></a>Jungle leaves
 
@@ -4984,7 +6050,7 @@ Wood of the jungle tree. Gives four planks each.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -5033,11 +6099,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Jungle Boat](items.md#item-qtcraft-jungle_boat), [Jungle button](parts.md#block-qtcraft-jungle_button), [Jungle door](#block-qtcraft-jungle_door), [Jungle fence](parts.md#block-qtcraft-jungle_fence), [Jungle fence gate](parts.md#block-qtcraft-jungle_fence_gate), [Jungle pressure plate](parts.md#block-qtcraft-jungle_pressure_plate), [Jungle sign](#block-qtcraft-jungle_sign), [Jungle slab](parts.md#block-qtcraft-jungle_slab), [Jungle stairs](parts.md#block-qtcraft-jungle_stairs), [Jungle trapdoor](#block-qtcraft-jungle_trapdoor), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Jungle Boat](items.md#item-qtcraft-jungle_boat), [Jungle button](parts.md#block-qtcraft-jungle_button), [Jungle door](#block-qtcraft-jungle_door), [Jungle fence](parts.md#block-qtcraft-jungle_fence), [Jungle fence gate](parts.md#block-qtcraft-jungle_fence_gate), [Jungle pressure plate](parts.md#block-qtcraft-jungle_pressure_plate), [Jungle sign](#block-qtcraft-jungle_sign), [Jungle slab](parts.md#block-qtcraft-jungle_slab), [Jungle stairs](parts.md#block-qtcraft-jungle_stairs), [Jungle trapdoor](#block-qtcraft-jungle_trapdoor), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_sapling"></a>Jungle sapling
 
@@ -5095,7 +6161,7 @@ A sign of jungle wood.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_trapdoor"></a>Jungle trapdoor
 
@@ -5126,7 +6192,7 @@ A hatch that opens upwards; sits high or low in its block.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_wood"></a>Jungle wood
 
@@ -5162,7 +6228,7 @@ A log with bark on all six sides, for walls and beams.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-ladder"></a>Ladder
 
@@ -5195,7 +6261,7 @@ Hang it on a wall and climb up by walking into it or jumping; sneak to hold on.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-lantern"></a>Lantern
 
@@ -5232,7 +6298,7 @@ An iron lantern around a torch flame; the brightest light you can build.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-lapis_ore"></a>Lapis lazuli ore
 
@@ -5244,14 +6310,14 @@ Deep blue flecks in the stone, rarely above height 30. Needs a pickaxe of level 
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Lapis lazuli](items.md#item-qtcraft-lapis_lazuli) (4–9×) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -5322,7 +6388,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-light_blue_concrete"></a>Light blue concrete
 
@@ -5341,7 +6407,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_blue_concrete_powder"></a>Light blue concrete powder
 
@@ -5371,7 +6437,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-light_blue_glazed_terracotta"></a>Light blue glazed terracotta
 
@@ -5404,7 +6470,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_blue_stained_glass"></a>Light blue stained glass
 
@@ -5497,7 +6563,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_blue_wool"></a>Light blue wool
 
@@ -5569,7 +6635,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-light_gray_concrete"></a>Light gray concrete
 
@@ -5588,7 +6654,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_gray_concrete_powder"></a>Light gray concrete powder
 
@@ -5618,7 +6684,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-light_gray_glazed_terracotta"></a>Light gray glazed terracotta
 
@@ -5651,7 +6717,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_gray_stained_glass"></a>Light gray stained glass
 
@@ -5744,7 +6810,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-light_gray_wool"></a>Light gray wool
 
@@ -5860,7 +6926,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-lime_concrete"></a>Lime concrete
 
@@ -5879,7 +6945,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-lime_concrete_powder"></a>Lime concrete powder
 
@@ -5909,7 +6975,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-lime_glazed_terracotta"></a>Lime glazed terracotta
 
@@ -5942,7 +7008,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-lime_stained_glass"></a>Lime stained glass
 
@@ -6035,7 +7101,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-lime_wool"></a>Lime wool
 
@@ -6107,7 +7173,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-magenta_concrete"></a>Magenta concrete
 
@@ -6126,7 +7192,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-magenta_concrete_powder"></a>Magenta concrete powder
 
@@ -6156,7 +7222,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-magenta_glazed_terracotta"></a>Magenta glazed terracotta
 
@@ -6189,7 +7255,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-magenta_stained_glass"></a>Magenta stained glass
 
@@ -6282,7 +7348,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-magenta_wool"></a>Magenta wool
 
@@ -6335,7 +7401,7 @@ Hot rock deep underground. It glows faintly and burns whoever stands on it. Fire
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -6367,7 +7433,7 @@ Grows next to a melon stem and wild in forests and swamps. Breaks into three to 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -6437,7 +7503,7 @@ A cage of dark iron with a small creature spinning inside. While a player is wit
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone"></a>Mossy cobblestone
 
@@ -6506,7 +7572,7 @@ Cobblestone overgrown with moss. Dungeons and their corridors are built from it 
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks"></a>Mossy stone bricks
 
@@ -6575,7 +7641,7 @@ Stone bricks overgrown with moss: stone bricks and vines in the crafting grid. T
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mud"></a>Mud
 
@@ -6615,7 +7681,7 @@ Soaked earth on the shores of swamps. You walk slowly on it and jump less high.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -6689,7 +7755,329 @@ Bricks of packed mud; a warm, earthy building block.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_brick_fence"></a>Nether brick fence
+
+A fence of nether bricks. It joins other nether brick fences, fence gates and solid blocks, but not wooden fences.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_fence` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether brick fence](#block-qtcraft-nether_brick_fence) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | Nether brick fence, fence gates, full solid blocks |
+| Sound | nether bricks |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether bricks](#block-qtcraft-nether_bricks) | 6 × [Nether brick fence](#block-qtcraft-nether_brick_fence) |
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether bricks](#block-qtcraft-nether_bricks) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_bricks"></a>Nether bricks
+
+Dark bricks of four nether bricks. Fire does not harm them. Slabs, stairs, walls and their own fence are made of them.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_bricks` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether bricks](#block-qtcraft-nether_bricks) |
+| Drops without the right tool | nothing |
+| Sound | nether bricks |
+
+**Building parts**
+
+[Nether brick slab](parts.md#block-qtcraft-nether_brick_slab), [Nether brick stairs](parts.md#block-qtcraft-nether_brick_stairs), [Nether brick vertical slab](parts.md#block-qtcraft-nether_brick_vertical_slab), [Nether brick wall](parts.md#block-qtcraft-nether_brick_wall)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether bricks](#block-qtcraft-nether_bricks) |
+| [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether brick](items.md#item-qtcraft-nether_brick) |  |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Cracked nether bricks](#block-qtcraft-cracked_nether_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Chiseled nether bricks](#block-qtcraft-chiseled_nether_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | 2 × [Nether brick slab](parts.md#block-qtcraft-nether_brick_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Nether brick stairs](parts.md#block-qtcraft-nether_brick_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | [Nether brick wall](parts.md#block-qtcraft-nether_brick_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](#block-qtcraft-nether_bricks) | 2 × [Nether brick vertical slab](parts.md#block-qtcraft-nether_brick_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Nether brick fence](#block-qtcraft-nether_brick_fence), [Nether brick slab](parts.md#block-qtcraft-nether_brick_slab), [Nether brick stairs](parts.md#block-qtcraft-nether_brick_stairs), [Nether brick wall](parts.md#block-qtcraft-nether_brick_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_gold_ore"></a>Nether gold ore
+
+Netherrack with flecks of gold. Mined, it gives two to six gold nuggets; smelted, a gold ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_gold_ore` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Gold nugget](items.md#item-qtcraft-gold_nugget) (2–6×) |
+| Drops without the right tool | nothing |
+| Sound | nether ore |
+
+**Smelts into**
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether gold ore](#block-qtcraft-nether_gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Nether gold ore veins](worldgen.md#ore-qtcraft-nether_gold) (y 10–117)
+
+### <a id="block-qtcraft-nether_portal"></a>Nether portal
+
+The glowing inside of a lit obsidian frame. Stand in it to travel to the Nether and back. It goes out when its frame breaks.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_portal` |
+| Hardness | unbreakable |
+| Light | 11 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | glass |
+| States | axis (x, z) |
+
+### <a id="block-qtcraft-nether_quartz_ore"></a>Nether quartz ore
+
+Netherrack with white quartz crystals. Gives nether quartz and experience.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_quartz_ore` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether quartz](items.md#item-qtcraft-quartz) |
+| Drops without the right tool | nothing |
+| Sound | nether ore |
+
+**Smelts into**
+
+*Furnace, Blast furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Nether quartz ore](#block-qtcraft-nether_quartz_ore) | [Nether quartz](items.md#item-qtcraft-quartz) |
+
+[Furnace](#block-qtcraft-furnace), [Blast furnace](#block-qtcraft-blast_furnace) (speed × 2)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Nether quartz ore veins](worldgen.md#ore-qtcraft-nether_quartz) (y 10–117)
+
+### <a id="block-qtcraft-nether_sprouts"></a>Nether sprouts
+
+Tiny growth on the floors of the nether; it leaves nothing behind.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_sprouts` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | roots and sprouts |
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-nether_wart_crop"></a>Nether wart (plant)
+
+Nether wart grows in four stages, only on soul sand and even in the dark. Ripe it gives two to four nether wart, before that one.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wart_crop` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Nether wart](items.md#item-qtcraft-nether_wart) (while growing), [Nether wart](items.md#item-qtcraft-nether_wart) (2–4×, when ripe) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Soul sand](#block-qtcraft-soul_sand) |
+| Washed away by liquids | yes |
+| Ripens | 4 stages, ripe after about 34.13 min on wet farmland, 34.13 min on dry |
+| Needs light | 0 of 15 |
+| Sound | grass and plants |
+| States | age (0, 1, 2, 3) |
+
+### <a id="block-qtcraft-nether_wart_block"></a>Nether wart block
+
+The flesh of a crimson cap, or nine nether warts pressed together.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wart_block` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Nether wart block](#block-qtcraft-nether_wart_block) |
+| Sound | wart blocks |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart block](#block-qtcraft-nether_wart_block) |
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) |  |
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether wart](items.md#item-qtcraft-nether_wart) |  |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe) (level 5)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Huge crimson fungus)
+
+### <a id="block-qtcraft-netherrack"></a>Netherrack
+
+The soft red rock of the Nether. Fire lit on top of it burns forever. Smelted, it becomes a nether brick.
+
+| | |
+|---|---|
+| ID | `qtcraft:netherrack` |
+| Hardness | 0.4 |
+| Breaking by hand | 2 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Netherrack](#block-qtcraft-netherrack) |
+| Drops without the right tool | nothing |
+| Fire on it burns forever | yes |
+| Sound | netherrack |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Netherrack](#block-qtcraft-netherrack) | [Nether brick](items.md#item-qtcraft-nether_brick) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Netherite upgrade](items.md#item-qtcraft-netherite_upgrade_smithing_template)
+
+**Dropped by**
+
+[Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Below the surface, Under water), [Nether Wastes](biomes.md#biome-qtcraft-nether_wastes) (Surface, Below the surface, Under water, Beaches), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Below the surface, Under water)
 
 ### <a id="block-qtcraft-note_block"></a>Note Block
 
@@ -6720,7 +8108,7 @@ Plays a note when a signal reaches it or when you use it; every use raises the n
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_button"></a>Oak button
 
@@ -6751,7 +8139,7 @@ Gives a signal of one and a half seconds when pressed.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_door"></a>Oak door
 
@@ -6784,7 +8172,7 @@ Two blocks tall; use it to open or close it.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_leaves"></a>Oak leaves
 
@@ -6841,7 +8229,7 @@ Wood of the oak: the first thing to collect. Four planks each.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -6890,11 +8278,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Oak Boat](items.md#item-qtcraft-oak_boat), [Oak button](#block-qtcraft-oak_button), [Oak door](#block-qtcraft-oak_door), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak pressure plate](#block-qtcraft-oak_pressure_plate), [Oak Sign](#block-qtcraft-oak_sign), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Oak Boat](items.md#item-qtcraft-oak_boat), [Oak button](#block-qtcraft-oak_button), [Oak door](#block-qtcraft-oak_door), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak pressure plate](#block-qtcraft-oak_pressure_plate), [Oak Sign](#block-qtcraft-oak_sign), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_pressure_plate"></a>Oak pressure plate
 
@@ -6924,7 +8312,7 @@ Gives a signal while anything lies or stands on it, items and armour stands too.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_sapling"></a>Oak sapling
 
@@ -6982,7 +8370,7 @@ Holds four lines of text that everyone can read. Placed on the floor it turns to
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_trapdoor"></a>Oak trapdoor
 
@@ -7013,7 +8401,7 @@ A hatch on the floor or the ceiling; use it to open or close it.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_wood"></a>Oak wood
 
@@ -7049,30 +8437,30 @@ A log with bark on all six sides, for walls and beams.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
-Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or better.
+Forms where water meets a lava source. Very hard; needs a pickaxe of level 4 or better.
 
 | | |
 |---|---|
 | ID | `qtcraft:obsidian` |
 | Hardness | 25 |
 | Breaking by hand | 125 s |
-| Tool | Pickaxe, level 3 or better (needed for drops) |
-| Breaking with the best tool | 4.69 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Tool | Pickaxe, level 4 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Obsidian](#block-qtcraft-obsidian) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Used in**
 
-[Chunk Loader](#block-qtcraft-chunk_loader), [Enchanting Table](#block-qtcraft-enchanting_table)
+[Beacon](#block-qtcraft-beacon), [Enchanting Table](#block-qtcraft-enchanting_table)
 
 **Mined with**
 
-[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-orange_bed"></a>Orange bed
 
@@ -7113,7 +8501,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-orange_concrete"></a>Orange concrete
 
@@ -7132,7 +8520,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-orange_concrete_powder"></a>Orange concrete powder
 
@@ -7162,7 +8550,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-orange_glazed_terracotta"></a>Orange glazed terracotta
 
@@ -7195,7 +8583,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-orange_stained_glass"></a>Orange stained glass
 
@@ -7288,7 +8676,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-orange_tulip"></a>Orange tulip
 
@@ -7402,7 +8790,7 @@ Ice pressed so hard that it no longer lets light through or melts. As slippery a
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-packed_mud"></a>Packed mud
 
@@ -7436,7 +8824,7 @@ Mud dried hard in the furnace.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-pink_bed"></a>Pink bed
 
@@ -7477,7 +8865,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-pink_concrete"></a>Pink concrete
 
@@ -7496,7 +8884,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-pink_concrete_powder"></a>Pink concrete powder
 
@@ -7526,7 +8914,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-pink_glazed_terracotta"></a>Pink glazed terracotta
 
@@ -7559,7 +8947,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-pink_stained_glass"></a>Pink stained glass
 
@@ -7652,7 +9040,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-pink_tulip"></a>Pink tulip
 
@@ -7728,7 +9116,274 @@ The head of an extended piston.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_basalt"></a>Polished basalt
+
+Four basalt polished into clean columns; like basalt it lies along the clicked axis.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_basalt` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished basalt](#block-qtcraft-polished_basalt) |
+| Drops without the right tool | nothing |
+| Sound | basalt |
+| States | axis (y, x, z) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Basalt](#block-qtcraft-basalt) | 4 × [Polished basalt](#block-qtcraft-polished_basalt) |
+| [Basalt](#block-qtcraft-basalt) | [Basalt](#block-qtcraft-basalt) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Polished basalt](#block-qtcraft-polished_basalt) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone"></a>Polished blackstone
+
+Four blackstone polished flat. It gives bricks, chiseled stone, slabs, stairs and walls.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone](#block-qtcraft-polished_blackstone) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+
+**Building parts**
+
+[Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab), [Polished blackstone stairs](parts.md#block-qtcraft-polished_blackstone_stairs), [Polished blackstone vertical slab](parts.md#block-qtcraft-polished_blackstone_vertical_slab), [Polished blackstone wall](parts.md#block-qtcraft-polished_blackstone_wall)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Blackstone](#block-qtcraft-blackstone) | 4 × [Polished blackstone](#block-qtcraft-polished_blackstone) |
+| [Blackstone](#block-qtcraft-blackstone) | [Blackstone](#block-qtcraft-blackstone) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone](#block-qtcraft-polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Chiseled polished blackstone](#block-qtcraft-chiseled_polished_blackstone) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone stairs](parts.md#block-qtcraft-polished_blackstone_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone wall](parts.md#block-qtcraft-polished_blackstone_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone vertical slab](parts.md#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone brick slab](parts.md#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone brick stairs](parts.md#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone brick wall](parts.md#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone brick vertical slab](parts.md#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks), [Polished blackstone slab](parts.md#block-qtcraft-polished_blackstone_slab), [Polished blackstone stairs](parts.md#block-qtcraft-polished_blackstone_stairs), [Polished blackstone wall](parts.md#block-qtcraft-polished_blackstone_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_bricks"></a>Polished blackstone bricks
+
+Polished blackstone laid as bricks, with slabs, stairs and walls of their own.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_bricks` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+| Drops without the right tool | nothing |
+| Sound | blackstone |
+
+**Building parts**
+
+[Polished blackstone brick slab](parts.md#block-qtcraft-polished_blackstone_brick_slab), [Polished blackstone brick stairs](parts.md#block-qtcraft-polished_blackstone_brick_stairs), [Polished blackstone brick vertical slab](parts.md#block-qtcraft-polished_blackstone_brick_vertical_slab), [Polished blackstone brick wall](parts.md#block-qtcraft-polished_blackstone_brick_wall)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone](#block-qtcraft-polished_blackstone) | 4 × [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone](#block-qtcraft-polished_blackstone) |  |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | [Cracked polished blackstone bricks](#block-qtcraft-cracked_polished_blackstone_bricks) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](#block-qtcraft-blackstone) | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](#block-qtcraft-polished_blackstone) | [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | 2 × [Polished blackstone brick slab](parts.md#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone brick stairs](parts.md#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone brick wall](parts.md#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](#block-qtcraft-polished_blackstone_bricks) | 2 × [Polished blackstone brick vertical slab](parts.md#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished blackstone brick slab](parts.md#block-qtcraft-polished_blackstone_brick_slab), [Polished blackstone brick stairs](parts.md#block-qtcraft-polished_blackstone_brick_stairs), [Polished blackstone brick wall](parts.md#block-qtcraft-polished_blackstone_brick_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-polished_stone"></a>Polished stone
 
@@ -7805,7 +9460,7 @@ Stone smoothed in the furnace.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-poppy"></a>Poppy
 
@@ -7887,7 +9542,7 @@ Rail that speeds carts up while it gets Signal Dust power and brakes them to a s
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-pumpkin"></a>Pumpkin
 
@@ -7910,7 +9565,7 @@ Grows next to a pumpkin stem and wild in plains and taiga. Gives pumpkin seeds a
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -7977,7 +9632,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-purple_concrete"></a>Purple concrete
 
@@ -7996,7 +9651,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-purple_concrete_powder"></a>Purple concrete powder
 
@@ -8026,7 +9681,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-purple_glazed_terracotta"></a>Purple glazed terracotta
 
@@ -8059,7 +9714,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-purple_stained_glass"></a>Purple stained glass
 
@@ -8152,7 +9807,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-purple_wool"></a>Purple wool
 
@@ -8185,6 +9840,83 @@ Wool coloured with a dye. Two wool make three carpets.
 
 [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Painting](items.md#item-qtcraft-painting) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple bed](#block-qtcraft-purple_bed), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
+### <a id="block-qtcraft-quartz_bricks"></a>Quartz bricks
+
+Four blocks of quartz laid as bricks.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_bricks` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Quartz bricks](#block-qtcraft-quartz_bricks) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Block of quartz](#block-qtcraft-quartz_block) | [Quartz bricks](#block-qtcraft-quartz_bricks) |
+| [Block of quartz](#block-qtcraft-quartz_block) | [Block of quartz](#block-qtcraft-quartz_block) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Quartz bricks](#block-qtcraft-quartz_bricks) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-quartz_pillar"></a>Quartz pillar
+
+A pillar of two quartz blocks. Like a log it lies along the clicked axis.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_pillar` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Quartz pillar](#block-qtcraft-quartz_pillar) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| States | axis (y, x, z) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | 2 × [Quartz pillar](#block-qtcraft-quartz_pillar) |
+| [Block of quartz](#block-qtcraft-quartz_block) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Quartz pillar](#block-qtcraft-quartz_pillar) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
 ### <a id="block-qtcraft-rail"></a>Rail
 
 Track for minecarts. It needs a solid block below, joins the rails beside it and climbs one block towards a rail above.
@@ -8216,7 +9948,7 @@ Track for minecarts. It needs a solid block below, joins the rails beside it and
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-red_concrete"></a>Red concrete
 
@@ -8235,7 +9967,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-red_concrete_powder"></a>Red concrete powder
 
@@ -8265,7 +9997,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-red_glazed_terracotta"></a>Red glazed terracotta
 
@@ -8298,7 +10030,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-red_mushroom"></a>Red mushroom
 
@@ -8323,6 +10055,76 @@ Grows in the shade of forests and swamps.
 **Found in**
 
 [Forest](biomes.md#biome-qtcraft-forest) (Red mushrooms), [Swamp](biomes.md#biome-qtcraft-swamp) (Red mushrooms)
+
+### <a id="block-qtcraft-red_nether_bricks"></a>Red nether bricks
+
+Nether bricks with nether wart: dark red bricks with slabs, stairs and walls of their own.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_bricks` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red nether bricks](#block-qtcraft-red_nether_bricks) |
+| Drops without the right tool | nothing |
+| Sound | nether bricks |
+
+**Building parts**
+
+[Red nether brick slab](parts.md#block-qtcraft-red_nether_brick_slab), [Red nether brick stairs](parts.md#block-qtcraft-red_nether_brick_stairs), [Red nether brick vertical slab](parts.md#block-qtcraft-red_nether_brick_vertical_slab), [Red nether brick wall](parts.md#block-qtcraft-red_nether_brick_wall)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Nether wart](items.md#item-qtcraft-nether_wart) | [Nether brick](items.md#item-qtcraft-nether_brick) | [Red nether bricks](#block-qtcraft-red_nether_bricks) |
+| [Nether brick](items.md#item-qtcraft-nether_brick) | [Nether wart](items.md#item-qtcraft-nether_wart) |  |
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](#block-qtcraft-red_nether_bricks) | 2 × [Red nether brick slab](parts.md#block-qtcraft-red_nether_brick_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](#block-qtcraft-red_nether_bricks) | [Red nether brick stairs](parts.md#block-qtcraft-red_nether_brick_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](#block-qtcraft-red_nether_bricks) | [Red nether brick wall](parts.md#block-qtcraft-red_nether_brick_wall) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](#block-qtcraft-red_nether_bricks) | 2 × [Red nether brick vertical slab](parts.md#block-qtcraft-red_nether_brick_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Red nether brick slab](parts.md#block-qtcraft-red_nether_brick_slab), [Red nether brick stairs](parts.md#block-qtcraft-red_nether_brick_stairs), [Red nether brick wall](parts.md#block-qtcraft-red_nether_brick_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-red_stained_glass"></a>Red stained glass
 
@@ -8415,7 +10217,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-red_wool"></a>Red wool
 
@@ -8507,7 +10309,7 @@ Falls when nothing holds it. Smelts into glass.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -8625,11 +10427,30 @@ Pressed sand, found under deserts.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
 [Desert](biomes.md#biome-qtcraft-desert) (Steep slopes)
+
+### <a id="block-qtcraft-shroomlight"></a>Shroomlight
+
+A glowing lobe from the cap of a huge fungus, as bright as glowstone.
+
+| | |
+|---|---|
+| ID | `qtcraft:shroomlight` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Shroomlight](#block-qtcraft-shroomlight) |
+| Light | 15 of 15 |
+| Sound | shroomlight |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe) (level 5)
 
 ### <a id="block-qtcraft-signal_comparator"></a>Signal Comparator
 
@@ -8685,7 +10506,7 @@ On a rising signal ejects one item from a random slot: pours and takes liquids w
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_dropper"></a>Signal Dropper
 
@@ -8716,7 +10537,7 @@ On a rising signal throws one item from a random slot out of its front, or puts 
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_dust"></a>Signal Dust
 
@@ -8753,11 +10574,11 @@ The wire of every circuit. It carries a signal of strength 15 from a source and 
 
 **Used in**
 
-[Block of Signal Dust](#block-qtcraft-signal_dust_block), [Chunk Loader](#block-qtcraft-chunk_loader), [Detector Rail](#block-qtcraft-detector_rail), [Powered Rail](#block-qtcraft-powered_rail), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal Lamp](#block-qtcraft-signal_lamp), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Signal Repeater](#block-qtcraft-signal_repeater), [Signal Torch](#block-qtcraft-signal_torch)
+[Block of Signal Dust](#block-qtcraft-signal_dust_block), [Detector Rail](#block-qtcraft-detector_rail), [Powered Rail](#block-qtcraft-powered_rail), [Signal Dispenser](#block-qtcraft-signal_dispenser), [Signal Dropper](#block-qtcraft-signal_dropper), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal Lamp](#block-qtcraft-signal_lamp), [Signal Observer](#block-qtcraft-signal_observer), [Signal Piston](#block-qtcraft-signal_piston), [Signal Repeater](#block-qtcraft-signal_repeater), [Signal Torch](#block-qtcraft-signal_torch)
 
 **Dropped by**
 
-[Signal ore](#block-qtcraft-signal_ore) (4×, 50 %), [Witch](creatures.md#mob-qtcraft-witch) (30 %)
+[Signal ore](#block-qtcraft-signal_ore) (4×, 50 %), [Witch](creatures.md#mob-qtcraft-witch) (0–2×)
 
 ### <a id="block-qtcraft-signal_hopper"></a>Signal Hopper
 
@@ -8792,7 +10613,7 @@ Moves items: every eight ticks it passes one item into the container its spout p
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_indicator_light"></a>Signal Indicator Light
 
@@ -8866,10 +10687,6 @@ Lights up at once while it is powered and goes dark a moment after.
 | [Signal Dust](#block-qtcraft-signal_dust) | [Lantern](#block-qtcraft-lantern) | [Signal Dust](#block-qtcraft-signal_dust) |  |
 | · | [Signal Dust](#block-qtcraft-signal_dust) | · |  |
 
-**Used in**
-
-[Chunk Loader](#block-qtcraft-chunk_loader)
-
 **Dropped by**
 
 [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit)
@@ -8915,7 +10732,7 @@ Watches the block its face looks at and sends a short pulse out of its back when
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_ore"></a>Signal ore
 
@@ -8927,14 +10744,14 @@ Ore deep below that gives Signal Dust; needs an iron pickaxe.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.5 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
 | Drops | [Signal Dust](#block-qtcraft-signal_dust) (4×), [Signal Dust](#block-qtcraft-signal_dust) (50 %) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -8973,7 +10790,7 @@ Pushes up to twelve blocks in front of it while powered, chests and furnaces wit
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-signal_repeater"></a>Signal Repeater
 
@@ -9105,7 +10922,7 @@ A carved pumpkin with a small torch inside: a softer glow with about half the li
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-small_signal_torch"></a>Small Signal Torch
 
@@ -9186,6 +11003,36 @@ A stub of a torch from a coal chunk: weaker light than a torch, but nine of them
 
 [Small jack o'lantern](#block-qtcraft-small_jack_o_lantern)
 
+### <a id="block-qtcraft-smithing_table"></a>Smithing table
+
+Upgrades diamond tools and armour to netherite: use it, put a netherite upgrade into the first slot, the diamond piece into the second and a netherite ingot into the third, then take the result. It keeps its enchantments, its name and its wear.
+
+| | |
+|---|---|
+| ID | `qtcraft:smithing_table` |
+| Hardness | 2.5 |
+| Breaking by hand | 3.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.31 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Smithing table](#block-qtcraft-smithing_table) |
+| Smithing | opens the smithing table: template, diamond piece and netherite ingot make the netherite piece, with its enchantments and wear |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Smithing table](#block-qtcraft-smithing_table) |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
 ### <a id="block-qtcraft-smoker"></a>Smoker
 
 A furnace for food only: it cooks meat, fish and potatoes twice as fast and burns its fuel twice as fast too. Made from a furnace with four logs around it.
@@ -9216,7 +11063,7 @@ A furnace for food only: it cooks meat, fish and potatoes twice as fast and burn
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Processes**
 
@@ -9275,6 +11122,102 @@ A furnace for food only: it cooks meat, fish and potatoes twice as fast and burn
 | [Raw salmon](food.md#item-qtcraft-raw_salmon) | [Cooked salmon](food.md#item-qtcraft-cooked_salmon) |
 
 [Furnace](#block-qtcraft-furnace), [Campfire](#block-qtcraft-campfire) (30 s), [Smoker](#block-qtcraft-smoker) (speed × 2)
+
+### <a id="block-qtcraft-smooth_basalt"></a>Smooth basalt
+
+Basalt smelted into a smooth grey block.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_basalt` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth basalt](#block-qtcraft-smooth_basalt) |
+| Drops without the right tool | nothing |
+| Sound | basalt |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Basalt](#block-qtcraft-basalt) | [Smooth basalt](#block-qtcraft-smooth_basalt) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-smooth_quartz"></a>Smooth quartz block
+
+A block of quartz smelted smooth. It gives slabs and stairs.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth quartz block](#block-qtcraft-smooth_quartz) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Building parts**
+
+[Smooth quartz slab](parts.md#block-qtcraft-smooth_quartz_slab), [Smooth quartz stairs](parts.md#block-qtcraft-smooth_quartz_stairs), [Smooth quartz vertical slab](parts.md#block-qtcraft-smooth_quartz_vertical_slab)
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](#block-qtcraft-quartz_block) | [Smooth quartz block](#block-qtcraft-smooth_quartz) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**The stonecutter cuts it into**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](#block-qtcraft-smooth_quartz) | 2 × [Smooth quartz slab](parts.md#block-qtcraft-smooth_quartz_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](#block-qtcraft-smooth_quartz) | [Smooth quartz stairs](parts.md#block-qtcraft-smooth_quartz_stairs) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](#block-qtcraft-smooth_quartz) | 2 × [Smooth quartz vertical slab](parts.md#block-qtcraft-smooth_quartz_vertical_slab) |
+
+[Stonecutter](#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Smooth quartz slab](parts.md#block-qtcraft-smooth_quartz_slab), [Smooth quartz stairs](parts.md#block-qtcraft-smooth_quartz_stairs)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_sandstone"></a>Smooth sandstone
 
@@ -9347,7 +11290,7 @@ Sandstone baked smooth in the furnace.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_stone"></a>Smooth stone
 
@@ -9404,7 +11347,7 @@ Polished stone smelted once more: a smooth face in a thin frame. Its slabs are t
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-snow_block"></a>Snow block
 
@@ -9436,7 +11379,7 @@ Packed snow of cold mountains and tundra.
 
 **Mined with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
@@ -9473,11 +11416,267 @@ A thin cover of snow that needs a block below. It settles by itself where snow f
 
 **Mined with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 **Found in**
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (Snow cover)
+
+### <a id="block-qtcraft-soul_anchor"></a>Soul anchor
+
+Six crying obsidian around three glowstone. Use glowstone on it to charge it, up to four times. In the Nether, using a charged anchor sets your respawn point beside it, and each respawn there takes one charge; anywhere else it explodes like a bed in the Nether. Needs a diamond pickaxe.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_anchor` |
+| Hardness | 25 |
+| Breaking by hand | 125 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Soul anchor](#block-qtcraft-soul_anchor) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crying obsidian](#block-qtcraft-crying_obsidian) | [Crying obsidian](#block-qtcraft-crying_obsidian) | [Crying obsidian](#block-qtcraft-crying_obsidian) | [Soul anchor](#block-qtcraft-soul_anchor) |
+| [Glowstone](#block-qtcraft-glowstone) | [Glowstone](#block-qtcraft-glowstone) | [Glowstone](#block-qtcraft-glowstone) |  |
+| [Crying obsidian](#block-qtcraft-crying_obsidian) | [Crying obsidian](#block-qtcraft-crying_obsidian) | [Crying obsidian](#block-qtcraft-crying_obsidian) |  |
+
+**Dropped by**
+
+[Soul anchor (1 of 4)](#block-qtcraft-soul_anchor_1), [Soul anchor (2 of 4)](#block-qtcraft-soul_anchor_2), [Soul anchor (3 of 4)](#block-qtcraft-soul_anchor_3), [Soul anchor (4 of 4)](#block-qtcraft-soul_anchor_4)
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_anchor_1"></a>Soul anchor (1 of 4)
+
+A soul anchor with 1 of 4 charges.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_anchor_1` |
+| Hardness | 25 |
+| Breaking by hand | 125 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Soul anchor](#block-qtcraft-soul_anchor) |
+| Drops without the right tool | nothing |
+| Light | 3 of 15 |
+| Sound | stone |
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_anchor_2"></a>Soul anchor (2 of 4)
+
+A soul anchor with 2 of 4 charges.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_anchor_2` |
+| Hardness | 25 |
+| Breaking by hand | 125 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Soul anchor](#block-qtcraft-soul_anchor) |
+| Drops without the right tool | nothing |
+| Light | 7 of 15 |
+| Sound | stone |
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_anchor_3"></a>Soul anchor (3 of 4)
+
+A soul anchor with 3 of 4 charges.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_anchor_3` |
+| Hardness | 25 |
+| Breaking by hand | 125 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Soul anchor](#block-qtcraft-soul_anchor) |
+| Drops without the right tool | nothing |
+| Light | 11 of 15 |
+| Sound | stone |
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_anchor_4"></a>Soul anchor (4 of 4)
+
+A soul anchor with 4 of 4 charges.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_anchor_4` |
+| Hardness | 25 |
+| Breaking by hand | 125 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 4.17 s: [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) |
+| Drops | [Soul anchor](#block-qtcraft-soul_anchor) |
+| Drops without the right tool | nothing |
+| Light | 15 of 15 |
+| Sound | stone |
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_fire"></a>Soul fire
+
+Blue fire that fire lit on soul sand or soul soil becomes. It is dimmer than fire, burns twice as hard and never goes out or spreads.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_fire` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | nothing |
+| Light | 10 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Washed away by liquids | yes |
+| Damage on contact | 2 health points |
+| Sets bodies on fire for | 8 s |
+| Sound | grass and plants |
+
+### <a id="block-qtcraft-soul_lantern"></a>Soul lantern
+
+A lantern around a soul torch. Stands on floors or hangs from ceilings and walls.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_lantern` |
+| Hardness | 1.5 |
+| Breaking by hand | 2.25 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Soul lantern](#block-qtcraft-soul_lantern) |
+| Light | 10 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | metal |
+| States | attach (floor, ceiling, north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Soul lantern](#block-qtcraft-soul_lantern) |
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Soul torch](#block-qtcraft-soul_torch) | [Iron nugget](items.md#item-qtcraft-iron_nugget) |  |
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-soul_sand"></a>Soul sand
+
+Grainy sand with faces in it. Whoever walks on it is slowed down. Fire lit on it burns as blue soul fire, forever, and nether wart grows only on it.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_sand` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Soul sand](#block-qtcraft-soul_sand) |
+| Fire on it burns forever | yes |
+| Fire lit on it becomes | [Soul fire](#block-qtcraft-soul_fire) |
+| Walking speed on top | 40 % |
+| Sound | soul sand |
+| Groups | [Soul sand or soul soil](tags.md#tag-qtcraft-soul_blocks) |
+
+**Used in**
+
+[Soul torch](#block-qtcraft-soul_torch) (Soul sand or soul soil)
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
+
+**Found in**
+
+[Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley) (Surface, Beaches)
+
+### <a id="block-qtcraft-soul_soil"></a>Soul soil
+
+Firm soul ground that does not slow anyone down. Fire lit on it burns as soul fire, forever.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_soil` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Soul soil](#block-qtcraft-soul_soil) |
+| Fire on it burns forever | yes |
+| Fire lit on it becomes | [Soul fire](#block-qtcraft-soul_fire) |
+| Sound | soul soil |
+| Groups | [Soul sand or soul soil](tags.md#tag-qtcraft-soul_blocks) |
+
+**Used in**
+
+[Soul torch](#block-qtcraft-soul_torch) (Soul sand or soul soil)
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
+
+**Found in**
+
+[Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley) (Below the surface, Under water)
+
+### <a id="block-qtcraft-soul_torch"></a>Soul torch
+
+A torch with a blue soul flame: coal on a stick on soul sand or soul soil. Dimmer than a torch.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_torch` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Soul torch](#block-qtcraft-soul_torch) |
+| Light | 10 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Washed away by liquids | yes |
+| Sound | wood |
+| States | attach (floor, north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Coal or charcoal](tags.md#tag-qtcraft-coals) | 4 × [Soul torch](#block-qtcraft-soul_torch) |
+| [Stick](items.md#item-qtcraft-stick) |  |
+| [Soul sand or soul soil](tags.md#tag-qtcraft-soul_blocks) |  |
+
+**Used in**
+
+[Soul lantern](#block-qtcraft-soul_lantern)
 
 ### <a id="block-qtcraft-spruce_door"></a>Spruce door
 
@@ -9510,7 +11709,7 @@ Two blocks tall; open and close it with the use button.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_leaves"></a>Spruce leaves
 
@@ -9567,7 +11766,7 @@ Wood of the spruce. Four planks each.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 **Found in**
 
@@ -9616,11 +11815,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Spruce Boat](items.md#item-qtcraft-spruce_boat), [Spruce button](parts.md#block-qtcraft-spruce_button), [Spruce door](#block-qtcraft-spruce_door), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce pressure plate](parts.md#block-qtcraft-spruce_pressure_plate), [Spruce Sign](#block-qtcraft-spruce_sign), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Spruce trapdoor](#block-qtcraft-spruce_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Spruce Boat](items.md#item-qtcraft-spruce_boat), [Spruce button](parts.md#block-qtcraft-spruce_button), [Spruce door](#block-qtcraft-spruce_door), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce pressure plate](parts.md#block-qtcraft-spruce_pressure_plate), [Spruce Sign](#block-qtcraft-spruce_sign), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Spruce trapdoor](#block-qtcraft-spruce_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_sapling"></a>Spruce sapling
 
@@ -9678,7 +11877,7 @@ A sign of spruce wood.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_trapdoor"></a>Spruce trapdoor
 
@@ -9709,7 +11908,7 @@ A hatch that opens upwards; sits high or low in its block.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_wood"></a>Spruce wood
 
@@ -9745,7 +11944,7 @@ A log with bark on all six sides, for walls and beams.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-sticky_signal_piston"></a>Sticky Signal Piston
 
@@ -9775,7 +11974,7 @@ A piston that pulls the block in front of it back when it retracts; a too short 
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone"></a>Stone
 
@@ -9900,7 +12099,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 **Found in**
 
@@ -10004,7 +12203,7 @@ Neatly cut stone.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_button"></a>Stone button
 
@@ -10035,7 +12234,7 @@ Gives a short signal of one second when pressed.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_pressure_plate"></a>Stone pressure plate
 
@@ -10069,7 +12268,7 @@ Gives a signal while a player or a creature stands on it.
 
 **Faster with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stonecutter"></a>Stonecutter
 
@@ -10100,7 +12299,7 @@ Cuts stone blocks into stairs, slabs, vertical slabs, walls and cut or chiseled 
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stripped_birch_log"></a>Stripped birch log
 
@@ -10138,7 +12337,7 @@ A log without its bark: use an axe on a log. It lies along the clicked face and 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_birch_wood"></a>Stripped birch wood
 
@@ -10185,7 +12384,64 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-stripped_crimson_hyphae"></a>Stripped crimson hyphae
+
+Hyphae without their skin: use an axe on hyphae, or put four stripped stems together.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_crimson_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | 3 × [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae) |
+| [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-stripped_crimson_stem"></a>Stripped crimson stem
+
+A stem without its skin: use an axe on a stem. It gives planks like the stem.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_crimson_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped crimson stem](#block-qtcraft-stripped_crimson_stem) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Crimson planks](#block-qtcraft-crimson_planks), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Stripped crimson hyphae](#block-qtcraft-stripped_crimson_hyphae)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_jungle_log"></a>Stripped jungle log
 
@@ -10223,7 +12479,7 @@ A log without its bark: use an axe on a log. It lies along the clicked face and 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_jungle_wood"></a>Stripped jungle wood
 
@@ -10270,7 +12526,7 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_oak_log"></a>Stripped oak log
 
@@ -10308,7 +12564,7 @@ A log without its bark: use an axe on a log. It lies along the clicked face and 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_oak_wood"></a>Stripped oak wood
 
@@ -10355,7 +12611,7 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_spruce_log"></a>Stripped spruce log
 
@@ -10393,7 +12649,7 @@ A log without its bark: use an axe on a log. It lies along the clicked face and 
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stripped_spruce_wood"></a>Stripped spruce wood
 
@@ -10440,7 +12696,64 @@ Wood without its bark: use an axe on wood, or put four stripped logs together.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-stripped_warped_hyphae"></a>Stripped warped hyphae
+
+Hyphae without their skin: use an axe on hyphae, or put four stripped stems together.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_warped_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | 3 × [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-stripped_warped_stem"></a>Stripped warped stem
+
+A stem without its skin: use an axe on a stem. It gives planks like the stem.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_warped_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-sugar_cane"></a>Sugar cane
 
@@ -10518,7 +12831,7 @@ A target of hay: an arrow or another projectile hitting it gives a signal of str
 
 **Faster with**
 
-[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe) (level 5)
 
 ### <a id="block-qtcraft-terracotta"></a>Terracotta
 
@@ -10554,7 +12867,7 @@ A clay block fired in the furnace: hard, smooth and ready to be dyed.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-torch"></a>Torch
 
@@ -10615,7 +12928,7 @@ A chest that gives a signal while players look into it, one level per player.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-tripwire"></a>Tripwire
 
@@ -10673,6 +12986,28 @@ Hangs on the side of a block. Two hooks facing each other with tripwire between 
 
 [Trapped chest](#block-qtcraft-trapped_chest)
 
+### <a id="block-qtcraft-twisting_vines"></a>Twisting vines
+
+Rises from the floor of the warped forest and grows upwards. You can climb it. Bone meal adds a few blocks; it drops itself only now and then.
+
+| | |
+|---|---|
+| ID | `qtcraft:twisting_vines` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Twisting vines](#block-qtcraft-twisting_vines) (33 %) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Twisting vines](#block-qtcraft-twisting_vines), [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Netherrack](#block-qtcraft-netherrack), [Soul soil](#block-qtcraft-soul_soil), [Soul sand](#block-qtcraft-soul_sand), [Basalt](#block-qtcraft-basalt), [Blackstone](#block-qtcraft-blackstone), [Nether wart block](#block-qtcraft-nether_wart_block), [Warped wart block](#block-qtcraft-warped_wart_block) |
+| Grows by itself | up to 26 blocks tall, one block about every 30 min |
+| Washed away by liquids | yes |
+| Climbable | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Twisting vines)
+
 ### <a id="block-qtcraft-unlit_campfire"></a>Unlit campfire
 
 A campfire that was put out: no light, no heat. Flint and steel lights it again.
@@ -10690,7 +13025,7 @@ A campfire that was put out: no light, no heat. Flint and steel lights it again.
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-vines"></a>Vines
 
@@ -10713,6 +13048,330 @@ Hangs on walls, the overgrowth of jungle temples. Climb it like a ladder; it has
 **Used in**
 
 [Mossy cobblestone](#block-qtcraft-mossy_cobblestone), [Mossy stone bricks](#block-qtcraft-mossy_stone_bricks)
+
+### <a id="block-qtcraft-warped_door"></a>Warped door
+
+Two blocks tall; open and close it with the use button. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped door](#block-qtcraft-warped_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 3 × [Warped door](#block-qtcraft-warped_door) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_fungus"></a>Warped fungus
+
+Bone meal grows it into a huge fungus, but only on warped nylium; it never grows by itself.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fungus` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Warped fungus](#block-qtcraft-warped_fungus) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Grows into | 120–300 s: [Huge warped fungus](worldgen.md#feature-qtcraft-huge_warped_fungus) |
+| Can be planted on | [Warped nylium](#block-qtcraft-warped_nylium) |
+| Sound | fungi |
+
+**Used in**
+
+[Fungus on a Stick](items.md#item-qtcraft-fungus_on_a_stick)
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Grasses), [Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-warped_hyphae"></a>Warped hyphae
+
+A stem with skin on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_hyphae` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped hyphae](#block-qtcraft-warped_hyphae) |
+| Axe makes | [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Warped stem](#block-qtcraft-warped_stem) | [Warped stem](#block-qtcraft-warped_stem) | 3 × [Warped hyphae](#block-qtcraft-warped_hyphae) |
+| [Warped stem](#block-qtcraft-warped_stem) | [Warped stem](#block-qtcraft-warped_stem) |  |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_nylium"></a>Warped nylium
+
+Netherrack overgrown by a warped mat. Bone meal grows the plants of the forest on it; bone meal on bare netherrack next to it spreads the mat. It breaks into netherrack.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_nylium` |
+| Hardness | 0.4 |
+| Breaking by hand | 2 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.05 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Netherrack](#block-qtcraft-netherrack) |
+| Drops without the right tool | nothing |
+| Sound | nylium |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Surface, Beaches)
+
+### <a id="block-qtcraft-warped_planks"></a>Warped planks
+
+Building wood of the nether; any planks fit recipes that ask for planks. It neither burns nor heats a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_planks` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped planks](#block-qtcraft-warped_planks) |
+| Sound | nether wood |
+| Groups | [Any planks](tags.md#tag-qtcraft-planks) |
+
+**Building parts**
+
+[Warped button](parts.md#block-qtcraft-warped_button), [Warped fence](parts.md#block-qtcraft-warped_fence), [Warped fence gate](parts.md#block-qtcraft-warped_fence_gate), [Warped pressure plate](parts.md#block-qtcraft-warped_pressure_plate), [Warped slab](parts.md#block-qtcraft-warped_slab), [Warped stairs](parts.md#block-qtcraft-warped_stairs), [Warped vertical slab](parts.md#block-qtcraft-warped_vertical_slab)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Warped stem](#block-qtcraft-warped_stem) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped warped hyphae](#block-qtcraft-stripped_warped_hyphae) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Stripped warped stem](#block-qtcraft-stripped_warped_stem) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Warped hyphae](#block-qtcraft-warped_hyphae) | 4 × [Warped planks](#block-qtcraft-warped_planks) |
+
+**Used in**
+
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Black bed](#block-qtcraft-black_bed) (Any planks), [Blue bed](#block-qtcraft-blue_bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Brown bed](#block-qtcraft-brown_bed) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Cyan bed](#block-qtcraft-cyan_bed) (Any planks), [Gray bed](#block-qtcraft-gray_bed) (Any planks), [Green bed](#block-qtcraft-green_bed) (Any planks), [Light blue bed](#block-qtcraft-light_blue_bed) (Any planks), [Light gray bed](#block-qtcraft-light_gray_bed) (Any planks), [Lime bed](#block-qtcraft-lime_bed) (Any planks), [Magenta bed](#block-qtcraft-magenta_bed) (Any planks), [Note Block](#block-qtcraft-note_block) (Any planks), [Orange bed](#block-qtcraft-orange_bed) (Any planks), [Pink bed](#block-qtcraft-pink_bed) (Any planks), [Purple bed](#block-qtcraft-purple_bed) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Smithing table](#block-qtcraft-smithing_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Tripwire hook](#block-qtcraft-tripwire_hook) (Any planks), [Warped button](parts.md#block-qtcraft-warped_button), [Warped door](#block-qtcraft-warped_door), [Warped fence](parts.md#block-qtcraft-warped_fence), [Warped fence gate](parts.md#block-qtcraft-warped_fence_gate), [Warped pressure plate](parts.md#block-qtcraft-warped_pressure_plate), [Warped sign](#block-qtcraft-warped_sign), [Warped slab](parts.md#block-qtcraft-warped_slab), [Warped stairs](parts.md#block-qtcraft-warped_stairs), [Warped trapdoor](#block-qtcraft-warped_trapdoor), [White bed](#block-qtcraft-white_bed) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks), [Yellow bed](#block-qtcraft-yellow_bed) (Any planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_roots"></a>Warped roots
+
+Low growth on the floors of the nether forests.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_roots` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Warped roots](#block-qtcraft-warped_roots) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Crimson nylium](#block-qtcraft-crimson_nylium), [Warped nylium](#block-qtcraft-warped_nylium), [Soul soil](#block-qtcraft-soul_soil), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Netherrack](#block-qtcraft-netherrack) |
+| Washed away by liquids | yes |
+| Sound | roots and sprouts |
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Grasses)
+
+### <a id="block-qtcraft-warped_sign"></a>Warped sign
+
+A sign of warped wood. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_sign` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped sign](#block-qtcraft-warped_sign) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | nether wood |
+| States | attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 3 × [Warped sign](#block-qtcraft-warped_sign) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+| · | [Stick](items.md#item-qtcraft-stick) | · |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_stem"></a>Warped stem
+
+The stem of a huge warped fungus. Four planks each. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_stem` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped stem](#block-qtcraft-warped_stem) |
+| Axe makes | [Stripped warped stem](#block-qtcraft-stripped_warped_stem) |
+| Sound | stems |
+| States | axis (y, x, z) |
+| Groups | [Any log or wood](tags.md#tag-qtcraft-logs) |
+
+**Used in**
+
+[Campfire](#block-qtcraft-campfire) (Any log or wood), [Smoker](#block-qtcraft-smoker) (Any log or wood), [Warped hyphae](#block-qtcraft-warped_hyphae), [Warped planks](#block-qtcraft-warped_planks)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Huge warped fungus)
+
+### <a id="block-qtcraft-warped_trapdoor"></a>Warped trapdoor
+
+A hatch that opens upwards; sits high or low in its block. It does not burn.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped trapdoor](#block-qtcraft-warped_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | 2 × [Warped trapdoor](#block-qtcraft-warped_trapdoor) |
+| [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) | [Warped planks](#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_wart_block"></a>Warped wart block
+
+The flesh of a warped cap, in winding folds.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_wart_block` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Hoe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Warped wart block](#block-qtcraft-warped_wart_block) |
+| Sound | wart blocks |
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4), [Netherite hoe](tools.md#item-qtcraft-netherite_hoe) (level 5)
+
+**Found in**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (Huge warped fungus)
+
+### <a id="block-qtcraft-weeping_vines"></a>Weeping vines
+
+Hangs from roofs and from the caps of crimson fungi and grows downwards. You can climb it. Bone meal adds a few blocks; it drops itself only now and then.
+
+| | |
+|---|---|
+| ID | `qtcraft:weeping_vines` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Weeping vines](#block-qtcraft-weeping_vines) (33 %) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid block above |
+| Grows by itself | up to 26 blocks tall, one block about every 30 min |
+| Washed away by liquids | yes |
+| Climbable | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (Weeping vines)
 
 ### <a id="block-qtcraft-wheat_crop"></a>Wheat crop
 
@@ -10773,7 +13432,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-white_concrete"></a>White concrete
 
@@ -10792,7 +13451,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-white_concrete_powder"></a>White concrete powder
 
@@ -10822,7 +13481,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-white_glazed_terracotta"></a>White glazed terracotta
 
@@ -10855,7 +13514,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-white_stained_glass"></a>White stained glass
 
@@ -10948,7 +13607,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-white_wool"></a>White wool
 
@@ -11057,7 +13716,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-yellow_concrete"></a>Yellow concrete
 
@@ -11076,7 +13735,7 @@ Hard, smooth and evenly coloured; made by wetting concrete powder.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-yellow_concrete_powder"></a>Yellow concrete powder
 
@@ -11106,7 +13765,7 @@ Falls like sand. Touching water on any side, it hardens into concrete.
 
 **Faster with**
 
-[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4), [Netherite shovel](tools.md#item-qtcraft-netherite_shovel) (level 5)
 
 ### <a id="block-qtcraft-yellow_glazed_terracotta"></a>Yellow glazed terracotta
 
@@ -11139,7 +13798,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-yellow_stained_glass"></a>Yellow stained glass
 
@@ -11232,7 +13891,7 @@ Dyed terracotta in earthy tones.
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-yellow_wool"></a>Yellow wool
 

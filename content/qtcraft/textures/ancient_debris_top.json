@@ -1,0 +1,8 @@
+{
+    "name": "ancient_debris_top",
+    "pattern": "log_top",
+    "primary": "#5e4034",
+    "secondary": "#8a6450",
+    "variation": 0.08,
+    "seed": 8898
+}

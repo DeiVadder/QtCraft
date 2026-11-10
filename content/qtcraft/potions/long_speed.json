@@ -1,0 +1,11 @@
+{
+    "name": "long_speed",
+    "variantOf": "speed",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "speed",
+            "seconds": 480
+        }
+    ]
+}

@@ -3,7 +3,9 @@
 
 #pragma once
 
+#include "common/content/items/QcItemDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcLoadFailure.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcAdvancementProgress.h"
@@ -14,6 +16,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcEntityMotion.h"
+#include "server/storage/QcPlayerReturn.h"
 
 #include <QDataStream>
 #include <QString>
@@ -23,7 +26,7 @@
 #include <optional>
 
 /*! \brief What is saved of a player (decision E-093): his body, view, inventory, armour, health,
-    food, game mode, experience, seeds, effects, advancements and air. */
+    food, game mode, experience, seeds, effects, advancements, air and dimension. */
 struct QcPlayerData
 {
     /*! Where his feet are and how he moves. */
@@ -38,6 +41,9 @@ struct QcPlayerData
     /*! Food and exhaustion; players saved before hunger existed come back full. \qcshared */
     int food = QcItemDefinition::maxFood;
     double exhaustion = 0.0;
+    /*! The hidden saturation (decision E-1001); the reference's 5 of a new player in files before
+        version 12. */
+    double saturation = QcItemDefinition::spawnSaturation;
     /*! Armour slots (decision E-234). */
     QcEquipment equipment;
     /*! The game mode, and the inventory and armour of the other inventory set, kept aside while
@@ -53,12 +59,22 @@ struct QcPlayerData
     quint32 runeSeed = 0;
     /*! Status effects (decision E-450). */
     QList<QcStatusEffect> effects;
+    /*! The extra health left of the absorption effect (decision E-992). */
+    double absorption = 0.0;
     /*! The met criteria of the adventure guide (decision E-923), unknown advancements included;
         empty in files before version 9. */
     QcAdvancementProgress advancements;
     /*! The air under water in game ticks (decision E-955); a full breath in files before version
         10. */
     int air = QcAirSupply::maxAir;
+    /*! The dimension he is in (decision E-978); the overworld in files before version 11. A
+        dimension the world's content does not have (a removed mod) is kept in the file until he
+        is placed elsewhere. */
+    QString dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
+    /*! Where he returns to when that dimension can open again (decision E-989). */
+    std::optional<QcPlayerReturn> returnTo;
+    /*! The soul anchor he respawns at (decision E-1112); none in files before version 13. */
+    std::optional<QcRespawnAnchor> anchor;
 };
 
 /*! \brief The player files of a world directory (players/<name>-<hash>.qcp, decision E-093):

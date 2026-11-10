@@ -1,0 +1,8 @@
+{
+    "name": "soul_lantern",
+    "pattern": "lantern",
+    "primary": "#5a5a62",
+    "secondary": "#7ae8ff",
+    "variation": 0.08,
+    "seed": 8435
+}

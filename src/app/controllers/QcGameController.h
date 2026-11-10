@@ -18,10 +18,8 @@
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
-#include "app/inventory/QcAnvilController.h"
-#include "app/inventory/QcEnchantingController.h"
-#include "app/inventory/QcStonecutterController.h"
 #include "app/inventory/QcTradeController.h"
+#include "app/inventory/QcWorkstationControllers.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
@@ -114,6 +112,10 @@ class QcGameController : public QObject
     Q_PROPERTY(QcEnchantingController *enchanting READ enchanting CONSTANT FINAL)
     // The anvil's screen (decision E-866).
     Q_PROPERTY(QcAnvilController *anvil READ anvil CONSTANT FINAL)
+    // The smithing table's screen (decision E-1115).
+    Q_PROPERTY(QcSmithingController *smithing READ smithing CONSTANT FINAL)
+    // The beacon's screen (decision E-1142).
+    Q_PROPERTY(QcBeaconController *beacon READ beacon CONSTANT FINAL)
     // The tree of the adventure guide (decision E-924).
     Q_PROPERTY(QcAdvancementTreeModel *advancements READ advancements CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
@@ -171,9 +173,12 @@ public:
     QcPlayerController *player() const { return m_player.get(); }
     QcTradeController *trade() const { return m_trade.get(); }
     QcSignController *sign() const { return m_sign.get(); }
-    QcStonecutterController *stonecutter() const { return m_stonecutter.get(); }
-    QcEnchantingController *enchanting() const { return m_enchanting.get(); }
-    QcAnvilController *anvil() const { return m_anvil.get(); }
+    const QcWorkstationControllers &workstations() const { return m_workstations; }
+    QcStonecutterController *stonecutter() const { return workstations().stonecutter.get(); }
+    QcEnchantingController *enchanting() const { return workstations().enchanting.get(); }
+    QcAnvilController *anvil() const { return workstations().anvil.get(); }
+    QcSmithingController *smithing() const { return workstations().smithing.get(); }
+    QcBeaconController *beacon() const { return workstations().beacon.get(); }
     QcAdvancementTreeModel *advancements() const { return m_advancements.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
@@ -192,11 +197,10 @@ public:
     // The mods that went into the content of the running world.
     const QList<QcModStatus> &loadedMods() const { return m_worlds.loadedMods(); }
 
-    // A world that is not saved (test hooks --play and --showcase), made by the generator type
-    // `generator` (QcWorldGenerators).
-    // `gameMode` is that of the player ("survival", "creative").
-    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
-                                       const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
+    // A world that is not saved (test hooks --play and --showcase). `setup` holds "generator" (the
+    // generator type, QcWorldGenerators; terrain without it), its "options", "gameMode" of the
+    // player ("survival", "creative") and "startDimension" (decision E-1110; empty: the overworld).
+    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // Creates a saved world in the library and starts it. `setup` holds "worldType" (a
     // WorldLibrary.WorldType; E-221, E-223), "layers" of a flat world (empty: the default),
     // "keepInventory", "gameMode" (a GameMode.Mode; decision E-282) and "worldOptions" of a terrain
@@ -301,9 +305,7 @@ private:
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcSignController> m_sign;
-    std::unique_ptr<QcStonecutterController> m_stonecutter;
-    std::unique_ptr<QcEnchantingController> m_enchanting;
-    std::unique_ptr<QcAnvilController> m_anvil;
+    QcWorkstationControllers m_workstations;
     std::unique_ptr<QcAdvancementTreeModel> m_advancements;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;

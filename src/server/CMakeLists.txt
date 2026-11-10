@@ -16,12 +16,14 @@ target_sources(qc_server PRIVATE
     advancements/QcServerAdvancements.h advancements/QcServerAdvancements.cpp
 )
 target_sources(qc_server PRIVATE
+    animals/QcBarterState.h
     animals/QcMobBreeding.h animals/QcMobBreeding.cpp
     animals/QcMobFamilies.h animals/QcMobFamilies.cpp
     animals/QcMobLaying.h animals/QcMobLaying.cpp
     animals/QcPetCare.h animals/QcPetCare.cpp
     animals/QcPetOwners.h animals/QcPetOwners.cpp
     animals/QcServerAnimals.h animals/QcServerAnimals.cpp
+    animals/QcServerBarter.h animals/QcServerBarter.cpp
 )
 target_sources(qc_server PRIVATE
     backup/QcBackupRunner.h backup/QcBackupRunner.cpp
@@ -53,6 +55,14 @@ target_sources(qc_server PRIVATE
     boats/QcBoatManager.h boats/QcBoatManager.cpp
     boats/QcBoxGrid.h boats/QcBoxGrid.cpp
     boats/QcServerBoats.h boats/QcServerBoats.cpp
+)
+target_sources(qc_server PRIVATE
+    bosses/QcHydraBrain.h bosses/QcHydraBrain.cpp
+    bosses/QcHydraRules.h bosses/QcHydraRules.cpp
+    bosses/QcHydraState.h
+    bosses/QcHydraSummoning.h bosses/QcHydraSummoning.cpp
+    bosses/QcServerBossBars.h bosses/QcServerBossBars.cpp
+    bosses/QcServerHydras.h bosses/QcServerHydras.cpp
 )
 target_sources(qc_server PRIVATE
     chunks/QcBlockIndex.h chunks/QcBlockIndex.cpp
@@ -94,6 +104,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
+    core/QcPlayerScreen.h
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcSaveSchedule.h core/QcSaveSchedule.cpp
     core/QcServer.h core/QcServer.cpp
@@ -112,10 +123,22 @@ target_sources(qc_server PRIVATE
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
 )
 target_sources(qc_server PRIVATE
+    dimensions/QcDimensions.h dimensions/QcDimensions.cpp
+    dimensions/QcEntityTravel.h dimensions/QcEntityTravel.cpp
+    dimensions/QcPerDimension.h
+    dimensions/QcPlayerTravel.h dimensions/QcPlayerTravel.cpp
+    dimensions/QcPortalIndex.h dimensions/QcPortalIndex.cpp
+    dimensions/QcPortalLinks.h dimensions/QcPortalLinks.cpp
+    dimensions/QcServerAnchors.h dimensions/QcServerAnchors.cpp
+    dimensions/QcServerDimension.h dimensions/QcServerDimension.cpp
+    dimensions/QcServerPortals.h dimensions/QcServerPortals.cpp
+    dimensions/QcTravellers.h dimensions/QcTravellers.cpp
+)
+target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
     entities/QcBoat.h
     entities/QcComponent.h
-    entities/QcCreature.h
+    entities/QcCreature.h entities/QcCreature.cpp
     entities/QcEntities.h entities/QcEntities.cpp
     entities/QcEntity.h
     entities/QcEntityChecks.h entities/QcEntityChecks.cpp
@@ -146,6 +169,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
+    gameplay/QcMovementEpochs.h gameplay/QcMovementEpochs.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
     gameplay/QcSafeSpot.h gameplay/QcSafeSpot.cpp
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
@@ -190,15 +214,19 @@ target_sources(qc_server PRIVATE
     login/QcServerLogin.h login/QcServerLogin.cpp
 )
 target_sources(qc_server PRIVATE
+    machines/QcBeacons.h machines/QcBeacons.cpp
     machines/QcBlockScreens.h machines/QcBlockScreens.cpp
+    machines/QcBrewingRules.h machines/QcBrewingRules.cpp
     machines/QcCampfires.h machines/QcCampfires.cpp
     machines/QcContainerSounds.h machines/QcContainerSounds.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     machines/QcServerAnvil.h machines/QcServerAnvil.cpp
+    machines/QcServerBeacons.h machines/QcServerBeacons.cpp
     machines/QcServerEnchanting.h machines/QcServerEnchanting.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
+    machines/QcServerSmithing.h machines/QcServerSmithing.cpp
     machines/QcServerStonecutter.h machines/QcServerStonecutter.cpp
     machines/QcServerWorkstations.h
 )
@@ -219,7 +247,10 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     mobbrains/QcArcherBrain.h mobbrains/QcArcherBrain.cpp
     mobbrains/QcArcherState.h
+    mobbrains/QcBarterSight.h mobbrains/QcBarterSight.cpp
     mobbrains/QcCreatureBrains.h mobbrains/QcCreatureBrains.cpp
+    mobbrains/QcDrifterBrain.h mobbrains/QcDrifterBrain.cpp
+    mobbrains/QcDrifterState.h
     mobbrains/QcFishSwimming.h mobbrains/QcFishSwimming.cpp
     mobbrains/QcMobBrain.h
     mobbrains/QcMobFear.h mobbrains/QcMobFear.cpp
@@ -233,6 +264,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     mobs/QcCreatureBodies.h mobs/QcCreatureBodies.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
+    mobs/QcDimensionDepartures.h mobs/QcDimensionDepartures.cpp
     mobs/QcInfestation.h mobs/QcInfestation.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
@@ -243,6 +275,7 @@ target_sources(qc_server PRIVATE
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
     mobs/QcNameTags.h mobs/QcNameTags.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
+    mobs/QcServerMounts.h mobs/QcServerMounts.cpp
 )
 target_sources(qc_server PRIVATE
     network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp
@@ -286,6 +319,7 @@ target_sources(qc_server PRIVATE
     signal/QcCircuitPlan.h
     signal/QcCircuitState.h signal/QcCircuitState.cpp
     signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
+    signal/QcDaylightSensors.h signal/QcDaylightSensors.cpp
     signal/QcDispenserActions.h signal/QcDispenserActions.cpp
     signal/QcDustNetwork.h signal/QcDustNetwork.cpp
     signal/QcHopperQueue.h signal/QcHopperQueue.cpp
@@ -309,13 +343,17 @@ target_sources(qc_server PRIVATE
     spawning/QcChunkSpawns.h spawning/QcChunkSpawns.cpp
     spawning/QcMonsterCap.h spawning/QcMonsterCap.cpp
     spawning/QcNaturalSpawner.h spawning/QcNaturalSpawner.cpp
+    spawning/QcNaturalSpawnPlace.cpp
     spawning/QcSpawnAreas.h spawning/QcSpawnAreas.cpp
     spawning/QcSpawnLight.h spawning/QcSpawnLight.cpp
 )
 target_sources(qc_server PRIVATE
+    storage/QcBarterCodec.h storage/QcBarterCodec.cpp
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
+    storage/QcBlockEntityFormat.h
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
+    storage/QcBlockEntityWriter.h storage/QcBlockEntityWriter.cpp
     storage/QcBoatCodec.h storage/QcBoatCodec.cpp
     storage/QcChunkCodec.h storage/QcChunkCodec.cpp
     storage/QcChunkIo.h storage/QcChunkIo.cpp
@@ -329,7 +367,9 @@ target_sources(qc_server PRIVATE
     storage/QcHangingCodec.h storage/QcHangingCodec.cpp
     storage/QcItemDataCodec.h storage/QcItemDataCodec.cpp
     storage/QcLoadWarnings.h
+    storage/QcMinecartCodec.h storage/QcMinecartCodec.cpp
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
+    storage/QcPlayerReturn.h
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
     storage/QcRegionFile.h storage/QcRegionFile.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
@@ -349,6 +389,11 @@ target_sources(qc_server PRIVATE
     tick/QcTickStats.h tick/QcTickStats.cpp
     tick/QcTickSystems.h tick/QcTickSystems.cpp
     tick/QcTimerResolution.h tick/QcTimerResolution.cpp
+)
+target_sources(qc_server PRIVATE
+    versions/QcExploredArea.h versions/QcExploredArea.cpp
+    versions/QcGeneratorSwitch.h versions/QcGeneratorSwitch.cpp
+    versions/QcVersionMapFile.h versions/QcVersionMapFile.cpp
 )
 target_sources(qc_server PRIVATE
     villages/QcServerTrading.h villages/QcServerTrading.cpp

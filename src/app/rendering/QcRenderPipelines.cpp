@@ -12,6 +12,27 @@
 
 #include <cstddef>
 
+namespace {
+
+// The parts the entity and the glow pipelines share: shaders, the entity vertex input, depth test,
+// back faces culled.
+std::unique_ptr<QRhiGraphicsPipeline> entityBase(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
+                                                 const QShader &vertexShader, const QShader &fragmentShader)
+{
+    std::unique_ptr<QRhiGraphicsPipeline> pipeline(rhi->newGraphicsPipeline());
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, vertexShader}, {QRhiShaderStage::Fragment, fragmentShader}});
+    pipeline->setVertexInputLayout(QcRenderPipelines::entityLayout());
+    pipeline->setShaderResourceBindings(bindings);
+    pipeline->setRenderPassDescriptor(target->renderPassDescriptor());
+    pipeline->setSampleCount(target->sampleCount());
+    pipeline->setDepthTest(true);
+    pipeline->setFrontFace(QRhiGraphicsPipeline::CCW);
+    pipeline->setCullMode(QRhiGraphicsPipeline::Back);
+    return pipeline;
+}
+
+} // namespace
+
 namespace QcRenderPipelines {
 
 QRhiVertexInputLayout blockLayout()
@@ -56,19 +77,29 @@ QShader loadShader(const QString &path, const QLoggingCategory &category)
 std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
                                                            const QShader &vertexShader, const QShader &fragmentShader)
 {
-    std::unique_ptr<QRhiGraphicsPipeline> pipeline(rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, vertexShader}, {QRhiShaderStage::Fragment, fragmentShader}});
-    pipeline->setVertexInputLayout(entityLayout());
-    pipeline->setShaderResourceBindings(bindings);
-    pipeline->setRenderPassDescriptor(target->renderPassDescriptor());
-    pipeline->setSampleCount(target->sampleCount());
-    pipeline->setDepthTest(true);
+    std::unique_ptr<QRhiGraphicsPipeline> pipeline = entityBase(rhi, target, bindings, vertexShader, fragmentShader);
     pipeline->setDepthWrite(true);
-    pipeline->setFrontFace(QRhiGraphicsPipeline::CCW);
-    pipeline->setCullMode(QRhiGraphicsPipeline::Back);
-
     if (!pipeline->create()) {
         qCCritical(lcRenderer) << "Cannot create entity pipeline";
+        return {};
+    }
+    return pipeline;
+}
+
+std::unique_ptr<QRhiGraphicsPipeline> createGlowPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
+                                                         const QShader &vertexShader, const QShader &fragmentShader)
+{
+    std::unique_ptr<QRhiGraphicsPipeline> pipeline = entityBase(rhi, target, bindings, vertexShader, fragmentShader);
+    pipeline->setDepthWrite(false);
+    QRhiGraphicsPipeline::TargetBlend add;
+    add.enable = true;
+    add.srcColor = QRhiGraphicsPipeline::One;
+    add.dstColor = QRhiGraphicsPipeline::One;
+    add.srcAlpha = QRhiGraphicsPipeline::Zero;
+    add.dstAlpha = QRhiGraphicsPipeline::One;
+    pipeline->setTargetBlends({add});
+    if (!pipeline->create()) {
+        qCCritical(lcRenderer) << "Cannot create glow pipeline";
         return {};
     }
     return pipeline;

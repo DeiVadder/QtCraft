@@ -483,13 +483,19 @@ QcStatus QcChunkStore::reopenIfNeeded()
     if (!m_needsReopen) {
         return {};
     }
-    for (auto &index : m_indexes) {
-        index.clear();
+    if (m_journalStore != nullptr) {
+        if (const QcStatus finished = m_journalStore->reopenIfNeeded(); !finished) {
+            return finished;
+        }
     }
+    // A journal that cannot be finished yet leaves the indexes as they are: has() still answers.
     if (const QcStatus finished = finishJournal(); !finished) {
         return finished;
     }
     removeStaged();
+    for (auto &index : m_indexes) {
+        index.clear();
+    }
     if (const QcStatus read = readIndexes(); !read) {
         return read;
     }
@@ -497,46 +503,31 @@ QcStatus QcChunkStore::reopenIfNeeded()
     return {};
 }
 
-QcStatus QcChunkStore::commit(const QList<WholeFile> &files)
+void QcChunkStore::keepFiles(const QList<WholeFile> &files)
 {
-    if (m_directory.isEmpty()) {
-        return {};
+    for (const WholeFile &file : files) {
+        m_pendingFiles.insert(file.name, file.content);
     }
+}
+
+QcStatus QcChunkStore::prepareCommit()
+{
     if (const QcStatus reopened = reopenIfNeeded(); !reopened) {
-        for (const WholeFile &file : files) {
-            m_pendingFiles.insert(file.name, file.content);
-        }
         return reopened;
     }
     if (!QDir().mkpath(m_directory)) {
         return qcError(u"Cannot create %1"_s.arg(m_directory));
     }
-
-    for (const WholeFile &file : files) {
-        m_pendingFiles.insert(file.name, file.content);
-    }
     // The whole index goes with the save (decision E-946): what an earlier save wrote stays in it.
     if (generated().isUnsaved()) {
         m_pendingFiles.insert(generatedFile(), generated().bytes());
     }
-    const QcResult<Staging> staging = stageAll();
-    // The journal makes the save happen: before it, the previous save is whole.
-    const QcStatus result = staging ? writeJournal(staging->steps) : QcStatus(qcError(staging.error()));
-    if (!result) {
-        removeStaged();
-        return result;
-    }
-    const auto &written = staging->written;
-    if (const QcStatus done = runSteps(staging->steps); !done) {
-        // Some files may be renamed already: what this store knows of them is stale. The journal
-        // stays; before anything else is read or written, the save is finished from it and the
-        // indexes are read again (reopen()), as opening the world would.
-        m_needsReopen = true;
-        return done;
-    }
-    QFile::remove(absolute(journalName.toString()));
-    syncDirectory(m_directory);
+    return {};
+}
 
+void QcChunkStore::adoptStaging(const Staging &staging)
+{
+    const auto &written = staging.written;
     for (int k = 0; k < kindCount; ++k) {
         for (auto it = written[static_cast<std::size_t>(k)].cbegin(); it != written[static_cast<std::size_t>(k)].cend(); ++it) {
             if (it->isEmpty()) {
@@ -549,6 +540,71 @@ QcStatus QcChunkStore::commit(const QList<WholeFile> &files)
     }
     m_pendingFiles.clear();
     markGeneratedSaved();
+}
+
+QcStatus QcChunkStore::commit(const QList<WholeFile> &files, const QList<QcChunkStore *> &linked)
+{
+    if (m_directory.isEmpty()) {
+        return {};
+    }
+    keepFiles(files);
+
+    // After a commit broke off this store finishes its journal first: only then what the linked
+    // stores read from their folders is final.
+    const bool broke = m_needsReopen;
+    QList<QcChunkStore *> stores{this};
+    stores.append(linked);
+    for (QcChunkStore *store : std::as_const(linked)) {
+        store->m_journalStore = this;
+    }
+    for (QcChunkStore *store : std::as_const(stores)) {
+        store->m_needsReopen = store->m_needsReopen || broke;
+        if (const QcStatus prepared = store->prepareCommit(); !prepared) {
+            return prepared;
+        }
+    }
+
+    QList<Staging> stagings;
+    QList<Step> steps;
+    QcStatus result;
+    const QDir root(m_directory);
+    for (QcChunkStore *store : std::as_const(stores)) {
+        QcResult<Staging> staging = store->stageAll();
+        if (!staging) {
+            result = qcError(staging.error());
+            break;
+        }
+        for (Step step : std::as_const(staging->steps)) {
+            step.name = store == this ? step.name : root.relativeFilePath(store->absolute(step.name));
+            steps.append(step);
+        }
+        stagings.append(std::move(*staging));
+    }
+    // The journal makes the save happen: before it, the previous save is whole.
+    if (result) {
+        result = writeJournal(steps);
+    }
+    if (!result) {
+        for (const QcChunkStore *store : std::as_const(stores)) {
+            store->removeStaged();
+        }
+        return result;
+    }
+    if (const QcStatus done = runSteps(steps); !done) {
+        // Some files may be renamed already: what the stores know of them is stale. The journal
+        // stays; before anything else is read or written, the save is finished from it and the
+        // indexes are read again (reopen()), as opening the world would.
+        for (QcChunkStore *store : std::as_const(stores)) {
+            store->m_needsReopen = true;
+        }
+        return done;
+    }
+    QFile::remove(absolute(journalName.toString()));
+    syncDirectory(m_directory);
+
+    for (qsizetype i = 0; i < stores.size(); ++i) {
+        stores[i]->adoptStaging(stagings[i]);
+    }
     return {};
 }
 

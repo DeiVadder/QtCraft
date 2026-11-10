@@ -1,0 +1,159 @@
+{
+    "name": "magma_slime",
+    "sounds": {
+        "ambient": "mob.magma_slime.ambient",
+        "hurt": "mob.magma_slime.hurt",
+        "death": "mob.magma_slime.death"
+    },
+    "health": 16,
+    "width": 1.0,
+    "height": 1.0,
+    "walkSpeed": 1.2,
+    "chaseSpeed": 2.6,
+    "hostile": true,
+    "hops": true,
+    "fireImmune": true,
+    "breathesUnderWater": true,
+    "attackDamage": 4,
+    "attackRange": 1.5,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "glow": 7,
+    "splits": {
+        "into": "magma_slime_small",
+        "min": 2,
+        "max": 4
+    },
+    "spawn": {
+        "maxGroup": 4,
+        "weight": 2,
+        "biomes": [
+            "nether_wastes"
+        ],
+        "darkness": false,
+        "maxLight": 15,
+        "also": [
+            {
+                "biomes": [
+                    "basalt_deltas"
+                ],
+                "weight": 100,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
+    },
+    "model": [
+        {
+            "from": [
+                -0.5,
+                0,
+                -0.5
+            ],
+            "to": [
+                0.5,
+                0.32,
+                0.5
+            ],
+            "texture": "magma_slime_crust"
+        },
+        {
+            "from": [
+                -0.45,
+                0.32,
+                -0.45
+            ],
+            "to": [
+                0.45,
+                0.38,
+                0.45
+            ],
+            "texture": "magma_slime_glow"
+        },
+        {
+            "from": [
+                -0.46,
+                0.38,
+                -0.5
+            ],
+            "to": [
+                0.54,
+                0.7,
+                0.44
+            ],
+            "texture": "magma_slime_crust"
+        },
+        {
+            "from": [
+                -0.41,
+                0.7,
+                -0.41
+            ],
+            "to": [
+                0.41,
+                0.75,
+                0.41
+            ],
+            "texture": "magma_slime_glow"
+        },
+        {
+            "from": [
+                -0.43,
+                0.75,
+                -0.43
+            ],
+            "to": [
+                0.43,
+                0.96,
+                0.43
+            ],
+            "texture": "magma_slime_crust"
+        },
+        {
+            "from": [
+                -0.26,
+                0.48,
+                -0.512
+            ],
+            "to": [
+                -0.1,
+                0.624,
+                -0.498
+            ],
+            "texture": "magma_slime_eye"
+        },
+        {
+            "from": [
+                0.1,
+                0.48,
+                -0.512
+            ],
+            "to": [
+                0.26,
+                0.624,
+                -0.498
+            ],
+            "texture": "magma_slime_eye"
+        },
+        {
+            "from": [
+                -0.2,
+                0.14400000000000002,
+                -0.512
+            ],
+            "to": [
+                0.2,
+                0.192,
+                -0.498
+            ],
+            "texture": "magma_slime_glow"
+        }
+    ],
+    "drops": [
+        {
+            "item": "magma_cream",
+            "chance": 0.25
+        }
+    ],
+    "experience": 4
+}

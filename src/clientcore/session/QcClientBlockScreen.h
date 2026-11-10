@@ -71,7 +71,7 @@ class QcClientBlockScreenOf : public QcClientBlockScreen
 public:
     /*! Takes over \a message when it is \c Open, \c State or \c Close. Returns false for other
         messages. */
-    bool handle(const QcMessage &message);
+    virtual bool handle(const QcMessage &message);
     /*! Returns the state as the server last sent it (empty while closed). */
     const State &state() const { return m_state; }
     /*! The player closed the screen; the server gives the slots back. */

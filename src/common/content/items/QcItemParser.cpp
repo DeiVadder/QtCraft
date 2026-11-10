@@ -6,6 +6,7 @@
 #include "common/content/blockbehaviour/QcHangingParser.h"
 #include "common/content/items/QcArmourParser.h"
 #include "common/content/items/QcHoldParser.h"
+#include "common/content/items/QcPotionParser.h"
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/core/QcLogging.h"
@@ -180,9 +181,10 @@ void ItemReader::parseDispense()
 // Drinks and fish buckets (decisions E-500, E-501): "drink": {"clearsEffects": true} and "releases".
 void ItemReader::parseContainerUses()
 {
-    m_reader.nestedObject(u"drink"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+    m_reader.nestedObject(u"drink"_s, [&](const QJsonObject &json, QcJsonFieldReader &nested) {
         QcDrinkDefinition drink;
         drink.clearsEffects = nested.boolean(u"clearsEffects"_s, false);
+        drink.effects = QcPotionParser::parseEffects(json, nested, m_namespace);
         m_item.drink = drink;
     });
     if (m_item.drink && (m_item.food > 0 || m_item.armour || !m_item.placesBlock.isEmpty() || m_item.throwable || m_item.launcher)) {
@@ -262,6 +264,7 @@ void ItemReader::parseBaseFields()
     m_item.attackDamage = m_reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);
     // Whole food points; larger values (older content) fill the bar completely.
     m_item.food = static_cast<int>(std::lround(std::min(m_reader.number(u"food"_s, 0.0, 0.0, 100.0), static_cast<double>(QcItemDefinition::maxFood))));
+    m_item.saturation = m_reader.number(u"saturation"_s, QcItemDefinition::defaultSaturationModifier, 0.0, QcItemDefinition::maxSaturationModifier);
     m_item.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
     m_item.tags = QcContentFields::parseTags(m_json.value(u"tags"_s), m_namespace, m_reader);
     m_item.scoops = m_reader.boolean(u"scoops"_s, false);

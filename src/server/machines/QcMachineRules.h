@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcBlockAccess.h"
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/machines/QcBrewingRules.h"
 
 #include <QHash>
 #include <QList>
@@ -33,6 +34,8 @@ public:
 
     explicit QcMachineRules(std::shared_ptr<const QcContentRegistry> content);
 
+    /*! Returns the rules of brewing stands, the machines that follow no smelting recipes. */
+    const QcBrewingRules &brewing() const { return m_brewing; }
     /*! Returns the machine definition of \a block, or null when it is no machine. */
     const QcMachineDefinition *machineOf(QcBlockId block) const;
     /*! Returns the recipe of the category and kinds of \a machine for \a input, or null when
@@ -50,7 +53,8 @@ public:
         in [0, 1]. */
     double progressFraction(const Machine &machine, QcBlockId block) const;
 
-    /*! Advances all machines of \a entities in loaded chunks of \a world by \a dt seconds. Returns
+    /*! Advances all machines of \a entities in loaded chunks of \a world by \a dt seconds, but for
+        brewing stands (QcBrewingRules::tick). Returns
         the positions whose slots changed (comparators and hoppers look again). */
     [[nodiscard]] QList<QcBlockPos> tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt) const;
     /*! Runs \a machine of \a definition for \a dt seconds. Returns \c true when anything of it
@@ -67,6 +71,7 @@ private:
                                         const QcSmeltingRecipe *recipe) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
+    QcBrewingRules m_brewing;
     // Recipes per category and input item in registry order; a machine uses the first whose kind it
     // takes (decision E-770).
     QHash<QString, QHash<QcItemId, QList<const QcSmeltingRecipe *>>> m_recipes;

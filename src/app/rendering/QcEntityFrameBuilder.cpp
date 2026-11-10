@@ -19,6 +19,7 @@
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/world/QcLightVolume.h"
 
 #include <algorithm>
@@ -49,6 +50,20 @@ QcEntityLight glowingLight(QcEntityLight light, const QcMobDefinition &mob, doub
     const double pulse = 0.75 + 0.25 * std::sin(seconds * 2.2 + phase);
     const float glow = static_cast<float>(emission * pulse * mob.glow / static_cast<double>(QcMobDefinition::maxGlow));
     return QcEntityLight(light.sky, std::max(light.block, glow));
+}
+
+// The highest y of `column` whose block holds back sky light, -1 for none: glass and other blocks
+// with a lightOpacity of 0 let the sky through, so a creature in a glass pen is not in shade.
+int highestShading(const QcChunk &chunk, const QcContentRegistry &content, QcBlockPos column)
+{
+    int y = chunk.highestNonAir(column.localX(), column.localZ());
+    for (; y >= 0; --y) {
+        const QcBlockId block = chunk.block(column.localX(), y, column.localZ());
+        if (block != qcAirBlockId && (!content.isValidBlock(block) || content.block(block).lightOpacity > 0)) {
+            return y;
+        }
+    }
+    return y;
 }
 
 } // namespace
@@ -96,7 +111,7 @@ float QcEntityFrameBuilder::skyExposure(const QcClientWorld &world, QcBlockPos p
         for (int dz = -1; dz <= 1; ++dz) {
             const QcBlockPos column = pos.offset(dx, 0, dz);
             const std::shared_ptr<const QcChunk> chunk = world.chunk(column.chunk());
-            open += !chunk || chunk->highestNonAir(column.localX(), column.localZ()) < pos.y ? 1 : 0;
+            open += !chunk || highestShading(*chunk, world.content(), column) < pos.y ? 1 : 0;
         }
     }
     return covered + (1.0f - covered) * static_cast<float>(open) / 9.0f;
@@ -190,12 +205,17 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     }
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held, pose.drawProgress);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
-    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
+    const bool invisible = (entity.flags & QcMsg::Invisible) != 0;
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour, 0, invisible}, body, placement, frame.uv);
 }
 
 void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
                                              const EntityFrame &frame, const QcEntityPose &pose)
 {
+    if ((entity.flags & QcMsg::Invisible) != 0) {
+        return;
+    }
+
     // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
     const QcMobDefinition *creature = entity.creature(frame.content);
     const bool ownParts = creature && !creature->parts.isEmpty();
@@ -207,7 +227,8 @@ void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientE
     const bool pulses = ownParts && creature->pulse;
     const QcBoxLegs *legs = !sitting && !pulses && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
     const QcSwimmerPose::Look swum = pulses ? QcSwimmerPose::of(*creature, entity, frame.alpha, frame.seconds, m_forcedPose.pulse()) : QcSwimmerPose::Look{};
-    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread});
+    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, (entity.flags & QcMsg::Saddled) != 0, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread, frame.seconds,
+                                                                    (entity.flags & QcMsg::Armoured) != 0});
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
@@ -340,6 +361,27 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
     }
 }
 
+void QcEntityFrameBuilder::appendPortalSparkles(QcEntityMesh &mesh, const EntityFrame &frame)
+{
+    const QcClientSession &session = *m_parts.session;
+    m_sparkles.refresh(frame.world, session.playerMotion().position, session.tickCount());
+    for (const QcBlockPos &pos : m_sparkles.blocks()) {
+        const std::optional<QcBlockId> block = frame.world.blockAt(pos);
+        if (!block || !frame.content.isValidBlock(*block)) {
+            continue;
+        }
+        // The specks glow in the portal's own texture.
+        QcEntityMesher::ItemLook speck;
+        speck.cube = true;
+        speck.faces.fill(frame.content.block(*block).texture(QcBlockFace::Up));
+        constexpr QcEntityLight light{0.0f, 1.0f};
+        const QList<QcEffectPuff> specks = QcPortalSparkles::specksOf(pos, frame.seconds);
+        for (const QcEffectPuff &puff : specks) {
+            appendPuff(mesh, speck, puff, light, frame.uv);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendEnchantingTables(QcEntityMesh &mesh, const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes)
 {
     // Book and runes stay within this distance of the table's middle (the shelves are two blocks away).
@@ -419,7 +461,8 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeLift = cape.lift;
         body.capeSway = cape.sway;
     }
-    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
+    const bool invisible = QcEffectRules::invisible(frame.content, session.vitals().effects());
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour, 0, invisible}, body,
                                 {feet, yaw, entityLight(frame.world, feet), pose.hurtProgress >= 0.0}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
@@ -549,6 +592,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendSpawners(*mesh, frame);
     appendSigns(*mesh, frame);
     appendCampfires(*mesh, frame);
+    appendPortalSparkles(*mesh, frame);
     appendEnchantingTables(*mesh, frame, planes);
     appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     appendInk(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
@@ -560,6 +604,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
 
     m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
     m_framedMapMesh = buildFramedMaps(frame);
+    m_beams = buildBeams(frame, planes);
     return mesh;
 }
 

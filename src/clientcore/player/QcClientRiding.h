@@ -34,8 +34,9 @@ public:
         the boat's). Returns true when the player got in or out. */
     bool noteVehicle(quint32 vehicle, bool boat);
     /*! Returns the shown player on the seat of the cart as the entity mirror \a entities shows
-        it this tick; none while the cart has not arrived yet (the player stays where it is). */
-    [[nodiscard]] std::optional<QcEntityMotion> seated(const QcClientEntities &entities) const;
+        it this tick; none while the cart has not arrived yet (the player stays where it is). On
+        a creature \a content tells how high its seat is. */
+    [[nodiscard]] std::optional<QcEntityMotion> seated(const QcClientEntities &entities, const QcContentRegistry &content) const;
 
 private:
     quint32 m_vehicle = 0;

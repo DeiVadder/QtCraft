@@ -1,0 +1,10 @@
+{
+    "name": "nether_quartz",
+    "dimension": "nether",
+    "replaces": "netherrack",
+    "block": "nether_quartz_ore",
+    "minY": 10,
+    "maxY": 117,
+    "veinsPerChunk": 16,
+    "veinSize": 12
+}

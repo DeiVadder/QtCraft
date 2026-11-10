@@ -130,7 +130,7 @@ private slots:
         QVERIFY(!QcContentParser::parseItem(QJsonDocument::fromJson(text).object(), u"m"_s).has_value());
     }
 
-    void baseGameHasFourSetsOfFourPieces()
+    void baseGameHasFiveSetsOfFourPieces()
     {
         QHash<QString, QList<QcEquipmentSlot>> sets;
         for (const QcItemDefinition &definition : m_content->items()) {
@@ -148,8 +148,8 @@ private slots:
             }
         }
 
-        QCOMPARE(sets.size(), 4);
-        for (const QString &set : {u"qtcraft:leather"_s, u"qtcraft:golden"_s, u"qtcraft:iron"_s, u"qtcraft:diamond"_s}) {
+        QCOMPARE(sets.size(), 5);
+        for (const QString &set : {u"qtcraft:leather"_s, u"qtcraft:golden"_s, u"qtcraft:iron"_s, u"qtcraft:diamond"_s, u"qtcraft:netherite"_s}) {
             QCOMPARE(sets.value(set).size(), 4);
             for (const QcEquipmentSlot slot : {QcEquipmentSlot::Head, QcEquipmentSlot::Chest, QcEquipmentSlot::Legs, QcEquipmentSlot::Feet}) {
                 QVERIFY2(sets.value(set).contains(slot), qPrintable(set));
@@ -245,7 +245,7 @@ private slots:
         QByteArray bytes;
         {
             QDataStream out(&bytes, QIODevice::WriteOnly);
-            out << true << static_cast<quint8>(QcEquipmentSlot::Chest) << qint32{6} << u"iron"_s << quint32{1} << static_cast<quint32>(0xFFFFFFF0u);
+            out << true << static_cast<quint8>(QcEquipmentSlot::Chest) << qint32{6} << u"iron"_s << 0.0 << 0.0 << quint32{1} << static_cast<quint32>(0xFFFFFFF0u);
         }
         QDataStream in(bytes);
         QVERIFY(!QcArmourSerializer::read(in));
@@ -265,13 +265,15 @@ private slots:
 
     void pointsReduceDamageUpToTheCap()
     {
-        QCOMPARE(QcArmour::reducedDamage(10.0, 0), 10.0);
-        QCOMPARE(QcArmour::reducedDamage(10.0, 5), 8.0);
-        QCOMPARE(QcArmour::reducedDamage(10.0, 15), 4.0);
-        QCOMPARE(QcArmour::reducedDamage(10.0, 20), 2.0);
-        // More than 20 points protect no better.
-        QCOMPARE(QcArmour::reducedDamage(10.0, 35), 2.0);
-        QCOMPARE(QcArmour::reducedDamage(10.0, -3), 10.0);
+        QCOMPARE(QcArmour::reducedDamage(10.0, 0, 0.0), 10.0);
+        // A hit pierces damage / 2 points without toughness, down to a fifth of them (E-1116).
+        QCOMPARE(QcArmour::reducedDamage(10.0, 5, 0.0), 9.6);
+        QCOMPARE(QcArmour::reducedDamage(10.0, 15, 0.0), 6.0);
+        QCOMPARE(QcArmour::reducedDamage(10.0, 20, 0.0), 4.0);
+        // More than 20 effective points protect no better.
+        QCOMPARE(QcArmour::reducedDamage(10.0, 35, 0.0), 2.0);
+        QCOMPARE(QcArmour::reducedDamage(1.0, 30, 0.0), 0.2);
+        QCOMPARE(QcArmour::reducedDamage(10.0, -3, 0.0), 10.0);
     }
 
     void hitsWearEveryPieceAndBreakIt()

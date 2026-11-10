@@ -1,0 +1,6 @@
+{
+    "name": "corrupt_healing",
+    "base": "healing",
+    "ingredient": "fermented_spider_eye",
+    "result": "harming"
+}

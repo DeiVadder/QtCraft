@@ -1,0 +1,28 @@
+{
+    "name": "netherite_leggings",
+    "texture": "netherite_leggings",
+    "maxStack": 1,
+    "durability": 555,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "armour": {
+        "slot": "legs",
+        "points": 6,
+        "set": "netherite",
+        "layers": [
+            {
+                "covers": [
+                    "legs"
+                ],
+                "texture": "netherite_armour",
+                "inflate": 0.028
+            }
+        ],
+        "toughness": 3.0,
+        "knockbackResistance": 0.1
+    },
+    "dispense": "equip",
+    "tags": [
+        "fire_resistant"
+    ]
+}

@@ -62,5 +62,9 @@
     "+ %n more": [
         "+ %n more",
         "+ %n more"
+    ],
+    "The question comes back in %n world(s).": [
+        "The question comes back in %n world.",
+        "The question comes back in %n worlds."
     ]
 }

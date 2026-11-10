@@ -29,6 +29,9 @@ struct Traits
     /*! Chance in 100 that a block update of it lights a flammable neighbourhood (lava, decision
         E-393). */
     quint8 sparks = 0;
+    /*! The fire block that fire lit right above it becomes ("fireAbove", soul sand: soul fire,
+        decision E-981); none: the fire that was lit. */
+    std::optional<QcBlockId> fireAbove;
 
     /*! Returns whether fire can catch on or burn it. */
     bool flammable() const { return ignite > 0 || burn > 0; }
@@ -48,8 +51,15 @@ public:
     }
     /*! Returns the fire block a spark lights (QcContentRegistry::defaultFire). */
     std::optional<QcBlockId> defaultFire() const { return m_defaultFire; }
+    /*! Returns the fire block that \a fire lit at \a pos of \a world becomes: the
+        \c {fireAbove} of the block below, else \a fire itself (decision E-981). */
+    QcBlockId fireAt(const QcBlockAccess &world, QcBlockPos pos, QcBlockId fire) const;
 
 private:
+    /*! Returns the fire block named \a name of \a content; none for an empty or unknown name
+        or a block that is no fire. */
+    static std::optional<QcBlockId> fireBlock(const QcContentRegistry &content, const QString &name);
+
     std::vector<Traits> m_traits;
     std::optional<QcBlockId> m_defaultFire;
 };

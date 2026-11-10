@@ -12,7 +12,8 @@ import QtCraft
 // in the accent; the pad moves between them and confirms, the arrow keys choose the next one.
 // SettingChoice puts them into a setting row; the character screen's preview uses them alone.
 // `model` lists { text, value }; `activated(value)` follows a choice by the player; `label` names
-// the choice for screen readers. With room, all segments are as wide as the widest text needs (in
+// the choice for screen readers; a choice with an objectName names each segment
+// "<objectName>_<value>". With room, all segments are as wide as the widest text needs (in
 // bold, as when chosen), so a short choice does not look less important than a long one; with
 // less room they shrink towards their own texts' widths, the short ones first (decision E-931).
 RowLayout {
@@ -65,6 +66,8 @@ RowLayout {
             required property var modelData
             required property int index
 
+            // "<choice's name>_<value>" for the test hooks (click:), when the choice has a name.
+            objectName: choice.objectName.length > 0 ? choice.objectName + "_" + modelData.value : ""
             Layout.fillWidth: true
             Layout.preferredWidth: choice.segmentWidth
             Layout.minimumWidth: implicitWidth

@@ -150,6 +150,13 @@ void QcWorldView::setFramedMaps(std::shared_ptr<const QcEntityMesh> mesh, std::s
     requestFrame();
 }
 
+void QcWorldView::setBeams(std::shared_ptr<const QcEntityMesh> core, std::shared_ptr<const QcEntityMesh> glow)
+{
+    m_frame.beamMesh = std::move(core);
+    m_frame.beamGlowMesh = std::move(glow);
+    requestFrame();
+}
+
 void QcWorldView::setHandMesh(std::shared_ptr<const QcEntityMesh> mesh)
 {
     m_frame.handMesh = std::move(mesh);
@@ -162,10 +169,9 @@ void QcWorldView::setSky(const QcSkyState &sky)
     requestFrame();
 }
 
-void QcWorldView::setFogRange(float start, float end)
+void QcWorldView::setFogDistance(float distance)
 {
-    m_frame.fogStart = start;
-    m_frame.fogEnd = end;
+    m_frame.fogEnd = distance;
     requestFrame();
 }
 

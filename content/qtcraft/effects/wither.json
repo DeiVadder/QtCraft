@@ -1,0 +1,8 @@
+{
+    "name": "wither",
+    "icon": "coal",
+    "colour": "#352a27",
+    "tintsHearts": true,
+    "damage": 1,
+    "periodTicks": 40
+}

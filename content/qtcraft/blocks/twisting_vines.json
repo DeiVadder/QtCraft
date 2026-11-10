@@ -1,0 +1,35 @@
+{
+    "name": "twisting_vines",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "climbable": true,
+    "ground": [
+        "twisting_vines",
+        "crimson_nylium",
+        "warped_nylium",
+        "netherrack",
+        "soul_soil",
+        "soul_sand",
+        "basalt",
+        "blackstone",
+        "nether_wart_block",
+        "warped_wart_block"
+    ],
+    "drops": [
+        {
+            "item": "twisting_vines",
+            "chance": 0.33
+        }
+    ],
+    "growth": {
+        "maxHeight": 26,
+        "averageSeconds": 1800,
+        "boneMeal": true
+    },
+    "textures": {
+        "all": "twisting_vines"
+    }
+}

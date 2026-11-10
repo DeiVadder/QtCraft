@@ -1,0 +1,8 @@
+{
+    "name": "chiseled_nether_bricks_from_nether_bricks",
+    "input": "nether_bricks",
+    "result": {
+        "item": "chiseled_nether_bricks",
+        "count": 1
+    }
+}

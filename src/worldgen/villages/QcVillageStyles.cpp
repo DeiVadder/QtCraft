@@ -4,6 +4,7 @@
 #include "worldgen/villages/QcVillageStyles.h"
 
 #include "common/content/villages/QcVillageLayoutParser.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "worldgen/villages/QcVillageFields.h"
 #include "worldgen/villages/QcVillagePlanner.h"
 
@@ -11,11 +12,18 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// The structure definition with the style's block swaps: "qtcraft:oak_planks[axis=x]" becomes
-// "qtcraft:spruce_planks[axis=x]" when the palette swaps oak planks for spruce planks.
-QcStructureDefinition swapped(const QcStructureDefinition &definition, const QHash<QString, QString> &palette)
+// The structure definition with the style's swaps: "qtcraft:oak_planks[axis=x]" becomes
+// "qtcraft:spruce_planks[axis=x]" when the palette swaps oak planks for spruce planks, and its
+// chests take the style's loot tables.
+QcStructureDefinition swapped(const QcStructureDefinition &definition, const QcVillageStyleDefinition &style)
 {
+    const QHash<QString, QString> &palette = style.palette;
     QcStructureDefinition result = definition;
+    for (QcStructureDefinition::VersionChange &change : result.generatorChanges) {
+        for (QcStructureDefinition::Loot &loot : change.loot) {
+            loot.table = style.loot.value(loot.table, loot.table);
+        }
+    }
     for (QString &state : result.palette) {
         const qsizetype bracket = state.indexOf(u'[');
         const QString block = bracket < 0 ? state : state.left(bracket);
@@ -315,7 +323,7 @@ std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QStrin
                          u"saplings, which villages leave out"_s.arg(style.name, name));
     }
 
-    QcPieceVariation::Resolved variation = QcPieceVariation::resolve(swapped(*definition, style.palette), content);
+    QcPieceVariation::Resolved variation = QcPieceVariation::resolve(swapped(*definition, style), content);
     m_warnings.append(QcPieceVariation::warningsOf(variation));
     if (!variation) {
         m_warnings.append(u"village style '%1': %2"_s.arg(style.name, variation.error().error));
@@ -326,7 +334,9 @@ std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QStrin
     Spots spots = spotsOf(*blueprint.structure());
     blueprint.spots = std::move(spots.spots);
     blueprint.bell = spots.bell;
-    blueprint.fields = QcVillageFields::hasCrops(*blueprint.variation.build(blueprint.variation.everything()), content);
+    // As the oldest version builds it: styles are read before the generator knows its version, and
+    // what a later version swaps must not change the crop draws of a frozen one.
+    blueprint.fields = QcVillageFields::hasCrops(*blueprint.variation.build(blueprint.variation.everything(QcGeneratorVersion::oldest)), content);
     return blueprint;
 }
 

@@ -1,0 +1,8 @@
+{
+    "name": "magma_slime_eye",
+    "pattern": "speckle",
+    "primary": "#ffe68a",
+    "secondary": "#ffb030",
+    "variation": 0.05,
+    "seed": 7203
+}

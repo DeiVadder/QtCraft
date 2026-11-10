@@ -1,0 +1,68 @@
+{
+    "name": "block.ancient_debris.break",
+    "volume": 0.85,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1240,
+            "gain": 0.04
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1054,
+            "resonance": 3.0,
+            "lowpass": 3162,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 248,
+            "resonance": 2.7,
+            "lowpass": 744,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 68,
+            "resonance": 1.8,
+            "lowpass": 205,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "start": 0.06,
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1612,
+            "resonance": 4.5,
+            "lowpass": 4836,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2600,
+            "resonance": 12,
+            "lowpass": 7800,
+            "gain": 0.3
+        }
+    ]
+}

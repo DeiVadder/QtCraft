@@ -1,4 +1,5 @@
 {
     "name": "cooked_mutton",
-    "food": 6
+    "food": 6,
+    "saturation": 0.8
 }

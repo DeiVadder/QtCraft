@@ -5,6 +5,7 @@
 
 #include "common/blockrules/QcRails.h"
 #include "common/gameplay/QcAnvil.h"
+#include "common/gameplay/QcBeacon.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcMobFamilies.h"
 #include "server/animals/QcPetCare.h"
@@ -51,11 +52,24 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
     return stacks;
 }
 
-// A chest gets the stacks in its slots, a machine as input, fuel and output, a campfire one item per
+// A chest gets the stacks in its slots, a machine as input, fuel and output, a beacon its effects, a campfire one item per
 // place to cook (decision E-772).
 void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
 {
     const QcBlockId block = blockAt(state, contents.at);
+    // A beacon takes the primary and secondary effect (decision E-1142).
+    if (QcBeacons::Entry *beacon = state.world().beacons().at(contents.at)) {
+        const QString primary = contents.effects.value(0);
+        const QString secondary = contents.effects.value(1);
+        const bool known = (primary.isEmpty() || state.content().effect(primary)) && (secondary.isEmpty() || state.content().effect(secondary));
+        if (!primary.isEmpty() && (!known || !QcBeacon::mayChoose(QcBeacon::maxLevel, primary, secondary))) {
+            qCWarning(lcServer) << "World setup: beacon at" << contents.at.x << contents.at.y << contents.at.z << "keeps no effects: a beacon cannot give" << primary << secondary;
+            return;
+        }
+        beacon->primary = primary;
+        beacon->secondary = secondary;
+        return;
+    }
     const QList<QcItemStack> stacks = stacksOf(state, contents.items);
     if (const int places = state.world().campfires().slotsOf(block); places > 0) {
         bool room = true;
@@ -78,8 +92,8 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
             container->stacks[i] = stacks[i];
         }
     } else if (QcBlockEntities::Machine *machine = entities.machine(contents.at)) {
-        for (qsizetype i = 0; i < stacks.size() && i < QcBlockEntities::Machine::slotCount; ++i) {
-            machine->stacks[static_cast<std::size_t>(i)] = stacks[i];
+        for (qsizetype i = 0; i < stacks.size() && i < machine->stacks.size(); ++i) {
+            machine->stacks[i] = stacks[i];
         }
     }
     if (!contents.name.isEmpty()) {
@@ -332,6 +346,12 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     state.info().explosionBlockDamage = setup.explosionBlockDamage;
     state.info().adventure.merge(setup.adventure);
 
+    applyContents(state, updates, setup);
+    state.info().setupDone = true;
+}
+
+void applyContents(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup &setup)
+{
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         placeMob(state, mob);
     }
@@ -369,7 +389,6 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         state.circuits().wake(state.world(), pos);
     }
     updates.setCommandMode(false);
-    state.info().setupDone = true;
 }
 
 } // namespace QcServerSetup

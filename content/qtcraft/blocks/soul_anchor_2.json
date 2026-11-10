@@ -1,0 +1,29 @@
+{
+    "name": "soul_anchor_2",
+    "sound": "stone",
+    "hardness": 25.0,
+    "blastResistance": 1200.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "light": 7,
+    "textures": {
+        "all": "soul_anchor_side_2",
+        "top": "soul_anchor_top_lit",
+        "bottom": "obsidian"
+    },
+    "anchor": {
+        "charge": 2,
+        "fuel": "glowstone",
+        "charged": "soul_anchor_3",
+        "spent": "soul_anchor_1"
+    },
+    "drops": [
+        {
+            "item": "soul_anchor"
+        }
+    ],
+    "item": false,
+    "signal": {
+        "movable": "immovable"
+    }
+}

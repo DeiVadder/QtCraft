@@ -1,0 +1,21 @@
+{
+    "name": "basalt",
+    "sound": "basalt",
+    "hardness": 1.25,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "blastResistance": 4.2,
+    "textures": {
+        "top": "basalt_top",
+        "bottom": "basalt_top",
+        "side": "basalt_side"
+    }
+}

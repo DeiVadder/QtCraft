@@ -1,0 +1,7 @@
+{
+    "name": "netherite_helmet",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_helmet",
+    "addition": "netherite_ingot",
+    "result": "netherite_helmet"
+}

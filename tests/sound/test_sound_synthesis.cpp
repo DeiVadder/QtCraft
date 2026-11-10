@@ -1,14 +1,18 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "clientcore/sound/QcMusicArrangement.h"
 #include "clientcore/sound/QcMusicComposer.h"
+#include "clientcore/sound/QcMusicReverb.h"
 #include "clientcore/sound/QcSoundBank.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
+#include "sound/QcMusicTestUtil.h"
 
 #include <QSet>
 #include <QTest>
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -304,42 +308,50 @@ private slots:
         QVERIFY(bank.totalSamples() <= QcSoundBank::maxSamples);
     }
 
-    void musicIsComposedDeterministicallyOnAPentatonicScale()
+    void musicIsComposedDeterministicallyOnItsScale()
     {
-        const QcMusicComposer::Piece piece = QcMusicComposer::compose(42);
-        const QcMusicComposer::Piece again = QcMusicComposer::compose(42);
+        const QcMusicArrangement &day = *QcMusicArrangement::find(u"day"_s);
+        const QcMusicStyle style = day.styleFor({});
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(42, style, day);
+        const QcMusicComposer::Piece again = QcMusicComposer::compose(42, style, day);
         QVERIFY(piece.notes == again.notes);
         QCOMPARE(piece.root, again.root);
-        QVERIFY(QcMusicComposer::compose(43).notes != piece.notes);
+        QCOMPARE(piece.seconds, again.seconds);
+        QVERIFY(QcMusicComposer::compose(43, style, day).notes != piece.notes);
 
-        QVERIFY(piece.beatsPerMinute >= 66.0 && piece.beatsPerMinute <= 90.0);
-        // Four phrases of two bars plus one closing bar: 36 beats.
-        QCOMPARE(piece.seconds, 36.0 * 60.0 / piece.beatsPerMinute);
+        QVERIFY(piece.beatsPerMinute >= style.slowestTempo && piece.beatsPerMinute <= style.fastestTempo);
+        // Whole cycles of four chords, as many as fit the drawn length, and the reverb's tail.
+        const double music = piece.seconds - QcMusicComposer::tailSeconds(piece);
+        const double cycle = 4.0 * day.barsPerChord * QcMusicComposer::beatsPerBar * 60.0 / piece.beatsPerMinute;
+        QVERIFY2(music > day.shortestSeconds - cycle && music <= day.longestSeconds + 1e-9, qPrintable(QString::number(music)));
+        QCOMPARE(QcMusicComposer::tailSeconds(piece), day.reverbSeconds);
 
-        const QList<int> scale = piece.minor ? QList<int>{0, 3, 5, 7, 10} : QList<int>{0, 2, 4, 7, 9};
+        const std::array<int, 7> steps = QcMusicComposer::scale(piece.minor);
         QList<QcMusicComposer::Note> lead;
         int bass = 0;
         for (const QcMusicComposer::Note &note : piece.notes) {
-            QVERIFY2(scale.contains(((note.pitch - piece.root) % 12 + 12) % 12), qPrintable(QString::number(note.pitch)));
-            QVERIFY(note.start >= 0.0 && note.duration > 0.0 && note.start + note.duration <= piece.seconds + 1e-9);
+            const int step = ((note.pitch - piece.root) % 12 + 12) % 12;
+            QVERIFY2(std::ranges::find(steps, step) != steps.end(), qPrintable(QString::number(note.pitch)));
+            QVERIFY(note.start >= 0.0 && note.duration > 0.0 && note.start + note.duration <= music + 1e-9);
             QVERIFY(note.velocity > 0.0f && note.velocity <= 1.0f);
             if (note.voice == QcMusicComposer::Voice::Lead) {
                 lead.append(note);
             }
             bass += note.voice == QcMusicComposer::Voice::Bass ? 1 : 0;
         }
-        QCOMPARE(bass, 9);
+        // One bass note per chord after the swelling start.
+        QVERIFY(bass >= static_cast<int>(music / cycle) * 4 - 4);
 
         std::ranges::sort(lead, {}, &QcMusicComposer::Note::start);
         for (qsizetype i = 1; i < lead.size(); ++i) {
             QVERIFY(lead[i].start >= lead[i - 1].start + lead[i - 1].duration - 1e-9);
         }
 
-        // The melody ends on the root, ringing until the end of the piece.
+        // The melody ends on the root, ringing until the end of the music.
         QCOMPARE((lead.constLast().pitch - piece.root) % 12, 0);
-        QCOMPARE(lead.constLast().start + lead.constLast().duration, piece.seconds);
+        QCOMPARE(lead.constLast().start + lead.constLast().duration, music);
 
-        // Seeds choose the key, so both scales appear.
+        // Seeds choose the key where the style leaves it open, so both scales appear.
         QSet<bool> modes;
         for (quint64 seed = 1; seed <= 20; ++seed) {
             modes.insert(QcMusicComposer::compose(seed).minor);
@@ -349,22 +361,95 @@ private slots:
 
     void musicRendersWithoutClipping()
     {
-        const QcMusicComposer::Piece piece = QcMusicComposer::compose(7);
+        const QcMusicArrangement &cave = *QcMusicArrangement::find(u"cave"_s);
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(7, cave.styleFor({}), cave);
         const int musicRate = 22050;
         const QcSampleBuffer buffer = QcMusicComposer::render(piece, musicRate);
         QCOMPARE(buffer.sampleRate, musicRate);
 
-        // The last notes ring on for at most half a second.
-        QVERIFY(double(buffer.samples.size()) >= piece.seconds * musicRate);
-        QVERIFY(double(buffer.samples.size()) <= (piece.seconds + 0.5) * musicRate + 1.0);
+        // The buffer holds the music and the reverb's tail, no more.
+        QCOMPARE(static_cast<double>(buffer.samples.size()), std::round(piece.seconds * musicRate));
         QVERIFY(std::abs(peakOf(buffer.samples) - QcSoundSynthesizer::peak) < 1e-6f);
         QVERIFY(std::ranges::all_of(buffer.samples, [](float sample) { return std::isfinite(sample); }));
 
-        // Music, not silence: every second has sound.
-        for (int second = 0; second + 1 < static_cast<int>(piece.seconds); ++second) {
-            QVERIFY2(rms(buffer.samples, std::size_t(second * musicRate), std::size_t((second + 1) * musicRate)) > 0.01,
+        // Music, not silence: every second has sound, the slow swell at the start included, up to
+        // the reverb's tail.
+        for (int second = 0; second + 1 < static_cast<int>(piece.seconds - QcMusicComposer::tailSeconds(piece)); ++second) {
+            const auto from = static_cast<std::size_t>(second) * static_cast<std::size_t>(musicRate);
+            QVERIFY2(rms(buffer.samples, from, from + static_cast<std::size_t>(musicRate)) > 0.002,
                      qPrintable(QString::number(second)));
         }
+    }
+
+    // The reverb keeps the dry sound and adds a tail that dies away in about its reverb time.
+    void reverbDecaysInItsTime()
+    {
+        const int rate = 22050;
+        std::vector<float> samples(static_cast<std::size_t>(4 * rate), 0.0f);
+        samples[0] = 1.0f;
+        samples = QcMusicReverb(1.0, 0.5, rate).processed(std::move(samples));
+        QCOMPARE(samples[0], 1.0f);
+        const auto oneSecond = static_cast<std::size_t>(rate);
+        const double early = rms(samples, oneSecond / 20, oneSecond / 10);
+        const double late = rms(samples, oneSecond, oneSecond + oneSecond / 20);
+        QVERIFY(early > 0.0);
+        // One second later: about 60 dB down (45 to 75 for the damping in the combs' loops).
+        const double drop = 20.0 * std::log10(early / late);
+        QVERIFY2(drop > 45.0 && drop < 75.0, qPrintable(QString::number(drop)));
+    }
+
+    // The piece's reverb is applied: after the music its tail still sounds, far louder than the
+    // release of the same piece without reverb.
+    void composedMusicRingsInItsReverb()
+    {
+        const QcMusicArrangement arrangement = QcMusicTestUtil::shortArrangement();
+        const QcMusicComposer::Piece wet = QcMusicComposer::compose(5, arrangement.styleFor({}), arrangement);
+        QcMusicComposer::Piece dry = wet;
+        dry.reverbMix = 0.0;
+        const int rate = 22050;
+        const QcSampleBuffer wetBuffer = QcMusicComposer::render(wet, rate);
+        const QcSampleBuffer dryBuffer = QcMusicComposer::render(dry, rate);
+        QCOMPARE(wetBuffer.samples.size(), dryBuffer.samples.size());
+
+        // The middle of the tail, after every note and its release have ended, against the music's
+        // last seconds: the reverb rings on there, about 30 dB down by the middle of its time.
+        const auto end = wetBuffer.samples.size();
+        const auto tail = static_cast<std::size_t>(QcMusicComposer::tailSeconds(wet) * rate);
+        const auto from = end - tail / 2;
+        const auto to = from + tail / 4;
+        const double wetTail = rms(wetBuffer.samples, from, to);
+        const double dryTail = rms(dryBuffer.samples, from, to);
+        const double music = rms(wetBuffer.samples, end - tail - static_cast<std::size_t>(2 * rate), end - tail);
+        QVERIFY2(wetTail > music * 1e-3, qPrintable(u"%1 %2"_s.arg(wetTail).arg(music)));
+        QVERIFY2(wetTail > 3.0 * dryTail, qPrintable(u"%1 %2"_s.arg(wetTail).arg(dryTail)));
+    }
+
+    // Each place's layout reaches the piece: one bass note per chord, so the bass notes per
+    // minute follow the place's bars per chord and the drawn tempo.
+    void composedPiecesFollowTheirPlace()
+    {
+        for (const QcMusicArrangement &arrangement : QcMusicArrangement::all()) {
+            const QcMusicComposer::Piece piece = QcMusicComposer::compose(11, arrangement.styleFor({}), arrangement);
+            const double music = piece.seconds - QcMusicComposer::tailSeconds(piece);
+            const auto basses = std::ranges::count_if(piece.notes, [](const auto &note) { return note.voice == QcMusicComposer::Voice::Bass; });
+            const double expected = piece.beatsPerMinute / (QcMusicComposer::beatsPerBar * arrangement.barsPerChord);
+            // The bass waits for the swelling start, so a few chords there have none.
+            const double measured = static_cast<double>(basses) / (music - arrangement.fadeInSeconds) * 60.0;
+            QVERIFY2(std::abs(measured - expected) < 0.25 * expected, qPrintable(u"%1: %2 %3"_s.arg(arrangement.place).arg(measured).arg(expected)));
+            QCOMPARE(piece.reverbSeconds, arrangement.reverbSeconds);
+            QCOMPARE(piece.padLowpass, arrangement.padLowpass);
+        }
+    }
+
+    // A set stop flag ends rendering early with an empty buffer.
+    void renderingStopsWhenAsked()
+    {
+        const QcMusicArrangement arrangement = QcMusicTestUtil::shortArrangement();
+        const QcMusicComposer::Piece piece = QcMusicComposer::compose(3, arrangement.styleFor({}), arrangement);
+        const std::atomic<bool> stop{true};
+        QVERIFY(QcMusicComposer::render(piece, 22050, &stop).samples.empty());
+        const std::atomic<bool> go{false};
+        QVERIFY(!QcMusicComposer::render(piece, 22050, &go).samples.empty());
     }
 };
 

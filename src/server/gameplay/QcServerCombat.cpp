@@ -3,6 +3,8 @@
 
 #include "server/gameplay/QcServerCombat.h"
 
+#include "common/content/registry/QcContentLoot.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
@@ -54,7 +56,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     const QcItemDefinition *held = m_state.heldItem(client);
     // Sharpness adds to the weapon's damage (decision E-864).
     const int sharpness = QcEnchanting::levelOf(m_state.content(), client.inventory.selectedStack(), QcEnchantmentEffect::Sharpness);
-    const double damage = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
+    const double weapon = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
+    // Strength and weakness change the blow (decision E-992).
+    const double damage = std::max(0.0, weapon + QcEffectRules::attackBonus(m_state.content(), client.effects.all()));
     // A sprint attack pushes harder, as in the reference (decision E-971).
     const double knockback = client.sprinting ? sprintKnockback : 1.0;
     hurtCreature(m_state, m_sounds, {.creature = entityId, .damage = damage, .from = client.motion.position, .attacker = client.id, .knockback = knockback});
@@ -83,7 +87,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
 
     // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
     // are stronger: those deal the difference, silently (decision E-429).
-    const QcHurtWindow::Take take = mob->hurt.wouldTake(blow.damage);
+    const QcHurtWindow::Take take = mob->wouldTake(blow.damage);
     if (take != QcHurtWindow::Take::Ignored) {
         const auto attacker = std::ranges::find_if(state.clients(), [&](const auto &client) { return client->id == blow.attacker; });
         const QString name = attacker != state.clients().end() ? (*attacker)->name : QString();
@@ -101,7 +105,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     if (drops) {
         // Like block drops (decision E-028) the loot falls where the mob died; only a grown
         // creature a player killed gives experience (decisions E-398, E-399).
-        dropLoot(state, *drops, lootPosition);
+        dropLoot(state, *drops, lootPosition, blow.attacker != 0);
         if (!young && blow.attacker != 0) {
             QcServerExperience::drop(state, QcServerExperience::roll(state, definition.experience), lootPosition);
         }
@@ -137,7 +141,7 @@ void QcServerCombat::woundCreature(QcServerState &state, QcServerSounds &sounds,
     // still invulnerable from the last, decision E-429), the death sound and the loot when it dies.
     const QcMobDefinition &definition = state.content().mobs()[mob->type];
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-    const bool fresh = mob->hurt.wouldTake(amount) == QcHurtWindow::Take::Fresh;
+    const bool fresh = mob->wouldTake(amount) == QcHurtWindow::Take::Fresh;
     if (const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().wound(id, amount)) {
         sounds.play(definition.deathSound, centre);
         state.entities().noteDeath(id);
@@ -147,16 +151,25 @@ void QcServerCombat::woundCreature(QcServerState &state, QcServerSounds &sounds,
     }
 }
 
-void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)
+void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position, bool byPlayer)
 {
     for (const QcItemDrop &drop : drops) {
-        if (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance) {
+        if ((drop.byPlayer && !byPlayer) || (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance)) {
+            continue;
+        }
+        // A drop with a table gives one draw of the loot table (decision E-1106).
+        if (!drop.table.isEmpty()) {
+            const QList<QcItemStack> loot = QcContentLoot::draw(state.content(), drop.table, state.random().generate64());
+            for (const QcItemStack &stack : loot) {
+                state.entities().items().spawnScattered(stack, position, state.entities().newId());
+            }
             continue;
         }
         // A drop with a maxCount gives between count and maxCount items, chosen evenly.
         const int extra = drop.mostCount() > drop.count
             ? static_cast<int>(state.random().bounded(static_cast<quint32>(drop.mostCount() - drop.count + 1))) : 0;
-        if (const std::optional<QcItemId> item = state.content().itemId(drop.item)) {
+        const std::optional<QcItemId> item = state.content().itemId(drop.item);
+        if (item && drop.count + extra > 0) {
             state.entities().items().spawnScattered({*item, drop.count + extra, 0}, position, state.entities().newId());
         }
     }

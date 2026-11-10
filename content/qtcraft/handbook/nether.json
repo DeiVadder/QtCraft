@@ -1,0 +1,30 @@
+{
+    "name": "nether",
+    "order": 90,
+    "icon": "glowstone",
+    "sections": [
+        "landscape",
+        "biomes",
+        "finds",
+        "ruins",
+        "fortress",
+        "bastion"
+    ],
+    "related": [
+        "netherrack",
+        "lava",
+        "soul_sand",
+        "soul_soil",
+        "gravel",
+        "glowstone",
+        "nether_quartz_ore",
+        "nether_gold_ore",
+        "fire",
+        "soul_fire",
+        "obsidian",
+        "crying_obsidian",
+        "nether_bricks",
+        "blackstone",
+        "gilded_blackstone"
+    ]
+}

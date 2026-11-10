@@ -25,14 +25,15 @@ QcContainerSounds::QcContainerSounds(QcServerState &state, QcServerSounds &sound
 
 void QcContainerSounds::update()
 {
+    Open &before = m_open.of(m_state.current());
     Open now = openNow();
 
     for (auto it = now.placed.cbegin(); it != now.placed.cend(); ++it) {
-        if (!m_open.placed.contains(it.key())) {
+        if (!before.placed.contains(it.key())) {
             play(it.value(), true, centreOf(it.key()));
         }
     }
-    for (auto it = m_open.placed.cbegin(); it != m_open.placed.cend(); ++it) {
+    for (auto it = before.placed.cbegin(); it != before.placed.cend(); ++it) {
         // A container broken while open makes its breaking sound instead. The comparison is by block
         // type, not state: a trapped chest switches its power state while it is open and closing.
         if (!now.placed.contains(it.key()) && isSameBlockAt(it.key(), it.value())) {
@@ -41,17 +42,17 @@ void QcContainerSounds::update()
     }
 
     for (auto it = now.held.cbegin(); it != now.held.cend(); ++it) {
-        if (!m_open.held.contains(it.key())) {
+        if (!before.held.contains(it.key())) {
             play(it->block, true, it->position);
         }
     }
-    for (auto it = m_open.held.cbegin(); it != m_open.held.cend(); ++it) {
+    for (auto it = before.held.cbegin(); it != before.held.cend(); ++it) {
         if (!now.held.contains(it.key())) {
             play(it->block, false, it->position);
         }
     }
 
-    m_open = std::move(now);
+    before = std::move(now);
 }
 
 QcContainerSounds::Open QcContainerSounds::openNow() const

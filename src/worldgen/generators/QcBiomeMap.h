@@ -16,7 +16,8 @@ class QcTerrainGenerator;
     corner (the same call that decides the biomes of the game), without generating chunks.
 
     The map preview of a new world and qtcraft-headless --biome-map draw it; sites() adds the
-    villages and structures the generator plans there. */
+    villages and structures the generator plans there. The nether's map (QcNetherMap) fills the
+    same cells through sampleWith() (decision E-1077). */
 class QcBiomeMap
 {
 public:
@@ -86,10 +87,33 @@ public:
 
     /*! Asked between rows (and regions); true stops the work. */
     using Cancelled = std::function<bool()>;
+    /*! Returns the cell of the column at the world's \c {x}, \c {z}. */
+    using CellAt = std::function<Cell(int x, int z)>;
+    /*! Returns the site of the plan of the region \c {regionX}, \c {regionZ}, if it has one. */
+    using PlaceOf = std::function<std::optional<Site>(int regionX, int regionZ)>;
+    /*! \brief A kind of site with the rule that finds it: at most one per square region of
+        \c {regionSize} blocks, where \c {placeOf} says. \qcfields */
+    struct SiteRule
+    {
+        QString kind;
+        int regionSize = 0;
+        PlaceOf placeOf;
+    };
 
     /*! Returns the map of \a area with the cells \a generator computes; none when \a cancelled
         said so first. */
     [[nodiscard]] static std::optional<QcBiomeMap> sample(const QcTerrainGenerator &generator, Area area, const Cancelled &cancelled = {});
+    /*! Returns the map of \a area with the cells \a cellOf gives for the north-west corner of
+        each, row by row; none when \a cancelled said so first. sample() calls it, and so does the
+        map of another dimension's generator (QcNetherMap). */
+    [[nodiscard]] static std::optional<QcBiomeMap> sampleWith(Area area, const CellAt &cellOf, const Cancelled &cancelled = {});
+    /*! Returns the sites \a placeOf finds in the regions of edge \a spacing blocks that reach
+        into \a area, those whose place lies inside it; none when \a cancelled said so first
+        (asked before each region). */
+    [[nodiscard]] static std::optional<QList<Site>> sitesInRegions(Area area, int spacing, const Cancelled &cancelled, const PlaceOf &placeOf);
+    /*! Returns the sites of \a rules in \a area, rule by rule; none when \a cancelled said so
+        first. */
+    [[nodiscard]] static std::optional<QList<Site>> sitesOf(const QList<SiteRule> &rules, Area area, const Cancelled &cancelled = {});
     /*! Returns the cell \a generator computes for the column \a x, \a z. */
     [[nodiscard]] static Cell cellAt(const QcTerrainGenerator &generator, int x, int z);
     /*! Returns the villages, surface structures and coastal towers whose place lies in \a area,

@@ -59,7 +59,7 @@ ColumnLayout {
     }
 
     // The pad's down from the form's last setting goes to "Create and play": the footer lies too
-    // far to the side of it for the spatial step (the map column has no focus target).
+    // far to the side of it for the spatial step (the switch of the map column is right of the form).
     function gamepadCommand(command: int): bool {
         if (command !== GamepadMenuInput.Command.Down || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
             return false;
@@ -278,6 +278,19 @@ ColumnLayout {
                         }))
                         onActivated: index => page.draft.generatorVersion = page.draft.generatorVersions[index]
                     }
+                    // Only while the content offers more than the overworld (decision E-1110).
+                    SettingDropdown {
+                        id: startChoice
+
+                        shownValue: page.draft.startDimension
+                        visible: page.game.worldOptions.startDimensions.length > 1
+                        label: qsTr("Start in")
+                        help: page.game.worldOptions.startDimensions[Math.max(0, startChoice.currentIndex)]?.help ?? ""
+                        textRole: "text"
+                        valueRole: "value"
+                        model: page.game.worldOptions.startDimensions
+                        onActivated: index => page.draft.startDimension = page.game.worldOptions.startDimensions[index].value
+                    }
                     SettingRow {
                         label: qsTr("World options")
                         help: page.game.worldOptions.summary
@@ -308,6 +321,8 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignTop
                 visible: page.terrain
                 compact: true
+                // The cross marks the overworld's spawn; a start elsewhere does not begin there.
+                spawnElsewhere: startChoice.currentIndex > 0
                 preview: page.game.worldOptions.preview
             }
         }

@@ -1,0 +1,6 @@
+{
+    "name": "fire_resistance",
+    "base": "awkward",
+    "ingredient": "magma_cream",
+    "result": "fire_resistance"
+}

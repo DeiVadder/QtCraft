@@ -1,4 +1,5 @@
 {
     "name": "melon_slice",
-    "food": 2
+    "food": 2,
+    "saturation": 0.3
 }

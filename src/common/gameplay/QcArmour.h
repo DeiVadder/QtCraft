@@ -11,10 +11,11 @@
 
 class QcContentRegistry;
 
-/*! \brief Armour rules (decision E-234), pure so that the server's damage handling is testable
-    on its own: every armour point takes 4 % off a hit up to 20 points (80 %); each hit wears
-    every worn piece with durability by a quarter of the damage (at least 1), and a piece breaks
-    at its durability. */
+/*! \brief Armour rules (decisions E-234, E-1116), pure so that the server's damage handling is
+    testable on its own: every effective armour point takes 4 % off a hit up to 20 points (80 %);
+    as in the reference game a hard hit pierces armour, toughness holds against that, and at
+    least a fifth of the points always counts. Each hit wears every worn piece with durability by
+    a quarter of the damage (at least 1), and a piece breaks at its durability. */
 namespace QcArmour {
 
 /*! The share of a hit each armour point takes off. */
@@ -38,8 +39,16 @@ bool fits(const QcContentRegistry &content, const QcItemStack &stack, QcEquipmen
 /*! Returns the sum of the armour points of the items worn in \a equipment, as \a content defines
     them. */
 int points(const QcContentRegistry &content, const QcEquipment &equipment);
-/*! Returns what is left of a hit of \a damage against \a points armour points. */
-double reducedDamage(double damage, int points);
+/*! Returns the sum of the toughness of the items worn in \a equipment, as \a content defines
+    them. */
+[[nodiscard]] double toughness(const QcContentRegistry &content, const QcEquipment &equipment);
+/*! Returns the share of a push the items worn in \a equipment hold back, as \a content defines
+    them: their knockback resistance added up, at most 1. */
+[[nodiscard]] double knockbackResistance(const QcContentRegistry &content, const QcEquipment &equipment);
+/*! Returns what is left of a hit of \a damage against \a points armour points of \a toughness,
+    by the reference's formula: the points count less by the damage over 2 + toughness / 4, but
+    never less than a fifth of them nor more than maxEffectivePoints. */
+[[nodiscard]] double reducedDamage(double damage, int points, double toughness);
 /*! Returns the durability lost by every worn piece in a hit of \a damage (before the
     reduction). */
 int wearOf(double damage);

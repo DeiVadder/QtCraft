@@ -1,0 +1,9 @@
+{
+    "name": "fire_resistance",
+    "effects": [
+        {
+            "effect": "fire_resistance",
+            "seconds": 180
+        }
+    ]
+}

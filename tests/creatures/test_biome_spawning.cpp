@@ -245,24 +245,24 @@ private slots:
         const QcSpawnWeights weights(*m_content);
         const auto weight = [&](const char *kind, const char *biome) { return weights.weight(type(kind), u"qtcraft:"_s + QString::fromLatin1(biome)); };
         // The common list: zombies, skeletons, spiders, slimes and Kjuts 100, shadewalkers 10,
-        // drowned 5 (deep water only); no witches (only at their huts), cave spiders or variants.
+        // drowned 5 (deep water only), witches 5 (decision E-1105); no cave spiders or variants.
         for (const char *kind : {"zombie", "skeleton", "spider", "slime", "kjut"}) {
             QCOMPARE(weight(kind, "plains"), 100.0);
         }
         QCOMPARE(weight("shadewalker", "plains"), 10.0);
-        QCOMPARE(weight("witch", "plains"), 0.0);
+        QCOMPARE(weight("witch", "plains"), 5.0);
         QCOMPARE(weight("drowned", "plains"), 5.0);
         QCOMPARE(weight("cave_spider", "plains"), 0.0);
         QCOMPARE(weight("husk", "plains"), 0.0);
         QCOMPARE(weight("stray", "plains"), 0.0);
         QCOMPARE(weight("cow", "plains"), 0.0);
-        QCOMPARE(weights.total(u"qtcraft:plains"_s), 515.0);
-        QCOMPARE(weights.total(QString()), 515.0);
+        QCOMPARE(weights.total(u"qtcraft:plains"_s), 520.0);
+        QCOMPARE(weights.total(QString()), 520.0);
 
         // Desert: husks 80 of the zombies' 100; tundra: strays 80 of the skeletons'; rivers.
         QCOMPARE(weight("zombie", "desert"), 20.0);
         QCOMPARE(weight("husk", "desert"), 80.0);
-        QCOMPARE(weights.total(u"qtcraft:desert"_s), 515.0);
+        QCOMPARE(weights.total(u"qtcraft:desert"_s), 520.0);
         QCOMPARE(weight("skeleton", "tundra"), 20.0);
         QCOMPARE(weight("stray", "tundra"), 80.0);
         QCOMPARE(weight("stray", "snowy_taiga"), 0.0);
@@ -339,9 +339,9 @@ private slots:
         } else {
             QVERIFY2(count(u"qtcraft:zombie"_s) > 0.75 * spiders && count(u"qtcraft:zombie"_s) < 1.33 * spiders, qPrintable(QString::number(count(u"qtcraft:zombie"_s))));
         }
-        // Shadewalkers 10 of the 100 of a spider, no witches.
+        // Shadewalkers 10 and witches 5 of the 100 of a spider.
         QVERIFY2(spawns.of("shadewalker") > 0 && spawns.of("shadewalker") < 0.25 * spiders, qPrintable(QString::number(spawns.of("shadewalker"))));
-        QCOMPARE(spawns.of("witch"), 0);
+        QVERIFY2(spawns.of("witch") > 0 && spawns.of("witch") < 0.2 * spiders, qPrintable(u"%1 of %2"_s.arg(spawns.of("witch")).arg(spiders)));
     }
 
     // Husks and strays need the open sky: under a roof by day only their plain kinds spawn.

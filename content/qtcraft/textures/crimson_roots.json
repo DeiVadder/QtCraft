@@ -1,0 +1,30 @@
+{
+    "name": "crimson_roots",
+    "pattern": "icon",
+    "primary": "#a22c44",
+    "variation": 0.0,
+    "seed": 8712,
+    "palette": {
+        "A": "#a22c44",
+        "B": "#6e1830",
+        "T": "#e05a58"
+    },
+    "bitmap": [
+        "",
+        "           T",
+        "T          B",
+        " B         B",
+        " B  T      BT",
+        " B  B      BA",
+        " B  B      TA",
+        " B  B  T   BB",
+        " B  BB A   BB",
+        " A  AB A   AB",
+        " A  AB A   AB",
+        " A  AA A   ABA",
+        " A  AA B  A BA",
+        " A  B AB  A BA",
+        " AA B AB  A BA",
+        "  A B A B A B A"
+    ]
+}

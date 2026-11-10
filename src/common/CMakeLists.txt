@@ -13,7 +13,9 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     blockrules/QcBlockRules.h blockrules/QcBlockRules.cpp
+    blockrules/QcPortalShapes.h blockrules/QcPortalShapes.cpp
     blockrules/QcRails.h blockrules/QcRails.cpp
+    blockrules/QcSafeStand.h blockrules/QcSafeStand.cpp
     blockrules/QcSlabRules.h blockrules/QcSlabRules.cpp
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
 )
@@ -34,6 +36,7 @@ target_sources(qc_common PRIVATE
     content/blockbehaviour/QcSpawnerDefinition.h
 )
 target_sources(qc_common PRIVATE
+    content/blocks/QcAnchorDefinition.h
     content/blocks/QcBlockDefinition.h
     content/blocks/QcBlockParser.h content/blocks/QcBlockParser.cpp
     content/blocks/QcBlockProperty.h
@@ -72,6 +75,10 @@ target_sources(qc_common PRIVATE
     content/items/QcItemDefinition.h content/items/QcItemDefinition.cpp
     content/items/QcItemParser.h content/items/QcItemParser.cpp
     content/items/QcItemSerializer.h content/items/QcItemSerializer.cpp
+    content/items/QcPotionCatalog.h content/items/QcPotionCatalog.cpp
+    content/items/QcPotionDefinition.h
+    content/items/QcPotionGenerator.h content/items/QcPotionGenerator.cpp
+    content/items/QcPotionParser.h content/items/QcPotionParser.cpp
     content/items/QcProjectileDefinition.h
     content/items/QcProjectileParser.h content/items/QcProjectileParser.cpp
 )
@@ -81,9 +88,13 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     content/mobs/QcAppearance.h
     content/mobs/QcAppearanceDefinition.h
+    content/mobs/QcBarterDefinition.h
+    content/mobs/QcBossBarDefinition.h
+    content/mobs/QcHydraDefinition.h
     content/mobs/QcMobDefinition.h
+    content/mobs/QcMobDrinkDefinition.h
     content/mobs/QcMobParser.h content/mobs/QcMobParser.cpp
-    content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderTraits.cpp
+    content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderBoss.cpp content/mobs/QcMobReaderTraits.cpp
     content/mobs/QcMobSerializer.h content/mobs/QcMobSerializer.cpp
     content/mobs/QcMobTraits.h
     content/mobs/QcMobTraitsContent.h content/mobs/QcMobTraitsContent.cpp
@@ -102,6 +113,8 @@ target_sources(qc_common PRIVATE
     content/recipes/QcRecipeDefinition.h content/recipes/QcRecipeDefinition.cpp
     content/recipes/QcRecipeParser.h content/recipes/QcRecipeParser.cpp
     content/recipes/QcSmeltingRecipe.h
+    content/recipes/QcSmithingRecipe.h
+    content/recipes/QcSmithingSerializer.h content/recipes/QcSmithingSerializer.cpp
     content/recipes/QcStonecutting.h content/recipes/QcStonecutting.cpp
 )
 target_sources(qc_common PRIVATE
@@ -113,6 +126,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcCommandMacroDefinition.h
     content/registry/QcCommandMacroParser.h content/registry/QcCommandMacroParser.cpp
     content/registry/QcContentFields.h content/registry/QcContentFields.cpp
+    content/registry/QcContentLoot.h content/registry/QcContentLoot.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentParser.h content/registry/QcContentParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
@@ -139,10 +153,19 @@ target_sources(qc_common PRIVATE
     content/villages/QcVillagerParser.h content/villages/QcVillagerParser.cpp
 )
 target_sources(qc_common PRIVATE
+    content/worldgen/QcAtmosphereParser.h content/worldgen/QcAtmosphereParser.cpp
     content/worldgen/QcCoastalTowerDefinition.h
     content/worldgen/QcCoastalTowerParser.h content/worldgen/QcCoastalTowerParser.cpp
+    content/worldgen/QcDimensionDefinition.h
+    content/worldgen/QcDimensionParser.h content/worldgen/QcDimensionParser.cpp
     content/worldgen/QcDungeonDefinition.h
     content/worldgen/QcMineshaftDefinition.h
+    content/worldgen/QcNetherDefinition.h
+    content/worldgen/QcNetherParser.h content/worldgen/QcNetherParser.cpp
+    content/worldgen/QcPortalDefinition.h
+    content/worldgen/QcPortalParser.h content/worldgen/QcPortalParser.cpp
+    content/worldgen/QcProgressionGoal.h
+    content/worldgen/QcProgressionGoalParser.h content/worldgen/QcProgressionGoalParser.cpp
     content/worldgen/QcShowcaseDefinition.h
     content/worldgen/QcShowcaseParser.h content/worldgen/QcShowcaseParser.cpp
     content/worldgen/QcStructureDefinition.h
@@ -216,8 +239,10 @@ target_sources(qc_common PRIVATE
     gameplay/QcAirSupply.h gameplay/QcAirSupply.cpp
     gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
+    gameplay/QcBeacon.h gameplay/QcBeacon.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
+    gameplay/QcEffectRules.h gameplay/QcEffectRules.cpp
     gameplay/QcEnchanting.h gameplay/QcEnchanting.cpp
     gameplay/QcEnchantingTable.h gameplay/QcEnchantingTable.cpp
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp
@@ -232,6 +257,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
     gameplay/QcSlotList.h gameplay/QcSlotList.cpp
+    gameplay/QcSmithing.h gameplay/QcSmithing.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcStatusEffects.h gameplay/QcStatusEffects.cpp
     gameplay/QcSwingSpeed.h gameplay/QcSwingSpeed.cpp
@@ -286,16 +312,22 @@ target_sources(qc_common PRIVATE
     physics/QcSpawnGround.h physics/QcSpawnGround.cpp
 )
 target_sources(qc_common PRIVATE
-    protocol/QcAdminCodec.cpp
+    protocol/QcAdminCodec.h protocol/QcAdminCodec.cpp
     protocol/QcAdminMessages.h
     protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
     protocol/QcAdvancementCodec.cpp
     protocol/QcAdvancementMessages.h
+    protocol/QcBeaconCodec.h protocol/QcBeaconCodec.cpp
+    protocol/QcBeaconMessages.h
+    protocol/QcBossBarCodec.cpp
+    protocol/QcBossBarMessages.h
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcChunkCodec.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp
     protocol/QcDebugCodec.cpp
     protocol/QcDebugMessages.h
+    protocol/QcDimensionCodec.cpp
+    protocol/QcDimensionMessages.h
     protocol/QcEntityCodec.cpp
     protocol/QcEntityMessages.h
     protocol/QcFrameReader.h protocol/QcFrameReader.cpp
@@ -317,6 +349,8 @@ target_sources(qc_common PRIVATE
     protocol/QcSessionMessages.h
     protocol/QcSignCodec.cpp
     protocol/QcSignMessages.h
+    protocol/QcSmithingCodec.cpp
+    protocol/QcSmithingMessages.h
     protocol/QcStreamLimits.h
     protocol/QcTradeCodec.cpp
     protocol/QcTradeMessages.h
@@ -325,14 +359,19 @@ target_sources(qc_common PRIVATE
     protocol/QcWorldMessages.h
 )
 target_sources(qc_common PRIVATE
+    world/QcAtmosphere.h world/QcAtmosphere.cpp
+    world/QcBlendWidth.h
     world/QcBlockAccess.h
     world/QcBoatBody.h
     world/QcChunk.h world/QcChunk.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
+    world/QcChunkSet.h world/QcChunkSet.cpp
+    world/QcConversionControl.h
     world/QcDamagedFile.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
     world/QcGeneratorVersion.h
+    world/QcGeneratorVersionMap.h world/QcGeneratorVersionMap.cpp
     world/QcLightPassage.h
     world/QcLightVolume.h world/QcLightVolume.cpp
     world/QcMinecartBody.h

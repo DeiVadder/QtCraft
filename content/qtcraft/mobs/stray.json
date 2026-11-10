@@ -13,8 +13,10 @@
     "chaseSpeed": 2.6,
     "hostile": true,
     "burnsInDaylight": true,
+    "undead": true,
     "immuneTo": [
-        "poison"
+        "poison",
+        "regeneration"
     ],
     "ai": "archer",
     "archer": {

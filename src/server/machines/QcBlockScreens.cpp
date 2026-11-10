@@ -30,6 +30,11 @@ QcBlockScreens::QcBlockScreens(QcServerState &state, QcServerBlocks &blocks, QcS
 {
 }
 
+QcBlockScreens::Viewers &QcBlockScreens::here() const
+{
+    return m_perDimension.of(m_state.current());
+}
+
 QcBlockEntities::Machine *QcBlockScreens::openMachineOf(const QcServerClient &client)
 {
     if (!client.screen.open) {
@@ -218,50 +223,27 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
     send(client, true);
 }
 
-void QcBlockScreens::setStonecutterCloser(std::function<void(QcServerClient &)> closer)
+void QcBlockScreens::setWorkstationCloser(QcWorkstation kind, std::function<void(QcServerClient &)> closer)
 {
-    m_closeStonecutter = std::move(closer);
-}
-
-void QcBlockScreens::setEnchantingCloser(std::function<void(QcServerClient &)> closer)
-{
-    m_closeEnchanting = std::move(closer);
-}
-
-void QcBlockScreens::setAnvilCloser(std::function<void(QcServerClient &)> closer)
-{
-    m_closeAnvil = std::move(closer);
+    m_workstationClosers.at(static_cast<std::size_t>(kind)) = std::move(closer);
 }
 
 void QcBlockScreens::closeOtherScreens(QcServerClient &client)
 {
-    closeStonecutter(client);
-    closeEnchanting(client);
-    closeAnvil(client);
+    closeWorkstationsExcept(client);
     endTrade(client);
 }
 
-void QcBlockScreens::closeStonecutter(QcServerClient &client)
+void QcBlockScreens::closeWorkstationsExcept(QcServerClient &client, std::optional<QcWorkstation> keep)
 {
-    // The stonecutter's input goes back to the player (QcServerStonecutter::close).
-    if (client.screen.stonecutter && m_closeStonecutter) {
-        m_closeStonecutter(client);
-    }
-}
-
-void QcBlockScreens::closeEnchanting(QcServerClient &client)
-{
-    // The table's item and lapis go back to the player (QcServerEnchanting::close).
-    if (client.screen.enchanting && m_closeEnchanting) {
-        m_closeEnchanting(client);
-    }
-}
-
-void QcBlockScreens::closeAnvil(QcServerClient &client)
-{
-    // The anvil's slots go back to the player (QcServerAnvil::close).
-    if (client.screen.anvil && m_closeAnvil) {
-        m_closeAnvil(client);
+    // Each closer gives the slots of its screen back and does nothing when it is not open.
+    std::size_t kind = 0;
+    for (const std::function<void(QcServerClient &)> &closer : m_workstationClosers) {
+        const bool kept = keep && static_cast<std::size_t>(*keep) == kind;
+        if (!kept && closer) {
+            closer(client);
+        }
+        ++kind;
     }
 }
 
@@ -275,6 +257,13 @@ void QcBlockScreens::endTrade(QcServerClient &client)
     client.screen.trading = 0;
     client.screen.sentTrade.reset();
     client.connection->send(QcMsg::CloseTrade{});
+}
+
+void QcBlockScreens::closeAll(QcServerClient &client)
+{
+    closeOtherScreens(client);
+    close(client, true);
+    client.screen.sign.reset();
 }
 
 void QcBlockScreens::close(QcServerClient &client, bool notify)
@@ -307,7 +296,7 @@ void QcBlockScreens::send(QcServerClient &client, bool force)
 
     QcMsg::MachineState state;
     state.pos = machine->pos;
-    state.stacks = QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
+    state.stacks = machine->stacks;
     state.burn = static_cast<float>(m_state.machineRules().burnFraction(*machine));
     state.progress = static_cast<float>(m_state.machineRules().progressFraction(*machine, m_state.world().blockAt(machine->pos).value_or(qcAirBlockId)));
 
@@ -378,7 +367,7 @@ void QcBlockScreens::updateViewers()
     }
 
     // Those looked into now and those nobody looks into any more.
-    QHash<QcBlockPos, int> changed = m_viewers;
+    QHash<QcBlockPos, int> changed = here().viewers;
     changed.insert(viewers);
     for (auto it = changed.cbegin(); it != changed.cend(); ++it) {
         const std::optional<QcBlockId> block = m_state.world().blockAt(it.key());
@@ -387,7 +376,7 @@ void QcBlockScreens::updateViewers()
             m_blocks.setAndBroadcast(it.key(), m_state.content().withProperty(*block, u"power"_s, power));
         }
     }
-    m_viewers = std::move(viewers);
+    here().viewers = std::move(viewers);
 }
 
 void QcBlockScreens::releaseViewers(QcServerState &state, QcChunkPos chunk)

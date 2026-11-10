@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
+#include "server/dimensions/QcPerDimension.h"
 
 #include <QHash>
 #include <QString>
@@ -58,5 +59,5 @@ private:
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;
-    Open m_open;
+    QcPerDimension<Open> m_open;
 };

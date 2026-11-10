@@ -1,0 +1,39 @@
+{
+    "name": "mob.charred_hydra.spawn",
+    "volume": 1.0,
+    "variants": 1,
+    "pitchVariation": 0.08,
+    "range": 128,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 3.0,
+            "frequency": 45,
+            "endFrequency": 90,
+            "attack": 0.6,
+            "curve": 0.6,
+            "tremoloRate": 4,
+            "tremoloDepth": 0.3,
+            "lowpass": 800,
+            "gain": 0.5
+        },
+        {
+            "wave": "sine",
+            "duration": 3.0,
+            "frequency": 90,
+            "endFrequency": 180,
+            "attack": 0.8,
+            "curve": 0.6,
+            "gain": 0.3
+        },
+        {
+            "wave": "noise",
+            "start": 0.5,
+            "duration": 2.5,
+            "attack": 0.6,
+            "curve": 0.8,
+            "bandpass": 250,
+            "gain": 0.3
+        }
+    ]
+}

@@ -49,7 +49,7 @@ QcAudioMixer::VoiceId start(QcAudioMixer &mixer, QcPositionalVoices &voices, con
                             const QcSoundSpatial::Listener &listener, const QString &key)
 {
     const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
-    const QcAudioMixer::VoiceId id = voices.start(mixer, longBuffer(), key, source, {placement.gain, placement.pan, 1.0, QcSoundBus::Effects, false});
+    const QcAudioMixer::VoiceId id = voices.start(mixer, longBuffer(), key, source, {placement.gain, placement.pan, 1.0, QcSoundCategory::Blocks, false});
     return id;
 }
 
@@ -64,7 +64,7 @@ double shareAboveKnee(const std::shared_ptr<const QcSampleBuffer> &buffer, const
     const QcSoundCue cue{QString::fromLatin1(QcSoundKeys::explosion), listener.ears, 1.1f, 1.0f, QcSoundCue::Origin::Server, 0};
     const QcSoundSpatial::Source source = QcSoundSpatial::source(sound, cue);
     const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
-    const QcAudioMixer::PlayParameters parameters{placement.gain, placement.pan, 1.0, QcSoundBus::Effects, false};
+    const QcAudioMixer::PlayParameters parameters{placement.gain, placement.pan, 1.0, QcSoundCategory::Blocks, false};
 
     qsizetype above = 0;
     qsizetype total = 0;

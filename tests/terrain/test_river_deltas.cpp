@@ -306,10 +306,12 @@ private slots:
     // bay from opposite sides, the fans overlap and a side arm may end short of the sea: at most
     // one such delta per seed, and none cut off by much. 161831057 and 649604540 (random,
     // decision E-907) had a patch of fan beside the river near its mouth, found by a few cells
-    // only and cut off from the sea; a delta needs the cells at its apex now.
+    // only and cut off from the sea; a delta needs the cells at its apex now. 677773194 (random)
+    // has a delta at -2608 1128 with 0.83 of its deep water joined: generator version 3 is frozen,
+    // so the bound for the deep water is 0.8 (decision of the human, 2026-11-10, plan 79.97).
     void armsRunIntoTheSea()
     {
-        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{161831057}, qint64{649604540}, m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{161831057}, qint64{649604540}, qint64{677773194}, m_randomSeed}) {
             const QcTerrainGenerator &generator = generatorOf(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             int cutShort = 0;
@@ -320,7 +322,7 @@ private slots:
                 qInfo("seed %lld, delta at %d %d: water %lld, %.3f joined to the sea; deep %lld, %.3f", seed, delta.x, delta.z,
                       waters.deltaWater, reached, waters.deepWater, deep);
                 const QString where = u"seed %1 at %2 %3: %4, %5"_s.arg(seed).arg(delta.x).arg(delta.z).arg(deep).arg(reached);
-                QVERIFY2(waters.deepWater > 50 && deep > 0.85 && reached > 0.6, qPrintable(where));
+                QVERIFY2(waters.deepWater > 50 && deep > 0.8 && reached > 0.6, qPrintable(where));
                 cutShort += deep < 0.95 ? 1 : 0;
             }
             QVERIFY2(cutShort <= 1, qPrintable(u"seed %1: %2 deltas with arms short of the sea"_s.arg(seed).arg(cutShort)));

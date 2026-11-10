@@ -41,6 +41,9 @@ bool onSurface(int i, int j, int k)
 struct BrokenCells
 {
     QSet<QcBlockPos> cells;
+    // Every breakable block soaks up at most this much (a charged skull, decision E-1128); below 0
+    // no limit.
+    double resistanceLimit = -1.0;
 
     // Walks one ray and adds the cells it breaks.
     void addRay(QcBlastField &field, const QcVec3 &centre, QcVec3 direction, double force)
@@ -54,8 +57,11 @@ struct BrokenCells
                 return;
             }
             if (at.block != qcAirBlockId) {
-                force -= (static_cast<double>(at.resistance) + 0.3) * QcExplosionRays::stepLength;
-                if (force > 0.0 && at.resistance < static_cast<float>(QcBlastDefinition::unbreakable)) {
+                const bool breakable = at.resistance < static_cast<float>(QcBlastDefinition::unbreakable);
+                const double resistance = breakable && resistanceLimit >= 0.0 ? std::min(static_cast<double>(at.resistance), resistanceLimit)
+                                                                              : static_cast<double>(at.resistance);
+                force -= (resistance + 0.3) * QcExplosionRays::stepLength;
+                if (force > 0.0 && breakable) {
                     cells.insert(cell);
                 }
             }
@@ -97,6 +103,7 @@ QSet<QcBlockPos> castRays(QcBlastField &field, const QcExplosionRays::Blast &bla
     constexpr int grid = QcExplosionRays::grid;
     constexpr double half = (grid - 1) / 2.0;
     BrokenCells broken;
+    broken.resistanceLimit = blast.resistanceLimit;
     const QcBlockPos centre = QcPhysics::blockContaining(blast.centre);
     int ray = 0;
     // The cells of the grid in the order i, j, k; only those on its surface send a ray.

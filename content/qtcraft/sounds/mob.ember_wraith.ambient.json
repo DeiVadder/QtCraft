@@ -1,0 +1,34 @@
+{
+    "name": "mob.ember_wraith.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 1.2,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 70,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 1.1,
+            "attack": 0.25,
+            "curve": 1.5,
+            "highpass": 1400,
+            "gain": 0.12
+        },
+        {
+            "wave": "triangle",
+            "duration": 1.0,
+            "frequency": 110,
+            "endFrequency": 95,
+            "attack": 0.2,
+            "curve": 1.5,
+            "gain": 0.16
+        }
+    ]
+}

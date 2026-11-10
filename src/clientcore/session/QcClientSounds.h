@@ -6,6 +6,7 @@
 #include "clientcore/sound/QcAmbience.h"
 #include "clientcore/sound/QcLocalSounds.h"
 #include "clientcore/sound/QcSoundCue.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QList>
 
@@ -42,6 +43,20 @@ public:
     /*! Returns the ambience levels as faded so far. */
     const QcAmbience::Levels &ambience() const { return m_ambience; }
 
+    /*! Distance in metres from the listener at which the sounds of a biome now and then play. */
+    static constexpr double additionsDistance = 6.0;
+    /*! One client \a tick of the ambience \a atmosphere of the biome the listener at \a eye
+        stands in (decision E-1122): its loop fades in (QcAmbience::fadePerSecond), another
+        biome's loop fades out before the new one fades in; the biome's sound now and then plays
+        (a cue for \a play) with its chance per tick and in a random direction, both drawn from
+        the tick (splitmix64), so a session plays the same sounds at the same ticks. */
+    void updateBiomeAmbience(const QcBiomeAtmosphere &atmosphere, const QcVec3 &eye, quint64 tick,
+                             const std::function<void(const QcSoundCue &)> &play);
+    /*! Returns the loop of the biome ambience that sounds. */
+    const QString &biomeLoop() const { return m_biomeLoop; }
+    /*! Returns the level of the biome ambience (0..1). */
+    float biomeLevel() const { return m_biomeLevel; }
+
     /*! Returns the player's steps, landings and swimming. */
     QcLocalSounds &local() { return m_local; }
 
@@ -50,4 +65,9 @@ private:
     QcLocalSounds m_local;
     QcAmbience::Levels m_ambience;
     QcAmbience::Levels m_ambienceTarget;
+    QString m_biomeLoop;
+    float m_biomeLevel = 0.0f;
+
+    void setBiomeLoop(const QString &loop) { m_biomeLoop = loop; }
+    void setBiomeLevel(float level) { m_biomeLevel = level; }
 };

@@ -1,0 +1,9 @@
+{
+    "name": "night_vision",
+    "effects": [
+        {
+            "effect": "night_vision",
+            "seconds": 180
+        }
+    ]
+}

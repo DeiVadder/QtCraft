@@ -134,7 +134,7 @@ private slots:
         QCOMPARE(furnace.machine.category, u"smelting"_s);
         QVERIFY(furnace.texture(QcBlockFace::North) != furnace.texture(QcBlockFace::East));
         const QcRecipeDefinition &recipe = content->recipes()[*content->recipeIndex(u"qtcraft:furnace"_s)];
-        QCOMPARE(QcCrafting::requirements(recipe), (QList<std::pair<QString, int>>{{u"qtcraft:cobblestone"_s, 8}}));
+        QCOMPARE(QcCrafting::requirements(recipe), (QList<std::pair<QString, int>>{{u"#qtcraft:stone_crafting_materials"_s, 8}}));
 
         const auto fuel = [&content](const char *name) { return content->item(*content->itemId(QString::fromLatin1(name))).fuelSeconds; };
         QCOMPARE(fuel("qtcraft:coal"), 80.0);

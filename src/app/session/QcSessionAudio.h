@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "clientcore/music/QcMusicDirector.h"
 #include "clientcore/sound/QcSoundSpatial.h"
 
 #include <QObject>
@@ -11,7 +12,7 @@ class QcAudioEngine;
 class QcClientSession;
 
 // What a client session plays (decision E-876), part of QcSessionWiring: its sound cues, and each
-// tick its ambience levels and the listener, so that playing positional voices follow the player.
+// tick its ambience levels, where the player is for the music and the listener, so that playing positional voices follow the player.
 // Everything is heard from listenerOf(session). Lives in the GUI thread; the engine outlives it.
 class QcSessionAudio : public QObject
 {
@@ -25,6 +26,9 @@ public:
 
     // Where the player of `session` hears from now: the eyes, looking the way the screen shows.
     [[nodiscard]] static QcSoundSpatial::Listener listenerOf(const QcClientSession &session);
+    // Where the player of `session` is for the music (decision E-1137): the dimension, the biome
+    // (known by its ambience loop from `library`, may be null), the time of day and the caves.
+    [[nodiscard]] static QcMusicDirector::Situation musicSituationOf(const QcClientSession &session, const QcMusicLibrary *library);
 
 private:
     QcAudioEngine &m_audio;

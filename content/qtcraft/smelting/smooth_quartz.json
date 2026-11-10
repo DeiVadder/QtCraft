@@ -1,0 +1,9 @@
+{
+    "name": "smooth_quartz",
+    "input": "quartz_block",
+    "result": {
+        "item": "smooth_quartz"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

@@ -338,7 +338,7 @@ void QcServerAdmin::noteLeft(const QcServerClient &client)
 QcTraffic QcServerAdmin::traffic() const
 {
     QcTraffic total = m_departed;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->connection && !client->local) {
             const QcTraffic own = client->connection->traffic();
             total.sent += own.sent;
@@ -351,8 +351,8 @@ QcTraffic QcServerAdmin::traffic() const
 void QcServerAdmin::dropUnauthorized()
 {
     for (auto it = m_subscribers.begin(); it != m_subscribers.end();) {
-        const auto client = std::ranges::find(m_state.clients(), it.key(), [](const auto &candidate) { return candidate->id; });
-        const bool present = client != m_state.clients().end() && (*client)->state == QcServerClient::State::Playing;
+        const auto client = std::ranges::find(m_state.allClients(), it.key(), [](const auto &candidate) { return candidate->id; });
+        const bool present = client != m_state.allClients().end() && (*client)->state == QcServerClient::State::Playing;
         if (present && m_state.permissionOf(**client) != QcPermission::Player) {
             ++it;
             continue;
@@ -369,7 +369,7 @@ void QcServerAdmin::dropUnauthorized()
 
 void QcServerAdmin::tellRights()
 {
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state != QcServerClient::State::Playing || !client->connection) {
             continue;
         }
@@ -395,7 +395,7 @@ void QcServerAdmin::sendChat()
         if ((it->topics & QcMsg::AdminSubscribe::chat) == 0 || it->chatSeen >= latest) {
             continue;
         }
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             if (client->id == it.key()) {
                 client->connection->send(QcMsg::AdminChat{false, m_commands.chatLog().since(it->chatSeen)});
             }
@@ -412,7 +412,7 @@ void QcServerAdmin::sampleSecond()
 
     QcAdminStatusRecorder::Counts counts;
     counts.timeMs = QDateTime::currentMSecsSinceEpoch();
-    counts.players = static_cast<quint32>(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }));
+    counts.players = static_cast<quint32>(std::ranges::count_if(m_state.allClients(), [](const auto &client) { return client->joined; }));
     counts.loadedChunks = static_cast<quint32>(m_state.world().loadedChunkCount());
     for (const quint32 count : m_reports.entitiesByKind()) {
         counts.entities += count;
@@ -430,7 +430,7 @@ void QcServerAdmin::sampleSecond()
     if (following) {
         const QcMsg::AdminStatus status = m_reports.status(sample, static_cast<quint64>(m_uptime.elapsed()));
         const QcMsg::AdminPlayers players = m_reports.players(pings());
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             if ((m_subscribers.value(client->id).topics & QcMsg::AdminSubscribe::status) != 0) {
                 client->connection->send(status);
                 client->connection->send(players);
@@ -445,7 +445,7 @@ void QcServerAdmin::sendLog()
 {
     // A quick look first: nothing new, nothing to collect.
     const quint64 newest = QcMessageLog::latestSequence();
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         const auto subscriber = m_subscribers.find(client->id);
         if (subscriber == m_subscribers.end() || (subscriber->topics & QcMsg::AdminSubscribe::log) == 0 || subscriber->logSeen >= newest) {
             continue;
@@ -467,7 +467,7 @@ void QcServerAdmin::sendPings()
         return;
     }
     m_lastPingNs = now;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state != QcServerClient::State::Playing) {
             continue;
         }

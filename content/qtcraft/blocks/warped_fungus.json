@@ -1,0 +1,26 @@
+{
+    "name": "warped_fungus",
+    "sound": "fungus",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "ground": [
+        "crimson_nylium",
+        "warped_nylium",
+        "soul_soil",
+        "grass_block",
+        "dirt"
+    ],
+    "sapling": {
+        "feature": "huge_warped_fungus",
+        "plantOn": [
+            "warped_nylium"
+        ],
+        "boneMealOnly": true,
+        "plantChance": 0.0
+    },
+    "textures": {
+        "all": "warped_fungus"
+    }
+}

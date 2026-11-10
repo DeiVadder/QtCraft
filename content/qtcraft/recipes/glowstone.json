@@ -1,0 +1,14 @@
+{
+    "name": "glowstone",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "glowstone_dust"
+    },
+    "result": {
+        "item": "glowstone"
+    }
+}

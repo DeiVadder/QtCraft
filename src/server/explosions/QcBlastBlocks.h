@@ -7,6 +7,7 @@
 #include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcWorldMessages.h"
+#include "server/dimensions/QcPerDimension.h"
 
 #include <QList>
 
@@ -59,9 +60,9 @@ public:
     void flush();
 
     /*! Forgets the waiting cells (the game rule explosionBlockDamage was switched off). */
-    void drop() { m_waiting.clear(); }
+    void drop() { here().waiting.clear(); }
     /*! Returns the number of waiting cells. */
-    qsizetype waiting() const { return static_cast<qsizetype>(m_waiting.size()); }
+    qsizetype waiting() const { return static_cast<qsizetype>(here().waiting.size()); }
     /*! Returns the blocks broken since the server started. */
     quint64 broken() const { return m_broken; }
 
@@ -84,8 +85,16 @@ private:
     QcServerBlocks &m_blocks;
     QcServerFire &m_fire;
     const QcBlastTable &m_table;
-    std::deque<Work> m_waiting;
-    QList<QcMsg::BlockUpdate> m_batch;
-    QList<QcBlockPos> m_fires;
     quint64 m_broken = 0;
+    // The blasts of a dimension still at work.
+    struct Blasts
+    {
+        std::deque<Work> waiting;
+        QList<QcMsg::BlockUpdate> batch;
+        QList<QcBlockPos> fires;
+    };
+    // Of the current dimension.
+    Blasts &here() const;
+
+    QcPerDimension<Blasts> m_blasts;
 };

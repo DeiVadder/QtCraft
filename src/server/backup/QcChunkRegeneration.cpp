@@ -32,11 +32,12 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
             continue;
         }
         // The generated chests, spawners and carts get their loot and kinds again (decisions E-520,
-        // E-571); the old carts go with the old blocks.
+        // E-571); the old carts go with the old blocks, the residents of a structure stay (E-1089).
         removeMinecarts(chunk);
-        QcFurnishing::furnish(m_state, chunk);
+        QcFurnishing::furnishAgain(m_state, chunk);
 
         dropPendingChanges(chunk);
+        startLiquids(chunk);
         resend(chunk);
         done.append(chunk);
     }
@@ -56,6 +57,18 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     m_state.hoppers().forgetChunk(chunk);
     m_state.entities().fallingBlocks().removeInChunk(chunk);
     m_state.entities().explosives().removeInChunk(chunk);
+}
+
+void QcChunkRegeneration::startLiquids(QcChunkPos chunk)
+{
+    const auto regenerated = m_state.world().chunk(chunk);
+    if (!regenerated) {
+        return;
+    }
+    const QList<QcBlockPos> starts = m_state.world().generator().liquidStartsIn(*regenerated);
+    for (const QcBlockPos &pos : starts) {
+        m_state.liquids().schedule(m_state.world(), pos, m_state.clock().tick());
+    }
 }
 
 void QcChunkRegeneration::removeMinecarts(QcChunkPos chunk)

@@ -1,0 +1,61 @@
+{
+    "name": "portal_station",
+    "showcase": {
+        "order": 116
+    },
+    "palette": {
+        "S": "polished_blackstone",
+        "O": "obsidian",
+        "p": "nether_portal[axis=x]"
+    },
+    "layers": [
+        [
+            "SSSSSSSSSSS",
+            "SSSSSSSSSSS",
+            "SSSSSSSSSSS"
+        ],
+        [
+            "           ",
+            "OOOO   OOOO",
+            "           "
+        ],
+        [
+            "           ",
+            "OppO   O  O",
+            "           "
+        ],
+        [
+            "           ",
+            "OppO   O  O",
+            "           "
+        ],
+        [
+            "           ",
+            "OppO   O  O",
+            "           "
+        ],
+        [
+            "           ",
+            "OOOO   OOOO",
+            "           "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                2.0,
+                6.4,
+                1.5
+            ],
+            "text": "block.qtcraft.nether_portal"
+        },
+        {
+            "at": [
+                9.0,
+                6.4,
+                1.5
+            ],
+            "text": "block.qtcraft.obsidian"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "name": "chiseled_quartz_block_top",
+    "pattern": "smooth_stone",
+    "primary": "#ebe5dc",
+    "secondary": "#cfc5b8",
+    "variation": 0.03,
+    "seed": 8412,
+    "material": {
+        "smoothness": 0.55,
+        "bump": 0.35,
+        "porosity": 0.05
+    }
+}

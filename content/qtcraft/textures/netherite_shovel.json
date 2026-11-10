@@ -1,0 +1,8 @@
+{
+    "name": "netherite_shovel",
+    "pattern": "shovel",
+    "primary": "#7a6e72",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 8884
+}

@@ -77,8 +77,15 @@ void main()
     // Torches in hands and fireflies nearby (realistic mode only).
     if (frame.animation.z > 0.5)
         vLight = max(vLight, shade * movingLight(relative));
+    // A vertex that glows by itself (QcEntityVertex::emissiveLight, a beacon's beam) is lit like an
+    // emissive block face: white, beyond it in the realistic mode so that it blooms.
+    bool emissive = blockLight > 1.5;
+    if (emissive)
+        vLight = vec3(frame.animation.y);
 #ifdef QC_SHADOWS
-    vLightParts = vec4(shade, skyLight * frame.params.z, frame.params.w + skyLight * frame.extra.w, blockLight);
+    // A negative block light part tells the fragment shader to keep vLight (no sun shadow).
+    vLightParts = emissive ? vec4(frame.animation.y, 0.0, 0.0, -1.0)
+                           : vec4(shade, skyLight * frame.params.z, frame.params.w + skyLight * frame.extra.w, blockLight);
     vMoving = frame.animation.z > 0.5 ? shade * movingLight(relative) : vec3(0.0);
     vShadowAt = relative;
 #endif

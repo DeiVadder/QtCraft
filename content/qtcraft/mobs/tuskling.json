@@ -1,0 +1,98 @@
+{
+    "name": "tuskling",
+    "sounds": {
+        "ambient": "mob.tuskling.ambient",
+        "hurt": "mob.tuskling.hurt",
+        "death": "mob.tuskling.death"
+    },
+    "health": 16,
+    "width": 0.6,
+    "height": 1.95,
+    "walkSpeed": 1.4,
+    "chaseSpeed": 4.2,
+    "hostile": true,
+    "ai": "neutral",
+    "packRange": 16,
+    "angerSeconds": 30,
+    "heldItem": "golden_sword",
+    "attackDamage": 5,
+    "attackRange": 1.6,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "spawn": {
+        "maxGroup": 4,
+        "weight": 15,
+        "darkness": false,
+        "maxLight": 15,
+        "biomes": [
+            "nether_wastes"
+        ],
+        "also": [
+            {
+                "biomes": [
+                    "crimson_forest"
+                ],
+                "weight": 5,
+                "darkness": false,
+                "maxLight": 15
+            }
+        ]
+    },
+    "young": {
+        "chance": 0.2,
+        "staysYoung": true
+    },
+    "barter": {
+        "sparedBy": [
+            "golden_helmet",
+            "golden_chestplate",
+            "golden_leggings",
+            "golden_boots"
+        ],
+        "currency": "gold_ingot",
+        "table": "tuskling_barter",
+        "loves": [
+            "gold_ingot",
+            "gold_block",
+            "gold_ore",
+            "nether_gold_ore",
+            "raw_gold",
+            "raw_gold_block",
+            "gilded_blackstone",
+            "golden_sword",
+            "golden_axe",
+            "golden_pickaxe",
+            "golden_shovel",
+            "golden_hoe",
+            "clock",
+            "bell",
+            "golden_helmet",
+            "golden_chestplate",
+            "golden_leggings",
+            "golden_boots"
+        ],
+        "guards": [
+            "gold_block",
+            "gold_ore",
+            "nether_gold_ore",
+            "raw_gold_block",
+            "gilded_blackstone",
+            "chest",
+            "trapped_chest",
+            "barrel"
+        ],
+        "admireSeconds": 6,
+        "alarmRange": 16,
+        "seekRange": 8,
+        "hoardSize": 8
+    },
+    "skeleton": "tuskling",
+    "outfit": "tuskling",
+    "drops": [
+        {
+            "item": "golden_sword",
+            "chance": 0.085
+        }
+    ],
+    "experience": 5
+}

@@ -1,0 +1,46 @@
+{
+    "name": "bastion_bridge",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {"pending": "lodestone", "weight": 1}
+            ]
+        },
+        {
+            "rolls": [1, 2],
+            "entries": [
+                {"pending": "crossbow", "weight": 1},
+                {"pending": "spectral_arrow", "weight": 1, "count": [10, 28]},
+                {"item": "gilded_blackstone", "weight": 1, "count": [8, 12]},
+                {"item": "crying_obsidian", "weight": 1, "count": [3, 8]},
+                {"item": "gold_block", "weight": 1},
+                {"item": "gold_ingot", "weight": 1, "count": [4, 9]},
+                {"item": "iron_ingot", "weight": 1, "count": [4, 9]},
+                {"item": "golden_sword", "weight": 1},
+                {"item": "golden_chestplate", "weight": 1},
+                {"item": "golden_helmet", "weight": 1},
+                {"item": "golden_leggings", "weight": 1},
+                {"item": "golden_boots", "weight": 1},
+                {"item": "golden_axe", "weight": 1}
+            ]
+        },
+        {
+            "rolls": [2, 4],
+            "entries": [
+                {"item": "string", "weight": 1, "count": [1, 6]},
+                {"item": "leather", "weight": 1, "count": [1, 3]},
+                {"item": "arrow", "weight": 1, "count": [5, 17]},
+                {"item": "iron_nugget", "weight": 1, "count": [2, 6]},
+                {"item": "gold_nugget", "weight": 1, "count": [2, 6]}
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {"item": "netherite_upgrade_smithing_template", "weight": 1},
+                {"weight": 9}
+            ]
+        }
+    ]
+}

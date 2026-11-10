@@ -1,0 +1,7 @@
+{
+    "name": "regeneration",
+    "icon": "healing_potion",
+    "colour": "#cd5cab",
+    "heal": 1,
+    "periodTicks": 50
+}

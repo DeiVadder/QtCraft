@@ -1,0 +1,6 @@
+{
+    "name": "thick",
+    "base": "water",
+    "ingredient": "glowstone_dust",
+    "result": "thick"
+}

@@ -1,0 +1,15 @@
+{
+    "name": "full_anchor",
+    "parent": "soul_anchor",
+    "icon": "glowstone",
+    "frame": "goal",
+    "handbook": "block:soul_anchor",
+    "criteria": {
+        "full": {
+            "trigger": "block_placed",
+            "conditions": {
+                "block": "soul_anchor_4"
+            }
+        }
+    }
+}

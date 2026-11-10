@@ -1,0 +1,11 @@
+{
+    "name": "nether_portal",
+    "pattern": "portal",
+    "primary": "#5a1ea8c0",
+    "secondary": "#c27cffe0",
+    "variation": 0.1,
+    "seed": 833,
+    "frames": 16,
+    "frameTime": 2,
+    "interpolate": true
+}

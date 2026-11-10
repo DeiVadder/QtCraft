@@ -29,7 +29,7 @@ Rectangle {
     required property GameController game
     property int page: MainMenu.Home
     // A screen or dialog of the menu is open.
-    readonly property bool covered: settingsScreen.visible || deleteDialog.visible || game.handbook.isOpen
+    readonly property bool covered: settingsScreen.visible || deleteDialog.visible || upgradeDialog.visible || game.handbook.isOpen
     // Gives the focus back when the settings close: to where they were opened from (the mods page's
     // "Texture packs …"), else to the side bar's "Settings".
     property var settingsReturn: null
@@ -325,6 +325,12 @@ Rectangle {
             if (menu.visible && menu.game.multiplayer.joining && menu.page !== MainMenu.Multiplayer)
                 menu.navigate(() => multiplayerPage.open());
         }
+    }
+
+    GeneratorUpgradeDialog {
+        id: upgradeDialog
+
+        upgrade: menu.game.library.upgrade
     }
 
     DeleteWorldDialog {

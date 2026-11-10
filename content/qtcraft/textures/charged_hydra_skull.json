@@ -1,0 +1,30 @@
+{
+    "name": "charged_hydra_skull",
+    "pattern": "icon",
+    "primary": "#7f9ff0",
+    "variation": 0.0,
+    "seed": 8617,
+    "palette": {
+        "B": "#7f9ff0",
+        "D": "#3d5bb0",
+        "E": "#0f1b45"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "    DDDDDDDD",
+        "   DBBBBBBBBD",
+        "   DBBBBBBBBD",
+        "   DBEEBBEEBD",
+        "   DBEEBBEEBD",
+        "   DBBBBBBBBD",
+        "   DBBBEEBBBD",
+        "    DBBBBBBD",
+        "    DEBEBEBD",
+        "     DDDDDD",
+        "",
+        "",
+        ""
+    ]
+}

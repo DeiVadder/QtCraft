@@ -22,6 +22,8 @@ target_compile_definitions(test_bundled_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${
 qc_add_test(test_cart_content SOURCES content/test_cart_content.cpp LIBRARIES qc_worlds)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_base_content qc_worlds)
 target_compile_definitions(test_sound_content PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+# The atmosphere of biomes and the particles of blocks (decisions E-1120 to E-1122).
+qc_add_test(test_atmosphere_content SOURCES content/test_atmosphere_content.cpp LIBRARIES qc_base_content)
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_base_content qc_worlds)
 qc_add_test(test_handbook_files SOURCES content/test_handbook_files.cpp LIBRARIES qc_common)
@@ -33,3 +35,5 @@ target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PR
 qc_add_test(test_english_plurals SOURCES content/test_english_plurals.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_english_plurals PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_advancement_content SOURCES content/test_advancement_content.cpp LIBRARIES qc_base_content)
+qc_add_test(test_progression_reachability SOURCES content/test_progression_reachability.cpp content/QcProgressionRules.h content/QcProgressionRules.cpp content/QcProgressionSolver.h content/QcProgressionSolver.cpp content/QcWorldCensus.h content/QcWorldCensus.cpp fixtures/QcTestUtil.h LIBRARIES qc_worlds qc_worldgen qc_base_content TIMEOUT 480)
+qc_add_test(test_nether_blocks SOURCES content/test_nether_blocks.cpp LIBRARIES qc_base_content)

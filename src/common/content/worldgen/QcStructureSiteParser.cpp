@@ -155,7 +155,7 @@ constexpr int maxAreaMonsters = 8;
             reader.fail(u"'monsters' must be an array of creature names"_s);
             return area;
         }
-        area.monsters.append(mob);
+        area.monsters.append({mob, 1, std::nullopt});
     }
     return area;
 }

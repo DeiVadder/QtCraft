@@ -18,6 +18,7 @@ qc_add_test(test_device_loss_policy SOURCES controls/test_device_loss_policy.cpp
 # The display settings with window modes, the fullscreen key and the frame limit on an offscreen
 # window (decision E-835).
 qc_add_test(test_display_settings SOURCES controls/test_display_settings.cpp LIBRARIES qc_app_core)
+qc_add_test(test_generator_upgrade_controller SOURCES controls/test_generator_upgrade_controller.cpp LIBRARIES qc_app_core)
 # The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
 # Enter switches, the arrow keys choose segments (decision E-845).
 qc_add_test(test_setting_controls SOURCES controls/test_setting_controls.cpp LIBRARIES qc_app_qml)
@@ -33,6 +34,8 @@ qc_add_test(test_control_palette SOURCES controls/test_control_palette.cpp LIBRA
 qc_add_test(test_ui_enums SOURCES controls/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
 # Modes, kinds and states of the menus as enumerations, in C++ and QML (E-688, package 79.62).
 qc_add_test(test_menu_enums SOURCES controls/test_menu_enums.cpp LIBRARIES qc_app_qml qc_worlds qc_base_content)
+# The audio page: one slider per sound category from the model, moving one sets the volume (E-1150).
+qc_add_test(test_audio_page SOURCES controls/test_audio_page.cpp LIBRARIES qc_app_qml qc_worlds qc_base_content)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES controls/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES controls/test_lazy_screen.cpp LIBRARIES Qt::Quick)

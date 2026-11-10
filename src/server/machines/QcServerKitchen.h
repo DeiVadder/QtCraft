@@ -14,14 +14,16 @@ class QcServerWorld;
 struct QcServerClient;
 class QcServerState;
 
-/*! \brief Cake and campfires in the server (decisions E-772, E-773).
+/*! \brief Cake, campfires and cauldrons in the server (decisions E-772, E-773, E-1065).
 
     Using cake eats one bite of it when the player is hungry; the last bite removes it. Using a
     lit campfire with an item it can cook puts one item on it (QcCampfires); a shovel or a bucket
     of a liquid that does not burn puts it out (its block becomes \c {extinguishesInto}, the
     items on it drop), and an unlit one is lit again by flint and steel, a dispenser or fire
     (light()). In the tick the items cook for the campfire's time and drop beside it when done,
-    and clients that have the chunk hear what lies on each campfire (QcMsg::CampfireDisplay). */
+    and clients that have the chunk hear what lies on each campfire (QcMsg::CampfireDisplay).
+    Using a cauldron with a bottle or bucket takes water out of it or puts water in
+    (QcCauldronDefinition). */
 class QcServerKitchen
 {
 public:
@@ -41,6 +43,10 @@ public:
 
 private:
     bool eatBite(QcServerClient &client, QcBlockPos pos, QcBlockId block);
+    // What the held item does to the cauldron at `pos`; false when nothing, so it acts as usual.
+    bool useCauldron(QcServerClient &client, QcBlockPos pos, QcBlockId block);
+    // Sets the cauldron at `pos` to `level` with a sound, and turns the held item into `item`.
+    void changeCauldron(QcServerClient &client, QcBlockPos pos, const QString &level, const QString &item);
     bool putOnCampfire(QcServerClient &client, QcBlockPos pos, QcBlockId block);
     bool putOut(QcServerClient &client, QcBlockPos pos, QcBlockId block);
     // Whether the held item puts out a campfire: a shovel, or a bucket of a liquid that does not burn.

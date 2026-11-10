@@ -1,0 +1,7 @@
+{
+    "name": "netherite_leggings",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_leggings",
+    "addition": "netherite_ingot",
+    "result": "netherite_leggings"
+}

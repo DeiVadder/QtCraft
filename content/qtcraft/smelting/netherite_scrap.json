@@ -1,0 +1,10 @@
+{
+    "name": "netherite_scrap",
+    "kind": "metal",
+    "input": "ancient_debris",
+    "result": {
+        "item": "netherite_scrap"
+    },
+    "seconds": 10,
+    "experience": 2.0
+}

@@ -19,10 +19,12 @@
 #include "server/chunks/QcChunkLoaders.h"
 #include "server/chunks/QcChunkSaveState.h"
 #include "server/chunks/QcSectionMarks.h"
+#include "server/machines/QcBeacons.h"
 #include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/villages/QcVillages.h"
+#include "worldgen/generators/QcVersionedGenerator.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 
 #include <QHash>
@@ -87,6 +89,9 @@ public:
     QcBlockIndex &hoppers() { return m_hoppers; }
     /*! Returns the loaded Signal Hoppers, read-only. */
     const QcBlockIndex &hoppers() const { return m_hoppers; }
+    /*! Returns the loaded daylight sensors (decision E-982): every chunk that arrives or leaves and
+        every block set keeps them up to date, so that reading them scans no chunk. */
+    const QcBlockIndex &daylightSensors() const { return m_daylightSensors; }
     /*! Returns the burning fires of the loaded chunks and their next steps (decision E-392),
         kept in step with every block set here and every chunk that arrives, leaves or is
         generated again. */
@@ -108,6 +113,10 @@ public:
     QcSignTexts &signs() { return m_signs; }
     /*! Returns the text on the signs, read-only. */
     const QcSignTexts &signs() const { return m_signs; }
+    /*! Returns the beacons of the loaded chunks (decision E-1142), kept in step like the signs. */
+    QcBeacons &beacons() { return m_beacons; }
+    /*! Returns the beacons, read-only. */
+    const QcBeacons &beacons() const { return m_beacons; }
     /*! Returns which loaded chunks were furnished and the parts of their saved block entities this
         version does not read (decisions E-520, E-440); kept in step with every block set here. */
     QcBlockEntityExtras &blockEntityExtras() { return m_blockEntityExtras; }
@@ -217,8 +226,18 @@ public:
         (QcBlockEntities::placed); spilled contents wait in blockEntities(). */
     bool setBlock(QcBlockPos pos, QcBlockId block);
 
-    /*! Returns the world generator. */
+    /*! Returns the world generator: the one the world was made with, following the version map
+        of its dimension (QcVersionedGenerator, decision E-1012). */
     const QcWorldGenerator &generator() const { return *m_generator; }
+    /*! Returns whether the chunk \a pos has an entry in the generator's version map. */
+    [[nodiscard]] bool isVersionMapped(QcChunkPos pos) const { return m_generator->versionMap().versionAt(pos).has_value(); }
+    /*! Generates the chunks \a map names with generators of their versions made by \a create
+        (QcVersionedGenerator::setVersionMap): only before the first chunk is generated. Returns
+        an error then or for a version \a create cannot make. */
+    [[nodiscard]] QcStatus setGeneratorVersionMap(const QcGeneratorVersionMap &map, const QcVersionedGenerator::Factory &create)
+    {
+        return m_generator->setVersionMap(map, create);
+    }
 
     /*! Puts \a chunks into the world as changed (tests). */
     void adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<QcChunk>> &chunks);
@@ -239,9 +258,11 @@ private:
     void generateInBackground(QcChunkPos pos, Arrival kept);
 
     std::shared_ptr<const QcContentRegistry> m_content;
-    std::unique_ptr<QcWorldGenerator> m_generator;
+    std::unique_ptr<QcVersionedGenerator> m_generator;
     QcSectionMarks m_marks;
     QcBlockIndex m_hoppers;
+    // NOLINT(qc-member-access): the sensors' index, built in the constructor, kept by noteSections, forgetSections and setBlock, read only through daylightSensors().
+    QcBlockIndex m_daylightSensors;
     QcChunkLinks m_links;
     QcChunkLoaders m_loaders;
     // Refers to the generator, which lives as long as the world.
@@ -251,6 +272,7 @@ private:
     QcSpawners m_spawners;
     QcCampfires m_campfires;
     QcSignTexts m_signs;
+    QcBeacons m_beacons;
     QcBlockEntityExtras m_blockEntityExtras;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).

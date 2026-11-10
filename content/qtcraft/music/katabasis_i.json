@@ -1,0 +1,11 @@
+{
+    "title": "Katabasis I (The Weight of Air)",
+    "artist": "Scott Buckley",
+    "licence": "CC-BY-4.0",
+    "source": "https://www.scottbuckley.com.au/library/katabasis-i/",
+    "attribution": "'Katabasis I (The Weight of Air)' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au",
+    "slots": [
+        "biome:nether_wastes",
+        "dimension:nether"
+    ]
+}

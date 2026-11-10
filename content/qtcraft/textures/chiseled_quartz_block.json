@@ -1,0 +1,13 @@
+{
+    "name": "chiseled_quartz_block",
+    "pattern": "chiseled_bricks",
+    "primary": "#ebe5dc",
+    "secondary": "#cfc5b8",
+    "variation": 0.04,
+    "seed": 8411,
+    "material": {
+        "smoothness": 0.5,
+        "bump": 0.8,
+        "porosity": 0.05
+    }
+}

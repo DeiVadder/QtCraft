@@ -1,0 +1,19 @@
+{
+    "name": "nether_sprouts",
+    "sound": "roots",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "replaceable": true,
+    "ground": [
+        "crimson_nylium",
+        "warped_nylium",
+        "soul_soil",
+        "netherrack"
+    ],
+    "drops": [],
+    "textures": {
+        "all": "nether_sprouts"
+    }
+}

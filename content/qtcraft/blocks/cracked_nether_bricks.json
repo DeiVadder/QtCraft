@@ -1,0 +1,11 @@
+{
+    "name": "cracked_nether_bricks",
+    "sound": "nether_bricks",
+    "hardness": 2.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "textures": {
+        "all": "cracked_nether_bricks"
+    }
+}

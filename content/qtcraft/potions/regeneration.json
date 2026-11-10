@@ -1,0 +1,9 @@
+{
+    "name": "regeneration",
+    "effects": [
+        {
+            "effect": "regeneration",
+            "seconds": 45
+        }
+    ]
+}

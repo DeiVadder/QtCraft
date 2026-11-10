@@ -17,6 +17,7 @@
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/content/worldgen/QcAtmosphereParser.h"
 
 #include <QJsonArray>
 
@@ -208,10 +209,14 @@ void BlockReader::readPlacementFields()
     const QString support = m_reader.string(u"support"_s, isCross(m_block) ? u"below"_s : u"none"_s);
     if (support == u"below"_s) {
         m_block.support = QcBlockSupport::Below;
+    } else if (support == u"above"_s) {
+        m_block.support = QcBlockSupport::Above;
     } else if (support == u"attached"_s) {
         m_block.support = QcBlockSupport::Attached;
+    } else if (support == u"portal"_s) {
+        m_block.support = QcBlockSupport::Portal;
     } else if (support != u"none"_s) {
-        m_reader.fail(u"'support' must be none, below or attached"_s);
+        m_reader.fail(u"'support' must be none, below, above, attached or portal"_s);
     }
 }
 
@@ -261,6 +266,9 @@ void BlockReader::readMiningFields()
     m_block.opensStonecutter = m_reader.boolean(u"stonecutter"_s, false);
     m_block.opensEnchanting = m_reader.boolean(u"enchanting"_s, false);
     m_block.opensAnvil = m_reader.boolean(u"anvil"_s, false);
+    m_block.opensSmithing = m_reader.boolean(u"smithing"_s, false);
+    m_block.opensBeacon = m_reader.boolean(u"beacon"_s, false);
+    m_block.beamColour = m_reader.colour(u"beamColour"_s);
     m_block.wearsInto = m_reader.name(u"wearsInto"_s, m_namespace);
     m_block.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }
@@ -366,6 +374,7 @@ void BlockReader::readSapling(const QJsonObject &saplingJson, QcJsonFieldReader 
     QcSaplingDefinition sapling;
     sapling.feature = saplingReader.name(u"feature"_s, m_namespace);
     sapling.giantFeature = saplingReader.name(u"giantFeature"_s, m_namespace);
+    sapling.boneMealOnly = saplingReader.boolean(u"boneMealOnly"_s, false);
     sapling.minSeconds = saplingReader.number(u"minSeconds"_s, 120.0, 1.0, 86400.0);
     sapling.maxSeconds = saplingReader.number(u"maxSeconds"_s, std::max(300.0, sapling.minSeconds), sapling.minSeconds, 86400.0);
     sapling.plantChance = saplingReader.number(u"plantChance"_s, 0.0, 0.0, 1.0);
@@ -438,7 +447,9 @@ void BlockReader::readFireFields()
     QcFireDefinition fire;
     fire.isFire = m_reader.boolean(u"fire"_s, false);
     fire.eternal = m_reader.boolean(u"eternalFire"_s, false);
+    fire.fireAbove = m_reader.name(u"fireAbove"_s, m_namespace);
     fire.setsAlightSeconds = m_reader.integer(u"setsAlight"_s, 0, 0, QcFireDefinition::maxAlightSeconds);
+    m_block.contactFire = m_reader.boolean(u"contactFire"_s, fire.setsAlightSeconds > 0);
     fire.sparks = m_reader.integer(u"sparks"_s, 0, 0, QcFireDefinition::maxChance);
     m_reader.nestedObject(u"flammable"_s, [&fire](const QJsonObject &, QcJsonFieldReader &nested) {
         fire.ignite = nested.integer(u"ignite"_s, 0, 0, QcFireDefinition::maxChance);
@@ -448,6 +459,9 @@ void BlockReader::readFireFields()
 
     if (fire.isFire && (m_block.solid || m_block.liquid || fire.isFlammable() || fire.eternal)) {
         m_reader.fail(u"fire must be neither solid nor liquid, flammable or eternal"_s);
+    }
+    if (fire.isFire && !fire.fireAbove.isEmpty()) {
+        m_reader.fail(u"fire cannot have 'fireAbove'"_s);
     }
     if (fire.isFire && m_block.lightOpacity != 0) {
         m_reader.fail(u"fire must have 'lightOpacity' 0"_s);
@@ -514,8 +528,9 @@ void BlockReader::readGrowth(QcJsonFieldReader &growthReader)
 {
     m_block.growth.maxHeight = growthReader.integer(u"maxHeight"_s, 3, 2, 64);
     m_block.growth.averageSeconds = growthReader.number(u"averageSeconds"_s, 600.0, 1.0, 86400.0);
-    if (growthReader.ok() && m_block.support != QcBlockSupport::Below) {
-        growthReader.fail(u"growing blocks need 'support': \"below\""_s);
+    m_block.growth.boneMeal = growthReader.boolean(u"boneMeal"_s, false);
+    if (growthReader.ok() && m_block.support != QcBlockSupport::Below && m_block.support != QcBlockSupport::Above) {
+        growthReader.fail(u"growing blocks need 'support': \"below\" or \"above\""_s);
     }
 }
 
@@ -530,6 +545,8 @@ void BlockReader::readFarming()
     m_block.tillsInto = m_reader.name(u"tillsInto"_s, m_namespace);
     m_block.flattensInto = m_reader.name(u"flattensInto"_s, m_namespace);
     m_block.growsVegetation = m_reader.boolean(u"growsVegetation"_s, false);
+    m_block.vegetationBiome = m_reader.name(u"vegetationBiome"_s, m_namespace);
+    m_block.overgrownBy = QcContentFields::parseNames(u"overgrownBy"_s, m_namespace, m_reader);
     m_block.coveredInto = m_reader.name(u"coveredInto"_s, m_namespace);
     m_block.strippedInto = m_reader.name(u"strippedInto"_s, m_namespace);
     m_block.dyeProperty = m_reader.string(u"dyeProperty"_s);
@@ -574,6 +591,19 @@ void BlockReader::readNamedObjects()
     readDrops();
     m_block.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     m_reader.nestedObject(u"infested"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readInfested(nested); });
+    m_reader.nestedObject(u"cauldron"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_block.cauldron.bottle = nested.name(u"bottle"_s, m_namespace);
+        m_block.cauldron.bucket = nested.name(u"bucket"_s, m_namespace);
+        if (nested.ok() && (m_block.cauldron.bottle.isEmpty() || m_block.cauldron.bucket.isEmpty())) {
+            nested.fail(u"a cauldron needs 'bottle' and 'bucket'"_s);
+        }
+    });
+    m_reader.nestedObject(u"anchor"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_block.anchor.charge = nested.integer(u"charge"_s, 0, 0, QcAnchorDefinition::maxCharge);
+        m_block.anchor.charged = nested.name(u"charged"_s, m_namespace);
+        m_block.anchor.spent = nested.name(u"spent"_s, m_namespace);
+        m_block.anchor.fuel = nested.name(u"fuel"_s, m_namespace);
+    });
     m_reader.nestedObject(u"campfire"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         m_block.campfire = QcCookingParser::parseCampfire(json, nested, m_namespace);
     });
@@ -621,6 +651,7 @@ QcResult<QcBlockDefinition> BlockReader::read()
     });
     m_block.soundMaterial = m_reader.name(u"sound"_s, m_namespace, QcSoundKeys::defaultMaterialFor(m_block));
     m_reader.nestedObject(u"sounds"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readSounds(nested); });
+    m_block.particles = QcAtmosphereParser::parseEmitters(m_json.value(u"particles"_s), m_reader);
 
     readTextures();
     m_block.itemTexture = m_reader.name(u"itemTexture"_s, m_namespace);

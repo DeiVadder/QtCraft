@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_magma_cream",
+    "base": "water",
+    "ingredient": "magma_cream",
+    "result": "mundane"
+}

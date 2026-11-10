@@ -1,0 +1,19 @@
+{
+    "name": "crimson_nylium",
+    "sound": "nylium",
+    "hardness": 0.4,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "netherrack"
+        }
+    ],
+    "growsVegetation": true,
+    "vegetationBiome": "crimson_forest",
+    "textures": {
+        "top": "crimson_nylium",
+        "bottom": "netherrack",
+        "side": "crimson_nylium_side"
+    }
+}

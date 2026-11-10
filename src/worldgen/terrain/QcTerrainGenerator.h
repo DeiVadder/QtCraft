@@ -22,7 +22,6 @@
 #include "worldgen/terrain/QcVegetationPatchPlacer.h"
 
 #include <QList>
-#include <QVarLengthArray>
 
 #include <array>
 #include <memory>
@@ -65,6 +64,10 @@ public:
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
     bool isNaturalGround(QcBlockId block) const override { return m_definitions.naturalGround.contains(block); }
+    /*! Returns the block the sea and lakes are filled with. */
+    [[nodiscard]] QcBlockId waterBlock() const override { return m_definitions.water; }
+    [[nodiscard]] bool isWaterBlock(QcBlockId block) const override { return m_definitions.waterKinds.contains(block); }
+    [[nodiscard]] int seaTop() const override { return m_definitions.seaLevel - 1; }
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
     /*! Returns the villages of the terrain. */
@@ -110,6 +113,9 @@ public:
         shafts by their central room and entrance, dungeons by their room's middle, coastal
         towers by their doorstep (QcTerrainLocate.cpp). */
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
+    /*! Returns the reach of every built dungeon, mine shaft, coastal tower, surface structure and
+        village in the chunk \a pos (decision E-1013, QcTerrainLocate.cpp). */
+    [[nodiscard]] QList<QcXzRect> structuresTouching(QcChunkPos pos) const override;
 
     /*! Returns the shape and biome of the column \a x, \a z. Near a biome border its ground
         biome is left \c {unresolvedGround} (a second climate evaluation): withGround() or
@@ -190,8 +196,6 @@ public:
     /*! Returns the sea level: the sea is filled with water up to the block below it (the water
         surface, \c {seaLevel() - 1}), the first air above the sea. */
     int seaLevel() const { return m_definitions.seaLevel; }
-    /*! Returns the block the sea and lakes are filled with. */
-    QcBlockId waterBlock() const { return m_definitions.water; }
 
 private:
     // The top block of a column with the terrain data `base` (its height possibly moved).
@@ -267,12 +271,6 @@ private:
     // Per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     QList<bool> carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
     void placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
-    // The cells of one vein, chunk-local; on the stack up to the largest vein the content allows
-    // (`veinSize` at most 64, QcWorldgenParser).
-    using Vein = QVarLengthArray<QcBlockPos, 64>;
-    // One compact vein of `ore`, grown from its first cell.
-    [[nodiscard]] Vein grownVein(const Ore &ore, int vein, QcChunkPos pos) const;
-    void placeVein(QcChunk &chunk, const Ore &ore, const Vein &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     // Columns under and around `village` (may be null) and the footprints of surface structures
     // (`structures`) get none.

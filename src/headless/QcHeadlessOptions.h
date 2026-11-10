@@ -53,7 +53,7 @@ struct Options
     QCommandLineOption mods{u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s};
     QCommandLineOption noMods{u"no-mods"_s, u"Load only the base game."_s};
     QCommandLineOption sounds{u"export-sounds"_s,
-                              u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
+                              u"Write every sound and one music piece per place (seeded by --seed) as WAV files into a directory and exit."_s,
                               u"dir"_s};
     QCommandLineOption handbook{u"export-handbook"_s,
                                 u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
@@ -71,6 +71,10 @@ struct Options
                                     u"World generation options of a terrain world it starts or creates (also with --server, and for --map, "
                                     u"--biome-map, --slice-map and --world-stats): 'preset=more_villages,village_spacing=256,caves=off'."_s,
                                     u"options"_s};
+    QCommandLineOption startDimension{u"start-dimension"_s,
+                                      u"Dimension a world it starts or creates begins in, e.g. 'qtcraft:nether' (also with --server, overriding "
+                                      u"server.json; default: the overworld). A saved world keeps its own."_s,
+                                      u"name"_s};
     QCommandLineOption generatorVersion{u"generator-version"_s,
                                         u"World generator version of a world it starts or creates (also with --server, overriding server.json; "
                                         u"0 or default: the current one). A saved world keeps its own."_s,
@@ -79,6 +83,15 @@ struct Options
                                 u"Game mode of players who join for the first time: survival, creative, adventure or spectator (with --server it overrides "
                                 u"server.json and is the default of a world it creates)."_s,
                                 u"mode"_s};
+    QCommandLineOption convertGenerator{u"convert-generator"_s,
+                                        u"Switch the saved world (a folder of <data>/worlds or a path) to a newer world generator and exit "
+                                        u"(decision E-1014): explored chunks and structures they started keep their version, a backup comes first."_s,
+                                        u"world"_s};
+    QCommandLineOption convertTo{u"to"_s, u"Generator version of --convert-generator (default: the newest)."_s, u"version"_s};
+    QCommandLineOption convertMode{u"mode"_s, u"Border of --convert-generator: hard or blend."_s, u"mode"_s, u"hard"_s};
+    QCommandLineOption convertBlendChunks{u"blend-chunks"_s, u"Width of the ring of --mode blend in chunks (2 to 16, default 6)."_s, u"chunks"_s, u"6"_s};
+    QCommandLineOption convertDimension{u"dimension"_s, u"Dimension of --convert-generator (default: qtcraft:overworld)."_s, u"id"_s,
+                                        u"qtcraft:overworld"_s};
     QCommandLineOption tour{u"showcase-tour"_s,
                             u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
     QCommandLineOption statsLog{u"stats"_s,
@@ -143,10 +156,11 @@ struct Options
         parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
         parser.addOptions({handbook, language, handbookWeb});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, worldOptions, generatorVersion, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
+        parser.addOptions({seed, world, generator, generatorOptions, worldOptions, startDimension, generatorVersion, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
+        parser.addOptions({convertGenerator, convertTo, convertMode, convertBlendChunks, convertDimension});
         parser.addOptions(diagnostics.all());
         parser.addOption(writeDiagnostics);
     }

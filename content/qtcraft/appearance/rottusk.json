@@ -1,0 +1,51 @@
+{
+    "name": "rottusk",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "rottusk_hide",
+            "tint": "none"
+        },
+        "eye": {
+            "texture": "rottusk_eye",
+            "tint": "none"
+        },
+        "pupil": {
+            "texture": "mob_eye_pupil",
+            "tint": "none"
+        },
+        "nostril": {
+            "texture": "mob_nostril",
+            "tint": "none"
+        },
+        "nose": {
+            "texture": "rottusk_snout",
+            "tint": "none"
+        },
+        "hat": {
+            "texture": "rottusk_bone",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "rottusk_rags",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "rottusk_hide",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "rottusk_rot",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "rottusk_rags",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "rottusk_rot",
+            "tint": "none"
+        }
+    }
+}

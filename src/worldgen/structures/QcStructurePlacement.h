@@ -39,6 +39,8 @@ public:
     /*! Returns the world position of the local point \a local (cell centres map to cell
         centres). */
     QcVec3 toWorld(const QcVec3 &local) const;
+    /*! Returns the middle of the structure's floor in the world, the place /locate names. */
+    QcBlockPos middle() const { return toWorld(QcBlockPos{m_structure->sizeX() / 2, m_structure->groundLayer + 1, m_structure->sizeZ() / 2}); }
     /*! Returns the state the local cell \a local gets in the world, turned; std::nullopt keeps
         what is there. */
     [[nodiscard]] std::optional<QcBlockId> worldBlock(QcBlockPos local) const;

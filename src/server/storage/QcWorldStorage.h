@@ -40,11 +40,24 @@ public:
     static constexpr auto infoFileName = "world.json";
     static constexpr auto blockUpdatesFileName = "blockupdates.qce";
     static constexpr auto villagesFileName = "villages.json";
+    static constexpr auto dimensionFileName = "dimension.json";
 
     QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content);
 
     /*! Returns the world directory. */
     const QString &directory() const { return m_directory; }
+    /*! The folder of the dimensions other than the overworld in a world directory. */
+    static constexpr auto dimensionsFolder = "dimensions";
+    /*! Returns the directory that holds the chunks of \a dimension in the world directory
+        \a worldDirectory (decisions E-978, E-988): the world directory itself for the overworld,
+        as before dimensions, else dimensions/<namespace>/<name> (\c {qtcraft:nether} in
+        dimensions/qtcraft/nether); a part Windows reserves as a device name (\c {con},
+        \c {COM1}, any case) gets a '~', which no dimension name holds. world.json, the players,
+        the maps and the lock file belong to the world and stay in the world directory.
+
+        It takes a definition, so only a name the content checked becomes a path: keys of
+        world.json and names of player files never do. */
+    static QString dimensionDirectory(const QString &worldDirectory, const QcDimensionDefinition &dimension);
 
     /*! Returns the world's info read from world.json, or the error. */
     [[nodiscard]] QcResult<QcWorldInfo> readInfo() const;
@@ -89,6 +102,19 @@ public:
     [[nodiscard]] QcResult<QList<QcVillage>> readVillages(const QcVillage::ReadLimits &limits) const;
     /*! Returns the contents of villages.json for \a villages. */
     static QByteArray villagesBytes(const QList<QcVillage> &villages);
+
+    /*! \brief What dimension.json keeps of a dimension other than the overworld, whose counterparts
+        are in world.json for the overworld (decision E-988). \qcfields */
+    struct DimensionFile
+    {
+        bool setupDone = false;
+        QList<QcPlacedChunkLoader> chunkLoaders;
+    };
+    /*! Returns dimension.json of this directory; with no such file a dimension that was never
+        saved; an error when the file cannot be read or is no JSON object. */
+    [[nodiscard]] QcResult<DimensionFile> readDimensionFile() const;
+    /*! Returns the contents of dimension.json for \a file. */
+    static QByteArray dimensionFileBytes(const DimensionFile &file);
 
     /*! Returns the region that holds \a chunk. */
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionFile::regionOf(chunk); }

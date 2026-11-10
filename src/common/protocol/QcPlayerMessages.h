@@ -181,6 +181,11 @@ struct PlayerHealth
     /*! The world yaw in degrees from the player towards where that hit came from (the attacker);
         none for a hit without a direction (a fall, fire, hunger) or no hit. */
     std::optional<float> hurtFrom = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! The extra health of the absorption effect (decision E-992), golden hearts in the HUD. */
+    double absorption = 0.0;
+    /*! Counts the changes of what \c {effects} do to the player's moving (QcMovementEpochs,
+        decision E-992): inputs quote the count they were predicted with. */
+    quint16 movementEpoch = 0;
 };
 
 /*! \brief Client -> server: leave the death screen. */

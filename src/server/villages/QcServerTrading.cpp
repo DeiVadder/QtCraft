@@ -94,13 +94,11 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
     close(client, false);
     // One screen at a time: an open machine, chest, cart or stonecutter closes.
     m_screens.close(client, true);
-    m_screens.closeStonecutter(client);
-    m_screens.closeEnchanting(client);
-    m_screens.closeAnvil(client);
+    m_screens.closeWorkstationsExcept(client);
     villager->villager->trader = client.id;
     villager->villager->traderAt = client.motion.position;
     client.screen.trading = id;
-    m_trading.insert(id);
+    tradingHere().insert(id);
     send(client, *villager, true);
     return true;
 }
@@ -196,7 +194,7 @@ void QcServerTrading::close(QcServerClient &client, bool notify)
         villager->villager->trader = 0;
         villager->villager->decideIn = 0;
     }
-    m_trading.remove(client.screen.trading);
+    tradingHere().remove(client.screen.trading);
     client.screen.trading = 0;
     client.screen.sentTrade.reset();
     if (notify) {
@@ -204,9 +202,15 @@ void QcServerTrading::close(QcServerClient &client, bool notify)
     }
 }
 
+QSet<quint32> &QcServerTrading::tradingHere() const
+{
+    return m_trading.of(m_state.current());
+}
+
 void QcServerTrading::update()
 {
-    if (m_trading.isEmpty()) {
+    QSet<quint32> &trading = tradingHere();
+    if (trading.isEmpty()) {
         return;
     }
 
@@ -226,13 +230,13 @@ void QcServerTrading::update()
     }
 
     // Villagers whose trader left the game stop trading.
-    for (const quint32 id : std::as_const(m_trading)) {
+    for (const quint32 id : std::as_const(trading)) {
         QcCreature *villager = traded.contains(id) ? nullptr : m_state.entities().creatures().find(id);
         if (villager) {
             villager->villager->trader = 0;
         }
     }
-    m_trading = std::move(traded);
+    trading = std::move(traded);
 }
 
 QcMsg::TradeState QcServerTrading::stateOf(const QcCreature &villager) const

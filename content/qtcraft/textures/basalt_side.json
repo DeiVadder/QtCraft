@@ -1,0 +1,8 @@
+{
+    "name": "basalt_side",
+    "pattern": "column_side",
+    "primary": "#62626a",
+    "secondary": "#25252b",
+    "variation": 0.08,
+    "seed": 8419
+}

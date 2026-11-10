@@ -7,8 +7,9 @@
 
 #include <algorithm>
 
-QcBlockIndex::QcBlockIndex(std::vector<bool> marked)
+QcBlockIndex::QcBlockIndex(std::vector<bool> marked, Touching touching)
     : m_marked(std::move(marked))
+    , m_touching(touching)
 {
 }
 
@@ -30,7 +31,9 @@ void QcBlockIndex::noteChunk(QcChunkPos pos, const QcChunk &chunk)
     }
     for (const QcBlockPos &block : std::as_const(found)) {
         m_all.insert(block);
-        m_touched.insert(block);
+    }
+    if (m_touching == Touching::Noted) {
+        m_touched.unite(QSet<QcBlockPos>(found.begin(), found.end()));
     }
     m_byChunk.insert(pos, found);
 }
@@ -49,7 +52,7 @@ void QcBlockIndex::noteBlock(QcBlockPos pos, QcBlockId block)
         }
     }
 
-    if (marked || hasNear(pos)) {
+    if (m_touching == Touching::Noted && (marked || hasNear(pos))) {
         m_touched.insert(pos);
     }
 }

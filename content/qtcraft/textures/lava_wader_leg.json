@@ -1,0 +1,8 @@
+{
+    "name": "lava_wader_leg",
+    "pattern": "speckle",
+    "primary": "#3b3236",
+    "secondary": "#20191c",
+    "variation": 0.12,
+    "seed": 7401
+}

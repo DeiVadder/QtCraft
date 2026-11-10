@@ -1,0 +1,9 @@
+{
+    "name": "instant_damage",
+    "icon": "harming_splash_potion",
+    "colour": "#430a09",
+    "instant": true,
+    "damage": 6,
+    "reversedOnUndead": true,
+    "undeadAmount": 4
+}

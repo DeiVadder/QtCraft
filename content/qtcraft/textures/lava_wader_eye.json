@@ -1,0 +1,8 @@
+{
+    "name": "lava_wader_eye",
+    "pattern": "speckle",
+    "primary": "#f5f0dc",
+    "secondary": "#d8cfb0",
+    "variation": 0.03,
+    "seed": 7404
+}

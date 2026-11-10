@@ -1,0 +1,8 @@
+{
+    "name": "quartz_pillar_from_quartz_block",
+    "input": "quartz_block",
+    "result": {
+        "item": "quartz_pillar",
+        "count": 1
+    }
+}

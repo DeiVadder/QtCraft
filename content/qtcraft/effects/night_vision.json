@@ -1,0 +1,6 @@
+{
+    "name": "night_vision",
+    "icon": "carrot",
+    "colour": "#1f1fa1",
+    "nightVision": true
+}

@@ -8,6 +8,27 @@
     "tool": "pickaxe",
     "textures": {
         "all": "cauldron_side",
-        "top": "cauldron_top"
+        "top": "cauldron_top",
+        "slots": {
+            "water": "water"
+        }
+    },
+    "states": {
+        "level": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "cauldron": {
+        "bottle": "water_bottle",
+        "bucket": "water_bucket"
+    },
+    "signal": {
+        "comparator": {
+            "property": "level",
+            "scaled": false
+        }
     }
 }

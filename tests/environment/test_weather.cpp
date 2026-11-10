@@ -3,13 +3,32 @@
 
 #include "fixtures/QcServerTestFixture.h"
 
+#include "fixtures/QcTestDimensions.h"
 #include "fixtures/QcTestUtil.h"
 #include "server/weather/QcWeatherCycle.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The test terrain in the crimson forest west of x = 50 and the basalt deltas east of it.
+class NetherBiomesGenerator : public QcTestTerrainGenerator
+{
+public:
+    using QcTestTerrainGenerator::QcTestTerrainGenerator;
+
+    QString biomeAt(int x, int z) const override
+    {
+        Q_UNUSED(z);
+        return x < 50 ? u"qtcraft:crimson_forest"_s : u"qtcraft:basalt_deltas"_s;
+    }
+};
+
+} // namespace
 
 // The weather on the server (stage 35.1, decision E-395): its course is a pure function of the seed;
 // /weather sets it with and without a duration; the game rule weatherCycle holds it; it is saved
@@ -286,6 +305,46 @@ private slots:
         QVERIFY(m_server->systems().weather.isSnowingAt(high));
         QVERIFY(m_server->systems().weather.isRainingAt(m_feet.offset(0, 1, 0)));
         QCOMPARE(m_client->weather->climate.snowFrom, QcWeather::snowHeight);
+    }
+
+    // The atmosphere of the biome under the player's feet (decision E-1120): sent on joining and
+    // when he crosses into another biome, never again while it stays the same.
+    void atmosphereFollowsTheBiome()
+    {
+        join({}, std::make_unique<NetherBiomesGenerator>(m_content));
+        const QcBiomeAtmosphere &crimson = m_content->worldgen().biome(u"qtcraft:crimson_forest"_s)->atmosphere;
+        const QcBiomeAtmosphere &deltas = m_content->worldgen().biome(u"qtcraft:basalt_deltas"_s)->atmosphere;
+        QCOMPARE(m_client->atmospheres, (QList<QcMsg::Atmosphere>{{crimson}}));
+        ticks(40);
+        QCOMPARE(m_client->atmospheres.size(), 1);
+
+        chat(u"/tp 100.5 80 0.5"_s);
+        ticks(2);
+        QCOMPARE(m_client->atmospheres.size(), 2);
+        QCOMPARE(m_client->atmospheres.last().atmosphere, deltas);
+        chat(u"/tp 120.5 80 0.5"_s);
+        ticks(2);
+        QCOMPARE(m_client->atmospheres.size(), 2);
+
+        // Without biomes (the plain test terrain) the atmosphere is empty.
+        join();
+        QCOMPARE(m_client->atmospheres, (QList<QcMsg::Atmosphere>{{}}));
+    }
+
+    // Another dimension makes the client forget the atmosphere it had, so the server sends one
+    // again even when it is the same (here: none in a world and a dimension without biomes); also
+    // in a frozen world.
+    void atmosphereComesAgainInAnotherDimension()
+    {
+        const std::shared_ptr<const QcContentRegistry> base = std::exchange(m_content, QcTestUtil::contentWithVoidDimension(u"test:void"_s, u"platform=qtcraft:stone,radius=2,y=63"_s));
+        join();
+        QCOMPARE(m_client->atmospheres, (QList<QcMsg::Atmosphere>{{}}));
+        chat(u"/tick freeze"_s);
+        chat(u"/tp 0.5 64 0.5 in test:void"_s);
+        ticks(3);
+        QCOMPARE(m_client->dimensions.last(), u"test:void"_s);
+        QCOMPARE(m_client->atmospheres, (QList<QcMsg::Atmosphere>{{}, {}}));
+        m_content = base;
     }
 
     // The climate cache drops its oldest columns when full; what it answers stays the same.

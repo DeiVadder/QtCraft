@@ -1,0 +1,8 @@
+{
+    "name": "blackstone_top",
+    "pattern": "glassy_stone",
+    "primary": "#2a2432",
+    "secondary": "#8a7ea6",
+    "variation": 0.08,
+    "seed": 8425
+}

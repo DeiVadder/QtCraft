@@ -1,0 +1,57 @@
+{
+    "name": "block.stem.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1476,
+            "gain": 0.024
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 426,
+            "resonance": 3.9,
+            "lowpass": 1279,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 943,
+            "resonance": 4.55,
+            "lowpass": 2829,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 131,
+            "resonance": 0.78,
+            "lowpass": 394,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

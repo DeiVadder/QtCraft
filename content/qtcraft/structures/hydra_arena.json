@@ -1,0 +1,111 @@
+{
+    "name": "hydra_arena",
+    "showcase": {
+        "order": 119
+    },
+    "palette": {
+        "P": "polished_stone",
+        "S": "soul_sand",
+        "O": "soul_soil",
+        "K": "charred_skull[facing=south]",
+        "G": "glass"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP"
+        ],
+        [
+            "             ",
+            "             ",
+            "       GGGGG ",
+            "       G   G ",
+            "   S   G   G ",
+            "       G   G ",
+            "       GGGGG ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "       GGGGG ",
+            "       G   G ",
+            "  SOS  G   G ",
+            "       G   G ",
+            "       GGGGG ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "       GGGGG ",
+            "       G   G ",
+            "  K K  G   G ",
+            "       G   G ",
+            "       GGGGG ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "       GGGGG ",
+            "       G   G ",
+            "       G   G ",
+            "       G   G ",
+            "       GGGGG ",
+            "             ",
+            "             "
+        ],
+        [
+            "             ",
+            "             ",
+            "       GGGGG ",
+            "       GGGGG ",
+            "       GGGGG ",
+            "       GGGGG ",
+            "       GGGGG ",
+            "             ",
+            "             "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "charred_hydra",
+            "at": [
+                9.5,
+                1.0,
+                4.5
+            ],
+            "confined": true,
+            "noAi": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                4.6,
+                4.5
+            ],
+            "text": "chapter.qtcraft.charred_hydra.summoning.title"
+        },
+        {
+            "at": [
+                9.5,
+                6.4,
+                4.5
+            ],
+            "text": "mob.qtcraft.charred_hydra"
+        }
+    ]
+}

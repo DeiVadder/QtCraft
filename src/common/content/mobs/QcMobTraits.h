@@ -242,18 +242,24 @@ struct QcArcherDefinition
     /*! Name of the QcProjectileDefinition it shoots. */
     QString projectile;
     /*! \brief Another projectile it shoots instead while its target lacks a status effect (the
-        witch's poison before its harming, decision E-623).
+        witch's slowness, poison and weakness before its harming, decisions E-623, E-1105).
 
-        \c {projectile} names the projectile, \c {unlessTargetHas} the status effect (JSON keys
-        of the same names in \c {"choices"}). \qcfields */
+        \c {projectile} names the projectile, \c {unlessTargetHas} the status effect; the choice
+        also needs the target at least \c {minDistance} and at most \c {maxDistance} metres away
+        (horizontally), its health at least \c {minTargetHealth} and a draw below \c {chance}
+        (JSON keys of the same names in \c {"choices"}). \qcfields */
     struct Choice
     {
         QString projectile;
         QString unlessTargetHas;
+        double minDistance = 0.0;
+        double maxDistance = 1000.0;
+        double minTargetHealth = 0.0;
+        double chance = 1.0;
 
         bool operator==(const Choice &) const = default;
     };
-    /*! The first choice whose effect the target lacks is shot, else \c {projectile}. */
+    /*! The first choice that holds is shot, else \c {projectile}. */
     QList<Choice> choices;
     /*! Most entries of \c {choices}. */
     static constexpr int maxChoices = 8;
@@ -272,31 +278,22 @@ struct QcArcherDefinition
     double range = 15.0;
     double minDistance = 5.0;
     double keepDistance = 12.0;
+    /*! Played where it starts to draw, \c {drawSeconds} before the shot (\c {warnSound}; the
+        wailer's cry, decision E-1053); empty for none. Only drifters play it. */
+    QString warnSound;
+    /*! Shots of one charge (\c {volley}, 1..8; the ember wraith's three, decision E-1056), the
+        later ones \c {volleySeconds} after the one before; \c {cooldownSeconds} counts from the
+        last. Only drifters fire volleys. \qcshared */
+    int volley = 1;
+    double volleySeconds = 0.3;
+    /*! Above 0 the aim sideways is off by a normal draw of this many metres per square root of
+        the distance, instead of \c {spreadDegrees} (\c {scatter}; only drifters). */
+    double scatter = 0.0;
+    /*! It shows flames on its body from the start of a charge to the last shot of the volley
+        (\c {flares}; only drifters). */
+    bool flares = false;
 
     bool operator==(const QcArcherDefinition &) const = default;
-};
-
-/*! \brief A creature that drinks to heal (the witch, decision E-623), from its data (\c {drinks}):
-    once its health lies \c {heal} or more below its most and \c {cooldownSeconds} have passed since
-    its last drink, it holds \c {item} for \c {seconds} without shooting, then heals by \c {heal}
-    with \c {sound}.
-
-    Server side only. \qcfields */
-struct QcDrinkHealDefinition
-{
-    QString item;
-    /*! The id of \c {item}, resolved when the content is finished (QcMobTraitsContent::resolve). */
-    QcItemId itemId = qcNoItem;
-    /*! Health it heals by a drink, and how far below its most its health must lie. */
-    double heal = 4.0;
-    /*! Seconds it holds the drink before it heals. */
-    double seconds = 1.6;
-    /*! Seconds after a drink before the next one. */
-    double cooldownSeconds = 3.0;
-    /*! Played when it heals; empty for none. */
-    QString sound;
-
-    bool operator==(const QcDrinkHealDefinition &) const = default;
 };
 
 /*! \brief A parent that splits off children and takes them with it (the Kjut, decision E-839), from
@@ -340,20 +337,77 @@ struct QcFamilyDefinition
     static constexpr int maxChildrenLimit = 16;
 };
 
+/*! \brief A creature that drifts without paths (decision E-1053; the wailer, the lava wader),
+    from its data (\c {drift}; the drifter AI, with \c {hover}): it holds a heading for about
+    \c {seconds} and turns at a wall. With \c {keepsToLava} it picks headings that lead over lava
+    where it can, with \c {keepsToGround} it stops at a drop of more than dropReach blocks and
+    takes another heading (decision E-1056); with \c {restSeconds} it stays about that long
+    after each heading. \qcfields */
+struct QcDriftDefinition
+{
+    /*! The deepest drop a creature that keeps to the ground walks off. */
+    static constexpr int dropReach = 3;
+
+    double seconds = 4.0;
+    bool keepsToLava = false;
+    bool keepsToGround = false;
+    double restSeconds = 0.0;
+
+    bool operator==(const QcDriftDefinition &) const = default;
+};
+
+/*! \brief A creature a player rides (decision E-1054; the lava wader), from its data (\c {ride}):
+    the item \c {saddle} used on it saddles it, using it saddled mounts it, and while the rider
+    holds \c {steer} it goes where he looks at \c {speed} m/s. \c {seat} is the height of the
+    rider's feet above its feet. \qcfields */
+struct QcRideDefinition
+{
+    QString saddle;
+    QString steer;
+    QcItemId saddleId = qcNoItem;
+    QcItemId steerId = qcNoItem;
+    double speed = 3.0;
+    double seat = 1.2;
+
+    bool operator==(const QcRideDefinition &) const = default;
+};
+
+/*! \brief A creature that falls apart when it dies (decision E-1055; the magma slime), from its
+    data (\c {splits}): \c {min} to \c {max} creatures of the kind \c {into} appear where it died.
+    \qcfields */
+struct QcSplitDefinition
+{
+    QString into;
+    int min = 2;
+    int max = 4;
+
+    bool operator==(const QcSplitDefinition &) const = default;
+};
+
 /*! \brief A creature that hovers (the Kjut, decision E-839), from its data (\c {hover}): it floats
     \c {height} metres above the ground or the liquid below it, bobbing by \c {bob} metres every
     \c {bobSeconds}, never higher than \c {maxHeight} above the ground and lower under a low
     ceiling; it flies without gravity towards where its brain wants to go, rises over a wall in its
-    way and turns to face where it goes at no more than \c {turnSpeed} degrees a second.
+    way and turns to face where it goes at no more than \c {turnSpeed} degrees a second, rising and
+    sinking at no more than \c {climbSpeed} metres a second (the wailer's slow drift, decision
+    E-1053). With \c {sinksInWater} only lava carries it, not water (the lava wader, decision
+    E-1054). With \c {risesToTarget} a drifter with a target stops and keeps its eyes about level
+    with the target's instead of its hover height (the ember wraith, decision E-1056).
 
     Server side only. \qcfields */
 struct QcHoverDefinition
 {
+    /*! The largest \c {height} and \c {maxHeight}. */
+    static constexpr double highest = 24.0;
+
     double height = 0.6;
     double bob = 0.08;
     double bobSeconds = 2.5;
     double maxHeight = 3.0;
     double turnSpeed = 120.0;
+    double climbSpeed = 3.0;
+    bool sinksInWater = false;
+    bool risesToTarget = false;
 
     bool operator==(const QcHoverDefinition &) const = default;
 };

@@ -1,0 +1,13 @@
+{
+    "name": "quartz_pillar",
+    "pattern": "log_side",
+    "primary": "#ebe5dc",
+    "secondary": "#d6cdc0",
+    "variation": 0.04,
+    "seed": 8409,
+    "material": {
+        "smoothness": 0.55,
+        "bump": 0.35,
+        "porosity": 0.05
+    }
+}

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Adventure guide](#chapter-qtcraft-advancements) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Brewing](#chapter-qtcraft-brewing) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Nether blocks](#chapter-qtcraft-nether_blocks) · [Portals](#chapter-qtcraft-portals) · [Death and respawn](#chapter-qtcraft-death) · [The Nether](#chapter-qtcraft-nether) · [Experience](#chapter-qtcraft-experience) · [Starting in the Nether](#chapter-qtcraft-nether_start) · [Netherite](#chapter-qtcraft-netherite) · [The Charred Hydra](#chapter-qtcraft-charred_hydra) · [The Beacon](#chapter-qtcraft-beacon) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Switching a world to a new generator](#chapter-qtcraft-generator_switch) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs) · [Music](#chapter-qtcraft-music)
 
 ## QtCraft
 
@@ -199,11 +199,47 @@ Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine 
 
 [Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Raw iron](items.md#item-qtcraft-raw_iron), [Copper ingot](items.md#item-qtcraft-copper_ingot), [Chain](blocks.md#block-qtcraft-chain), [Smoker](blocks.md#block-qtcraft-smoker), [Blast furnace](blocks.md#block-qtcraft-blast_furnace), [Campfire](blocks.md#block-qtcraft-campfire)
 
+### <a id="chapter-qtcraft-brewing"></a>Brewing
+
+**The brewing stand**
+
+Craft a brewing stand from an Ember Rod and three stones and use it to open its screen. Ember Dust in the fuel slot gives the stand 20 brews. Put an ingredient on top and up to three bottles below: if the ingredient changes at least one of them, the brew runs for 20 seconds, then every bottle it fits changes and one ingredient is used up. Taking the ingredient away, changing it or taking the last fitting bottle stops the brew.
+
+A hopper from above fills the ingredient, a hopper from the side fills bottles and fuel, and a hopper below takes the bottles out. A comparator reads how full the stand is.
+
+**Base and effects**
+
+Nearly every potion starts as a water bottle with nether wart, which makes an odd potion. An odd potion then takes the ingredient of the effect: sugar for swiftness, gilded melon slice for healing, spider eye for poison, magma cream for fire resistance, golden carrot for night vision, Ember Dust for strength and a wailer tear for regeneration. A fermented spider eye in a water bottle makes a potion of weakness. Other ingredients on water only give a plain potion, glowstone dust a thick one.
+
+**Longer, stronger, thrown, turned**
+
+Signal dust makes a potion last longer, glowstone dust makes it stronger but shorter; a potion is either one or the other. Gunpowder turns a potion into a splash potion, which reaches everyone around where it breaks, less with the distance. A fermented spider eye turns a potion around: swiftness into slowness, healing and poison into harming, night vision into invisibility.
+
+Lingering potions exist as items but cannot be brewed yet; thrown, they act like a splash potion for a quarter of the time.
+
+**Water from the cauldron**
+
+A water bucket fills a cauldron, and each glass bottle takes a third of it; a water bottle puts a third back and an empty bucket takes a full cauldron. Glass bottles also fill at any water.
+
+**Witches and clerics**
+
+Witches brew for themselves. Under water a witch drinks water breathing, burning fire resistance, hurt healing, and swiftness when the one she hunts is more than 11 blocks away; she stands still while she drinks. At you she throws slowness from 8 blocks or more while you are not slowed, poison while you have at least 8 health and are not poisoned, now and then weakness up close, and otherwise harming. Water breathing cannot be brewed yet; witches have it all the same.
+
+A villager who claims a brewing stand becomes a cleric in a dark red robe. Churches and temples of villages in worlds of generator version 3 or newer have one at the altar.
+
+**See also**
+
+[Brewing stand](blocks.md#block-qtcraft-brewing_stand), [Ember Dust](items.md#item-qtcraft-ember_dust), [Nether wart](items.md#item-qtcraft-nether_wart), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Water bottle](items.md#item-qtcraft-water_bottle), [Cauldron](blocks.md#block-qtcraft-cauldron), [Fermented spider eye](items.md#item-qtcraft-fermented_spider_eye), [Gilded melon slice](items.md#item-qtcraft-gilded_melon_slice), [Golden carrot](food.md#item-qtcraft-golden_carrot), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear), [Witch](creatures.md#mob-qtcraft-witch), [Potion of water breathing](items.md#item-qtcraft-water_breathing_potion)
+
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 
 **Eating**
 
-The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one food point. Walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 food points.
+The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one point of saturation (see below) or, when there is none left, one food point. Without saturation walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 points of saturation or food; the quick healing at a full bar costs 1.5 points of saturation.
+
+**Saturation**
+
+Besides food points every meal gives **saturation**, which the food bar does not show. Exhaustion uses it up first; only then does the bar go down. Hearty food gives more of it than snacks: cooked meat and fish keep you going much longer than raw meat, apples or melon slices, and the saturation never exceeds your food points. You start and respawn with a full bar and 5 points of saturation. The status effect **Saturation** fills both at once.
 
 **Cake**
 
@@ -211,7 +247,7 @@ A **cake** (three milk buckets, two sugar, an egg and three wheat; the buckets c
 
 **Healing and starving**
 
-With at least 18 food points you heal one health point every 4 s. With an empty food bar you lose one health point every 4 s, but hunger alone never takes you below 1.
+With a full food bar and saturation left you heal quickly: one health point every 0.5 s, paid from the saturation. Otherwise with at least 18 food points you heal one health point every 4 s. With an empty food bar you lose one health point every 4 s, but hunger alone never takes you below 1.
 
 **See also**
 
@@ -329,7 +365,7 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 
 **See also**
 
-[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [Trapped chest](blocks.md#block-qtcraft-trapped_chest), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Decoupled Signal Piston](blocks.md#block-qtcraft-decoupled_signal_piston), [Decoupled Sticky Signal Piston](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper), [Decoupled Signal Dispenser](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Decoupled Signal Dropper](blocks.md#block-qtcraft-decoupled_signal_dropper)
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [Trapped chest](blocks.md#block-qtcraft-trapped_chest), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Decoupled Signal Piston](blocks.md#block-qtcraft-decoupled_signal_piston), [Decoupled Sticky Signal Piston](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper), [Decoupled Signal Dispenser](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Decoupled Signal Dropper](blocks.md#block-qtcraft-decoupled_signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Rails and Minecarts
 
@@ -382,6 +418,10 @@ Left-click a creature within 4 m to hit it, at most every 0.4 s. Swords and axes
 **Status effects**
 
 Some attacks leave an effect that lasts a while. Next to the hearts a box shows each effect with its picture, name and the time left. Poison, from the bite of a cave spider, takes one health point every 1.25 s (faster at higher levels) but never your last one, and turns the hearts green. Armour does not help against it. Effects end with time or when you die; zombies, skeletons and spiders are immune to poison.
+
+**Kinds of effects**
+
+Speed makes you walk 20 % faster per level, slowness 15 % slower. Strength adds 3 points to your blows per level, weakness takes 4 away. Regeneration gives back a point every 2.5 s, twice as often per level. Instant health gives 4 points at once and instant damage takes 6, twice as much per level; on the undead they work the other way round. Resistance takes 20 % off every hit per level. Fire resistance keeps fire, lava and magma from hurting you, water breathing keeps your breath under water, and night vision shows the world as bright as by day. Under invisibility your body vanishes, and creatures notice you only from very close by; every piece of armour you wear gives you away from further off, because armour and what you hold stay visible. Jump boost makes you jump higher and fall one block further unhurt per level, slow falling lets you sink gently without any fall damage, and haste makes you mine 20 % faster per level. Wither hurts like poison, turns the hearts black and can kill. Absorption adds golden hearts above your own, 4 points per level; hits take them first and they do not grow back.
 
 **See also**
 
@@ -455,7 +495,7 @@ Every village has its own street plan: one long main street through the middle w
 
 **Beds and workstations**
 
-The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once; one placed up to 32 blocks from a village's buildings joins it, and the area grows, but never into another village's: every bed and workstation belongs to one village. A bed or workstation farther from every village starts a settlement of its own: villagers without a home move in, and it lives like any village (children, golems). A settlement without beds, workstations and villagers is forgotten. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations (one placed beyond that is not listed later either); the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
+The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher, brewing stand: cleric). Beds and workstations you place or break inside a village count at once; one placed up to 32 blocks from a village's buildings joins it, and the area grows, but never into another village's: every bed and workstation belongs to one village. A bed or workstation farther from every village starts a settlement of its own: villagers without a home move in, and it lives like any village (children, golems). A settlement without beds, workstations and villagers is forgotten. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations (one placed beyond that is not listed later either); the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
 
 **Villages in mods**
 
@@ -473,7 +513,7 @@ When the part of a village with a bed is seen for the first time, a villager mov
 
 **Professions**
 
-A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of every field within 8 blocks of their composter, yours too, and plant them again at once; the harvest stays with the village (no items drop). With the game rule `mobGriefing` off they leave the crops alone. A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).
+A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron), the barrel a fisher (oilskin vest and hat) and the brewing stand a cleric (dark red robe). Each workstation belongs to one villager. Farmers harvest the ripe crops of every field within 8 blocks of their composter, yours too, and plant them again at once; the harvest stays with the village (no items drop). With the game rule `mobGriefing` off they leave the crops alone. A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).
 
 **A villager's day**
 
@@ -529,6 +569,10 @@ Buys coal and iron ingots (novice), gold ingots (apprentice), lapis lazuli (jour
 
 Buys string and coal (novice), sugar cane (apprentice), slimeballs (journeyman) and leather (expert). Fills your bucket with water for an emerald, sells lanterns, cooked mutton and fireflies in a bottle, and as a master slime blocks and diamond boots.
 
+**The cleric**
+
+Buys rotten flesh (novice), gold ingots (apprentice), glass bottles (expert) and nether wart (master). Sells signal dust and lapis lazuli, as a journeyman glowstone and as an expert shade pearls.
+
 **Emeralds**
 
 Emeralds are the villagers' money. You earn them by selling goods, or mine them: emerald ore lies rarely and in very small veins deep in the stone and needs an iron pickaxe or better. Nine emeralds make a block of emerald and back.
@@ -539,7 +583,7 @@ A file in `trades/` lists offers of one profession: for each the level from whic
 
 **See also**
 
-[Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel)
+[Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Brewing stand](blocks.md#block-qtcraft-brewing_stand)
 
 ### <a id="chapter-qtcraft-archery"></a>Archery
 
@@ -551,6 +595,10 @@ Hold the use button with a bow in your hand to draw it and let go to shoot. A fu
 
 Arrows fall in an arc and slow down, much faster in water. A hit deals more damage the faster the arrow flies and pushes the target back; armour protects as against blows. Arrows stick in the block they hit and fall when it goes; walk over them to pick them up. They vanish after 60 s. A world holds at most 1024 arrows in flight or stuck, and at most 64 stuck in one chunk (the oldest go first).
 
+**Tipped arrows**
+
+Eight arrows around a splash potion in the crafting grid make eight tipped arrows of that potion, its long and strong kinds too. The bottle is used up. Bows and dispensers shoot them like any arrow. What a tipped arrow hits takes the arrow's damage and gets the potion's effect for an eighth of its time: a poison arrow poisons for about five and a half seconds, and instant effects like healing and harming act at once. A stuck tipped arrow gives itself back when you pick it up.
+
 **Throwing**
 
 Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit. A shade pearl is thrown the same way and teleports you to where it lands.
@@ -561,7 +609,7 @@ Cast a fishing rod with the use button and its bobber flies off and floats on th
 
 **See also**
 
-[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Shade Pearl](items.md#item-qtcraft-shade_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
+[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Arrow of poison](items.md#item-qtcraft-poison_tipped_arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Shade Pearl](items.md#item-qtcraft-shade_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-explosives"></a>Explosives
 
@@ -589,6 +637,62 @@ However big a field of explosives, the world stays playable: at most 512 explosi
 
 [Explosive](blocks.md#block-qtcraft-explosive), [Gunpowder](items.md#item-qtcraft-gunpowder), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate), [Lever](blocks.md#block-qtcraft-lever)
 
+### <a id="chapter-qtcraft-nether_blocks"></a>Nether blocks
+
+**Netherrack and eternal fire**
+
+Netherrack is quick to mine with any pickaxe. Fire lit on top of it never ages and never spreads, so a fireplace of netherrack burns forever, like one on a magma block. Smelted, netherrack becomes a nether brick.
+
+**Soul sand and soul fire**
+
+Soul sand slows down whoever walks on it to less than half the speed; soul soil does not. Fire lit on either becomes blue **soul fire**: light 10 instead of 15, twice the burn, and like fire on netherrack it never goes out. Coal on a stick on soul sand or soul soil makes four **soul torches**, and iron nuggets around a soul torch a **soul lantern**; both give light 10.
+
+**Glowstone**
+
+Glowstone is the brightest block (light 15) and breaks by hand into two to four glowstone dust. Four dust in a square make the block again.
+
+**Quartz and gold**
+
+Nether quartz ore and nether gold ore sit in netherrack and need only a wooden pickaxe. Quartz makes white building blocks: the block of quartz, pillars, chiseled blocks, bricks, slabs and stairs, and smelted, smooth quartz. Nether gold ore drops gold nuggets.
+
+**Nether bricks and basalt**
+
+Four nether bricks make a block of nether bricks; with nether wart in the other corners, red nether bricks. Both give slabs, stairs and walls; nether brick blocks and nether brick items together make a fence that joins its own kind and fence gates, but not wooden fences. Basalt lies like a log along the clicked axis; four make polished basalt, smelted it is smooth.
+
+**Blackstone**
+
+Blackstone counts as stone for stone tools and the furnace, so a player in the Nether can make them without cobblestone. Polished it becomes polished blackstone, bricks and chiseled blackstone; all of them give slabs, stairs and walls, and the stonecutter cuts them in one step.
+
+**Nether wart**
+
+Nether wart grows only on soul sand, needs neither water nor light and ripens in four stages within about half an hour. Ripe it gives two to four wart, unripe one. Bone meal does not help it, and farmers leave it alone.
+
+**See also**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Soul torch](blocks.md#block-qtcraft-soul_torch), [Soul lantern](blocks.md#block-qtcraft-soul_lantern), [Glowstone](blocks.md#block-qtcraft-glowstone), [Glowstone dust](items.md#item-qtcraft-glowstone_dust), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether quartz](items.md#item-qtcraft-quartz), [Block of quartz](blocks.md#block-qtcraft-quartz_block), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Nether brick](items.md#item-qtcraft-nether_brick), [Nether bricks](blocks.md#block-qtcraft-nether_bricks), [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks), [Nether brick fence](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Blackstone](blocks.md#block-qtcraft-blackstone), [Gilded blackstone](blocks.md#block-qtcraft-gilded_blackstone), [Nether wart](items.md#item-qtcraft-nether_wart)
+
+### <a id="chapter-qtcraft-portals"></a>Portals
+
+**Building a frame**
+
+A nether portal is an upright frame of obsidian around an empty inside, at least 2 blocks wide and 3 high and at most 21 by 21. The corners are not needed, so 10 obsidian are enough for the smallest frame. Water and lava make obsidian where they meet; mining it needs a diamond pickaxe.
+
+**Lighting it**
+
+Light fire inside the complete frame, for example with flint and steel on the bottom frame block: instead of the fire, the inside fills with the purple portal, which glows with light 11, hums and sparkles. Any fire lights it, also lava or lightning. If a frame block is missing or something else stands inside, only an ordinary fire appears. The ruined portals in the overworld light as soon as their frame is complete again: crying obsidian does not count, so put obsidian where it is missing or crying.
+
+**Travelling**
+
+Stand in the portal for 4 seconds to travel; in creative mode you travel at once. You arrive in a portal on the other side and have to step out of it before it takes you back. Creatures, dropped items and minecarts travel too, at once, and then rest for 15 seconds before they can travel again; a player in a minecart travels on his own and leaves the cart behind. Breaking a frame block puts the whole portal out.
+
+**Where it leads**
+
+One block in the Nether stands for 8 in the overworld. The portal looks for a nether portal near the matching point on the other side, within 128 overworld blocks (16 in the Nether), and leads there. If there is none, it builds a new frame there, on solid ground within 16 blocks if it can, else right at the point on a small floor of obsidian with room around it, also over lava or nothing. Portals you lit, used or arrived at are remembered with the world, so the way back finds the portal you came through. Until the real Nether arrives, it is a flat place of netherrack.
+
+**See also**
+
+[Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Fire](blocks.md#block-qtcraft-fire), [Netherrack](blocks.md#block-qtcraft-netherrack)
+
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
 **When you die**
@@ -602,6 +706,36 @@ Nothing holds you below the bottom of the world: through a hole in the bedrock o
 **Dropped items**
 
 Items on the ground vanish after 300 s while their area is loaded. Items you throw can be picked up again after 2 s.
+
+### <a id="chapter-qtcraft-nether"></a>The Nether
+
+**A cave without end**
+
+The Nether is one huge cave of netherrack. Bedrock closes it at the bottom and at height 127; there is no sky, no sun and no weather, only a dim light that never changes. Caverns, shafts and bridges of rock fill the height between, and below height 32 lies a sea of lava. Lava springs break out of the walls and run down as soon as you come near, so watch your step on ledges.
+
+**Wastes and soul sand valleys**
+
+Most of the Nether is **Nether Wastes**: bare netherrack with banks of gravel and soul sand along the lava. In a **Soul Sand Valley** every floor is soul sand and soul soil, which slows you down, and the fires burn blue. A map shows the biomes of the Nether as it does those of the overworld, and `/locate` knows its structures once you stand in it.
+
+**What to look for**
+
+Clusters of glowstone hang from the roofs of the caverns. Nether quartz and nether gold ore lie in the netherrack at every height. Fires burn on the rock here and there; on netherrack and soul soil they never go out, so keep your distance.
+
+**Ruined portals**
+
+Now and then a ruined portal stands on a floor above the lava, with a chest and a broken frame of obsidian and crying obsidian. Finish the frame with obsidian and light it to get a second way home.
+
+**Fortresses**
+
+Between the lava sea and the roof stand fortresses of nether bricks: halls joined by long, straight passages. Over open caverns and the lava sea a passage runs as a bridge on piers, through the rock as a closed gallery with slits and glowstone lamps; stairs climb between floors, and a stairwell leads to an upper floor. One hall is an open platform with a monster spawner on a dais, another a garden where nether wart grows on soul sand around a chest. More chests stand in the halls, with gold, iron, diamonds, obsidian, nether wart, saddles and golden gear. Monsters come inside a fortress at any time. /locate fortress names the nearest one. The spawner brings forth Ember Wraiths. Among the parts of a fortress also come Charred Skeletons and skeletons where the light is low, and at any light Rottusks, Magma Slimes and more Ember Wraiths, in small groups.
+
+**Bastion ruins**
+
+Where no fortress stands, a ruin of blackstone rises from the lava sea: the old seat of the Tusklings, in one of four forms. A bridge carries a causeway over a canal of lava between two towers. In the stables Bristleboars stand in stalls under a loft. In a quarter, houses stand behind a curtain wall, joined by bridges high up. The treasure hall is the richest: bridges lead over a floor of lava to a pillar of gold, magma slimes come from its spawners, and the chest on the pillar holds diamond armour and much gold. There are none in the basalt deltas. Tusklings and Tuskling Bruisers stand in a bastion from the start; what you kill there does not come back, and a Bruiser cares nothing for the gold you wear. Breaking gold or opening chests in sight of Tusklings makes them all turn on you. /locate bastion names the nearest.
+
+**See also**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Gravel](blocks.md#block-qtcraft-gravel), [Glowstone](blocks.md#block-qtcraft-glowstone), [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Fire](blocks.md#block-qtcraft-fire), [Soul fire](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Nether bricks](blocks.md#block-qtcraft-nether_bricks), [Blackstone](blocks.md#block-qtcraft-blackstone), [Gilded blackstone](blocks.md#block-qtcraft-gilded_blackstone)
 
 ### <a id="chapter-qtcraft-experience"></a>Experience
 
@@ -624,6 +758,94 @@ Operators change experience with /xp add <player> <amount> [points|levels] (a ne
 **See also**
 
 [Lapis lazuli ore](blocks.md#block-qtcraft-lapis_ore), [Furnace](blocks.md#block-qtcraft-furnace)
+
+### <a id="chapter-qtcraft-nether_start"></a>Starting in the Nether
+
+**The start option**
+
+When you create a normal world, "Start in" under World generation lets you begin in the Nether instead of the overworld. You appear on firm ground away from lava and fire, if one is near in a crimson or warped forest. Without a soul anchor you come back there after dying. The overworld lies behind a nether portal; the world keeps its start for good.
+
+**The first steps**
+
+There is no water and no iron ore. Crimson and warped stems give planks, sticks, a crafting table and wooden tools; blackstone counts as stone for stone tools and the furnace. Nether gold ore gives nuggets and ingots, and tusklings barter for gold: obsidian, crying obsidian, iron nuggets, fire charges, water bottles, gravel, soul sand, string and leather. Hoglins give food, and fire burns on netherrack for ever. Ten obsidian make a portal frame, and lava or a fire charge lights it.
+
+**The soul anchor**
+
+Craft a soul anchor from six crying obsidian around three glowstone and charge it with glowstone, up to four charges; it glows brighter with each. Use it charged in the Nether to set your respawn point. Each respawn takes one charge; an empty anchor, a broken one or one without room beside it sends you to the world spawn and is forgotten. Used in the overworld, a charged anchor explodes with power 5 and sets fires.
+
+**Beds**
+
+A bed cannot be slept in where the dimension does not allow it: used in the Nether, it explodes with power 5, stronger than TNT, and sets fires around. Keep beds for the overworld.
+
+**See also**
+
+[Soul anchor](blocks.md#block-qtcraft-soul_anchor), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Glowstone](blocks.md#block-qtcraft-glowstone), [Crimson stem](blocks.md#block-qtcraft-crimson_stem), [Warped stem](blocks.md#block-qtcraft-warped_stem), [Blackstone](blocks.md#block-qtcraft-blackstone), [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore), [Bed](blocks.md#block-qtcraft-bed)
+
+### <a id="chapter-qtcraft-netherite"></a>Netherite
+
+**Ancient debris**
+
+The rarest find of the Nether lies deep down: **ancient debris**, in small clumps of one to three, most often between heights 8 and 24 and now and then up to height 119. It is always buried in netherrack, never beside open air, so dig tunnels low in the Nether rather than looking along the walls of caves. It needs a diamond pickaxe; explosions do not touch it, so explosives can clear the netherrack around it. Chests in bastion ruins hold some too.
+
+**Scrap and ingots**
+
+A furnace smelts ancient debris into **netherite scrap**. Four pieces of scrap and four gold ingots, anywhere in the crafting grid, make one **netherite ingot**; nine ingots pack into a block of netherite, which crafts back into nine.
+
+**The smithing table**
+
+Netherite tools and armour are not crafted but upgraded from diamond at the **smithing table** (two iron ingots over four planks). Put a **netherite upgrade** template into the first slot, the diamond tool or piece of armour into the second and a netherite ingot into the third, then press *Upgrade*: the piece becomes netherite and keeps its enchantments, its name and its wear. Each upgrade uses up one template and one ingot. Templates come from bastion ruins: the treasure hall always has one, other chests now and then. Seven diamonds and a block of netherrack around a template make two.
+
+**Stronger than diamond**
+
+Netherite tools last 2031 uses, mine faster than diamond and break blocks of level 5; the sword deals one point more. Netherite armour gives as many armour points as diamond, but is tougher, so hard hits pierce it less, and every piece holds back a tenth of each push. Nothing made of netherite burns: dropped into lava or fire, it floats up and waits to be picked up.
+
+**See also**
+
+[Ancient debris](blocks.md#block-qtcraft-ancient_debris), [Netherite scrap](items.md#item-qtcraft-netherite_scrap), [Netherite ingot](items.md#item-qtcraft-netherite_ingot), [Block of netherite](blocks.md#block-qtcraft-netherite_block), [Smithing table](blocks.md#block-qtcraft-smithing_table), [Netherite upgrade](items.md#item-qtcraft-netherite_upgrade_smithing_template), [Netherite sword](tools.md#item-qtcraft-netherite_sword), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe), [Netherite chestplate](tools.md#item-qtcraft-netherite_chestplate)
+
+### <a id="chapter-qtcraft-charred_hydra"></a>The Charred Hydra
+
+**Summoning**
+
+Build a **T** of four blocks of soul sand or soul soil: three in a row and one under the middle, with air on both sides of that foot. Then place three **charred skulls** on top of the row, from the Charred Skeletons of the fortresses. The last skull wakes the hydra, in creative mode too, and every player within 50 blocks gets the advancement. Build it far from your home.
+
+**The fight**
+
+For eleven seconds the hydra gathers its strength: it cannot be hurt and fills its health. Then it bursts with a blast stronger than any explosive, which breaks blocks unless the rule mobGriefing forbids it. After that it flies above whoever it fights and spits **skulls** from its three heads: the middle head at its target, the side heads at targets of their own. The skulls explode and give **wither**: the hearts go dark and drain. Undead creatures are safe from it. Every hurt makes it smash the blocks around it, and it heals a point every second.
+
+**Half its health**
+
+Below half its health the hydra wears **armour**: arrows glance off, so finish it with a sword. It stops keeping its distance and comes down to the level of its target.
+
+**The Nether Star**
+
+A defeated hydra leaves a **Nether Star** and plenty of experience. The star does not burn and survives explosions.
+
+**See also**
+
+[Charred Hydra](creatures.md#mob-qtcraft-charred_hydra), [Charred Skull](blocks.md#block-qtcraft-charred_skull), [Soul sand](blocks.md#block-qtcraft-soul_sand), [Soul soil](blocks.md#block-qtcraft-soul_soil), [Nether Star](items.md#item-qtcraft-nether_star)
+
+### <a id="chapter-qtcraft-beacon"></a>The Beacon
+
+**Building a beacon**
+
+Craft a **beacon** from five glass on top, a **Nether Star** in the middle and three obsidian below; the star comes from the Charred Hydra. On its own a beacon is only a light.
+
+**The pyramid**
+
+Put the beacon on a **pyramid** of blocks of iron, gold, emerald, diamond or netherite, in any mix: a 3 × 3 layer right under it gives level 1, then 5 × 5 for level 2, 7 × 7 for level 3 and 9 × 9 for level 4. Each layer must be full. The beacon looks at its pyramid every four seconds.
+
+**Powers**
+
+Use the beacon, put an iron ingot, a gold ingot, an emerald, a diamond or a netherite ingot into its slot, choose a power and confirm. Level 1 offers **speed** and **haste**, level 2 also **resistance** and **jump boost**, level 3 **strength**. At level 4 a second power is added: **regeneration**, or the first power at level II. Every player within 20 blocks per level plus 10 gets the powers, at any height above, for 9 seconds plus 2 per level, renewed every four seconds.
+
+**The beam**
+
+A beacon shines only with **open sky** above: glass and other clear blocks let the beam through, solid blocks stop it. **Stained glass** or panes in the beam colour it; several colours mix. Without a beam the beacon gives no powers.
+
+**See also**
+
+[Beacon](blocks.md#block-qtcraft-beacon), [Nether Star](items.md#item-qtcraft-nether_star), [Block of iron](blocks.md#block-qtcraft-iron_block), [Block of gold](blocks.md#block-qtcraft-gold_block), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Block of diamond](blocks.md#block-qtcraft-diamond_block), [Block of netherite](blocks.md#block-qtcraft-netherite_block)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 
@@ -651,6 +873,10 @@ In the mountains some stone is infested: it looks like stone but breaks much fas
 
 Kjuts float out of dark places like other monsters. Each hit a big Kjut survives splits off a little one, up to four at once and eight in all; a snowball or an egg splits nothing. The little ones circle it on glowing threads until they see you. The little ones belong to it like the children of a Qt object to their parent: when the parent dies, they all pop at once and leave gunpowder; killed one by one, they leave only spark gel. So for gunpowder, hit the big one a few times and then finish it; for gel, fight the little ones first. A Kjut that leaves the world without dying takes its little ones along quietly.
 
+**Creatures of the nether**
+
+Below the bedrock roof it is always midnight: nothing burns in a sun, and the creatures of the overworld stay away unless a biome names them. Rottusks walk the wastes in groups and leave you alone, but a blow to one brings every Rottusk nearby down on you; they carry gold. Magma Slimes hop at what they see and fall apart into smaller pieces, and some of them leave Magma Cream. Wailers drift high over the lava and spit fireballs from far away: strike a fireball in flight and it flies where you look, and sent back it brings a Wailer down at once. Wailer Tears and gunpowder are what is left of them. Lava Waders step over the lava seas and do no harm. A saddle goes on with the use button, a second use mounts it, and while you hold a Fungus on a Stick it goes where you look; sneak to get off. Water hurts it. Tusklings attack anyone without a piece of golden armour; they trade: give or throw them a Gold Ingot and after a few seconds they throw something back, from obsidian and crying obsidian to string, leather, gravel and soul sand. Mining gold or opening a chest in their sight angers all of them nearby. Bristleboars charge on sight in the crimson forests, breed with crimson fungus and flee from warped fungus.
+
 **Chickens and eggs**
 
 Chickens flutter down slowly instead of falling and lay an egg every five to ten minutes. Thrown eggs burst where they land; one in eight hatches a chick, and one hatching in 32 brings four. Chickens fall in love with seeds of any kind. They drop feathers for arrows and raw chicken, which you cook in a furnace.
@@ -677,7 +903,7 @@ Monsters share one cap: the world holds at most 70 of them for every 289 loaded 
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Shadewalker](creatures.md#mob-qtcraft-shadewalker), [Husk](creatures.md#mob-qtcraft-husk), [Stray](creatures.md#mob-qtcraft-stray), [Drowned](creatures.md#mob-qtcraft-drowned), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg), [Cow](creatures.md#mob-qtcraft-cow), [Milk bucket](items.md#item-qtcraft-milk_bucket), [Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Bucket of cod](items.md#item-qtcraft-cod_bucket), [Squid](creatures.md#mob-qtcraft-squid), [Ink sac](items.md#item-qtcraft-ink_sac), [Kjut](creatures.md#mob-qtcraft-kjut), [Little Kjut](creatures.md#mob-qtcraft-kjut_child), [Spark gel](items.md#item-qtcraft-spark_gel), [Gunpowder](items.md#item-qtcraft-gunpowder)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Shadewalker](creatures.md#mob-qtcraft-shadewalker), [Husk](creatures.md#mob-qtcraft-husk), [Stray](creatures.md#mob-qtcraft-stray), [Drowned](creatures.md#mob-qtcraft-drowned), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg), [Cow](creatures.md#mob-qtcraft-cow), [Milk bucket](items.md#item-qtcraft-milk_bucket), [Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Bucket of cod](items.md#item-qtcraft-cod_bucket), [Squid](creatures.md#mob-qtcraft-squid), [Ink sac](items.md#item-qtcraft-ink_sac), [Kjut](creatures.md#mob-qtcraft-kjut), [Little Kjut](creatures.md#mob-qtcraft-kjut_child), [Spark gel](items.md#item-qtcraft-spark_gel), [Gunpowder](items.md#item-qtcraft-gunpowder), [Rottusk](creatures.md#mob-qtcraft-rottusk), [Tuskling](creatures.md#mob-qtcraft-tuskling), [Tuskling Bruiser](creatures.md#mob-qtcraft-tuskling_bruiser), [Bristleboar](creatures.md#mob-qtcraft-bristleboar), [Magma Slime](creatures.md#mob-qtcraft-magma_slime), [Little Magma Slime](creatures.md#mob-qtcraft-magma_slime_small), [Wailer](creatures.md#mob-qtcraft-wailer), [Lava Wader](creatures.md#mob-qtcraft-lava_wader), [Ember Wraith](creatures.md#mob-qtcraft-ember_wraith), [Charred Skeleton](creatures.md#mob-qtcraft-charred_skeleton), [Magma Cream](items.md#item-qtcraft-magma_cream), [Wailer Tear](items.md#item-qtcraft-wailer_tear), [Fireball](items.md#item-qtcraft-fireball), [Ember Rod](items.md#item-qtcraft-ember_rod), [Ember Dust](items.md#item-qtcraft-ember_dust), [Charred Skull](blocks.md#block-qtcraft-charred_skull), [Saddle](items.md#item-qtcraft-saddle), [Fungus on a Stick](items.md#item-qtcraft-fungus_on_a_stick)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 
@@ -711,7 +937,7 @@ Jungle temples stand alone in the jungle, overgrown with moss and vines. Climb d
 
 **Witch huts and witches**
 
-Witch huts stand on stilts in the swamp, often over water, with a cauldron and potted plants inside. Witches spawn there and only there: where monsters may appear in a column of a hut's footprint, at any height from the bottom of the world to the top, only a witch comes, as often as any monster would and under the same rules: dark enough, 24–128 m from players, within the monster limit, on solid ground with room for her. Floors built into the footprint above or below the hut give more of them; light keeps them away. A witch throws splash potions: poison while you are not poisoned, then harming. A splash reaches everything living around the place it bursts, the weaker the further away. Hurt, she drinks a potion of healing for a moment and throws nothing meanwhile; milk takes the poison away again.
+Witch huts stand on stilts in the swamp, often over water, with a cauldron and potted plants inside. In a hut's footprint only witches spawn: where monsters may appear in a column of the footprint, at any height from the bottom of the world to the top, only a witch comes, as often as any monster would and under the same rules: dark enough, 24–128 m from players, within the monster limit, on solid ground with room for her. Floors built into the footprint above or below the hut give more of them; light keeps them away. Elsewhere a witch is a rare monster of the dark like the others. A witch throws splash potions chosen for her target (see the chapter on brewing). A splash reaches everything living around the place it bursts, the weaker the further away. She drinks a potion when she needs one and throws nothing meanwhile; milk takes the poison away again.
 
 **Ruined portals, wells and oases**
 
@@ -746,6 +972,24 @@ A filled map with empty maps in the crafting grid gives one copy per empty map. 
 **Maps on the wall**
 
 Put a filled map into an **item frame** and it covers the whole face of the frame, drawn flat on the wall. Each right click turns it a quarter turn. Maps in frames side by side meet without a gap, so four maps of neighbouring squares make a large wall map. Players near a framed map see it change as others explore, and every map shows the frames it hangs in as green arrows.
+
+### <a id="chapter-qtcraft-generator_switch"></a>Switching a world to a new generator
+
+**The question when a world opens**
+
+A world keeps the generator version it was made with, so land made after an update fits the land made before. When a newer version of QtCraft brings a newer world generator, opening an older world asks what to do. “Keep version” is the default and changes nothing; the world plays as before, and you are asked again the next time you start the game. With “Don't ask again” ticked, the world asks only when an even newer generator comes; “Show world generator questions again” in the advanced settings brings the question back. “Switch” first copies the whole world into the folder backups next to the worlds (named “before-generator” with the new version), then works out which land stays as it is, shows the progress, and opens the world. “Cancel” stops the switch at once and leaves the world exactly as it was. “Switch with transition” does the same and also blends a ring of land around the explored area from the old into the new generator; the slider above sets its width, 6 chunks unless you change it. This takes a moment longer, and “Cancel” still leaves the world as it was.
+
+**What stays as it was**
+
+Every chunk the world has ever generated, stored or shown on a map keeps the old generator, block for block, also when you break and build there later. Structures keep their shape too: a village, mine shaft, dungeon, coastal tower, temple or ruin that reaches out of the explored land keeps its old plan, so the chunks it reaches stay with the old generator as well. Only land never generated before comes from the new generator, and the new generator places no structure that would reach into the old land. Each dimension switches on its own; the question names the ones that are older.
+
+**Hard borders and transitions**
+
+Where old and new land meet, they meet along chunk borders: a hill may end in a cliff, a river may stop at a wall of stone, a beach may turn into forest from one block to the next. These edges are part of a “Switch” and stay. A “Switch with transition” avoids them: outside the explored land, ground and water rise and fall gradually from the old height to the new one, the ground blocks and trees of both generators mix patch by patch, and caves and ores come from the nearer side. Structures in the ring come from the old plan only and keep their ground. The ring is stored in the world like land you have changed, so it stays even when another version of the game comes. Dimensions other than the overworld always get hard borders.
+
+**On a dedicated server**
+
+A dedicated server never switches by itself. Stop it and run `qtcraft-headless --convert-generator <world> --to <version> --mode hard`, or `--mode blend --blend-chunks <width>` for a transition 2 to 16 chunks wide, with `--dimension <name>` for a dimension other than the overworld; the world is a folder in the worlds of the data directory or a path to a world folder. The command makes the same backup, prints its progress and refuses a world that is open.
 
 ### <a id="chapter-qtcraft-backpack"></a>Backpack
 
@@ -929,3 +1173,47 @@ A pack is a folder with a **texturepack.json** and PNG images (or texture descri
 **When something is wrong**
 
 A damaged image or one of the wrong size is skipped and listed under its pack; that texture then comes from the next pack. Very large packs are shown at a lower resolution when the graphics card or the memory would not take them, and the settings say so.
+
+### <a id="chapter-qtcraft-music"></a>Music
+
+**Tracks or generated music**
+
+Now and then music plays, with a pause of several minutes between two pieces. **Settings → Audio → Music** chooses where it comes from: the **Scott Buckley tracks** (the default) or **generated** pieces the game composes itself.
+
+Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.
+
+**Where which music plays**
+
+In the overworld the tracks follow the day, the night and the caves; each biome of the nether has its own, and the menus have theirs. Walking from day into a cave lets a piece play to its end, the next one fits the new place. Going through a portal or back to the menu fades the piece out, and the next one starts soon. Where no track fits, a generated piece plays. Mods can bring tracks of their own.
+
+**Credits**
+
+The tracks are licensed under the Creative Commons Attribution 4.0 International licence (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/ The game ships its text as **CC-BY-4.0.txt** with the other licences. They were converted to Ogg Vorbis; nothing else was changed.
+
+'Borealis' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Cobalt' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Ephemera' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Hymn To The Dawn' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In Search Of Solitude' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In This Moment' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Intervention' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Katabasis I (The Weight of Air)' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Machina' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Moonlight' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Shadows and Dust' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'She Moved Mountains' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'The Old Ones' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Unraveling' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au

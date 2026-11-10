@@ -1,0 +1,11 @@
+{
+    "title": "The Old Ones",
+    "artist": "Scott Buckley",
+    "licence": "CC-BY-4.0",
+    "source": "https://www.scottbuckley.com.au/library/the-old-ones/",
+    "attribution": "'The Old Ones' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au",
+    "slots": [
+        "biome:warped_forest",
+        "dimension:nether"
+    ]
+}

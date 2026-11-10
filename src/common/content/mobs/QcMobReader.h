@@ -45,8 +45,13 @@ private:
     // creatures, milking, crumbling, guarding and drinking.
     void parseCreatureTraits();
     void parseCompanions();
+    void parseNetherTraits();
+    void parseGoldFolkTraits();
     void parseWaterAndMilk();
     void parseGuardian();
+
+    // QcMobReaderBoss.cpp: "hydra" and "bossBar" (decisions E-1125, E-1127).
+    void parseBoss();
 
     const QJsonObject &m_json;
     const QString &m_namespace;

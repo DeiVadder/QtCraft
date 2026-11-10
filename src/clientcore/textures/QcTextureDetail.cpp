@@ -5,6 +5,7 @@
 
 #include "clientcore/textures/QcTextureOutline.h"
 #include "clientcore/textures/QcTexturePaint.h"
+#include "clientcore/textures/QcTextureRelief.h"
 
 #include <algorithm>
 #include <array>
@@ -223,6 +224,10 @@ bool among(Pattern pattern, std::initializer_list<Pattern> patterns)
 
 Params forPattern(Pattern pattern)
 {
+    // Relief patterns are painted at the resolution with their own light: a little grain, no more.
+    if (QcTextureRelief::isRelief(pattern)) {
+        return {0.03, 0.0, false};
+    }
     // Ground, stone and ore: grainy, round speckles, soft edges.
     if (among(pattern, {Pattern::Noise, Pattern::Speckle, Pattern::Ore, Pattern::Lump, Pattern::GrassSide, Pattern::Farmland, Pattern::Lava})) {
         return {0.08, 0.12, true};
@@ -253,7 +258,7 @@ Params forPattern(Pattern pattern)
         return {0.0, 0.1, false};
     }
     // Woven or soft surfaces of figures: a little grain, hardly any bevel.
-    if (among(pattern, {Pattern::Limb, Pattern::Sleeve, Pattern::ArmourLeather, Pattern::Emblem, Pattern::Face, Pattern::Paper, Pattern::Patches,
+    if (among(pattern, {Pattern::Limb, Pattern::Sleeve, Pattern::ArmourLeather, Pattern::Emblem, Pattern::Face, Pattern::Paper, Pattern::Patches, Pattern::Skull,
                         Pattern::BackpackSide, Pattern::BackpackFront, Pattern::BackpackTop})) {
         return {0.04, 0.06, true};
     }
@@ -261,7 +266,7 @@ Params forPattern(Pattern pattern)
     // a handle stays straight and even at every resolution (Scale2x would leave steps that grow
     // into bumps with every doubling).
     if (among(pattern, {Pattern::Tool, Pattern::Pickaxe, Pattern::Axe, Pattern::Shovel, Pattern::Sword, Pattern::Hoe, Pattern::Stick,
-                        Pattern::Arrow, Pattern::FishingRod})) {
+                        Pattern::Arrow, Pattern::TippedArrow, Pattern::FishingRod})) {
         return {.grain = 0.03, .bevel = 0.22, .smooth = true, .rimOnly = true, .strokes = true};
     }
     // Everything else is a cut-out shape (plants, items, armour parts): smooth outlines, a bevel

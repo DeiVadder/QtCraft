@@ -69,17 +69,50 @@ private:
 
     void trigger(const QcAdvancementEvent &event) { m_server->systems().advancements.trigger(player(), event); }
 
+    static constexpr int firstBottle = QcMsg::MoveInventoryItem::machineOutputSlot;
+
+    quint64 brewedEvents() const { return m_server->systems().advancements.events(QcAdvancementTrigger::PotionBrewed); }
+
+    // Puts `block` at `pos` and tells the circuits, as a placement would (hoppers).
+    void place(QcBlockPos pos, QcBlockId block)
+    {
+        const QcBlockId before = m_server->world().blockAt(pos).value_or(qcAirBlockId);
+        QVERIFY(m_server->world().setBlock(pos, block));
+        m_server->circuitState().noteChange(m_server->world(), pos, before, block);
+    }
+
+    // A brewing stand next to the player, open on its screen.
+    QcBlockPos openStand()
+    {
+        const QcBlockPos stand = m_feet.offset(2, 0, 0);
+        place(stand, id("qtcraft:brewing_stand"));
+        [[maybe_unused]] const bool made = ensureEntity(stand);
+        send(QcMsg::UseItem{stand, QcBlockFace::West});
+        ticks(1);
+        return stand;
+    }
+
+    // Three potions of healing in the bottle slots of the stand at `pos`.
+    void fillBottles(QcBlockPos pos)
+    {
+        QList<QcItemStack> &stacks = m_server->blockEntities().machine(pos)->stacks;
+        for (int slot = QcBrewerDefinition::firstBottleSlot; slot < QcBrewerDefinition::firstBottleSlot + 3; ++slot) {
+            stacks[slot] = QcItemStack{item("qtcraft:healing_potion"), 1, 0};
+        }
+        ticks(1);
+    }
+
     quint32 spawnMob(const char *kind, int dx, int dz)
     {
         const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->mobs().spawn(*m_content->mobKind(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
     }
 
-    // The base content with two advancements for uses on creatures: a bone and wheat.
+    // The base content with advancements for uses on creatures: a bone, wheat and a gold ingot.
     static std::shared_ptr<const QcContentRegistry> contentWithUses()
     {
         auto content = std::make_shared<QcContentRegistry>(*QcTestUtil::loadContent());
-        for (const char *item : {"bone", "wheat"}) {
+        for (const char *item : {"bone", "wheat", "gold_ingot"}) {
             QcAdvancementDefinition use;
             use.name = u"test:%1_on_creature"_s.arg(QString::fromLatin1(item));
             use.icon = u"qtcraft:stick"_s;
@@ -241,6 +274,40 @@ private slots:
         QVERIFY(done("qtcraft:iron"));
     }
 
+    void potionsTakenFromAStandCountAsBrewed()
+    {
+        // Each potion a player takes out of a bottle slot counts once (decision E-1107), by hand
+        // or by a quick move; an ingredient and what a hopper pulls out count for nothing.
+        const QcBlockPos stand = openStand();
+        const quint64 before = brewedEvents();
+        chat(u"/give nether_wart 1"_s);
+        move(slotOf(item("qtcraft:nether_wart")), inputSlot);
+        move(inputSlot, 20);
+        QCOMPARE(brewedEvents(), before);
+        QVERIFY(!done("qtcraft:brewing"));
+
+        fillBottles(stand);
+        move(firstBottle, 21);
+        QCOMPARE(brewedEvents(), before + 1);
+        QVERIFY(done("qtcraft:brewing"));
+
+        fillBottles(stand);
+        for (int slot = firstBottle; slot < firstBottle + 3; ++slot) {
+            send(QcMsg::QuickMoveItem{slot});
+        }
+        QCOMPARE(brewedEvents(), before + 1 + 3);
+        QCOMPARE(countOf(item("qtcraft:healing_potion")), 4);
+
+        // A hopper under the stand takes the bottles out without a player.
+        fillBottles(stand);
+        place(stand.offset(0, -1, 0), m_content->withProperty(id("qtcraft:signal_hopper"), u"facing"_s, u"down"_s));
+        [[maybe_unused]] const bool hopper = ensureEntity(stand.offset(0, -1, 0));
+        ticks(60);
+        QVERIFY(std::ranges::all_of(m_server->blockEntities().machine(stand)->stacks.mid(QcBrewerDefinition::firstBottleSlot, 3),
+                                    [](const QcItemStack &stack) { return stack.isEmpty(); }));
+        QCOMPARE(brewedEvents(), before + 1 + 3);
+    }
+
     void breedingTamingAndFeedingCount()
     {
         cleanup();
@@ -271,6 +338,24 @@ private slots:
         QVERIFY(!done("test:bone_on_creature"));
     }
 
+    // An ingot a creature refuses is no use on it, one it takes is (decision E-1081).
+    void aRefusedGiftIsNoUse()
+    {
+        cleanup();
+        m_content = contentWithUses();
+        join();
+        const quint32 tuskling = spawnMob("qtcraft:tuskling", 2, 0);
+        hold("qtcraft:gold_ingot");
+        m_server->mobs().find(tuskling)->growUp = 100.0;
+        send(QcMsg::UseEntity{tuskling});
+        QVERIFY(!m_server->mobs().find(tuskling)->barter->admires());
+        QVERIFY(!done("test:gold_ingot_on_creature"));
+        m_server->mobs().find(tuskling)->growUp = 0.0;
+        send(QcMsg::UseEntity{tuskling});
+        QVERIFY(m_server->mobs().find(tuskling)->barter->admires());
+        QVERIFY(done("test:gold_ingot_on_creature"));
+    }
+
     void damagedAdvancementsCostOnlyTheProgress()
     {
         QTemporaryDir dir;
@@ -279,12 +364,14 @@ private slots:
         data.motion.position = {0.5, 70.0, 0.5};
         data.experience = QcExperience(5, 0);
         QVERIFY(data.advancements.grant(u"qtcraft:iron"_s, u"iron"_s));
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 10);
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 13);
         QVERIFY(payload);
 
-        // The advancements are the last field of version 9 (version 10 adds the air after them): a
-        // byte array whose criteria count is forged.
-        const auto air = static_cast<qsizetype>(sizeof(qint32));
+        // The advancements are the last field of version 9 (version 10 adds the air after them,
+        // version 11 the dimension, version 12 the extra health and the saturation, version 13 the
+        // flag of the soul anchor): a byte array whose criteria count is forged.
+        const auto air = static_cast<qsizetype>(sizeof(qint32)) + static_cast<qsizetype>(sizeof(quint32)) + 2 * data.dimension.size() + 1
+                         + static_cast<qsizetype>(2 * sizeof(double)) + 1;
         QByteArray damaged = payload->bytes.chopped(air + static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
         QDataStream out(&damaged, QIODevice::Append);
         out.setVersion(QcSaveFile::streamVersion);

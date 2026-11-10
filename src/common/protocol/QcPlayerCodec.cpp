@@ -4,6 +4,7 @@
 // Payloads of the player messages (QcPlayerMessages.h): input and state, inventory, crafting,
 // health, food and appearance.
 
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcProtocolCodec.h"
@@ -20,7 +21,7 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 {
     const QcPlayerInput &in = m.input;
-    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch << in.usingItem;
+    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch << in.usingItem << in.movementEpoch;
 }
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
@@ -79,7 +80,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerHealth &m)
 {
     stream << m.health << m.maxHealth << m.dead << m.burning;
     QcStatusEffects::write(stream, m.effects);
-    stream << m.hurt << m.hurtFrom.has_value() << m.hurtFrom.value_or(0.0f);
+    stream << m.hurt << m.hurtFrom.has_value() << m.hurtFrom.value_or(0.0f) << m.absorption << m.movementEpoch;
 }
 
 void encode(QDataStream &, QcMsg::Respawn) {}
@@ -134,7 +135,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
-    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch >> in.usingItem;
+    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch >> in.usingItem >> in.movementEpoch;
     if (!std::isfinite(in.forward) || !std::isfinite(in.strafe) || !std::isfinite(in.yaw) || !std::isfinite(in.pitch)) {
         return qcError(u"Non-finite player input"_s);
     }
@@ -258,9 +259,9 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     m.effects = std::move(*effects);
     bool directed = false;
     float from = 0.0f;
-    stream >> m.hurt >> directed >> from;
-    if (!std::isfinite(from)) {
-        return qcError(u"Non-finite hurt direction"_s);
+    stream >> m.hurt >> directed >> from >> m.absorption >> m.movementEpoch;
+    if (!std::isfinite(from) || !std::isfinite(m.absorption) || m.absorption < 0.0 || m.absorption > QcEffectRules::maxAbsorption) {
+        return qcError(u"Non-finite hurt direction or absorption out of range"_s);
     }
     if (directed) {
         m.hurtFrom = qcWrappedYaw(from);

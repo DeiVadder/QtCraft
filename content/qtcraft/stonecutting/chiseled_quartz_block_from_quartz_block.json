@@ -1,0 +1,8 @@
+{
+    "name": "chiseled_quartz_block_from_quartz_block",
+    "input": "quartz_block",
+    "result": {
+        "item": "chiseled_quartz_block",
+        "count": 1
+    }
+}

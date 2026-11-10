@@ -1,0 +1,8 @@
+{
+    "name": "polished_blackstone_from_blackstone",
+    "input": "blackstone",
+    "result": {
+        "item": "polished_blackstone",
+        "count": 1
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "name": "overworld",
+    "generator": {"type": "world"},
+    "sky": "overworld",
+    "skyLight": true,
+    "dayCycle": true,
+    "weather": true,
+    "floor": "bedrock"
+}

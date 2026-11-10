@@ -35,6 +35,20 @@ QcPhysics::Steering QcPassiveBrain::think(QcCreature &mob, const QcMobDefinition
             return steering;
         }
     }
+    // One repelled by blocks looks for them in its turn to look and flees while its fear lasts
+    // (decision E-1082).
+    if (definition.repellents && (mob.fleeTimer > 0.0 || looks)) {
+        if (const std::optional<QcVec3> away = looks ? QcMobFear::repelledFrom(mob, definition, context.world) : std::nullopt) {
+            mob.fleeTimer = fleeSeconds;
+            mob.wanderDirection = *away;
+        }
+        if (mob.fleeTimer > 0.0) {
+            mob.chasing = 0;
+            const QcPhysics::Steering steering = wander(mob, definition, context, mayPlan);
+            mob.lastSpeed = steering.speed;
+            return steering;
+        }
+    }
     // An angry creature neutral by day hunts exactly the player that hurt it (decision E-451).
     const QcMobManager::PlayerView *provoker = QcMobSteering::provoker(mob, definition, *context.players);
     const QcMobManager::PlayerView *target = nullptr;

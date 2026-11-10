@@ -5,10 +5,13 @@
 
 #include "common/protocol/QcMessages.h"
 
+#include <QHash>
+
 #include <optional>
 
 // What a raw protocol client (QcRawClient) recorded about the open workstation screens: the
-// stonecutter (decision E-785), the enchanting table (decision E-864) and the anvil (decision E-866).
+// stonecutter (decision E-785), the enchanting table (decision E-864), the anvil (decision E-866),
+// the smithing table (decision E-1115) and the beacon (decision E-1142), with the beacons' beams.
 struct QcRawWorkstations
 {
     // Opens, states and closes of the workstations; false for another message.
@@ -36,6 +39,22 @@ struct QcRawWorkstations
         } else if (std::holds_alternative<QcMsg::CloseAnvil>(message)) {
             anvil.reset();
             anvilState = {};
+        } else if (const auto *smith = std::get_if<QcMsg::OpenSmithing>(&message)) {
+            smithing = smith->pos;
+        } else if (const auto *smithState = std::get_if<QcMsg::SmithingState>(&message)) {
+            smithingState = *smithState;
+        } else if (std::holds_alternative<QcMsg::CloseSmithing>(message)) {
+            smithing.reset();
+            smithingState = {};
+        } else if (const auto *light = std::get_if<QcMsg::OpenBeacon>(&message)) {
+            beacon = light->pos;
+        } else if (const auto *lightState = std::get_if<QcMsg::BeaconState>(&message)) {
+            beaconState = *lightState;
+        } else if (std::holds_alternative<QcMsg::CloseBeacon>(message)) {
+            beacon.reset();
+            beaconState = {};
+        } else if (const auto *beam = std::get_if<QcMsg::BeaconBeam>(&message)) {
+            beams.insert(beam->pos, beam->sections);
         } else {
             return false;
         }
@@ -52,4 +71,12 @@ struct QcRawWorkstations
     // The open anvil and its state as last sent.
     std::optional<QcBlockPos> anvil;
     QcMsg::AnvilState anvilState;
+    // The open smithing table and its state as last sent.
+    std::optional<QcBlockPos> smithing;
+    QcMsg::SmithingState smithingState;
+    // The open beacon and its state as last sent.
+    std::optional<QcBlockPos> beacon;
+    QcMsg::BeaconState beaconState;
+    // The beam last sent for each beacon (no sections: dark).
+    QHash<QcBlockPos, QList<QcBeamSection>> beams;
 };

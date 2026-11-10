@@ -32,7 +32,7 @@ private slots:
         QCOMPARE(m_client->craftingSize, 2);
 
         // One log into the grid's top left cell: four planks are on offer.
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
         QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
         QCOMPARE(m_client->craftingResult, (QcItemStack{item("qtcraft:oak_planks"), 4, 0}));
         send(QcMsg::TakeCraftingResult{});
@@ -42,12 +42,12 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:oak_planks")), 4);
 
         // The third column and row of the grid only exist at a crafting table.
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 2, 1});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 6, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot + 2, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot + 6, 1});
         QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
 
         // Closing returns what is left in the grid.
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 3, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot + 3, 0});
         QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
         send(QcMsg::CloseCrafting{});
         QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
@@ -94,7 +94,7 @@ private slots:
         chat(u"/give oak_log 2"_s);
         chat(u"/give raw_porkchop 1"_s);
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:raw_porkchop"))});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
         QVERIFY(!m_client->craftingResult.isEmpty());
         chat(u"/kill"_s);
         QVERIFY(m_client->dead);
@@ -112,7 +112,7 @@ private slots:
         config.worldDirectory = dir.path();
         join(config);
         chat(u"/give oak_log 5"_s);
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot, 0});
         QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
         // Disconnect with the grid full, then rejoin: the logs are back in the inventory.
         m_client->connection.close();
@@ -131,7 +131,7 @@ private slots:
         QVERIFY(std::ranges::all_of(m_client->craftingGrid, &QcItemStack::isEmpty));
 
         // The same through a server stop.
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot, 0});
         QVERIFY(m_server->stop().has_value());
         m_client.reset();
         config.viewDistance = 1;
@@ -395,7 +395,7 @@ private slots:
     {
         join();
         chat(u"/give oak_log 4"_s);
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcMsg::MoveInventoryItem::craftingGridSlot, 0});
         chat(u"/give stone 2304"_s);
         QCOMPARE(countOf(item("qtcraft:stone")), 36 * 64);
         send(QcMsg::CloseCrafting{});
@@ -429,7 +429,7 @@ private slots:
         ticks(40);
         send(QcMsg::FinishMining{grass});
         QCOMPARE(m_server->world().blockAt(grass), std::optional<QcBlockId>(qcAirBlockId));
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:stone_pickaxe")), QcServer::craftingGridSlot, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:stone_pickaxe")), QcMsg::MoveInventoryItem::craftingGridSlot, 0});
         QCOMPARE(m_client->craftingGrid.first().damage, 1);
 
         // A full inventory: the pickaxe cannot go back and must land on the ground, still worn.

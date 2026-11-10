@@ -1,0 +1,8 @@
+{
+    "name": "nether_wart_growing",
+    "pattern": "nether_wart",
+    "primary": "#7a161a",
+    "secondary": "#a0262c",
+    "variation": 0.1,
+    "seed": 8437
+}

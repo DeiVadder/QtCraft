@@ -36,5 +36,13 @@
             {"hay_block": "spruce_planks"},
             {"hay_block": "brown_wool"}
         ]
-    }
+    },
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [3, 1, 1], "table": "village_house_swamp" }
+            ]
+        }
+    ]
 }

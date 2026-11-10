@@ -312,7 +312,7 @@ private slots:
     {
         QTest::addColumn<QString>("name");
         QTest::addColumn<QByteArray>("hash");
-        QTest::newRow("magma block (lava pattern)") << u"qtcraft:magma_block"_s << QByteArray("ac26a8a7f34539e97ad5364e5de2cdd937c9dc80");
+        QTest::newRow("magma block (magma crust pattern)") << u"qtcraft:magma_block"_s << QByteArray("c5faf928f329c166d48111f65433da8eef801c9d");
         QTest::newRow("stone") << u"qtcraft:stone"_s << QByteArray("428f8ce9dcc3f8387193b0a35b5c60e6c75facac");
         QTest::newRow("oak planks") << u"qtcraft:oak_planks"_s << QByteArray("22a36c839fc7f68fde0c4b6da7e96d965abdf8c6");
         QTest::newRow("glass") << u"qtcraft:glass"_s << QByteArray("53132f3fad4881c1d48f1594635de63b4a62bd9f");

@@ -1,0 +1,13 @@
+{
+    "name": "smooth_quartz",
+    "pattern": "noise",
+    "primary": "#ece6dd",
+    "secondary": "#e4ddd2",
+    "variation": 0.02,
+    "seed": 8413,
+    "material": {
+        "smoothness": 0.55,
+        "bump": 0.35,
+        "porosity": 0.05
+    }
+}

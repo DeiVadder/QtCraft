@@ -1,0 +1,19 @@
+{
+    "name": "warped_nylium",
+    "sound": "nylium",
+    "hardness": 0.4,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "netherrack"
+        }
+    ],
+    "growsVegetation": true,
+    "vegetationBiome": "warped_forest",
+    "textures": {
+        "top": "warped_nylium",
+        "bottom": "netherrack",
+        "side": "warped_nylium_side"
+    }
+}

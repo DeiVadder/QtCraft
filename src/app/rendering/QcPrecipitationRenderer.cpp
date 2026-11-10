@@ -5,6 +5,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
+#include "clientcore/weather/QcAtmosphereParticles.h"
 
 
 #include <array>
@@ -19,7 +20,12 @@ namespace {
 // (-1 at the drop, 1 at the far end of the streak).
 constexpr std::array<float, 12> quadCorners = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
 
-// The Shape block of precipitation.vert (std140: five vec4).
+// Entries of the palette: 0 unused (rain and snow have their own colours), then one per kind of
+// ambient particle (decision E-1120).
+constexpr int paletteSize = 8;
+static_assert(1 + qcParticleKindCount <= paletteSize);
+
+// The Shape block of precipitation.vert (std140: five vec4 and the palette).
 struct ShapeUniforms
 {
     float streak[4];
@@ -28,18 +34,30 @@ struct ShapeUniforms
     float snowColor[4];
     // xyz: the offset of the drops' origin from the camera (decision E-883).
     float origin[4];
+    // rgb: the colour of an ambient particle, a: the least light it shows in.
+    float palette[paletteSize][4];
 };
 
 ShapeUniforms shapeUniforms()
 {
     const QcVec3 streak = QcPrecipitationField::rainStreak();
     // At 1080 pixels high: a streak two pixels wide; a flake between three and nine pixels across.
-    return {{static_cast<float>(streak.x), static_cast<float>(streak.y), static_cast<float>(streak.z), 1.0f},
-            {static_cast<float>(QcPrecipitationField::flakeSize), 1.5f, 4.5f, 0.0f},
-            // Grey-blue streaks of rain, white flakes, both in full daylight.
-            {0.82f, 0.88f, 0.98f, 1.0f},
-            {0.97f, 0.98f, 1.0f, 1.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f}};
+    ShapeUniforms shape{{static_cast<float>(streak.x), static_cast<float>(streak.y), static_cast<float>(streak.z), 1.0f},
+                        {static_cast<float>(QcPrecipitationField::flakeSize), 1.5f, 4.5f, 0.0f},
+                        // Grey-blue streaks of rain, white flakes, both in full daylight.
+                        {0.82f, 0.88f, 0.98f, 1.0f},
+                        {0.97f, 0.98f, 1.0f, 1.0f},
+                        {0.0f, 0.0f, 0.0f, 0.0f},
+                        {}};
+    for (int kind = 0; kind < qcParticleKindCount; ++kind) {
+        const QcParticleLook look = QcAtmosphereParticles::look(static_cast<QcParticleKind>(kind));
+        const auto entry = static_cast<std::size_t>(kind) + 1;
+        shape.palette[entry][0] = look.red;
+        shape.palette[entry][1] = look.green;
+        shape.palette[entry][2] = look.blue;
+        shape.palette[entry][3] = look.selfLight;
+    }
+    return shape;
 }
 
 } // namespace
@@ -75,7 +93,7 @@ void QcPrecipitationRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiR
         m_instances->create();
     }
     updates->updateDynamicBuffer(m_instances.get(), 0, bytes, drops->constData());
-    // 80 bytes; set every frame, as a dynamic buffer has one copy per frame in flight.
+    // 208 bytes; set every frame, as a dynamic buffer has one copy per frame in flight.
     static const ShapeUniforms fixed = shapeUniforms();
     ShapeUniforms shape = fixed;
     shape.origin[0] = static_cast<float>(frame.offset.x);

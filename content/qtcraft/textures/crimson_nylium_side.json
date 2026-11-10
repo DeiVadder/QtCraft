@@ -1,0 +1,8 @@
+{
+    "name": "crimson_nylium_side",
+    "pattern": "mat_edge",
+    "primary": "#9c2438",
+    "secondary": "#6a2a26",
+    "variation": 0.04,
+    "seed": 8507
+}

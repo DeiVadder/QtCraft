@@ -1,0 +1,8 @@
+{
+    "name": "netherite_scrap",
+    "pattern": "raw_chunk",
+    "primary": "#6e4c3e",
+    "secondary": "#3e2a24",
+    "variation": 0.08,
+    "seed": 8894
+}

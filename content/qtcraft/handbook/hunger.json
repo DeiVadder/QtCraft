@@ -4,6 +4,7 @@
     "icon": "cooked_porkchop",
     "sections": [
         "food",
+        "saturation",
         "cake",
         "effects"
     ],

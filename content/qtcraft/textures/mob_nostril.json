@@ -1,0 +1,8 @@
+{
+    "name": "mob_nostril",
+    "pattern": "noise",
+    "primary": "#34201c",
+    "secondary": "#281714",
+    "variation": 0.04,
+    "seed": 5303
+}

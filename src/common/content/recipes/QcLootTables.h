@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/recipes/QcLootTableDefinition.h"
 #include "common/gameplay/QcItemStack.h"
 
@@ -45,8 +46,14 @@ public:
     /*! Returns \a stacks scattered over \a slotCount slots (empty ones stay empty), each to a
         random free slot drawn from \a seed; stacks beyond the slots are left out. */
     static QList<QcItemStack> scatter(const QList<QcItemStack> &stacks, int slotCount, quint64 seed);
+    /*! Returns \a drops of a creature as the handbook lists them: every drop of a loot table
+        (QcItemDrop::table, decision E-1106) replaced by one drop per item of the table with its
+        counts; an unknown table gives none. */
+    QList<QcItemDrop> shownDrops(const QList<QcItemDrop> &drops) const;
 
 private:
-    QList<QcLootTableDefinition> m_tables;
-    QHash<QString, qsizetype> m_index;
+    // One drop per item entry of the table of `drop`, with the chance of `drop`.
+    QList<QcItemDrop> tableDrops(const QcItemDrop &drop) const;
+    QList<QcLootTableDefinition> m_tables; // NOLINT(qc-member-access): written only by add(), which keeps it and m_index in step
+    QHash<QString, qsizetype> m_index; // NOLINT(qc-member-access): written only by add(), read only by find()
 };

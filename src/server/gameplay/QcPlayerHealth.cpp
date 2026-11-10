@@ -6,11 +6,14 @@
 #include "common/content/registry/QcSoundKeys.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcPlayerTravel.h"
+#include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcToolWear.h"
 #include "server/items/QcServerExperience.h"
@@ -133,6 +136,9 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
     if (kind == DamageKind::Armoured || kind == DamageKind::Blow || kind == DamageKind::Shot) {
         amount = throughArmour(client, amount);
     }
+    if (!fromVoid && kind != DamageKind::Command) {
+        amount = throughEffects(client, amount);
+    }
     client.health = std::max(0.0, client.health - amount);
     client.hunger.hurt();
     client.hunger.exhaust(QcHunger::damageTaken);
@@ -144,8 +150,10 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
                       client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     }
 
-    if (fresh && knockback.length() > 0.0) {
-        knock(client, knockback);
+    // Worn armour holds back part of the push (decision E-1116).
+    const double held = QcArmour::knockbackResistance(m_state.content(), client.equipment);
+    if (fresh && knockback.length() > 0.0 && held < 1.0) {
+        knock(client, knockback, 1.0 - held);
     }
 
     if (client.health <= 0.0) {
@@ -175,6 +183,8 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind, quint32 creatu
     client.mining.pos.reset();
     client.drawing = false;
     client.effects.clear();
+    // Old counts would let inputs move with effects the death took (decision E-992).
+    client.movementEpochs.forgetPast();
     m_state.entities().noteDeath(client.id);
     forgetTeleports(client);
 
@@ -232,29 +242,49 @@ double QcPlayerHealth::throughArmour(QcServerClient &client, double amount)
     // Protection enchantments take their share off what the armour lets through (decision E-864);
     // counted before the hit wears the armour, so a piece that breaks on this hit still protects.
     const int protection = QcEnchanting::protectionPoints(content, client.equipment, false);
+    const double toughness = QcArmour::toughness(content, client.equipment);
     QcEquipment worn = client.equipment;
     const bool broke = !worn.wear(content, amount, [this](const QcItemStack &piece) { return QcToolWear::armourKeeps(m_state, piece); }).isEmpty();
     m_inventory.equipmentWorn(client, worn, broke);
-    return QcEnchanting::reducedDamage(QcArmour::reducedDamage(amount, points), protection);
+    return QcEnchanting::reducedDamage(QcArmour::reducedDamage(amount, points, toughness), protection);
 }
 
-void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
+double QcPlayerHealth::throughEffects(QcServerClient &client, double amount) const
+{
+    const double resisted = amount * QcEffectRules::damageShare(m_state.content(), client.effects.all());
+    const double absorbed = std::min(client.absorption, resisted);
+    client.absorption -= absorbed;
+    return resisted - absorbed;
+}
+
+bool QcPlayerHealth::fallHeldBack(float maxFallSpeed)
+{
+    // The speed of a free fall from fallDamageThreshold blocks: a slower limit never hurts.
+    static const double hurtingSpeed = std::sqrt(2.0 * QcPhysics::gravity * fallDamageThreshold);
+    return maxFallSpeed > 0.0f && maxFallSpeed < hurtingSpeed;
+}
+
+void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY, float maxFallSpeed)
 {
     // Falls are measured from their highest point, including the position before the first
     // airborne tick; water (also with only the feet in it, decision E-918), ladders, cobwebs and
     // flying break a fall.
     const bool wading = QcPhysics::feetInLiquid(m_state.world(), client.motion.position);
-    if (client.motion.inWater || wasInWater || wading || client.motion.climbing || client.motion.slowed || client.motion.flying) {
+    // So does a fall that slow falling holds back, by the effects the step ran with (decision E-992).
+    const bool floats = fallHeldBack(maxFallSpeed);
+    if (client.motion.inWater || wasInWater || wading || client.motion.climbing || client.motion.slowed || client.motion.flying || floats) {
         client.fallPeak = client.motion.position.y;
     } else if (!client.motion.onGround) {
         client.fallPeak = wasOnGround ? std::max(previousY, client.motion.position.y)
                                       : std::max(client.fallPeak, client.motion.position.y);
     } else if (!wasOnGround) {
         const double height = client.fallPeak - client.motion.position.y;
-        if (height > fallDamageThreshold) {
+        // Jump boost lets a player fall further unhurt (decision E-992).
+        const double harmless = fallDamageThreshold + QcEffectRules::fallTolerance(m_state.content(), client.effects.all());
+        if (height > harmless) {
             // Protection and feather falling soften a fall (decision E-864).
             const int protection = QcEnchanting::protectionPoints(m_state.content(), client.equipment, true);
-            const double fall = QcEnchanting::reducedDamage(std::floor(height - fallDamageThreshold), protection);
+            const double fall = QcEnchanting::reducedDamage(std::floor(height - harmless), protection);
             if (fall > 0.0) {
                 damage(client, fall, {});
             }
@@ -263,7 +293,7 @@ void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wa
     }
 }
 
-void QcPlayerHealth::respawn(QcServerClient &client)
+void QcPlayerHealth::respawn(QcServerClient &client, const std::optional<QcPortalLinks::Destination> &atAnchor)
 {
     if (!client.dead) {
         return;
@@ -277,11 +307,13 @@ void QcPlayerHealth::respawn(QcServerClient &client)
     if (!client.hunger.frozen()) {
         client.hunger.reset();
     }
+    // At his soul anchor, else at the world spawn, wherever he died (decisions E-1110, E-1112). He
+    // leaves from where he fell.
+    QcServerDimension &home = atAnchor ? *atAnchor->dimension : m_state.spawnDimension();
+    const QcVec3 spawn = atAnchor ? atAnchor->position : m_state.spawnPoint().position();
+    QcPlayerTravel::move(m_state, client, home, spawn);
     client.motion = {};
-    client.motion.position = m_state.spawnPoint().position();
-    client.previousPosition.reset();
-    client.fallPeak = client.motion.position.y;
-    client.stateDirty = true;
+    client.motion.position = spawn;
 
     sendHealth(client);
 }
@@ -302,7 +334,7 @@ void QcPlayerHealth::consume(QcServerClient &client)
 
     // Full players do not eat (decision E-039), nor do players with frozen hunger (creative mode,
     // decision E-282): the survival values stay as they are and the food is not used up.
-    if (client.dead || client.hunger.frozen() || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
+    if (client.dead || client.hunger.frozen() || !held || held->food <= 0 || !client.hunger.eat(held->food, held->saturation)) {
         return;
     }
 
@@ -327,6 +359,11 @@ void QcPlayerHealth::drink(QcServerClient &client, const QcItemDefinition &held)
     if (held.drink->clearsEffects && client.effects.clear()) { // NOLINT(bugprone-unchecked-optional-access): consume() checked it
         sendHealth(client);
     }
+    // What a potion gives (decision E-1061).
+    for (const QcPotionEffect &effect : held.drink->effects) { // NOLINT(bugprone-unchecked-optional-access): consume() checked it
+        const int ticks = static_cast<int>(std::lround(effect.seconds / QcPhysics::tickDuration));
+        QcServerEffects::givePlayer(m_state, client, {effect.effect, effect.level, ticks});
+    }
     // Creative players keep what they drink, like the items they place.
     if (!client.rules().infiniteItems) {
         if (!held.emptiesTo.isEmpty() && m_state.content().itemId(held.emptiesTo)) {
@@ -342,8 +379,10 @@ void QcPlayerHealth::drink(QcServerClient &client, const QcItemDefinition &held)
 void QcPlayerHealth::sendHealth(QcServerClient &client, bool hurt, std::optional<float> hurtFrom)
 {
     client.sentEffects = client.effects;
-    client.connection->send(
-        QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0, client.effects.all(), hurt, hurtFrom});
+    // The count goes with the effects it stands for: the client quotes it once it knows them.
+    client.movementEpochs.update(QcEffectRules::movement(m_state.content(), client.effects.all()), m_state.clock().tick());
+    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0, client.effects.all(), hurt, hurtFrom,
+                                                client.absorption, client.movementEpochs.epoch()});
 }
 
 void QcPlayerHealth::sendFood(QcServerClient &client)

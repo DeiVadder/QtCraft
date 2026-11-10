@@ -1,0 +1,57 @@
+{
+    "name": "block.blackstone.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2150,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1634,
+            "resonance": 2.75,
+            "lowpass": 4902,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 387,
+            "resonance": 2.2,
+            "lowpass": 1161,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 112,
+            "resonance": 1.32,
+            "lowpass": 335,
+            "gain": 0.9
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.08,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 3000,
+            "highpass": 900,
+            "density": 500,
+            "gain": 0.25
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "name": "smooth_basalt",
+    "sound": "basalt",
+    "hardness": 1.25,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 4.2,
+    "textures": {
+        "all": "smooth_basalt"
+    }
+}

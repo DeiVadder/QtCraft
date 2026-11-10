@@ -67,7 +67,7 @@ class TestMaps : public QcServerTestFixture
         chat(u"/give paper 8"_s);
         for (int cell = 0; cell < 9; ++cell) {
             const int slot = cell == 4 ? slotOfMap(map) : slotOf(item("qtcraft:paper"));
-            send(QcMsg::MoveInventoryItem{slot, QcServer::craftingGridSlot + cell, 1});
+            send(QcMsg::MoveInventoryItem{slot, QcMsg::MoveInventoryItem::craftingGridSlot + cell, 1});
         }
     }
 
@@ -275,8 +275,8 @@ private slots:
         join();
         const quint32 map = makeMap();
         chat(u"/give map 1"_s);
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:filled_map")), QcServer::craftingGridSlot, 1});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcServer::craftingGridSlot + 1, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:filled_map")), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcMsg::MoveInventoryItem::craftingGridSlot + 1, 1});
         const QcItemStack twoCopies = QcItemStack{item("qtcraft:filled_map"), 2, 0}.withMapId(map);
         QCOMPARE(m_client->craftingResult, twoCopies);
         send(QcMsg::TakeCraftingResult{});
@@ -298,7 +298,7 @@ private slots:
         QCOMPARE(m_client->craftingSize, 3);
         for (int cell = 0; cell < 9; ++cell) {
             const QcItemId wanted = cell == 4 ? item("qtcraft:filled_map") : item("qtcraft:paper");
-            send(QcMsg::MoveInventoryItem{slotOf(wanted), QcServer::craftingGridSlot + cell, 1});
+            send(QcMsg::MoveInventoryItem{slotOf(wanted), QcMsg::MoveInventoryItem::craftingGridSlot + cell, 1});
         }
         send(QcMsg::TakeCraftingResult{});
         QCOMPARE(countOf(item("qtcraft:paper")), 0);
@@ -370,8 +370,8 @@ private slots:
         join();
         const quint32 map = makeMap();
         chat(u"/give map 1"_s);
-        send(QcMsg::MoveInventoryItem{slotOfMap(map), QcServer::craftingGridSlot, 1});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcServer::craftingGridSlot + 1, 1});
+        send(QcMsg::MoveInventoryItem{slotOfMap(map), QcMsg::MoveInventoryItem::craftingGridSlot, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcMsg::MoveInventoryItem::craftingGridSlot + 1, 1});
         send(QcMsg::TakeCraftingResult{});
         openTable();
         layOutZoom(map);
@@ -515,6 +515,29 @@ private slots:
         join(config);
         QVERIFY(!m_server->maps().find(3));
         QCOMPARE(m_server->maps().nextId(), quint32(4));
+    }
+
+    void aMapKeepsItsDimension()
+    {
+        // Saved with its dimension (decision E-1005); a map of a world from before dimensions
+        // (written with "overworld") reads as one of the overworld.
+        QcMapData map = *QcMapData::fromParts(0, {64, 64}, QList<quint16>(QcMapData::pixelCount, 0));
+        QCOMPARE(map.dimension(), QString::fromLatin1(QcDimensionDefinition::overworldName));
+        map.setDimension(u"qtcraft:nether"_s);
+        const QcResult<QcMapData> back = QcMapSaveCodec::read(QcMapSaveCodec::write(map, *m_content), u"map"_s, *m_content);
+        QVERIFY(back);
+        QCOMPARE(back->dimension(), u"qtcraft:nether"_s);
+
+        QcMapData old = map;
+        old.setDimension(QcMapSaveCodec::overworld.toString());
+        const QcResult<QcMapData> older = QcMapSaveCodec::read(QcMapSaveCodec::write(old, *m_content), u"map"_s, *m_content);
+        QVERIFY(older);
+        QCOMPARE(older->dimension(), QString::fromLatin1(QcDimensionDefinition::overworldName));
+
+        // A name that could point out of anything is damaged data.
+        QcMapData bad = map;
+        bad.setDimension(u"../nether"_s);
+        QVERIFY(!QcMapSaveCodec::read(QcMapSaveCodec::write(bad, *m_content), u"map"_s, *m_content));
     }
 
     void clientsRefuseBadMapUpdates()

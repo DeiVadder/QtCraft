@@ -8,6 +8,7 @@
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
 #include <QSet>
@@ -329,7 +330,7 @@ bool QcCoastalTowerPlanner::nearVillage(QcXzRect around) const
     QSet<const QcVillagePlan *> seen;
     const QList<QcChunkPos> chunks = around.chunks();
     for (const QcChunkPos &chunk : chunks) {
-        const std::shared_ptr<const QcVillagePlan> village = m_terrain.villageFor(chunk);
+        const std::shared_ptr<const QcVillagePlan> village = m_terrain.villages().planFor(chunk);
         if (!village || seen.contains(village.get())) {
             continue;
         }

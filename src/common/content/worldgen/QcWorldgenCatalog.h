@@ -4,6 +4,10 @@
 #pragma once
 
 #include "common/content/registry/QcNamedList.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
+#include "common/content/worldgen/QcNetherDefinition.h"
+#include "common/content/worldgen/QcPortalDefinition.h"
+#include "common/content/worldgen/QcProgressionGoal.h"
 #include "common/content/worldgen/QcShowcaseDefinition.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/content/worldgen/QcWorldgenDefinitions.h"
@@ -60,6 +64,42 @@ public:
     /*! Returns the void world settings. */
     const QcVoidDefinition &voidWorld() const { return m_voidWorld; }
 
+    /*! Adds the \a dimension, or replaces the one of the same name in its place (decision
+        E-978). */
+    void registerDimension(QcDimensionDefinition dimension) { m_dimensions.set(std::move(dimension)); }
+    /*! Removes the dimension named \a name, if any. */
+    void removeDimension(const QString &name) { m_dimensions.remove(name); }
+    /*! Returns the dimensions in registration order. */
+    const QList<QcDimensionDefinition> &dimensions() const { return m_dimensions.items(); }
+    /*! Returns the dimension named \a name; null when there is none. The overworld may be
+        missing (content without dimensions/): overworld() stands in for it. */
+    const QcDimensionDefinition *dimension(const QString &name) const { return m_dimensions.find(name); }
+    /*! Returns the overworld as registered, else QcDimensionDefinition::defaultOverworld(). */
+    const QcDimensionDefinition &overworld() const
+    {
+        const QcDimensionDefinition *registered = dimension(QString::fromLatin1(QcDimensionDefinition::overworldName));
+        return registered != nullptr ? *registered : m_defaultOverworld;
+    }
+
+    /*! Replaces the settings of the nether generator with \a nether (decision E-1030). */
+    void setNether(QcNetherSettings nether) { m_nether = std::move(nether); }
+    /*! Returns the settings of the nether generator. */
+    const QcNetherSettings &nether() const { return m_nether; }
+
+    /*! Adds the \a portal, or replaces the one of the same name in its place (decision
+        E-1020). */
+    void registerPortal(QcPortalDefinition portal) { m_portals.set(std::move(portal)); }
+    /*! Returns the portals in registration order. */
+    const QList<QcPortalDefinition> &portals() const { return m_portals.items(); }
+    /*! Returns the portal named \a name; null when there is none. */
+    const QcPortalDefinition *portal(const QString &name) const { return m_portals.find(name); }
+
+    /*! Adds the progression \a goal, or replaces the one of the same name in its place (decision
+        E-1095). */
+    void registerProgressionGoal(QcProgressionGoal goal) { m_progressionGoals.set(std::move(goal)); }
+    /*! Returns the progression goals in registration order. */
+    const QList<QcProgressionGoal> &progressionGoals() const { return m_progressionGoals.items(); }
+
     /*! Adds the groups, options and presets of \a set, one pack's world generation options
         (decision E-917); an entry with the name of an existing one replaces it in its place. Called
         in the order of the packs and their files. */
@@ -89,9 +129,14 @@ private:
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
+    QcNetherSettings m_nether;
     QcNamedList<QcWorldOptionGroup> m_optionGroups;
     QcNamedList<QcWorldOptionDefinition> m_options;
     QcNamedList<QcWorldPreset> m_presets;
+    QcNamedList<QcDimensionDefinition> m_dimensions;
+    QcNamedList<QcPortalDefinition> m_portals;
+    QcNamedList<QcProgressionGoal> m_progressionGoals;
+    QcDimensionDefinition m_defaultOverworld = QcDimensionDefinition::defaultOverworld();
 };
 
 inline void QcWorldgenCatalog::addWorldOptions(const QcWorldOptionSet &set)

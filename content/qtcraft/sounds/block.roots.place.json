@@ -1,0 +1,39 @@
+{
+    "name": "block.roots.place",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.004,
+            "curve": 3,
+            "bandpass": 4000,
+            "resonance": 0.72,
+            "lowpass": 12000,
+            "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 8750,
+            "highpass": 2500,
+            "density": 720,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 212,
+            "resonance": 0.96,
+            "lowpass": 638,
+            "gain": 0.8
+        }
+    ]
+}

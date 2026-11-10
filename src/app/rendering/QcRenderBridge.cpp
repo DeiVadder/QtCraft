@@ -11,6 +11,7 @@
 #include "clientcore/light/QcWaterLook.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>
@@ -72,6 +73,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
     if (std::shared_ptr<QcEntityMesh> mesh = m_entities.buildEntities(alpha, mode, m_parts.view->animationTicks())) {
         m_parts.view->setEntityMesh(std::move(mesh));
         m_parts.view->setFramedMaps(m_entities.framedMaps(), m_entities.framedMapTiles());
+        m_parts.view->setBeams(m_entities.beams().core, m_entities.beams().glow);
     }
 }
 
@@ -100,12 +102,21 @@ void QcRenderBridge::updateSky(double alpha)
     const QcClientWeather &weather = session.worldMirror().weather();
     // Sun, moon and colours follow the time of day (decision E-960), the clouds the animation
     // clock, so they drift without a daylight cycle and stand while paused (decision E-968).
-    QcSkyState sky = QcSky::withCloudDrift(QcSky::at(session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
-    sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
+    // The dimension sets the kind of sky, its fog, sky light and ambient light (decision E-1003); one
+    // without weather has none even before the server's clear weather arrives.
+    const QcDimensionDefinition &dimension = session.worldMirror().dimension();
+    QcSkyState sky = QcSky::withCloudDrift(QcSky::forDimension(dimension, session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
+    // The biome's fog, blended when the player walks into another (decision E-1120).
+    sky = QcSky::withAtmosphere(sky, session.worldMirror().atmosphere().fog());
+    if (dimension.weather) {
+        sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
+    }
     const QcVec3 &eye = m_parts.view->camera().position;
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.
     const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);
     sky = QcSky::withBlast(sky, flash);
+    const auto content = session.content();
+    sky = QcSky::withNightVision(sky, content && QcEffectRules::nightVision(*content, session.vitals().effects()));
     m_parts.view->setSky(QcSky::seenFrom(sky, eye.y));
     // The cave level of the ambience (0 outside, 0.5 to 1 under a thick ceiling, eased) clears the
     // height fog of the realistic mode in caves.
@@ -129,13 +140,20 @@ void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
     }
 
     m_precipitation.update(*session.world(), session.worldMirror().weather(), eye, frameSeconds);
-    if (m_precipitation.particles().isEmpty()) {
+    if (session.worldMirror().dimension().name != m_particleDimension) {
+        m_particleDimension = session.worldMirror().dimension().name;
+        m_atmosphere.clear();
+    }
+    // While the world is paused nothing new drifts in; what floats stays where it is.
+    const double atmosphereSeconds = session.serverPaused() ? 0.0 : frameSeconds;
+    m_atmosphere.update(*session.world(), session.worldMirror().atmosphere().current(), eye, atmosphereSeconds);
+    if (m_precipitation.particles().isEmpty() && m_atmosphere.particles().isEmpty()) {
         m_parts.view->setPrecipitation(nullptr, QcVec3{});
         return;
     }
 
     const QcVec3 origin = QcRenderOrigin::blockNear(eye);
-    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain(), origin), origin);
+    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain(), m_atmosphere, origin), origin);
 }
 
 void QcRenderBridge::updateSelection()

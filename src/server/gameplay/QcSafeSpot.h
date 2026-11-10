@@ -55,5 +55,10 @@ inline constexpr double backtrack = 2.0;
     that shares an open face with it. So a pearl never brings its thrower through a wall, a floor or
     a roof one block thick. None when nothing near fits. */
 std::optional<QcVec3> nearest(const QcBlockAccess &world, const QcVec3 &point, const QcVec3 &along, int cells);
+/*! Returns the place of \a world nearest \a point within \a reach cells to the side where a body
+    of \a cells can stand (canStand), the feet in the middle of the cell, at most three cells higher
+    or lower. Cells right beside the point come first, then its own cell, then those further out, so
+    a body in a closed room stays in it. None when there is no floor within reach (a lava sea). */
+std::optional<QcVec3> standBeside(const QcBlockAccess &world, const QcVec3 &point, int reach, int cells);
 
 } // namespace QcSafeSpot

@@ -22,6 +22,9 @@ class QcContentRegistry;
 class QcClientMachineScreen
 {
 public:
+    /*! The category of a brewing stand (QcMachineDefinition::category). */
+    static constexpr auto brewingCategory = "brewing";
+
     /*! What a server message did to the screen. */
     enum class Change {
         None,    // a message about a screen that changed nothing here
@@ -53,6 +56,9 @@ public:
     const QString &name() const { return m_name; }
     /*! Returns whether the open screen belongs to a storage block (chest) rather than a machine. */
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }
+    /*! Returns whether the open screen belongs to a brewing stand (decision E-1063), with five
+        slots: ingredient, fuel and three bottles. */
+    bool isBrewing() const { return m_category == QLatin1StringView(brewingCategory); }
     /*! Returns the hotbar slot of a backpack opened from the hand (decision E-833), locked while
         open; -1 for a block or cart. */
     int heldSlot() const { return m_heldSlot; }

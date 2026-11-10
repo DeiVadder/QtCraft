@@ -209,7 +209,8 @@ Item {
 
         objectName: "armourBar"
         anchors.left: hotbar.left
-        anchors.bottom: hearts.top
+        // Above the extra hearts of absorption; their empty row has no height.
+        anchors.bottom: absorptionHearts.top
         anchors.bottomMargin: Ui.hudPx(2)
         iconsReady: hud.playing
         pointsRow: hud.game.player.armourRow
@@ -277,38 +278,35 @@ Item {
         Repeater {
             model: hud.game.player.heartRow
 
-            Item {
-                id: heart
-
+            HeartIcon {
                 required property real fill
 
-                width: Ui.hudPx(22)
-                height: Ui.hudPx(22)
+                filled: fill
+                colour: hud.game.player.heartColour !== "" ? hud.game.player.heartColour : Theme.health
+            }
+        }
+    }
 
-                Text {
-                    anchors.fill: parent
-                    text: "\u2665"
-                    color: Theme.slotBorder
-                    font.pixelSize: Ui.hudPx(22)
-                    horizontalAlignment: Text.AlignHCenter
-                }
+    // The extra health of absorption above the hearts (decision E-992), two points a heart; a mod's
+    // high level fills the row and no more.
+    Row {
+        id: absorptionHearts
 
-                Item {
-                    width: parent.width * heart.fill
-                    height: parent.height
-                    clip: true
+        readonly property int heartPoints: 2
 
-                    Text {
-                        width: heart.width
-                        height: heart.height
-                        text: "\u2665"
-                        color: hud.game.player.heartColour !== "" ? hud.game.player.heartColour : Theme.health
-                        style: Text.Outline
-                        styleColor: Theme.textOutline
-                        font.pixelSize: Ui.hudPx(22)
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                }
+        anchors.left: hotbar.left
+        anchors.bottom: hearts.top
+        spacing: Ui.hudPx(2)
+        visible: hearts.visible
+
+        Repeater {
+            model: Math.min(hud.game.player.heartRow.count, Math.ceil(hud.game.player.absorption / absorptionHearts.heartPoints))
+
+            HeartIcon {
+                required property int index
+
+                filled: Math.min(1, hud.game.player.absorption / absorptionHearts.heartPoints - index)
+                colour: hud.game.player.absorptionColour
             }
         }
     }
@@ -345,6 +343,8 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: Ui.hudPx(8)
+        // Empty in a dimension without day cycle (decision E-1003).
+        visible: text.length > 0
         text: hud.hudState.timeOfDay
     }
 
@@ -460,6 +460,14 @@ Item {
         visible: opacity > 0 && hud.hudState.viewShown
         anchors.horizontalCenter: hotbar.horizontalCenter
         y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y) - height - Ui.hudPx(4)
+    }
+
+    // The boss bars at the top, behind open screens too (decision E-1127).
+    BossBars {
+        hudState: hud.hudState
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: Ui.hudPx(8)
     }
 
     // A held compass or clock (decision E-769) right of the hotbar.

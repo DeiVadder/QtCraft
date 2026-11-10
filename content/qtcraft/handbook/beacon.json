@@ -1,0 +1,20 @@
+{
+    "name": "beacon",
+    "order": 94,
+    "icon": "beacon",
+    "sections": [
+        "building",
+        "pyramid",
+        "powers",
+        "beam"
+    ],
+    "related": [
+        "beacon",
+        "nether_star",
+        "iron_block",
+        "gold_block",
+        "emerald_block",
+        "diamond_block",
+        "netherite_block"
+    ]
+}

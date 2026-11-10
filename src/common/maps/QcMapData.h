@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcWorldConstants.h"
 
 #include <QList>
@@ -16,7 +17,8 @@
     it, and the client, which keeps what the server sent: size x size pixels over a square of the
     world that lies on a fixed grid of its scale (the map of a block column is the same for every
     holder), each pixel the top block of its column with a shade (QcMapPixel), 0 where nobody has
-    looked yet.
+    looked yet. A map belongs to the dimension it was made in (decision E-1005): only there is it
+    revealed and does it show players.
 
     One pixel covers blocksPerPixel() x blocksPerPixel() columns; north is up (-z), east right
     (+x). */
@@ -45,6 +47,10 @@ public:
     int scale() const { return m_scale; }
     /*! Returns the block column at the middle of the map (the corner of the four middle pixels). */
     QPoint centre() const { return m_centre; }
+    /*! Returns the qualified name of the dimension the map shows (the overworld unless set). */
+    const QString &dimension() const { return m_dimension; }
+    /*! Sets the dimension the map shows to \a dimension (a qualified name). */
+    void setDimension(const QString &dimension) { m_dimension = dimension; }
     /*! Returns the block columns along each side of one pixel: 2^scale. */
     int blocksPerPixel() const { return 1 << m_scale; }
     /*! Returns the pixel of the block column (\a x, \a z), or std::nullopt outside the map. */
@@ -77,5 +83,6 @@ public:
 private:
     int m_scale = 0;
     QPoint m_centre;
+    QString m_dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
     QList<quint16> m_pixels = QList<quint16>(pixelCount, 0);
 };

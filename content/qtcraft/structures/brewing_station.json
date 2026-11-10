@@ -1,0 +1,138 @@
+{
+    "name": "brewing_station",
+    "showcase": {
+        "order": 117
+    },
+    "palette": {
+        "P": "polished_stone",
+        "S": "brewing_stand",
+        "K": "cauldron[level=3]",
+        "C": "chest[facing=south]",
+        "H": "signal_hopper[facing=down]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP"
+        ],
+        [
+            "         ",
+            "  S  S  K",
+            "         ",
+            "         "
+        ],
+        [
+            "         ",
+            "     H   ",
+            "         ",
+            "         "
+        ],
+        [
+            "         ",
+            "     C   ",
+            "         ",
+            "         "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                2,
+                1,
+                1
+            ],
+            "items": [
+                {
+                    "item": "nether_wart",
+                    "count": 8
+                },
+                {
+                    "item": "ember_dust",
+                    "count": 4
+                },
+                {
+                    "item": "water_bottle",
+                    "count": 1
+                },
+                {
+                    "item": "water_bottle",
+                    "count": 1
+                },
+                {
+                    "item": "water_bottle",
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "at": [
+                5,
+                1,
+                1
+            ],
+            "items": [
+                {
+                    "item": "sugar",
+                    "count": 1
+                },
+                {
+                    "item": "ember_dust",
+                    "count": 4
+                },
+                {
+                    "item": "awkward_potion",
+                    "count": 1
+                },
+                {
+                    "item": "awkward_potion",
+                    "count": 1
+                },
+                {
+                    "item": "awkward_potion",
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "at": [
+                5,
+                3,
+                1
+            ],
+            "items": [
+                {
+                    "item": "sugar",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                2.5,
+                2.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.brewing_station.stand"
+        },
+        {
+            "at": [
+                5.5,
+                4.6,
+                1.5
+            ],
+            "text": "structure.qtcraft.brewing_station.hopper"
+        },
+        {
+            "at": [
+                8.5,
+                2.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.brewing_station.cauldron"
+        }
+    ]
+}

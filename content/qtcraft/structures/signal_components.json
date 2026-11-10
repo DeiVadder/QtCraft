@@ -20,7 +20,9 @@
         "D": "oak_door[facing=north,half=bottom]",
         "U": "oak_door[facing=north,half=top]",
         "t": "oak_trapdoor[facing=north]",
-        "Q": "small_signal_torch[attach=floor]"
+        "Q": "small_signal_torch[attach=floor]",
+        "Y": "daylight_sensor",
+        "N": "daylight_sensor[inverted=true]"
     },
     "layers": [
         [
@@ -41,9 +43,9 @@
             "...............................",
             "...........d...................",
             "d.ddd.dd.Lddd.dSd..............",
-            ".......d...d...................",
-            "...............................",
-            ".QdddddddM.Q..T................"
+            ".......d...d.............S.....",
+            "........................SNM....",
+            ".QdddddddM.Q..T..YdM.NdM.S....."
         ],
         [
             "...............................",
@@ -53,7 +55,7 @@
             "...............................",
             "...............d...............",
             "...............................",
-            "...............................",
+            ".........................S.....",
             ".M.........S..S................"
         ],
         [
@@ -253,6 +255,46 @@
             14,
             3,
             8
+        ],
+        [
+            17,
+            1,
+            8
+        ],
+        [
+            18,
+            1,
+            8
+        ],
+        [
+            19,
+            1,
+            8
+        ],
+        [
+            21,
+            1,
+            8
+        ],
+        [
+            22,
+            1,
+            8
+        ],
+        [
+            23,
+            1,
+            8
+        ],
+        [
+            25,
+            1,
+            7
+        ],
+        [
+            26,
+            1,
+            7
         ]
     ],
     "labels": [
@@ -359,6 +401,30 @@
                 8.5
             ],
             "text": "block.qtcraft.signal_torch"
+        },
+        {
+            "at": [
+                18.5,
+                2.6,
+                8.5
+            ],
+            "text": "block.qtcraft.daylight_sensor"
+        },
+        {
+            "at": [
+                22.5,
+                2.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_components.daylight_inverted"
+        },
+        {
+            "at": [
+                26.5,
+                3.6,
+                7.5
+            ],
+            "text": "structure.qtcraft.signal_components.daylight_closed"
         }
     ]
 }

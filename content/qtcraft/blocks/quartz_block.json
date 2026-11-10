@@ -1,0 +1,12 @@
+{
+    "name": "quartz_block",
+    "sound": "stone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "side": "quartz_block_side",
+        "top": "quartz_block_top",
+        "bottom": "quartz_block_top"
+    }
+}

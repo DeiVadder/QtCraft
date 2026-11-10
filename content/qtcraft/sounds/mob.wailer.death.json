@@ -1,0 +1,35 @@
+{
+    "name": "mob.wailer.death",
+    "volume": 1.0,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 64,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 1.4,
+            "frequency": 520,
+            "endFrequency": 90,
+            "attack": 0.02,
+            "curve": 1.2,
+            "gain": 0.55
+        },
+        {
+            "wave": "sine",
+            "duration": 1.4,
+            "frequency": 790,
+            "endFrequency": 130,
+            "attack": 0.02,
+            "curve": 1.2,
+            "gain": 0.25
+        },
+        {
+            "wave": "noise",
+            "duration": 1.0,
+            "attack": 0.1,
+            "curve": 1.5,
+            "highpass": 900,
+            "gain": 0.15
+        }
+    ]
+}

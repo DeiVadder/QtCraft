@@ -17,7 +17,8 @@
                 "texture": "diamond_armour",
                 "inflate": 0.028
             }
-        ]
+        ],
+        "toughness": 2.0
     },
     "dispense": "equip"
 }

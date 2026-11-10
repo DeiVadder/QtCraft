@@ -60,8 +60,17 @@ struct QcHitEffect
         nothing else. */
     static constexpr const char *splash = "splash";
 
+    /*! Where the projectile breaks an explosion of \c {power} goes off (a fireball, decision
+        E-1053); with an \c {ignite} effect beside it, it lights fires. */
+    static constexpr const char *explode = "explode";
+
+    /*! A shot whose harm is its fire (a small fireball, decision E-1058): a fire-proof body takes
+        no damage from it, and where it meets a block it lights the cell in front of the face, a
+        creature's shot only under the rule \c {mobGriefing}. */
+    static constexpr const char *kindle = "kindle";
+
     /*! The known types, one row each, in the order of the names above. */
-    static constexpr std::array<Type, 8> types{{
+    static constexpr std::array<Type, 10> types{{
         {damage, "amount", 0.0, 1000.0, 2.0},
         {knockback, "strength", 0.0, 10.0, 1.0},
         {ignite, "seconds", 0.0, 3600.0, 5.0},
@@ -70,6 +79,8 @@ struct QcHitEffect
         {spawn, "chance", 0.0, 1.0, 1.0},
         {teleport, "damage", 0.0, 1000.0, 5.0},
         {splash, "radius", 0.5, 8.0, 4.0},
+        {explode, "power", 0.1, 8.0, 1.0},
+        {kindle, "", 0.0, 0.0, 0.0},
     }};
 
     /*! Returns the row of \c {types} named \a name, or std::nullopt for an unknown type. */

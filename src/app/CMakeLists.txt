@@ -20,6 +20,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcChatFeed.h controllers/QcChatFeed.cpp
     controllers/QcChatInputHistory.h controllers/QcChatInputHistory.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcGeneratorUpgradeController.h controllers/QcGeneratorUpgradeController.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
@@ -77,14 +78,18 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     inventory/QcAnvilController.h inventory/QcAnvilController.cpp
+    inventory/QcBeaconController.h inventory/QcBeaconController.cpp
     inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
     inventory/QcSlotActions.h
     inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
+    inventory/QcSmithingController.h inventory/QcSmithingController.cpp
     inventory/QcStonecutterController.h inventory/QcStonecutterController.cpp
     inventory/QcTradeController.h inventory/QcTradeController.cpp
+    inventory/QcWorkstationControllers.h
 )
 target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
+    models/QcBossBarModel.h models/QcBossBarModel.cpp
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     models/QcDurationText.h models/QcDurationText.cpp
@@ -137,6 +142,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
+    rendering/QcEntityFrameBeams.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
     rendering/QcEntityFramePuffs.cpp
     rendering/QcForcedPose.h rendering/QcForcedPose.cpp
@@ -176,6 +182,7 @@ target_sources(qc_app_core PRIVATE
     settings/QcRenderSettings.h settings/QcRenderSettings.cpp
     settings/QcSceneOverrides.h settings/QcSceneOverrides.cpp
     settings/QcSettingsController.h settings/QcSettingsController.cpp
+    settings/QcSoundVolumeModel.h settings/QcSoundVolumeModel.cpp
     settings/QcTexturePackController.h settings/QcTexturePackController.cpp
 )
 # The mouse capture talks to the platform (AppKit on macOS).
@@ -290,9 +297,11 @@ qt_add_qml_module(qc_app_core
         qml/handbook/HandbookScreen.qml
         qml/hud/AdvancementToast.qml
         qml/hud/AirBar.qml
+        qml/hud/BossBars.qml
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
         qml/hud/DialDisplay.qml
+        qml/hud/HeartIcon.qml
         qml/hud/HeldItemName.qml
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
@@ -303,10 +312,14 @@ qt_add_qml_module(qc_app_core
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/AnvilScreen.qml
+        qml/inventory/BeaconEffectButton.qml
+        qml/inventory/BeaconScreen.qml
+        qml/inventory/BrewingScreen.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
         qml/inventory/EnchantingOffer.qml
         qml/inventory/EnchantingScreen.qml
+        qml/inventory/FuelFlame.qml
         qml/inventory/FurnaceScreen.qml
         qml/inventory/InventoryScreen.qml
         qml/inventory/InventorySlot.qml
@@ -315,14 +328,18 @@ qt_add_qml_module(qc_app_core
         qml/inventory/ParchmentField.qml
         qml/inventory/PixelArt.qml
         qml/inventory/PlayerSlots.qml
+        qml/inventory/SlotName.qml
         qml/inventory/SlotScreen.qml
+        qml/inventory/SmithingScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
+        qml/inventory/WorkbenchOutput.qml
         qml/menus/CharacterPage.qml
         qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml
         qml/menus/DeleteWorldDialog.qml
         qml/menus/DisconnectScreen.qml
+        qml/menus/GeneratorUpgradeDialog.qml
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/LeaveGameButton.qml
@@ -346,6 +363,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml
         qml/menus/WorldTile.qml
+        qml/settings/AboutPage.qml
         qml/settings/AdvancedPage.qml
         qml/settings/AudioPage.qml
         qml/settings/ControlsPage.qml
@@ -460,6 +478,8 @@ else()
 endif()
 
 target_link_libraries(qtcraft PRIVATE qc_app_qml)
+# The music tracks (content/CMakeLists.txt, decision E-1136).
+target_link_libraries(qtcraft PRIVATE qc_music)
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
     BASE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -585,6 +605,27 @@ qt_add_shaders(qtcraft "qtcraft_entity_shadow_shaders"
         shaders/block_shadow.vert.qsb
         shaders/entity_shadow.vert.qsb
         shaders/hand_shadow.vert.qsb
+)
+
+# The glows of the beacon beams are added to the colour behind them (decision E-1143), also as
+# receivers of the sun shadows.
+qt_add_shaders(qtcraft "qtcraft_glow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_GLOW=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_glow.frag.qsb
+)
+qt_add_shaders(qtcraft "qtcraft_glow_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_GLOW=1 QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_glow_shadow.frag.qsb
 )
 
 qt_add_translations(qtcraft

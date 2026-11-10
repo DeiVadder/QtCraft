@@ -1,0 +1,28 @@
+{
+    "name": "soul_torch",
+    "sound": "wood",
+    "shape": "torch",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 10,
+    "hardness": 0.0,
+    "support": "attached",
+    "replaceable": false,
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "itemTexture": "soul_torch_item",
+    "textures": {
+        "all": "soul_torch",
+        "top": "soul_torch_top",
+        "bottom": "soul_torch"
+    }
+}

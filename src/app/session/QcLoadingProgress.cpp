@@ -71,9 +71,10 @@ double QcLoadingProgress::fraction() const
     return start + share * std::clamp(done / chunksNeeded(), 0.0, 1.0);
 }
 
-void QcLoadingProgress::begin(Kind kind)
+void QcLoadingProgress::begin(Kind kind, const QString &destination)
 {
     m_kind = kind;
+    m_destination = kind == Kind::Dimension ? destination : QString();
     setShownOnly(false);
     setArea({});
     for (std::size_t index = 0; index < indexOf(Stage::Ready) + 1; ++index) {
@@ -81,7 +82,8 @@ void QcLoadingProgress::begin(Kind kind)
     }
     m_sinceBegin.start();
     m_sincePlaying.invalidate();
-    setStage(kind == Kind::Network ? Stage::Joining : Stage::Content);
+    // A network game and a dimension start with the server placing the player.
+    setStage(kind == Kind::Network || kind == Kind::Dimension ? Stage::Joining : Stage::Content);
     emit changed();
 }
 

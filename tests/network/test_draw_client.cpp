@@ -3,11 +3,9 @@
 
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
+#include "fixtures/QcFlatLocalHost.h"
 #include "fixtures/QcLatencyTransport.h"
 #include "fixtures/QcTestUtil.h"
-#include "server/core/QcServerConfig.h"
-#include "worldgen/generators/QcWorldGenerators.h"
-#include "worlds/QcLocalServerHost.h"
 
 #include <QTest>
 
@@ -50,12 +48,7 @@ private:
 
     void start()
     {
-        QcServerConfig config;
-        config.viewDistance = 2;
-        config.seed = 1;
-        config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        config.defaultGameMode = QcGameMode::Survival;
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
+        m_host = qcFlatSurvivalHost(m_content);
         QVERIFY(m_host->startError().isEmpty());
 
         auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 7 + jitterMs));

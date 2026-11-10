@@ -49,5 +49,13 @@
                 ["o   o"]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [6, 1, 1], "table": "village_house_desert" }
+            ]
+        }
     ]
 }

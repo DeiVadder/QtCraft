@@ -1,0 +1,34 @@
+{
+    "name": "soul_anchor",
+    "parent": "adventure",
+    "icon": "soul_anchor",
+    "frame": "task",
+    "handbook": "chapter:nether_start",
+    "criteria": {
+        "charge_1": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "block": "soul_anchor_1"
+            }
+        },
+        "charge_2": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "block": "soul_anchor_2"
+            }
+        },
+        "charge_3": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "block": "soul_anchor_3"
+            }
+        },
+        "charge_4": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "block": "soul_anchor_4"
+            }
+        }
+    },
+    "requirements": "any"
+}

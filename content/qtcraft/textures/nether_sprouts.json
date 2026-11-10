@@ -1,0 +1,30 @@
+{
+    "name": "nether_sprouts",
+    "pattern": "icon",
+    "primary": "#1e9080",
+    "variation": 0.0,
+    "seed": 8714,
+    "palette": {
+        "A": "#1e9080",
+        "B": "#0e5a58",
+        "T": "#58d8b0"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "        T",
+        "        A",
+        "        A",
+        "      T AB",
+        "      A ABT",
+        "      A ABA",
+        " T    ABABA",
+        " A    ABABAB   T",
+        " A   A BABAB   A",
+        " AB  ABBAB B   A",
+        "  B  AB AB AB A",
+        "  AB AB AB AB AB",
+        "  AB AB AB AB AB"
+    ]
+}

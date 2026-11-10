@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "server/dimensions/QcPerDimension.h"
+#include "server/mobs/QcDimensionDepartures.h"
 #include "server/mobs/QcMobManager.h"
 
 #include <QList>
@@ -36,9 +38,6 @@ public:
     static constexpr double splitLift = 5.0;
 
     QcMobFamilies(QcServerState &state, QcServerSounds &sounds);
-    ~QcMobFamilies();
-    QcMobFamilies(const QcMobFamilies &) = delete;
-    QcMobFamilies &operator=(const QcMobFamilies &) = delete;
 
     /*! Before the creatures move: the children of parents that left since the last call pop or
         vanish, the parents wounded since their last move split, and kept children note where
@@ -65,6 +64,17 @@ private:
         bool pop = false;
     };
 
+    // What is left of a creature that fell apart (decision E-1055): `count` of `kind` at `where`.
+    struct Remains
+    {
+        QcCreatureKindId kind;
+        QcVec3 where;
+        int count = 0;
+        bool confined = false;
+    };
+
+    // The creatures that fell apart since the last tick appear.
+    void takeRemains();
     // Notes the children of a parent that leaves; a kept parent whose chunk unloads lets them wait.
     void noteDeparture(const QcCreature &mob, QcMobManager::Departure why);
     // The children of parents that left pop or vanish.
@@ -77,7 +87,8 @@ private:
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;
-    QcMobManager::DepartureToken m_departures{};
-    QList<Orphans> m_orphans;
+    QcDimensionDepartures m_departures;
+    QcPerDimension<QList<Orphans>> m_orphans;
+    QcPerDimension<QList<Remains>> m_remains;
     qint64 m_popped = 0;
 };

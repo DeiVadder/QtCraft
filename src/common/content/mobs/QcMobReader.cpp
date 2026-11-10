@@ -19,7 +19,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The tint and the sitting offset of a model part (decision E-480): "tint" none or collar,
-// "sitOffset" three numbers within 1 m; "tentacle" (decision E-974).
+// "sitOffset" three numbers within 1 m; "tentacle" (decision E-974); "spin" (decision E-1056).
 [[nodiscard]] std::optional<QcMobPart> partLook(QcMobPart part, const QJsonObject &json, QcJsonFieldReader &reader)
 {
     const QString tint = json.value(u"tint"_s).toString(u"none"_s);
@@ -38,6 +38,13 @@ namespace {
     }
     // A tentacle of a creature that swims in pulses (decision E-974).
     part.tentacle = json.value(u"tentacle"_s).toBool(false);
+    part.saddled = json.value(u"saddled"_s).toBool(false);
+    part.armour = json.value(u"armour"_s).toBool(false);
+    part.spin = json.value(u"spin"_s).toDouble(0.0);
+    if (std::abs(part.spin) > QcMobPart::maxSpin) {
+        reader.fail(u"a model part's 'spin' must lie within %1 degrees a second"_s.arg(QcMobPart::maxSpin));
+        return std::nullopt;
+    }
     return part;
 }
 
@@ -57,13 +64,20 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
         const QcItemDrop drop{.item = dropReader.name(u"item"_s, packNamespace),
-                              .count = dropReader.integer(u"count"_s, 1, 1, 64),
+                              .count = dropReader.integer(u"count"_s, 1, 0, 64),
                               .chance = dropReader.number(u"chance"_s, 1.0, 0.0, 1.0),
-                              .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64)};
-        if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
+                              .maxCount = dropReader.integer(u"maxCount"_s, 0, 0, 64),
+                              .byPlayer = dropReader.boolean(u"byPlayer"_s, false),
+                              .table = dropReader.name(u"table"_s, packNamespace)};
+        if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty() == drop.table.isEmpty()) {
             // A problem inside the entry comes first; it names the place itself.
             reader.adopt(dropReader);
-            reader.fail(u"drop needs an 'item'"_s);
+            reader.fail(u"drop needs an 'item' or a 'table'"_s);
+            break;
+        }
+        // The table draws its own counts (decision E-1106).
+        if (!drop.table.isEmpty() && (dropJson.contains(u"count"_s) || dropJson.contains(u"maxCount"_s))) {
+            reader.fail(u"a drop with a 'table' takes no 'count' or 'maxCount'"_s);
             break;
         }
         result.append(drop);
@@ -72,7 +86,8 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
 }
 
 // The projectiles an archer shoots instead while its target lacks an effect (decision E-623):
-// "choices": [{"projectile", "unlessTargetHas"}].
+// "choices": [{"projectile", "unlessTargetHas", "minDistance", "maxDistance", "minTargetHealth",
+// "chance"}] (decision E-1105).
 [[nodiscard]] QList<QcArcherDefinition::Choice> parseArcherChoices(QcJsonFieldReader &reader, const QString &packNamespace)
 {
     const QJsonValue value = reader.json.value(u"choices"_s);
@@ -88,7 +103,12 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     const QJsonArray list = value.toArray();
     for (const auto &entry : list) {
         QcJsonFieldReader nested{entry.toObject(), reader.context + u" choices"_s, {}};
-        const QcArcherDefinition::Choice choice{nested.name(u"projectile"_s, packNamespace), nested.name(u"unlessTargetHas"_s, packNamespace)};
+        const QcArcherDefinition::Choice choice{nested.name(u"projectile"_s, packNamespace),
+                                                nested.name(u"unlessTargetHas"_s, packNamespace),
+                                                nested.number(u"minDistance"_s, 0.0, 0.0, 128.0),
+                                                nested.number(u"maxDistance"_s, 1000.0, 0.0, 1000.0),
+                                                nested.number(u"minTargetHealth"_s, 0.0, 0.0, 1000.0),
+                                                nested.number(u"chance"_s, 1.0, 0.0, 1.0)};
         if (!entry.isObject() || choice.projectile.isEmpty() || choice.unlessTargetHas.isEmpty()) {
             nested.fail(u"entries need a 'projectile' and 'unlessTargetHas'"_s);
         }
@@ -115,6 +135,11 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     archer.range = reader.number(u"range"_s, archer.range, 2.0, 64.0);
     archer.minDistance = reader.number(u"minDistance"_s, archer.minDistance, 0.0, 32.0);
     archer.keepDistance = reader.number(u"keepDistance"_s, archer.keepDistance, 1.0, 64.0);
+    archer.warnSound = reader.name(u"warnSound"_s, packNamespace);
+    archer.volley = reader.integer(u"volley"_s, archer.volley, 1, 8);
+    archer.volleySeconds = reader.number(u"volleySeconds"_s, archer.volleySeconds, 0.05, 5.0);
+    archer.scatter = reader.number(u"scatter"_s, archer.scatter, 0.0, 4.0);
+    archer.flares = reader.boolean(u"flares"_s, false);
     if (archer.projectile.isEmpty()) {
         reader.fail(u"needs a 'projectile'"_s);
     } else if (archer.minDistance >= archer.keepDistance || archer.keepDistance > archer.range) {
@@ -216,6 +241,7 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     rule.maxY = reader.integer(u"maxY"_s, QcWorld::worldHeight, 1, QcWorld::worldHeight);
     rule.sky = reader.boolean(u"sky"_s, false);
     rule.water = reader.boolean(u"water"_s, false);
+    rule.lava = reader.boolean(u"lava"_s, false);
 
     const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
     for (const auto &entry : blocks) {
@@ -243,7 +269,8 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     return rule;
 }
 
-// How a creature breeds; `mob` (read so far) must be a peaceful animal on the ground.
+// How a creature breeds; `mob` (read so far) must live on the ground (hostile ones too, the
+// bristleboar, decision E-1082).
 [[nodiscard]] QcBreedingDefinition parseBreeding(const QcMobDefinition &mob, QcJsonFieldReader &breedingReader,
                                                  const QString &packNamespace)
 {
@@ -257,8 +284,8 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     if (breedingReader.ok() && breeding.food.isEmpty()) {
         breedingReader.fail(u"needs 'food'"_s);
     }
-    if (breedingReader.ok() && (mob.hostile || mob.ambient || mob.flying)) {
-        breedingReader.fail(u"only peaceful animals on the ground breed"_s);
+    if (breedingReader.ok() && (mob.ambient || mob.flying)) {
+        breedingReader.fail(u"only creatures on the ground breed"_s);
     }
     return breeding;
 }
@@ -330,8 +357,9 @@ void QcMobReader::parseFighting()
     m_reader.nestedObject(u"archer"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_mob.archer = parseArcher(nested, m_namespace);
     });
-    if (m_reader.ok() && m_json.contains(u"archer"_s) != (m_mob.ai == QcMobDefinition::Ai::Archer)) {
-        m_reader.fail(u"the archer AI goes with 'archer' settings, and they with it"_s);
+    const bool shoots = m_mob.ai == QcMobDefinition::Ai::Archer || (m_mob.ai == QcMobDefinition::Ai::Drifter && m_mob.hostile);
+    if (m_reader.ok() && m_json.contains(u"archer"_s) != shoots) {
+        m_reader.fail(u"the archer AI and a hostile drifter go with 'archer' settings, and they with them"_s);
     }
     m_reader.nestedObject(u"golem"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_mob.golem = parseGolem(nested, m_namespace);
@@ -371,6 +399,10 @@ QcResult<QcMobDefinition> QcMobReader::read()
     m_mob.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     parseMobSounds();
     parseFamily();
+    parseBoss();
+    if (m_reader.ok() && (m_mob.ai == QcMobDefinition::Ai::Drifter) != (m_mob.hover && m_json.contains(u"drift"_s))) {
+        m_reader.fail(u"the drifter AI goes with 'hover' and 'drift', and 'drift' with it"_s);
+    }
     checkWaterSpawns();
 
     if (!m_reader.ok()) {
@@ -403,19 +435,20 @@ void QcMobReader::parseAi()
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
         {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
-        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}};
+        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}, {u"drifter"_s, Ai::Drifter},
+        {u"hydra"_s, Ai::Hydra}};
     const Ai fallback = m_mob.villager ? Ai::Villager : m_mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = m_reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        m_reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral, golem or guardian"_s);
+        m_reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral, golem, guardian, drifter or hydra"_s);
         return;
     }
 
     m_mob.ai = names.value(name);
     if ((m_mob.ai == Ai::Villager) != m_mob.villager) {
         m_reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
-    } else if ((m_mob.ai == Ai::Hostile || m_mob.ai == Ai::Archer || m_mob.ai == Ai::Guardian) && !m_mob.hostile) {
-        m_reader.fail(u"the hostile, archer and guardian AIs need 'hostile': true"_s);
+    } else if ((m_mob.ai == Ai::Hostile || m_mob.ai == Ai::Archer || m_mob.ai == Ai::Guardian || m_mob.ai == Ai::Hydra) && !m_mob.hostile) {
+        m_reader.fail(u"the hostile, archer, guardian and hydra AIs need 'hostile': true"_s);
     } else if (m_mob.ai == Ai::Golem && (m_mob.hostile || m_mob.flying)) {
         m_reader.fail(u"the golem AI is for peaceful walkers"_s);
     }
@@ -429,6 +462,7 @@ void QcMobReader::parseAi()
 void QcMobReader::parseHostileTraits()
 {
     m_mob.immuneTo = QcContentFields::parseNames(u"immuneTo"_s, m_namespace, m_reader);
+    m_mob.undead = m_reader.boolean(u"undead"_s, false);
     m_mob.blowEffects = parseBlowEffects(m_json, m_reader, m_namespace);
     m_mob.neutralByDay = m_reader.boolean(u"neutralByDay"_s, false);
     m_mob.leapSpeed = m_reader.number(u"leapSpeed"_s, 0.0, 0.0, 20.0);
@@ -453,6 +487,7 @@ void QcMobReader::parseSpawnConditions(const QJsonObject &spawn, QcJsonFieldRead
     m_mob.spawnBiomes = main.biomes;
     m_mob.spawnUnderSky = main.sky;
     m_mob.spawnInWater = main.water;
+    m_mob.spawnOnLava = main.lava;
     m_mob.maxGroup = spawnReader.integer(u"maxGroup"_s, 2, 1, 4);
 }
 
@@ -576,16 +611,19 @@ void QcMobReader::parseMobSounds()
 // A parent that splits off children (decision E-839): "family": {"child", "maxChildren",
 // "childrenPerHit", "maxSplits", "popDrops", "popSound", "orbitRadius", "orbitSeconds",
 // "tetherTexture", "tetherRange"}, and hovering: "hover": {"height", "bob", "bobSeconds",
-// "maxHeight", "turnSpeed"}.
+// "maxHeight", "turnSpeed", "climbSpeed", "sinksInWater"}.
 void QcMobReader::parseFamily()
 {
     m_reader.nestedObject(u"hover"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         QcHoverDefinition &hover = m_mob.hover.emplace();
-        hover.height = nested.number(u"height"_s, hover.height, 0.0, 2.0);
+        hover.height = nested.number(u"height"_s, hover.height, 0.0, QcHoverDefinition::highest);
         hover.bob = nested.number(u"bob"_s, hover.bob, 0.0, 0.5);
         hover.bobSeconds = nested.number(u"bobSeconds"_s, hover.bobSeconds, 0.1, 30.0);
-        hover.maxHeight = nested.number(u"maxHeight"_s, hover.maxHeight, hover.height, 16.0);
+        hover.maxHeight = nested.number(u"maxHeight"_s, hover.maxHeight, hover.height, QcHoverDefinition::highest);
         hover.turnSpeed = nested.number(u"turnSpeed"_s, hover.turnSpeed, 1.0, 3600.0);
+        hover.climbSpeed = nested.number(u"climbSpeed"_s, hover.climbSpeed, 0.1, 10.0);
+        hover.sinksInWater = nested.boolean(u"sinksInWater"_s, false);
+        hover.risesToTarget = nested.boolean(u"risesToTarget"_s, false);
     });
     m_reader.nestedObject(u"family"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
         QcFamilyDefinition &family = m_mob.family.emplace();

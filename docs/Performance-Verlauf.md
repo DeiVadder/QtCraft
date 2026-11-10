@@ -2898,6 +2898,12 @@ Stand `0ea6db0`, Release, D3D11, RTX 5060 Ti, i7-14700K, 2560 × 1440 mit 143 Hz
 
 Server-Tick im Mittel 0,55–0,96 ms. Mit VSync zeigt die Bildzeit nur die Monitorfrequenz (6,94 ms).
 
+## Nether-Generator 84.2: Lava und Chunk-Kosten (2026-11-05)
+
+`test_nether_measure` im Release-Build, Seed 42, Ticks von Hand, 289 Chunks, 3000 Ticks: Tick im Schnitt 0,138 ms, 99. Perzentil 4,2 ms, schlechtester 7,9 ms, Flüssigkeits-Plan höchstens 294 Schritte, 0 verworfen, nach etwa 2500 Ticks leer. `generationCost`: Nether 0,43 ms je Chunk, Oberwelt 2,50 ms. Mit Lava wie im Vorbild (Reichweite 7, alle 10 Ticks; E-1037): Schnitt 0,192 ms, 99. Perzentil 5,4 ms, schlechtester 8,0 ms, Plan höchstens 496 Schritte, 0 verworfen, vor Tick 2000 leer; Nether 0,41 ms je Chunk, Oberwelt 2,33 ms. Einordnung in E-1035. Mit Quellen nur noch über dem Lavameer (E-1039): Schnitt 0,061 ms, 99. Perzentil 0,50 ms, schlechtester 3,0 ms, Plan höchstens 58 Schritte, 0 verworfen; `generationCost` Nether 0,42 ms, Oberwelt 2,31 ms je Chunk.
+
+Mit den fünf Biomen (84.3, E-1049; Rechner unter Last durch parallele Pakete, Lastmittel um 12): `generationCost` Nether 0,54–0,56 ms, Oberwelt 2,46 ms je Chunk; Chunks ganz im Biom: Karmesinwald 0,65 ms, Wirrwald 0,60–0,64 ms, Basaltdeltas 0,60–0,63 ms. `lavaCost` Radius 8, 3000 Ticks: Schnitt 0,125 ms, 99. Perzentil 0,48 ms, schlechtester 4,3 ms, Plan höchstens 46 Schritte, 0 verworfen. Verschränkte A/B-Messung 84.2 gegen 84.3 (Release, 4 Runden, Lastmittel 5,7): Schnitt 0,060–0,064 ms gegen 0,097–0,119 ms, 99. Perzentil 0,44–0,48 ms gegen 0,35–0,40 ms. Der Anstieg kommt von den Zufalls-Ticks (`QcPlantGrowth::tick`, `mayHoldPlants`): Ranken sind die ersten `growth`-Blöcke im Nether. Nicht von Lava und nicht von der Last.
+
 ## Release 1.0.0: `release/1.0` gegen `v1.0.0-rc.4`, Fenster-A/B und Headless-A/B (2026-11-04)
 
 - **Stände:** `rc4` = `v1.0.0-rc.4` (`89042db`), `rel10` = `release/1.0` beim Schnitt (`33bdebb`; 82 Commits, darunter 79.47/79.49 Main.qml-Aufteilung, 79.81 Tintenfisch, 79.80 Fisch-Wege, 79.86 Bogen, 79.88 feste Item-Drops, 79.90 HD-Werkzeuge), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv (alle Szenarien 6 Runden, Grund: Streuung von Tick und Render-CPU), Sicht 8. Zweite Reihe gleich mit `TEXTURE_PACKS=builtin:qtcraft_hd_64` für beide; dort 31 von 48 Läufen `loaded=1` (Parallels-VM und `ApplicationsStorageExtension` liefen mit, Last 4–5), die erste Reihe ruhig (2 von 48).
@@ -2914,3 +2920,102 @@ Server-Tick im Mittel 0,55–0,96 ms. Mit VSync zeigt die Bildzeit nur die Monit
 - **Fenster, HD 64 (rc4 → rel10):** GPU stand +3 %, sprint −15 %, showcase −2 %, crowd −18 % (Streuung 38–74 %); Render-CPU −10 … +11 % (crowd +11 % bei 12–47 % Streuung); GUI-CPU crowd 0,96 → 1,09 ms (+13 %), sonst −6 … +1 %; Spitzenspeicher −0,2 … +2,0 %. Die Änderungen an der Item-Darstellung (79.88, 79.90) zeigen keine Kosten in GPU oder Speicher.
 - **Headless `@server` (60 Spielsekunden, adaptiv; rc4 → rel10, Tick Ø / p99):** crowd 0,229 → 0,225 / 0,388 → 0,383 ms; gravel-collapse 0,544 → 0,547 / 1,58 → 1,56; farm 0,009 → 0,009; farm-seeds 0,021 → 0,021; explore 0,308 → 0,309 / 1,49 → 1,46; Signal-Stationen components 0,094 → 0,110 (+17 %), machines 0,092 → 0,107 (+17 %), farm 0,098 → 0,120 (+22 %) bei 2–12 % Streuung. Speicher −1,5 … +1,9 %.
 - **Bewertung:** kein Rückschritt über der 10-%-Schwelle in Bildzeit, GPU oder Speicher. Über der Schwelle: (1) Signal-Stationen headless +0,015 … +0,022 ms je Tick, ganz in der Phase Wesen (0,053–0,058 → 0,068–0,076 ms) bei zwei Wesen mehr in der Szene (47–52 → 49–54; Tintenfisch/Fische der Showcase, 79.80/79.81), absolut winzig (Budget 50 ms); (2) GUI-CPU crowd +8 % (ruhig) bzw. +13 % (HD, unter Last), +0,08 … +0,12 ms je Bild, dieselbe bekannte Reserve wie seit 79.14a (Entity-Meshing auf dem GUI-Thread), Bildzeit unberührt; (3) showcase +48 Draw-Calls ohne messbare GPU- oder CPU-Kosten. Alles hingenommen; keine Fixes nötig.
+
+## Paket 84.4: Wesen im Nether (2026-11-06)
+
+`test_nether_spawns::tickCostOfACrowd` im Release-Build, je Art 40 Wesen im Nether, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 15). Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,056 | 0,064 | 0,056 |
+| Moderhauer | 0,073 | 0,058 | 0,056 |
+| Magmaschleim | 0,057 | 0,057 | 0,055 |
+| Klagegeist | 0,176 | 0,176 | 0,164 |
+| Lavastelze | 0,057 | 0,057 | 0,058 |
+
+- **Bewertung:** Moderhauer, Magmaschleim und Lavastelze kosten so viel wie Zombies. Der Klagegeist kostet rund das Dreifache (0,004 ms je Wesen und Tick), das Budget von 50 ms bleibt weit entfernt. Gemessen ist nur `QcMobManager::tick` mit einem Spieler in der Nähe, ohne Schüsse, Netz und Explosionen; keine A/B-Messung gegen `dev`.
+
+## Paket 84.5a: Netherfestung, Kosten der Generierung (2026-11-06)
+
+`test_nether_generator generationCost` im Release-Build ohne Fenster, Seed 42, drei Läufe nacheinander; der Rechner stand unter fremder Last (Lastmittel 24–31 auf 14 Kernen), die Werte streuen darum mehr als sonst.
+
+| Lauf | Nether je Chunk | Oberwelt je Chunk | Region planen | Chunks um die Mitte einer Festung, Plan noch zu machen | dieselben, Plan im Cache |
+|------|-----------------|-------------------|---------------|-------------------------------------------------------|--------------------------|
+| 1 | 0,69 ms | 2,58 ms | 0,23 ms | 0,47 ms | 0,46 ms |
+| 2 | 0,63 ms | 2,54 ms | 0,23 ms | 0,66 ms | 0,60 ms |
+| 3 | 0,87 ms | 3,51 ms | 0,27 ms | 0,60 ms | 0,56 ms |
+
+- **Planen:** 16 Regionen (448 Blöcke) im Schnitt 0,23–0,27 ms je Region, mit und ohne Festung; ein Plan wird je Region einmal gemacht (Cache von 256 Plänen).
+- **Chunks in einer Festung** (6 × 6 Chunks um ihre Mitte) kosten nicht mehr als gewöhnliche Nether-Chunks: Die Höhlen dort sind offen, das Gelände ist billiger, und das Schreiben der Festung fällt nicht auf. Der Vergleich mit 84.3 (0,54–0,56 ms bei Last 12) ist unter dieser Last nicht belastbar; eine verschränkte A/B-Messung gegen 84.3 steht aus und braucht einen ruhigen Rechner.
+- **Test:** `test_nether_fortress` von etwa 305 s auf 17–24 s Debug-Zeit (die Tests, die Blöcke lesen, teilen sich 9 erzeugte Festungen statt jede Festung jedes Seeds neu; die Prüfungen auf Reihenfolge und vier Threads erzeugen je 3×3 Chunks frisch, das Abtasten der Pfeiler unter den Spawn-Kästen kostet Planungszeit, Erzeugungskosten nicht neu gemessen), `TIMEOUT` 600 → 450 (≥ 15 × Debug-Zeit; `tests/structures/tests.cmake`; die übrigen Struktur-Tests behalten ihre Grenzen).
+
+## Paket 84.5b: Wesen der Festung (2026-11-06)
+
+`test_nether_spawns::tickCostOfACrowd` im Release-Build, je Art 40 Wesen im Nether, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 13). Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,048 | 0,050 | 0,051 |
+| Klagegeist (Vergleich) | 0,143 | 0,148 | 0,158 |
+| Glutgeist | 0,041 | 0,043 | 0,041 |
+| Verkohltes Skelett | 0,055 | 0,057 | 0,055 |
+
+- **Bewertung:** Beide Arten kosten so viel wie Zombies, das Budget von 50 ms bleibt weit entfernt. Der Glutgeist kostet trotz desselben Gehirns weit weniger als der Klagegeist, weil sein Körper klein ist (0,6 × 1,8 statt 3 Meter breit, also weniger Zellen je Kollisionsprüfung), er nahe am Boden schwebt und meist still steht oder rastet (begründet, nicht mit dem Profiler gemessen).
+
+## Paket 84.6a: Hauerling und Borstenkeiler (2026-11-06)
+
+Release-Build, Ticks von Hand, drei Läufe, Rechner unter fremder Last (Lastmittel um 9 bis 17). `test_nether_spawns::tickCostOfACrowd`: je Art 40 Wesen im Nether, nur `QcMobManager::tick`. Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,047 | 0,051 | 0,048 |
+| Hauerling | 0,051 | 0,047 | 0,056 |
+| Borstenkeiler | 0,262 | 0,266 | 0,271 |
+
+`test_gold_folk::tickCostOfBartering`: ganzer Server-Tick mit `QcServerBarter`, 40 Wesen, 100 Stapel Stein liegen herum, die kein Wesen nimmt (jeder Blick prüft also alle), Spieler mit Goldhelm. Millisekunden je Tick:
+
+| Art | Lauf 1 | Lauf 2 | Lauf 3 |
+|-----|-------:|-------:|-------:|
+| Zombie (Vergleich) | 0,138 | 0,141 | 0,135 |
+| Hauerling | 0,139 | 0,148 | 0,135 |
+
+- **Bewertung:** Der Hauerling kostet im Rahmen der Streuung so viel wie ein Zombie, auch mit dem Suchen nach Gold. Der Borstenkeiler kostet rund das Fünfeinhalbfache (0,0066 ms je Wesen und Tick): jeder Blick prüft 17 × 17 × 9 Blöcke auf Wirrpilz und Portal (`repelledBy`). 40 Keiler nehmen 0,5 % des Budgets von 50 ms; ein Zwischenspeicher lohnt sich erst, wenn Messungen im echten Spiel es verlangen.
+
+## Kette 84.6b–84.8 (Bastion, Nether-Start, Brauen, Hexe, Netherite), Headless-A/B `@server` (2026-11-08)
+
+Release-Builds ohne Fenster, `scripts/bench-headless.sh` mit 60 Spielsekunden, adaptiv 3–6 Runden, verschränkt; `base` = 19ddf1b (nach 84.6a, zuletzt gemessen), `dev` = b13f50a (mit 84.8). Rechner ruhig (Lastmittel 2,3–3,7). Median je Szenario, Server-Tick in ms, Spitzenspeicher in MB:
+
+| Szenario | Runden | Tick Schnitt | Tick p99 | Spitzenspeicher |
+|----------|-------:|-------------:|---------:|----------------:|
+| crowd | 6 | 0,213 → 0,212 (−0,5 %) | 0,343 → 0,360 (+5,1 %) | 73,8 → 77,3 (+4,7 %) |
+| gravel-collapse | 3 | 0,507 → 0,509 (+0,4 %) | 1,476 → 1,464 (−0,8 %) | 108,7 → 110,0 (+1,2 %) |
+| farm | 6 | 0,008 → 0,008 | 0,013 → 0,014 (+3,7 %) | 62,9 → 65,4 (+4,1 %) |
+| farm-seeds | 3 | 0,019 → 0,019 | 0,064 → 0,061 (−4,7 %) | 62,9 → 64,7 (+2,9 %) |
+| explore | 3 | 0,272 → 0,271 (−0,4 %) | 1,273 → 1,248 (−2,0 %) | 88,4 → 90,4 (+2,3 %) |
+| showcase-signal_components | 6 | 0,100 → 0,101 (+0,5 %) | 0,193 → 0,206 (+6,5 %) | 71,9 → 72,5 (+0,8 %) |
+| showcase-signal_machines | 6 | 0,096 → 0,091 (−4,7 %) | 0,181 → 0,192 (+6,1 %) | 72,1 → 72,4 (+0,3 %) |
+| showcase-signal_farm | 3 | 0,106 → 0,107 (+0,9 %) | 0,182 → 0,192 (+5,5 %) | 71,8 → 72,1 (+0,4 %) |
+
+`test_nether_generator generationCost` (Release, Seed 42, je drei Läufe abwechselnd base/dev), ms je Chunk: Nether 0,57–0,61 → 0,57–0,61, Oberwelt 2,23–2,24 → 2,21–2,23, Karmesinwald 0,63–0,64 → 0,62, Wirrwald 0,60–0,61 → 0,60–0,61, Basaltdeltas 0,58–0,59 → 0,57–0,59; Festung: Region planen 0,78 → 0,59–0,60 ms, Chunks um die Mitte 0,43–0,45 → 0,44.
+
+- **Bewertung:** keine Regression über der 10-%-Schwelle. Tick-Schnitt in allen Szenarien gleich; p99 in mehreren Szenarien 4–7 % höher, im Bereich der Streuung kurzer Läufe (Werte unter 0,4 ms). Spitzenspeicher 0,3–3,5 MB mehr durch den neuen Inhalt (Blöcke, Items, Tränke, Rezepte, Texturen). Die Schrott-Adern (84.8) ändern die Kosten der Nether-Generierung nicht messbar.
+- **Nicht gemessen:** Fenster-A/B (Bildzeiten, GPU) gegen `v1.0.0` folgt nach 84.9; die Kosten der Bastion-Generierung haben in `generationCost` noch keine eigene Zeile.
+
+## Release-Prüfung 1.1.0: `dev` gegen `v1.0.0`, Fenster-A/B und Headless-A/B (2026-11-10)
+
+- **Stände:** `v100` = `v1.0.0` (`e469f9f`, eigener Worktree), `dev` = `5d872cb` (nach 86.2 Leuchtfeuer, mit 83–88: Nether, Brauen, Musik), beide Release statisch (`RelWithDebInfo`). `scripts/bench-ab.sh`, `SCENARIOS=@core,@world`, 10 s je Lauf, adaptiv (alle 7 Szenarien 6 Runden; Gründe GUI-CPU, Tick, Spitzenspeicher nahe der Schwelle), Sicht 8. 3 von 84 Läufen `loaded=1`, Lastmittel 2,6–5,6 (eine Parallels-VM lief mit). Nether-, Musik- oder Leuchtfeuer-Szenarien gibt es in `scripts/bench-groups.sh` nicht; keine eigene Reihe dafür.
+- **Bildzeit:** Mittel 8,50–8,58 ms, p99 15,0–16,1 ms in beiden Ständen (diesmal wieder zweigipflig, höher als bei 1.0.0 mit 9,7–10,6 ms, aber für beide gleich); Unterschied v100 → dev −3,3 … +2,1 %.
+- **Fenster (Mittel aus 6 Runden, v100 → dev):**
+
+| Szenario | p99 ms | GPU ms | Render-CPU ms | GUI-CPU ms | Spitze MB | Draw-Calls |
+|---|---|---|---|---|---|---|
+| stand | 15,73 → 16,06 (+2 %) | 1,80 → 1,79 | 1,28 → 1,27 | 0,43 → 0,46 (+8 %) | 466 → 543 (+16 %) | 557 → 557 |
+| sprint | 15,96 → 15,43 (−3 %) | 2,41 → 2,41 | 1,27 → 1,21 (−4 %) | 0,37 → 0,40 (+8 %) | 490 → 567 (+16 %) | 604 → 604 |
+| showcase | 15,73 → 15,66 | 0,71 → 0,72 (+1 %) | 0,84 → 0,84 | 0,25 → 0,28 (+11 %) | 366 → 448 (+22 %) | 348 → 355 (+2 %) |
+| crowd | 15,97 → 15,88 | 2,62 → 2,93 (+12 %) | 1,39 → 1,38 | 1,01 → 1,13 (+11 %) | 474 → 553 (+17 %) | 563 → 564 |
+| walk | 15,16 → 14,98 (−1 %, Streuung 41–50 %) | 2,28 → 2,27 | 1,27 → 1,27 | 0,39 → 0,41 (+7 %) | 466 → 544 (+17 %) | 624 → 622 |
+| flight | 15,89 → 15,90 | 0,75 → 0,73 (−2 %) | 0,75 → 0,70 (−6 %) | 0,34 → 0,38 (+13 %) | 508 → 587 (+16 %) | 107 → 106 |
+| flat-crowd | 15,94 → 16,00 | 1,00 → 1,13 (+13 %) | 1,12 → 1,14 (+2 %) | 0,90 → 0,92 (+2 %) | 362 → 445 (+23 %) | 94 → 92 |
+
+- **Headless `@server` (60 Spielsekunden, adaptiv 3–6 Runden, Last 2,2–3,3, 2 von 84 Läufen `loaded=1`; v100 → dev, Tick Ø / p99 in ms, Spitze MB):** crowd 0,205 → 0,206 / 0,336 → 0,332, 66,8 → 77,6 (+16 %); gravel-collapse 0,515 → 0,516 / 1,48 → 1,49, 104,8 → 112,1 (+7 %); farm 0,0085 → 0,0090 / 0,016 → 0,017, 57,9 → 66,4 (+15 %); farm-seeds 0,019 → 0,020 / 0,066 → 0,068, 56,8 → 65,7 (+16 %); explore 0,287 → 0,290 / 1,33 → 1,35, 82,7 → 94,0 (+14 %); Signal-Stationen components 0,102 → 0,101 / 0,203 → 0,182, machines 0,097 → 0,094 / 0,190 → 0,185, farm 0,107 → 0,111 / 0,195 → 0,211 (+8 %), Speicher je 66,2–66,4 → 73,1–73,3 (+10 … +11 %).
+- **Bewertung:** Bildzeit (Ø und p99) und Server-Tick ohne Rückschritt. Über der 10-%-Schwelle, alle wiederholbar und nicht Rauschen: (1) **Spitzenspeicher im Fenster +77 … +82 MB** (+16 … +23 %) in allen Szenarien bei 1–3 % Streuung. Rund 7–11 MB davon zeigt auch der Server headless (Inhalt von 83–88: Nether-Blöcke, Wesen und Modelle, Strukturen, Tränke, Rezepte, Generator-Tabellen; die Kette 84.6b–84.8 allein brachte 0,3–3,5 MB); der Rest gehört zum Client und passt zur Musik aus 88.1 (rund 60 MB Ogg Vorbis als unkomprimierte Ressourcen im Programm, `__TEXT` 15 → 79 MB; ein Stück liegt beim Abspielen ganz im Speicher, E-1135). Ob die Seiten nur gelesen (sauber, vom System freigebbar) oder kopiert sind, ist nicht gemessen; offen als Nachprüfung mit `vmmap` (resident sauber/schmutzig) im Stand-Szenario, ohne Musik (`musicSource` erzeugt oder Lautstärke 0) gegen mit Musik. (2) **GUI-CPU +7 … +13 %** (+0,02 … +0,11 ms je Bild) in sechs von sieben Szenarien, in stand, sprint, showcase und crowd in allen 6 Runden höher; vermutete Ursache der Musik-Takt und das Nachfüllen des Vorbis-Fensters unter der Mixer-Sperre (E-1135, Hinweise), nicht eingegrenzt; Bildzeit unberührt. (3) **GPU crowd +12 % und flat-crowd +13 %** (+0,13 … +0,31 ms), in crowd 6 von 6 Runden höher, Draw-Calls gleich; vermutlich mehr Dreiecke oder Anbauteile der Wesen-Modelle, nicht eingegrenzt; GPU bleibt unter 3 ms je Bild. Headless-Speicher +7 … +16 % (siehe (1)). Keine dieser Kosten bedroht das Bildbudget; Nachprüfung von (1) und (2) vor dem Tag empfohlen.

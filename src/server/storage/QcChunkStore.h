@@ -114,10 +114,16 @@ public:
     /*! Returns the largest number of chunks of one kind with data waiting for the next commit
         (not the number of distinct chunks). */
     qsizetype pendingChunks() const;
-    /*! Writes everything handed over and \a files as one save (see the class); returns an error
-        on failure. Then nothing handed over is lost, the files included: it waits for the next
-        commit. */
-    [[nodiscard]] QcStatus commit(const QList<WholeFile> &files);
+    /*! Writes everything handed over and \a files as one save (see the class), with what the
+        stores \a linked hold (the dimensions of the world, each in a folder below this store's;
+        decision E-988): one journal here names the files of all of them, so a save that breaks
+        off never leaves one dimension behind another. The linked stores keep a pointer to this
+        store from now on, which must outlive them: after a commit that broke off they read
+        nothing before it finished its journal. Returns an error on failure. Then nothing handed
+        over is lost, the files included: it waits for the next commit. */
+    [[nodiscard]] QcStatus commit(const QList<WholeFile> &files, const QList<QcChunkStore *> &linked = {});
+    /*! Hands over \a files for the next commit. */
+    void keepFiles(const QList<WholeFile> &files);
     /*! Returns the whole file \a name as the next commit writes it (waiting) or as it is on disk;
         none: no such file. */
     [[nodiscard]] QcResult<std::optional<QByteArray>> readFile(const QString &name);
@@ -184,11 +190,17 @@ private:
     [[nodiscard]] QcResult<StagedRegion> stageRegion(Kind kind, QcChunkPos region);
     // Stages every region with changes and the whole files.
     [[nodiscard]] QcResult<Staging> stageAll();
+    // Takes in what a commit wrote: the new indexes, nothing pending any more.
+    void adoptStaging(const Staging &staging);
+    // Gets the store ready for staging: the folder is there and the index of generated chunks goes
+    // with the save.
+    [[nodiscard]] QcStatus prepareCommit();
     [[nodiscard]] static QcResult<Head> headOf(const QString &path);
     [[nodiscard]] QcStatus writeJournal(const QList<Step> &steps) const;
     [[nodiscard]] QcStatus runSteps(const QList<Step> &steps);
     // After a commit broke off between its renames: finishes it from the journal and reads the
-    // indexes again.
+    // indexes again. The journal lies with the store that wrote it, which goes first: until then
+    // the staged files here are still needed and the renames in this folder may be half done.
     [[nodiscard]] QcStatus reopenIfNeeded();
 
     QString m_directory;
@@ -200,5 +212,8 @@ private:
     // The index of generated chunks, its file and the warnings of reading it.
     QcGeneratedChunks::Opened m_generated;
     bool m_needsReopen = false;
+    // The store whose journal names the files here (commit() with this store linked); null: this
+    // store's own journal.
+    QcChunkStore *m_journalStore = nullptr;
     int m_renamesLeft = -1;
 };

@@ -43,7 +43,7 @@ private:
                 }
             }
         }
-        player().hunger.restore(10, 0.0);
+        player().hunger.restore(10, 0.0, 0.0);
     }
 
     quint32 spawn(const char *name, int dx, int dy, int dz)

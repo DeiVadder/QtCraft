@@ -1,0 +1,22 @@
+{
+    "name": "netherite",
+    "order": 92,
+    "icon": "netherite_ingot",
+    "sections": [
+        "debris",
+        "ingot",
+        "smithing",
+        "fireproof"
+    ],
+    "related": [
+        "ancient_debris",
+        "netherite_scrap",
+        "netherite_ingot",
+        "netherite_block",
+        "smithing_table",
+        "netherite_upgrade_smithing_template",
+        "netherite_sword",
+        "netherite_pickaxe",
+        "netherite_chestplate"
+    ]
+}

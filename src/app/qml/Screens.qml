@@ -46,6 +46,12 @@ Item {
     }
 
     OverlayScreen {
+        overlay: GameController.Overlay.Brewing
+
+        screen: BrewingScreen { game: screens.game }
+    }
+
+    OverlayScreen {
         overlay: GameController.Overlay.Chest
 
         screen: ChestScreen { game: screens.game }
@@ -73,6 +79,18 @@ Item {
         overlay: GameController.Overlay.Anvil
 
         screen: AnvilScreen { game: screens.game }
+    }
+
+    OverlayScreen {
+        overlay: GameController.Overlay.Smithing
+
+        screen: SmithingScreen { game: screens.game }
+    }
+
+    OverlayScreen {
+        overlay: GameController.Overlay.Beacon
+
+        screen: BeaconScreen { game: screens.game }
     }
 
     // A moment after the world starts to play, the pause menu is made in the background (decision
@@ -185,8 +203,8 @@ Item {
         screen: LoadingScreen {
             progress: screens.game.loading
             keys: screens.game.settings.keys
-            // Loading a network server's world can be cancelled.
-            canCancel: screens.game.multiplayer.networkGame
+            // Joining a network server can be cancelled, entering another dimension cannot.
+            canCancel: screens.game.loading.cancellable
             onCancelRequested: screens.game.leaveGame()
         }
     }

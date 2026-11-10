@@ -58,8 +58,15 @@ public:
     // server's speed, so animations follow the server's ticks and stand while the game is paused
     // or /tick freeze holds the world (QcAnimationClock).
     void updateAnimations(double frameSeconds);
-    // Rain and snow around the eye, advanced by `frameSeconds` (decision E-395).
+    // Rain and snow (decision E-395) and the ambient particles (decision E-1120) around the eye,
+    // advanced by `frameSeconds`.
     void updateWeather(const QcVec3 &eye, double frameSeconds);
+    // A new session: the ambient particles of the last one go.
+    void forgetParticles()
+    {
+        m_atmosphere.clear();
+        m_particleDimension.clear();
+    }
     void updateSelection();
     // Photo mode (decision E-692): the outline of the targeted block hides with the HUD, the hand
     // as the settings say.
@@ -76,6 +83,9 @@ private:
     QcEntityFrameBuilder m_entities;
     QcFovEffect m_fov;
     QcPrecipitationField m_precipitation{QcPrecipitationField::selectedBudget()};
+    QcAtmosphereParticles m_atmosphere;
+    // The dimension the particles belong to; another one forgets them.
+    QString m_particleDimension;
     QcDropPool m_drops;
     QcAnimationClock m_animationClock;
     bool m_outlineHidden = false;

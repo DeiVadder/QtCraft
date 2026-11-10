@@ -405,6 +405,46 @@ private slots:
         QCOMPARE(storage.readPlayer(u"Hungry"_s)->player->food, 20);
     }
 
+    // The saturation comes back; files of version 11 (before it) give the reference's 5 of a new
+    // player (decision E-1001).
+    void saturationRoundTripsAndOlderFilesGetTheSpawnValue()
+    {
+        QTemporaryDir dir;
+        const QcTestWorldFiles storage(dir.path(), registryWith({u"a:stone"_s}));
+        QcPlayerData player;
+        player.motion.position = {0.5, 70.0, 0.5};
+        player.food = 16;
+        player.saturation = 7.5;
+        player.absorption = 2.0;
+        QVERIFY(storage.writePlayer(u"Fed"_s, player).has_value());
+        const auto read = storage.readPlayer(u"Fed"_s);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->player->saturation, 7.5);
+        QCOMPARE(read->player->absorption, 2.0);
+
+        // The same file as version 11: without the extra health, the saturation and the flag of
+        // the soul anchor (version 13) at its end.
+        QFile file(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Fed"_s)));
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        constexpr qsizetype headerSize = 4 + 2 + 4 + 4;
+        const QByteArray payload = file.readAll().mid(headerSize).chopped(2 * sizeof(double) + 1);
+        file.close();
+        QByteArray old("QCPL");
+        QDataStream header(&old, QIODevice::Append);
+        header.setVersion(QDataStream::Qt_6_8);
+        header << quint16{11} << static_cast<quint32>(payload.size()) << qcCrc32(payload);
+        old.append(payload);
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        file.write(old);
+        file.close();
+
+        const auto oldRead = storage.readPlayer(u"Fed"_s);
+        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
+        QCOMPARE(oldRead->player->food, 16);
+        QCOMPARE(oldRead->player->saturation, 5.0);
+        QCOMPARE(oldRead->player->absorption, 0.0);
+    }
+
     void playerNamesDifferingInCaseGetTheirOwnFiles()
     {
         QTemporaryDir dir;

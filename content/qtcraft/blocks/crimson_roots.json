@@ -1,0 +1,20 @@
+{
+    "name": "crimson_roots",
+    "sound": "roots",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "replaceable": true,
+    "ground": [
+        "crimson_nylium",
+        "warped_nylium",
+        "soul_soil",
+        "grass_block",
+        "dirt",
+        "netherrack"
+    ],
+    "textures": {
+        "all": "crimson_roots"
+    }
+}

@@ -27,6 +27,9 @@ public:
         int alightTicks = 0;
         /*! Whether a block of them burns items (not a campfire, decision E-772). */
         bool burnsItems = false;
+        /*! The strongest damage that is not heat (QcBlockDefinition::contactFire): what a
+            fire-proof body feels. */
+        double coldDamage = 0.0;
     };
 
     explicit QcContactDamage(const QcContentRegistry &content);

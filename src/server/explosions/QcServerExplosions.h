@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "server/explosions/QcBlastBlocks.h"
 #include "server/explosions/QcBlastBodies.h"
@@ -58,13 +59,17 @@ public:
 
     /*! \brief An explosion of \c {power} at \c {centre}; with \c {breaksBlocks} (the game rule,
         and for a creature also mobGriefing) it breaks blocks, with \c {fire} it lights fires
-        among them. \qcfields */
+        among them. A breakable block soaks up at most \c {resistanceLimit} of it (below 0: no
+        limit; a charged skull, decision E-1128), and creatures of the kind \c {spares} take
+        nothing (a hydra's own skulls and blast, decision E-1126). \qcfields */
     struct Blast
     {
         QcVec3 centre;
         double power = 4.0;
         bool breaksBlocks = true;
         bool fire = false;
+        double resistanceLimit = -1.0;
+        std::optional<QcCreatureKindId> spares{}; // NOLINT(readability-redundant-member-init): callers with designated initialisers leave it out
     };
 
     /*! Clients hear and see an explosion this far away. */

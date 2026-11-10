@@ -1,0 +1,16 @@
+{
+    "name": "ancient_debris",
+    "sound": "ancient_debris",
+    "hardness": 30.0,
+    "blastResistance": 1200.0,
+    "tool": "pickaxe",
+    "toolLevel": 4,
+    "tags": [
+        "fire_resistant"
+    ],
+    "textures": {
+        "all": "ancient_debris_side",
+        "top": "ancient_debris_top",
+        "bottom": "ancient_debris_top"
+    }
+}

@@ -108,7 +108,8 @@ QString invalid(const QString &key)
 
     for (const auto &[key, value] : {std::pair{u"serverName"_s, &settings.serverName}, std::pair{u"motd"_s, &settings.motd},
                                      std::pair{u"bindAddress"_s, &settings.bindAddress}, std::pair{u"password"_s, &settings.password},
-                                     std::pair{u"world"_s, &settings.world}, std::pair{u"worldType"_s, &settings.worldType}}) {
+                                     std::pair{u"world"_s, &settings.world}, std::pair{u"worldType"_s, &settings.worldType},
+                                     std::pair{u"startDimension"_s, &settings.startDimension}}) {
         const std::optional<QString> read = readText(json, key, 256, *value);
         if (!read) {
             return qcError(invalid(key));
@@ -219,6 +220,7 @@ QJsonObject QcServerSettings::toJson() const
             {u"seed"_s, seed ? QString::number(*seed) : QString()},
             {u"worldType"_s, worldType},
             {u"worldOptions"_s, worldOptions},
+            {u"startDimension"_s, startDimension},
             {u"generatorVersion"_s, generatorVersion},
             {u"viewDistance"_s, viewDistance},
             {u"loginTimeoutSeconds"_s, loginTimeoutSeconds},

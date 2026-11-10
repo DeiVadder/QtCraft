@@ -17,6 +17,31 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// "tags": {"wood": ["wooden_slabs"]}: the item tags of the parts of a material kind of `kinds`.
+[[nodiscard]] QHash<QString, QStringList> parseFamilyTags(const QJsonObject &json, const QStringList &kinds, QcJsonFieldReader &reader)
+{
+    QHash<QString, QStringList> result;
+    const QJsonValue value = json.value(u"tags"_s);
+    if (value.isUndefined()) {
+        return result;
+    }
+    if (!value.isObject()) {
+        reader.fail(u"'tags' must be an object of material kinds"_s);
+        return result;
+    }
+
+    const QJsonObject byKind = value.toObject();
+    for (auto kind = byKind.begin(); kind != byKind.end(); ++kind) {
+        const QStringList tags = kind.value().toVariant().toStringList();
+        if (!kinds.contains(kind.key()) || !kind.value().isArray() || tags.isEmpty() || tags.contains(QString{})) {
+            reader.fail(u"'tags' must give material kinds of 'kinds' a list of tags, not '%1'"_s.arg(kind.key()));
+            break;
+        }
+        result.insert(kind.key(), tags);
+    }
+    return result;
+}
+
 [[nodiscard]] QStringList parseFamilyKinds(const QJsonObject &json, QcJsonFieldReader &reader)
 {
     QStringList result;
@@ -189,6 +214,7 @@ namespace QcMaterialParser {
     }
 
     family.kinds = parseFamilyKinds(json, reader);
+    family.tagsByKind = parseFamilyTags(json, family.kinds, reader);
     family.hardnessFactor = reader.number(u"hardness"_s, 1.0, 0.0, 100.0);
     family.fuelFactor = reader.number(u"fuel"_s, 1.0, 0.0, 100.0);
     family.block = json.value(u"block"_s).toObject();

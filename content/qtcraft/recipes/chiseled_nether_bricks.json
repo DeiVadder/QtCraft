@@ -1,0 +1,14 @@
+{
+    "name": "chiseled_nether_bricks",
+    "type": "shaped",
+    "pattern": [
+        "#",
+        "#"
+    ],
+    "key": {
+        "#": "nether_brick_slab"
+    },
+    "result": {
+        "item": "chiseled_nether_bricks"
+    }
+}

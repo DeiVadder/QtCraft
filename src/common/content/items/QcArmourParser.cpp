@@ -110,6 +110,8 @@ QcArmourDefinition parseArmour(const QJsonObject &json, const QString &packNames
     armour.slot = slot.value_or(QcEquipmentSlot::Head);
     armour.points = reader.integer(u"points"_s, 0, 0, QcArmourDefinition::maxPoints);
     armour.set = reader.name(u"set"_s, packNamespace, itemName);
+    armour.toughness = reader.number(u"toughness"_s, 0.0, 0.0, QcArmourDefinition::maxToughness);
+    armour.knockbackResistance = reader.number(u"knockbackResistance"_s, 0.0, 0.0, 1.0);
 
     armour.layers = parseList<QcArmourLayer>(json, u"layers"_s, QcArmourDefinition::maxLayers, reader,
                                              [&](const QJsonObject &object, QcJsonFieldReader &nested) { return parseLayer(object, packNamespace, nested); });

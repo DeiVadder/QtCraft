@@ -13,8 +13,10 @@
     "chaseSpeed": 3.2,
     "hostile": true,
     "burnsInDaylight": true,
+    "undead": true,
     "immuneTo": [
-        "poison"
+        "poison",
+        "regeneration"
     ],
     "attackDamage": 3,
     "attackRange": 1.6,

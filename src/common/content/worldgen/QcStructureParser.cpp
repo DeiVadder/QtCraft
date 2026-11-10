@@ -297,7 +297,16 @@ void StructureReader::parseContents()
             m_reader.fail(u"a 'contents' name has at most %1 characters"_s.arg(QcItemData::maxNameLength));
             return;
         }
-        Structure::Contents placed{*at, {}, name};
+        QStringList effects;
+        const QJsonArray effectNames = object.value(u"effects"_s).toArray();
+        for (const auto &effect : effectNames) {
+            effects.append(effect.isString() ? QcContentNames::qualify(effect.toString(), m_namespace) : QString());
+        }
+        if (effects.size() > 2 || effects.contains(QString())) {
+            m_reader.fail(u"a 'contents' entry names at most two 'effects' (a beacon's primary and secondary one), each a name"_s);
+            return;
+        }
+        Structure::Contents placed{*at, {}, name, effects};
         for (const auto &item : items) {
             const std::optional<Structure::Stack> stack = readStack(item, m_namespace);
             if (!stack) {
@@ -379,14 +388,12 @@ void StructureReader::parseSpawnersAndLoot()
     }
     const QJsonArray loot = extraArray(m_json, u"loot"_s, m_reader);
     for (const auto &entry : loot) {
-        const QJsonObject object = entry.toObject();
-        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
-        const QString table = QcContentNames::qualify(object.value(u"table"_s).toString(), m_namespace);
-        if (!cell || table.isEmpty()) {
+        std::optional<QcStructureDefinition::Loot> chest = QcStructureVariationParser::readLoot(entry.toObject(), m_structure, m_namespace);
+        if (!chest) {
             m_reader.fail(u"'loot' entries need 'at' inside the structure and a valid 'table' name"_s);
             return;
         }
-        m_structure.loot.append({*cell, table});
+        m_structure.loot.append(std::move(*chest));
     }
 }
 
@@ -527,6 +534,7 @@ void StructureReader::parseExtras()
     parseSigns();
     parseHangings();
     m_structure.choices = QcStructureVariationParser::parseChoices(m_json, m_reader, m_namespace);
+    m_structure.generatorChanges = QcStructureVariationParser::parseGeneratorChanges(m_json, m_structure, m_reader, m_namespace);
     if (m_reader.ok()) {
         m_structure.parts = QcStructureVariationParser::parseParts(m_json, m_keys, m_structure, m_reader);
     }

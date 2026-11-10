@@ -158,7 +158,7 @@ void QcVillageCommands::locateStructure(const QcCommandContext &context, QcBlock
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "/help locate names the structures of this world"));
         return;
     }
-    const QcBlockPos middle = found->toWorld(QcBlockPos{found->structure().sizeX() / 2, found->structure().groundLayer + 1, found->structure().sizeZ() / 2});
+    const QcBlockPos middle = found->middle();
     const int distance = static_cast<int>(std::lround(QcPlaceSearch::distance(middle, origin)));
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3 %4, %5 blocks away"),
                   {name, QString::number(middle.x), QString::number(middle.y), QString::number(middle.z), QString::number(distance)});

@@ -9,6 +9,7 @@
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEffectClock.h"
 #include "clientcore/session/QcInkClouds.h"
+#include "clientcore/weather/QcClientAtmosphere.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/protocol/QcMessages.h"
 
@@ -24,7 +25,7 @@ struct QcClientEntity;
 /*! \brief The world as the server sends it (part of QcClientSession, decision E-717): the content,
     the blocks of the loaded chunks with the local player's predicted changes on top (QcBlockMirror,
     decision E-853; QcClientWorld, there from the content on), what the chunks carry besides their
-    blocks (QcChunkExtras), the world time and the weather.
+    blocks (QcChunkExtras), the world time, the weather and the dimension the player is in.
 
     It takes the server's world messages and tells what they changed; the session reports that
     through its signals. */
@@ -68,10 +69,16 @@ public:
         tick (QcEffectClock): running with or without the time of day, standing while the server
         stands. */
     double animationSeconds(double alpha) const { return m_effects.seconds(alpha); }
+    /*! Returns the dimension the player is in (decision E-1002): its client's part as the server
+        sent it (QcMsg::DimensionChange), the overworld's defaults before. */
+    const QcDimensionDefinition &dimension() const { return m_dimension; }
     /*! Returns the weather as shown: strengths, climate, lightning flashes (decision E-395). */
     QcClientWeather &weather() { return m_weather; }
     /*! Returns the weather as shown, read-only. */
     const QcClientWeather &weather() const { return m_weather; }
+    /*! Returns the atmosphere of the biome the player stands in, its fog blended (decision
+        E-1120). */
+    const QcClientAtmosphere &atmosphere() const { return m_atmosphere; }
     /*! Returns the labels (E-222), spinning spawner creatures (E-520), campfire items (E-772),
         sign texts (E-766) and explosions (E-604) of the loaded chunks. */
     const QcChunkExtras &extras() const { return m_extras; }
@@ -90,6 +97,8 @@ public:
     }
 
 private:
+    // Another dimension: forgets the chunk extras, ink, weather and atmosphere of the old one.
+    void enter(const QcDimensionDefinition &dimension);
     // Labels, spawners, explosions, maps, time and weather; false for other messages.
     bool handleSkyMessage(const QcMessage &message, const QcVec3 &eye, quint64 now);
 
@@ -98,7 +107,9 @@ private:
     QcClientMaps m_maps;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
+    QcDimensionDefinition m_dimension = QcDimensionDefinition::defaultOverworld();
     QcEffectClock m_effects;
     QcClientWeather m_weather;
+    QcClientAtmosphere m_atmosphere;
     QcInkClouds m_ink;
 };

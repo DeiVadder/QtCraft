@@ -26,7 +26,7 @@ Hot liquid that glows, burns items and sets whoever touches it on fire. Next to 
 | Damage on contact | 3 health points |
 | Sets bodies on fire for | 15 s |
 | Lights fire next to it | 3 in 100 per block update, next to flammable blocks |
-| States | falling (false, true); level (0, 1, 2, 3) |
+| States | falling (false, true); level (0, 1, 2, 3, 4, 5, 6, 7) |
 
 **Found in**
 

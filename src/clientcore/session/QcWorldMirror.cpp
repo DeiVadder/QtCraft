@@ -14,6 +14,9 @@ std::optional<QcWorldMirror::Change> QcWorldMirror::handle(const QcMessage &mess
     } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
         m_extras.removeChunk(unload->pos);
     }
+    if (const auto *dimension = std::get_if<QcMsg::DimensionChange>(&message)) {
+        enter(dimension->dimension);
+    }
     if (std::optional<Change> change = m_blocks.handle(message)) {
         return change;
     }
@@ -33,6 +36,8 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
         m_extras.setSign(*sign);
     } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
         m_extras.setCampfire(*campfire);
+    } else if (const auto *beam = std::get_if<QcMsg::BeaconBeam>(&message)) {
+        m_extras.setBeam(*beam);
     } else if (const auto *map = std::get_if<QcMsg::MapUpdate>(&message)) {
         m_maps.apply(*map);
     } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
@@ -43,10 +48,24 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
         m_weather.receive(*weather);
     } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
         m_weather.lightning(*strike, eye, now);
+    } else if (const auto *atmosphere = std::get_if<QcMsg::Atmosphere>(&message)) {
+        m_atmosphere.receive(*atmosphere);
     } else {
         return false;
     }
     return true;
+}
+
+void QcWorldMirror::enter(const QcDimensionDefinition &dimension)
+{
+    // What the chunks carried, the clouds of ink, the weather and the atmosphere belong to the old
+    // dimension; those of the new one come from the server (decisions E-1002, E-1120), so no fog of
+    // the old one blends into the new. Maps are items of the world.
+    m_dimension = dimension;
+    m_extras = {};
+    m_ink = {};
+    m_weather = {};
+    m_atmosphere = {};
 }
 
 double QcWorldMirror::timeAt(double alpha) const
@@ -62,6 +81,7 @@ void QcWorldMirror::tick(quint64 now)
     m_extras.pruneExplosions(now);
     m_ink.prune(now);
     m_effects.tick(m_worldTime.speed);
+    m_atmosphere.tick(QcPhysics::tickDuration);
     if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
         m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;

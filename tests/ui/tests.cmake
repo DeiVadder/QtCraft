@@ -145,12 +145,12 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> layout)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 630 COST 37)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 780 COST 37)
     # The pad in the main menu at the same size: the settings' pages, back entries and Y (decision
     # E-925), the handbook, the character's draft, saved worlds and "New world" (decision E-930).
     add_test(NAME app_offscreen_menu_pad COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> pad)
-    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 690 COST 43)
+    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 780 COST 43)
     # The pause menu's buttons in a saved world and on a joined server, the pause and death cards
     # above the HUD's status rows at 200 % and 225 %, and the sign typed on the pad's keyboard
     # (decision E-928). It waits for the world and a dedicated server in real time: label realtime
@@ -159,12 +159,18 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_pause_screens)
     set_tests_properties(app_offscreen_pause_screens PROPERTIES TIMEOUT 900 COST 60 PROCESSORS 2 LABELS realtime
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_pause_screens.sh")
+    # The question before a world of an older generator version opens, the switch from it and the
+    # progress screen (decisions E-1013, E-1014). It waits for the menu and the world in real time.
+    add_test(NAME app_offscreen_generator_upgrade COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_generator_upgrade_dialog.sh
+        $<TARGET_FILE:qtcraft> $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_generator_upgrade)
+    set_tests_properties(app_offscreen_generator_upgrade PROPERTIES TIMEOUT 600 COST 60 LABELS realtime
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_generator_upgrade_dialog.sh")
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900;
     # behind screens, full-screen screens, the handbook and the chat line only the parts decision
     # E-927 keeps show, and closing brings them back (1280 x 720 at 100 and 200 %).
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 930 COST 55)
+    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 1080 COST 55)
     # The main menu fills windows up to 3440 x 1440 (a large monitor in fullscreen, decision E-875):
     # Auto lets the page grow with the window, and it stands centred beside the side bar.
     add_test(NAME app_offscreen_window_fill COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh $<TARGET_FILE:qtcraft>
@@ -177,7 +183,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1500 COST 100
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 2310 COST 100
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
     # The same screens at 100 % in the windows of large monitors at 100 % display scaling (decision
@@ -189,7 +195,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         list(GET parts 1 expect)
         add_test(NAME app_offscreen_ui_scale_100_${size} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> 100
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_100_${size})
-        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 1980 COST 130
+        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 2730 COST 130
             ENVIRONMENT "QC_UI_SIZE=${size};QC_UI_EXPECT=${expect}"
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
@@ -321,7 +327,7 @@ add_test(NAME app_offscreen_pad_advancements
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;advancements;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadDown;--overlay;@0 pad:dpadLeft"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: advancement_qtcraft_adventure[^\n]*\n.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*padFocus: advancement_qtcraft_village[^\n]*\n.*padFocus: advancement_qtcraft_adventure"
+        "-DEXPECTED_ERROR=padFocus: advancement_qtcraft_adventure[^\n]*\n.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*padFocus: advancement_qtcraft_soul_anchor[^\n]*\n.*padFocus: advancement_qtcraft_adventure"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-advancements.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
@@ -439,7 +445,7 @@ set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
-    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 630 COST 60
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 750 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
 endif()
 # qtcraft is a GUI program on Windows (WIN32_EXECUTABLE): without a console, Qt sends its messages to

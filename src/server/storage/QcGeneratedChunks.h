@@ -5,6 +5,7 @@
 
 #include "common/core/QcChunkPos.h"
 #include "common/core/QcResult.h"
+#include "common/world/QcChunkSet.h"
 
 #include <QByteArray>
 #include <QByteArrayView>
@@ -25,8 +26,8 @@
       per region, sorted by z then x: [qint32 x][qint32 z][128 bytes, one bit per chunk slot
       (x + 32 * z within the region, lowest bit first)]
 
-    In memory it keeps the same bitmap per region. A world without the file starts with an empty
-    index. Entries are only ever added. */
+    In memory it keeps the same bitmap per region (QcChunkSet, whose bytes() are the payload). A
+    world without the file starts with an empty index. Entries are only ever added. */
 class QcGeneratedChunks
 {
 public:
@@ -54,11 +55,13 @@ public:
     /*! Adds \a chunk; a chunk not in the index yet makes it unsaved. */
     void note(QcChunkPos chunk);
     /*! Returns whether \a chunk is in the index. */
-    bool contains(QcChunkPos chunk) const;
+    bool contains(QcChunkPos chunk) const { return m_chunks.contains(chunk); }
     /*! Returns every chunk in the index (built from the bitmaps). */
-    QSet<QcChunkPos> chunks() const;
+    QSet<QcChunkPos> chunks() const { return m_chunks.chunks(); }
+    /*! Returns the chunks of the index as a set of region bitmaps. */
+    const QcChunkSet &chunkSet() const { return m_chunks; }
     /*! Returns the number of regions with chunks in the index. */
-    qsizetype regionCount() const { return m_regions.size(); }
+    qsizetype regionCount() const { return m_chunks.regionCount(); }
 
     /*! Returns whether chunks were added since the index was last written or read. */
     bool isUnsaved() const { return m_unsaved; }
@@ -74,7 +77,8 @@ private:
     [[nodiscard]] static Opened load(const QString &directory, const QString &name);
 
     // One bit per chunk slot of each region with chunks.
-    QHash<QcChunkPos, QByteArray> m_regions;
+    // NOLINT(qc-member-access): the index is this set; note() adds to it, parse() reads it in.
+    QcChunkSet m_chunks;
     bool m_unsaved = false;
 };
 

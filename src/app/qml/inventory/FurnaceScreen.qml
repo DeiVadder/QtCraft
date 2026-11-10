@@ -21,12 +21,6 @@ SlotScreen {
     // The furnace, smoker or blast furnace that is open.
     handbookTarget: screen.game.player.machineBlock
 
-    // A slot's name beside it (IV-8 of docs/Menue-Pruefung.md).
-    component SlotName: Label {
-        color: Theme.textMuted
-        font.pixelSize: Ui.type.help
-    }
-
     RowLayout {
         spacing: Ui.space.xl
 
@@ -39,63 +33,28 @@ SlotScreen {
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 text: qsTr("To smelt")
             }
-            Repeater {
-                model: SlotRange {
-                    source: screen.game.player.inventory
-                    first: screen.inputRow
-                    count: 1
-                }
-
-                InventorySlot {
-                    owner: screen
-                }
+            MachineSlotRow {
+                owner: screen
+                first: screen.inputRow
+                count: 1
             }
 
             Item {
                 implicitWidth: 1
             }
-            // The flame shrinks as the current fuel burns down.
-            Rectangle {
-                objectName: "flame"
+            FuelFlame {
                 Layout.alignment: Qt.AlignHCenter
-                implicitWidth: Ui.size.flame
-                implicitHeight: Ui.size.flame
-                radius: Ui.radius
-                color: Theme.slotBorder
-
-                Rectangle {
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: parent.width - 2 * Ui.space.xs
-                    height: (parent.height - Ui.space.xs) * screen.game.player.machineBurn
-                    radius: Ui.radius
-                    gradient: Gradient {
-                        GradientStop {
-                            position: 0
-                            color: Theme.flameCore
-                        }
-                        GradientStop {
-                            position: 1
-                            color: Theme.flame
-                        }
-                    }
-                }
+                share: screen.game.player.machineBurn
             }
 
             SlotName {
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 text: qsTr("Fuel")
             }
-            Repeater {
-                model: SlotRange {
-                    source: screen.game.player.inventory
-                    first: screen.fuelRow
-                    count: 1
-                }
-
-                InventorySlot {
-                    owner: screen
-                }
+            MachineSlotRow {
+                owner: screen
+                first: screen.fuelRow
+                count: 1
             }
         }
 
@@ -134,17 +93,11 @@ SlotScreen {
         ColumnLayout {
             spacing: Ui.space.xs
 
-            Repeater {
-                model: SlotRange {
-                    source: screen.game.player.inventory
-                    first: screen.outputRow
-                    count: 1
-                }
-
-                InventorySlot {
-                    owner: screen
-                    Layout.alignment: Qt.AlignHCenter
-                }
+            MachineSlotRow {
+                Layout.alignment: Qt.AlignHCenter
+                owner: screen
+                first: screen.outputRow
+                count: 1
             }
             SlotName {
                 Layout.alignment: Qt.AlignHCenter

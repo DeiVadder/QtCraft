@@ -132,8 +132,12 @@ struct QcTerrainDefinitions
         /*! The patches of each vegetation layer (decision E-814). */
         std::array<VegetationPatches, VegetationLayers> patches;
 
-        /*! Returns whether the climate chooses this biome (not a river or delta biome). */
-        [[nodiscard]] bool byClimate() const { return !river && !delta; }
+        /*! Whether the biome belongs to another dimension's generator (decision E-1030). */
+        bool elsewhere = false;
+
+        /*! Returns whether the climate chooses this biome (not a river or delta biome, nor one
+            of another dimension). */
+        [[nodiscard]] bool byClimate() const { return !river && !delta && !elsewhere; }
     };
 
     /*! \brief A pool of liquid with its blocks resolved: sunk into a cave floor (QcPoolPlacer),
@@ -200,6 +204,8 @@ struct QcTerrainDefinitions
         int veins = 8;
         /*! Blocks per vein, at most. */
         int veinSize = 6;
+        /*! Whether cells next to air stay as they are (QcOreDefinition::hidden). */
+        bool hidden = false;
         /*! Seed of the ore's veins, derived from its name. */
         quint64 seed = 0;
         /*! Biome indices a vein may start in; empty for all. */
@@ -244,6 +250,8 @@ struct QcTerrainDefinitions
     /*! Solid blocks the terrain itself is made of (stone and every biome's ground layers, no
         features, liquids or ice): where a player may spawn. */
     QSet<QcBlockId> naturalGround;
+    /*! Water and what it freezes to. */
+    QSet<QcBlockId> waterKinds;
     /*! Whether any biome uses ridges or terraces (their noise is skipped otherwise).
         \qcshared */
     bool anyRidges = false;

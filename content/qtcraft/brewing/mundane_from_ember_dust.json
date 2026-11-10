@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_ember_dust",
+    "base": "water",
+    "ingredient": "ember_dust",
+    "result": "mundane"
+}

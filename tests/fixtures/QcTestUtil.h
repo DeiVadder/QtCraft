@@ -109,4 +109,18 @@ void ticks(Server &server, int count)
     }
 }
 
+// Takes the saturation of the first player of `server`, keeping his food and exhaustion
+// (decision E-1001). Only the first client is touched, and a respawn gives the spawn saturation
+// back, so call it again after one. Without a player (refused at the door) there is nothing to do.
+template <typename Server>
+void withoutSaturation(Server &server)
+{
+    const auto &clients = server.entities().clients();
+    if (clients.empty()) {
+        return;
+    }
+    auto &hunger = clients.front()->hunger;
+    hunger.restore(hunger.food(), hunger.exhaustion(), 0.0);
+}
+
 } // namespace QcTestUtil

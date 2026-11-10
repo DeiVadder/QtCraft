@@ -8,6 +8,7 @@
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcChunkPos.h"
 #include "server/core/QcServerLimits.h"
+#include "server/dimensions/QcPerDimension.h"
 
 #include <QHash>
 #include <QList>
@@ -67,9 +68,9 @@ public:
     QHash<QcChunkPos, QList<QcBlockPos>> takeChunks(const QSet<QcChunkPos> &chunks);
 
     /*! Returns the pending updates of player actions in order. */
-    QList<QcBlockPos> playerUpdates() const { return {m_playerUpdates.begin(), m_playerUpdates.end()}; }
+    QList<QcBlockPos> playerUpdates() const { return {here().playerUpdates.begin(), here().playerUpdates.end()}; }
     /*! Returns the pending updates of commands in order. */
-    QList<QcBlockPos> commandUpdates() const { return {m_commandUpdates.begin(), m_commandUpdates.end()}; }
+    QList<QcBlockPos> commandUpdates() const { return {here().commandUpdates.begin(), here().commandUpdates.end()}; }
     /*! Returns the updates waiting for their chunk to load. */
     QList<QcBlockPos> waitingUpdates() const;
 
@@ -77,11 +78,11 @@ public:
         actions and of commands. */
     qsizetype pendingCount() const { return pendingPlayerCount() + pendingCommandCount(); }
     /*! Returns the number of pending updates of player actions. */
-    qsizetype pendingPlayerCount() const { return static_cast<qsizetype>(m_playerUpdates.size()); }
+    qsizetype pendingPlayerCount() const { return static_cast<qsizetype>(here().playerUpdates.size()); }
     /*! Returns the number of pending updates of commands. */
-    qsizetype pendingCommandCount() const { return static_cast<qsizetype>(m_commandUpdates.size()); }
+    qsizetype pendingCommandCount() const { return static_cast<qsizetype>(here().commandUpdates.size()); }
     /*! Returns the number of updates waiting for their chunk. */
-    qsizetype waitingCount() const { return m_waitingCount; }
+    qsizetype waitingCount() const { return here().waitingCount; }
     /*! Returns the updates processed since the server started. */
     quint64 processedCount() const { return m_processed; }
     /*! Returns the waiting updates dropped beyond maxWaitingBlockUpdates. */
@@ -99,14 +100,22 @@ private:
     bool loneBorderRail(const BorderScan &scan, QcBlockId block, QcBlockPos pos) const;
 
     QcServerState &m_state;
-    std::deque<QcBlockPos> m_playerUpdates;
-    std::deque<QcBlockPos> m_commandUpdates;
-    QSet<QcBlockPos> m_queuedPlayerUpdates;
-    QSet<QcBlockPos> m_queuedCommandUpdates;
-    // Updates of positions whose chunk was not loaded when their turn came.
-    QHash<QcChunkPos, QSet<QcBlockPos>> m_waitingUpdates;
-    qsizetype m_waitingCount = 0;
     bool m_commandMode = false;
     quint64 m_processed = 0;
     quint64 m_dropped = 0;
+    // The updates of a dimension.
+    struct Queues
+    {
+        std::deque<QcBlockPos> playerUpdates;
+        std::deque<QcBlockPos> commandUpdates;
+        QSet<QcBlockPos> queuedPlayerUpdates;
+        QSet<QcBlockPos> queuedCommandUpdates;
+        // Updates of positions whose chunk was not loaded when their turn came.
+        QHash<QcChunkPos, QSet<QcBlockPos>> waitingUpdates;
+        qsizetype waitingCount = 0;
+    };
+    // Of the current dimension.
+    Queues &here() const;
+
+    QcPerDimension<Queues> m_queues;
 };

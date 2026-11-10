@@ -5,6 +5,9 @@
     "blastResistance": 6.0,
     "tool": "pickaxe",
     "toolLevel": 1,
+    "tags": [
+        "stone_crafting_materials"
+    ],
     "textures": {
         "all": "cobblestone"
     }

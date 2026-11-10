@@ -5,16 +5,15 @@
 
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEffectPuff.h"
+#include "clientcore/session/QcNearbyBlocks.h"
 #include "common/core/QcVec3.h"
 
 #include <QList>
 
-#include <vector>
 
-/*! \brief The smoke rising from the lit campfires near the player (decision E-772): a list of the
-    campfires (blocks whose campfire cooks) within \c {radius} blocks, found again every
-    \c {rescanTicks} by looking only into the chunk sections whose palette holds such a block, and a
-    few puffs per campfire that rise, drift and shrink in a loop.
+/*! \brief The smoke rising from the lit campfires near the player (decision E-772): the campfires
+    (blocks whose campfire cooks) within \c {radius} blocks, found again every \c {rescanTicks}
+    (QcNearbyBlocks), and a few puffs per campfire that rise, drift and shrink in a loop.
 
     The puffs follow from the campfire's position and the time alone, so nothing is kept per
     puff. */
@@ -34,26 +33,17 @@ public:
 
     /*! Looks for the campfires of \a world around \a eye again when \a tick is rescanTicks past
         the last look or the world changed. */
-    void refresh(const QcClientWorld &world, const QcVec3 &eye, quint64 tick);
+    void refresh(const QcClientWorld &world, const QcVec3 &eye, quint64 tick) { m_campfires.refresh(world, eye, tick); }
     /*! Returns the smoking campfires found by the latest look, the nearest at most maxCampfires. */
-    const QList<QcBlockPos> &campfires() const { return m_campfires; }
+    const QList<QcBlockPos> &campfires() const { return m_campfires.found(); }
     /*! Returns the puffs of the campfire at \a pos at \a seconds of the animations' clock
         (QcWorldMirror::animationSeconds, decision E-962). */
     [[nodiscard]] static QList<QcEffectPuff> puffsOf(QcBlockPos pos, double seconds);
+    /*! Returns a number in [0, 1) for loop \a round of puff \a index of the block at \a pos,
+        stirred by \a salt: the same for the same arguments (also for QcPortalSparkles). */
+    [[nodiscard]] static double unitOf(QcBlockPos pos, int index, qint64 round, quint32 salt);
 
 private:
-    // The campfires of the sections near `eye`.
-    [[nodiscard]] QList<QcBlockPos> scan(const QcClientWorld &world, const QcVec3 &eye) const;
-    // The campfires in one section whose first cell is at `origin`; none without one in its palette.
-    [[nodiscard]] QList<QcBlockPos> campfiresIn(const QcChunkSection &section, QcBlockPos origin) const;
-    // Whether the block state smokes.
-    [[nodiscard]] bool smokes(QcBlockId id) const;
-    // Whether a block state smokes (a cooking campfire), per state id of the world's content.
-    void learn(const QcContentRegistry &content);
-
-    std::vector<bool> m_smokes;
-    const QcContentRegistry *m_content = nullptr;
-    QList<QcBlockPos> m_campfires;
-    quint64 m_scannedAt = 0;
-    bool m_scanned = false;
+    QcNearbyBlocks m_campfires{{radius, rescanTicks, maxCampfires},
+                               [](const QcContentRegistry &content, QcBlockId id) { return content.block(id).campfire.cooks(); }};
 };

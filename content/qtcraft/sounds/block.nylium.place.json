@@ -1,0 +1,67 @@
+{
+    "name": "block.nylium.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1838,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1396,
+            "resonance": 2.5,
+            "lowpass": 4190,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 331,
+            "resonance": 2.0,
+            "lowpass": 992,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 96,
+            "resonance": 1.2,
+            "lowpass": 287,
+            "gain": 0.9
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 2520,
+            "highpass": 420,
+            "density": 630,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 3200,
+            "resonance": 1.2,
+            "highpass": 1800,
+            "gain": 0.25
+        }
+    ]
+}

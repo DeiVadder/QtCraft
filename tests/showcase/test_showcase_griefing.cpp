@@ -101,6 +101,25 @@ private:
         return ripe;
     }
 
+    // Turns every second ripe wheat around `centre` into ripe nether wart on soul sand; returns where.
+    QList<QcBlockPos> plantWart(QcServer &server, QcBlockPos centre) const
+    {
+        QList<QcBlockPos> warts;
+        int ripeSeen = 0;
+        for (int x = centre.x - 8; x <= centre.x + 8; ++x) {
+            for (int z = centre.z - 8; z <= centre.z + 8; ++z) {
+                const QcBlockPos pos{x, centre.y, z};
+                const std::optional<QcBlockId> block = server.world().blockAt(pos);
+                if (block && m_content->stateName(*block) == u"qtcraft:wheat_crop[age=7]"_s && ripeSeen++ % 2 == 0) {
+                    server.world().setBlock(pos.offset(0, -1, 0), *m_content->blockId(u"qtcraft:soul_sand"_s));
+                    server.world().setBlock(pos, *m_content->stateId(u"qtcraft:nether_wart_crop[age=3]"_s));
+                    warts.append(pos);
+                }
+            }
+        }
+        return warts;
+    }
+
     // Whether the crop at `pos` is at its last stage (QcServerVillagers::harvest takes only those).
     bool ripe(QcServer &server, QcBlockPos pos) const
     {
@@ -218,16 +237,21 @@ private slots:
         const QcBlockPos centre{static_cast<int>(std::floor(settlers.first().x)), static_cast<int>(std::floor(settlers.first().y)),
             static_cast<int>(std::floor(settlers.first().z))};
         loadAround(*server, centre.offset(-32, 0, -32), centre.offset(32, 0, 32));
+        const QList<QcBlockPos> warts = plantWart(*server, centre);
         const int ripe = ripeWheat(*server, centre);
         QVERIFY(ripe > 0);
+        QVERIFY(!warts.isEmpty());
 
-        // Settled, they harvest their field.
+        // Settled, they harvest their field, but leave the nether wart in it (decision E-981).
         int now = ripe;
         for (int tick = 0; tick < 2 * QcVillagePopulation::villageLifeTicks + 2400 && now == ripe; ++tick) {
             server->tick();
             now = ripeWheat(*server, centre);
         }
         QVERIFY2(now < ripe, qPrintable(QString::number(now)));
+        for (const QcBlockPos &wart : warts) {
+            QVERIFY(this->ripe(*server, wart));
+        }
 
         // Bread thrown at the feet of one that wants food is picked up.
         QcCreature *settler = nullptr;

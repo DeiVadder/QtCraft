@@ -1,0 +1,14 @@
+{
+    "name": "huge_warped_fungus",
+    "type": "tree",
+    "trunk": "warped_stem",
+    "leaves": "warped_wart_block",
+    "glow": "shroomlight",
+    "icon": "warped_fungus",
+    "shape": "fungus_canopy",
+    "minHeight": 5,
+    "maxHeight": 14,
+    "ground": [
+        "warped_nylium"
+    ]
+}

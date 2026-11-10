@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
 #include <QList>
@@ -174,6 +175,9 @@ struct QcMineshaftPlan
     /*! Returns whether the columns \a x0 to \a x1, \a z0 to \a z1 (inclusive) share a column with
         the plan's bounds. */
     bool touches(int x0, int z0, int x1, int z1) const { return x1 >= minX && x0 <= maxX && z1 >= minZ && z0 <= maxZ; }
+    /*! Returns the plan's bounds as a rectangle of columns: what a generator switch asks
+        about (QcWorldGenerator::buildsStructure). */
+    QcXzRect bounds() const { return {minX, minZ, maxX, maxZ}; }
     /*! Sets the columns touched by its open cells, blocks, entrance and rooms, and one more
         around. */
     void bound()

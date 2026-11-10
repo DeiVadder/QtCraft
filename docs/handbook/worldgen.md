@@ -2,9 +2,29 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Copper ore veins](#ore-qtcraft-copper) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Dry shrub](#feature-qtcraft-dry_shrub) · [Emerald ore veins](#ore-qtcraft-emerald) · [Giant jungle tree](#feature-qtcraft-giant_jungle_tree) · [Giant spruce](#feature-qtcraft-giant_spruce_tree) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Infested stone veins](#ore-qtcraft-infested_stone) · [Iron ore veins](#ore-qtcraft-iron) · [Jungle bush](#feature-qtcraft-jungle_bush) · [Jungle tree](#feature-qtcraft-jungle_tree) · [Lapis lazuli ore veins](#ore-qtcraft-lapis) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lily pads](#feature-qtcraft-lily_pad) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Oak bush](#feature-qtcraft-oak_bush) · [Oak tree](#feature-qtcraft-oak_tree) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Reeds](#feature-qtcraft-reeds) · [Signal ore veins](#ore-qtcraft-signal) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
+**QtCraft:** [Ancient debris veins](#ore-qtcraft-ancient_debris_large) · [Ancient debris veins](#ore-qtcraft-ancient_debris_small) · [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Copper ore veins](#ore-qtcraft-copper) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Dry shrub](#feature-qtcraft-dry_shrub) · [Emerald ore veins](#ore-qtcraft-emerald) · [Giant jungle tree](#feature-qtcraft-giant_jungle_tree) · [Giant spruce](#feature-qtcraft-giant_spruce_tree) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Huge crimson fungus](#feature-qtcraft-huge_crimson_fungus) · [Huge warped fungus](#feature-qtcraft-huge_warped_fungus) · [Infested stone veins](#ore-qtcraft-infested_stone) · [Iron ore veins](#ore-qtcraft-iron) · [Jungle bush](#feature-qtcraft-jungle_bush) · [Jungle tree](#feature-qtcraft-jungle_tree) · [Lapis lazuli ore veins](#ore-qtcraft-lapis) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lily pads](#feature-qtcraft-lily_pad) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Nether gold ore veins](#ore-qtcraft-nether_gold) · [Nether quartz ore veins](#ore-qtcraft-nether_quartz) · [Oak bush](#feature-qtcraft-oak_bush) · [Oak tree](#feature-qtcraft-oak_tree) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Reeds](#feature-qtcraft-reeds) · [Signal ore veins](#ore-qtcraft-signal) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Terrain](#world-terrain) · [Twisting vines](#feature-qtcraft-twisting_vines) · [Weeping vines](#feature-qtcraft-weeping_vines) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
 
 ## QtCraft
+
+### <a id="ore-qtcraft-ancient_debris_large"></a>Ancient debris veins
+
+| | |
+|---|---|
+| ID | `qtcraft:ancient_debris_large` |
+| Block | [Ancient debris](blocks.md#block-qtcraft-ancient_debris) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 8–24 |
+| Veins | 1 per chunk, up to 3 blocks each |
+
+### <a id="ore-qtcraft-ancient_debris_small"></a>Ancient debris veins
+
+| | |
+|---|---|
+| ID | `qtcraft:ancient_debris_small` |
+| Block | [Ancient debris](blocks.md#block-qtcraft-ancient_debris) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 8–119 |
+| Veins | 1 per chunk, up to 2 blocks each |
 
 ### <a id="feature-qtcraft-birch_tree"></a>Birch tree
 
@@ -195,6 +215,36 @@
 | Heights | y 5–100 |
 | Veins | 5 per chunk, up to 20 blocks each |
 
+### <a id="feature-qtcraft-huge_crimson_fungus"></a>Huge crimson fungus
+
+| | |
+|---|---|
+| ID | `qtcraft:huge_crimson_fungus` |
+| Kind | tree |
+| Blocks | [Crimson stem](blocks.md#block-qtcraft-crimson_stem), [Nether wart block](blocks.md#block-qtcraft-nether_wart_block), [Shroomlight](blocks.md#block-qtcraft-shroomlight), [Weeping vines](blocks.md#block-qtcraft-weeping_vines) |
+| Size | 5–14 blocks |
+| Grows on | [Crimson nylium](blocks.md#block-qtcraft-crimson_nylium) |
+| Grows from | [Crimson fungus](blocks.md#block-qtcraft-crimson_fungus) |
+
+**In biomes**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (0.8 % of columns)
+
+### <a id="feature-qtcraft-huge_warped_fungus"></a>Huge warped fungus
+
+| | |
+|---|---|
+| ID | `qtcraft:huge_warped_fungus` |
+| Kind | tree |
+| Blocks | [Warped stem](blocks.md#block-qtcraft-warped_stem), [Warped wart block](blocks.md#block-qtcraft-warped_wart_block), [Shroomlight](blocks.md#block-qtcraft-shroomlight) |
+| Size | 5–14 blocks |
+| Grows on | [Warped nylium](blocks.md#block-qtcraft-warped_nylium) |
+| Grows from | [Warped fungus](blocks.md#block-qtcraft-warped_fungus) |
+
+**In biomes**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (0.8 % of columns)
+
 ### <a id="ore-qtcraft-infested_stone"></a>Infested stone veins
 
 | | |
@@ -323,6 +373,26 @@ Tried in every chunk, whatever the biome.
 **In biomes**
 
 [Forest](biomes.md#biome-qtcraft-forest) (0.12 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (0.4 % of columns), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (0.3 % of columns), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.15 % of columns)
+
+### <a id="ore-qtcraft-nether_gold"></a>Nether gold ore veins
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_gold` |
+| Block | [Nether gold ore](blocks.md#block-qtcraft-nether_gold_ore) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 10–117 |
+| Veins | 10 per chunk, up to 8 blocks each |
+
+### <a id="ore-qtcraft-nether_quartz"></a>Nether quartz ore veins
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_quartz` |
+| Block | [Nether quartz ore](blocks.md#block-qtcraft-nether_quartz_ore) |
+| Replaces | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Heights | y 10–117 |
+| Veins | 16 per chunk, up to 12 blocks each |
 
 ### <a id="feature-qtcraft-oak_bush"></a>Oak bush
 
@@ -464,11 +534,38 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Ore veins**
 
-[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Copper ore veins](#ore-qtcraft-copper) (y 16–96), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Emerald ore veins](#ore-qtcraft-emerald) (y 4–32), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Infested stone veins](#ore-qtcraft-infested_stone) (y 40–160), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Lapis lazuli ore veins](#ore-qtcraft-lapis) (y 2–34), [Magma block veins](#ore-qtcraft-magma) (y 5–24), [Signal ore veins](#ore-qtcraft-signal) (y 2–16)
+[Ancient debris veins](#ore-qtcraft-ancient_debris_large) (y 8–24), [Ancient debris veins](#ore-qtcraft-ancient_debris_small) (y 8–119), [Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Copper ore veins](#ore-qtcraft-copper) (y 16–96), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Emerald ore veins](#ore-qtcraft-emerald) (y 4–32), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Infested stone veins](#ore-qtcraft-infested_stone) (y 40–160), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Lapis lazuli ore veins](#ore-qtcraft-lapis) (y 2–34), [Magma block veins](#ore-qtcraft-magma) (y 5–24), [Nether gold ore veins](#ore-qtcraft-nether_gold) (y 10–117), [Nether quartz ore veins](#ore-qtcraft-nether_quartz) (y 10–117), [Signal ore veins](#ore-qtcraft-signal) (y 2–16)
 
 **Biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [River](biomes.md#biome-qtcraft-river), [River Delta](biomes.md#biome-qtcraft-delta), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Basalt deltas](biomes.md#biome-qtcraft-basalt_deltas), [Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Crimson forest](biomes.md#biome-qtcraft-crimson_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [Mountains](biomes.md#biome-qtcraft-mountains), [Nether Wastes](biomes.md#biome-qtcraft-nether_wastes), [Plains](biomes.md#biome-qtcraft-plains), [River](biomes.md#biome-qtcraft-river), [River Delta](biomes.md#biome-qtcraft-delta), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Soul Sand Valley](biomes.md#biome-qtcraft-soul_sand_valley), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Warped forest](biomes.md#biome-qtcraft-warped_forest)
+
+### <a id="feature-qtcraft-twisting_vines"></a>Twisting vines
+
+| | |
+|---|---|
+| ID | `qtcraft:twisting_vines` |
+| Kind | column |
+| Blocks | [Twisting vines](blocks.md#block-qtcraft-twisting_vines) |
+| Size | 2–9 blocks |
+| Grows on | [Warped nylium](blocks.md#block-qtcraft-warped_nylium) |
+
+**In biomes**
+
+[Warped forest](biomes.md#biome-qtcraft-warped_forest) (3 % of columns)
+
+### <a id="feature-qtcraft-weeping_vines"></a>Weeping vines
+
+| | |
+|---|---|
+| ID | `qtcraft:weeping_vines` |
+| Kind | column |
+| Blocks | [Weeping vines](blocks.md#block-qtcraft-weeping_vines) |
+| Size | 2–10 blocks |
+
+**In biomes**
+
+[Crimson forest](biomes.md#biome-qtcraft-crimson_forest) (3.5 % of columns)
 
 ### <a id="feature-qtcraft-wild_carrots"></a>Wild carrots
 

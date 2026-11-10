@@ -1,0 +1,34 @@
+{
+    "name": "mob.charred_skeleton.death",
+    "volume": 0.9,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.7,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 110,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.5,
+            "attack": 0.01,
+            "curve": 1.5,
+            "highpass": 1800,
+            "gain": 0.15
+        },
+        {
+            "wave": "square",
+            "duration": 0.6,
+            "frequency": 180,
+            "endFrequency": 70,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.2
+        }
+    ]
+}

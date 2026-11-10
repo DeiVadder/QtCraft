@@ -126,16 +126,33 @@ void QcBlockEntities::placed(QcBlockPos pos, QcBlockId before, QcBlockId after)
 
 void QcBlockEntities::placedMachine(QcBlockPos pos, QcBlockId after)
 {
-    if (machineOf(after)) {
+    if (const QcMachineDefinition *definition = machineOf(after)) {
         ensure(pos, after);
+        fitMachine(pos, *definition);
+        // Another state may no longer show the bottles of the slots (a stand set onto a stand).
+        if (Machine *held = machine(pos)) {
+            held->shownBottles = -1;
+        }
         return;
     }
 
     const auto it = m_machines.constFind(pos);
     if (it != m_machines.constEnd()) {
-        spill(pos, QList<QcItemStack>(it->stacks.begin(), it->stacks.end()), it->experience);
+        spill(pos, it->stacks, it->experience);
         removeMachine(pos);
     }
+}
+
+void QcBlockEntities::fitMachine(QcBlockPos pos, const QcMachineDefinition &definition)
+{
+    Machine *held = machine(pos);
+    const qsizetype slotTotal = definition.slotCount();
+    if (!held || held->stacks.size() == slotTotal) {
+        return;
+    }
+    // A mod took the stand and left a furnace (or the other way round): what has no slot falls out.
+    spill(pos, held->stacks.mid(slotTotal), 0.0);
+    held->stacks.resize(slotTotal);
 }
 
 void QcBlockEntities::placedContainer(QcBlockPos pos, QcBlockId before, QcBlockId after)
@@ -362,7 +379,9 @@ bool QcBlockEntities::relocateEntry(QHash<QcBlockPos, Entry> QcBlockEntities::*t
 void QcBlockEntities::relocate(QcBlockPos from, QcBlockPos to)
 {
     relocateEntry(&QcBlockEntities::m_containers, &ChunkIndex::containers, from, to);
-    relocateEntry(&QcBlockEntities::m_machines, &ChunkIndex::machines, from, to);
+    if (relocateEntry(&QcBlockEntities::m_machines, &ChunkIndex::machines, from, to)) {
+        m_machines[to].shownBottles = -1;
+    }
     relocateEntry(&QcBlockEntities::m_memories, &ChunkIndex::memories, from, to);
     if (relocateEntry(&QcBlockEntities::m_saplingAt, &ChunkIndex::saplings, from, to)) {
         m_saplings[m_saplingAt.value(to)].pos = to;
@@ -428,10 +447,11 @@ bool QcBlockEntities::ensure(QcBlockPos pos, QcBlockId block)
         holds = m_containers.contains(pos);
     }
 
-    if (machineOf(block)) {
+    if (const QcMachineDefinition *definition = machineOf(block)) {
         if (!m_machines.contains(pos) && !isMachineTableFull()) {
             Machine created;
             created.pos = pos;
+            created.stacks.resize(definition->slotCount());
             m_machines.insert(pos, created);
             index(pos, &ChunkIndex::machines);
         }

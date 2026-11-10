@@ -1,0 +1,17 @@
+{
+    "name": "netherite_ingot",
+    "type": "shapeless",
+    "ingredients": [
+        "netherite_scrap",
+        "netherite_scrap",
+        "netherite_scrap",
+        "netherite_scrap",
+        "gold_ingot",
+        "gold_ingot",
+        "gold_ingot",
+        "gold_ingot"
+    ],
+    "result": {
+        "item": "netherite_ingot"
+    }
+}

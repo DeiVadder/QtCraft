@@ -13,8 +13,10 @@
     "chaseSpeed": 3.2,
     "hostile": true,
     "burnsInDaylight": false,
+    "undead": true,
     "immuneTo": [
-        "poison"
+        "poison",
+        "regeneration"
     ],
     "blowEffects": [
         {

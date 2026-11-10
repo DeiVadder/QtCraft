@@ -8,12 +8,15 @@
 #include <QImage>
 #include <QList>
 
+#include <optional>
+
 class QcContentRegistry;
 
 // Draws the cells of a QcBiomeMap for the map preview of a new world (decision E-921), one pixel per
 // cell: land in its biome's colour (`mapColour` of the content, else hues spread over the biomes),
 // lit from the north-west by the slope to the neighbouring cell and a little brighter with height;
-// the sea and lakes blue, darker with depth, or ice where their top layer freezes; rivers in their river biome's colour, lightened. Pure
+// the sea and lakes blue, darker with depth, or ice where their top layer freezes; rivers in their river biome's colour, lightened. A
+// map without relief (under a roof) shows only the colours of its biomes, as the legend does. Pure
 // functions: the preview's worker thread calls them.
 namespace QcWorldMapPainter {
 
@@ -23,6 +26,7 @@ namespace QcWorldMapPainter {
 [[nodiscard]] quint32 seaColour();
 // The colour of frozen sea and lakes, 0xRRGGBB.
 [[nodiscard]] quint32 iceColour();
-[[nodiscard]] QImage paint(const QcBiomeMap &map, const QList<quint32> &colours, int seaLevel);
+// The image of `map`; `seaLevel` is the height of the sea, none for a map without relief.
+[[nodiscard]] QImage paint(const QcBiomeMap &map, const QList<quint32> &colours, std::optional<int> seaLevel);
 
 } // namespace QcWorldMapPainter

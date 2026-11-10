@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcChunk.h"
+#include "worldgen/terrain/QcFungusCrown.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTreeLayout.h"
 
@@ -17,11 +18,13 @@ namespace QcTreeShape {
 
 std::optional<Crown> crownOf(const QString &shape)
 {
-    static constexpr std::array<std::pair<std::u16string_view, Crown>, 5> names{{{u"round", Crown::Round},
+    static constexpr std::array<std::pair<std::u16string_view, Crown>, 7> names{{{u"round", Crown::Round},
                                                                                  {u"cone", Crown::Cone},
                                                                                  {u"bush", Crown::Bush},
                                                                                  {u"giant_cone", Crown::GiantCone},
-                                                                                 {u"giant_round", Crown::GiantRound}}};
+                                                                                 {u"giant_round", Crown::GiantRound},
+                                                                                 {u"fungus_dome", Crown::FungusDome},
+                                                                                 {u"fungus_canopy", Crown::FungusCanopy}}};
     for (const auto &[name, crown] : names) {
         if (shape == name) {
             return crown;
@@ -55,6 +58,8 @@ Params paramsOf(const QcContentRegistry &content, const QcFeatureDefinition &fea
     params.crown = crownOf(feature.shape).value_or(Crown::Round);
     std::tie(params.trunkX, params.trunkZ) = lyingTrunks(content, params.trunk);
     params.vines = vinesOf(content, content.blockId(feature.vinesBlock).value_or(qcAirBlockId));
+    params.glow = content.blockId(feature.glowBlock).value_or(qcAirBlockId);
+    params.hanging = content.blockId(feature.hangingBlock).value_or(qcAirBlockId);
     return params;
 }
 
@@ -75,6 +80,9 @@ int reach(const Params &params)
     case Crown::GiantCone:
     case Crown::GiantRound:
         return 1 + QcTreeLayout::giantCrownRadius;
+    case Crown::FungusDome:
+    case Crown::FungusCanopy:
+        return QcFungusCrown::reach;
     }
     return 0;
 }
@@ -192,6 +200,12 @@ void build(const Params &params, QcBlockPos base, double random, quint64 seed, c
         break;
     case Crown::GiantRound:
         layout.buildGiantRound(params, base, trunkHeight, seed);
+        break;
+    case Crown::FungusDome:
+        QcFungusCrown::buildDome(params, base, trunkHeight, seed, layout);
+        break;
+    case Crown::FungusCanopy:
+        QcFungusCrown::buildCanopy(params, base, trunkHeight, seed, layout);
         break;
     }
     layout.hangVines(params, seed);

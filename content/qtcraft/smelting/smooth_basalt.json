@@ -1,0 +1,9 @@
+{
+    "name": "smooth_basalt",
+    "input": "basalt",
+    "result": {
+        "item": "smooth_basalt"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

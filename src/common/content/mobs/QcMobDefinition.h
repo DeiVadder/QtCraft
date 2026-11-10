@@ -6,6 +6,10 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
 #include "common/content/mobs/QcAppearanceDefinition.h"
+#include "common/content/mobs/QcBarterDefinition.h"
+#include "common/content/mobs/QcBossBarDefinition.h"
+#include "common/content/mobs/QcHydraDefinition.h"
+#include "common/content/mobs/QcMobDrinkDefinition.h"
 #include "common/content/mobs/QcMobTraits.h"
 #include "common/core/QcCreatureKindId.h"
 #include "common/core/QcIdList.h"
@@ -38,6 +42,17 @@ struct QcMobPart
     /*! A tentacle (decision E-974): it turns outwards about the middle of its top as a creature
         that swims in pulses (QcPulseDefinition) glides, and back in as it pushes. */
     bool tentacle = false;
+    /*! Shown only while the creature wears a saddle (\c {"saddled"}, QcMsg::Saddled, decision
+        E-1054). */
+    bool saddled = false;
+    /*! Shown only while the creature wears its armour (\c {"armour"}, QcMsg::Armoured, decision
+        E-1126; the charred hydra in its second phase and while it charges). */
+    bool armour = false;
+    /*! Degrees a second the box turns about the upright axis through the feet (\c {"spin"},
+        decision E-1056; negative: the other way), at most maxSpin either way. */
+    double spin = 0.0;
+    /*! The fastest \c {spin}. */
+    static constexpr double maxSpin = 720.0;
 };
 
 /*! \brief How a creature finds its way (decision E-423), from its data (\c {abilities}); the path
@@ -140,7 +155,9 @@ struct QcMobDefinition
         with \c {gaze}) and then chase that player (decision E-460), golems guard villagers
         against hostile creatures (only without \c {hostile}, with \c {golem}, decision E-471),
         guardians keep to the zone they guard and chase only players who come within
-        \c {guardLeash} of it (only with \c {hostile}, decision E-594). Server side only. */
+        \c {guardLeash} of it (only with \c {hostile}, decision E-594), the hydra flies with three
+        heads and shoots skulls at whatever lives and is not undead (only with \c {hostile} and
+        \c {hydra}, decision E-1126). Server side only. */
     enum class Ai : quint8 {
         Passive, // wanders and flees
         Hostile, // chases players
@@ -148,7 +165,9 @@ struct QcMobDefinition
         Archer, // keeps its distance and shoots
         Neutral, // passive until a player provokes it
         Golem, // guards villagers
-        Guardian // guards a zone
+        Guardian, // guards a zone
+        Drifter, // drifts without paths; a hostile one shoots what it sees
+        Hydra // the three-headed boss: flies and shoots skulls
     };
     /*! Its AI (\c {"ai"}); without the key: Villager for villagers, Hostile for hostile
         creatures, else Passive. */
@@ -168,13 +187,43 @@ struct QcMobDefinition
     std::optional<QcCarryDefinition> carries;
     /*! Crumbles into blocks at a liquid's source (decision E-593). */
     std::optional<QcCrumbleDefinition> crumbles;
-    /*! Drinks to heal itself (the witch, decision E-623). */
-    std::optional<QcDrinkHealDefinition> drinks;
+    /*! Drinks potions when it needs them (the witch, decisions E-623, E-1105). */
+    std::optional<QcMobDrinkDefinition> drinks;
     /*! Splits off children when hurt and takes them with it when it dies (the Kjut, decision
         E-839). */
     std::optional<QcFamilyDefinition> family;
     /*! Hovers above the ground instead of walking (the Kjut, decision E-839). */
     std::optional<QcHoverDefinition> hover;
+    /*! How it drifts (\c {drift}; the drifter AI, decision E-1053). Server side only. */
+    QcDriftDefinition drift;
+    /*! How players ride it (\c {ride}, decision E-1054); none for no rider. Reaches the client. */
+    std::optional<QcRideDefinition> ride;
+    /*! The three-headed boss (\c {"hydra"}, Ai::Hydra, decision E-1125). */
+    std::optional<QcHydraDefinition> hydra;
+    /*! Its boss bar (\c {"bossBar"}, decision E-1127); none for an ordinary creature. */
+    std::optional<QcBossBarDefinition> bossBar;
+    /*! What it falls apart into (\c {splits}, decision E-1055). Server side only. */
+    std::optional<QcSplitDefinition> splits;
+    /*! Jumps whenever it moves, like a slime (\c {hops}, decision E-1055). Server side only. */
+    bool hops = false;
+    /*! Loves gold and barters (\c {barter}, decision E-1081; the neutral AI). Server side only. */
+    std::optional<QcBarterDefinition> barter;
+    /*! Blocks it keeps away from (\c {repelledBy}, decision E-1082). Server side only. */
+    std::optional<QcRepellentDefinition> repellents;
+    /*! Seconds a provoked neutral creature stays angry after it last saw its target
+        (\c {"angerSeconds"}, 1..600; decision E-1081). Server side only. */
+    double angerSeconds = 20.0;
+    /*! Share of its natural spawns that come young (\c {"young": {"chance"}}, 0..1; decision
+        E-1083). Server side only. */
+    double youngChance = 0.0;
+    /*! A young one never grows up (\c {"young": {"staysYoung"}}, decision E-1083; young tusklings).
+        Server side only. */
+    bool staysYoung = false;
+    /*! A hit by this projectile sent back by a player takes \c {deflectedDamage} health instead
+        of its own damage (\c {"weakTo": {"projectile", "damage"}}, decision E-1053; the wailer's
+        own fire). Empty for none. Server side only. \qcshared */
+    QString weakTo;
+    double deflectedDamage = 0.0;
     /*! A guardian (Ai::Guardian) chases players up to this many blocks outside the zone it
         guards (\c {"guardian": {"leash": 6}}, decision E-594). Server side only. */
     double guardLeash = 6.0;
@@ -196,12 +245,18 @@ struct QcMobDefinition
     /*! Catches fire in direct sunlight (decision E-426): by day, with the open sky above its
         head, neither in water nor in the rain. Server side only. */
     bool burnsInDaylight = false;
+    /*! Fire, lava and hot blocks do it no harm and it never burns (\c {"fireImmune"}, decision
+        E-1052). Server side only. */
+    bool fireImmune = false;
     /*! Needs no air under water and never drowns (\c {"breathesUnderWater"}, decision E-955;
         by default the creatures that swim, dive or live in water). Server side only. */
     bool breathesUnderWater = false;
     /*! Kinds of status effects that do nothing to it (spiders and the undead: poison; decision
         E-450). Server side only. */
     QStringList immuneTo;
+    /*! Instant health hurts it and instant damage heals it (\c {"undead"}, decision E-992;
+        QcEffectDefinition::reversedOnUndead). Server side only. */
+    bool undead = false;
     /*! Effects its blows give the player struck (a cave spider's poison), with their ticks.
         Server side only. */
     QList<QcStatusEffect> blowEffects;
@@ -300,6 +355,9 @@ struct QcMobDefinition
     /*! In water instead of on dry ground: its feet in water above a solid block (drowned;
         decision E-838). Server side only. */
     bool spawnInWater = false;
+    /*! On the surface of lava instead of on solid ground (\c {"lava"}, decision E-1051). Server
+        side only. */
+    bool spawnOnLava = false;
 
     /*! \brief One place and time where the creature spawns: the main rule (the fields above) or an
         extra one (\c {spawn.also}, e.g. slimes also on swamp surfaces at night).
@@ -329,6 +387,8 @@ struct QcMobDefinition
         bool sky = false;
         /*! In water (\c {"water"}), as spawnInWater. */
         bool water = false;
+        /*! On lava (\c {"lava"}), as spawnOnLava. */
+        bool lava = false;
     };
     /*! Extra spawn rules (\c {"spawn": {"also": [...]}}), at most maxExtraSpawns. */
     QList<SpawnRule> extraSpawns;
@@ -336,7 +396,7 @@ struct QcMobDefinition
     QList<SpawnRule> spawnRules() const
     {
         QList<SpawnRule> rules{{spawnTime, spawnBlocks, spawnWeight, spawnsInCaves, maxSpawnLight, spawnChunkChance, spawnMaxY, spawnBiomes,
-                                 spawnInDarkness, spawnUnderSky, spawnInWater}};
+                                 spawnInDarkness, spawnUnderSky, spawnInWater, spawnOnLava}};
         rules.append(extraSpawns);
         return rules;
     }

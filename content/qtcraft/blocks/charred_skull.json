@@ -1,0 +1,25 @@
+{
+    "name": "charred_skull",
+    "sound": "stone",
+    "shape": "charred_skull",
+    "render": "cutout",
+    "solid": false,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 1.0,
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "top": "charred_skull_side",
+        "bottom": "charred_skull_side",
+        "side": "charred_skull_side",
+        "north": "charred_skull_face"
+    }
+}

@@ -3,6 +3,8 @@
 
 #include "server/core/QcEntitySync.h"
 
+#include "common/gameplay/QcEffectRules.h"
+#include "server/bosses/QcHydraRules.h"
 #include "server/core/QcServerState.h"
 #include "server/villages/QcVillagerLooks.h"
 
@@ -20,12 +22,16 @@ quint16 flagsOf(const QcEntity &entity, bool swung, bool sneaking, bool sprintin
                    | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0) | (entity.burnTicks > 0 ? QcMsg::Burning : 0));
 }
 
-// What a creature holds: a drink to heal while it drinks (decision E-623), else the block a
-// shadewalker carries (decision E-460), else its kind's item (an archer's bow, decision E-426).
+// What a creature holds: the potion it drinks (decisions E-623, E-1105), else what one that
+// barters looks at (E-1081), else the block a shadewalker carries (decision E-460), else its kind's
+// item (an archer's bow, decision E-426).
 QcItemId heldBy(const QcCreature &creature, const QcMobDefinition &kind)
 {
     if (kind.drinks && creature.archer.has() && creature.archer->drinking()) {
-        return kind.drinks->itemId;
+        return creature.archer->drinkItem;
+    }
+    if (creature.barter && creature.barter->admires()) {
+        return creature.barter->admiring.item;
     }
     return creature.carriedItem != qcNoItem ? creature.carriedItem : kind.heldItemId;
 }
@@ -41,7 +47,9 @@ QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature
     now.health = creature.health;
     now.hurt = creature.hurtUnsent;
     now.struck = creature.struckUnsent;
-    now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
+    // A drifter that flares shows the flames of a burning body (decision E-1056).
+    const quint16 flare = creature.drifter && creature.drifter->flares ? QcMsg::Burning : 0;
+    now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding | flare);
     now.held = heldBy(creature, kind);
     if (creature.archer.has() && creature.archer->drawing()) {
         now.flags = static_cast<quint16>(now.flags | QcMsg::Drawing);
@@ -105,10 +113,22 @@ int boatCount(const QcBoat &boat)
     return static_cast<int>(std::lround(boat.yaw * 10.0f)) * 2 + (paddled(boat) ? 1 : 0);
 }
 
+// What a client needs to know of a projectile: stuck in something, or open to a blow (decision
+// E-1053).
+quint16 flagsOf(const QcProjectile &projectile, const QcContentRegistry &content)
+{
+    if (projectile.stuck) {
+        return QcMsg::Stuck;
+    }
+    const QcProjectileDefinition *kind = content.projectile(projectile.type);
+    return kind && kind->deflectable ? QcMsg::Deflectable : quint16{0};
+}
+
 } // namespace
 
 QcEntitySync::QcEntitySync(QcServerState &state)
     : m_state(state)
+    , m_bossBars(state)
 {
 }
 
@@ -122,6 +142,7 @@ void QcEntitySync::sync(QcServerClient &client)
         pass.moves.timeMs = m_state.clock().playerTimeNs() / 1'000'000;
         client.connection->send(pass.moves);
     }
+    m_bossBars.update(client);
 }
 
 QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
@@ -131,11 +152,24 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
         now = creatureMove(now, creature, m_state.content().mobs()[creature.type]);
+        if (creature.saddled) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Saddled);
+        }
+        if (creature.hydra && QcHydraRules::showsArmour(creature, m_state.content().mobs()[creature.type])) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Armoured);
+        }
+        if (creature.effects && QcEffectRules::invisible(m_state.content(), creature.effects->all())) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
+        }
         break;
     }
     case QcEntityKind::Player: {
         const auto &player = entity.as<QcServerClient>();
-        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id));
+        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id)
+                                     || m_state.entities().creatures().riddenBy(player.id));
+        if (QcEffectRules::invisible(m_state.content(), player.effects.all())) {
+            now.flags = static_cast<quint16>(now.flags | QcMsg::Invisible);
+        }
         break;
     }
     case QcEntityKind::Minecart:
@@ -164,7 +198,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         const auto &projectile = entity.as<QcProjectile>();
         now.yaw = projectile.yaw;
         now.pitch = projectile.pitch;
-        now.flags = projectile.stuck ? static_cast<quint16>(QcMsg::Stuck) : quint16{0};
+        now.flags = flagsOf(projectile, m_state.content());
         break;
     }
     case QcEntityKind::PrimedExplosive:

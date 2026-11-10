@@ -1,0 +1,9 @@
+{
+    "name": "instant_health",
+    "icon": "healing_potion",
+    "colour": "#f82423",
+    "instant": true,
+    "heal": 4,
+    "reversedOnUndead": true,
+    "undeadAmount": 6
+}

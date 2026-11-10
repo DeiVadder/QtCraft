@@ -11,6 +11,7 @@
 #include <QSet>
 
 class QcBlockEntities;
+class QcBeacons;
 class QcCampfires;
 class QcFireQueue;
 class QcSignTexts;
@@ -50,10 +51,11 @@ public:
         const QcSpawners &spawners;
         const QcSignTexts &signs;
         const QcCampfires &campfires;
+        const QcBeacons &beacons;
     };
     /*! Drops the kept tails of the entries at \a pos that the block just set there ended, as
-        \a tables tell: those whose container, machine, sapling, memory, fire, spawner, campfire or
-        sign text is gone. */
+        \a tables tell: those whose container, machine, sapling, memory, fire, spawner, campfire,
+        sign text or beacon is gone. */
     void dropOrphanTails(QcBlockPos pos, const Tables &tables);
 
     /*! Forgets the chunk at \a pos, which left the world or is generated again. */

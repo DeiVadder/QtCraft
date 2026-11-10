@@ -83,6 +83,15 @@ enum class Component : quint16 {
     Name = 21,
     /*! Feet, velocity and yaw of a boat (version 1, decision E-920; QcBoatCodec). */
     Boat = 22,
+    /*! A creature wears a saddle (version 1, no data, decision E-1054). */
+    Saddle = 23,
+    /*! What a creature that barters holds (version 1, decision E-1081): the stack it looks at
+        (QcSaveFile::writeStack, empty for none), the seconds left, then the number of kept stacks
+        and each stack (QcBarterCodec). */
+    Barter = 24,
+    /*! The ticks a summoned charred hydra still charges (version 1, decision E-1126); only while
+        it charges. */
+    Hydra = 25,
 };
 
 /*! Returns the blob of \a record, names after \a content. */

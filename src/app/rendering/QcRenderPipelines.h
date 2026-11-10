@@ -69,4 +69,10 @@ QRhiVertexInputLayout entityLayout();
 std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
                                                            const QShader &vertexShader, const QShader &fragmentShader);
 
+// Entity meshes that glow (QcBeamMesher, decision E-1143): like createEntityPipeline, but their
+// colour is added to the target's (the fragment shader leaves out the fog's share) and they write
+// no depth, so glows overlap without hiding each other.
+std::unique_ptr<QRhiGraphicsPipeline> createGlowPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
+                                                         const QShader &vertexShader, const QShader &fragmentShader);
+
 } // namespace QcRenderPipelines

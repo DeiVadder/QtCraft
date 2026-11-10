@@ -1,0 +1,15 @@
+{
+    "name": "red_nether_bricks",
+    "type": "shaped",
+    "pattern": [
+        "wb",
+        "bw"
+    ],
+    "key": {
+        "w": "nether_wart",
+        "b": "nether_brick"
+    },
+    "result": {
+        "item": "red_nether_bricks"
+    }
+}

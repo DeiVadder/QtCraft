@@ -139,6 +139,9 @@ struct QcTextureSpec
             through the middle four rows (decision E-742). */
         Chain,
         ChainAcross, // links running from left to right
+        /*! The inside of a portal (decision E-1022): swirling bands of light (secondary) in a
+            translucent glow (primary) that turn around the middle once per loop. */
+        Portal,
         /*! A leather backpack (decision E-832): sides with a strap and a buckle (secondary), the
             front with a stitched flap and its buckle, the top with a carrying loop; all with a
             darker seam at the edges. BackpackItem is its icon: the body with a loop, a lighter
@@ -156,6 +159,7 @@ struct QcTextureSpec
         Crop,
         RootCrop, // leafy tufts with roots or tubers
         Stem, // a thin stem with leaves
+        NetherWart, // knobbly lumps with gaps (rims dark, lit sides secondary)
         /*! ... tilled soil with furrows (primary, furrows secondary) ... */
         Farmland,
         /*! ... fruit blocks: a ribbed pumpkin side and its top with the stalk, a striped melon
@@ -218,6 +222,7 @@ struct QcTextureSpec
         HopperTop, // hopper rim from above
         HopperItem, // hopper icon
         Comparator, // comparator slab
+        DaylightSensor, // panes of a daylight sensor
         ObserverFace, // observer face
         ObserverBack, // observer back
         ObserverSide, // observer side
@@ -238,6 +243,7 @@ struct QcTextureSpec
         BowDrawn2, // the second stage
         BowDrawn3, // the third stage, fully drawn
         Arrow, // an arrow
+        TippedArrow, // an arrow whose head (secondary) is wet with a potion, decision E-1102
         Feather, // a feather
         Bone, // a bone
         /*! A fishing rod (decision E-503): the rod (primary) on the diagonal, its line
@@ -294,6 +300,75 @@ struct QcTextureSpec
         /*! A creature's coat (QcTextureCoatPatterns, decision E-880): a few large smooth-edged
             patches (secondary) on the primary colour, like a Holstein cow; the seed places them. */
         Patches,
+        /*! The front of a skull (QcTextureCoatPatterns): bone (primary) with two eye sockets and a
+            nose hole (secondary), a faint glow deep in the sockets, and a row of teeth. */
+        Skull,
+        /*! The relief patterns (QcTextureRelief, decision E-1043), painted at each resolution.
+            Porous fused rock: crooked lumps (primary) with seams and pores (secondary). */
+        FusedRock,
+        /*! Grainy sand (primary) with a few deep hollows (secondary). */
+        HollowSand,
+        /*! Dry soil: flat angular plates (primary) between cracks with pale grit (secondary). */
+        CrustedSoil,
+        /*! Standing stone columns (primary) with joints and fractures (secondary). */
+        ColumnSide,
+        /*! The cut through such columns: polygons (primary) with joints (secondary). */
+        ColumnTop,
+        /*! The columns ground flat: a smooth face (primary) with fine joints (secondary). */
+        PolishedColumns,
+        /*! Ground rock with wavering flow bands (primary, secondary). */
+        FlowBands,
+        /*! Dark stone (primary) breaking like glass: shell-shaped shards with glints (secondary). */
+        GlassyStone,
+        /*! That stone polished: dark clouded fields (primary to secondary) with pale veins. */
+        PolishedGlass,
+        /*! Glassy stone (primary) with gold (secondary) in its fractures. */
+        GildedStone,
+        /*! Large smooth blocks (primary) in courses of unequal height with thin joints
+            (secondary); cracked, and carved with a stepped diamond. */
+        Ashlar,
+        CrackedAshlar, // with cracks
+        CarvedAshlar, // with a carved panel
+        /*! Long fired bricks of unequal length (primary) in deep mortar (secondary), with scorch
+            marks; cracked, and carved with chevrons. */
+        FiredBricks,
+        CrackedFiredBricks, // with cracks
+        CarvedFiredBricks, // with a carved panel
+        /*! Fused rock (primary) with crystals standing out of it (secondary). */
+        QuartzOre,
+        /*! Fused rock (primary) with crooked strands and flakes of gold (secondary). */
+        GoldVeinOre,
+        /*! A dark crust (primary) broken into plates of different sizes over thin cracks of molten
+            rock (secondary). */
+        MagmaCrust,
+        /*! Glowing lumps (primary, white in their middle) with dim gaps between them (secondary). */
+        GlowCluster,
+        /*! The nether forests (decision E-1048). A mat of crossing threads (primary, secondary in
+            the furrows) with fleshy knobs. */
+        FungalFelt,
+        /*! Round cushions of fine tufts (primary) with crevices (secondary). */
+        MossCushions,
+        /*! A mat (primary) hanging over rock (secondary) in uneven tongues; does not repeat
+            downwards, like the side of a grass block. */
+        MatEdge,
+        /*! Twisted ropes of fibre (primary) with furrows (secondary). */
+        RopeStem,
+        /*! Dark upright ribs (primary) with shining pores (secondary). */
+        PoredStem,
+        /*! The cut through a stem: tube walls (primary) around hollows (secondary). */
+        StemSection,
+        /*! Bare fibre (primary) with a few dark flecks (secondary). */
+        PeeledFibre,
+        /*! Long boards across the tile (primary) with seams and butt joints (secondary). */
+        FibreBoards,
+        /*! Upright boards of unequal width (primary), their fibre full of pits (secondary). */
+        PittedBoards,
+        /*! Flesh in lumps with small warts (primary), dark gaps (secondary). */
+        WartLumps,
+        /*! Flesh in winding folds (primary) with dark grooves (secondary). */
+        WartFolds,
+        /*! Glowing lobes (primary, pale in their middle) in a thin skin (secondary). */
+        GlowLobes,
     };
 
     /*! Emblem and Icon only: up to 16 rows of up to 16 characters, top row first. \qcshared */

@@ -1,0 +1,65 @@
+{
+    "name": "nether_wart_crop",
+    "sound": "grass",
+    "shape": "nether_wart",
+    "render": "cutout",
+    "solid": false,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "ground": [
+        "soul_sand"
+    ],
+    "washable": true,
+    "item": false,
+    "states": {
+        "age": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "crop": {
+        "property": "age",
+        "averageSeconds": 2048,
+        "dryFactor": 1.0,
+        "minLight": 0,
+        "fertilizable": false,
+        "tendedByFarmers": false
+    },
+    "drops": [
+        {
+            "item": "nether_wart",
+            "when": {
+                "age": [
+                    "0",
+                    "1",
+                    "2"
+                ]
+            }
+        },
+        {
+            "item": "nether_wart",
+            "count": 2,
+            "maxCount": 4,
+            "when": {
+                "age": "3"
+            }
+        }
+    ],
+    "textures": {
+        "all": "nether_wart_ripe",
+        "slots": {
+            "young": "nether_wart_young",
+            "growing": "nether_wart_growing",
+            "ripe": "nether_wart_ripe"
+        }
+    },
+    "signal": {
+        "comparator": {
+            "property": "age"
+        }
+    }
+}

@@ -44,6 +44,14 @@ Tint multiply(Tint a, Tint b)
         static_cast<quint8>(a[3] * b[3] / 255)};
 }
 
+// An armour shell (QcMobPart::armour, decision E-1126) shimmers: its brightness waves with the
+// animation clock `seconds`, each part a little out of step by its `index`.
+Tint shimmer(double seconds, qsizetype index)
+{
+    const auto level = static_cast<quint8>(std::lround(205.0 + 50.0 * std::sin(seconds * 5.0 + static_cast<double>(index))));
+    return {level, level, 255, 255};
+}
+
 Tint fromRgb(quint32 rgb)
 {
     return {static_cast<quint8>((rgb >> 16) & 0xFF), static_cast<quint8>((rgb >> 8) & 0xFF), static_cast<quint8>(rgb & 0xFF), 255};
@@ -463,6 +471,24 @@ QcVec3 swum(const QcMobPart &part, const QcVec3 &p, const PartLook &look)
     return {point.x, look.tiltHeight + y * std::cos(tilt) + point.z * std::sin(tilt), -y * std::sin(tilt) + point.z * std::cos(tilt)};
 }
 
+// The body of `figure`: its bones, hair and cape.
+void paintBody(const LayerPainter &paint, const Figure &figure, const QcAnimator::BodyPose &pose, const BodyPlacer &toWorld)
+{
+    const ModelLook &look = figure.look;
+    for (const QcModelBone &bone : look.model->bones) {
+        if (!isHidden(figure, bone.role)) {
+            paint(*look.outfit, bone.boxes, toWorld.bone(bone));
+        }
+    }
+    const QcModelBone *head = boneWithRole(*look.model, QcBoneRole::Head);
+    if (look.hair && head) {
+        paint(*look.hair, look.hair->boxes, toWorld.bone(*head));
+    }
+    if (look.cape) {
+        emitCape(paint, look, pose, toWorld);
+    }
+}
+
 } // namespace
 
 const QList<QcMobPart> &playerParts()
@@ -508,9 +534,16 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const bool swimming = look.tilt != 0.0 || look.spread != 0.0;
     for (qsizetype index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
+        if ((part.saddled && !look.saddled) || (part.armour && !look.armoured)) {
+            continue;
+        }
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
-        const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light};
-        if (walking && index < look.legs->swings().size()) {
+        const Tint tint = part.armour ? multiply(shimmer(look.seconds, index), overlay) : overlay;
+        const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), tint), placement.light};
+        if (part.spin != 0.0) {
+            const Turn spin(static_cast<float>(std::fmod(part.spin * look.seconds, 360.0)));
+            emitBox(mesh, {part.from + offset, part.to + offset}, [&](const QcVec3 &p) { return place(spin(p)); }, surface);
+        } else if (walking && index < look.legs->swings().size()) {
             const QcBoxLegs::Swing &leg = look.legs->swings().at(index);
             emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(leg.apply(p, swing) + offset); }, surface);
         } else if (swimming) {
@@ -530,17 +563,9 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
     const BodyPlacer toWorld(pose, placement, look.scale);
     const LayerPainter paint{mesh, uv, look.colors, placement.hurt ? hurtTint : white, placement.light};
 
-    for (const QcModelBone &bone : look.model->bones) {
-        if (!isHidden(figure, bone.role)) {
-            paint(*look.outfit, bone.boxes, toWorld.bone(bone));
-        }
-    }
-    const QcModelBone *head = boneWithRole(*look.model, QcBoneRole::Head);
-    if (look.hair && head) {
-        paint(*look.hair, look.hair->boxes, toWorld.bone(*head));
-    }
-    if (look.cape) {
-        emitCape(paint, look, pose, toWorld);
+    // An invisible body keeps what it wears and holds (decision E-992).
+    if (!figure.bodyHidden) {
+        paintBody(paint, figure, pose, toWorld);
     }
 
     if (figure.attachments) {

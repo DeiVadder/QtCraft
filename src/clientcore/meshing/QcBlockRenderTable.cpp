@@ -224,7 +224,10 @@ float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlo
 {
     const bool falling = content.property(id, u"falling"_s) == u"true"_s;
     const int level = content.property(id, u"level"_s).toInt();
-    const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - static_cast<float>(level) / static_cast<float>(block.flow.distance + 1);
+    // A dimension may let the liquid run further than its own distance: a thin sheet from there on.
+    constexpr float thinnest = 0.125f;
+    const float flowing = level > block.flow.distance ? thinnest : 1.0f - static_cast<float>(level) / static_cast<float>(block.flow.distance + 1);
+    const float share = falling || block.flow.distance <= 0 ? 1.0f : flowing;
     return (1.0f - QcBlockRenderTable::liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
 }
 

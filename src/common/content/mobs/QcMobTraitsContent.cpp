@@ -81,19 +81,27 @@ namespace {
     return result;
 }
 
-// A creature that drinks an unknown item does not drink (decision E-623).
-[[nodiscard]] QcMobTraitsContent::Part<QcDrinkHealDefinition> resolveDrinks(const QcContentRegistry &content, const QcMobDefinition &mob)
+// A potion whose item is unknown or not drunk is left out; a creature without potions does not
+// drink (decisions E-623, E-1105).
+[[nodiscard]] QcMobTraitsContent::Part<QcMobDrinkDefinition> resolveDrinks(const QcContentRegistry &content, const QcMobDefinition &mob)
 {
-    QcMobTraitsContent::Part<QcDrinkHealDefinition> result{mob.drinks, {}};
+    QcMobTraitsContent::Part<QcMobDrinkDefinition> result{mob.drinks, {}};
     if (!result.value) {
         return result;
     }
-    const std::optional<QcItemId> item = content.itemId(result.value->item);
-    if (!item) {
-        result.warnings.append(u"mob '%1': no item '%2' to drink; it does not drink"_s.arg(mob.name, result.value->item));
+    QList<QcMobDrinkDefinition::Potion> known;
+    for (QcMobDrinkDefinition::Potion potion : std::as_const(result.value->potions)) {
+        const std::optional<QcItemId> item = content.itemId(potion.item);
+        if (!item || !content.item(*item).drink) {
+            result.warnings.append(u"mob '%1': no item '%2' to drink; it does not drink it"_s.arg(mob.name, potion.item));
+            continue;
+        }
+        potion.itemId = *item;
+        known.append(potion);
+    }
+    result.value->potions = known;
+    if (known.isEmpty()) {
         result.value.reset();
-    } else {
-        result.value->itemId = *item;
     }
     return result;
 }
@@ -149,6 +157,43 @@ namespace {
     return result;
 }
 
+// Warnings for the names in `names` that `known` does not find: `what` says where they stand.
+QStringList unknownNames(const QcMobDefinition &mob, const QStringList &names, const QString &what, const auto &known)
+{
+    QStringList warnings;
+    for (const QString &name : names) {
+        if (!known(name)) {
+            warnings.append(u"mob '%1': %2 names nothing known as '%3'"_s.arg(mob.name, what, name));
+        }
+    }
+    return warnings;
+}
+
+// Bartering and fear of blocks work on names at run time (decisions E-1081, E-1082): a typo would
+// quietly do nothing, so it is told here.
+QStringList checkGoldFolk(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    const auto isItem = [&content](const QString &name) { return content.itemId(name).has_value(); };
+    const auto isBlock = [&content](const QString &name) { return content.blockId(name).has_value(); };
+    QStringList warnings;
+    if (mob.barter) {
+        const QcBarterDefinition &barter = *mob.barter;
+        warnings.append(unknownNames(mob, barter.sparedBy, u"'sparedBy'"_s, isItem));
+        warnings.append(unknownNames(mob, barter.loves, u"'loves'"_s, isItem));
+        warnings.append(unknownNames(mob, barter.guards, u"'guards'"_s, isBlock));
+        if (!barter.currency.isEmpty() && !isItem(barter.currency)) {
+            warnings.append(u"mob '%1': no item '%2' as its 'currency'; it does not barter"_s.arg(mob.name, barter.currency));
+        }
+        if (!barter.table.isEmpty() && !content.lootTables().find(barter.table)) {
+            warnings.append(u"mob '%1': no loot table '%2' to barter from; a barter gives nothing"_s.arg(mob.name, barter.table));
+        }
+    }
+    if (mob.repellents) {
+        warnings.append(unknownNames(mob, mob.repellents->blocks, u"'repelledBy'"_s, isBlock));
+    }
+    return warnings;
+}
+
 } // namespace
 
 namespace QcMobTraitsContent {
@@ -157,11 +202,11 @@ Resolved resolve(const QcContentRegistry &content, const QcMobDefinition &mob)
 {
     Part<QcTameDefinition> tame = resolveTame(content, mob);
     Part<QcCrumbleDefinition> crumbles = resolveCrumbles(content, mob);
-    Part<QcDrinkHealDefinition> drinks = resolveDrinks(content, mob);
+    Part<QcMobDrinkDefinition> drinks = resolveDrinks(content, mob);
     Part<QcCarryDefinition> carries = resolveCarries(content, mob);
     Part<QcFamilyDefinition> family = resolveFamily(content, mob);
     return {std::move(tame.value), std::move(crumbles.value), std::move(drinks.value), std::move(carries.value), std::move(family.value),
-            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings + family.warnings};
+            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings + family.warnings + checkGoldFolk(content, mob)};
 }
 
 } // namespace QcMobTraitsContent

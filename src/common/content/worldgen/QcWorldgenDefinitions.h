@@ -12,6 +12,7 @@
 #include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "common/content/worldgen/QcVegetationDefinition.h"
 #include "common/core/QcWorldConstants.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QList>
 #include <QString>
@@ -68,6 +69,10 @@ struct QcBiomeDefinition
         biome closest to its local climate. \qcshared */
     double temperature = 0.5;
     double humidity = 0.5;
+    /*! The dimension whose generator uses the biome (\c {"dimension"}, decision E-1030): empty
+        for the overworld's terrain, which leaves out all others; the nether's map reads
+        \c {temperature} and \c {humidity} as a point between its own two noises. */
+    QString dimension;
     /*! Third climate coordinate in [0, 1]: how rugged the land is. The world's ruggedness is low
         almost everywhere and high along chains, so a biome with a high value forms mountain
         ranges across all climates. Counts twice as much as temperature and humidity. */
@@ -151,10 +156,21 @@ struct QcBiomeDefinition
     /*! Monster kinds weighted differently here than by their spawn rules (\c {monsters},
         decision E-838; QcSpawnWeights). Server side only. */
     QList<QcSpawnWeight> monsterWeights;
+    /*! Biomes of the nether: the rock of the biome's columns instead of the filler (\c {"rock"},
+        decision E-1047), with bands of \c {rockBand} through it (\c {"rockBand"}); empty keeps
+        the filler. \qcshared */
+    QString rockBlock;
+    QString rockBandBlock;
+    /*! Biomes of the nether: the size in blocks of the patches of \c {surfacePatches}
+        (\c {"patchScale"}, decision E-1047); 0 chooses column by column. */
+    double patchScale = 0.0;
     /*! The features the biome places, with their densities (\c {"features"}, at most 64). */
     QList<QcFeaturePlacement> features;
     /*! Grass and flowers (decision E-814): placed after the listed features, used by bone meal. */
     QcVegetationDefinition vegetation;
+    /*! Fog, particles, ambience and music where a player stands in the biome (\c {"atmosphere"},
+        decision E-1120). The server sends it to the player (QcMsg::Atmosphere). */
+    QcBiomeAtmosphere atmosphere;
 };
 
 /*! \brief A terrain feature (a feature file of a pack): a tree, a column, a single plant or a
@@ -189,12 +205,20 @@ struct QcFeatureDefinition
         \c {"maxHeight"}, 1 to 32). \qcshared */
     int minHeight = 4;
     int maxHeight = 6;
-    /*! Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", or the giant trees on a 2×2
-        trunk "giant_cone" and "giant_round" (decision E-822). */
+    /*! Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", the giant trees on a 2×2
+        trunk "giant_cone" and "giant_round" (decision E-822), or the huge fungi "fungus_dome" and
+        "fungus_canopy" (decision E-1045). */
     QString shape = QStringLiteral("round");
     /*! Vines hung on the trunk and lowest leaves of trees (a block with the state \c {attach});
         empty for none. */
     QString vinesBlock;
+    /*! Huge fungi: the glowing block in the cap (\c {"glow"}) and the plant hanging from its rim
+        (\c {"hanging"}, a block growing downwards); empty for none. \qcshared */
+    QString glowBlock;
+    QString hangingBlock;
+    /*! Columns in the nether: hangs from a roof instead of standing on a floor (\c {"fromRoof"},
+        decision E-1046). */
+    bool fromRoof = false;
     /*! Blocks the feature may stand on; empty allows any solid block. */
     QList<QString> groundBlocks;
     /*! Only on ground at sea level with water right next to it (sugar cane on a shore). */
@@ -245,6 +269,12 @@ struct QcOreDefinition
     int veinsPerChunk = 8;
     /*! Blocks of a vein at most (\c {"veinSize"}, 1 to 64). */
     int veinSize = 6;
+    /*! Whether a vein leaves out the cells next to air (\c {"hidden"}, decision E-1117): the ore
+        is never seen from a cave, as ancient debris in the reference. */
+    bool hidden = false;
+    /*! The dimension whose generator places the ore (\c {"dimension"}, decision E-1030); empty for
+        the overworld's terrain, which leaves out all others. */
+    QString dimension;
     /*! Biomes a vein may lie in (the biome of the column where it starts); empty for all
         (decision E-453: infested stone only in the mountains). */
     QList<QString> biomes;

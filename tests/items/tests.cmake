@@ -14,6 +14,7 @@ qc_add_test(test_items SOURCES items/test_items.cpp fixtures/QcTestWorld.h LIBRA
 qc_add_test(test_item_data SOURCES items/test_item_data.cpp LIBRARIES qc_server)
 qc_add_test(test_item_data_limits SOURCES items/test_item_data_limits.cpp LIBRARIES qc_server)
 qc_add_test(test_item_data_paths SOURCES items/test_item_data_paths.cpp fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server)
+qc_add_test(test_nether_plants SOURCES items/test_nether_plants.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_base_content TIMEOUT 120)
 qc_add_test(test_farming_server SOURCES items/test_farming_server.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_dirt_paths SOURCES items/test_dirt_paths.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_building SOURCES items/test_building.cpp LIBRARIES qc_server TIMEOUT 300)

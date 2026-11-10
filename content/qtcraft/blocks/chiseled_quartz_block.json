@@ -1,0 +1,12 @@
+{
+    "name": "chiseled_quartz_block",
+    "sound": "stone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "side": "chiseled_quartz_block",
+        "top": "chiseled_quartz_block_top",
+        "bottom": "chiseled_quartz_block_top"
+    }
+}

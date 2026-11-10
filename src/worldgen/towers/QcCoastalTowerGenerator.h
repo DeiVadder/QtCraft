@@ -34,9 +34,17 @@ public:
         the planner's, unless a neighbouring region's of higher priority stands closer than
         \c {minDistance} (decision E-857). */
     [[nodiscard]] std::shared_ptr<const QcCoastalTowerPlan> planOf(int regionX, int regionZ) const;
+    /*! Returns planOf() of the region \a regionX, \a regionZ when the terrain builds it
+        (QcWorldGenerator::buildsStructure with reachOf()), else null: what the chunks, their
+        furnishing and /locate see. */
+    [[nodiscard]] std::shared_ptr<const QcCoastalTowerPlan> builtPlanOf(int regionX, int regionZ) const;
+    /*! Returns the columns the tower \a plan writes: its footprint and the doorstep beside it. */
+    [[nodiscard]] static QcXzRect reachOf(const QcCoastalTowerPlan &plan) { return plan.footprint().grown(1); }
     /*! Returns the towers whose cells may lie in the chunk \a pos (their footprint or the
-        doorstep beside it). */
+        doorstep beside it), built or not (planning). */
     QList<std::shared_ptr<const QcCoastalTowerPlan>> plansTouching(QcChunkPos pos) const;
+    /*! Returns the plans of plansTouching() for \a pos that the terrain builds (builtPlanOf()). */
+    QList<std::shared_ptr<const QcCoastalTowerPlan>> builtPlansTouching(QcChunkPos pos) const;
     /*! Returns the footprints of the towers within \a margin columns of the chunk \a pos: the
         terrain generator places no features and no surface pools there, like near surface
         structures. */
@@ -63,6 +71,7 @@ private:
     // Clears the column above the floor and fills it below the floor down to the ground.
     void prepareColumn(QcChunk &chunk, const QcCoastalTowerPlan &plan, int x, int z) const;
 
+    const QcTerrainGenerator &m_terrain;
     QcCoastalTowerPlanner m_planner;
     quint64 m_seed = 0;
     // Per block state: ground a foundation stands on (solid, opaque, no liquid).

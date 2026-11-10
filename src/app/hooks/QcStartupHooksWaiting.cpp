@@ -7,6 +7,7 @@
 
 #include "app/hooks/QcStartupHooks.h"
 
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/controllers/QcMultiplayerController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcAppLogging.h"
@@ -41,6 +42,22 @@ void QcStartupHooks::runUntilOverlay(const QString &step)
         }
     });
     repeatKeyUntilShown(action.mid(4), shown, watch, 0);
+}
+
+void QcStartupHooks::holdScreenshotDuringSwitch()
+{
+    connect(&m_screens.upgrade, &QcGeneratorUpgradeController::switchStarted, this, [this] {
+        holdScreenshot();
+        auto *watch = new QObject(this);
+        connect(&m_screens.upgrade, &QcGeneratorUpgradeController::stateChanged, watch, [this, watch] {
+            if (m_screens.upgrade.state() == QcGeneratorUpgradeController::State::Converting) {
+                return;
+            }
+            // Queued: the world the switch opens takes its own hold first.
+            QMetaObject::invokeMethod(this, [this] { releaseScreenshot(); }, Qt::QueuedConnection);
+            watch->deleteLater();
+        });
+    });
 }
 
 void QcStartupHooks::holdScreenshotDuringJoin(QcMultiplayerController &multiplayer)

@@ -1,0 +1,33 @@
+{
+    "name": "soul_anchor_side_4",
+    "pattern": "emblem",
+    "primary": "#1c1428",
+    "variation": 0.12,
+    "seed": 8814,
+    "palette": {
+        "e": "#120c1c",
+        "v": "#7a34c4",
+        "a": "#ffc24a",
+        "b": "#ffc24a",
+        "c": "#ffc24a",
+        "d": "#ffc24a"
+    },
+    "bitmap": [
+        "eeeeeeeeeeeeeeee",
+        "e.v....vv....v.e",
+        "e..v..v..v..v..e",
+        "e...vv....vv...e",
+        "e..............e",
+        "e..............e",
+        "e.v..........v.e",
+        "e..v........v..e",
+        "e..............e",
+        "e..............e",
+        "e..............e",
+        "e.aa.bb..cc.dd.e",
+        "e.aa.bb..cc.dd.e",
+        "e..............e",
+        "e..............e",
+        "eeeeeeeeeeeeeeee"
+    ]
+}

@@ -28,6 +28,8 @@ public:
         QList<int> options;
         /*! Whether each part is built, one per part. */
         QList<bool> parts;
+        /*! The generator version the structure is built for (its \c {"generatorChanges"}). */
+        int generatorVersion = 0;
     };
 
     /*! The result of resolve(): the variation, or the failure of the structure. */
@@ -51,19 +53,20 @@ public:
 
     /*! Returns the structure without parts and with every palette entry as written. */
     const std::shared_ptr<const QcStructure> &base() const { return m_base; }
-    /*! Returns whether the blueprint has choices or parts. */
-    bool varies() const { return !choices().isEmpty() || !parts().isEmpty(); }
+    /*! Returns whether the blueprint has choices, parts or changes of generator versions. */
+    bool varies() const { return !choices().isEmpty() || !parts().isEmpty() || !versions().isEmpty(); }
     /*! Returns how many options each choice has. */
     [[nodiscard]] QList<int> optionCounts() const;
     /*! Returns the chance of each part. */
     [[nodiscard]] QList<double> partChances() const;
-    /*! Returns a selection from \a random (values in [0, 1)): one draw per choice, then one per
-        part. */
-    [[nodiscard]] Selection choose(const std::function<double()> &random) const;
-    /*! Returns the selection with every part built and the first option of every choice (the
-        showcase shows this one). */
-    [[nodiscard]] Selection everything() const;
-    /*! Returns the structure of \a selection: options swap palette entries and creatures,
+    /*! Returns a selection for a world of \a generatorVersion from \a random (values in [0, 1)):
+        one draw per choice, then one per part. */
+    [[nodiscard]] Selection choose(const std::function<double()> &random, int generatorVersion) const;
+    /*! Returns the selection for a world of \a generatorVersion with every part built and the
+        first option of every choice (the showcase shows this one). */
+    [[nodiscard]] Selection everything(int generatorVersion) const;
+    /*! Returns the structure of \a selection: the changes of its generator version
+        (blocks and loot chests) and then options swap palette entries, options also creatures,
         parts built overwrite their cells, connections follow the built copy; the base itself when
         nothing varies. */
     [[nodiscard]] std::shared_ptr<const QcStructure> build(const Selection &selection) const;
@@ -76,13 +79,26 @@ private:
         QHash<QString, QString> mobs;
     };
 
+    // What worlds of `version` and newer build differently (QcStructureDefinition::VersionChange).
+    struct VersionOption
+    {
+        int version = 0;
+        Option option;
+        QList<QcStructureDefinition::Loot> loot;
+    };
+
     QcPieceVariation() = default;
+    // What later generator versions change, in the order of the structure's file.
+    const QList<VersionOption> &versions() const { return m_versions; }
     // The options of every choice, and the optional parts.
     const QList<QList<Option>> &choices() const { return m_choices; }
     const QList<QcStructureDefinition::Part> &parts() const { return m_parts; }
     // One option of a choice; its unknown blocks go to the warnings.
     [[nodiscard]] Option resolveOption(const QcStructureDefinition &definition, const QHash<QString, QString> &swaps,
                                        const QcContentRegistry &content);
+
+    // The palette of a world of `generatorVersion`, before the options.
+    [[nodiscard]] QList<QcBlockId> versionStates(int generatorVersion) const;
 
     std::shared_ptr<const QcStructure> m_base;
     // The definition's palette resolved, and its cells (QcStructureDefinition::cellIndex).
@@ -96,4 +112,5 @@ private:
     QStringList m_warnings;
     QList<QList<Option>> m_choices;
     QList<QcStructureDefinition::Part> m_parts;
+    QList<VersionOption> m_versions;
 };

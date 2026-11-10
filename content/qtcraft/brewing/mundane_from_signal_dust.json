@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_signal_dust",
+    "base": "water",
+    "ingredient": "signal_dust",
+    "result": "mundane"
+}

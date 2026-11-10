@@ -4,6 +4,7 @@
 #pragma once
 
 #include "audio/QcAudioOutput.h"
+#include "audio/QcMusicPlayer.h"
 #include "clientcore/sound/QcAmbience.h"
 #include "clientcore/sound/QcAudioMixer.h"
 #include "clientcore/sound/QcPositionalVoices.h"
@@ -11,12 +12,12 @@
 #include "clientcore/sound/QcSoundCue.h"
 #include "clientcore/sound/QcSoundSpatial.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <QFutureWatcher>
 #include <QObject>
 #include <QRandomGenerator>
 #include <QSet>
-#include <QTimer>
 
 #include <array>
 #include <memory>
@@ -31,14 +32,8 @@ class QcAudioEngine : public QObject
     Q_OBJECT
 
 public:
-    /*! Pause between music pieces, and before the first one, in seconds. \qcshared */
-    static constexpr int minMusicPause = 60;
-    static constexpr int maxMusicPause = 180;
-    static constexpr int firstMusicDelay = 15;
     /*! Quieter voices are not worth a mixer voice. */
     static constexpr float audibleGain = 0.002f;
-    /*! Level of the music relative to its bus volume. */
-    static constexpr float musicGain = 0.6f;
 
     /*! A silent engine, child of \a parent; start() opens the output. */
     explicit QcAudioEngine(QObject *parent = nullptr);
@@ -59,9 +54,9 @@ public:
     const QcContentRegistry *content() const { return m_content.get(); }
     /*! Returns whether the sound bank of the content is rendered (bankReady()). */
     bool isBankReady() const { return m_bank != nullptr; }
-    /*! Sets the volumes of the buses, each from 0 to 1: \a master over all, \a effects, \a music
-        and \a ambient; \a muted silences everything. */
-    void setVolumes(double master, double effects, double music, double ambient, bool muted);
+    /*! Sets the volumes, each from 0 to 1: \a master over all and \a volumes of the sound
+        categories (decision E-1150); \a muted silences everything. */
+    void setVolumes(double master, const QcSoundVolumes &volumes, bool muted);
 
     /*! Plays \a cue as \a listener hears it; its voice follows the listener until it ends
         (moveListener). */
@@ -73,10 +68,20 @@ public:
     const QcSoundSpatial::Listener &listener() const { return m_listener; }
     /*! Plays the sound \a key without a position (menu clicks). */
     void playUi(const QString &key);
-    /*! Sets the \a levels of the ambience loops; a loop starts with its first audible level. */
+    /*! Sets the \a levels of the ambience loops; a loop starts with its first audible level. The
+        biome's loop (setBiomeAmbience) takes the place of wind and cave by its level. */
     void setAmbience(QcAmbience::Levels levels);
-    /*! Background music plays while \a enabled (in a world), with pauses between pieces. */
-    void setMusicEnabled(bool enabled);
+    /*! Plays the ambience loop \a key of the biome the listener stands in at \a level (0..1;
+        decision E-1122); another key stops the old loop. An empty key plays none. */
+    void setBiomeAmbience(const QString &key, float level);
+    /*! The composed pieces from the next one on follow \a style (a biome's music, decision
+        E-1123); none: the place's own style (E-1156). */
+    void setMusicStyle(const std::optional<QcMusicStyle> &style) { m_music.setStyle(style); }
+    /*! Background music plays while \a enabled (in the menus and in a world), with pauses
+        between pieces (QcMusicDirector, decision E-1137). */
+    void setMusicEnabled(bool enabled) { m_music.setEnabled(enabled); }
+    /*! Returns the background music (its director: tracks, source, where the player is). */
+    QcMusicPlayer &music() { return m_music; }
     /*! Stops ambience, music and effects (leaving a world). */
     void stopWorldSounds();
 
@@ -90,20 +95,25 @@ private:
     void mixerReset();
     std::shared_ptr<const QcSampleBuffer> pickVariant(const QcSoundBank::Entry &entry);
     QcAudioMixer::VoiceId startVoice(const QcSoundBank::Entry &entry, const QcAudioMixer::PlayParameters &parameters);
-    void scheduleMusic(int seconds);
-    void renderMusic();
     void warnUnknown(const QString &key);
 
     QcAudioOutput m_output;
     std::shared_ptr<const QcContentRegistry> m_content;
     std::shared_ptr<const QcSoundBank> m_bank;
     QFutureWatcher<std::shared_ptr<const QcSoundBank>> m_bankWatcher;
-    QFutureWatcher<std::shared_ptr<const QcSampleBuffer>> m_musicWatcher;
-    QTimer m_musicTimer;
-    bool m_musicEnabled = false;
-    QcAudioMixer::VoiceId m_musicVoice = 0;
+    QcMusicPlayer m_music{m_output};
     std::array<QcAudioMixer::VoiceId, 4> m_ambienceVoices{};
     QcAmbience::Levels m_ambience;
+    // The biome's ambience loop (decision E-1122): its key, level and voice (0: none).
+    const QString &biomeLoop() const { return m_biomeLoop; }
+    void setBiomeLoop(const QString &key) { m_biomeLoop = key; }
+    float biomeLevel() const { return m_biomeLevel; }
+    void setBiomeLevel(float level) { m_biomeLevel = level; }
+    QcAudioMixer::VoiceId biomeVoice() const { return m_biomeVoice; }
+    void setBiomeVoice(QcAudioMixer::VoiceId voice) { m_biomeVoice = voice; }
+    QString m_biomeLoop;
+    float m_biomeLevel = 0.0f;
+    QcAudioMixer::VoiceId m_biomeVoice = 0;
     QcPositionalVoices m_positional;
     QcSoundSpatial::Listener m_listener;
     QRandomGenerator m_random;

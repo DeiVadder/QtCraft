@@ -27,13 +27,13 @@ QString renderName(QcRenderLayer layer)
 
 bool isPlant(const QcBlockDefinition &block)
 {
-    return block.support == QcBlockSupport::Below || !block.groundBlocks.isEmpty() || block.sapling.isSapling()
+    return block.support == QcBlockSupport::Below || block.support == QcBlockSupport::Above || !block.groundBlocks.isEmpty() || block.sapling.isSapling()
            || block.shapeName == u"cross"_s;
 }
 
 bool isFunctional(const QcBlockDefinition &block)
 {
-    return block.opensCrafting || block.opensStonecutter || block.opensEnchanting || block.opensAnvil || block.machine.isMachine() || block.containerSlots > 0 || block.toggles || block.door;
+    return block.opensCrafting || block.opensStonecutter || block.opensEnchanting || block.opensAnvil || block.opensSmithing || block.opensBeacon || block.machine.isMachine() || block.containerSlots > 0 || block.toggles || block.door;
 }
 
 // An unset condition holds; a set one must equal the block's property.

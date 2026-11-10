@@ -1,0 +1,11 @@
+{
+    "name": "smooth_quartz",
+    "sound": "stone",
+    "hardness": 2.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "textures": {
+        "all": "smooth_quartz"
+    }
+}

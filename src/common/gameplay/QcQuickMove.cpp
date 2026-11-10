@@ -28,13 +28,29 @@ QList<int> wholeInventory()
     return range(0, QcInventory::slotCount);
 }
 
-QList<int> intoOpenBlock(Situation situation)
+QList<int> intoOpenBlock(const Situation &situation)
 {
     if (situation.containerSlots > 0) {
         return range(blockSlot, situation.containerSlots);
     }
-    // Into the machine: what it can smelt goes into the input, fuel onto the fuel slot.
+    if (situation.workstationSlot >= 0) {
+        return {situation.workstationSlot};
+    }
     QList<int> result;
+    if (situation.brewing) {
+        // The fuel of a stand is an ingredient too: the fuel slot first, as in the reference.
+        if (situation.fuel) {
+            result.append(QcMsg::MoveInventoryItem::machineFuelSlot);
+        }
+        if (situation.smeltable) {
+            result.append(QcMsg::MoveInventoryItem::machineInputSlot);
+        }
+        if (situation.bottle) {
+            result.append(range(QcMsg::MoveInventoryItem::machineOutputSlot, 3));
+        }
+        return result;
+    }
+    // Into the machine: what it can smelt goes into the input, fuel onto the fuel slot.
     if (situation.smeltable) {
         result.append(QcMsg::MoveInventoryItem::machineInputSlot);
     }
@@ -46,7 +62,7 @@ QList<int> intoOpenBlock(Situation situation)
 
 } // namespace
 
-QList<int> targets(int from, Situation situation)
+QList<int> targets(int from, const Situation &situation)
 {
     if (from >= gridSlot) {
         // From the crafting grid, the open block or an armour slot into the inventory.

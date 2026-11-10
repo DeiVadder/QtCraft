@@ -23,7 +23,8 @@ class QTimer;
         time to close too, reading and throwing away whatever it still sends;
     \li closes the socket then, at the latest after four linger times (a peer that reads nothing).
     \endlist
-    Lives as a child of its socket, in the socket's thread. */
+    Lives as a child of its socket, in the socket's thread. Over TLS every step runs from that
+    thread's event loop, never inside the socket's own encryption (decision E-1076). */
 class QcTcpGoodbye : public QObject
 {
     Q_OBJECT

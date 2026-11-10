@@ -1,4 +1,5 @@
 {
     "name": "raw_beef",
-    "food": 3
+    "food": 3,
+    "saturation": 0.3
 }

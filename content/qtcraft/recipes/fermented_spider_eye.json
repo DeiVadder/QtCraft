@@ -1,0 +1,12 @@
+{
+    "name": "fermented_spider_eye",
+    "type": "shapeless",
+    "ingredients": [
+        "spider_eye",
+        "brown_mushroom",
+        "sugar"
+    ],
+    "result": {
+        "item": "fermented_spider_eye"
+    }
+}

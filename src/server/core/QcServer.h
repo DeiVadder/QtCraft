@@ -23,6 +23,7 @@
 #include "server/core/QcServerState.h"
 #include "server/core/QcServerSystems.h"
 #include "server/core/QcServerVehicles.h"
+#include "server/dimensions/QcServerPortals.h"
 #include "server/explosions/QcServerExplosions.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
@@ -111,7 +112,7 @@ public:
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
     /*! Returns the number of clients, those still logging in included. */
-    int clientCount() const { return static_cast<int>(m_state.clients().size()); }
+    int clientCount() const { return static_cast<int>(m_state.allClients().size()); }
     /*! The health of a player at full health (QcServerClient::maxHealth). */
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
     /*! Returns the ticks counted since the server started. */
@@ -139,6 +140,9 @@ public:
     const QcMachineRules &machineRules() const { return m_state.machineRules(); }
     /*! Returns the flow of liquids. */
     QcLiquidFlow &liquids() { return m_state.liquids(); }
+    /*! Returns the dimension \a name, opened unless it is open, or why it cannot open
+        (QcServerState::openDimension). */
+    [[nodiscard]] QcResult<QcServerDimension *> openDimension(const QString &name) { return m_state.openDimension(name); }
     /*! Returns the table of the falling blocks. */
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
     /*! Returns the queue of the burning fires (decision E-392). */
@@ -154,8 +158,6 @@ public:
     QcExperienceOrbManager &orbs() { return m_state.entities().orbs(); }
     /*! Returns the state of the Signal Dust circuits. */
     QcCircuitState &circuitState() { return m_state.circuits(); }
-    /*! Returns the queue of the Signal Hoppers. */
-    QcHopperQueue &hopperQueue() { return m_state.hoppers(); }
     /*! The contents of the container or machine at \a pos changed (set by a test or tool):
         comparators reading it and hoppers next to it look again. */
     void noteContents(QcBlockPos pos) { m_state.noteContents(pos); }
@@ -187,8 +189,6 @@ public:
     /*! Sets the world time to \a seconds (at least 0) and tells every playing client. */
     void setWorldTime(double seconds);
 
-    /*! The first slot of the crafting grid in inventory moves (QcMsg::MoveInventoryItem). */
-    static constexpr int craftingGridSlot = QcServerInventory::craftingGridSlot;
     /*! Returns the configuration. */
     const QcServerConfig &config() const { return m_state.config(); }
 
@@ -319,6 +319,7 @@ private:
     QcServerInventory m_inventory;
     QcServerCrafting m_crafting;
     QcFireIgnition m_ignition;
+    QcServerPortals m_portals;
     QcPlayerHealth m_health;
     QcServerKitchen m_kitchen;
     QcServerWorkstations m_workstations;

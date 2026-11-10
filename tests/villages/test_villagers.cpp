@@ -227,6 +227,37 @@ private slots:
         QVERIFY(!villager(farmerId)->villager->work);
     }
 
+    void aBrewingStandMakesACleric_data()
+    {
+        QTest::addColumn<bool>("byCommand");
+        QTest::newRow("setBlock") << false;
+        QTest::newRow("/setblock") << true;
+    }
+
+    void aBrewingStandMakesACleric()
+    {
+        // The brewing stand is the cleric's workstation (decision E-1108), placed by the world or
+        // by an operator's command; the villager loses the job again with the stand.
+        QFETCH(bool, byCommand);
+        start(0.1);
+        const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
+        const QcBlockPos stand = m_feet.offset(-5, 0, 4);
+        if (byCommand) {
+            chat(u"/setblock %1 %2 %3 qtcraft:brewing_stand"_s.arg(stand.x).arg(stand.y).arg(stand.z));
+        } else {
+            m_server->world().setBlock(stand, id("qtcraft:brewing_stand"));
+        }
+        const quint32 cleric = settle(head, centreOf(m_feet.offset(5, 0, 0))).id;
+        ticks(30);
+        QCOMPARE(villager(cleric)->villager->profession, u"qtcraft:cleric"_s);
+        ticks(2);
+        QCOMPARE(m_client->spawns[cleric].appearance.outfit, u"qtcraft:villager_tunic@qtcraft:cleric"_s);
+
+        m_server->world().setBlock(stand, qcAirBlockId);
+        ticks(25);
+        QCOMPARE(villager(cleric)->villager->profession, u"qtcraft:unemployed"_s);
+    }
+
     void theRoutineFollowsTheTimeOfDay()
     {
         start(0.02);

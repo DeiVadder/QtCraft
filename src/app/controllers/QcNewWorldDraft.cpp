@@ -136,7 +136,20 @@ QVariantMap QcNewWorldDraft::setup() const
             {u"layers"_s, worldType() == WorldType::Flat ? layers() : QString()},
             {u"gameMode"_s, static_cast<int>(gameMode())},
             {u"generatorVersion"_s, generatorVersion()},
+            {u"startDimension"_s, terrain() ? startDimension() : QString::fromLatin1(QcDimensionDefinition::overworldName)},
             {u"worldOptions"_s, m_options.values()}};
+}
+
+void QcNewWorldDraft::setStartDimension(const QString &dimension)
+{
+    if (dimension.isEmpty()) {
+        qCWarning(lcGame) << "New world: refused an empty start dimension";
+        return;
+    }
+    if (dimension != m_startDimension) {
+        m_startDimension = dimension;
+        emit startDimensionChanged();
+    }
 }
 
 void QcNewWorldDraft::setStartWorldType(WorldType type)
@@ -169,6 +182,7 @@ void QcNewWorldDraft::reset()
     setGameMode(m_startGameMode);
     setKeepInventory(true);
     setGeneratorVersion(QcGeneratorVersion::current);
+    setStartDimension(QString::fromLatin1(QcDimensionDefinition::overworldName));
     m_options.reset();
     m_options.preview()->resetView();
 }

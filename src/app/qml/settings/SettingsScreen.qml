@@ -11,10 +11,10 @@ import QtCraft
 // The game settings (decision E-845, docs/UI-Leitfaden.md 8 and 8b): one level down the side bar
 // (SidebarScreen), with a back entry and the categories (graphics with the display options of
 // decision E-835, audio, controls, controller, interface, texture packs, advanced with debug and
-// diagnostics) in the bar and the chosen page on the right, scrolling as a whole. Changes apply at
-// once and the settings store them themselves. The back entry, Esc and the pad's B close it; the
-// pad's shoulders and Ctrl+Tab switch the category. The main menu and the pause menu show the same
-// screen.
+// diagnostics, about with the credits) in the bar and the chosen page on the right, scrolling as a
+// whole. Changes apply at once and the settings store them themselves. The back entry, Esc and the
+// pad's B close it; the pad's shoulders and Ctrl+Tab switch the category. The main menu and the
+// pause menu show the same screen.
 SidebarScreen {
     id: screen
 
@@ -118,7 +118,7 @@ SidebarScreen {
             // In the order of GameController.SettingsPage (QcScreenState::SettingsPage) and of the
             // pages below: startPage indexes both.
             model: [qsTr("Graphics"), qsTr("Audio"), qsTr("Controls"), qsTr("Controller"), qsTr("Interface"),
-                qsTr("Texture packs"), qsTr("Advanced")]
+                qsTr("Texture packs"), qsTr("Advanced"), qsTr("About")]
         },
         // Keeps the categories at the top.
         Item {
@@ -154,6 +154,9 @@ SidebarScreen {
             game: screen.game
         }
         AdvancedPage {
+            game: screen.game
+        }
+        AboutPage {
             game: screen.game
         }
     }

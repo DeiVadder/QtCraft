@@ -4,8 +4,11 @@
 #include "common/content/blockbehaviour/QcSpawnerContent.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcGeneratorVersion.h"
 
 #include <QSet>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -83,6 +86,70 @@ QStringList resolveMineshafts(QcContentRegistry &content)
     return warnings;
 }
 
+// The loot tables of the chests of `structure`, in every generator version.
+QStringList checkChests(const QcStructureDefinition &structure, const QcContentRegistry &content)
+{
+    QList<QcStructureDefinition::Loot> chests = structure.loot;
+    for (const QcStructureDefinition::VersionChange &change : structure.generatorChanges) {
+        chests.append(change.loot);
+    }
+    QStringList warnings;
+    for (const QcStructureDefinition::Loot &loot : std::as_const(chests)) {
+        if (!content.lootTables().find(loot.table)) {
+            warnings.append(u"structure '%1': unknown loot table '%2', the chest stays empty"_s.arg(structure.name, loot.table));
+        }
+    }
+    return warnings;
+}
+
+// The loot tables village styles swap, on both sides (decision E-1017).
+QStringList checkStyleLoot(const QcContentRegistry &content)
+{
+    QStringList warnings;
+    for (const QcVillageStyleDefinition &style : content.villageCatalog().styles()) {
+        const auto check = [&](const QString &table) {
+            if (!content.lootTables().find(table)) {
+                warnings.append(u"village style '%1': unknown loot table '%2' in 'loot'"_s.arg(style.name, table));
+            }
+        };
+        for (const auto &[from, to] : style.loot.asKeyValueRange()) {
+            check(from);
+            check(to);
+        }
+    }
+    return warnings;
+}
+
+// Whether a village style builds the structure `name`.
+bool inAVillage(const QString &name, const QcContentRegistry &content)
+{
+    const auto builds = [&name](const QcVillagePiece &piece) {
+        return std::ranges::any_of(piece.blueprints, [&name](const QcWeightedStructureName &blueprint) { return blueprint.structure == name; });
+    };
+    return std::ranges::any_of(content.villageCatalog().styles(), [&](const QcVillageStyleDefinition &style) {
+        return style.centre == name || style.rareCentre == name || style.lamp == name || std::ranges::any_of(style.pieces, builds);
+    });
+}
+
+// What `generatorChanges` of `structure` cannot do (decision E-1016): only villages and surface
+// structures read it, and a version this game does not have is reached by no world.
+QStringList checkGeneratorChanges(const QcStructureDefinition &structure, const QcContentRegistry &content)
+{
+    QStringList warnings;
+    if (structure.generatorChanges.isEmpty()) {
+        return warnings;
+    }
+    if (!structure.surface && !inAVillage(structure.name, content)) {
+        warnings.append(u"structure '%1': only villages and surface structures read 'generatorChanges', it is built as written"_s.arg(structure.name));
+    }
+    for (const QcStructureDefinition::VersionChange &change : structure.generatorChanges) {
+        if (change.version > QcGeneratorVersion::current) {
+            warnings.append(u"structure '%1': 'generatorChanges' for version %2, this game generates up to %3"_s.arg(structure.name).arg(change.version).arg(QcGeneratorVersion::current));
+        }
+    }
+    return warnings;
+}
+
 QStringList checkStructures(const QcContentRegistry &content)
 {
     QStringList warnings;
@@ -99,19 +166,17 @@ QStringList checkStructures(const QcContentRegistry &content)
             }
         }
         // A spawn area (decision E-871) brings forth monsters only: kinds of the natural monster spawns.
-        const QStringList areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
-        for (const QString &mob : areaMonsters) {
-            const std::optional<QcCreatureKindId> type = content.mobKind(mob);
+        const QList<QcStructureDefinition::SpawnArea::Monster> areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
+        for (const QcStructureDefinition::SpawnArea::Monster &monster : areaMonsters) {
+            const std::optional<QcCreatureKindId> type = content.mobKind(monster.mob);
             if (!type || !content.mobs()[*type].isMonster()) {
-                warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, mob));
+                warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, monster.mob));
             }
         }
-        for (const QcStructureDefinition::Loot &loot : structure.loot) {
-            if (!content.lootTables().find(loot.table)) {
-                warnings.append(u"structure '%1': unknown loot table '%2', the chest stays empty"_s.arg(structure.name, loot.table));
-            }
-        }
+        warnings.append(checkChests(structure, content));
+        warnings.append(checkGeneratorChanges(structure, content));
     }
+    warnings.append(checkStyleLoot(content));
     return warnings;
 }
 

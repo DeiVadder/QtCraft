@@ -1,0 +1,23 @@
+{
+    "name": "nether",
+    "generator": {
+        "type": "nether"
+    },
+    "coordinateScale": 8,
+    "sky": "nether",
+    "fogColour": "#3a0c0c",
+    "ambientLight": 7,
+    "skyLight": false,
+    "dayCycle": false,
+    "weather": false,
+    "waterEvaporates": true,
+    "compassesSpin": true,
+    "bedsExplode": true,
+    "anchorsWork": true,
+    "startable": true,
+    "ceiling": 127,
+    "portalFloor": 33,
+    "liquids": {
+        "lava": { "distance": 7, "ticks": 10, "dropSearch": 4 }
+    }
+}

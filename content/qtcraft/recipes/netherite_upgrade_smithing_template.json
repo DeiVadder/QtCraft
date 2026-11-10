@@ -1,0 +1,18 @@
+{
+    "name": "netherite_upgrade_smithing_template",
+    "type": "shaped",
+    "pattern": [
+        "#S#",
+        "#C#",
+        "###"
+    ],
+    "key": {
+        "#": "diamond",
+        "S": "netherite_upgrade_smithing_template",
+        "C": "netherrack"
+    },
+    "result": {
+        "item": "netherite_upgrade_smithing_template",
+        "count": 2
+    }
+}

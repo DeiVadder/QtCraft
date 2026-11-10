@@ -1,0 +1,20 @@
+{
+    "name": "beacon",
+    "sound": "glass",
+    "shape": "beacon",
+    "render": "translucent",
+    "solid": true,
+    "opaque": false,
+    "lightOpacity": 0,
+    "light": 15,
+    "hardness": 3.0,
+    "blastResistance": 3.0,
+    "beacon": true,
+    "textures": {
+        "all": "beacon",
+        "slots": {
+            "base": "obsidian",
+            "core": "beacon_core"
+        }
+    }
+}

@@ -461,7 +461,7 @@ private slots:
         run(flow, world, 1, 400);
 
         QCOMPARE(name(world, {3, 1, 0}), water(3));
-        QCOMPARE(QcLiquidFlow::fedState(world, {3, 1, 0}, id(u"water[level=3]"_s)), std::nullopt);
+        QCOMPARE(QcLiquidFlow::fedState(world, {3, 1, 0}, id(u"water[level=3]"_s), 7), std::nullopt);
 
         // A cell whose feeder is not loaded keeps its level instead of drying up.
         world.loadedRadius = 12;
@@ -470,7 +470,7 @@ private slots:
         world.set({2, 1, 1}, id(u"stone"_s));
         world.set({2, 1, -1}, id(u"stone"_s));
         world.loadedRadius = 1;
-        QCOMPARE(QcLiquidFlow::fedState(world, {1, 1, 0}, id(u"water[level=1]"_s)), std::nullopt);
+        QCOMPARE(QcLiquidFlow::fedState(world, {1, 1, 0}, id(u"water[level=1]"_s), 7), std::nullopt);
 
         // Loading the rest and planning the border cells (the server re-checks borders on load)
         // lets the flow go on to its full distance.

@@ -24,6 +24,11 @@ QcServerFallingBlocks::QcServerFallingBlocks(QcServerState &state, QcServerSound
 {
 }
 
+QcServerFallingBlocks::Waiting &QcServerFallingBlocks::here() const
+{
+    return m_perDimension.of(m_state.current());
+}
+
 void QcServerFallingBlocks::start(QcBlockPos pos, QcBlockId block)
 {
     if (!m_state.entities().fallingBlocks().isFull()) {
@@ -37,7 +42,7 @@ void QcServerFallingBlocks::start(QcBlockPos pos, QcBlockId block)
     // entity within the manager's limit.
     const std::optional<QcBlockPos> rest = QcFallingBlockManager::restingCell(m_state.world(), pos);
     if (!rest) {
-        m_waiting.insert(pos);
+        here().waiting.insert(pos);
         return;
     }
 
@@ -48,17 +53,17 @@ void QcServerFallingBlocks::start(QcBlockPos pos, QcBlockId block)
 
 void QcServerFallingBlocks::retryWaiting()
 {
-    if (m_waiting.isEmpty() || m_state.entities().fallingBlocks().isFull()) {
+    if (here().waiting.isEmpty() || m_state.entities().fallingBlocks().isFull()) {
         return;
     }
 
     // As a cascade: behind the updates of player actions.
     m_updates.setCommandMode(true);
-    for (const QcBlockPos pos : std::as_const(m_waiting)) {
+    for (const QcBlockPos pos : std::as_const(here().waiting)) {
         m_updates.queue(pos);
     }
     m_updates.setCommandMode(false);
-    m_waiting.clear();
+    here().waiting.clear();
 }
 
 double QcServerFallingBlocks::landingDamage(const QcBlockDefinition &definition, double fallen)

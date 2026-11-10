@@ -1,0 +1,8 @@
+{
+    "name": "cracked_nether_bricks",
+    "pattern": "cracked_fired_bricks",
+    "primary": "#44202a",
+    "secondary": "#1c0c12",
+    "variation": 0.08,
+    "seed": 8416
+}

@@ -7,6 +7,7 @@
 #include "clientcore/materials/QcMaterialSynthesizer.h"
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "fixtures/QcTestUtil.h"
 
@@ -17,6 +18,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -66,6 +68,30 @@ class TestMaterialMaps : public QObject
     }
 
 private slots:
+    // Blocks painted with a pattern of another material keep their own surface (decision E-981).
+    void netherBlocksHaveTheirOwnSurface()
+    {
+        const QcResult<QcBaseContent::Loaded> content = QcBaseContent::load();
+        QVERIFY(content.has_value());
+        const QList<QcTextureDefinition> &textures = content->registry->assets().textures();
+        const auto params = [&textures](const char *name) {
+            const QString texture = u"qtcraft:"_s + QLatin1StringView(name);
+            const auto found = std::ranges::find(textures, texture, &QcTextureDefinition::name);
+            return found == textures.end() ? QcMaterialParams{} : QcMaterialRules::forTexture(texture, found->procedural, false);
+        };
+        const QcMaterialParams wood = QcMaterialRules::forTexture(u"qtcraft:oak_log"_s, QJsonObject{{u"pattern"_s, u"log_side"_s}}, false);
+        for (const char *stone : {"basalt_side", "basalt_top", "polished_basalt_side", "quartz_pillar"}) {
+            QVERIFY2(params(stone).bump < wood.bump && params(stone).porosity < wood.porosity, stone);
+        }
+        const QcMaterialParams bricks = params("polished_blackstone_bricks");
+        for (const char *relief : {"polished_blackstone_bricks", "cracked_polished_blackstone_bricks", "chiseled_polished_blackstone"}) {
+            QVERIFY2(params(relief).bump > 1.0f, relief);
+        }
+        QVERIFY(bricks.smoothness < params("polished_blackstone").smoothness);
+        QCOMPARE(params("quartz_block_side").smoothness, params("quartz_block_top").smoothness);
+        QCOMPARE(params("quartz_block_side").bump, params("quartz_block_top").bump);
+    }
+
     void paintingIsDeterministicAndTiles()
     {
         const QcMaterialParams params = QcMaterialRules::forTexture(u"qtcraft:stone"_s, QJsonObject{{u"pattern"_s, u"speckle"_s}}, false);

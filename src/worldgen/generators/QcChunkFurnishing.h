@@ -5,18 +5,25 @@
 
 #include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/core/QcBlockPos.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QList>
 #include <QString>
 
 /*! \brief What a world generator puts into the block entities of a chunk it made (decision E-520):
     the loot of its chests, the creature kinds of its spawners (dungeons, mine shafts, the
-    showcase's dungeon station) and its minecarts.
+    showcase's dungeon station), its minecarts and those who stand in it from the start (bastions).
 
     The server puts it in once, when the chunk first arrives (QcFurnishing), and marks the chunk
     so that a chest emptied since is not filled again. */
 struct QcChunkFurnishing
 {
+    /*! Returns the seed of the loot of the chest at \a at of a structure with \a lootSeed. */
+    [[nodiscard]] static quint64 chestSeed(quint64 lootSeed, QcBlockPos at)
+    {
+        return qcMixSeed(lootSeed, static_cast<quint64>(qcPositionRandom(lootSeed, at.x, at.y, at.z) * 4294967296.0));
+    }
+
     /*! \brief A chest block to fill with loot. */
     struct Chest
     {
@@ -42,21 +49,32 @@ struct QcChunkFurnishing
         quint64 seed = 0;
     };
 
+    /*! \brief A creature that stands in a structure from the start, kept with the world (decision
+        E-1089). \qcfields */
+    struct Resident
+    {
+        QcBlockPos at;
+        QString mob;
+    };
+
     /*! The chests to fill. */
     QList<Chest> chests;
     /*! The spawners to set up. */
     QList<QcStructureDefinition::Spawner> spawners;
     /*! The minecarts to place. */
     QList<Cart> carts;
+    /*! Those who stand there from the start. */
+    QList<Resident> residents;
 
-    /*! Returns whether there are no chests, spawners and carts. */
-    bool isEmpty() const { return chests.isEmpty() && spawners.isEmpty() && carts.isEmpty(); }
-    /*! Appends the chests, spawners and carts of \a other (what another part of the generator
-        furnishes the same chunk with). */
+    /*! Returns whether there are no chests, spawners, carts and residents. */
+    bool isEmpty() const { return chests.isEmpty() && spawners.isEmpty() && carts.isEmpty() && residents.isEmpty(); }
+    /*! Appends the chests, spawners, carts and residents of \a other (what another part of the
+        generator furnishes the same chunk with). */
     void add(const QcChunkFurnishing &other)
     {
         chests.append(other.chests);
         spawners.append(other.spawners);
         carts.append(other.carts);
+        residents.append(other.residents);
     }
 };

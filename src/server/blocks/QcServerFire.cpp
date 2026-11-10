@@ -81,6 +81,10 @@ void QcServerFire::tick()
 bool QcServerFire::ignite(QcBlockPos pos, std::optional<QcBlockId> fire)
 {
     QcServerWorld &world = m_state.world();
+    // Fire in an empty portal frame lights the portal instead (decision E-1021).
+    if (m_portalLight && pos.isInsideWorldHeight() && world.blockAt(pos) == qcAirBlockId && m_portalLight(pos)) {
+        return true;
+    }
     const std::optional<QcBlockId> block = fire ? fire : m_table.defaultFire();
     if (!block || !m_table.of(*block).fire || !pos.isInsideWorldHeight() || world.blockAt(pos) != qcAirBlockId
         || !QcFireRules::canStay(world, m_table, pos)) {
@@ -94,7 +98,7 @@ bool QcServerFire::ignite(QcBlockPos pos, std::optional<QcBlockId> fire)
 
     const quint64 now = m_state.clock().tick();
     world.fires().add({pos, pos, 0, dice(pos, 0).nextStep(now), eternal});
-    m_blocks.setAndBroadcast(pos, *block);
+    m_blocks.setAndBroadcast(pos, m_table.fireAt(world, pos, *block));
     ++m_numbers.lit;
     return true;
 }
@@ -180,8 +184,8 @@ void QcServerFire::step(QcFireQueue::Fire fire, quint64 now)
     }
 
     if (fuel && spreads()) {
-        burnNeighbours(fire, *block, now);
-        spreadAround(fire, *block, now);
+        burnNeighbours(fire, now);
+        spreadAround(fire, now);
     }
     // The fire keeps its entry while its block stands (burning what held it, it may have lost its
     // place; a block update puts it out then).
@@ -199,7 +203,7 @@ bool QcServerFire::rainPutsOut(const QcFireQueue::Fire &fire) const
     return dice(fire.pos, fire.age).roll(fire.pos, RainSalt, rainDivisor) < chance;
 }
 
-void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block, quint64 now)
+void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, quint64 now)
 {
     const QcFireRules::Dice step = dice(fire.pos, fire.age);
     for (const QcBlockFace face : qcAllBlockFaces) {
@@ -227,7 +231,7 @@ void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block
 
         const quint32 odds = static_cast<quint32>(QcFireRules::chanceAge(fire.age)) + 10;
         const QcBlockId burnt = *neighbour;
-        if (step.roll(pos, BecomesFireSalt, odds) < becomesFire && light(pos, fire, block, now)) {
+        if (step.roll(pos, BecomesFireSalt, odds) < becomesFire && light(pos, fire, now)) {
             ++m_numbers.burnt;
             m_state.plants().blockRemoved(pos, burnt, m_state.world());
         } else {
@@ -236,7 +240,7 @@ void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block
     }
 }
 
-void QcServerFire::spreadAround(const QcFireQueue::Fire &fire, QcBlockId block, quint64 now)
+void QcServerFire::spreadAround(const QcFireQueue::Fire &fire, quint64 now)
 {
     // The cells -1..1 east and south and -1..2 up of the fire, the fire's own cell left out.
     constexpr int cells = 3 * 3 * 4;
@@ -246,7 +250,7 @@ void QcServerFire::spreadAround(const QcFireQueue::Fire &fire, QcBlockId block, 
         const int dy = cell / 9 - 1;
         const QcBlockPos pos = fire.pos.offset(dx, dy, dz);
         if ((dx != 0 || dy != 0 || dz != 0) && catches(fire, pos)) {
-            light(pos, fire, block, now);
+            light(pos, fire, now);
         }
     }
 }
@@ -265,8 +269,14 @@ bool QcServerFire::catches(const QcFireQueue::Fire &fire, QcBlockPos pos) const
     return chance > 0 && dice(fire.pos, fire.age).roll(pos, CatchSalt, divisor) <= static_cast<quint32>(chance);
 }
 
-bool QcServerFire::light(QcBlockPos pos, const QcFireQueue::Fire &parent, QcBlockId block, quint64 now)
+bool QcServerFire::light(QcBlockPos pos, const QcFireQueue::Fire &parent, quint64 now)
 {
+    // Only the ground chooses another fire, so soul fire that lost its ground passes on plain fire.
+    const std::optional<QcBlockId> block = m_table.defaultFire();
+    if (!block) {
+        return false;
+    }
+
     QcFireQueue &fires = m_state.world().fires();
     const bool eternal = onEternalGround(pos);
     // Fire does not spread into the rain.
@@ -281,7 +291,7 @@ bool QcServerFire::light(QcBlockPos pos, const QcFireQueue::Fire &parent, QcBloc
     const int older = dice(parent.pos, parent.age).roll(pos, ChildAgeSalt, 5) == 4 ? QcFireRules::stepsPerChanceAge : 0;
     const auto age = static_cast<quint8>(std::min(parent.age + older, QcFireQueue::maxAge));
     fires.add({pos, parent.origin, age, dice(pos, age).nextStep(now), eternal});
-    m_blocks.setAndBroadcast(pos, block);
+    m_blocks.setAndBroadcast(pos, m_table.fireAt(m_state.world(), pos, *block));
     ++m_numbers.lit;
     return true;
 }

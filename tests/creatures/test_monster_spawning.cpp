@@ -442,7 +442,7 @@ private slots:
         for (const QString &name : {u"stone"_s, u"grass_block"_s, u"dirt"_s, u"sand"_s, u"packed_ice"_s, u"oak_planks"_s}) {
             QVERIFY2(QcSpawnGround::carries(content, block(name)), qPrintable(name));
         }
-        for (const QString &name : {u"glass"_s, u"oak_leaves"_s, u"ice"_s, u"magma_block"_s, u"dirt_path"_s, u"farmland"_s, u"snow_layer"_s,
+        for (const QString &name : {u"bedrock"_s, u"glass"_s, u"oak_leaves"_s, u"ice"_s, u"magma_block"_s, u"dirt_path"_s, u"farmland"_s, u"snow_layer"_s,
                                     u"water"_s, u"tall_grass"_s}) {
             QVERIFY2(!QcSpawnGround::carries(content, block(name)), qPrintable(name));
         }

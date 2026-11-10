@@ -1,0 +1,11 @@
+{
+    "name": "long_fire_resistance",
+    "variantOf": "fire_resistance",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "fire_resistance",
+            "seconds": 480
+        }
+    ]
+}

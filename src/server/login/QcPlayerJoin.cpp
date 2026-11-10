@@ -24,12 +24,17 @@ QcPlayerJoin::QcPlayerJoin(QcServerState &state, Parts parts)
 {
 }
 
+using namespace Qt::StringLiterals;
+
 void QcPlayerJoin::join(QcServerClient &client)
 {
     if (restore(client)) {
         return;
     }
 
+    // A new player starts where the world spawn is (decision E-1110), told by the Welcome.
+    m_state.moveClient(client, m_state.spawnDimension());
+    const QcServerState::Scope scope(m_state, m_state.spawnDimension());
     client.state = QcServerClient::State::Playing;
     client.joined = true;
     client.motion.position = m_state.spawnPoint().position();
@@ -65,6 +70,8 @@ bool QcPlayerJoin::restore(QcServerClient &client)
     }
 
     QcPlayerRecords::restore(client, *stored->player);
+    placeInDimension(client);
+    const QcServerState::Scope scope(m_state, m_state.dimensionOf(client));
 
     // Who left while dead comes back to the death screen and respawns from there.
     client.dead = client.health <= 0.0;
@@ -81,6 +88,50 @@ bool QcPlayerJoin::restore(QcServerClient &client)
     return true;
 }
 
+QcServerDimension *QcPlayerJoin::openToPlay(const QcServerClient &client, const QString &dimension)
+{
+    QcResult<QcServerDimension *> opened = m_state.openDimension(dimension);
+    if (!opened) {
+        qCWarning(lcServer).noquote() << u"Player %1 belongs in the dimension %2, which cannot open: %3"_s.arg(client.name, dimension, opened.error());
+        return nullptr;
+    }
+    return *opened;
+}
+
+void QcPlayerJoin::placeInDimension(QcServerClient &client)
+{
+    // His file named the dimension; until he is placed he is on the overworld's list (QcServerState).
+    const QString saved = std::exchange(client.dimension, QString::fromLatin1(QcDimensionDefinition::overworldName));
+
+    // Back to where he was before a dimension went missing, as soon as it opens (decision E-989).
+    if (client.returnTo) {
+        if (QcServerDimension *dimension = openToPlay(client, client.returnTo->dimension)) {
+            m_state.moveClient(client, *dimension);
+            client.motion = {};
+            client.motion.position = client.returnTo->position;
+            client.yaw = client.returnTo->yaw;
+            client.pitch = client.returnTo->pitch;
+            client.fallPeak = client.motion.position.y;
+            client.returnTo.reset();
+            return;
+        }
+    }
+
+    if (QcServerDimension *dimension = openToPlay(client, saved)) {
+        m_state.moveClient(client, *dimension);
+        return;
+    }
+
+    // A first absence remembers the place; a later one must not replace the place he belongs.
+    if (!client.returnTo) {
+        client.returnTo = QcPlayerReturn{saved, client.motion.position, client.yaw, client.pitch};
+    }
+    m_state.moveClient(client, m_state.spawnDimension());
+    client.motion = {};
+    client.motion.position = m_state.spawnPoint().position();
+    client.fallPeak = client.motion.position.y;
+}
+
 void QcPlayerJoin::sendWelcome(QcServerClient &client, bool rejoined)
 {
     client.connection->send(QcMsg::Welcome{QcProtocol::version, client.id, m_state.config().worldName, m_state.config().seed,
@@ -88,6 +139,7 @@ void QcPlayerJoin::sendWelcome(QcServerClient &client, bool rejoined)
                                            std::clamp(client.view.distance, 0, QcMsg::Welcome::maxViewDistance),
                                            m_state.spawnPoint().column().x, m_state.spawnPoint().column().z});
     client.connection->send(QcMsg::ContentSync{m_state.contentPointer()});
+    client.connection->send(QcMsg::DimensionChange{m_state.dimensionOf(client).definition()});
     QcServerGameModes::send(client, m_state.info().adventure);
     m_parts.inventory.send(client);
     m_parts.health.sendHealth(client);

@@ -83,15 +83,21 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     return warnings;
 }
 
-[[nodiscard]] QStringList checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob)
+// The items and loot tables (decision E-1106) a creature drops.
+[[nodiscard]] QStringList checkMobDrops(const QcContentRegistry &content, const QcMobDefinition &mob)
 {
     QStringList warnings;
     for (const QcItemDrop &drop : mob.drops) {
-        if (!knowsItem(content, drop.item)) {
-            warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.item));
+        if (drop.table.isEmpty() ? !knowsItem(content, drop.item) : !content.lootTables().find(drop.table)) {
+            warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.table.isEmpty() ? drop.item : drop.table));
         }
     }
+    return warnings;
+}
 
+[[nodiscard]] QStringList checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    QStringList warnings = checkMobDrops(content, mob);
     for (const QcMobPart &part : mob.parts) {
         if (!knowsTexture(content, part.texture)) {
             warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));
@@ -116,7 +122,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     }
 
     warnings.append(checkGolemReferences(content, mob));
-    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound, mob.golem.attackSound, mob.golem.repairSound}) {
+    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound, mob.golem.attackSound, mob.golem.repairSound, mob.archer.warnSound}) {
         if (!knowsSound(content, name)) {
             warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
         }
@@ -162,10 +168,17 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
     for (const auto &[field, name] : {std::pair{u"fruit"_s, block.crop.fruit}, std::pair{u"soil revertsTo"_s, block.soil.revertsTo},
                                       std::pair{u"tillsInto"_s, block.tillsInto}, std::pair{u"flattensInto"_s, block.flattensInto},
                                       std::pair{u"coveredInto"_s, block.coveredInto}, std::pair{u"carving into"_s, block.carvesInto},
-                                      std::pair{u"strippedInto"_s, block.strippedInto}}) {
+                                      std::pair{u"strippedInto"_s, block.strippedInto},
+                                      std::pair{u"fireAbove"_s, block.fire.fireAbove}}) {
         if (!name.isEmpty() && !content.blockId(name)) {
             warnings.append(u"block %1: unknown %2 '%3'"_s.arg(block.name, field, name));
         }
+    }
+
+    // Decision E-981: fire on such a block stays what it was.
+    const std::optional<QcBlockId> fireAbove = block.fire.fireAbove.isEmpty() ? std::nullopt : content.blockId(block.fire.fireAbove);
+    if (fireAbove && !content.block(*fireAbove).fire.isFire) {
+        warnings.append(u"block %1: fireAbove '%2' is no fire"_s.arg(block.name, block.fire.fireAbove));
     }
     return warnings;
 }
@@ -226,6 +239,14 @@ QStringList check(const QcContentRegistry &content)
         warnings.append(checkBlockReferences(content, block));
     }
     warnings.append(checkCartReferences(content));
+    // The ambience of a biome's atmosphere (decision E-1122).
+    for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
+        for (const QString &name : {biome.atmosphere.loop, biome.atmosphere.additions}) {
+            if (!knowsSound(content, name)) {
+                warnings.append(u"biome %1: unknown ambience sound '%2'"_s.arg(biome.name, name));
+            }
+        }
+    }
 
     for (const QcItemDefinition &definition : content.items()) {
         if (!knowsTexture(content, definition.texture)) {

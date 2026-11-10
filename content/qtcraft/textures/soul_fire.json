@@ -1,0 +1,10 @@
+{
+    "name": "soul_fire",
+    "pattern": "fire",
+    "primary": "#2a9cc0",
+    "secondary": "#90f0ff",
+    "variation": 0.12,
+    "seed": 8431,
+    "frames": 16,
+    "frameTime": 1
+}

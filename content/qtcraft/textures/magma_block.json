@@ -1,8 +1,8 @@
 {
     "name": "magma_block",
-    "pattern": "lava",
-    "primary": "#5a2010",
-    "secondary": "#e86a20",
-    "variation": 0.12,
+    "pattern": "magma_crust",
+    "primary": "#2c1410",
+    "secondary": "#f07820",
+    "variation": 0.08,
     "seed": 903
 }

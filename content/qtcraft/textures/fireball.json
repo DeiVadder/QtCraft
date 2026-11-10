@@ -1,0 +1,8 @@
+{
+    "name": "fireball",
+    "pattern": "lump",
+    "primary": "#e0561a",
+    "secondary": "#ffc23f",
+    "variation": 0.15,
+    "seed": 7307
+}

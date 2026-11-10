@@ -5,6 +5,7 @@
 
 #include "clientcore/session/QcExplosionEffects.h"
 #include "common/core/QcBlockPos.h"
+#include "common/protocol/QcBeaconMessages.h"
 #include "common/protocol/QcSignMessages.h"
 #include "common/protocol/QcWorldMessages.h"
 #include "common/world/QcWorldLabel.h"
@@ -15,14 +16,15 @@
 #include <algorithm>
 
 /*! \brief What the server sends about the loaded chunks besides their blocks: the labels floating
-    in them (decision E-222), the creature kinds spinning in their monster spawners (decision E-520)
-    and the items lying on their campfires (decision E-772).
+    in them (decision E-222), the creature kinds spinning in their monster spawners (decision
+    E-520), the items lying on their campfires (decision E-772) and the beams of their beacons
+    (decision E-1143).
 
-    All go with their chunk's ChunkUnload; the spawners and campfires also with a new ChunkData
-    of their chunk (the server sends them right after its blocks, so a chunk sent again, e.g.
-    after /regenerate, keeps only those it still has). The text on signs (decision E-766) comes
-    and goes the same way. The explosions near the player (decision E-604) stay as puffs of flash
-    and smoke until they are over. */
+    All go with their chunk's ChunkUnload; the spawners, campfires and beams also with a new
+    ChunkData of their chunk (the server sends them right after its blocks, so a chunk sent
+    again, e.g. after /regenerate, keeps only those it still has). The text on signs (decision
+    E-766) comes and goes the same way. The explosions near the player (decision E-604) stay as
+    puffs of flash and smoke until they are over. */
 class QcChunkExtras
 {
 public:
@@ -76,20 +78,31 @@ public:
             m_campfires.insert(display.pos, display.items);
         }
     }
+    /*! Returns the beam sections of each beacon of the loaded chunks that shines. */
+    const QHash<QcBlockPos, QList<QcBeamSection>> &beams() const { return m_beams; }
+    /*! Takes the beam of a beacon, \a beam; one without sections is forgotten. */
+    void setBeam(const QcMsg::BeaconBeam &beam)
+    {
+        if (beam.sections.isEmpty()) {
+            m_beams.remove(beam.pos);
+        } else {
+            m_beams.insert(beam.pos, beam.sections);
+        }
+    }
     /*! Returns the explosions near the player, as puffs of flash and smoke. */
     const QcExplosionEffects &explosions() const { return m_explosions; }
     /*! Adds the puffs of \a explosion, which happened at client \a tick. */
     void addExplosion(const QcMsg::Explosion &explosion, quint64 tick) { m_explosions.add(explosion, tick); }
     /*! Forgets the puffs that are over at client \a tick. */
     void pruneExplosions(quint64 tick) { m_explosions.prune(tick); }
-    /*! A chunk's ChunkData arrived at \a pos: forgets its spawners, campfires and signs (the server
-        sends them again right after). */
+    /*! A chunk's ChunkData arrived at \a pos: forgets its spawners, campfires, beams and signs (the
+        server sends them again right after). */
     void chunkArrived(QcChunkPos pos)
     {
         removeBlockDisplays(pos);
         removeSigns(pos);
     }
-    /*! The chunk at \a pos left: forgets its labels, spawners, campfires and signs. */
+    /*! The chunk at \a pos left: forgets its labels, spawners, campfires, beams and signs. */
     void removeChunk(QcChunkPos pos)
     {
         m_labelGeneration += m_labels.remove(pos) ? 1 : 0;
@@ -102,6 +115,7 @@ private:
     {
         m_spawners.removeIf([pos](const auto &spawner) { return spawner.key().chunk() == pos; });
         m_campfires.removeIf([pos](const auto &campfire) { return campfire.key().chunk() == pos; });
+        m_beams.removeIf([pos](const auto &beam) { return beam.key().chunk() == pos; });
     }
     void removeSigns(QcChunkPos pos)
     {
@@ -114,5 +128,6 @@ private:
     QHash<QcBlockPos, QcSignText::Text> m_signs;
     quint64 m_signGeneration = 0;
     QHash<QcBlockPos, QList<quint32>> m_campfires;
+    QHash<QcBlockPos, QList<QcBeamSection>> m_beams;
     QcExplosionEffects m_explosions;
 };

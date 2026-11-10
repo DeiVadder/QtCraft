@@ -1,0 +1,12 @@
+{
+    "name": "strong_poison",
+    "variantOf": "poison",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "poison",
+            "seconds": 21.6,
+            "level": 2
+        }
+    ]
+}

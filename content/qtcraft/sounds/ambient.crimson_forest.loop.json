@@ -1,0 +1,48 @@
+{
+    "name": "ambient.crimson_forest.loop",
+    "bus": "ambient",
+    "volume": 0.55,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 140,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.35
+        },
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "bandpass": 1250,
+            "resonance": 4,
+            "tremoloRate": 6,
+            "tremoloDepth": 0.6,
+            "gain": 0.06
+        },
+        {
+            "wave": "crackle",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 1500,
+            "highpass": 300,
+            "density": 10,
+            "gain": 0.2
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 55,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.4,
+            "gain": 0.25
+        }
+    ]
+}

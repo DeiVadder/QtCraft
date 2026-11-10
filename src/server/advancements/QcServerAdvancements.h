@@ -57,6 +57,8 @@ public:
     quint64 locationChecks() const { return m_locationChecks; }
     /*! Returns the criteria compared with an event or the inventory since the start. */
     quint64 comparisons() const { return m_comparisons; }
+    /*! Returns the events of \a trigger since the start, met or not (tests count them). */
+    quint64 events(QcAdvancementTrigger trigger) const { return m_events[static_cast<std::size_t>(trigger)]; }
 
 private:
     struct Ref
@@ -64,7 +66,7 @@ private:
         qsizetype advancement = 0;
         qsizetype criterion = 0;
     };
-    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::LevelReached) + 1;
+    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::BeaconConstructed) + 1;
 
     // The advancement `ref` points to; refs come from the trigger index built over the same
     // catalog (see the constructor), so it exists.
@@ -93,4 +95,5 @@ private:
     std::array<QList<Ref>, triggerCount> m_byTrigger;
     quint64 m_locationChecks = 0;
     quint64 m_comparisons = 0;
+    std::array<quint64, triggerCount> m_events{};
 };

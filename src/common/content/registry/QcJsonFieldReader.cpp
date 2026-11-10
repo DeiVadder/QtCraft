@@ -4,8 +4,11 @@
 #include "common/content/registry/QcJsonFieldReader.h"
 
 #include "common/content/registry/QcContentNames.h"
+#include "common/core/QcLogging.h"
 
 #include <QJsonValue>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -13,6 +16,16 @@ void QcJsonFieldReader::fail(const QString &message)
 {
     if (error.isEmpty()) {
         error = context + u": "_s + message;
+    }
+}
+
+void QcJsonFieldReader::warnUnknownKeys(std::initializer_list<QStringView> known) const
+{
+    const QStringList keys = json.keys();
+    for (const QString &key : keys) {
+        if (std::ranges::find(known, QStringView{key}) == known.end()) {
+            qCWarning(lcRegistry).noquote() << context << u"has an unknown key '%1', ignored"_s.arg(key);
+        }
     }
 }
 

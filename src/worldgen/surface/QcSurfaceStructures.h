@@ -65,9 +65,20 @@ public:
     /*! Returns the copy of kind \a kind in region (\a regionX, \a regionZ), planned once; null
         when the region has none. */
     [[nodiscard]] std::shared_ptr<const QcStructurePlacement> planOf(QcSurfacePlanner::KindId kind, int regionX, int regionZ) const;
+    /*! Returns planOf() of kind \a kind in region (\a regionX, \a regionZ) when the terrain
+        builds it (QcWorldGenerator::buildsStructure with reachOf()), else null: what the chunks,
+        their furnishing, the sites and the searches see. */
+    [[nodiscard]] std::shared_ptr<const QcStructurePlacement> builtPlanOf(QcSurfacePlanner::KindId kind, int regionX, int regionZ) const;
+    /*! Returns the columns the copy \a plan of kind \a kind changes: its footprint and blended
+        ground, and the column grids of the chunks whose heights the blend moves. */
+    [[nodiscard]] QcXzRect reachOf(const QcStructurePlacement &plan, QcSurfacePlanner::KindId kind) const;
+    /*! Returns reachOf() of every built copy whose reach overlaps the chunk \a pos. */
+    [[nodiscard]] QList<QcXzRect> reachesTouching(QcChunkPos pos) const;
     /*! Returns the copies of every kind whose footprint or blended ground overlaps the chunk
-        \a pos. */
+        \a pos, built or not (planning). */
     QList<std::shared_ptr<const QcStructurePlacement>> plansTouching(QcChunkPos pos) const;
+    /*! Returns the same as plansTouching() for \a pos, only the built copies (builtPlanOf()). */
+    QList<std::shared_ptr<const QcStructurePlacement>> builtPlansTouching(QcChunkPos pos) const;
     /*! Returns the footprints of the copies of every kind, grown by their blended ground, within
         \a margin columns of the chunk \a pos: the terrain generator places no features and no
         surface pools there (decisions E-630, E-889). */
@@ -123,8 +134,13 @@ private:
     // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint, or
     // within the larger blend of the two (decision E-889).
     bool occupied(QcSurfacePlanner::KindId kind, QcXzRect footprint, int margin) const;
+    // planOf() or builtPlanOf().
+    using PlanGetter = std::shared_ptr<const QcStructurePlacement> (QcSurfaceStructures::*)(QcSurfacePlanner::KindId, int, int) const;
+    // The copies `plans` gives whose footprint or blended ground overlaps the chunk `pos`.
+    [[nodiscard]] QList<std::shared_ptr<const QcStructurePlacement>> touchingWith(QcChunkPos pos, PlanGetter plans) const;
     void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;
 
+    const QcTerrainGenerator &m_terrain;
     const QcVillageGenerator &m_villages;
     QcSurfacePlanner m_planner;
     QcSurfaceBlend m_blend;

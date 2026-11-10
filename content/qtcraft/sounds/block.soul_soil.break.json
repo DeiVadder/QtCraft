@@ -1,0 +1,60 @@
+{
+    "name": "block.soul_soil.break",
+    "volume": 0.75,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.22,
+            "attack": 0.005,
+            "curve": 2.5,
+            "bandpass": 1656,
+            "resonance": 0.7,
+            "lowpass": 4968,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 103,
+            "resonance": 1.2,
+            "lowpass": 310,
+            "gain": 1.0
+        },
+        {
+            "wave": "crackle",
+            "start": 0.01,
+            "duration": 0.2,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4140,
+            "highpass": 1035,
+            "density": 900,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.05,
+            "curve": 2,
+            "bandpass": 1035,
+            "resonance": 4.0,
+            "lowpass": 2070,
+            "gain": 0.25
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 140,
+            "resonance": 1.2,
+            "lowpass": 420,
+            "gain": 0.6
+        }
+    ]
+}

@@ -10,6 +10,7 @@
 #include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
+#include "server/animals/QcBarterState.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/mobbrains/QcTameState.h"
 #include "server/villages/QcVillager.h"
@@ -57,11 +58,16 @@ struct Stored
     double layTimer = -1.0;
     /*! A golem a player built (decision E-471). */
     bool playerBuilt = false;
+    /*! The ticks a summoned charred hydra still charges (QcHydraState::chargeTicks, decision
+        E-1126); 0 for none. */
+    qint32 hydraCharge = 0;
     /*! The block it carries, whether it is kept only for that block and whether it stays in its
         enclosure (decision E-460). \qcshared */
     QcBlockId carried = qcAirBlockId;
     bool keptForBlock = false;
     bool confined = false;
+    /*! Wears a saddle (decision E-1054). */
+    bool saddled = false;
     /*! Without a mind (QcCreature::noAi, decision E-510). */
     bool noAi = false;
     /*! Owner, sitting and collar of a tame one (decision E-480; its target is not saved). */
@@ -73,6 +79,9 @@ struct Stored
     std::optional<QcChunkPos> parentChunk = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! The name a name tag gave it (QcCreature::name, decision E-866). */
     QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! What it holds and looks at when it barters (QcCreature::barter, decision E-1081); none
+        when it holds nothing. */
+    std::optional<QcBarterState> barter = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const Stored &) const = default;
 };
@@ -104,9 +113,14 @@ struct PlayerView
     quint32 struck = 0;
     /*! The item in the player's hand (shy creatures). */
     QcItemId held = qcNoItem;
+    /*! The armour the player wears, one item per piece (creatures that spare who wears gold,
+        QcBarterDefinition::sparedBy, decision E-1081). */
+    QList<QcItemId> worn = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     /*! Its status effects (an archer's choice of projectile, decision E-623); null for none
         known. */
     const QcStatusEffects *effects = nullptr;
+    /*! Its health (an archer's choice of projectile, decision E-1105). */
+    double health = 20.0;
     /*! The player's horizontal speed in m/s (shy creatures). */
     double speed = 0.0;
     /*! Server ticks at which hurtBy and struck happened: a pet keeps its target unless its owner
@@ -116,6 +130,9 @@ struct PlayerView
     /*! Rides a minecart or drives a boat: the vehicle meets the creatures (decisions E-382,
         E-920), the player's body does not push them (decision E-882). */
     bool seated = false;
+    /*! The share of a creature's sight range within which it notices this player
+        (QcEffectRules::sightShare, decision E-992): 1 unless he is invisible. */
+    double sightShare = 1.0;
 };
 
 /*! \brief A block a creature takes or puts down in a tick (a shadewalker, decision E-460), which

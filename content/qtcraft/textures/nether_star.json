@@ -1,0 +1,31 @@
+{
+    "name": "nether_star",
+    "pattern": "icon",
+    "primary": "#fffbe6",
+    "variation": 0.0,
+    "seed": 8618,
+    "palette": {
+        "W": "#ffffff",
+        "Y": "#fff2b0",
+        "G": "#d9c873",
+        "C": "#bfe8ff"
+    },
+    "bitmap": [
+        "",
+        "       Y",
+        "       W",
+        "      YWY",
+        "      WWW",
+        " G   YWCWY   G",
+        "  YYWWCCCWWYY",
+        "   YWWCWCWWY",
+        "    YWCWCWY",
+        "   YWWCWCWWY",
+        "  YYWWCCCWWYY",
+        " G   YWCWY   G",
+        "      WWW",
+        "      YWY",
+        "       W",
+        "       Y"
+    ]
+}

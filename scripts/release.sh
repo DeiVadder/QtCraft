@@ -220,6 +220,10 @@ fi
 mkdir -p "$APP/Contents/Resources/licenses" &&
     cp "$PROJECT_DIR/src/app/fonts/OFL.txt" "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ||
     abort "cannot copy the licence text of Pixelify Sans"
+# The music tracks (CC BY 4.0) are built into the game; the licence asks that every copy carries
+# its text or address (decision E-1138).
+cp "$PROJECT_DIR/LICENSES/CC-BY-4.0.txt" "$APP/Contents/Resources/licenses/CC-BY-4.0.txt" ||
+    abort "cannot copy the licence text of the music"
 # The game's own licence and the lists of third-party parts, next to the licence texts.
 for file in LICENSE THIRD_PARTY.md CREDITS.md; do
     cp "$PROJECT_DIR/$file" "$APP/Contents/Resources/licenses/QtCraft-$file" || abort "cannot copy $file"
@@ -390,7 +394,7 @@ else
     [ -s "$APP/Contents/Resources/NOT-FOR-DISTRIBUTION.txt" ] && ok "local-only: contains NOT-FOR-DISTRIBUTION.txt" ||
         problem "missing NOT-FOR-DISTRIBUTION.txt"
 fi
-for licence in PixelifySans-OFL.txt QtCraft-LICENSE QtCraft-THIRD_PARTY.md QtCraft-CREDITS.md $QT_TEXTS \
+for licence in PixelifySans-OFL.txt CC-BY-4.0.txt QtCraft-LICENSE QtCraft-THIRD_PARTY.md QtCraft-CREDITS.md $QT_TEXTS \
     Qt-NOTICE.txt FFmpeg-LGPL-2.1.txt; do
     [ -s "$APP/Contents/Resources/licenses/$licence" ] && ok "contains $licence" || problem "missing $licence"
 done

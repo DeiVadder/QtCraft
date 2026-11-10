@@ -4,6 +4,7 @@
     "render": "translucent",
     "opaque": false,
     "lightOpacity": 0,
+    "beamColour": "#f9fffe",
     "hardness": 0.3,
     "drops": [],
     "textures": {

@@ -182,14 +182,14 @@ private slots:
         const QList<O> world{O::None};
         const QList<O> chat{O::Chat};
         const QList<O> overWorld{O::Inventory, O::Creative, O::Furnace, O::Chest,       O::Trade,      O::Pause, O::Character,
-                                 O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil};
+                                 O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil, O::Brewing, O::Smithing, O::Beacon};
         const QList<O> fullScreen{O::Settings, O::Display, O::Audio,        O::Interface, O::Controls,
                                   O::Gamepad,  O::Debug,   O::TexturePacks, O::Admin,     O::Advancements};
         // The pages of SettingsScreen and the screens with item slots (GameController.screens.subScreen, slotScreenOpen).
         const QList<O> settingsPages{O::Settings, O::Display, O::Audio,        O::Interface,
                                      O::Controls, O::Gamepad, O::Debug, O::TexturePacks};
         const QList<O> slotScreens{O::Inventory, O::Creative,    O::Furnace,    O::Chest,
-                                   O::Trade,     O::Stonecutter, O::Enchanting, O::Anvil};
+                                   O::Trade,     O::Stonecutter, O::Enchanting, O::Anvil, O::Brewing, O::Smithing, O::Beacon};
         // Every overlay is in exactly one list: a new one needs a decision here and in isFullScreen.
         const QMetaEnum overlays = QMetaEnum::fromType<O>();
         for (int index = 0; index < overlays.keyCount(); ++index) {

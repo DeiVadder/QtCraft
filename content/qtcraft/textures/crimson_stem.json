@@ -1,0 +1,8 @@
+{
+    "name": "crimson_stem",
+    "pattern": "rope_stem",
+    "primary": "#74283c",
+    "secondary": "#2a0d18",
+    "variation": 0.08,
+    "seed": 8501
+}

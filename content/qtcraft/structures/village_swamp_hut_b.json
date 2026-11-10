@@ -47,5 +47,14 @@
                 [".o", "..", "..", "..", ".."]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [1, 1, 3], "table": "village_house_swamp" },
+                { "at": [5, 1, 3], "table": "village_house_swamp" }
+            ]
+        }
     ]
 }

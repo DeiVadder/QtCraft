@@ -1,0 +1,15 @@
+{
+    "name": "polished_blackstone",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "blackstone"
+    },
+    "result": {
+        "item": "polished_blackstone",
+        "count": 4
+    }
+}

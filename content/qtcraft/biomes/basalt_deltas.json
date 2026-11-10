@@ -1,0 +1,48 @@
+{
+    "name": "basalt_deltas",
+    "dimension": "nether",
+    "icon": "basalt",
+    "mapColour": "#4a4a54",
+    "temperature": 0.66,
+    "humidity": 0.66,
+    "surface": "basalt",
+    "subsurface": "basalt",
+    "subsurfaceDepth": 3,
+    "rock": "basalt",
+    "rockBand": "blackstone",
+    "patchScale": 9,
+    "surfacePatches": [
+        {
+            "block": "blackstone",
+            "share": 0.32
+        }
+    ],
+    "atmosphere": {
+        "fog": {
+            "colour": "#685f70",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "white_ash",
+                "chance": 0.118093334
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.basalt_deltas.loop",
+            "additions": "ambient.basalt_deltas.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "major",
+            "lowestRoot": 36,
+            "highestRoot": 39,
+            "slowestTempo": 50,
+            "fastestTempo": 58,
+            "lead": "square",
+            "leadLowpass": 1000,
+            "drone": true
+        }
+    }
+}

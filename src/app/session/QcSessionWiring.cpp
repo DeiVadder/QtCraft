@@ -8,15 +8,25 @@
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/hooks/QcStartupHooks.h"
-#include "app/inventory/QcAnvilController.h"
-#include "app/inventory/QcEnchantingController.h"
-#include "app/inventory/QcStonecutterController.h"
 #include "app/inventory/QcTradeController.h"
+#include "app/inventory/QcWorkstationControllers.h"
 #include "app/models/QcAdvancementTreeModel.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldAtlas.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
+
+namespace {
+
+// The workstation `station` opening or closing shows or closes its screen `overlay`.
+template<typename Station>
+void connectScreen(const Station *station, QcScreenState &screens, QcScreenState::Overlay overlay)
+{
+    QObject::connect(station, &Station::opened, &screens, [&screens, overlay] { screens.workstationOpened(overlay); });
+    QObject::connect(station, &Station::closed, &screens, [&screens, overlay] { screens.workstationClosed(overlay); });
+}
+
+} // namespace
 
 QcSessionWiring::QcSessionWiring(QcSessionParts &parts, const Targets &targets)
     : m_parts(parts)
@@ -37,6 +47,7 @@ void QcSessionWiring::connectWorld()
     connect(session, &QcClientSession::contentReady, this, &QcSessionWiring::onContentReady);
     connect(session, &QcClientSession::chunkLoaded, this, [this](QcChunkPos pos) { m_parts.meshes->chunkLoaded(*m_parts.session->world(), pos); });
     connect(session, &QcClientSession::chunkUnloaded, m_parts.meshes.get(), &QcMeshScheduler::chunkUnloaded);
+    connect(session, &QcClientSession::dimensionChanged, this, &QcSessionWiring::onDimensionChanged);
     connect(session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
         m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous);
     });
@@ -48,6 +59,9 @@ void QcSessionWiring::connectWorld()
     // After the tick above: the sounds follow the player of this tick.
     m_audio.connectSession(*session);
     connect(session, &QcClientSession::chatReceived, &m_targets.hud, &QcHudState::addChatLine);
+    // The boss bars follow what the server tells; a new session starts without the old ones.
+    connect(&session->bossBars(), &QcClientBossBars::changed, &m_targets.hud, &QcHudState::updateBossBars);
+    m_targets.hud.updateBossBars();
     connect(session, &QcClientSession::stateChanged, this, &QcSessionWiring::onSessionState);
 
     connect(m_parts.meshes.get(), &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
@@ -61,6 +75,17 @@ void QcSessionWiring::connectWorld()
             m_parts.view->removeMesh(key);
         }
     });
+}
+
+void QcSessionWiring::onDimensionChanged()
+{
+    // The meshes and light of the old dimension go with its chunks (decision E-1002); waiting jobs
+    // are dropped, the results of running ones are discarded when they arrive.
+    m_parts.meshes->clear();
+    if (m_parts.view) {
+        m_parts.view->clearMeshes();
+    }
+    emit dimensionChanged();
 }
 
 void QcSessionWiring::connectPlayer()
@@ -89,6 +114,8 @@ void QcSessionWiring::connectPlayer()
     connectStonecutter();
     connectEnchanting();
     connectAnvil();
+    connectSmithing();
+    connectBeacon();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
@@ -97,9 +124,8 @@ void QcSessionWiring::connectPlayer()
 void QcSessionWiring::connectStonecutter()
 {
     const QcClientSession *session = m_parts.session.get();
-    const QcStonecutterController *stonecutter = &m_targets.stonecutter;
-    connect(&session->stonecutter(), &QcClientStonecutter::opened, &m_targets.screens, &QcScreenState::stonecutterOpened);
-    connect(&session->stonecutter(), &QcClientStonecutter::closed, &m_targets.screens, &QcScreenState::stonecutterClosed);
+    const QcStonecutterController *stonecutter = m_targets.workstations.stonecutter.get();
+    connectScreen(&session->stonecutter(), m_targets.screens, QcScreenState::Overlay::Stonecutter);
     connect(&session->stonecutter(), &QcClientStonecutter::opened, stonecutter, &QcStonecutterController::update);
     connect(&session->stonecutter(), &QcClientStonecutter::closed, stonecutter, &QcStonecutterController::update);
     connect(&session->stonecutter(), &QcClientStonecutter::changed, stonecutter, &QcStonecutterController::update);
@@ -114,9 +140,8 @@ void QcSessionWiring::connectAnvil()
 {
     const QcClientSession *session = m_parts.session.get();
     const QcClientAnvil *anvil = &session->anvil();
-    const QcAnvilController *controller = &m_targets.anvil;
-    connect(anvil, &QcClientAnvil::opened, &m_targets.screens, &QcScreenState::anvilOpened);
-    connect(anvil, &QcClientAnvil::closed, &m_targets.screens, &QcScreenState::anvilClosed);
+    const QcAnvilController *controller = m_targets.workstations.anvil.get();
+    connectScreen(anvil, m_targets.screens, QcScreenState::Overlay::Anvil);
     connect(anvil, &QcClientAnvil::opened, controller, &QcAnvilController::update);
     connect(anvil, &QcClientAnvil::closed, controller, &QcAnvilController::update);
     connect(anvil, &QcClientAnvil::changed, controller, &QcAnvilController::update);
@@ -130,13 +155,46 @@ void QcSessionWiring::connectAnvil()
     connect(anvil, &QcClientAnvil::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
 }
 
+void QcSessionWiring::connectSmithing()
+{
+    const QcClientSmithing *smithing = &m_parts.session->smithing();
+    const QcSmithingController *controller = m_targets.workstations.smithing.get();
+    connectScreen(smithing, m_targets.screens, QcScreenState::Overlay::Smithing);
+    connect(smithing, &QcClientSmithing::opened, controller, &QcSmithingController::update);
+    connect(smithing, &QcClientSmithing::closed, controller, &QcSmithingController::update);
+    connect(smithing, &QcClientSmithing::changed, controller, &QcSmithingController::update);
+    // The template, base, addition and output slots live in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(smithing, &QcClientSmithing::opened, player, &QcPlayerController::updateInventory);
+    connect(smithing, &QcClientSmithing::changed, player, &QcPlayerController::updateInventory);
+    connect(smithing, &QcClientSmithing::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay smithing` fills the three slots from the hotbar.
+    connect(smithing, &QcClientSmithing::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
+}
+
+void QcSessionWiring::connectBeacon()
+{
+    const QcClientBeacon *beacon = &m_parts.session->beacon();
+    const QcBeaconController *controller = m_targets.workstations.beacon.get();
+    connectScreen(beacon, m_targets.screens, QcScreenState::Overlay::Beacon);
+    connect(beacon, &QcClientBeacon::opened, controller, &QcBeaconController::opened);
+    connect(beacon, &QcClientBeacon::closed, controller, &QcBeaconController::update);
+    connect(beacon, &QcClientBeacon::changed, controller, &QcBeaconController::update);
+    // The payment slot lives in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(beacon, &QcClientBeacon::opened, player, &QcPlayerController::updateInventory);
+    connect(beacon, &QcClientBeacon::changed, player, &QcPlayerController::updateInventory);
+    connect(beacon, &QcClientBeacon::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay beacon` puts the first hotbar slot into the payment slot.
+    connect(beacon, &QcClientBeacon::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
+}
+
 void QcSessionWiring::connectEnchanting()
 {
     const QcClientSession *session = m_parts.session.get();
     const QcClientEnchanting *table = &session->enchanting();
-    const QcEnchantingController *enchanting = &m_targets.enchanting;
-    connect(table, &QcClientEnchanting::opened, &m_targets.screens, &QcScreenState::enchantingOpened);
-    connect(table, &QcClientEnchanting::closed, &m_targets.screens, &QcScreenState::enchantingClosed);
+    const QcEnchantingController *enchanting = m_targets.workstations.enchanting.get();
+    connectScreen(table, m_targets.screens, QcScreenState::Overlay::Enchanting);
     connect(table, &QcClientEnchanting::opened, enchanting, &QcEnchantingController::update);
     connect(table, &QcClientEnchanting::closed, enchanting, &QcEnchantingController::update);
     connect(table, &QcClientEnchanting::changed, enchanting, &QcEnchantingController::update);
@@ -164,13 +222,12 @@ void QcSessionWiring::onContentReady()
     m_targets.atlas.enterWorld();
     m_targets.player.useContent();
     m_targets.audio.setContent(m_parts.session->content());
-    m_targets.audio.setMusicEnabled(true);
 }
 
 void QcSessionWiring::onMachineOpened()
 {
     m_targets.player.nameOpenMachine();
-    m_targets.screens.machineOpened(m_parts.session->machine().isContainer());
+    m_targets.screens.machineOpened(m_parts.session->machine().isContainer(), m_parts.session->machine().isBrewing());
     m_targets.player.updateMachine();
     m_targets.startup.machineOpened();
 }

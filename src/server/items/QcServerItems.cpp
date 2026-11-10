@@ -58,7 +58,7 @@ QcServerItems::Given QcServerItems::giveToPlayer(quint32 entityId, const QcItemS
             return {left, nullptr};
         }
         m_sounds.play(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);
-        return {left, client.get()};
+        return {left, client};
     }
     return {stack.count, nullptr};
 }

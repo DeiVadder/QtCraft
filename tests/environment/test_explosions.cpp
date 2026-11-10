@@ -284,6 +284,30 @@ private slots:
         QVERIFY(QcEntityChecks::problems(m_server->entities()).isEmpty());
     }
 
+    // The fires of an explosion are soul fire on soul sand.
+    void explosionsLightSoulFireOnSoulSand()
+    {
+        buildArea();
+        constexpr int size = 9;
+        const QcBlockPos corner = at(4, -6, 4);
+        fillCube(corner, size, "qtcraft:soul_sand");
+        const QcBlockPos top = corner.offset(size / 2, size - 1, size / 2);
+        explosions().explode({QcVec3{top.x + 0.5, top.y + 0.5, top.z + 0.5}, 4.0, true, true});
+        ticks(4);
+
+        int soulFires = 0;
+        for (int x = -1; x <= size; ++x) {
+            for (int y = 0; y <= size; ++y) {
+                for (int z = -1; z <= size; ++z) {
+                    const QcBlockId here = block(corner.offset(x, y, z));
+                    QVERIFY(here != id("qtcraft:fire"));
+                    soulFires += here == id("qtcraft:soul_fire") ? 1 : 0;
+                }
+            }
+        }
+        QVERIFY(soulFires > 0);
+    }
+
     void gameRuleKeepsBlocks()
     {
         buildArea();

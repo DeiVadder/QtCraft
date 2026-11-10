@@ -54,6 +54,12 @@ bool QcProjectileManager::launch(const Launch &shot, quint32 id)
     return add(std::move(projectile));
 }
 
+QcProjectile *QcProjectileManager::find(quint32 id)
+{
+    const auto it = std::ranges::find(m_projectiles, id, &QcProjectile::id);
+    return it != m_projectiles.end() ? &*it : nullptr;
+}
+
 bool QcProjectileManager::add(QcProjectile projectile)
 {
     if (m_projectiles.size() >= m_limit || QcWorld::isInVoid(projectile.motion.position.y)) {
@@ -150,7 +156,8 @@ bool QcProjectileManager::fly(QcProjectile &projectile, const QcProjectileDefini
     }
 
     if (pass.handlers.blockHit) {
-        pass.handlers.blockHit({step.block, step.face, step.point, definition.sticks && !definition.breaks()});
+        pass.handlers.blockHit({step.block, step.face, step.point, definition.sticks && !definition.breaks(),
+                                definition.effect(QcHitEffect::kindle) != nullptr, projectile.shooter});
     }
 
     if (definition.breaks()) {

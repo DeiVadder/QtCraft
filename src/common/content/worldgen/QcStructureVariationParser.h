@@ -20,6 +20,15 @@ namespace QcStructureVariationParser {
     \a packNamespace; \a reader fails on an invalid entry. */
 [[nodiscard]] QList<QcStructureDefinition::Choice> parseChoices(const QJsonObject &json, QcJsonFieldReader &reader,
                                                                 const QString &packNamespace);
+/*! Returns the loot chest of the entry \a entry of "loot" (\c {at}, a cell of \a structure, and
+    \c {table}, qualified with \a packNamespace); std::nullopt when it is invalid. */
+[[nodiscard]] std::optional<QcStructureDefinition::Loot> readLoot(const QJsonObject &entry, const QcStructureDefinition &structure,
+                                                                  const QString &packNamespace);
+/*! Returns the changes of generator versions at "generatorChanges" of \a json (decision E-1016) for
+    \a structure, whose size is known, names qualified with \a packNamespace; \a reader fails on an
+    invalid entry. */
+[[nodiscard]] QList<QcStructureDefinition::VersionChange> parseGeneratorChanges(const QJsonObject &json, const QcStructureDefinition &structure,
+                                                                                QcJsonFieldReader &reader, const QString &packNamespace);
 /*! Returns the optional parts at "parts" of \a json; \a reader fails on an invalid entry.
     \a keys maps the palette characters to palette indices
     of \a structure (read so far: its palette, size and cells). */

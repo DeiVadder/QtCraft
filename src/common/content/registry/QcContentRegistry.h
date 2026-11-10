@@ -11,10 +11,12 @@
 #include "common/content/items/QcEnchantmentDefinition.h"
 #include "common/content/items/QcHoldDisplay.h"
 #include "common/content/items/QcItemDefinition.h"
+#include "common/content/items/QcPotionCatalog.h"
 #include "common/content/mobs/QcMobDefinition.h"
 #include "common/content/recipes/QcLootTables.h"
 #include "common/content/recipes/QcRecipeDefinition.h"
 #include "common/content/recipes/QcSmeltingRecipe.h"
+#include "common/content/recipes/QcSmithingRecipe.h"
 #include "common/content/registry/QcAdvancementCatalog.h"
 #include "common/content/registry/QcAssetCatalog.h"
 #include "common/content/registry/QcCommandMacroDefinition.h"
@@ -119,7 +121,8 @@ public:
     /*! Gives every visible, non-liquid block that has an item (\c {hasItem}) but no item of the
         same name yet an item that places it. */
     void createBlockItems();
-    /*! Completes the content after all packs: generates building parts (QcPartGenerator), takes
+    /*! Completes the content after all packs: generates building parts (QcPartGenerator) and
+        the items of the potions (QcPotionGenerator), takes
         circuit blocks with broken links out of circuits, creates the block items and the
         generated stonecutting recipes, and resolves what definitions name of each other (anvil
         swaps, villagers, archers, held items, creature traits, spawners, projectiles, village
@@ -147,6 +150,11 @@ public:
     [[nodiscard]] std::optional<QcItemId> itemId(const QString &name) const;
     /*! Returns the item definitions in id order (the item with id 1 first). */
     const QList<QcItemDefinition> &items() const { return m_items; }
+
+    /*! Returns the potions and brewing recipes (QcPotionCatalog, server side). */
+    QcPotionCatalog &potionCatalog() { return m_potionCatalog; }
+    /*! Returns the potions and brewing recipes (QcPotionCatalog, server side). */
+    const QcPotionCatalog &potionCatalog() const { return m_potionCatalog; }
 
     /*! Returns the textures, skeleton models, appearances and sounds (QcAssetCatalog). */
     QcAssetCatalog &assets() { return m_assets; }
@@ -182,6 +190,10 @@ public:
     /*! Returns the position in stonecuttingRecipes() of the recipe named \a name; none for an
         unknown name. */
     [[nodiscard]] std::optional<qsizetype> stonecuttingIndex(const QString &name) const;
+    /*! Registers the smithing \a recipe (decision E-1115), replacing one of the same name. */
+    void registerSmithingRecipe(QcSmithingRecipe recipe) { m_smithingRecipes.set(std::move(recipe)); }
+    /*! Returns the smithing recipes in registration order. */
+    const QList<QcSmithingRecipe> &smithingRecipes() const { return m_smithingRecipes.items(); }
 
     /*! Registers the handbook \a chapter about playing, replacing one of the same name (server
         side only, not synchronised). */
@@ -296,11 +308,13 @@ private:
     QList<QcItemDefinition> m_items;
     QHash<QString, QcItemId> m_itemIds;
     QcAssetCatalog m_assets;
+    QcPotionCatalog m_potionCatalog;
     QcTranslations m_translations;
     QcNamedList<QcMobDefinition> m_mobs;
     QcNamedList<QcRecipeDefinition> m_recipes;
     QcNamedList<QcSmeltingRecipe> m_smeltingRecipes;
     QcNamedList<QcSmeltingRecipe> m_stonecuttingRecipes;
+    QcNamedList<QcSmithingRecipe> m_smithingRecipes;
     QcNamedList<QcCommandMacroDefinition> m_commandMacros;
     QcWeatherDefinition m_weather;
     QcHoldDefaults m_holdDefaults;

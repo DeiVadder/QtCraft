@@ -5,6 +5,7 @@
 #include "storage/QcChunkChecksum.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
+#include "worldgen/nether/QcNetherGenerator.h"
 #include "worldgen/terrain/QcRiverField.h"
 #include "worldgen/terrain/QcSurfaceLakes.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -42,7 +43,8 @@ using namespace Qt::StringLiterals;
 // promises. A platform without values fails, unless the reference lists it under "unrecorded" or the
 // version is still open and the run is no CI run (CI set); then it skips and prints them. QC_RECORD_GENERATOR_REFERENCE=<version> writes this platform's values of that
 // version into the file; for a frozen version (QcGeneratorVersion::lastFrozen) only when the platform
-// has none yet (the checklist in decision E-922).
+// has none yet (the checklist in decision E-922). The nether counts its versions on its own (decision
+// E-1033): its values stand under "nether", and QC_RECORD_GENERATOR_SERIES=nether records them.
 namespace {
 
 using Checksums = QJsonObject;
@@ -91,6 +93,9 @@ constexpr int lakeRings = 24;
 // The rivers are hashed on a grid of riverStep blocks within riverReach of the origin.
 constexpr int riverReach = 1536;
 constexpr int riverStep = 16;
+// The nether's rarer biome is looked for on this grid.
+constexpr int netherBiomeRings = 32;
+constexpr int netherBiomeStep = 48;
 // The places /locate finds that are no placed structure.
 const QStringList places{u"village"_s, u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s};
 // The biomes looked for; one column of each set nearest to the origin.
@@ -212,6 +217,12 @@ public:
         if (dynamic_cast<const QcTerrainGenerator *>(&m_generator)) {
             addPlaces();
         }
+        if (dynamic_cast<const QcNetherGenerator *>(&m_generator)) {
+            addStructures();
+            addLocated(u"fortress"_s);
+            addLocated(u"bastion"_s);
+            addNetherBiome();
+        }
         if (const auto *terrainGenerator = dynamic_cast<const QcTerrainGenerator *>(&m_generator); terrainGenerator && m_explore) {
             addStructures();
             const QList<QcChunkPos> biomes = biomeChunks(m_generator);
@@ -289,6 +300,35 @@ private:
         }
     }
 
+    // The nearest place of `word` in the nether: the chunk of its middle and the eight around it.
+    void addLocated(const QString &word)
+    {
+        const QcLocateResult found = m_generator.locate(word, {0, 64, 0}, structureReach);
+        if (!found.place) {
+            return;
+        }
+        m_coverage.located.insert(word);
+        const QcChunkPos at = found.place->at.chunk();
+        for (int i = 0; i < 9; ++i) {
+            add({at.x - 1 + i % 3, at.z - 1 + i / 3});
+        }
+    }
+
+    // A chunk of the rarer biome of the nether, nearest to the origin on a coarse grid.
+    void addNetherBiome()
+    {
+        for (int ring = 0; ring <= netherBiomeRings; ++ring) {
+            for (int x = -ring; x <= ring; ++x) {
+                for (int z = -ring; z <= ring; ++z) {
+                    if (m_generator.biomeAt(x * netherBiomeStep, z * netherBiomeStep) == u"qtcraft:soul_sand_valley"_s) {
+                        add(QcBlockPos{x * netherBiomeStep, 64, z * netherBiomeStep}.chunk());
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     void hashChunk(QcChunkPos pos)
     {
         m_hash.addInts({pos.x, pos.z});
@@ -345,6 +385,13 @@ private:
         };
     }
 
+    // The nether's worlds of the reference.
+    static QList<Case> netherCases()
+    {
+        const QString nether = QString::fromLatin1(QcWorldGenerators::nether);
+        return {{u"nether 42"_s, nether, {}, {}, 42}, {u"nether 7"_s, nether, {}, {}, 7}};
+    }
+
     // The checksums of the worlds of the reference as generator version `version` makes them, and
     // what their terrain worlds covered.
     struct Run
@@ -353,11 +400,10 @@ private:
         Coverage coverage;
     };
 
-    Run checksumsOf(int version) const
+    Run checksumsOf(const QList<Case> &worlds, int version) const
     {
         Checksums checksums;
         Coverage coverage;
-        const QList<Case> worlds = cases();
         for (const Case &world : worlds) {
             const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, world.type, world.worldOptions);
             const std::unique_ptr<QcWorldGenerator> generator =
@@ -392,29 +438,68 @@ private:
         return file.open(QIODevice::WriteOnly | QIODevice::Truncate) && file.write(QJsonDocument(reference).toJson()) > 0;
     }
 
-    // Records this platform's values of `version` (QC_RECORD_GENERATOR_REFERENCE); a frozen version
-    // keeps values it has.
-    static QString record(int version, const Checksums &actual)
+    // The key of a series' values in the reference: "versions" for the overworld's.
+    static QString referenceKey(const QcGeneratorVersion::Series &series)
+    {
+        const QString name = QString::fromLatin1(series.name);
+        return name == QLatin1StringView(QcGeneratorVersion::overworld.name) ? u"versions"_s : name;
+    }
+
+    // Records this platform's values of `version` of `series` (QC_RECORD_GENERATOR_REFERENCE,
+    // QC_RECORD_GENERATOR_SERIES names a series but the overworld's); a frozen version keeps
+    // values it has.
+    static QString record(const QcGeneratorVersion::Series &series, int version, const Checksums &actual)
     {
         QJsonObject reference = readReference();
-        QJsonObject versions = reference.value(u"versions"_s).toObject();
+        QJsonObject versions = reference.value(referenceKey(series)).toObject();
         QJsonObject platforms = versions.value(QString::number(version)).toObject();
-        if (version <= QcGeneratorVersion::lastFrozen && platforms.contains(platform())) {
+        if (version <= series.lastFrozen && platforms.contains(platform())) {
             return u"version %1 is frozen: its values for %2 stay as recorded"_s.arg(version).arg(platform());
         }
         platforms.insert(platform(), actual);
         versions.insert(QString::number(version), platforms);
-        reference.insert(u"versions"_s, versions);
+        reference.insert(referenceKey(series), versions);
         return writeReference(reference) ? QString() : u"cannot write the reference"_s;
     }
 
     // Whether the reference may lack this platform's values of `version`: listed as unrecorded, or
     // an open version outside a CI run.
-    static bool mayLackPlatform(int version)
+    static bool mayLackPlatform(const QcGeneratorVersion::Series &series, int version)
     {
         const bool listed = readReference().value(u"unrecorded"_s).toArray().contains(platform());
-        const bool open = version > QcGeneratorVersion::lastFrozen;
+        const bool open = version > series.lastFrozen;
         return listed || (open && !qEnvironmentVariableIsSet("CI"));
+    }
+
+    // Whether the run was asked to record `version` of `series`.
+    static bool recording(const QcGeneratorVersion::Series &series, int version)
+    {
+        const QString asked = qEnvironmentVariable("QC_RECORD_GENERATOR_SERIES", QString::fromLatin1(QcGeneratorVersion::overworld.name));
+        return qEnvironmentVariableIntValue("QC_RECORD_GENERATOR_REFERENCE") == version && asked == QLatin1StringView(series.name);
+    }
+
+    // Checks `actual` against the values of `version` of `series`.
+    static void compareWithReference(const QcGeneratorVersion::Series &series, int version, const Checksums &actual)
+    {
+        if (recording(series, version)) {
+            const QString refused = record(series, version, actual);
+            QVERIFY2(refused.isEmpty(), qPrintable(refused));
+        }
+        const QJsonObject platforms = readReference().value(referenceKey(series)).toObject().value(QString::number(version)).toObject();
+        QVERIFY2(!platforms.isEmpty(), qPrintable(u"no values of generator version %1 in the reference; record them"_s.arg(version)));
+        if (!platforms.contains(platform())) {
+            const QString missing = u"no values of generator version %1 for %2 (printed above)"_s.arg(version).arg(platform());
+            QVERIFY2(mayLackPlatform(series, version), qPrintable(missing + u"; record them or list the platform as unrecorded"_s));
+            QSKIP(qPrintable(missing));
+        }
+
+        const QJsonObject expected = platforms.value(platform()).toObject();
+        QCOMPARE(QStringList(actual.keys()), QStringList(expected.keys()));
+        for (auto it = expected.constBegin(); it != expected.constEnd(); ++it) {
+            // A difference means generator version `version` no longer makes the worlds it made:
+            // bring the old output back for this version (E-922) instead of updating the values.
+            QVERIFY2(actual.value(it.key()) == it.value(), qPrintable(u"version %1, %2"_s.arg(version).arg(it.key())));
+        }
     }
 
 private slots:
@@ -429,31 +514,35 @@ private slots:
     void versionsKeepTheirWorlds()
     {
         QFETCH(int, version);
-        const Run run = checksumsOf(version);
+        const Run run = checksumsOf(cases(), version);
         const Checksums &actual = run.checksums;
-        const Coverage &coverage = run.coverage;
         qInfo().noquote() << u"version %1 on %2:\n%3"_s.arg(version).arg(platform(), QString::fromUtf8(QJsonDocument(actual).toJson()));
-        checkCoverage(coverage);
+        checkCoverage(run.coverage);
+        compareWithReference(QcGeneratorVersion::overworld, version, actual);
+    }
 
-        if (qEnvironmentVariableIntValue("QC_RECORD_GENERATOR_REFERENCE") == version) {
-            const QString refused = record(version, actual);
-            QVERIFY2(refused.isEmpty(), qPrintable(refused));
+    void netherVersionsKeepTheirWorlds_data()
+    {
+        QTest::addColumn<int>("version");
+        for (int version = QcGeneratorVersion::nether.oldest; version <= QcGeneratorVersion::nether.current; ++version) {
+            QTest::addRow("version %d", version) << version;
         }
-        const QJsonObject platforms = readReference().value(u"versions"_s).toObject().value(QString::number(version)).toObject();
-        QVERIFY2(!platforms.isEmpty(), qPrintable(u"no values of generator version %1 in the reference; record them"_s.arg(version)));
-        if (!platforms.contains(platform())) {
-            const QString missing = u"no values of generator version %1 for %2 (printed above)"_s.arg(version).arg(platform());
-            QVERIFY2(mayLackPlatform(version), qPrintable(missing + u"; record them or list the platform as unrecorded"_s));
-            QSKIP(qPrintable(missing));
-        }
+    }
 
-        const QJsonObject expected = platforms.value(platform()).toObject();
-        QCOMPARE(QStringList(actual.keys()), QStringList(expected.keys()));
-        for (auto it = expected.constBegin(); it != expected.constEnd(); ++it) {
-            // A difference means generator version `version` no longer makes the worlds it made:
-            // bring the old output back for this version (E-922) instead of updating the values.
-            QVERIFY2(actual.value(it.key()) == it.value(), qPrintable(u"version %1, %2"_s.arg(version).arg(it.key())));
+    void netherVersionsKeepTheirWorlds()
+    {
+        QFETCH(int, version);
+        const Run run = checksumsOf(netherCases(), version);
+        qInfo().noquote() << u"nether version %1 on %2:\n%3"_s.arg(version).arg(platform(), QString::fromUtf8(QJsonDocument(run.checksums).toJson()));
+        for (const QStringView part : {u"netherrack", u"lava", u"glowstone", u"nether_quartz_ore", u"nether_gold_ore", u"soul_sand", u"soul_soil", u"gravel", u"obsidian",
+                                        u"nether_bricks", u"polished_blackstone_bricks"}) {
+            QVERIFY2(std::ranges::any_of(run.coverage.blocks, [part](const QString &name) { return name.contains(part); }), qPrintable(part.toString()));
         }
+        QVERIFY(run.coverage.located.contains(u"ruined_portal_nether"_s));
+        QVERIFY(run.coverage.located.contains(u"fortress"_s));
+        QVERIFY(run.coverage.located.contains(u"bastion"_s));
+        QVERIFY(run.coverage.biomes.contains(u"qtcraft:soul_sand_valley"_s));
+        compareWithReference(QcGeneratorVersion::nether, version, run.checksums);
     }
 
     // The reference holds the versions the game has, no more; frozen versions are the oldest ones.
@@ -466,6 +555,12 @@ private slots:
             QVERIFY2(QcGeneratorVersion::isKnown(key.toInt()), qPrintable(u"the reference has values of unknown version '%1'"_s.arg(key)));
         }
         QVERIFY(QcGeneratorVersion::lastFrozen <= QcGeneratorVersion::current);
+
+        const QJsonObject nether = readReference().value(referenceKey(QcGeneratorVersion::nether)).toObject();
+        const QStringList netherKeys = nether.keys();
+        for (const QString &key : netherKeys) {
+            QVERIFY2(QcGeneratorVersion::nether.isKnown(key.toInt()), qPrintable(u"the reference has values of unknown nether version '%1'"_s.arg(key)));
+        }
     }
 
     // A generator exists for every version the game has and for no other, and knows its version.
@@ -480,6 +575,10 @@ private slots:
         QVERIFY(!QcWorldGenerators::create(terrain, m_content, 1, {}, QcGeneratorVersion::oldest - 1));
         QVERIFY(!QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::flat), m_content, 1, {}, 0));
         QCOMPARE(QcGeneratorVersion::unversioned, 1);
+        // The nether counts on its own: version 1 is its first, the overworld's 2 means nothing to it.
+        const QString nether = QString::fromLatin1(QcWorldGenerators::nether);
+        QCOMPARE(QcWorldGenerators::create(nether, m_content, 1, {}, 1)->version(), 1);
+        QVERIFY(!QcWorldGenerators::create(nether, m_content, 1, {}, QcGeneratorVersion::nether.current + 1));
         // The showcase is not versioned: always the current code.
         QCOMPARE(QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::showcase), m_content, 1, {}, QcGeneratorVersion::oldest)->version(),
                  QcGeneratorVersion::current);

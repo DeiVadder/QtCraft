@@ -1,10 +1,17 @@
 {
     "name": "crying_obsidian",
     "sound": "stone",
+    "particles": [
+        {
+            "kind": "dripping_tear",
+            "chance": 0.2,
+            "from": "faces"
+        }
+    ],
     "hardness": 25.0,
     "blastResistance": 1200.0,
     "tool": "pickaxe",
-    "toolLevel": 3,
+    "toolLevel": 4,
     "light": 10,
     "textures": {
         "all": "crying_obsidian"

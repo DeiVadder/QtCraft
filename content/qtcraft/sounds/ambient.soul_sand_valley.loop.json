@@ -1,0 +1,51 @@
+{
+    "name": "ambient.soul_sand_valley.loop",
+    "bus": "ambient",
+    "volume": 0.55,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "bandpass": 380,
+            "resonance": 1.5,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.6,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 80,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.3,
+            "gain": 0.6
+        },
+        {
+            "wave": "sine",
+            "attack": 1.2,
+            "curve": 1.2,
+            "duration": 3.0,
+            "start": 1.5,
+            "frequency": 880,
+            "endFrequency": 760,
+            "tremoloRate": 5,
+            "tremoloDepth": 0.3,
+            "gain": 0.06
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 48,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.4,
+            "gain": 0.2
+        }
+    ]
+}

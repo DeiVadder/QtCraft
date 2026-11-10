@@ -1,0 +1,13 @@
+{
+    "name": "smithing_table",
+    "sound": "wood",
+    "hardness": 2.5,
+    "tool": "axe",
+    "textures": {
+        "top": "smithing_table_top",
+        "bottom": "smithing_table_bottom",
+        "side": "smithing_table_side"
+    },
+    "smithing": true,
+    "fuelSeconds": 15
+}

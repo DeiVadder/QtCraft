@@ -3,6 +3,7 @@
 
 #include "clientcore/light/QcSky.h"
 
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/world/QcDayCycle.h"
 
@@ -23,6 +24,14 @@ const QVector3D duskHorizon(0.93f, 0.52f, 0.30f);
 const QVector3D duskGlow(1.00f, 0.45f, 0.15f);
 const QVector3D dayClouds(0.97f, 0.97f, 0.98f);
 const QVector3D nightClouds(0.10f, 0.11f, 0.15f);
+// The nether's fog and the end's vault when the dimension names no fog colour (decision E-1003).
+const QVector3D netherFog(0.20f, 0.03f, 0.03f);
+const QVector3D endZenith(0.02f, 0.015f, 0.035f);
+const QVector3D endHorizon(0.07f, 0.055f, 0.10f);
+// The factor on the fog's distances in the nether.
+constexpr double netherFogScale = 0.5;
+// The share of the ambient light (0..15) on the shaders' floor at full ambient light.
+constexpr double ambientShare = 0.6;
 // The sun's path is tilted a little towards the south, so it never stands exactly overhead.
 constexpr double pathTilt = 0.25;
 
@@ -43,7 +52,69 @@ double duskShare(double sunHeight)
     return std::max(0.0, 1.0 - std::abs(sunHeight + 0.05) / 0.3);
 }
 
+// A sky without sun, moon, stars and clouds: `horizon` all around, `zenith` above.
+QcSkyState vault(QVector3D zenith, QVector3D horizon)
+{
+    QcSkyState sky;
+    sky.zenith = zenith;
+    sky.horizon = horizon;
+    sky.cloudColor = horizon;
+    // Below the horizon, so that nothing would light from there if anything still read them.
+    sky.sunDirection = QVector3D(0.0f, -1.0f, 0.0f);
+    sky.moonDirection = QVector3D(0.0f, -1.0f, 0.0f);
+    sky.celestial = false;
+    return sky;
+}
+
 } // namespace
+
+QVector3D colourOf(quint32 rgb)
+{
+    return QVector3D(static_cast<float>((rgb >> 16) & 0xFF), static_cast<float>((rgb >> 8) & 0xFF), static_cast<float>(rgb & 0xFF)) / 255.0f;
+}
+
+QcSkyState withAtmosphere(QcSkyState sky, const QcAtmosphereFog &fog)
+{
+    sky.horizon = mix(sky.horizon, fog.colour, fog.colourShare);
+    if (!sky.celestial) {
+        // A vault without sun is the fog all around.
+        sky.zenith = mix(sky.zenith, fog.colour, fog.colourShare);
+        sky.cloudColor = sky.horizon;
+    }
+
+    // The shares are taken before fogScale; the shown distances are the atmosphere's.
+    const double scale = std::max(sky.fogScale, 0.01);
+    sky.fogStart = sky.fogStart + (fog.start / scale - sky.fogStart) * std::clamp(fog.startShare, 0.0, 1.0);
+    const double endScale = 0.5 + 0.5 * scale;
+    sky.fogEnd = sky.fogEnd + (fog.end / endScale - sky.fogEnd) * std::clamp(fog.endShare, 0.0, 1.0);
+    return sky;
+}
+
+QcSkyState forDimension(const QcDimensionDefinition &dimension, double worldTime)
+{
+    using Sky = QcDimensionDefinition::Sky;
+    const std::optional<QVector3D> fog = dimension.fogColour ? std::optional<QVector3D>(colourOf(*dimension.fogColour)) : std::nullopt;
+    QcSkyState sky;
+    switch (dimension.sky) {
+    case Sky::Overworld:
+        sky = at(dimension.dayCycle ? worldTime : fixedNoon);
+        sky.horizon = fog.value_or(sky.horizon);
+        break;
+    case Sky::Nether:
+        sky = vault(fog.value_or(netherFog), fog.value_or(netherFog));
+        // The nether's fog stands close, as the hot air hides the far caverns.
+        sky.fogScale = netherFogScale;
+        break;
+    case Sky::End:
+        sky = vault(endZenith, fog.value_or(endHorizon));
+        break;
+    }
+
+    sky.skyLight = dimension.skyLight;
+    sky.daylight = dimension.skyLight ? sky.daylight : 0.0;
+    sky.flashLight = std::max(sky.flashLight, ambientShare * std::clamp(dimension.ambientLight, 0, 15) / 15.0);
+    return sky;
+}
 
 QcSkyState at(double worldTime)
 {
@@ -123,6 +194,13 @@ QcSkyState withBlast(QcSkyState sky, double flash)
     sky.horizon = mix(sky.horizon, fireColour, flash * 0.5);
     sky.cloudColor = mix(sky.cloudColor, fireColour, flash * 0.5);
     sky.flashLight = std::max(sky.flashLight, flash * 0.6);
+    return sky;
+}
+
+QcSkyState withNightVision(QcSkyState sky, bool sees)
+{
+    constexpr double nightVisionLight = 0.76;
+    sky.flashLight = sees ? std::max(sky.flashLight, nightVisionLight) : sky.flashLight;
     return sky;
 }
 

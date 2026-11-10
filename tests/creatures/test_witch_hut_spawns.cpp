@@ -129,7 +129,7 @@ private:
 
     static QcSpawnArea witchArea(QcBlockPos min, QcBlockPos max)
     {
-        return {{min.x, 0, min.z}, {max.x, QcWorld::worldHeight - 1, max.z}, {u"qtcraft:witch"_s}};
+        return {{min.x, 0, min.z}, {max.x, QcWorld::worldHeight - 1, max.z}, QList<QcStructureDefinition::SpawnArea::Monster>{{u"qtcraft:witch"_s, 1, std::nullopt}}, {}};
     }
 
     std::unique_ptr<QcServerWorld> makeWorld(const std::shared_ptr<const QcContentRegistry> &content, int radius,
@@ -416,7 +416,7 @@ private slots:
     {
         const QcStructureDefinition *hut = m_content->worldgen().structure(u"qtcraft:witch_hut"_s);
         QVERIFY(hut && hut->spawnArea);
-        QCOMPARE(hut->spawnArea->monsters, QStringList{u"qtcraft:witch"_s});
+        QCOMPARE(hut->spawnArea->monsters, (QList<QcStructureDefinition::SpawnArea::Monster>{{u"qtcraft:witch"_s, 1, std::nullopt}}));
         QVERIFY(hut->guardians.isEmpty());
         for (const QString &name : {u"qtcraft:desert_temple"_s, u"qtcraft:desert_temple_station"_s}) {
             const QcStructureDefinition *temple = m_content->worldgen().structure(name);
@@ -427,7 +427,7 @@ private slots:
         }
         QCOMPARE(m_content->worldgen().structure(u"qtcraft:desert_temple"_s)->guardians.front().cooldownSeconds, 120.0);
         // The rule of a kind in an area keeps its light test and drops biome, time and weight.
-        const QcMobDefinition::SpawnRule rule = QcSpawnAreas::ruleOf(m_content->mobs()[type(u"witch"_s)]);
+        const QcMobDefinition::SpawnRule rule = QcSpawnAreas::ruleOf(m_content->mobs()[type(u"witch"_s)], {u"qtcraft:witch"_s, 1, std::nullopt});
         QVERIFY(rule.darkness);
         QCOMPARE(rule.maxLight, 0);
         QCOMPARE(rule.weight, 1.0);
@@ -444,7 +444,7 @@ private slots:
         QVERIFY(plain && !plain->spawnArea);
         const QcResult<QcStructureDefinition> witches = parse(u", \"spawnArea\": { \"monsters\": [\"witch\"] }"_s);
         QVERIFY2(witches, qPrintable(witches ? QString() : witches.error()));
-        QCOMPARE(witches->spawnArea->monsters, QStringList{u"qtcraft:witch"_s});
+        QCOMPARE(witches->spawnArea->monsters, (QList<QcStructureDefinition::SpawnArea::Monster>{{u"qtcraft:witch"_s, 1, std::nullopt}}));
         for (const QString &wrong : {u", \"spawnArea\": { \"monsters\": [] }"_s, u", \"spawnArea\": { }"_s, u", \"spawnArea\": [\"witch\"]"_s,
                                      u", \"spawnArea\": { \"monsters\": [3] }"_s}) {
             const QcResult<QcStructureDefinition> refused = parse(wrong);
@@ -455,7 +455,7 @@ private slots:
         // A kind that is no monster is reported and never comes.
         auto content = std::make_shared<QcContentRegistry>(*m_content);
         QcStructureDefinition hut = *content->worldgen().structure(u"qtcraft:witch_hut"_s);
-        hut.spawnArea->monsters = {u"qtcraft:cow"_s, u"qtcraft:witch"_s};
+        hut.spawnArea->monsters = {{u"qtcraft:cow"_s, 1, std::nullopt}, {u"qtcraft:witch"_s, 1, std::nullopt}};
         content->worldgen().registerStructure(hut);
         const QStringList warnings = QcSpawnerContent::resolve(*content);
         QVERIFY2(warnings.contains(u"structure 'qtcraft:witch_hut': spawn area with 'qtcraft:cow', not a known monster, none come"_s),
@@ -464,8 +464,37 @@ private slots:
         auto world = makeWorld(content, 0, {witchArea({0, 0, 0}, {3, 0, 3})});
         areas.refresh(*world, {playerAt(*world, 0, 0)});
         QCOMPARE(areas.areas().size(), qsizetype{1});
-        QCOMPARE(areas.areas().front().types, QList<QcCreatureKindId>{type(u"witch"_s)});
-        QVERIFY(areas.at(3, 3) && !areas.at(4, 3));
+        QCOMPARE(areas.areas().front().kinds.size(), qsizetype{1});
+        QCOMPARE(areas.areas().front().kinds.front().type, type(u"witch"_s));
+        QVERIFY(areas.at({3, 70, 3}) && !areas.at({4, 70, 3}));
+    }
+
+    // An area of parts (a fortress, decision E-1074) holds only the cells of its boxes, draws its
+    // kinds by weight and gives a kind its own block light limit.
+    void partsWeightsAndLightOfAnArea()
+    {
+        using Monster = QcStructureDefinition::SpawnArea::Monster;
+        const QList<Monster> monsters{{u"qtcraft:skeleton"_s, 2, 7}, {u"qtcraft:zombie"_s, 5, std::nullopt}};
+        const QcSpawnArea site{{0, 60, 0}, {9, 70, 9}, monsters, {{{0, 60, 0}, {9, 64, 3}}, {{6, 66, 6}, {9, 70, 9}}}};
+        QcSpawnAreas areas(m_content);
+        auto world = makeWorld(m_content, 0, {site});
+        areas.refresh(*world, {playerAt(*world, 0, 0)});
+        QCOMPARE(areas.areas().size(), qsizetype{1});
+        QVERIFY(areas.at({2, 62, 2}) && areas.at({7, 68, 7}));
+        QVERIFY(!areas.at({2, 66, 2}) && !areas.at({2, 62, 5}) && !areas.at({7, 62, 7}));
+        QVERIFY(areas.touchesColumn(2, 2) && areas.touchesColumn(7, 7) && !areas.touchesColumn(2, 7));
+
+        const QcSpawnAreas::Area &area = areas.areas().front();
+        QCOMPARE(area.totalWeight(), 7);
+        QCOMPARE(area.kindAt(0).type, type(u"skeleton"_s));
+        QCOMPARE(area.kindAt(1).type, type(u"skeleton"_s));
+        QCOMPARE(area.kindAt(2).type, type(u"zombie"_s));
+        QCOMPARE(area.kindAt(6).type, type(u"zombie"_s));
+        // The skeleton's limit replaces its darkness test; the zombie keeps its own.
+        QVERIFY(!area.kindAt(0).rule.darkness);
+        QCOMPARE(area.kindAt(0).rule.maxLight, 7);
+        QVERIFY(area.kindAt(2).rule.darkness);
+        QCOMPARE(area.kindAt(2).rule.maxLight, 0);
     }
 
     void generatedHutsAreTheirFootprints()
@@ -490,7 +519,7 @@ private slots:
                     QCOMPARE(area->max.x - area->min.x + 1, plan->sizeX());
                     QCOMPARE(area->max.z - area->min.z + 1, plan->sizeZ());
                     QCOMPARE(area->min.x, std::min(plan->origin().x, plan->toWorld(QcBlockPos{plan->structure().sizeX() - 1, 0, 0}).x));
-                    QCOMPARE(area->monsters, QStringList{u"qtcraft:witch"_s});
+                    QCOMPARE(area->monsters, (QList<QcStructureDefinition::SpawnArea::Monster>{{u"qtcraft:witch"_s, 1, std::nullopt}}));
                     for (const QcGuardSite &site : sites.guards) {
                         QVERIFY(!area->containsColumn(site.min.x, site.min.z));
                     }

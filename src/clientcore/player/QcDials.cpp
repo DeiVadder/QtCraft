@@ -40,6 +40,16 @@ double clockAngle(double worldTime)
     return std::fmod((QcDayCycle::phase(worldTime) - 0.25) * 360.0 + 360.0, 360.0);
 }
 
+double spinAngle(double seconds, Dial dial)
+{
+    // Two waves of different speed against a steady turn: the needle turns, hesitates and swings
+    // back now and then, never the same way twice in a short while.
+    const double phase = dial == Dial::Compass ? 0.0 : 2.1;
+    const double angle = seconds * 140.0 + 160.0 * std::sin(seconds * 1.7 + phase) + 90.0 * std::sin(seconds * 0.6 + 2.0 * phase);
+    const double turn = std::fmod(angle, 360.0);
+    return turn < 0.0 ? turn + 360.0 : turn;
+}
+
 ClockTime clockTime(double worldTime)
 {
     // Phase 0 is sunrise, shown as 6:00.

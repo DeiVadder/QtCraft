@@ -86,13 +86,13 @@ check worldoptions --overlay "@300 open:worldOptionsPage"
 # "New world" of a normal world (draft D.3 A, decision E-930): the game mode stands in the page's
 # view without scrolling (its bottom above the form's), the map stands in its own column right of
 # it, and the pad walks the form in reading order: name, type, seed, the die, game mode, keeping the
-# inventory, the generator version, the world options, then down to "Create and play"; the world options page with its
+# inventory, the generator version, the start dimension (E-1110), the world options, then down to "Create and play"; the world options page with its
 # full map and sliders fits as well.
 MENU_WORLD_TYPE=terrain
 LOG_ITEMS=newWorldForm,gameModeChoice,newWorldMap
 check newworld-terrain --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
     --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
-    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
 LOG_ITEMS=
 # item_bottom <run> <name>: the bottom edge of a logged item in the window.
 item_bottom() {
@@ -111,11 +111,23 @@ if ! awk -v mode="$mode_bottom" -v form="$form_bottom" 'BEGIN { exit !(mode > 0 
     failed=1
 fi
 order=$(grep 'padFocus' "$DATA/newworld-terrain.log" | sed 's/^padFocus: //' | tr '\n' ' ')
-if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
     echo "newworld-terrain: the pad's focus does not walk the form in reading order: $order"
     failed=1
 fi
 check worldoptions-terrain --overlay "@300 open:worldOptionsPage"
+# The switch of the map's dimensions (decision E-1078): right from the form, right to the nether,
+# confirmed, and the map shows the nether's scale.
+LOG_ITEMS=worldMapScale
+check newworld-dimension --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadRight" \
+    --overlay "@600 pad:dpadRight" --overlay "@600 pad:south"
+LOG_ITEMS=
+order=$(grep 'padFocus' "$DATA/newworld-dimension.log" | sed 's/^padFocus: //' | tr '\n' ' ')
+if [ "$order" != "worldName worldMapDimension_qtcraft:overworld worldMapDimension_qtcraft:nether worldMapDimension_qtcraft:nether " ]; then
+    echo "newworld-dimension: the pad's focus does not reach the switch right of the form: $order"
+    failed=1
+fi
+expect_shown newworld-dimension worldMapScale yes
 MENU_WORLD_TYPE=
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
@@ -131,6 +143,8 @@ check creative $world --game-mode creative --overlay creative
 # shellcheck disable=SC2086
 check furnace $world --look 0,-89 --chat "/give raw_iron 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
 # shellcheck disable=SC2086
+check brewing $world --look 0,-89 --chat "/give sugar 5" --chat "/give ember_dust 2" --chat "/give awkward_potion" --chat "/give awkward_potion" --chat "/give awkward_potion" --chat "/setblock ~ ~-1 ~ brewing_stand" --overlay brewing
+# shellcheck disable=SC2086
 check chest $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ chest" --overlay chest
 # The machines in the common frame (stage 76.2-e): the key hints are shown and end inside it.
 LOG_ITEMS=slotFrame,slotKeyHints
@@ -145,6 +159,9 @@ fi
 # shellcheck disable=SC2086
 check enchanting $world --look 0,-89 --chat "/give lapis_lazuli 5" --chat "/xp add Player 30 levels" \
     --chat "/setblock ~ ~-1 ~ enchanting_table" --overlay enchanting
+# shellcheck disable=SC2086
+check smithing $world --look 0,-89 --chat "/give netherite_upgrade_smithing_template" --chat "/give diamond_sword" \
+    --chat "/give netherite_ingot" --chat "/setblock ~ ~-1 ~ smithing_table" --overlay smithing
 # shellcheck disable=SC2086
 check stonecutter $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ stonecutter" --overlay "@2500 key:use"
 # shellcheck disable=SC2086
@@ -220,6 +237,16 @@ check pad-inventory $world --chat "/give stone 5" --overlay inventory --overlay 
 if ! grep -o 'padFocus: slot:[0-9]*' "$DATA/pad-inventory.log" | tr '\n' ' ' | grep -Eq 'slot:100 .*slot:101 .*slot:102 .*slot:9'; then
     echo "pad-inventory: the pad's focus did not move as expected:"
     grep 'padFocus' "$DATA/pad-inventory.log"
+    failed=1
+fi
+# The pad on the brewing stand's screen: its focus reaches the stand's slots (decision E-1063). The
+# stand opens a moment after the world, so the steps wait; steps of one delay run in order.
+# shellcheck disable=SC2086
+check pad-brewing $world --look 0,-89 --chat "/setblock ~ ~-1 ~ brewing_stand" --overlay brewing --overlay "@4000 pad:dpadLeft" --overlay "@4000 pad:dpadUp" --overlay "@4000 pad:dpadRight" \
+    --overlay "@4000 pad:dpadUp" --overlay "@4000 pad:dpadLeft" --overlay "@4000 pad:dpadLeft"
+if ! grep -o 'padFocus: slot:[0-9]*' "$DATA/pad-brewing.log" | tr '\n' ' ' | grep -Eq 'slot:46 .*slot:50 .*slot:46 .*slot:48 .*slot:4[57]'; then
+    echo "pad-brewing: the pad's focus did not reach the stand's slots:"
+    grep 'padFocus' "$DATA/pad-brewing.log"
     failed=1
 fi
 # The chat on the pad: the on-screen keyboard (decision E-584) with its keys named.

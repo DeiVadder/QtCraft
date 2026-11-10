@@ -1,0 +1,8 @@
+{
+    "name": "gilded_melon_slice",
+    "pattern": "melon_slice",
+    "primary": "#e8c040",
+    "secondary": "#c89a2a",
+    "variation": 0.1,
+    "seed": 8502
+}

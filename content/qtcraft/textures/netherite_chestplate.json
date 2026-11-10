@@ -1,0 +1,8 @@
+{
+    "name": "netherite_chestplate",
+    "pattern": "chestplate",
+    "primary": "#62585b",
+    "secondary": "#7a6c6e",
+    "variation": 0.06,
+    "seed": 8887
+}

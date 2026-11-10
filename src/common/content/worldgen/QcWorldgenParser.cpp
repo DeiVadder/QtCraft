@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
+#include "common/content/worldgen/QcAtmosphereParser.h"
 #include "common/content/worldgen/QcCoastalTowerParser.h"
 #include "common/content/worldgen/QcVegetationParser.h"
 #include "common/core/QcWorldConstants.h"
@@ -103,6 +104,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         readPool();
     }
 
+    m_feature.glowBlock = m_reader.name(u"glow"_s, m_namespace);
+    m_feature.hangingBlock = m_reader.name(u"hanging"_s, m_namespace);
+    m_feature.fromRoof = m_reader.boolean(u"fromRoof"_s, false);
     m_feature.nearWater = m_reader.boolean(u"nearWater"_s, false);
     m_feature.onWater = m_reader.boolean(u"onWater"_s, false);
     if (m_reader.ok() && m_feature.onWater && (m_feature.nearWater || m_feature.type != QcFeatureDefinition::Type::Plant)) {
@@ -114,9 +118,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     m_feature.maxHeight = m_reader.integer(u"maxHeight"_s, m_feature.minHeight, m_feature.minHeight, 32);
 
     m_feature.shape = m_reader.string(u"shape"_s, u"round"_s);
-    static const QStringList shapes{u"round"_s, u"cone"_s, u"bush"_s, u"giant_cone"_s, u"giant_round"_s};
+    static const QStringList shapes{u"round"_s, u"cone"_s, u"bush"_s, u"giant_cone"_s, u"giant_round"_s, u"fungus_dome"_s, u"fungus_canopy"_s};
     if (!shapes.contains(m_feature.shape)) {
-        m_reader.fail(u"'shape' must be round, cone, bush, giant_cone or giant_round"_s);
+        m_reader.fail(u"'shape' must be round, cone, bush, giant_cone, giant_round, fungus_dome or fungus_canopy"_s);
     }
     m_feature.vinesBlock = m_reader.name(u"vines"_s, m_namespace);
     if (m_feature.trunkBlock.isEmpty()) {
@@ -229,6 +233,29 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     return weights;
 }
 
+// The biome with the fields that shape its land.
+[[nodiscard]] QcBiomeDefinition withLandShape(QcBiomeDefinition biome, QcJsonFieldReader &reader)
+{
+    biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
+    biome.heightVariation = reader.number(u"heightVariation"_s, 6.0, 0.0, 120.0);
+    biome.ridges = reader.number(u"ridges"_s, 0.0, 0.0, 1.0);
+    biome.terraceHeight = reader.integer(u"terraceHeight"_s, 0, 0, 32);
+    biome.overhang = reader.integer(u"overhang"_s, 0, 0, 16);
+    return biome;
+}
+
+// The biome's nested objects: what grows on its floors and its atmosphere (decision E-1120).
+QcBiomeDefinition withNestedParts(QcBiomeDefinition biome, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
+    });
+    reader.nestedObject(u"atmosphere"_s, [&biome, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
+        biome.atmosphere = QcAtmosphereParser::parseAtmosphere(object, nested, packNamespace);
+    });
+    return biome;
+}
+
 } // namespace
 
 namespace QcWorldgenParser {
@@ -250,14 +277,11 @@ namespace QcWorldgenParser {
 
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
+    biome.dimension = reader.name(u"dimension"_s, packNamespace);
     biome.ruggedness = reader.number(u"ruggedness"_s, biome.ruggedness, 0.0, 1.0);
     biome.rarity = reader.number(u"rarity"_s, biome.rarity, 0.0, 1.0);
     biome.spread = reader.number(u"spread"_s, biome.spread, 0.0, 0.1);
-    biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
-    biome.heightVariation = reader.number(u"heightVariation"_s, 6.0, 0.0, 120.0);
-    biome.ridges = reader.number(u"ridges"_s, 0.0, 0.0, 1.0);
-    biome.terraceHeight = reader.integer(u"terraceHeight"_s, 0, 0, 32);
-    biome.overhang = reader.integer(u"overhang"_s, 0, 0, 16);
+    biome = withLandShape(std::move(biome), reader);
 
     biome.steepBlock = reader.name(u"steep"_s, packNamespace);
     biome.steepSlope = reader.integer(u"steepSlope"_s, biome.steepSlope, 1, 32);
@@ -277,14 +301,15 @@ namespace QcWorldgenParser {
     biome.monsterWeights = parseMonsterWeights(json, reader, packNamespace);
     biome.surfacePatches = parseBlockShares(json, u"surfacePatches"_s, reader, packNamespace);
     biome.frozenDepth = reader.integer(u"frozenDepth"_s, 0, 0, 16);
+    biome.rockBlock = reader.name(u"rock"_s, packNamespace);
+    biome.rockBandBlock = reader.name(u"rockBand"_s, packNamespace);
+    biome.patchScale = reader.number(u"patchScale"_s, 0.0, 0.0, 256.0);
     biome.delta = reader.boolean(u"delta"_s, false);
     biome.deltaBiome = reader.name(u"deltaBiome"_s, packNamespace);
     if (biome.river && biome.delta) {
         reader.fail(u"a biome is either a river or a delta biome"_s);
     }
-    reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
-    });
+    biome = withNestedParts(std::move(biome), reader, packNamespace);
 
     if (biome.surfaceBlock.isEmpty()) {
         reader.fail(u"'surface' is required"_s);
@@ -323,6 +348,8 @@ namespace QcWorldgenParser {
     ore.maxY = reader.integer(u"maxY"_s, 64, ore.minY, QcWorld::worldHeight - 1);
     ore.veinsPerChunk = reader.integer(u"veinsPerChunk"_s, 8, 0, 256);
     ore.veinSize = reader.integer(u"veinSize"_s, 6, 1, 64);
+    ore.hidden = reader.boolean(u"hidden"_s, false);
+    ore.dimension = reader.name(u"dimension"_s, packNamespace);
     ore.biomes = QcContentFields::parseNames(u"biomes"_s, packNamespace, reader);
 
     if (ore.block.isEmpty()) {

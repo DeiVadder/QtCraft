@@ -1,0 +1,7 @@
+{
+    "name": "netherite_hoe",
+    "template": "netherite_upgrade_smithing_template",
+    "base": "diamond_hoe",
+    "addition": "netherite_ingot",
+    "result": "netherite_hoe"
+}

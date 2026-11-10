@@ -20,16 +20,23 @@ struct Situation
     bool machineOpen = false;
     bool smeltable = false;
     bool fuel = false;
+    /*! The machine is a brewing stand (decision E-1063): \c {fuel} goes first, the ingredient
+        (\c {smeltable}) next, and a potion (\c {bottle}) into the three bottle slots. \qcshared */
+    bool brewing = false;
+    bool bottle = false;
     /*! The moved item is armour whose slot is empty: the slot number
         (MoveInventoryItem::equipmentSlot onwards), else -1. With no block open, armour from the
         inventory goes there first. */
     int freeArmourSlot = -1;
+    /*! A workstation with a slot for each kind of item is open (the smithing table, decision
+        E-1115): the slot the moved item goes into, else -1 (it stays). */
+    int workstationSlot = -1;
     /*! A backpack opened from the hand (decision E-833): its slots go into the hotbar only. */
     bool hotbarOnly = false;
 };
 
 /*! Returns the target slots for the stack in slot \a from in \a situation, in the order they are
     filled; empty when the stack cannot go anywhere. */
-QList<int> targets(int from, Situation situation);
+QList<int> targets(int from, const Situation &situation);
 
 } // namespace QcQuickMove

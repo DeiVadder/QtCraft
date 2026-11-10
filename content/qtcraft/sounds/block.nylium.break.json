@@ -1,0 +1,89 @@
+{
+    "name": "block.nylium.break",
+    "volume": 0.85,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1470,
+            "gain": 0.04
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1250,
+            "resonance": 2.0,
+            "lowpass": 3748,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 294,
+            "resonance": 1.8,
+            "lowpass": 882,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 81,
+            "resonance": 1.2,
+            "lowpass": 243,
+            "gain": 0.8
+        },
+        {
+            "wave": "crackle",
+            "start": 0.01,
+            "duration": 0.25,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 3675,
+            "highpass": 735,
+            "density": 489,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "start": 0.06,
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1911,
+            "resonance": 3.0,
+            "lowpass": 5733,
+            "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 2520,
+            "highpass": 420,
+            "density": 630,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 3200,
+            "resonance": 1.2,
+            "highpass": 1800,
+            "gain": 0.25
+        }
+    ]
+}

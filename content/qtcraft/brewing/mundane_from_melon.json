@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_melon",
+    "base": "water",
+    "ingredient": "gilded_melon_slice",
+    "result": "mundane"
+}

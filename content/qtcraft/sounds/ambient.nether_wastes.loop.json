@@ -1,0 +1,47 @@
+{
+    "name": "ambient.nether_wastes.loop",
+    "bus": "ambient",
+    "volume": 0.55,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 90,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.45
+        },
+        {
+            "wave": "sine",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "frequency": 41,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.5,
+            "gain": 0.3
+        },
+        {
+            "wave": "crackle",
+            "attack": 0.0,
+            "curve": 0,
+            "duration": 8.0,
+            "lowpass": 900,
+            "highpass": 200,
+            "density": 6,
+            "gain": 0.25
+        },
+        {
+            "wave": "sine",
+            "attack": 0.8,
+            "curve": 1.5,
+            "duration": 2.0,
+            "start": 3.0,
+            "frequency": 70,
+            "endFrequency": 55,
+            "gain": 0.15
+        }
+    ]
+}

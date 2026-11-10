@@ -94,5 +94,8 @@
             ],
             "table": "ruined_portal_chest"
         }
+    ],
+    "generatorChanges": [
+        { "version": 3, "swaps": { "red_terracotta": "netherrack" } }
     ]
 }

@@ -183,6 +183,9 @@ struct QcVillagePlan
     {
         return x >= minX - margin && x <= maxX + margin && z >= minZ - margin && z <= maxZ + margin;
     }
+    /*! Returns the covered columns as a rectangle: what a generator switch asks about
+        (QcWorldGenerator::buildsStructure). */
+    QcXzRect bounds() const { return {minX, minZ, maxX, maxZ}; }
     /*! Returns whether \a chunk comes within \a margin blocks of the covered columns. */
     bool overlaps(QcChunkPos chunk, int margin) const
     {

@@ -47,6 +47,8 @@ void QcClientSession::connectParts()
     m_stonecutter.setSender(send);
     m_enchanting.setSender(send);
     m_anvil.setSender(send);
+    m_smithing.setSender(send);
+    m_beacon.setSender(send);
     m_admin.setSender(send);
 }
 
@@ -151,9 +153,11 @@ void QcClientSession::handleMessage(const QcMessage &message)
         return;
     }
 
-    if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
+    // The boss bars only watch for a DimensionChange; the others handle it too.
+    if (!m_bossBars.handle(message) && !handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
         && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
-        && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_enchanting.handle(message) && !m_anvil.handle(message)
+        && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_enchanting.handle(message) && !m_anvil.handle(message) && !m_smithing.handle(message)
+        && !m_beacon.handle(message)
         && !m_admin.receive(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }
@@ -222,6 +226,11 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         emit chunkLoaded(*change->loaded);
     } else if (change->unloaded) {
         emit chunkUnloaded(*change->unloaded);
+    } else if (change->dimensionChanged) {
+        // Nothing of the old dimension is seen or aimed at any more (decision E-1002).
+        m_entities.clear();
+        m_hand.setMining(false);
+        emit dimensionChanged();
     }
     for (const auto &[pos, previous] : change->blocks) {
         emit blockChanged(pos, previous);
@@ -402,7 +411,7 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     }
 
     if (m_prediction.riding().ridesCart()) {
-        m_prediction.followCart(m_entities);
+        m_prediction.followCart(m_entities, *m_worldMirror.content());
     } else if (m_prediction.riding().drivesBoat()) {
         rowingSounds();
     } else {
@@ -450,6 +459,7 @@ void QcClientSession::updateSounds()
     const QcVec3 eye = playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const double rain = m_worldMirror.weather().rainAt(static_cast<int>(std::floor(eye.y)));
     m_sounds.updateAmbience(*m_worldMirror.world(), eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
+    m_sounds.updateBiomeAmbience(m_worldMirror.atmosphere().current(), eye, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
     const QList<QcSoundCue> thunder = m_worldMirror.weather().tick(m_tickCount);
     for (const QcSoundCue &sound : thunder) {
         cue(sound);

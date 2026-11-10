@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/world/QcBlockAccess.h"
 #include "server/core/QcServerLimits.h"
@@ -41,6 +42,15 @@ public:
         clients). */
     using SetFunction = std::function<void(QcBlockPos pos, QcBlockId block)>;
 
+    /*! \brief How far a liquid runs. \qcfields */
+    struct Reach
+    {
+        /*! Blocks it runs sideways from its source. */
+        int distance = 0;
+        /*! Blocks it looks sideways for the nearest drop. */
+        int dropSearch = 0;
+    };
+
     /*! \brief What the steps of one tick did. */
     struct TickResult
     {
@@ -52,7 +62,7 @@ public:
         QList<QcBlockPos> unloaded;
     };
 
-    explicit QcLiquidFlow(std::shared_ptr<const QcContentRegistry> content);
+    explicit QcLiquidFlow(std::shared_ptr<const QcContentRegistry> content, const QList<QcDimensionDefinition::LiquidFlow> &flows = {});
 
     /*! Plans a step for the liquid at \a pos of \a world after its flow ticks, counted from
         \a now. Returns \c false for blocks that do not flow, positions already planned and when
@@ -102,9 +112,9 @@ public:
         liquid it reacts with. */
     [[nodiscard]] static std::optional<QcBlockId> reaction(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
     /*! Returns the state the flowing (non-source) liquid \a id at \a pos of \a world takes from
-        its feeders, air without any; std::nullopt while a neighbour that decides it is not
-        loaded. */
-    [[nodiscard]] static std::optional<QcBlockId> fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+        its feeders when it reaches \a distance blocks, air without any; std::nullopt while a
+        neighbour that decides it is not loaded. */
+    [[nodiscard]] static std::optional<QcBlockId> fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id, int distance);
     /*! Returns whether the liquid may flow into \a pos of \a world as \a state (air, replaceable
         or washable blocks, or a weaker part of the same liquid). */
     static bool canFlowInto(const QcBlockAccess &world, QcBlockPos pos, QcBlockId state);
@@ -114,9 +124,9 @@ public:
     static bool canReplace(const QcContentRegistry &content, std::optional<QcBlockId> block, QcBlockId state);
     /*! Returns the sides the liquid at \a pos of \a world spreads to as \a spread: of the sides
         it can flow into, those whose way leads to the nearest drop within the liquid's
-        \c {dropSearch} blocks and the reach left to \a spread (decision E-103), or all of them
-        when no drop is that near. */
-    static QList<QcBlockFace> spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread);
+        \c {dropSearch} blocks and the reach left to \a spread of the \a reach blocks it
+        runs (decision E-103), or all of them when no drop is that near. */
+    static QList<QcBlockFace> spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread, Reach reach);
 
 private:
     // What the steps of one tick work on.
@@ -128,10 +138,20 @@ private:
         TickResult &result;
     };
 
+    // How a liquid flows here: its own values or those of the dimension.
+    struct Flow
+    {
+        Reach reach;
+        int ticks = 0;
+    };
+
+    [[nodiscard]] Flow flowOf(QcBlockId id) const;
     void step(QcBlockPos pos, const StepContext &context);
     void change(QcBlockPos pos, QcBlockId block, const StepContext &context);
 
     std::shared_ptr<const QcContentRegistry> m_content;
+    // By block type, the liquids that flow differently in this dimension.
+    QHash<quint32, Flow> m_flows;
     // Due tick -> positions in the order they were planned.
     std::map<quint64, QList<QcBlockPos>> m_due;
     QHash<QcBlockPos, quint64> m_planned;

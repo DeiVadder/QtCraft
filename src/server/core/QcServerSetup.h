@@ -17,5 +17,10 @@ namespace QcServerSetup {
 
 /*! Applies \a setup to the world of \a state; block updates go to \a updates. */
 void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup &setup);
+/*! Applies what \a setup places in the current dimension of \a state: creatures, stands,
+    vehicles, contents, signs and block updates (they go to \a updates), but not the time and the
+    rules, which are the world's and belong to the overworld's generator. The way a dimension
+    other than the overworld is set up the first time it opens (decision E-988). */
+void applyContents(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup &setup);
 
 } // namespace QcServerSetup

@@ -5,6 +5,7 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcSoundKeys.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/gameplay/QcSwingSpeed.h"
@@ -18,8 +19,10 @@
 #include "server/blocks/QcOpeners.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/boats/QcServerBoats.h"
+#include "server/bosses/QcHydraSummoning.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcServerPortals.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerCombat.h"
@@ -44,6 +47,7 @@ using namespace Qt::StringLiterals;
 QcServerInteraction::QcServerInteraction(QcServerState &state, const Parts &parts)
     : m_state(state)
     , m_parts(parts)
+    , m_anchors(state, parts.sounds, parts.blocks, parts.inventory, parts.explosions)
 {
 }
 
@@ -77,12 +81,16 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         disarmCutWire();
         m_parts.blocks.breakBlock(pos, false);
         m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
+        m_parts.animals.barter().alarm(client, definition.name, false);
         return;
     }
 
     const QcItemStack heldStack = client.inventory.selectedStack();
     const int efficiency = QcEnchanting::levelOf(m_state.content(), heldStack, QcEnchantmentEffect::Efficiency);
-    const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency));
+    // Haste counts as it was when the mining began or as it is now, whichever is faster: the client
+    // may have mined on with an effect that ended meanwhile (decision E-992).
+    const double haste = std::max(client.mining.startFactor, QcEffectRules::miningFactor(m_state.content(), client.effects.all()));
+    const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency)) / haste;
     // In the players' time, so the mining takes as long at every tick rate.
     constexpr qint64 tickNs = static_cast<qint64>(QcPhysics::tickDuration * 1e9);
     const qint64 requiredNs = static_cast<qint64>(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
@@ -96,6 +104,8 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     disarmCutWire();
     m_parts.blocks.breakBlock(pos, QcMining::canHarvest(definition, held));
     m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
+    // Gold and containers the creatures that barter guard (decision E-1081).
+    m_parts.animals.barter().alarm(client, definition.name, false);
     client.hunger.exhaust(QcHunger::mineBlock);
 
     if (held && held->durability > 0) {
@@ -120,6 +130,12 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     }
 
     if (useClickedBlock(client, message.target)) {
+        return;
+    }
+    // Soul anchors and beds that explode (decisions E-1112, E-1113); the client may have predicted
+    // the held block placed against them.
+    if (!client.sneaking && QcLineOfSight::isWithinReach(client, message.target) && m_anchors.use(client, message.target)) {
+        rejectPlacement(client, qcNeighbour(message.target, message.face));
         return;
     }
 
@@ -151,7 +167,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.carve(client, message.target, message.face, held)
                           || m_parts.plants.strip(client, message.target, held)
                           || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
-    if (reshaped || m_parts.ignition.use(client, message)) {
+    if (reshaped || m_parts.portals.use(client, message) || m_parts.ignition.use(client, message)) {
         noteUse(client, held, clicked);
         return;
     }
@@ -184,6 +200,9 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 
     if (clickedBlock && (m_state.machineRules().machineOf(*clickedBlock) || storage) && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         m_parts.screens.open(client, target);
+        if (storage) {
+            m_parts.animals.barter().alarm(client, m_state.content().block(*clickedBlock).name, true);
+        }
         return true;
     }
 
@@ -192,16 +211,8 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
-    // The stonecutter (decision E-785).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.stonecutter.open(client, target)) {
-        return true;
-    }
-    // The enchanting table (decision E-864).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.enchanting.open(client, target)) {
-        return true;
-    }
-    // The anvil (decision E-866).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.anvil.open(client, target)) {
+    // The stonecutter, the enchanting table, the anvil, the smithing table and the beacon.
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.open(client, target)) {
         return true;
     }
 
@@ -352,6 +363,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     QcServerSigns(m_state).openEditor(client, target);
     // A golem's head on its body brings it to life (decision E-471).
     m_parts.golems.build(target);
+    // Three charred skulls on a T of soul blocks summon the charred hydra (decision E-1125).
+    QcHydraSummoning(m_state, m_parts.blocks).summon(target);
     // A fish bucket lets its fish out into the water it pours, kept with the world (decision E-501).
     QcServerAnimals::release(m_state, held, QcServerAnimals::releasePoint(target));
 
@@ -462,6 +475,14 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
         return;
     }
     const UseOnEntity use = useOnEntity(client, entityId);
+    // A creature that barters takes its currency from the hand (decision E-1081). The currency is
+    // never used otherwise on it, even when it refuses now.
+    if (const QcServerBarter::Giving giving = m_parts.animals.barter().give(client, entityId); giving != QcServerBarter::Giving::NotTheCurrency) {
+        if (giving == QcServerBarter::Giving::Given) {
+            noteUse(client, use);
+        }
+        return;
+    }
     // A cow takes the bucket before anything else is done with it (decision E-500).
     if (m_parts.animals.milk(client, entityId)) {
         noteUse(client, use);

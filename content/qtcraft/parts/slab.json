@@ -1,6 +1,7 @@
 {
     "name": "slab",
     "kinds": ["wood", "stone"],
+    "tags": { "wood": ["wooden_slabs"] },
     "fuel": 0.5,
     "block": {
         "shape": "slab",

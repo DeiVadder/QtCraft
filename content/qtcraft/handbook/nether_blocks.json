@@ -1,0 +1,36 @@
+{
+    "name": "nether_blocks",
+    "order": 88,
+    "icon": "netherrack",
+    "sections": [
+        "netherrack",
+        "soul",
+        "glowstone",
+        "quartz",
+        "bricks",
+        "blackstone",
+        "wart"
+    ],
+    "related": [
+        "netherrack",
+        "soul_sand",
+        "soul_soil",
+        "soul_fire",
+        "soul_torch",
+        "soul_lantern",
+        "glowstone",
+        "glowstone_dust",
+        "nether_quartz_ore",
+        "quartz",
+        "quartz_block",
+        "nether_gold_ore",
+        "nether_brick",
+        "nether_bricks",
+        "red_nether_bricks",
+        "nether_brick_fence",
+        "basalt",
+        "blackstone",
+        "gilded_blackstone",
+        "nether_wart"
+    ]
+}

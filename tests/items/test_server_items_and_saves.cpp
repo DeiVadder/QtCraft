@@ -115,7 +115,7 @@ private slots:
         QVERIFY(m_client->chatLines.last().contains(u"false"_s));
         chat(u"/give stone_pickaxe"_s);
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:stone_pickaxe"))});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:dirt")), QcServer::craftingGridSlot, 2});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:dirt")), QcMsg::MoveInventoryItem::craftingGridSlot, 2});
         chat(u"/kill"_s);
         QVERIFY(m_client->dead);
         QCOMPARE(countOf(item("qtcraft:dirt")), 0);

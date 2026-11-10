@@ -7,6 +7,7 @@
 #include "common/content/items/QcHoldSerializer.h"
 #include "common/content/items/QcItemDefinition.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "common/world/QcAtmosphere.h"
 
 #include <cmath>
 
@@ -152,7 +153,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 toolLevel = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
         >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> block.opensStonecutter >> block.opensEnchanting
-        >> block.opensAnvil
+        >> block.opensAnvil >> block.opensSmithing >> block.opensBeacon
         >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.machine.kinds
         >> block.soundMaterial;
     for (QString &key : block.soundKeys) {
@@ -299,7 +300,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 biteFood = 0;
     qint32 campfireSlots = 0;
     stream >> signLines >> signLength;
-    stream >> block.floats >> biteFood >> campfireSlots;
+    stream >> block.floats >> biteFood >> campfireSlots >> block.cauldron.bottle >> block.cauldron.bucket;
     block.sign = {signLines, signLength};
     block.bites.food = biteFood;
     block.campfire.slotCount = campfireSlots;
@@ -319,7 +320,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 
     block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
-        || facingRule > static_cast<quint8>(QcFacingRule::Against) || support > static_cast<quint8>(QcBlockSupport::Attached) || containerSlots < 0
+        || facingRule > static_cast<quint8>(QcFacingRule::Against) || support > static_cast<quint8>(QcBlockSupport::Above) || containerSlots < 0
         || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || biteFood < 0 || biteFood > QcItemDefinition::maxFood
         || campfireSlots < 0 || campfireSlots > QcCampfireDefinition::maxSlots || !QcBlockStateTable::problem(block).isEmpty()) {
@@ -349,7 +350,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.name << block.translationKey << static_cast<quint8>(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << static_cast<qint32>(block.lightOpacity) << block.hardness << block.tool
            << static_cast<qint32>(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.opensEnchanting << block.opensAnvil
-           << block.machine.category
+           << block.opensSmithing << block.opensBeacon << block.machine.category
            << block.machine.speed << block.fuelSeconds << block.machine.sound << block.machine.kinds << block.soundMaterial;
     for (const QString &key : block.soundKeys) {
         stream << key;
@@ -399,13 +400,16 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     // Signs: the client draws their text and offers the editor (decision E-766).
     stream << static_cast<quint8>(block.sign.lines) << static_cast<quint8>(block.sign.lineLength);
     // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
-    // take the use instead of food being eaten.
+    // take the use instead of food being eaten, a cauldron takes its bottle instead of it being drunk.
     stream << block.floats << static_cast<qint32>(block.bites.food) << static_cast<qint32>(block.campfire.slotCount);
+    stream << block.cauldron.bottle << block.cauldron.bucket;
     // How a hand holds its item (decision E-831).
     QcHoldSerializer::write(stream, block.hold);
     // The material and family of a building part, "<material>/<family>" (the creative tab Building
     // parts sorts by it, decision E-874).
     stream << block.partOf;
+    // What the client lets the block give off (decision E-1121).
+    QcAtmosphere::writeEmitters(stream, block.particles);
 }
 
 std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
@@ -440,9 +444,11 @@ std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
     }
     block->hold = *hold;
     stream >> block->partOf;
-    if (stream.status() != QDataStream::Ok) {
+    std::optional<QList<QcParticleEmitter>> particles = QcAtmosphere::readEmitters(stream);
+    if (!particles || stream.status() != QDataStream::Ok) {
         return std::nullopt;
     }
+    block->particles = std::move(*particles);
     return block;
 }
 

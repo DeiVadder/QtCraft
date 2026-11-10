@@ -1,3 +1,6 @@
 {
-    "name": "gold_ingot"
+    "name": "gold_ingot",
+    "tags": [
+        "beacon_payment"
+    ]
 }

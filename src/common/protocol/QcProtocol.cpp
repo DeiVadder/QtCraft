@@ -3,7 +3,8 @@
 
 #include "common/protocol/QcProtocol.h"
 
-#include "common/protocol/QcProtocolCodec.h"
+#include "common/protocol/QcAdminCodec.h"
+#include "common/protocol/QcBeaconCodec.h"
 
 #include <QDataStream>
 #include <QIODevice>
@@ -61,7 +62,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
     };
     if (is.template operator()<QcMsg::Disconnect>() || is.template operator()<QcMsg::CloseMachine>()
         || is.template operator()<QcMsg::CloseTrade>() || is.template operator()<QcMsg::CloseStonecutter>()
-        || is.template operator()<QcMsg::CloseEnchanting>() || is.template operator()<QcMsg::CloseAnvil>()) {
+        || is.template operator()<QcMsg::CloseEnchanting>() || is.template operator()<QcMsg::CloseAnvil>()
+        || is.template operator()<QcMsg::CloseSmithing>() || is.template operator()<QcMsg::CloseBeacon>()) {
         return true;
     }
 
@@ -83,7 +85,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::AdminSubscribe>() || is.template operator()<QcMsg::AdminRequest>()
                                || is.template operator()<QcMsg::ChooseEnchantment>() || is.template operator()<QcMsg::RenameAnvil>()
                                || is.template operator()<QcMsg::ForgeAnvil>() || is.template operator()<QcMsg::PauseRequest>()
-                               || is.template operator()<QcMsg::LatencyProbe>();
+                               || is.template operator()<QcMsg::LatencyProbe>() || is.template operator()<QcMsg::ForgeSmithing>()
+                               || is.template operator()<QcMsg::ChooseBeaconEffects>();
     return clientMessage == (sender == Peer::Client);
 }
 

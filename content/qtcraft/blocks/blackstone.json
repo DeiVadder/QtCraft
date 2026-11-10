@@ -1,0 +1,16 @@
+{
+    "name": "blackstone",
+    "sound": "blackstone",
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "tags": [
+        "stone_crafting_materials"
+    ],
+    "textures": {
+        "side": "blackstone",
+        "top": "blackstone_top",
+        "bottom": "blackstone_top"
+    }
+}

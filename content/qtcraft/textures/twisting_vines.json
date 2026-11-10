@@ -1,0 +1,30 @@
+{
+    "name": "twisting_vines",
+    "pattern": "icon",
+    "primary": "#20a08c",
+    "variation": 0.0,
+    "seed": 8716,
+    "palette": {
+        "A": "#20a08c",
+        "B": "#0f6860",
+        "T": "#68e8c4"
+    },
+    "bitmap": [
+        "        BT",
+        "   B  B   A",
+        "    TB     A",
+        "      B   A",
+        "        BT",
+        "      A  BB",
+        "     A    TB",
+        "      A   A",
+        "        BT",
+        "   B  B   A",
+        "    TB     A",
+        "      B   A",
+        "        BT",
+        "      A  BB",
+        "     A    TB",
+        "      A   B"
+    ]
+}

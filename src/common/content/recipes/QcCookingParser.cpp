@@ -4,6 +4,7 @@
 #include "common/content/recipes/QcCookingParser.h"
 
 #include "common/content/items/QcItemDefinition.h"
+#include "common/content/recipes/QcMachineDefinition.h"
 #include "common/content/recipes/QcSmeltingRecipe.h"
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcJsonFieldReader.h"
@@ -17,6 +18,7 @@ namespace {
 
 constexpr double minMachineSpeed = 0.01;
 constexpr double maxMachineSpeed = 100.0;
+constexpr int maxFuelUses = 1000;
 constexpr qsizetype maxKinds = 16;
 
 // The recipe category of a machine or campfire (default: the base furnace's).
@@ -65,6 +67,17 @@ QcMachineDefinition parseMachine(const QJsonObject &json, QcJsonFieldReader &rea
     machine.speed = reader.number(u"speed"_s, 1.0, minMachineSpeed, maxMachineSpeed);
     machine.sound = reader.name(u"sound"_s, packNamespace, QString::fromLatin1(QcSoundKeys::machineActive));
     machine.kinds = recipeKinds(json, reader);
+    reader.nestedObject(u"brewing"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcBrewerDefinition brewing;
+        brewing.fuel = nested.name(u"fuel"_s, packNamespace);
+        brewing.fuelUses = nested.integer(u"fuelUses"_s, brewing.fuelUses, 1, maxFuelUses);
+        brewing.seconds = nested.number(u"seconds"_s, brewing.seconds, QcSmeltingRecipe::minSeconds, QcSmeltingRecipe::maxSeconds);
+        brewing.finishSound = nested.name(u"finishSound"_s, packNamespace);
+        if (nested.ok() && brewing.fuel.isEmpty()) {
+            nested.fail(u"'brewing' needs 'fuel'"_s);
+        }
+        machine.brewing = brewing;
+    });
     return machine;
 }
 
@@ -87,6 +100,7 @@ QcBitesDefinition parseBites(const QcBlockDefinition &block, QcJsonFieldReader &
 {
     QcBitesDefinition bites;
     bites.food = reader.integer(u"food"_s, 2, 1, QcItemDefinition::maxFood);
+    bites.saturation = reader.number(u"saturation"_s, bites.saturation, 0.0, QcItemDefinition::maxSaturationModifier);
     const QcBlockProperty *property = block.property(u"bites"_s);
     if (reader.ok() && (!property || property->values.size() < 2)) {
         reader.fail(u"a block with bites needs the state 'bites' with at least two values"_s);

@@ -19,6 +19,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <optional>
 
 class QcWorkerPool;
 class QcWorldMapImageProvider;
@@ -39,6 +40,17 @@ class QcWorldMapPreview : public QObject
     Q_PROPERTY(QString seedText READ seedText WRITE setSeedText NOTIFY seedTextChanged FINAL)
     // The world generator version of the world shown (decision E-922; the form's choice).
     Q_PROPERTY(int generatorVersion READ generatorVersion WRITE setGeneratorVersion NOTIFY generatorVersionChanged FINAL)
+    // The name of the dimension shown, one of `dimensions` (decision E-1078). Stays when the seed
+    // or the options change.
+    Q_PROPERTY(QString dimension READ dimension WRITE setDimension NOTIFY dimensionChanged FINAL)
+    // The dimensions of the content that have a map, the overworld first: maps with value (the
+    // name) and text (in the language), as Segments takes them.
+    Q_PROPERTY(QVariantList dimensions READ dimensions NOTIFY dimensionsChanged FINAL)
+    // Whether the dimension shown is the overworld.
+    Q_PROPERTY(bool overworld READ overworld NOTIFY dimensionChanged FINAL)
+    // How many overworld blocks one block of the dimension shown stands for ("coordinateScale");
+    // the view's centre counts in the blocks of this scale.
+    Q_PROPERTY(double coordinateScale READ coordinateScale NOTIFY dimensionChanged FINAL)
     // Whether the page with the preview is shown; nothing is computed otherwise.
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged FINAL)
     // Villages and structures on the map: off by default, so the map does not give them away.
@@ -71,6 +83,10 @@ class QcWorldMapPreview : public QObject
     // What the centre of the shown map is, with its block column ("Plains, x 0, z 0"; empty without
     // a map): the line under the map while it has the keyboard's focus.
     Q_PROPERTY(QString centreText READ centreText NOTIFY imageChanged FINAL)
+    // The spawn marker (decision E-1079): maps with x and y (0..1 across the map), title and text;
+    // empty before the search has ended, in a dimension no portal of the overworld leads to, or
+    // when it lies outside the shown map.
+    Q_PROPERTY(QVariantMap spawn READ spawn NOTIFY spawnChanged FINAL)
     // How far from the view's centre villages and structures are looked for, in blocks.
     Q_PROPERTY(int sitesRadius READ sitesRadius CONSTANT FINAL)
 
@@ -101,6 +117,14 @@ public:
     int generatorVersion() const { return m_generatorVersion; }
     // A version the game does not have is refused with a warning.
     void setGeneratorVersion(int version);
+    QString dimension() const { return m_dimension; }
+    // Moves the view to the same place in the other dimension's blocks (by their coordinate
+    // scales) at the same zoom; a name that is not in `dimensions` is refused with a warning.
+    void setDimension(const QString &dimension);
+    QVariantList dimensions() const;
+    bool overworld() const { return dimension() == QLatin1StringView(QcDimensionDefinition::overworldName); }
+    double coordinateScale() const { return m_coordinateScale; }
+    QVariantMap spawn() const;
     bool active() const { return m_active; }
     void setActive(bool active);
     bool showSites() const { return m_showSites; }
@@ -108,7 +132,7 @@ public:
     QString source() const;
     Stage stage() const { return m_stage; }
     bool busy() const { return m_busy; }
-    double progress() const { return passCount() > 0 ? static_cast<double>(m_passesDone) / passCount() : 0.0; }
+    double progress() const { return passCount() > 0 ? static_cast<double>(passesDone()) / passCount() : 0.0; }
     int radius() const { return view().radius; }
     int centreX() const { return view().centreX; }
     int centreZ() const { return view().centreZ; }
@@ -154,6 +178,9 @@ public:
 signals:
     void seedTextChanged();
     void generatorVersionChanged();
+    void dimensionChanged();
+    void dimensionsChanged();
+    void spawnChanged();
     void activeChanged();
     void showSitesChanged();
     void imageChanged();
@@ -175,6 +202,14 @@ private:
     void setLegend(QVariantList legend);
     // The markers and the legend of the kinds (sites, siteLegend).
     void setMarkers(QVariantList markers, QVariantList legend);
+    // Shows the dimension `name` of the coordinate scale `scale`: the view moves to the same place
+    // in its blocks, the zoom stays.
+    void moveToDimension(const QString &name, double scale);
+    // The spawn marker in the blocks of the dimension shown, none before the search has ended.
+    const std::optional<QcWorldMapSpawn> &spawnPlace() const { return m_spawnPlace; }
+    void setSpawnPlace(std::optional<QcWorldMapSpawn> place);
+    // Another world or dimension: what was found on the map no longer stands there.
+    void forgetPlaces();
     // The villages and structures found for the current world, in world columns, and every kind
     // the generator can place.
     const QList<QcBiomeMap::Site> &siteList() const { return m_siteList; }
@@ -201,6 +236,7 @@ private:
     void setBusy(bool busy);
     // The passes of the running build that have arrived, of how many it has.
     int passCount() const { return m_passCount; }
+    int passesDone() const { return m_passesDone; }
     void setPasses(int done, int count);
     // A change: the running build stops now, a new one starts once changes settle.
     void requestUpdate();
@@ -217,6 +253,8 @@ private:
     QJsonObject m_values;
     QString m_seedText;
     int m_generatorVersion = QcGeneratorVersion::current;
+    QString m_dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
+    double m_coordinateScale = 1.0;
     bool m_active = false;
     bool m_showSites = false;
     QcBiomeMap::Area m_view{0, 0, defaultRadius, 1};
@@ -234,6 +272,7 @@ private:
     QStringList m_siteKinds;
     QSet<QString> m_hiddenKinds;
     QList<QcBiomeMap::Site> m_siteList;
+    std::optional<QcWorldMapSpawn> m_spawnPlace;
     ResultHook m_resultHook; // NOLINT(qc-member-access): a test hook, set by its setter and read only in start()
     std::array<qint64, 3> m_passMs{-1, -1, -1};
     // The engine owns the provider and may delete it first (the game outlives the QML engine).

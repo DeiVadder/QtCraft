@@ -163,7 +163,7 @@ private slots:
     {
         QcContentRegistry content;
         QcProjectileDefinition kind = parsed(R"({"name": "bomb", "item": "bomb",
-            "onHit": [{"type": "explode", "power": 4}, {"type": "knockback", "strength": 0.5}]})");
+            "onHit": [{"type": "transmute", "power": 4}, {"type": "knockback", "strength": 0.5}]})");
         QCOMPARE(kind.onHit.size(), 2);
         QCOMPARE(kind.onHit[0].fields.value(u"power"_s).toInt(), 4);
         content.registerProjectile(kind);
@@ -173,7 +173,7 @@ private slots:
         QVERIFY(content.registerItem(bomb).has_value());
 
         const QStringList warnings = content.finish();
-        QVERIFY2(warnings.contains(u"projectile 'test:bomb': unknown onHit type 'explode' left out"_s), qPrintable(warnings.join(u'\n')));
+        QVERIFY2(warnings.contains(u"projectile 'test:bomb': unknown onHit type 'transmute' left out"_s), qPrintable(warnings.join(u'\n')));
         const QcProjectileDefinition &left = *content.projectile(u"test:bomb"_s);
         QCOMPARE(left.onHit.size(), 1);
         QCOMPARE(left.onHit[0].number, 0.5);

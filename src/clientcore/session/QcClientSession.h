@@ -3,6 +3,10 @@
 
 #pragma once
 
+// NOLINT(qc-file-length): the session is the client's facade (E-717); one line over with the
+// dimension signal (E-1002) and five over with the beacon's screen (E-1142); moving the screen
+// parts behind an owner of their own is noted as a follow-up of package 83.2.
+
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/figures/QcEntityPose.h"
@@ -17,12 +21,15 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/player/QcRefusalThrottle.h"
 #include "clientcore/session/QcClientAnvil.h"
+#include "clientcore/session/QcClientBeacon.h"
+#include "clientcore/session/QcClientBossBars.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEnchanting.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
 #include "clientcore/session/QcClientSignEditor.h"
+#include "clientcore/session/QcClientSmithing.h"
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientStonecutter.h"
 #include "clientcore/session/QcClientTrading.h"
@@ -207,6 +214,16 @@ public:
     QcClientAnvil &anvil() { return m_anvil; }
     /*! Returns the anvil's screen the server opened, read-only. */
     const QcClientAnvil &anvil() const { return m_anvil; }
+    /*! Returns the smithing table's screen the server opened (decision E-1115). */
+    QcClientSmithing &smithing() { return m_smithing; }
+    /*! Returns the smithing table's screen the server opened, read-only. */
+    const QcClientSmithing &smithing() const { return m_smithing; }
+    /*! Returns the beacon's screen the server opened (decision E-1142). */
+    QcClientBeacon &beacon() { return m_beacon; }
+    /*! Returns the beacon's screen the server opened, read-only. */
+    const QcClientBeacon &beacon() const { return m_beacon; }
+    /*! Returns the boss bars the server shows the player (decision E-1127). */
+    const QcClientBossBars &bossBars() const { return m_bossBars; }
     /*! Sends \a text as a chat line, trimmed; blank text sends nothing. */
     void sendChat(const QString &text);
     /*! Asks the server to pause (\a paused) while the pause menu is open, or to run on (decision
@@ -292,6 +309,9 @@ signals:
     void chunkLoaded(QcChunkPos pos);
     /*! The server unloaded the chunk at \a pos. */
     void chunkUnloaded(QcChunkPos pos);
+    /*! The player entered another dimension, or the one he joined in (decision E-1002): the
+        chunks, creatures and labels are gone; worldMirror().dimension() is the new one. */
+    void dimensionChanged();
     /*! The server changed the block at \a pos; \a previous is the block before. */
     void blockChanged(QcBlockPos pos, QcBlockId previous);
     /*! Emitted when the block at \a pos changed from \a previous because the local player's
@@ -410,7 +430,10 @@ private:
     QcClientStonecutter m_stonecutter;
     QcClientEnchanting m_enchanting;
     QcClientAnvil m_anvil;
-    QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
+    QcClientSmithing m_smithing;
+    QcClientBeacon m_beacon;
+    QcClientBossBars m_bossBars;
+    QcHandActions m_hand{{m_prediction, m_inventory, m_entities, m_vitals},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },
                          [this](const QcSoundCue &sound) { cue(sound); },

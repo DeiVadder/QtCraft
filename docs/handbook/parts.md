@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch button](#block-qtcraft-birch_button) · [Birch fence](#block-qtcraft-birch_fence) · [Birch fence gate](#block-qtcraft-birch_fence_gate) · [Birch pressure plate](#block-qtcraft-birch_pressure_plate) · [Birch slab](#block-qtcraft-birch_slab) · [Birch stairs](#block-qtcraft-birch_stairs) · [Birch vertical slab](#block-qtcraft-birch_vertical_slab) · [Black carpet](#block-qtcraft-black_wool_carpet) · [Blue carpet](#block-qtcraft-blue_wool_carpet) · [Brick slab](#block-qtcraft-brick_slab) · [Brick stairs](#block-qtcraft-brick_stairs) · [Brick vertical slab](#block-qtcraft-brick_vertical_slab) · [Brick wall](#block-qtcraft-brick_wall) · [Brown carpet](#block-qtcraft-brown_wool_carpet) · [Cobblestone slab](#block-qtcraft-cobblestone_slab) · [Cobblestone stairs](#block-qtcraft-cobblestone_stairs) · [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) · [Cobblestone wall](#block-qtcraft-cobblestone_wall) · [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) · [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) · [Cyan carpet](#block-qtcraft-cyan_wool_carpet) · [Gray carpet](#block-qtcraft-gray_wool_carpet) · [Green carpet](#block-qtcraft-green_wool_carpet) · [Jungle button](#block-qtcraft-jungle_button) · [Jungle fence](#block-qtcraft-jungle_fence) · [Jungle fence gate](#block-qtcraft-jungle_fence_gate) · [Jungle pressure plate](#block-qtcraft-jungle_pressure_plate) · [Jungle slab](#block-qtcraft-jungle_slab) · [Jungle stairs](#block-qtcraft-jungle_stairs) · [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) · [Light blue carpet](#block-qtcraft-light_blue_wool_carpet) · [Light gray carpet](#block-qtcraft-light_gray_wool_carpet) · [Lime carpet](#block-qtcraft-lime_wool_carpet) · [Magenta carpet](#block-qtcraft-magenta_wool_carpet) · [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) · [Mossy cobblestone stairs](#block-qtcraft-mossy_cobblestone_stairs) · [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) · [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) · [Mossy stone brick stairs](#block-qtcraft-mossy_stone_bricks_stairs) · [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) · [Mud brick slab](#block-qtcraft-mud_bricks_slab) · [Mud brick stairs](#block-qtcraft-mud_bricks_stairs) · [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) · [Mud brick wall](#block-qtcraft-mud_bricks_wall) · [Oak fence](#block-qtcraft-oak_fence) · [Oak fence gate](#block-qtcraft-oak_fence_gate) · [Oak slab](#block-qtcraft-oak_slab) · [Oak stairs](#block-qtcraft-oak_stairs) · [Oak vertical slab](#block-qtcraft-oak_vertical_slab) · [Orange carpet](#block-qtcraft-orange_wool_carpet) · [Pink carpet](#block-qtcraft-pink_wool_carpet) · [Polished stone slab](#block-qtcraft-polished_stone_slab) · [Polished stone stairs](#block-qtcraft-polished_stone_stairs) · [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) · [Purple carpet](#block-qtcraft-purple_wool_carpet) · [Red carpet](#block-qtcraft-red_wool_carpet) · [Sandstone slab](#block-qtcraft-sandstone_slab) · [Sandstone stairs](#block-qtcraft-sandstone_stairs) · [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) · [Sandstone wall](#block-qtcraft-sandstone_wall) · [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) · [Smooth sandstone stairs](#block-qtcraft-smooth_sandstone_stairs) · [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) · [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) · [Smooth stone slab](#block-qtcraft-smooth_stone_slab) · [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) · [Spruce button](#block-qtcraft-spruce_button) · [Spruce fence](#block-qtcraft-spruce_fence) · [Spruce fence gate](#block-qtcraft-spruce_fence_gate) · [Spruce pressure plate](#block-qtcraft-spruce_pressure_plate) · [Spruce slab](#block-qtcraft-spruce_slab) · [Spruce stairs](#block-qtcraft-spruce_stairs) · [Spruce vertical slab](#block-qtcraft-spruce_vertical_slab) · [Stone brick slab](#block-qtcraft-stone_bricks_slab) · [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) · [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) · [Stone brick wall](#block-qtcraft-stone_bricks_wall) · [Stone slab](#block-qtcraft-stone_slab) · [Stone stairs](#block-qtcraft-stone_stairs) · [Stone vertical slab](#block-qtcraft-stone_vertical_slab) · [White carpet](#block-qtcraft-white_wool_carpet) · [Yellow carpet](#block-qtcraft-yellow_wool_carpet)
+**QtCraft:** [Birch button](#block-qtcraft-birch_button) · [Birch fence](#block-qtcraft-birch_fence) · [Birch fence gate](#block-qtcraft-birch_fence_gate) · [Birch pressure plate](#block-qtcraft-birch_pressure_plate) · [Birch slab](#block-qtcraft-birch_slab) · [Birch stairs](#block-qtcraft-birch_stairs) · [Birch vertical slab](#block-qtcraft-birch_vertical_slab) · [Black carpet](#block-qtcraft-black_wool_carpet) · [Blackstone slab](#block-qtcraft-blackstone_slab) · [Blackstone stairs](#block-qtcraft-blackstone_stairs) · [Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab) · [Blackstone wall](#block-qtcraft-blackstone_wall) · [Blue carpet](#block-qtcraft-blue_wool_carpet) · [Brick slab](#block-qtcraft-brick_slab) · [Brick stairs](#block-qtcraft-brick_stairs) · [Brick vertical slab](#block-qtcraft-brick_vertical_slab) · [Brick wall](#block-qtcraft-brick_wall) · [Brown carpet](#block-qtcraft-brown_wool_carpet) · [Cobblestone slab](#block-qtcraft-cobblestone_slab) · [Cobblestone stairs](#block-qtcraft-cobblestone_stairs) · [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) · [Cobblestone wall](#block-qtcraft-cobblestone_wall) · [Crimson button](#block-qtcraft-crimson_button) · [Crimson fence](#block-qtcraft-crimson_fence) · [Crimson fence gate](#block-qtcraft-crimson_fence_gate) · [Crimson pressure plate](#block-qtcraft-crimson_pressure_plate) · [Crimson slab](#block-qtcraft-crimson_slab) · [Crimson stairs](#block-qtcraft-crimson_stairs) · [Crimson vertical slab](#block-qtcraft-crimson_vertical_slab) · [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) · [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) · [Cyan carpet](#block-qtcraft-cyan_wool_carpet) · [Gray carpet](#block-qtcraft-gray_wool_carpet) · [Green carpet](#block-qtcraft-green_wool_carpet) · [Jungle button](#block-qtcraft-jungle_button) · [Jungle fence](#block-qtcraft-jungle_fence) · [Jungle fence gate](#block-qtcraft-jungle_fence_gate) · [Jungle pressure plate](#block-qtcraft-jungle_pressure_plate) · [Jungle slab](#block-qtcraft-jungle_slab) · [Jungle stairs](#block-qtcraft-jungle_stairs) · [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) · [Light blue carpet](#block-qtcraft-light_blue_wool_carpet) · [Light gray carpet](#block-qtcraft-light_gray_wool_carpet) · [Lime carpet](#block-qtcraft-lime_wool_carpet) · [Magenta carpet](#block-qtcraft-magenta_wool_carpet) · [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) · [Mossy cobblestone stairs](#block-qtcraft-mossy_cobblestone_stairs) · [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) · [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) · [Mossy stone brick stairs](#block-qtcraft-mossy_stone_bricks_stairs) · [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) · [Mud brick slab](#block-qtcraft-mud_bricks_slab) · [Mud brick stairs](#block-qtcraft-mud_bricks_stairs) · [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) · [Mud brick wall](#block-qtcraft-mud_bricks_wall) · [Nether brick slab](#block-qtcraft-nether_brick_slab) · [Nether brick stairs](#block-qtcraft-nether_brick_stairs) · [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab) · [Nether brick wall](#block-qtcraft-nether_brick_wall) · [Oak fence](#block-qtcraft-oak_fence) · [Oak fence gate](#block-qtcraft-oak_fence_gate) · [Oak slab](#block-qtcraft-oak_slab) · [Oak stairs](#block-qtcraft-oak_stairs) · [Oak vertical slab](#block-qtcraft-oak_vertical_slab) · [Orange carpet](#block-qtcraft-orange_wool_carpet) · [Pink carpet](#block-qtcraft-pink_wool_carpet) · [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) · [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) · [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) · [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) · [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) · [Polished blackstone stairs](#block-qtcraft-polished_blackstone_stairs) · [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) · [Polished blackstone wall](#block-qtcraft-polished_blackstone_wall) · [Polished stone slab](#block-qtcraft-polished_stone_slab) · [Polished stone stairs](#block-qtcraft-polished_stone_stairs) · [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) · [Purple carpet](#block-qtcraft-purple_wool_carpet) · [Quartz slab](#block-qtcraft-quartz_slab) · [Quartz stairs](#block-qtcraft-quartz_stairs) · [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab) · [Red carpet](#block-qtcraft-red_wool_carpet) · [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) · [Red nether brick stairs](#block-qtcraft-red_nether_brick_stairs) · [Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab) · [Red nether brick wall](#block-qtcraft-red_nether_brick_wall) · [Sandstone slab](#block-qtcraft-sandstone_slab) · [Sandstone stairs](#block-qtcraft-sandstone_stairs) · [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) · [Sandstone wall](#block-qtcraft-sandstone_wall) · [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) · [Smooth quartz stairs](#block-qtcraft-smooth_quartz_stairs) · [Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab) · [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) · [Smooth sandstone stairs](#block-qtcraft-smooth_sandstone_stairs) · [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) · [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) · [Smooth stone slab](#block-qtcraft-smooth_stone_slab) · [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) · [Spruce button](#block-qtcraft-spruce_button) · [Spruce fence](#block-qtcraft-spruce_fence) · [Spruce fence gate](#block-qtcraft-spruce_fence_gate) · [Spruce pressure plate](#block-qtcraft-spruce_pressure_plate) · [Spruce slab](#block-qtcraft-spruce_slab) · [Spruce stairs](#block-qtcraft-spruce_stairs) · [Spruce vertical slab](#block-qtcraft-spruce_vertical_slab) · [Stone brick slab](#block-qtcraft-stone_bricks_slab) · [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) · [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) · [Stone brick wall](#block-qtcraft-stone_bricks_wall) · [Stone slab](#block-qtcraft-stone_slab) · [Stone stairs](#block-qtcraft-stone_stairs) · [Stone vertical slab](#block-qtcraft-stone_vertical_slab) · [Warped button](#block-qtcraft-warped_button) · [Warped fence](#block-qtcraft-warped_fence) · [Warped fence gate](#block-qtcraft-warped_fence_gate) · [Warped pressure plate](#block-qtcraft-warped_pressure_plate) · [Warped slab](#block-qtcraft-warped_slab) · [Warped stairs](#block-qtcraft-warped_stairs) · [Warped vertical slab](#block-qtcraft-warped_vertical_slab) · [White carpet](#block-qtcraft-white_wool_carpet) · [Yellow carpet](#block-qtcraft-yellow_wool_carpet)
 
 ## QtCraft
 
@@ -39,7 +39,7 @@ A wooden button gives a signal of one and a half seconds when pressed. Every kin
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_fence"></a>Birch fence
 
@@ -58,7 +58,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
 | Kind of part | Fence |
-| Connects to | fences and gates, full solid blocks |
+| Connects to | fences, fence gates, full solid blocks |
 | Sound | wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -73,7 +73,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_fence_gate"></a>Birch fence gate
 
@@ -107,7 +107,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_pressure_plate"></a>Birch pressure plate
 
@@ -141,7 +141,7 @@ A wooden pressure plate gives a signal while anything stands or lies on it, item
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_slab"></a>Birch slab
 
@@ -162,6 +162,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Kind of part | Slab |
 | Sound | wood |
 | States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **How to make it**
 
@@ -179,11 +180,11 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Used in**
 
-[Birch vertical slab](#block-qtcraft-birch_vertical_slab)
+[Birch vertical slab](#block-qtcraft-birch_vertical_slab), [Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_stairs"></a>Birch stairs
 
@@ -217,7 +218,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-birch_vertical_slab"></a>Birch vertical slab
 
@@ -255,7 +256,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-black_wool_carpet"></a>Black carpet
 
@@ -282,6 +283,190 @@ A thin layer of wool that needs a block below.
 | 1 | 2 | → |
 |---|---|---|
 | [Black wool](blocks.md#block-qtcraft-black_wool) | [Black wool](blocks.md#block-qtcraft-black_wool) | 3 × [Black carpet](#block-qtcraft-black_wool_carpet) |
+
+### <a id="block-qtcraft-blackstone_slab"></a>Blackstone slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_slab` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blackstone slab](#block-qtcraft-blackstone_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
+| Kind of part | Slab |
+| Sound | blackstone |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | 6 × [Blackstone slab](#block-qtcraft-blackstone_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab) | [Blackstone slab](#block-qtcraft-blackstone_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Blackstone slab](#block-qtcraft-blackstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-blackstone_stairs"></a>Blackstone stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_stairs` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blackstone stairs](#block-qtcraft-blackstone_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
+| Kind of part | Stairs |
+| Sound | blackstone |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | · | · | 4 × [Blackstone stairs](#block-qtcraft-blackstone_stairs) |
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | · |  |
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone stairs](#block-qtcraft-blackstone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-blackstone_vertical_slab"></a>Blackstone vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_vertical_slab` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
+| Kind of part | Vertical slab |
+| Sound | blackstone |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Blackstone slab](#block-qtcraft-blackstone_slab) | 3 × [Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab) |
+| [Blackstone slab](#block-qtcraft-blackstone_slab) |  |
+| [Blackstone slab](#block-qtcraft-blackstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Blackstone vertical slab](#block-qtcraft-blackstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Blackstone slab](#block-qtcraft-blackstone_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-blackstone_wall"></a>Blackstone wall
+
+Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_wall` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blackstone wall](#block-qtcraft-blackstone_wall) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Made from | [Blackstone](blocks.md#block-qtcraft-blackstone) |
+| Kind of part | Wall |
+| Connects to | walls, full solid blocks |
+| Sound | blackstone |
+| States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | 6 × [Blackstone wall](#block-qtcraft-blackstone_wall) |
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone](blocks.md#block-qtcraft-blackstone) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Blackstone wall](#block-qtcraft-blackstone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-blue_wool_carpet"></a>Blue carpet
 
@@ -358,7 +543,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brick_stairs"></a>Brick stairs
 
@@ -401,7 +586,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brick_vertical_slab"></a>Brick vertical slab
 
@@ -448,7 +633,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brick_wall"></a>Brick wall
 
@@ -491,7 +676,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-brown_wool_carpet"></a>Brown carpet
 
@@ -568,7 +753,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cobblestone_stairs"></a>Cobblestone stairs
 
@@ -611,7 +796,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cobblestone_vertical_slab"></a>Cobblestone vertical slab
 
@@ -658,7 +843,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cobblestone_wall"></a>Cobblestone wall
 
@@ -701,7 +886,245 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-crimson_button"></a>Crimson button
+
+A wooden button gives a signal of one and a half seconds when pressed. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_button` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson button](#block-qtcraft-crimson_button) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Washed away by liquids | yes |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Button |
+| Sound | nether wood |
+| States | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson button](#block-qtcraft-crimson_button) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_fence"></a>Crimson fence
+
+Fences connect to fences, gates and full solid blocks and are too high to jump over.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fence` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson fence](#block-qtcraft-crimson_fence) |
+| Light blocked | 0 of 15 |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Fence |
+| Connects to | fences, fence gates, full solid blocks |
+| Sound | nether wood |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Stick](items.md#item-qtcraft-stick) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | 3 × [Crimson fence](#block-qtcraft-crimson_fence) |
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Stick](items.md#item-qtcraft-stick) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_fence_gate"></a>Crimson fence gate
+
+A gate in a fence: use it to open or close it. Open gates let everything through.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fence_gate` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson fence gate](#block-qtcraft-crimson_fence_gate) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Fence gate |
+| Sound | nether wood |
+| States | facing (north, east, south, west); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stick](items.md#item-qtcraft-stick) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Stick](items.md#item-qtcraft-stick) | [Crimson fence gate](#block-qtcraft-crimson_fence_gate) |
+| [Stick](items.md#item-qtcraft-stick) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Stick](items.md#item-qtcraft-stick) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_pressure_plate"></a>Crimson pressure plate
+
+A wooden pressure plate gives a signal while anything stands or lies on it, items too. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_pressure_plate` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson pressure plate](#block-qtcraft-crimson_pressure_plate) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid block below |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Pressure plate |
+| Sound | nether wood |
+| States | powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson pressure plate](#block-qtcraft-crimson_pressure_plate) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_slab"></a>Crimson slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson slab](#block-qtcraft-crimson_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Slab |
+| Sound | nether wood |
+| States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | 6 × [Crimson slab](#block-qtcraft-crimson_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Crimson vertical slab](#block-qtcraft-crimson_vertical_slab) | [Crimson slab](#block-qtcraft-crimson_slab) |
+
+**Used in**
+
+[Crimson vertical slab](#block-qtcraft-crimson_vertical_slab), [Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_stairs"></a>Crimson stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson stairs](#block-qtcraft-crimson_stairs) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Stairs |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | · | · | 4 × [Crimson stairs](#block-qtcraft-crimson_stairs) |
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | · |  |
+| [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-crimson_vertical_slab"></a>Crimson vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Crimson vertical slab](#block-qtcraft-crimson_vertical_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Crimson planks](blocks.md#block-qtcraft-crimson_planks) |
+| Kind of part | Vertical slab |
+| Sound | nether wood |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Crimson slab](#block-qtcraft-crimson_slab) | 3 × [Crimson vertical slab](#block-qtcraft-crimson_vertical_slab) |
+| [Crimson slab](#block-qtcraft-crimson_slab) |  |
+| [Crimson slab](#block-qtcraft-crimson_slab) |  |
+
+**Used in**
+
+[Crimson slab](#block-qtcraft-crimson_slab)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-cut_sandstone_slab"></a>Cut sandstone slab
 
@@ -760,7 +1183,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cut_sandstone_vertical_slab"></a>Cut sandstone vertical slab
 
@@ -815,7 +1238,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-cyan_wool_carpet"></a>Cyan carpet
 
@@ -928,7 +1351,7 @@ A wooden button gives a signal of one and a half seconds when pressed. Every kin
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_fence"></a>Jungle fence
 
@@ -947,7 +1370,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
 | Kind of part | Fence |
-| Connects to | fences and gates, full solid blocks |
+| Connects to | fences, fence gates, full solid blocks |
 | Sound | wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -962,7 +1385,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_fence_gate"></a>Jungle fence gate
 
@@ -996,7 +1419,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_pressure_plate"></a>Jungle pressure plate
 
@@ -1030,7 +1453,7 @@ A wooden pressure plate gives a signal while anything stands or lies on it, item
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_slab"></a>Jungle slab
 
@@ -1051,6 +1474,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Kind of part | Slab |
 | Sound | wood |
 | States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **How to make it**
 
@@ -1068,11 +1492,11 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Used in**
 
-[Jungle vertical slab](#block-qtcraft-jungle_vertical_slab)
+[Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs), [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_stairs"></a>Jungle stairs
 
@@ -1106,7 +1530,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-jungle_vertical_slab"></a>Jungle vertical slab
 
@@ -1144,7 +1568,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-light_blue_wool_carpet"></a>Light blue carpet
 
@@ -1299,7 +1723,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_stairs"></a>Mossy cobblestone stairs
 
@@ -1342,7 +1766,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_vertical_slab"></a>Mossy cobblestone vertical slab
 
@@ -1389,7 +1813,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_wall"></a>Mossy cobblestone wall
 
@@ -1432,7 +1856,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_slab"></a>Mossy stone brick slab
 
@@ -1483,7 +1907,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_stairs"></a>Mossy stone brick stairs
 
@@ -1526,7 +1950,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_vertical_slab"></a>Mossy stone brick vertical slab
 
@@ -1573,7 +1997,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_wall"></a>Mossy stone brick wall
 
@@ -1616,7 +2040,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mud_bricks_slab"></a>Mud brick slab
 
@@ -1667,7 +2091,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mud_bricks_stairs"></a>Mud brick stairs
 
@@ -1710,7 +2134,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mud_bricks_vertical_slab"></a>Mud brick vertical slab
 
@@ -1757,7 +2181,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-mud_bricks_wall"></a>Mud brick wall
 
@@ -1800,7 +2224,191 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_brick_slab"></a>Nether brick slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether brick slab](#block-qtcraft-nether_brick_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
+| Kind of part | Slab |
+| Sound | nether bricks |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | 6 × [Nether brick slab](#block-qtcraft-nether_brick_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab) | [Nether brick slab](#block-qtcraft-nether_brick_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | 2 × [Nether brick slab](#block-qtcraft-nether_brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Chiseled nether bricks](blocks.md#block-qtcraft-chiseled_nether_bricks), [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_brick_stairs"></a>Nether brick stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether brick stairs](#block-qtcraft-nether_brick_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
+| Kind of part | Stairs |
+| Sound | nether bricks |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | · | · | 4 × [Nether brick stairs](#block-qtcraft-nether_brick_stairs) |
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | · |  |
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether brick stairs](#block-qtcraft-nether_brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_brick_vertical_slab"></a>Nether brick vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
+| Kind of part | Vertical slab |
+| Sound | nether bricks |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Nether brick slab](#block-qtcraft-nether_brick_slab) | 3 × [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab) |
+| [Nether brick slab](#block-qtcraft-nether_brick_slab) |  |
+| [Nether brick slab](#block-qtcraft-nether_brick_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | 2 × [Nether brick vertical slab](#block-qtcraft-nether_brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Nether brick slab](#block-qtcraft-nether_brick_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-nether_brick_wall"></a>Nether brick wall
+
+Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_wall` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Nether brick wall](#block-qtcraft-nether_brick_wall) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Made from | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |
+| Kind of part | Wall |
+| Connects to | walls, full solid blocks |
+| Sound | nether bricks |
+| States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | 6 × [Nether brick wall](#block-qtcraft-nether_brick_wall) |
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether bricks](blocks.md#block-qtcraft-nether_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Nether bricks](blocks.md#block-qtcraft-nether_bricks) | [Nether brick wall](#block-qtcraft-nether_brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-oak_fence"></a>Oak fence
 
@@ -1819,7 +2427,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
 | Kind of part | Fence |
-| Connects to | fences and gates, full solid blocks |
+| Connects to | fences, fence gates, full solid blocks |
 | Sound | wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -1834,7 +2442,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_fence_gate"></a>Oak fence gate
 
@@ -1868,7 +2476,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_slab"></a>Oak slab
 
@@ -1889,6 +2497,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Kind of part | Slab |
 | Sound | wood |
 | States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **How to make it**
 
@@ -1906,11 +2515,11 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Used in**
 
-[Oak vertical slab](#block-qtcraft-oak_vertical_slab)
+[Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs), [Oak vertical slab](#block-qtcraft-oak_vertical_slab)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_stairs"></a>Oak stairs
 
@@ -1944,7 +2553,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-oak_vertical_slab"></a>Oak vertical slab
 
@@ -1982,7 +2591,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-orange_wool_carpet"></a>Orange carpet
 
@@ -2036,6 +2645,470 @@ A thin layer of wool that needs a block below.
 |---|---|---|
 | [Pink wool](blocks.md#block-qtcraft-pink_wool) | [Pink wool](blocks.md#block-qtcraft-pink_wool) | 3 × [Pink carpet](#block-qtcraft-pink_wool_carpet) |
 
+### <a id="block-qtcraft-polished_blackstone_brick_slab"></a>Polished blackstone brick slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_slab` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Kind of part | Slab |
+| Sound | blackstone |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | 6 × [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) | [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | 2 × [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_stairs"></a>Polished blackstone brick stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_stairs` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Kind of part | Stairs |
+| Sound | blackstone |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | · | · | 4 × [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) |
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | · |  |
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone brick stairs](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_vertical_slab"></a>Polished blackstone brick vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_vertical_slab` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Kind of part | Vertical slab |
+| Sound | blackstone |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) | 3 × [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+| [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |  |
+| [Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | 2 × [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone brick vertical slab](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished blackstone brick slab](#block-qtcraft-polished_blackstone_brick_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_wall"></a>Polished blackstone brick wall
+
+Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_wall` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Made from | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Kind of part | Wall |
+| Connects to | walls, full solid blocks |
+| Sound | blackstone |
+| States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | 6 × [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) |
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone bricks](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone brick wall](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_slab"></a>Polished blackstone slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
+| Kind of part | Slab |
+| Sound | blackstone |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 6 × [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) | [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Chiseled polished blackstone](blocks.md#block-qtcraft-chiseled_polished_blackstone), [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_stairs"></a>Polished blackstone stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone stairs](#block-qtcraft-polished_blackstone_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
+| Kind of part | Stairs |
+| Sound | blackstone |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | · | · | 4 × [Polished blackstone stairs](#block-qtcraft-polished_blackstone_stairs) |
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | · |  |
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone stairs](#block-qtcraft-polished_blackstone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Polished blackstone stairs](#block-qtcraft-polished_blackstone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_vertical_slab"></a>Polished blackstone vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
+| Kind of part | Vertical slab |
+| Sound | blackstone |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) | 3 × [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) |
+| [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |  |
+| [Polished blackstone slab](#block-qtcraft-polished_blackstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | 2 × [Polished blackstone vertical slab](#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Polished blackstone slab](#block-qtcraft-polished_blackstone_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-polished_blackstone_wall"></a>Polished blackstone wall
+
+Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_wall` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Polished blackstone wall](#block-qtcraft-polished_blackstone_wall) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Made from | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |
+| Kind of part | Wall |
+| Connects to | walls, full solid blocks |
+| Sound | blackstone |
+| States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | 6 × [Polished blackstone wall](#block-qtcraft-polished_blackstone_wall) |
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished blackstone](blocks.md#block-qtcraft-polished_blackstone) | [Polished blackstone wall](#block-qtcraft-polished_blackstone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Blackstone](blocks.md#block-qtcraft-blackstone) | [Polished blackstone wall](#block-qtcraft-polished_blackstone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
 ### <a id="block-qtcraft-polished_stone_slab"></a>Polished stone slab
 
 Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
@@ -2085,7 +3158,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-polished_stone_stairs"></a>Polished stone stairs
 
@@ -2128,7 +3201,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-polished_stone_vertical_slab"></a>Polished stone vertical slab
 
@@ -2175,7 +3248,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-purple_wool_carpet"></a>Purple carpet
 
@@ -2203,6 +3276,147 @@ A thin layer of wool that needs a block below.
 |---|---|---|
 | [Purple wool](blocks.md#block-qtcraft-purple_wool) | [Purple wool](blocks.md#block-qtcraft-purple_wool) | 3 × [Purple carpet](#block-qtcraft-purple_wool_carpet) |
 
+### <a id="block-qtcraft-quartz_slab"></a>Quartz slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_slab` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Quartz slab](#block-qtcraft-quartz_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Block of quartz](blocks.md#block-qtcraft-quartz_block) |
+| Kind of part | Slab |
+| Sound | stone |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Block of quartz](blocks.md#block-qtcraft-quartz_block) | 6 × [Quartz slab](#block-qtcraft-quartz_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab) | [Quartz slab](#block-qtcraft-quartz_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | 2 × [Quartz slab](#block-qtcraft-quartz_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Chiseled quartz block](blocks.md#block-qtcraft-chiseled_quartz_block), [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-quartz_stairs"></a>Quartz stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_stairs` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Quartz stairs](#block-qtcraft-quartz_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Block of quartz](blocks.md#block-qtcraft-quartz_block) |
+| Kind of part | Stairs |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | · | · | 4 × [Quartz stairs](#block-qtcraft-quartz_stairs) |
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Block of quartz](blocks.md#block-qtcraft-quartz_block) | · |  |
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Block of quartz](blocks.md#block-qtcraft-quartz_block) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | [Quartz stairs](#block-qtcraft-quartz_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-quartz_vertical_slab"></a>Quartz vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_vertical_slab` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Block of quartz](blocks.md#block-qtcraft-quartz_block) |
+| Kind of part | Vertical slab |
+| Sound | stone |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Quartz slab](#block-qtcraft-quartz_slab) | 3 × [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab) |
+| [Quartz slab](#block-qtcraft-quartz_slab) |  |
+| [Quartz slab](#block-qtcraft-quartz_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Block of quartz](blocks.md#block-qtcraft-quartz_block) | 2 × [Quartz vertical slab](#block-qtcraft-quartz_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Quartz slab](#block-qtcraft-quartz_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
 ### <a id="block-qtcraft-red_wool_carpet"></a>Red carpet
 
 A thin layer of wool that needs a block below.
@@ -2228,6 +3442,190 @@ A thin layer of wool that needs a block below.
 | 1 | 2 | → |
 |---|---|---|
 | [Red wool](blocks.md#block-qtcraft-red_wool) | [Red wool](blocks.md#block-qtcraft-red_wool) | 3 × [Red carpet](#block-qtcraft-red_wool_carpet) |
+
+### <a id="block-qtcraft-red_nether_brick_slab"></a>Red nether brick slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
+| Kind of part | Slab |
+| Sound | nether bricks |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | 6 × [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab) | [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | 2 × [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-red_nether_brick_stairs"></a>Red nether brick stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red nether brick stairs](#block-qtcraft-red_nether_brick_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
+| Kind of part | Stairs |
+| Sound | nether bricks |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | · | · | 4 × [Red nether brick stairs](#block-qtcraft-red_nether_brick_stairs) |
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | · |  |
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether brick stairs](#block-qtcraft-red_nether_brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-red_nether_brick_vertical_slab"></a>Red nether brick vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
+| Kind of part | Vertical slab |
+| Sound | nether bricks |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) | 3 × [Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab) |
+| [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |  |
+| [Red nether brick slab](#block-qtcraft-red_nether_brick_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | 2 × [Red nether brick vertical slab](#block-qtcraft-red_nether_brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Red nether brick slab](#block-qtcraft-red_nether_brick_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-red_nether_brick_wall"></a>Red nether brick wall
+
+Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_wall` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red nether brick wall](#block-qtcraft-red_nether_brick_wall) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Made from | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |
+| Kind of part | Wall |
+| Connects to | walls, full solid blocks |
+| Sound | nether bricks |
+| States | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | 6 × [Red nether brick wall](#block-qtcraft-red_nether_brick_wall) |
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Red nether bricks](blocks.md#block-qtcraft-red_nether_bricks) | [Red nether brick wall](#block-qtcraft-red_nether_brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-sandstone_slab"></a>Sandstone slab
 
@@ -2278,7 +3676,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-sandstone_stairs"></a>Sandstone stairs
 
@@ -2321,7 +3719,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-sandstone_vertical_slab"></a>Sandstone vertical slab
 
@@ -2368,7 +3766,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-sandstone_wall"></a>Sandstone wall
 
@@ -2411,7 +3809,148 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-smooth_quartz_slab"></a>Smooth quartz slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) |
+| Kind of part | Slab |
+| Sound | stone |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | 6 × [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab) | [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | 2 × [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-smooth_quartz_stairs"></a>Smooth quartz stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth quartz stairs](#block-qtcraft-smooth_quartz_stairs) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) |
+| Kind of part | Stairs |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | · | · | 4 × [Smooth quartz stairs](#block-qtcraft-smooth_quartz_stairs) |
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | · |  |
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | [Smooth quartz stairs](#block-qtcraft-smooth_quartz_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-smooth_quartz_vertical_slab"></a>Smooth quartz vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 10 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab) |
+| Drops without the right tool | nothing |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) |
+| Kind of part | Vertical slab |
+| Sound | stone |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) | 3 × [Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab) |
+| [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |  |
+| [Smooth quartz slab](#block-qtcraft-smooth_quartz_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth quartz block](blocks.md#block-qtcraft-smooth_quartz) | 2 × [Smooth quartz vertical slab](#block-qtcraft-smooth_quartz_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+**Used in**
+
+[Smooth quartz slab](#block-qtcraft-smooth_quartz_slab)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_slab"></a>Smooth sandstone slab
 
@@ -2462,7 +4001,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_stairs"></a>Smooth sandstone stairs
 
@@ -2505,7 +4044,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_vertical_slab"></a>Smooth sandstone vertical slab
 
@@ -2552,7 +4091,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_wall"></a>Smooth sandstone wall
 
@@ -2595,7 +4134,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_stone_slab"></a>Smooth stone slab
 
@@ -2646,7 +4185,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-smooth_stone_vertical_slab"></a>Smooth stone vertical slab
 
@@ -2693,7 +4232,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-spruce_button"></a>Spruce button
 
@@ -2728,7 +4267,7 @@ A wooden button gives a signal of one and a half seconds when pressed. Every kin
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_fence"></a>Spruce fence
 
@@ -2747,7 +4286,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
 | Kind of part | Fence |
-| Connects to | fences and gates, full solid blocks |
+| Connects to | fences, fence gates, full solid blocks |
 | Sound | wood |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -2762,7 +4301,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_fence_gate"></a>Spruce fence gate
 
@@ -2796,7 +4335,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_pressure_plate"></a>Spruce pressure plate
 
@@ -2830,7 +4369,7 @@ A wooden pressure plate gives a signal while anything stands or lies on it, item
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_slab"></a>Spruce slab
 
@@ -2851,6 +4390,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Kind of part | Slab |
 | Sound | wood |
 | States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **How to make it**
 
@@ -2868,11 +4408,11 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Used in**
 
-[Spruce vertical slab](#block-qtcraft-spruce_vertical_slab)
+[Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs), [Spruce vertical slab](#block-qtcraft-spruce_vertical_slab)
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_stairs"></a>Spruce stairs
 
@@ -2906,7 +4446,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-spruce_vertical_slab"></a>Spruce vertical slab
 
@@ -2944,7 +4484,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Faster with**
 
-[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-stone_bricks_slab"></a>Stone brick slab
 
@@ -3003,7 +4543,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_bricks_stairs"></a>Stone brick stairs
 
@@ -3054,7 +4594,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_bricks_vertical_slab"></a>Stone brick vertical slab
 
@@ -3109,7 +4649,7 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_bricks_wall"></a>Stone brick wall
 
@@ -3160,7 +4700,7 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_slab"></a>Stone slab
 
@@ -3211,7 +4751,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_stairs"></a>Stone stairs
 
@@ -3254,7 +4794,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
 
 ### <a id="block-qtcraft-stone_vertical_slab"></a>Stone vertical slab
 
@@ -3301,7 +4841,245 @@ Half a block standing upright against one side of its cell: it leans against the
 
 **Mined with**
 
-[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4), [Netherite pickaxe](tools.md#item-qtcraft-netherite_pickaxe) (level 5)
+
+### <a id="block-qtcraft-warped_button"></a>Warped button
+
+A wooden button gives a signal of one and a half seconds when pressed. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_button` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped button](#block-qtcraft-warped_button) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Washed away by liquids | yes |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Button |
+| Sound | nether wood |
+| States | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped button](#block-qtcraft-warped_button) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_fence"></a>Warped fence
+
+Fences connect to fences, gates and full solid blocks and are too high to jump over.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fence` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped fence](#block-qtcraft-warped_fence) |
+| Light blocked | 0 of 15 |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Fence |
+| Connects to | fences, fence gates, full solid blocks |
+| Sound | nether wood |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Stick](items.md#item-qtcraft-stick) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | 3 × [Warped fence](#block-qtcraft-warped_fence) |
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Stick](items.md#item-qtcraft-stick) | [Warped planks](blocks.md#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_fence_gate"></a>Warped fence gate
+
+A gate in a fence: use it to open or close it. Open gates let everything through.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fence_gate` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped fence gate](#block-qtcraft-warped_fence_gate) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Fence gate |
+| Sound | nether wood |
+| States | facing (north, east, south, west); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stick](items.md#item-qtcraft-stick) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Stick](items.md#item-qtcraft-stick) | [Warped fence gate](#block-qtcraft-warped_fence_gate) |
+| [Stick](items.md#item-qtcraft-stick) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Stick](items.md#item-qtcraft-stick) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_pressure_plate"></a>Warped pressure plate
+
+A wooden pressure plate gives a signal while anything stands or lies on it, items too. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_pressure_plate` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped pressure plate](#block-qtcraft-warped_pressure_plate) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid block below |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Pressure plate |
+| Sound | nether wood |
+| States | powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped pressure plate](#block-qtcraft-warped_pressure_plate) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_slab"></a>Warped slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped slab](#block-qtcraft-warped_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Slab |
+| Sound | nether wood |
+| States | type (bottom, top, double) |
+| Groups | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | 6 × [Warped slab](#block-qtcraft-warped_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Warped vertical slab](#block-qtcraft-warped_vertical_slab) | [Warped slab](#block-qtcraft-warped_slab) |
+
+**Used in**
+
+[Daylight Sensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs), [Warped vertical slab](#block-qtcraft-warped_vertical_slab)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_stairs"></a>Warped stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped stairs](#block-qtcraft-warped_stairs) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Stairs |
+| Sound | nether wood |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | · | · | 4 × [Warped stairs](#block-qtcraft-warped_stairs) |
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | · |  |
+| [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) | [Warped planks](blocks.md#block-qtcraft-warped_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
+
+### <a id="block-qtcraft-warped_vertical_slab"></a>Warped vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Warped vertical slab](#block-qtcraft-warped_vertical_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Made from | [Warped planks](blocks.md#block-qtcraft-warped_planks) |
+| Kind of part | Vertical slab |
+| Sound | nether wood |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Warped slab](#block-qtcraft-warped_slab) | 3 × [Warped vertical slab](#block-qtcraft-warped_vertical_slab) |
+| [Warped slab](#block-qtcraft-warped_slab) |  |
+| [Warped slab](#block-qtcraft-warped_slab) |  |
+
+**Used in**
+
+[Warped slab](#block-qtcraft-warped_slab)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4), [Netherite axe](tools.md#item-qtcraft-netherite_axe) (level 5)
 
 ### <a id="block-qtcraft-white_wool_carpet"></a>White carpet
 

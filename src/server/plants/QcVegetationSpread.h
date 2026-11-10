@@ -23,8 +23,9 @@ class QcServerWorld;
     also grows vegetation and that are not solid; a try ending in air plants a flower of the biome
     there with one chance in \c {flowerOdds} (if the biome has flowers), otherwise its grass.
 
-    The biome is the generator's at the end of the walk, the terrain's \c {vegetationBiome} where
-    the generator names none. */
+    The biome is the one the ground at the end of the walk names
+    (QcBlockDefinition::vegetationBiome), else the generator's there, the terrain's
+    \c {vegetationBiome} where the generator names none. */
 class QcVegetationSpread
 {
 public:
@@ -47,8 +48,9 @@ private:
         QcVegetationTable flowers;
     };
 
-    // The tables of the biome at column (x, z); null where there are none.
-    [[nodiscard]] const Tables *tablesAt(const QcServerWorld &world, int x, int z) const;
+    // The tables for a plant at `pos`: those its ground names, or those of the biome there; null
+    // where there are none.
+    [[nodiscard]] const Tables *tablesAt(const QcServerWorld &world, QcBlockPos pos) const;
     // Where a walk of `steps` steps from `start` ends, std::nullopt where it leaves the vegetation.
     [[nodiscard]] std::optional<QcBlockPos> walk(const QcServerWorld &world, QcBlockPos start, int steps, QRandomGenerator &random) const;
     // Whether a walk may stand at `pos`: not inside a solid block, on a block that grows vegetation.

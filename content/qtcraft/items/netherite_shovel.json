@@ -1,0 +1,16 @@
+{
+    "name": "netherite_shovel",
+    "texture": "netherite_shovel",
+    "maxStack": 1,
+    "durability": 2031,
+    "enchantability": 15,
+    "repairWith": "qtcraft:netherite_ingot",
+    "attackDamage": 4.5,
+    "tool": "shovel",
+    "toolLevel": 5,
+    "toolSpeed": 9.0,
+    "flattens": true,
+    "tags": [
+        "fire_resistant"
+    ]
+}

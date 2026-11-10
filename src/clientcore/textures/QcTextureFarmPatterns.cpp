@@ -43,6 +43,34 @@ QColor paintRootCrop(const QcTextureSpec &spec, int x, int y, QColor color)
     return color;
 }
 
+// Round knobs on a grid of 4 pixels, each shifted by the hash of its cell, some cells left empty: a
+// knobbly lump with gaps. A knob is lit (secondary) towards its upper left and dark at its rim.
+QColor paintNetherWart(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    constexpr int cell = 4;
+    constexpr int knobRadiusSquared = 5;
+    for (int row = y / cell - 1; row <= y / cell + 1; ++row) {
+        for (int column = x / cell - 1; column <= x / cell + 1; ++column) {
+            const quint32 hash = hashPixel(spec.seed, column, row);
+            if (hash % 5 == 0) {
+                continue;
+            }
+
+            const int dx = x - (column * cell + 1 + static_cast<int>(hash / 5 % 3));
+            const int dy = y - (row * cell + 1 + static_cast<int>(hash / 15 % 3));
+            const int distance = dx * dx + dy * dy;
+            if (distance > knobRadiusSquared) {
+                continue;
+            }
+            if (distance >= knobRadiusSquared - 1) {
+                return scaled(color, 0.7);
+            }
+            return dx + dy < 0 ? varied(spec, spec.secondary, x, y, 3) : color;
+        }
+    }
+    return clear();
+}
+
 // A thin stem in the middle with a leaf on each side.
 QColor paintStem(const QcTextureSpec &spec, int x, int y, QColor color)
 {
@@ -265,10 +293,11 @@ QColor paintReeds(const QcTextureSpec &spec, int x, int y, QColor color)
     return clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 18> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 19> painters = {{
     {Pattern::Crop, paintCrop},
     {Pattern::RootCrop, paintRootCrop},
     {Pattern::Stem, paintStem},
+    {Pattern::NetherWart, paintNetherWart},
     {Pattern::Farmland, paintFarmland},
     {Pattern::PumpkinSide, paintPumpkinSide},
     {Pattern::PumpkinTop, paintPumpkinTop},

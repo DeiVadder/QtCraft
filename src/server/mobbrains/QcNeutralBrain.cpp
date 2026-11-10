@@ -7,6 +7,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerWorld.h"
 #include "server/gameplay/QcLineOfSight.h"
+#include "server/mobbrains/QcBarterSight.h"
 #include "server/mobbrains/QcMobSteering.h"
 #include "server/mobbrains/QcMobTeleport.h"
 
@@ -47,12 +48,28 @@ QcPhysics::Steering QcNeutralBrain::think(QcCreature &mob, const QcMobDefinition
         QcMobTeleport::teleport(mob, definition, context.world, random());
     }
 
-    if (const QcMobManager::PlayerView *player = provoker(mob, definition, context, looks)) {
+    // A young one of a kind that barters is never angry (decision E-1083).
+    const bool calmYoung = definition.barter && mob.isYoung();
+    if (const QcMobManager::PlayerView *player = calmYoung ? nullptr : provoker(mob, definition, context, looks)) {
         mob.provokedBy = player->entityId;
-        mob.angerTimer = angerSeconds;
+        mob.angerTimer = definition.angerSeconds;
     }
     mob.struckBy = 0;
     const QcMobManager::PlayerView *target = angryAt(mob, context);
+    // Anger ends its looking at an item; otherwise it stands while it looks (decision E-1081).
+    if (target && mob.barter && mob.barter->admires()) {
+        mob.barter->admireSeconds = 0.0;
+    } else if (mob.barter && mob.barter->admires()) {
+        mob.chasing = 0;
+        mob.path.clear();
+        mob.lastSpeed = 0.0;
+        return {};
+    }
+    // Who wears none of what spares him is its foe while it sees him, unless gold lying around
+    // draws it away (decision E-1081).
+    if (!target && definition.barter && !calmYoung && !mob.barter->seeks()) {
+        target = QcBarterSight::foe(mob, definition, context, looks);
+    }
     mob.chasing = target ? target->entityId : 0;
     if (!target) {
         carry(mob, definition, context, thinkTicks);
@@ -62,8 +79,8 @@ QcPhysics::Steering QcNeutralBrain::think(QcCreature &mob, const QcMobDefinition
     }
 
     // Seeing the target keeps it angry; a teleporter far from it now and then jumps next to it.
-    if (looks && QcLineOfSight::seesPoint(context.world, eyeOf(mob, definition), playerEyes(*target))) {
-        mob.angerTimer = angerSeconds;
+    if (mob.provokedBy == target->entityId && looks && QcLineOfSight::seesPoint(context.world, eyeOf(mob, definition), playerEyes(*target))) {
+        mob.angerTimer = definition.angerSeconds;
     }
     const double distance = (target->position - mob.motion.position).length();
     if (definition.teleport && distance > farTarget

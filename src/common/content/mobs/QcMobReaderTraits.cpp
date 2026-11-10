@@ -10,6 +10,12 @@
 #include "common/content/registry/QcContentFields.h"
 #include "common/content/registry/QcContentNames.h"
 
+#include <QJsonArray>
+
+#include <algorithm>
+#include <array>
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -150,22 +156,144 @@ struct Collar
     return pulse;
 }
 
-// Drinking to heal (the witch, decision E-623): the object "drinks".
-QcDrinkHealDefinition parseDrinks(QcJsonFieldReader &reader, const QString &packNamespace)
+// One potion of "drinks": {"item", "need", "chance", "distance"}.
+QcMobDrinkDefinition::Potion parseDrinkPotion(QcJsonFieldReader &reader, const QString &packNamespace)
 {
-    QcDrinkHealDefinition drinks;
-    drinks.item = reader.name(u"item"_s, packNamespace);
-    drinks.heal = reader.number(u"heal"_s, drinks.heal, 0.5, 1000.0);
-    drinks.seconds = reader.number(u"seconds"_s, drinks.seconds, 0.05, 30.0);
-    drinks.cooldownSeconds = reader.number(u"cooldownSeconds"_s, drinks.cooldownSeconds, 0.0, 3600.0);
-    drinks.sound = reader.name(u"sound"_s, packNamespace);
-    if (reader.ok() && drinks.item.isEmpty()) {
+    using Need = QcMobDrinkDefinition::Need;
+    static constexpr std::array<std::pair<QLatin1StringView, Need>, 4> needs{{
+        {QLatin1StringView("underwater"), Need::Underwater},
+        {QLatin1StringView("burning"), Need::Burning},
+        {QLatin1StringView("hurt"), Need::Hurt},
+        {QLatin1StringView("targetFar"), Need::TargetFar},
+    }};
+    QcMobDrinkDefinition::Potion potion;
+    potion.item = reader.name(u"item"_s, packNamespace);
+    const QString need = reader.string(u"need"_s);
+    const auto found = std::ranges::find(needs, need, &std::pair<QLatin1StringView, Need>::first);
+    if (found == needs.end()) {
+        reader.fail(u"'need' must be \"underwater\", \"burning\", \"hurt\" or \"targetFar\""_s);
+    } else {
+        potion.need = found->second;
+    }
+    potion.chance = reader.number(u"chance"_s, potion.chance, 0.0, 1.0);
+    potion.distance = reader.number(u"distance"_s, potion.distance, 0.0, 128.0);
+    if (reader.ok() && potion.item.isEmpty()) {
         reader.fail(u"needs the 'item' it drinks"_s);
+    }
+    return potion;
+}
+
+// Drinking potions when needed (the witch, decisions E-623, E-1105): the object "drinks" with
+// "potions", "seconds" and "sound".
+QcMobDrinkDefinition parseDrinks(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcMobDrinkDefinition drinks;
+    drinks.seconds = reader.number(u"seconds"_s, drinks.seconds, 0.05, 30.0);
+    drinks.sound = reader.name(u"sound"_s, packNamespace);
+    drinks.dropChance = reader.number(u"dropChance"_s, drinks.dropChance, 0.0, 1.0);
+    const QJsonValue potions = reader.json.value(u"potions"_s);
+    if (!potions.isArray() || potions.toArray().isEmpty() || potions.toArray().size() > QcMobDrinkDefinition::maxPotions) {
+        reader.fail(u"'potions' must be an array of 1 to %1 entries"_s.arg(QcMobDrinkDefinition::maxPotions));
+        return drinks;
+    }
+    const QJsonArray entries = potions.toArray();
+    for (const auto &entry : entries) {
+        QcJsonFieldReader nested{entry.toObject(), reader.context + u" potions"_s, {}};
+        drinks.potions.append(parseDrinkPotion(nested, packNamespace));
+        reader.adopt(nested);
+        if (!reader.ok()) {
+            break;
+        }
     }
     return drinks;
 }
 
+// Bartering for gold (decision E-1081): the object "barter".
+QcBarterDefinition parseBarter(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcBarterDefinition barter;
+    barter.sparedBy = QcContentFields::parseNames(u"sparedBy"_s, packNamespace, reader);
+    barter.loves = QcContentFields::parseNames(u"loves"_s, packNamespace, reader);
+    barter.currency = reader.name(u"currency"_s, packNamespace);
+    barter.table = reader.name(u"table"_s, packNamespace);
+    barter.guards = QcContentFields::parseNames(u"guards"_s, packNamespace, reader);
+    barter.admireSeconds = reader.number(u"admireSeconds"_s, barter.admireSeconds, 0.5, 60.0);
+    barter.alarmRange = reader.number(u"alarmRange"_s, barter.alarmRange, 0.0, 64.0);
+    barter.seekRange = reader.number(u"seekRange"_s, barter.seekRange, 0.0, 32.0);
+    barter.hoardSize = reader.integer(u"hoardSize"_s, barter.hoardSize, 0, 36);
+    if (reader.ok() && !barter.currency.isEmpty() && !barter.loves.contains(barter.currency)) {
+        barter.loves.append(barter.currency);
+    }
+    if (reader.ok() && !barter.currency.isEmpty() && barter.table.isEmpty()) {
+        reader.fail(u"a 'currency' needs the loot 'table' it is bartered for"_s);
+    }
+    return barter;
+}
+
+// Blocks it keeps away from (decision E-1082): the object "repelledBy".
+QcRepellentDefinition parseRepellents(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcRepellentDefinition repellents;
+    repellents.blocks = QcContentFields::parseNames(u"blocks"_s, packNamespace, reader);
+    repellents.range = reader.integer(u"range"_s, repellents.range, 1, 16);
+    repellents.height = reader.integer(u"height"_s, repellents.height, 0, 8);
+    if (reader.ok() && repellents.blocks.isEmpty()) {
+        reader.fail(u"needs the 'blocks' it keeps away from"_s);
+    }
+    return repellents;
+}
+
 } // namespace
+
+// Gold, fear of blocks, anger and young ones of the nether folk (decisions E-1081 to E-1083).
+void QcMobReader::parseGoldFolkTraits()
+{
+    m_reader.nestedObject(u"barter"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.barter = parseBarter(nested, m_namespace); });
+    m_reader.nestedObject(u"repelledBy"_s,
+                          [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.repellents = parseRepellents(nested, m_namespace); });
+    m_mob.angerSeconds = m_reader.number(u"angerSeconds"_s, m_mob.angerSeconds, 1.0, 600.0);
+    m_reader.nestedObject(u"young"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.youngChance = nested.number(u"chance"_s, 0.0, 0.0, 1.0);
+        m_mob.staysYoung = nested.boolean(u"staysYoung"_s, false);
+    });
+    if (m_reader.ok() && m_mob.barter && m_mob.ai != QcMobDefinition::Ai::Neutral) {
+        m_reader.fail(u"'barter' goes with the neutral AI"_s);
+    }
+    // Only the passive brain looks for such blocks, and the hostile one that builds on it.
+    if (m_reader.ok() && m_mob.repellents && m_mob.ai != QcMobDefinition::Ai::Passive && m_mob.ai != QcMobDefinition::Ai::Hostile) {
+        m_reader.fail(u"'repelledBy' goes with the passive or hostile AI"_s);
+    }
+}
+
+// Drifting, riding, falling apart and the weakness to a projectile (decisions E-1053 to E-1055).
+void QcMobReader::parseNetherTraits()
+{
+    m_reader.nestedObject(u"drift"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.drift.seconds = nested.number(u"seconds"_s, 4.0, 0.5, 60.0);
+        m_mob.drift.keepsToLava = nested.boolean(u"keepsToLava"_s, false);
+        m_mob.drift.keepsToGround = nested.boolean(u"keepsToGround"_s, false);
+        m_mob.drift.restSeconds = nested.number(u"restSeconds"_s, 0.0, 0.0, 60.0);
+    });
+    m_reader.nestedObject(u"ride"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcRideDefinition ride;
+        ride.saddle = nested.name(u"saddle"_s, m_namespace);
+        ride.steer = nested.name(u"steer"_s, m_namespace);
+        ride.speed = nested.number(u"speed"_s, 3.0, 0.1, 20.0);
+        ride.seat = nested.number(u"seat"_s, 1.2, 0.0, 8.0);
+        m_mob.ride = std::move(ride);
+    });
+    m_reader.nestedObject(u"splits"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcSplitDefinition splits;
+        splits.into = nested.name(u"into"_s, m_namespace);
+        splits.min = nested.integer(u"min"_s, 2, 1, 8);
+        splits.max = nested.integer(u"max"_s, 4, splits.min, 8);
+        m_mob.splits = std::move(splits);
+    });
+    m_reader.nestedObject(u"weakTo"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.weakTo = nested.name(u"projectile"_s, m_namespace);
+        m_mob.deflectedDamage = nested.number(u"damage"_s, 1000.0, 0.0, 10000.0);
+    });
+}
 
 // Taming, shyness, packs and cats (decision E-480).
 void QcMobReader::parseCompanions()
@@ -176,6 +304,10 @@ void QcMobReader::parseCompanions()
     m_reader.nestedObject(u"shy"_s,
                         [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.shy = parseShy(nested, m_namespace); });
     m_mob.packRange = m_reader.number(u"packRange"_s, 0.0, 0.0, 64.0);
+    m_mob.fireImmune = m_reader.boolean(u"fireImmune"_s, false);
+    m_mob.hops = m_reader.boolean(u"hops"_s, false);
+    parseNetherTraits();
+    parseGoldFolkTraits();
     m_mob.frightens = m_reader.boolean(u"frightens"_s, false);
     m_mob.scaredOfCats = m_reader.boolean(u"scaredOfCats"_s, false);
 

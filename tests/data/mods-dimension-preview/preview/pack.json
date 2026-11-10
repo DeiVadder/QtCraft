@@ -1,0 +1,7 @@
+{
+    "id": "preview",
+    "name": "Dimension preview",
+    "version": "1.0.0",
+    "description": "Test pack (package 83.2): a nether-like and an end-like dimension for screenshots of the client side of dimensions, until the real nether generator arrives (84.2).",
+    "dependencies": [{"id": "qtcraft", "minVersion": "1.0.0"}]
+}

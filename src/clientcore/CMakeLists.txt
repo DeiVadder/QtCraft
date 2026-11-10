@@ -48,6 +48,7 @@ target_sources(qc_clientcore PRIVATE
     debug/QcStatsLog.h debug/QcStatsLog.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    entitymeshes/QcBeamMesher.h entitymeshes/QcBeamMesher.cpp
     entitymeshes/QcBoatModel.h entitymeshes/QcBoatModel.cpp
     entitymeshes/QcBoatRiders.h entitymeshes/QcBoatRiders.cpp
     entitymeshes/QcEnchantingMesher.h entitymeshes/QcEnchantingMesher.cpp
@@ -135,6 +136,12 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    music/QcMusicDirector.h music/QcMusicDirector.cpp
+    music/QcMusicLibrary.h music/QcMusicLibrary.cpp
+    music/QcMusicSource.h
+    music/QcVorbisStream.h music/QcVorbisStream.cpp
+)
+target_sources(qc_clientcore PRIVATE
     network/QcKnownServers.h network/QcKnownServers.cpp
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
@@ -172,7 +179,9 @@ target_sources(qc_clientcore PRIVATE
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientAnvil.h session/QcClientAnvil.cpp
+    session/QcClientBeacon.h session/QcClientBeacon.cpp
     session/QcClientBlockScreen.h session/QcClientBlockScreen.cpp
+    session/QcClientBossBars.h session/QcClientBossBars.cpp
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEnchanting.h session/QcClientEnchanting.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
@@ -182,6 +191,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
     session/QcClientSession.h session/QcClientSession.cpp
     session/QcClientSignEditor.h session/QcClientSignEditor.cpp
+    session/QcClientSmithing.h session/QcClientSmithing.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientStonecutter.h session/QcClientStonecutter.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
@@ -191,6 +201,8 @@ target_sources(qc_clientcore PRIVATE
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcInkClouds.h session/QcInkClouds.cpp
+    session/QcNearbyBlocks.h session/QcNearbyBlocks.cpp
+    session/QcPortalSparkles.h session/QcPortalSparkles.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSessionState.h
@@ -199,6 +211,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcWorldMirror.h session/QcWorldMirror.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    settings/QcAudioVolumes.h settings/QcAudioVolumes.cpp
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
@@ -217,14 +230,20 @@ target_sources(qc_clientcore PRIVATE
 target_sources(qc_clientcore PRIVATE
     sound/QcAmbience.h sound/QcAmbience.cpp
     sound/QcAudioMixer.h sound/QcAudioMixer.cpp
+    sound/QcAudioStream.h
     sound/QcLocalSounds.h sound/QcLocalSounds.cpp
+    sound/QcMusicArrangement.h sound/QcMusicArrangement.cpp
     sound/QcMusicComposer.h sound/QcMusicComposer.cpp
+    sound/QcMusicReverb.h sound/QcMusicReverb.cpp
     sound/QcPositionalVoices.h sound/QcPositionalVoices.cpp
     sound/QcSampleBuffer.h
     sound/QcSoundBank.h sound/QcSoundBank.cpp
+    sound/QcSoundCategorizer.h sound/QcSoundCategorizer.cpp
+    sound/QcSoundCategory.h sound/QcSoundCategory.cpp
     sound/QcSoundCue.h
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
+    sound/QcStreamCursor.h sound/QcStreamCursor.cpp
 )
 target_sources(qc_clientcore PRIVATE
     texturepacks/QcTexturePack.h
@@ -251,13 +270,19 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureDetail.h textures/QcTextureDetail.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
+    textures/QcTextureField.h textures/QcTextureField.cpp
+    textures/QcTextureFungalPatterns.h textures/QcTextureFungalPatterns.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
+    textures/QcTextureMasonryPatterns.h textures/QcTextureMasonryPatterns.cpp
     textures/QcTextureOutline.h textures/QcTextureOutline.cpp
     textures/QcTexturePaint.h
     textures/QcTexturePaintingPatterns.h textures/QcTexturePaintingPatterns.cpp
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
+    textures/QcTextureRelief.h textures/QcTextureRelief.cpp
+    textures/QcTextureRockPatterns.h textures/QcTextureRockPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
+    textures/QcTextureStonePatterns.h textures/QcTextureStonePatterns.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
     textures/QcTextureToolPatterns.h textures/QcTextureToolPatterns.cpp
 )
@@ -274,6 +299,8 @@ target_sources(qc_clientcore PRIVATE
     tick/QcTickTiming.h tick/QcTickTiming.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    weather/QcAtmosphereParticles.h weather/QcAtmosphereParticles.cpp
+    weather/QcClientAtmosphere.h weather/QcClientAtmosphere.cpp
     weather/QcClientWeather.h weather/QcClientWeather.cpp
     weather/QcDropPool.h weather/QcDropPool.cpp
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
@@ -283,6 +310,8 @@ qc_configure_target(qc_clientcore)
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_clientcore PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)
+# The music's Ogg Vorbis decoder (QcVorbisStream, decision E-1135).
+target_link_libraries(qc_clientcore PRIVATE qc_stb_vorbis)
 
 # Procedural textures must be bit-identical on every architecture (decision E-300): no fused
 # multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).

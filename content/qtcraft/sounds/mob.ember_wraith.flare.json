@@ -1,0 +1,34 @@
+{
+    "name": "mob.ember_wraith.flare",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 32,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.9,
+            "attack": 0.2,
+            "curve": 1.5,
+            "highpass": 900,
+            "gain": 0.35
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.9,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 180,
+            "gain": 0.3
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.9,
+            "frequency": 140,
+            "endFrequency": 330,
+            "attack": 0.2,
+            "curve": 1.5,
+            "gain": 0.2
+        }
+    ]
+}

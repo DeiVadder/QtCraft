@@ -19,6 +19,7 @@ QcServerAnimals::QcServerAnimals(QcServerState &state, QcServerSounds &sounds, Q
     , m_inventory(inventory)
     , m_breeding(state.contentPointer())
     , m_pets(state, sounds, inventory)
+    , m_barter(state, sounds, inventory)
 {
 }
 
@@ -84,6 +85,8 @@ QcServerAnimals::Feeding QcServerAnimals::feed(QcServerClient &client, quint32 m
     }
     m_inventory.send(client);
     m_sounds.play(QString::fromLatin1(QcSoundKeys::playerEat), centre, 0.6f);
+    // What a player fed stays with the world, also a wild one of a hostile kind (decision E-1082).
+    m_state.entities().creatures().keep(*mob, true);
     return Feeding::Fed;
 }
 
@@ -144,7 +147,7 @@ void QcServerAnimals::creditBreeding(const QcMobBreeding::Birth &birth)
         const double distance = (client->motion.position - birth.position).length();
         if (client->hasBody() && distance <= nearest) {
             nearest = distance;
-            breeder = client.get();
+            breeder = client;
         }
     }
     if (breeder) {
@@ -170,6 +173,7 @@ void QcServerAnimals::tick()
     }
 
     layEggs();
+    m_barter.tick();
 }
 
 void QcServerAnimals::layEggs()

@@ -38,9 +38,11 @@ public:
         const char *name = nullptr;
     };
     /*! The places of the generator /locate knows besides the structures. */
-    static constexpr std::array<PlaceKind, 3> placeKinds{{{u"mineshaft", QT_TRANSLATE_NOOP("QcServerMessages", "Mine shaft")},
+    static constexpr std::array<PlaceKind, 5> placeKinds{{{u"mineshaft", QT_TRANSLATE_NOOP("QcServerMessages", "Mine shaft")},
                                                           {u"dungeon", QT_TRANSLATE_NOOP("QcServerMessages", "Dungeon")},
-                                                          {u"coastal_tower", QT_TRANSLATE_NOOP("QcServerMessages", "Coastal tower")}}};
+                                                          {u"coastal_tower", QT_TRANSLATE_NOOP("QcServerMessages", "Coastal tower")},
+                                                          {u"fortress", QT_TRANSLATE_NOOP("QcServerMessages", "Fortress")},
+                                                          {u"bastion", QT_TRANSLATE_NOOP("QcServerMessages", "Bastion")}}};
 
     explicit QcVillageCommands(QcServerState &state);
 

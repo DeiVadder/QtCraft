@@ -54,8 +54,10 @@ bool QcServerMaps::useHeld(QcServerClient &client)
         return true;
     }
     const QcVec3 &position = client.motion.position;
-    const std::optional<quint32> id = m_state.maps().create(QcMapData::around(static_cast<int>(std::floor(position.x)),
-        static_cast<int>(std::floor(position.z)), 0));
+    // A map shows the dimension it was made in (decision E-1005).
+    QcMapData made = QcMapData::around(static_cast<int>(std::floor(position.x)), static_cast<int>(std::floor(position.z)), 0);
+    made.setDimension(client.dimension);
+    const std::optional<quint32> id = m_state.maps().create(made);
     if (!id) {
         return true;
     }
@@ -84,7 +86,9 @@ std::optional<quint32> QcServerMaps::zoomOut(quint32 id)
     if (!map || map->scale() >= QcMapData::maxScale) {
         return std::nullopt;
     }
-    return m_state.maps().create(QcMapData::around(map->centre().x(), map->centre().y(), map->scale() + 1));
+    QcMapData zoomed = QcMapData::around(map->centre().x(), map->centre().y(), map->scale() + 1);
+    zoomed.setDimension(map->dimension());
+    return m_state.maps().create(zoomed);
 }
 
 void QcServerMaps::tick()
@@ -197,6 +201,10 @@ void QcServerMaps::reveal(const QcServerClient &holder, quint32 id)
 {
     QcMapStore &maps = m_state.maps();
     const QcMapData &map = *maps.find(id);
+    // Only the dimension it shows fills it in (decision E-1005).
+    if (map.dimension() != holder.dimension) {
+        return;
+    }
     const QPointF where(holder.motion.position.x, holder.motion.position.z);
     const QList<QPoint> due = QcMapSurvey::pixelsDue(map, where, m_state.clock().tick());
     const QList<QcMapSurvey::Surveyed> shown = QcMapSurvey::survey(m_state.world(), map, due);
@@ -242,15 +250,17 @@ QList<QcMapMarker> QcServerMaps::markersFor(const QcServerClient &receiver, quin
             markers.append(marker);
         }
     }
-    // Players show only on maps in the hand; a framed map shows its frames (as in the reference).
-    if (mapIdOf(receiver.inventory.selectedStack()) != id) {
+    // Players show only on maps in the hand, and only in the dimension the map shows (the players
+    // of the receiver's dimension, decision E-1005); a framed map shows its frames (as in the
+    // reference).
+    if (mapIdOf(receiver.inventory.selectedStack()) != id || map.dimension() != receiver.dimension) {
         return markers;
     }
     for (const auto &client : m_state.clients()) {
         if (markers.size() >= QcMapMarker::maxCount) {
             break;
         }
-        const bool own = client.get() == &receiver;
+        const bool own = client == &receiver;
         if (client->state != QcServerClient::State::Playing || client->dead || (!own && !carries(*client, id))) {
             continue;
         }

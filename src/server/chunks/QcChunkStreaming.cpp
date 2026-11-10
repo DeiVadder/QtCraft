@@ -7,6 +7,7 @@
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/machines/QcServerBeacons.h"
 #include "server/machines/QcServerKitchen.h"
 #include "server/spawners/QcSpawnerRules.h"
 
@@ -128,6 +129,14 @@ void QcChunkStreaming::sendSpawners(QcServerClient &client, QcChunkPos pos) cons
     const QList<QcBlockPos> campfires = m_state.world().campfires().positionsIn(pos);
     for (const QcBlockPos &campfire : campfires) {
         client.connection->send(QcServerKitchen::displayOf(m_state.world(), campfire));
+    }
+    // And the beams of its beacons that shine (decision E-1143).
+    const QList<QcBlockPos> beacons = m_state.world().beacons().positionsIn(pos);
+    for (const QcBlockPos &beacon : beacons) {
+        const QcMsg::BeaconBeam beam = QcServerBeacons::beamOf(m_state.world().beacons(), beacon);
+        if (!beam.sections.isEmpty()) {
+            client.connection->send(beam);
+        }
     }
 }
 

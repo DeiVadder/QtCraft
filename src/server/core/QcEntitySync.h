@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/protocol/QcMessages.h"
+#include "server/bosses/QcServerBossBars.h"
 #include "server/core/QcServerClient.h"
 
 #include <QList>
@@ -67,4 +68,5 @@ private:
                                                                                double threshold);
 
     QcServerState &m_state;
+    QcServerBossBars m_bossBars;
 };

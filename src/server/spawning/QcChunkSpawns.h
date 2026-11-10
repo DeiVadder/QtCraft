@@ -40,6 +40,9 @@ public:
         with the world, not flying, ambient or water creatures, not villagers or golems (they
         belong to villages, decisions E-411, E-470). */
     static bool isAnimal(const QcMobDefinition &definition);
+    /*! Sets whether only animals that name their biomes come with new chunks to \a named (true
+        outside the overworld, decision E-1050). */
+    void setNamedBiomesOnly(bool named) { m_namedBiomesOnly = named; }
 
     /*! \a mobs owns the creatures this adds and outlives it; kinds from \a content, chances
         decided by the world \a seed. */
@@ -66,4 +69,5 @@ private:
     QcMobManager &m_mobs;
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
+    bool m_namedBiomesOnly = false;
 };

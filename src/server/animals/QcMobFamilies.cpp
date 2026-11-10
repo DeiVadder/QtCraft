@@ -15,14 +15,8 @@
 QcMobFamilies::QcMobFamilies(QcServerState &state, QcServerSounds &sounds)
     : m_state(state)
     , m_sounds(sounds)
+    , m_departures(state, [this](const QcCreature &mob, QcMobManager::Departure why) { noteDeparture(mob, why); })
 {
-    m_departures = m_state.entities().creatures().onDeparture(
-        [this](const QcCreature &mob, QcMobManager::Departure why) { noteDeparture(mob, why); });
-}
-
-QcMobFamilies::~QcMobFamilies()
-{
-    m_state.entities().creatures().removeDepartureListener(m_departures);
 }
 
 QList<quint32> QcMobFamilies::childrenOf(const QcMobManager &creatures, quint32 parentId)
@@ -38,6 +32,13 @@ QList<quint32> QcMobFamilies::childrenOf(const QcMobManager &creatures, quint32 
 
 void QcMobFamilies::noteDeparture(const QcCreature &mob, QcMobManager::Departure why)
 {
+    const std::optional<QcSplitDefinition> &splits = m_state.content().mobs()[mob.type].splits;
+    if (splits && why == QcMobManager::Departure::Died) {
+        const int count = splits->min + m_state.random().bounded(splits->max - splits->min + 1);
+        const std::optional<QcCreatureKindId> kind = m_state.content().mobKind(splits->into);
+        m_remains.of(m_state.current()).append({kind.value_or(mob.type), mob.motion.position, count, mob.confined});
+    }
+
     const std::optional<QcFamilyDefinition> &family = m_state.content().mobs()[mob.type].family;
     if (!family) {
         return;
@@ -59,12 +60,29 @@ void QcMobFamilies::noteDeparture(const QcCreature &mob, QcMobManager::Departure
     // The others go in the next tick of the creatures, after the step that took the parent.
     Orphans orphans{childrenOf(creatures, mob.id), family->popDrops, family->popSound, why == QcMobManager::Departure::Died};
     if (!orphans.children.isEmpty()) {
-        m_orphans.append(std::move(orphans));
+        m_orphans.of(m_state.current()).append(std::move(orphans));
+    }
+}
+
+void QcMobFamilies::takeRemains()
+{
+    QcMobManager &creatures = m_state.entities().creatures();
+    const QList<Remains> remains = std::exchange(m_remains.of(m_state.current()), {});
+    for (const Remains &left : remains) {
+        for (int i = 0; i < left.count; ++i) {
+            const double angle = m_state.random().bounded(2.0 * std::numbers::pi);
+            const QcVec3 away{std::sin(angle), 0.0, -std::cos(angle)};
+            const quint32 id = creatures.spawn(left.kind, left.where + away * 0.2, m_state.entities().newId());
+            QcCreature &piece = *creatures.find(id);
+            piece.confined = left.confined;
+            piece.motion.velocity = away * splitSpeed + QcVec3{0.0, splitLift, 0.0};
+        }
     }
 }
 
 void QcMobFamilies::tick()
 {
+    takeRemains();
     takeOrphans();
     splitHurt();
     tendKept();
@@ -100,7 +118,7 @@ void QcMobFamilies::tendKept()
 
 void QcMobFamilies::takeOrphans()
 {
-    const QList<Orphans> orphans = std::exchange(m_orphans, {});
+    const QList<Orphans> orphans = std::exchange(m_orphans.of(m_state.current()), {});
     QcMobManager &creatures = m_state.entities().creatures();
     int sounds = 0;
     for (const Orphans &family : orphans) {

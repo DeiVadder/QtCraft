@@ -6,7 +6,7 @@
         "lightOpacity": 0,
         "toggles": true,
         "signal": { "type": "opener" },
-        "connects": { "group": "fence", "to": [] },
+        "connects": { "group": "fence_gate", "to": [] },
         "states": { "facing": ["north", "east", "south", "west"], "open": [false, true] }
     },
     "recipe": { "pattern": ["|#|", "|#|"], "key": { "#": "@", "|": "stick" }, "count": 1 },

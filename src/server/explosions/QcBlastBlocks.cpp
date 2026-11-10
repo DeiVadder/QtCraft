@@ -33,10 +33,15 @@ QcBlastBlocks::QcBlastBlocks(QcServerState &state, QcServerBlocks &blocks, QcSer
 {
 }
 
+QcBlastBlocks::Blasts &QcBlastBlocks::here() const
+{
+    return m_blasts.of(m_state.current());
+}
+
 void QcBlastBlocks::add(const QList<QcBlockPos> &cells, const Effects &effects)
 {
     for (const QcBlockPos &pos : cells) {
-        m_waiting.push_back({pos, effects});
+        here().waiting.push_back({pos, effects});
     }
 }
 
@@ -49,9 +54,9 @@ quint32 QcBlastBlocks::roll(const Work &work, quint32 salt, quint32 bound) const
 QList<QcPlacedBlock> QcBlastBlocks::take(qint64 budget)
 {
     QList<QcPlacedBlock> chained;
-    for (; budget > 0 && !m_waiting.empty(); --budget) {
-        const Work work = m_waiting.front();
-        m_waiting.pop_front();
+    for (; budget > 0 && !here().waiting.empty(); --budget) {
+        const Work work = here().waiting.front();
+        here().waiting.pop_front();
         const std::optional<QcBlockId> block = m_state.world().blockAt(work.pos);
         if (!block || *block == qcAirBlockId) {
             continue;
@@ -70,7 +75,7 @@ bool QcBlastBlocks::clear(QcBlockPos pos)
     if (!m_blocks.setQuietly(pos, qcAirBlockId)) {
         return false;
     }
-    m_batch.append({pos, qcAirBlockId});
+    here().batch.append({pos, qcAirBlockId});
     return true;
 }
 
@@ -104,7 +109,7 @@ void QcBlastBlocks::breakCell(const Work &work, QcBlockId block)
     // An infested block lets its creature out (decision E-453).
     QcInfestation::release(m_state, definition, work.pos);
     if (work.effects.fire && roll(work, FireSalt, fireOneIn) == 0) {
-        m_fires.append(work.pos);
+        here().fires.append(work.pos);
     }
 }
 
@@ -112,15 +117,15 @@ void QcBlastBlocks::flush()
 {
     sendBatch();
     // Fires after the air they stand in reached the clients.
-    for (const QcBlockPos &pos : std::as_const(m_fires)) {
+    for (const QcBlockPos &pos : std::as_const(here().fires)) {
         m_fire.ignite(pos);
     }
-    m_fires.clear();
+    here().fires.clear();
 }
 
 void QcBlastBlocks::sendBatch()
 {
-    if (m_batch.isEmpty()) {
+    if (here().batch.isEmpty()) {
         return;
     }
 
@@ -129,7 +134,7 @@ void QcBlastBlocks::sendBatch()
             continue;
         }
         QList<QcMsg::BlockUpdate> updates;
-        for (const QcMsg::BlockUpdate &update : std::as_const(m_batch)) {
+        for (const QcMsg::BlockUpdate &update : std::as_const(here().batch)) {
             if (client->view.sentChunks.contains(update.pos.chunk())) {
                 updates.append(update);
             }
@@ -140,7 +145,7 @@ void QcBlastBlocks::sendBatch()
             client->connection->send(batch);
         }
     }
-    m_batch.clear();
+    here().batch.clear();
 }
 
 QList<QcMsg::BlockBatch> QcBlastBlocks::pieces(const QList<QcMsg::BlockUpdate> &updates, qsizetype most)

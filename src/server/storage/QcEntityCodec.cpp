@@ -17,6 +17,7 @@
 #include "server/storage/QcCreatureComponents.h"
 #include "server/storage/QcHangingCodec.h"
 #include "server/storage/QcItemDataCodec.h"
+#include "server/storage/QcMinecartCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
 
@@ -200,7 +201,8 @@ private:
         const std::optional<QcCreatureKindId> type = m_content.mobKind(header.type);
         // Without its creature component it is a grown creature at full health.
         stored.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
-        std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored));
+        QcStackReader stacks(m_content, m_path, m_warnings);
+        std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored), stacks);
         if (!read) {
             return false;
         }
@@ -394,19 +396,17 @@ private:
         cart.motion.velocity = header.velocity;
         cart.yaw = header.yaw;
         // A container cart's slots (decision E-386) and whether a hopper cart pulls.
-        const auto fields = [this, &cart](QDataStream &in, quint16) {
-            in >> cart.item;
-            const std::optional<quint32> slotCountRead = QcStreamLimits::readCount(in, QcBlockDefinition::maxContainerSlots);
-            if (!slotCountRead) {
+        QList<QcItemStack> rest;
+        const auto fields = [this, &cart, &rest](QDataStream &in, quint16) {
+            QcStackReader stacks(m_content, m_path, m_warnings);
+            std::optional<QcMinecartCodec::Fields> read = QcMinecartCodec::read(in, stacks);
+            if (!read) {
                 return false;
             }
-            const quint32 slotCount = *slotCountRead;
-            QcStackReader stacks(m_content, m_path, m_warnings);
-            cart.stacks.resize(slotCount);
-            for (QcItemStack &stack : cart.stacks) {
-                stack = stacks.read(in);
-            }
-            in >> cart.enabled;
+            cart.item = std::move(read->item);
+            cart.stacks = std::move(read->stacks);
+            cart.enabled = read->enabled;
+            rest = std::move(read->rest);
             return true;
         };
         const double y = cart.motion.position.y;
@@ -416,6 +416,14 @@ private:
             return false;
         }
         cart.kept.components = std::move(*components);
+
+        // What no slot took lies beside the cart (decision E-1066).
+        for (const QcItemStack &stack : std::as_const(rest)) {
+            QcEntityRecord::Ordered<QcItemEntityManager::Drop> drop{{}, header.order};
+            drop.entry.stack = stack;
+            drop.entry.position = cart.motion.position;
+            m_record.items.append(drop);
+        }
 
         // A cart whose item a mod took away still rolls, it only drops nothing.
         if (!cart.item.isEmpty() && !m_content.itemId(cart.item)) {
@@ -554,13 +562,7 @@ void addStand(QcComponentFrames::Writer &components, const QcArmourStand &stand,
 
 void addMinecart(QcComponentFrames::Writer &components, const QcMinecart &cart, const QcContentRegistry &content)
 {
-    components.add(static_cast<quint16>(Component::Minecart), kindVersion, [&](QDataStream &out) {
-        out << cart.item << static_cast<quint32>(cart.stacks.size());
-        for (const QcItemStack &stack : cart.stacks) {
-            QcSaveFile::writeStack(out, stack, content);
-        }
-        out << cart.enabled;
-    });
+    components.add(static_cast<quint16>(Component::Minecart), kindVersion, [&](QDataStream &out) { QcMinecartCodec::write(out, cart, content); });
 }
 
 void writeCreatures(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)

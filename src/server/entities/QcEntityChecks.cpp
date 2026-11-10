@@ -66,7 +66,7 @@ namespace {
         note(boat, QcEntityKind::Boat);
     }
     // Every client that became a player, also one that is dead or leaving.
-    for (const std::unique_ptr<QcServerClient> &client : entities.clients()) {
+    for (const auto &client : entities.clients()) {
         if (client->id != 0) {
             note(*client, QcEntityKind::Player);
         }
@@ -98,7 +98,7 @@ template<typename Entry, typename Position>
         if (cart.rider == 0) {
             continue;
         }
-        const bool player = std::ranges::any_of(entities.clients(), [&cart](const std::unique_ptr<QcServerClient> &client) {
+        const bool player = std::ranges::any_of(entities.clients(), [&cart](QcServerClient *client) {
             return client->id == cart.rider && client->state == QcServerClient::State::Playing && !client->dead;
         });
         if (!player) {

@@ -16,6 +16,7 @@
 #include "clientcore/session/QcCampfireSmoke.h"
 #include "clientcore/session/QcEffectPuff.h"
 #include "clientcore/session/QcEnchantingAura.h"
+#include "clientcore/session/QcPortalSparkles.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
 
@@ -34,7 +35,7 @@ class QcTextureAtlas;
 struct QcSessionParts;
 
 // Builds the entity meshes of one frame from the running session: creatures, armour stands, carts
-// with their load, boats, drops, projectiles, flames, lit explosives, the puffs of explosions and ink, the local
+// with their load, boats, drops, projectiles, flames, lit explosives, the puffs of explosions and ink, beacon beams, the local
 // player seen from outside and the
 // first-person arm, with their capes and the light they stand in. Hands nothing to the view; that
 // is QcRenderBridge's part. Lives in the GUI thread.
@@ -73,6 +74,15 @@ public:
     [[nodiscard]] std::shared_ptr<QcEntityMesh> framedMaps() const { return m_framedMapMesh; }
     // The tiles of the framed-map texture the framed maps' coordinates point into.
     [[nodiscard]] std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles() const { return m_framedMaps.tiles(); }
+    // The beams of the shining beacons of the last buildEntities (decision E-1143): their cores,
+    // drawn like entities without sun shadows, and their glows, added without depth; null before
+    // the first.
+    struct BeamMeshes
+    {
+        std::shared_ptr<QcEntityMesh> core;
+        std::shared_ptr<QcEntityMesh> glow;
+    };
+    [[nodiscard]] const BeamMeshes &beams() const { return m_beams; }
     // The first-person arm with the held item at `eye`; null without an atlas or while dead.
     // Animated textures show their frame at `animationTicks`, as in buildEntities.
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildHand(double alpha, const QcVec3 &eye, double animationTicks) const;
@@ -107,9 +117,14 @@ private:
     void appendSigns(QcEntityMesh &mesh, const EntityFrame &frame);
     // The items lying on the campfires near the player and the smoke rising from them (decision E-772).
     void appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The specks around the lit portals near the player (decision E-1022).
+    void appendPortalSparkles(QcEntityMesh &mesh, const EntityFrame &frame);
     // The floating books and flying runes of the enchanting tables near the player that may show
     // within `planes` (decision E-884).
     void appendEnchantingTables(QcEntityMesh &mesh, const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes);
+    // QcEntityFrameBeams.cpp: the beams of the shining beacons that may show within `planes`
+    // (decision E-1143).
+    [[nodiscard]] BeamMeshes buildBeams(const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes) const;
     // The maps in item frames (decision E-806), their tiles given nearest to the camera first
     // (decision E-809).
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildFramedMaps(const EntityFrame &frame);
@@ -168,12 +183,14 @@ private:
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
     QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;
+    QcPortalSparkles m_sparkles;
     QcEnchantingAura m_aura;
     // Which parent each child of a family is tied to, kept from frame to frame (decision E-839).
     QcTethers m_tethers;
     // The pictures of the framed maps, kept from frame to frame, and the mesh of their quads.
     QcFramedMapAtlas m_framedMaps;
     std::shared_ptr<QcEntityMesh> m_framedMapMesh;
+    BeamMeshes m_beams;
     // The map colours come from the atlas; true until worked out for the current one.
     bool m_mapColoursStale = true;
     QElapsedTimer m_capeClock;

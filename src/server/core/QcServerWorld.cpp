@@ -13,7 +13,7 @@
 
 QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator)
     : m_content(std::move(content))
-    , m_generator(std::move(generator))
+    , m_generator(std::make_unique<QcVersionedGenerator>(std::move(generator)))
     , m_links(*m_content)
     , m_loaders(*m_content)
     , m_villages(std::make_unique<QcVillages>(*m_content, *m_generator))
@@ -21,6 +21,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     , m_spawners(*m_content)
     , m_campfires(*m_content)
     , m_signs(*m_content)
+    , m_beacons(*m_content)
     , m_light(std::make_shared<const QcLightTable>(*m_content), {})
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
@@ -28,18 +29,21 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     const auto stateCount = static_cast<std::size_t>(m_content->stateCount());
     std::vector<QcSectionMarks::Traits> traits(stateCount);
     std::vector<bool> hoppers(stateCount);
+    std::vector<bool> daylightSensors(stateCount);
     std::vector<bool> fires(stateCount);
     std::vector<bool> eternalGround(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcBlockDefinition &block = m_content->block(static_cast<QcBlockId>(id));
         traits[id] = QcSectionMarks::traitsOf(block);
         hoppers[id] = block.signal.kind == QcSignalKind::Hopper;
+        daylightSensors[id] = block.signal.kind == QcSignalKind::Daylight;
         fires[id] = block.fire.isFire;
         eternalGround[id] = block.fire.eternal;
     }
 
     m_marks = QcSectionMarks(std::move(traits));
     m_hoppers = QcBlockIndex(std::move(hoppers));
+    m_daylightSensors = QcBlockIndex(std::move(daylightSensors), QcBlockIndex::Touching::Ignored);
     m_fires = QcFireQueue(std::move(fires), std::move(eternalGround));
     m_villages->setLoadedQuery([this](QcChunkPos pos) { return m_chunks.contains(pos); });
 }
@@ -68,7 +72,7 @@ void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
     kept.request = m_pending.value(pos);
     m_generationPool.submit([this, pos, kept = std::move(kept)]() mutable {
         kept.pos = pos;
-        kept.blocks = m_generator->generate(pos);
+        kept.blocks = generator().generate(pos);
         kept.generated = true;
         kept.light = m_light.prepare(*kept.blocks);
         m_generated.push(std::move(kept));
@@ -82,7 +86,7 @@ void QcServerWorld::planStructureSitesInBackground(QcBlockPos from, int reach)
     }
     m_generationPool.submit([this, from, reach, planning = m_planningSites]() {
         // Only for its plans, which the generator keeps.
-        m_generator->structureSitesNear(from, reach);
+        generator().structureSitesNear(from, reach);
         planning->store(false);
     });
 }
@@ -184,18 +188,20 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     noteChange(pos);
     m_marks.noteChunk(pos, chunk);
     m_hoppers.noteChunk(pos, chunk);
+    m_daylightSensors.noteChunk(pos, chunk);
     m_links.noteChunk(chunk);
     m_loaders.noteChunk(chunk);
     m_villages->noteChunk(chunk);
     // The generator's beds and workstations outside its villages count as placed (decision E-490);
     // one broken since is air and counts no more, one listed already stays as it is.
-    const QList<QcBlockPos> points = m_generator->pointsOfInterestIn(pos);
+    const QList<QcBlockPos> points = generator().pointsOfInterestIn(pos);
     for (const QcBlockPos &point : points) {
         m_villages->notePointOfInterest(point, chunk.block(point.localX(), point.y, point.localZ()));
     }
     m_blockEntities.chunkArrived(chunk, m_marks.sectionsOf(pos, QcBlockTrait::BlockEntity));
     m_fires.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Fire));
     m_spawners.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Spawner));
+    beacons().noteChunk(pos, chunk);
 }
 
 void QcServerWorld::noteChange(QcChunkPos pos)
@@ -208,11 +214,13 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_lastChange.remove(pos);
     m_marks.forgetChunk(pos);
     m_hoppers.forgetChunk(pos);
+    m_daylightSensors.forgetChunk(pos);
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
     m_spawners.forgetChunk(pos);
     m_campfires.forgetChunk(pos);
     m_signs.forgetChunk(pos);
+    beacons().forgetChunk(pos);
     m_blockEntityExtras.forgetChunk(pos);
     m_villages->forgetChunk(pos);
 }
@@ -234,7 +242,7 @@ QcServerWorld::Arrival QcServerWorld::produceNow(QcChunkPos pos)
     }
     arrival.pos = pos;
     if (!arrival.blocks) {
-        arrival.blocks = m_generator->generate(pos);
+        arrival.blocks = generator().generate(pos);
         arrival.generated = true;
     }
     // A background request of the same chunk is superseded; its result is dropped when it comes.
@@ -305,7 +313,7 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
     }
 
     m_light.removeChunk(pos);
-    *it = m_generator->generate(pos);
+    *it = generator().generate(pos);
     m_light.addChunk(**it);
     forgetSections(pos);
     m_blockEntities.forgetChunk(pos);
@@ -334,6 +342,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_light.changeBlock(pos, before, **it);
     m_marks.noteBlock(pos, block);
     m_hoppers.noteBlock(pos, block);
+    m_daylightSensors.noteBlock(pos, block);
     m_links.noteBlock(pos, before, block);
     m_loaders.noteBlock(pos, before, block);
     m_villages->noteBlock(pos, before, block);
@@ -342,8 +351,9 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_spawners.noteBlock(pos, before, block);
     m_campfires.noteBlock(pos, block);
     m_signs.noteBlock(pos, block);
+    beacons().noteBlock(pos, block);
     if (m_blockEntityExtras.hasKeptParts()) [[unlikely]] {
-        m_blockEntityExtras.dropOrphanTails(pos, {m_blockEntities, m_fires, m_spawners, m_signs, m_campfires});
+        m_blockEntityExtras.dropOrphanTails(pos, {m_blockEntities, m_fires, m_spawners, m_signs, m_campfires, m_beacons});
     }
 
     m_saves.noteChanged(pos.chunk());

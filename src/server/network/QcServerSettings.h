@@ -52,6 +52,9 @@ struct QcServerSettings
     std::optional<qint64> seed;
     QString worldType = QStringLiteral("terrain");
     QString worldOptions;
+    /*! The dimension a world the server creates starts in (\c {startDimension}, decision
+        E-1110); empty: the overworld. A saved world keeps its own. */
+    QString startDimension;
     /*! The longest world generation options accepted. */
     static constexpr qsizetype maxWorldOptionsLength = 2048;
     /*! The world generator version of a world the server creates (decision E-922); 0, the

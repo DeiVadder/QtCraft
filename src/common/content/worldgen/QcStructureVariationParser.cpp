@@ -6,7 +6,10 @@
 #include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
+#include <QJsonDocument>
 
+#include <algorithm>
+#include <cmath>
 #include <optional>
 
 using namespace Qt::StringLiterals;
@@ -42,6 +45,33 @@ using Structure = QcStructureDefinition;
         return std::nullopt;
     }
     return structure.cellIndex(cell.x, cell.y, cell.z);
+}
+
+// The chests of a "generatorChanges" entry, none without the key; std::nullopt on an invalid one.
+[[nodiscard]] std::optional<QList<Structure::Loot>> readVersionLoot(const QJsonValue &value, const Structure &structure, const QString &packNamespace)
+{
+    QList<Structure::Loot> loot;
+    if (value.isUndefined()) {
+        return loot;
+    }
+    const QJsonArray entries = value.toArray();
+    if (!value.isArray() || entries.size() > Structure::maxPaletteEntries) {
+        return std::nullopt;
+    }
+    for (const auto &entry : entries) {
+        std::optional<Structure::Loot> chest = QcStructureVariationParser::readLoot(entry.toObject(), structure, packNamespace);
+        if (!chest) {
+            return std::nullopt;
+        }
+        loot.append(std::move(*chest));
+    }
+    return loot;
+}
+
+// An entry of "generatorChanges" as it stands in the file, cut for a message.
+[[nodiscard]] QString quoted(const QJsonObject &entry)
+{
+    return QString::fromUtf8(QJsonDocument(entry).toJson(QJsonDocument::Compact)).left(120);
 }
 
 // Reads the layers of one part: owns the part being built, whose cells span the whole structure.
@@ -129,6 +159,50 @@ QList<QcStructureDefinition::Choice> parseChoices(const QJsonObject &json, QcJso
             choice.options.append(std::move(*swaps));
         }
         result.append(std::move(choice));
+    }
+    return result;
+}
+
+std::optional<QcStructureDefinition::Loot> readLoot(const QJsonObject &entry, const QcStructureDefinition &structure, const QString &packNamespace)
+{
+    const QJsonArray at = entry.value(u"at"_s).toArray();
+    const QString table = QcContentNames::qualify(entry.value(u"table"_s).toString(), packNamespace);
+    const bool whole = at.size() == 3 && std::ranges::all_of(at, [](const QJsonValue &value) { return value.isDouble() && value.toDouble() == std::floor(value.toDouble()); });
+    if (!whole || table.isEmpty()) {
+        return std::nullopt;
+    }
+    const QcBlockPos cell{at[0].toInt(), at[1].toInt(), at[2].toInt()};
+    return cellIndexOf(cell, structure) ? std::optional(Structure::Loot{cell, table}) : std::nullopt;
+}
+
+QList<QcStructureDefinition::VersionChange> parseGeneratorChanges(const QJsonObject &json, const QcStructureDefinition &structure,
+                                                                  QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<Structure::VersionChange> result;
+    const QJsonValue value = json.value(u"generatorChanges"_s);
+    if (value.isUndefined()) {
+        return result;
+    }
+    const QJsonArray entries = value.toArray();
+    if (!value.isArray() || entries.size() > Structure::maxChoices) {
+        reader.fail(u"'generatorChanges' must be an array of at most %1 entries"_s.arg(Structure::maxChoices));
+        return result;
+    }
+
+    for (const auto &entry : entries) {
+        const QJsonObject object = entry.toObject();
+        const QJsonValue swapsValue = object.value(u"swaps"_s);
+        const std::optional<QHash<QString, QString>> swaps = swapsValue.isUndefined() ? QHash<QString, QString>() : readOption(swapsValue, packNamespace);
+        const std::optional<QList<Structure::Loot>> loot = readVersionLoot(object.value(u"loot"_s), structure, packNamespace);
+        const int version = object.value(u"version"_s).toInt();
+        if (version < 1 || !swaps || !loot) {
+            const QString wrong = version < 1 ? u"'version' must be 1 or more"_s
+                                  : !swaps    ? u"'swaps' must be an object of name -> name"_s
+                                              : u"'loot' must list 'at' inside the structure and 'table'"_s;
+            reader.fail(u"'generatorChanges' entry %1: %2: %3"_s.arg(result.size()).arg(wrong, quoted(object)));
+            return result;
+        }
+        result.append({version, *swaps, *loot});
     }
     return result;
 }

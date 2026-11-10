@@ -577,7 +577,7 @@ private slots:
     void showcaseHasAStandForEverySet()
     {
         QCOMPARE(QcShowcaseArmourArea::sets(*m_content),
-                 (QStringList{u"qtcraft:leather"_s, u"qtcraft:golden"_s, u"qtcraft:iron"_s, u"qtcraft:diamond"_s}));
+                 (QStringList{u"qtcraft:leather"_s, u"qtcraft:golden"_s, u"qtcraft:iron"_s, u"qtcraft:diamond"_s, u"qtcraft:netherite"_s}));
 
         QcShowcasePlanner planner(*m_content);
         const QcShowcasePlan plan = planner.build();

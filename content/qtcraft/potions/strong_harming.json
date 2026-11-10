@@ -1,0 +1,11 @@
+{
+    "name": "strong_harming",
+    "variantOf": "harming",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "instant_damage",
+            "level": 2
+        }
+    ]
+}

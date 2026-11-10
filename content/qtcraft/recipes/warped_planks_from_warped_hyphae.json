@@ -1,0 +1,11 @@
+{
+    "name": "warped_planks_from_warped_hyphae",
+    "type": "shapeless",
+    "ingredients": [
+        "warped_hyphae"
+    ],
+    "result": {
+        "item": "warped_planks",
+        "count": 4
+    }
+}

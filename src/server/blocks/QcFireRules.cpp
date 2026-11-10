@@ -22,8 +22,22 @@ Table::Table(const QcContentRegistry &content)
         traits.ignite = static_cast<quint8>(block.fire.ignite);
         traits.burn = static_cast<quint8>(block.fire.burn);
         traits.sparks = static_cast<quint8>(block.fire.sparks);
+        traits.fireAbove = fireBlock(content, block.fire.fireAbove);
     }
     m_defaultFire = content.defaultFire();
+}
+
+std::optional<QcBlockId> Table::fireBlock(const QcContentRegistry &content, const QString &name)
+{
+    const std::optional<QcBlockId> fire = name.isEmpty() ? std::nullopt : content.blockId(name);
+    return fire && content.block(*fire).fire.isFire ? fire : std::nullopt;
+}
+
+QcBlockId Table::fireAt(const QcBlockAccess &world, QcBlockPos pos, QcBlockId fire) const
+{
+    const std::optional<QcBlockId> below = pos.y > 0 ? world.blockAt(pos.offset(0, -1, 0)) : std::nullopt;
+    const std::optional<QcBlockId> above = below ? of(*below).fireAbove : std::nullopt;
+    return above.value_or(fire);
 }
 
 bool canStay(const QcBlockAccess &world, const Table &table, QcBlockPos pos)

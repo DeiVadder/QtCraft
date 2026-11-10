@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Brauen](#chapter-qtcraft-brewing) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Nether-Blöcke](#chapter-qtcraft-nether_blocks) · [Portale](#chapter-qtcraft-portals) · [Der Nether](#chapter-qtcraft-nether) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Im Nether beginnen](#chapter-qtcraft-nether_start) · [Netherit](#chapter-qtcraft-netherite) · [Die Verkohlte Hydra](#chapter-qtcraft-charred_hydra) · [Das Leuchtfeuer](#chapter-qtcraft-beacon) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Welt auf neuen Generator umstellen](#chapter-qtcraft-generator_switch) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs) · [Musik](#chapter-qtcraft-music)
 
 ## QtCraft
 
@@ -199,11 +199,47 @@ Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barr
 
 [Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Roheisen](items.md#item-qtcraft-raw_iron), [Kupferbarren](items.md#item-qtcraft-copper_ingot), [Kette](blocks.md#block-qtcraft-chain), [Räucherofen](blocks.md#block-qtcraft-smoker), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire)
 
+### <a id="chapter-qtcraft-brewing"></a>Brauen
+
+**Der Braustand**
+
+Stelle einen Braustand aus einer Glutrute und drei Steinen her und öffne ihn mit der Benutzen-Taste. Glutstaub im Brennstoff-Platz gibt dem Stand 20 Brauvorgänge. Lege oben eine Zutat ein und unten bis zu drei Flaschen: Ändert die Zutat mindestens eine davon, läuft der Brauvorgang 20 Sekunden, dann ändert sich jede passende Flasche und eine Zutat ist verbraucht. Nimmst du die Zutat weg, tauschst sie oder nimmst die letzte passende Flasche, bricht der Vorgang ab.
+
+Ein Trichter von oben füllt die Zutat, ein Trichter von der Seite füllt Flaschen und Brennstoff, ein Trichter darunter nimmt die Flaschen heraus. Ein Komparator liest, wie voll der Stand ist.
+
+**Grundlage und Wirkung**
+
+Fast jeder Trank beginnt als Wasserflasche mit Netherwarze, das ergibt einen seltsamen Trank. Der nimmt dann die Zutat der Wirkung auf: Zucker für Schnelligkeit, vergoldete Melonenscheibe für Heilung, Spinnenauge für Vergiftung, Magmacreme für Feuerresistenz, goldene Karotte für Nachtsicht, Glutstaub für Stärke und eine Klageträne für Regeneration. Ein fermentiertes Spinnenauge in einer Wasserflasche ergibt einen Trank der Schwäche. Andere Zutaten auf Wasser ergeben nur einen schlichten Trank, Leuchtsteinstaub einen dicken.
+
+**Länger, stärker, geworfen, umgekehrt**
+
+Signalstaub lässt einen Trank länger wirken, Leuchtsteinstaub macht ihn stärker, aber kürzer; ein Trank ist entweder das eine oder das andere. Schwarzpulver macht aus einem Trank einen Wurftrank, der alle rund um die Stelle trifft, an der er zerbricht, mit der Entfernung schwächer. Ein fermentiertes Spinnenauge kehrt einen Trank um: Schnelligkeit wird Langsamkeit, Heilung und Vergiftung werden Schaden, Nachtsicht wird Unsichtbarkeit.
+
+Verweiltränke gibt es als Gegenstände, sie lassen sich aber noch nicht brauen; geworfen wirken sie wie ein Wurftrank ein Viertel der Zeit.
+
+**Wasser aus dem Kessel**
+
+Ein Wassereimer füllt einen Kessel, jede Glasflasche nimmt ein Drittel heraus; eine Wasserflasche gibt ein Drittel zurück, und ein leerer Eimer nimmt einen vollen Kessel. Glasflaschen füllen sich auch an jedem Wasser.
+
+**Hexen und Kleriker**
+
+Hexen brauen für sich selbst. Unter Wasser trinkt eine Hexe Wasseratmung, brennend Feuerresistenz, verletzt Heilung und Schnelligkeit, wenn ihr Ziel mehr als 11 Blöcke entfernt ist; solange sie trinkt, bleibt sie stehen. Auf dich wirft sie ab 8 Blöcken Langsamkeit, solange du nicht verlangsamt bist, Gift, solange du mindestens 8 Leben hast und nicht vergiftet bist, aus der Nähe ab und zu Schwäche und sonst Schaden. Wasseratmung lässt sich noch nicht brauen; Hexen haben sie trotzdem.
+
+Ein Dorfbewohner, der einen Braustand beansprucht, wird Kleriker in dunkelroter Robe. Kirchen und Tempel der Dörfer in Welten ab Generator-Version 3 haben einen am Altar.
+
+**Siehe auch**
+
+[Braustand](blocks.md#block-qtcraft-brewing_stand), [Glutstaub](items.md#item-qtcraft-ember_dust), [Netherwarze](items.md#item-qtcraft-nether_wart), [Glasflasche](items.md#item-qtcraft-glass_bottle), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Wasserflasche](items.md#item-qtcraft-water_bottle), [Kessel](blocks.md#block-qtcraft-cauldron), [Fermentiertes Spinnenauge](items.md#item-qtcraft-fermented_spider_eye), [Vergoldete Melonenscheibe](items.md#item-qtcraft-gilded_melon_slice), [Goldene Karotte](food.md#item-qtcraft-golden_carrot), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear), [Hexe](creatures.md#mob-qtcraft-witch), [Trank der Wasseratmung](items.md#item-qtcraft-water_breathing_potion)
+
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 
 **Essen**
 
-Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Nahrungspunkt. Gehen leert eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Nahrungspunkte.
+Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Punkt Sättigung (siehe unten) oder, wenn keine mehr übrig ist, einen Nahrungspunkt. Ohne Sättigung leert Gehen eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Punkte Sättigung oder Nahrung, beim schnellen Heilen mit voller Leiste 1,5 Punkte Sättigung.
+
+**Sättigung**
+
+Neben Nahrungspunkten gibt jede Mahlzeit **Sättigung**, die die Nahrungsleiste nicht zeigt. Erschöpfung verbraucht zuerst sie; erst danach sinkt die Leiste. Herzhaftes Essen gibt mehr davon als ein Happen: Gebratenes Fleisch und gebratener Fisch halten viel länger vor als rohes Fleisch, Äpfel oder Melonenscheiben, und die Sättigung ist nie größer als deine Nahrungspunkte. Du beginnst und erscheinst nach dem Tod mit voller Leiste und 5 Punkten Sättigung. Der Statuseffekt **Sättigung** füllt beides auf einmal.
 
 **Kuchen**
 
@@ -211,7 +247,7 @@ Ein **Kuchen** (drei Milcheimer, zwei Zucker, ein Ei und drei Weizen; die Eimer 
 
 **Heilen und Hungern**
 
-Mit mindestens 18 Nahrungspunkten heilst du alle 4 s einen Lebenspunkt. Mit leerer Nahrungsleiste verlierst du alle 4 s einen Lebenspunkt, doch Hunger allein bringt dich nie unter 1.
+Mit voller Nahrungsleiste und übriger Sättigung heilst du schnell: alle 0,5 s einen Lebenspunkt, bezahlt aus der Sättigung. Sonst heilst du mit mindestens 18 Nahrungspunkten alle 4 s einen Lebenspunkt. Mit leerer Nahrungsleiste verlierst du alle 4 s einen Lebenspunkt, doch Hunger allein bringt dich nie unter 1.
 
 **Siehe auch**
 
@@ -329,7 +365,7 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 
 **Siehe auch**
 
-[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook), [Fallentruhe](blocks.md#block-qtcraft-trapped_chest), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Entkoppelter Signalkolben](blocks.md#block-qtcraft-decoupled_signal_piston), [Entkoppelter klebriger Signalkolben](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper), [Entkoppelter Signalspender](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Entkoppelter Signalwerfer](blocks.md#block-qtcraft-decoupled_signal_dropper)
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook), [Fallentruhe](blocks.md#block-qtcraft-trapped_chest), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Entkoppelter Signalkolben](blocks.md#block-qtcraft-decoupled_signal_piston), [Entkoppelter klebriger Signalkolben](blocks.md#block-qtcraft-decoupled_sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper), [Entkoppelter Signalspender](blocks.md#block-qtcraft-decoupled_signal_dispenser), [Entkoppelter Signalwerfer](blocks.md#block-qtcraft-decoupled_signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Schienen und Loren
 
@@ -382,6 +418,10 @@ Klicke mit links auf ein Wesen in bis zu 4 m, um es zu treffen, höchstens alle 
 **Status-Effekte**
 
 Manche Angriffe hinterlassen eine Wirkung, die eine Weile anhält. Neben den Herzen zeigt ein Kästchen jeden Effekt mit Bild, Namen und Restzeit. Gift, vom Biss einer Höhlenspinne, nimmt alle 1,25 s einen Gesundheitspunkt (auf höheren Stufen schneller), aber nie den letzten, und färbt die Herzen grün. Rüstung hilft nicht dagegen. Effekte enden mit der Zeit oder mit dem Tod; Zombies, Skelette und Spinnen sind gegen Gift immun.
+
+**Arten von Effekten**
+
+Schnelligkeit lässt dich je Stufe 20 % schneller gehen, Langsamkeit 15 % langsamer. Stärke gibt deinen Schlägen je Stufe 3 Punkte mehr, Schwäche nimmt ihnen 4. Regeneration gibt alle 2,5 s einen Punkt zurück, je Stufe doppelt so oft. Sofortheilung gibt auf einen Schlag 4 Punkte, Sofortschaden nimmt 6, je Stufe das Doppelte; bei Untoten wirken beide umgekehrt. Resistenz nimmt jedem Treffer je Stufe 20 %. Feuerresistenz schützt vor Feuer, Lava und Magma, Wasseratmung hält unter Wasser den Atem, und Nachtsicht zeigt die Welt so hell wie am Tag. Unter Unsichtbarkeit verschwindet dein Körper, und Wesen bemerken dich nur noch aus nächster Nähe; jedes Rüstungsteil verrät dich schon von weiter weg, denn Rüstung und was du hältst bleiben sichtbar. Sprungkraft lässt dich höher springen und je Stufe einen Block weiter unverletzt fallen, Sanfter Fall lässt dich ohne Fallschaden langsam sinken, und Eile lässt dich je Stufe 20 % schneller abbauen. Wither schmerzt wie Gift, färbt die Herzen schwarz und kann töten. Absorption gibt goldene Herzen über deinen eigenen, 4 Punkte je Stufe; Treffer nehmen sie zuerst, und sie wachsen nicht nach.
 
 **Siehe auch**
 
@@ -455,7 +495,7 @@ Jedes Dorf hat seinen eigenen Grundriss: eine lange Hauptstraße durch die Mitte
 
 **Betten und Arbeitsplätze**
 
-Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort; einer bis 32 Blöcke von den Gebäuden eines Dorfs gehört zu ihm, und das Gebiet wächst, aber nie in das eines anderen Dorfs: Jedes Bett und jeder Arbeitsplatz gehört zu genau einem Dorf. Ein Bett oder Arbeitsplatz weiter weg von jedem Dorf gründet eine eigene Siedlung: Dorfbewohner ohne Zuhause ziehen ein, und sie lebt wie jedes Dorf (Kinder, Golems). Eine Siedlung ohne Betten, Arbeitsplätze und Bewohner wird vergessen. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze (eins, das darüber hinaus gesetzt wird, auch später nicht); die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
+Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer, Braustand: Kleriker). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort; einer bis 32 Blöcke von den Gebäuden eines Dorfs gehört zu ihm, und das Gebiet wächst, aber nie in das eines anderen Dorfs: Jedes Bett und jeder Arbeitsplatz gehört zu genau einem Dorf. Ein Bett oder Arbeitsplatz weiter weg von jedem Dorf gründet eine eigene Siedlung: Dorfbewohner ohne Zuhause ziehen ein, und sie lebt wie jedes Dorf (Kinder, Golems). Eine Siedlung ohne Betten, Arbeitsplätze und Bewohner wird vergessen. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze (eins, das darüber hinaus gesetzt wird, auch später nicht); die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
 
 **Dörfer in Mods**
 
@@ -473,7 +513,7 @@ Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes 
 
 **Berufe**
 
-Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte jedes Felds bis 8 Blöcke um ihren Komposter, auch deiner, und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Mit der Spielregel `mobGriefing` aus lassen sie die Felder in Ruhe. Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).
+Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze), das Fass einen Fischer (Ölzeugweste und Südwester) und der Braustand einen Kleriker (dunkelrote Robe). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte jedes Felds bis 8 Blöcke um ihren Komposter, auch deiner, und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Mit der Spielregel `mobGriefing` aus lassen sie die Felder in Ruhe. Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).
 
 **Der Tag eines Dorfbewohners**
 
@@ -529,6 +569,10 @@ Kauft Kohle und Eisenbarren (Neuling), Goldbarren (Lehrling), Lapislazuli (Gesel
 
 Kauft Faden und Kohle (Neuling), Zuckerrohr (Lehrling), Schleimbälle (Geselle) und Leder (Experte). Füllt deinen Eimer für einen Smaragd mit Wasser, verkauft Laternen, gebratenes Hammelfleisch und Glühwürmchen im Glas, als Meister auch Schleimblöcke und Diamantstiefel.
 
+**Der Kleriker**
+
+Kauft verrottetes Fleisch (Neuling), Goldbarren (Lehrling), Glasflaschen (Experte) und Netherwarzen (Meister). Verkauft Signalstaub und Lapislazuli, als Geselle Leuchtstein und als Experte Schattenperlen.
+
 **Smaragde**
 
 Smaragde sind das Geld der Dorfbewohner. Du verdienst sie, indem du Waren verkaufst, oder baust sie ab: Smaragderz liegt selten und in sehr kleinen Adern tief im Stein und braucht eine Eisenspitzhacke oder besser. Neun Smaragde ergeben einen Smaragdblock und zurück.
@@ -539,7 +583,7 @@ Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab d
 
 **Siehe auch**
 
-[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel)
+[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Braustand](blocks.md#block-qtcraft-brewing_stand)
 
 ### <a id="chapter-qtcraft-archery"></a>Bogenschießen
 
@@ -551,6 +595,10 @@ Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und las
 
 Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Treffer richtet umso mehr Schaden an, je schneller der Pfeil fliegt, und stößt das Ziel zurück; Rüstung schützt wie gegen Schläge. Pfeile bleiben im getroffenen Block stecken und fallen, wenn er verschwindet; lauf darüber, um sie aufzuheben. Nach 60 s verschwinden sie. Eine Welt hält höchstens 1024 fliegende oder steckende Pfeile und höchstens 64 steckende in einem Chunk (die ältesten gehen zuerst).
 
+**Getränkte Pfeile**
+
+Acht Pfeile rund um einen Wurftrank im Handwerksraster ergeben acht getränkte Pfeile dieses Tranks, auch aus seinen langen und starken Arten. Die Flasche ist dabei verbraucht. Bögen und Spender schießen sie wie jeden Pfeil. Was ein getränkter Pfeil trifft, nimmt den Schaden des Pfeils und bekommt die Wirkung des Tranks für ein Achtel seiner Zeit: Ein Giftpfeil vergiftet etwa fünfeinhalb Sekunden, Sofortwirkungen wie Heilung und Schaden wirken sofort. Ein steckender getränkter Pfeil kommt beim Aufheben als er selbst zurück.
+
 **Werfen**
 
 Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Schattenperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.
@@ -561,7 +609,7 @@ Wirf eine Angel mit der Benutzen-Taste aus, und ihr Schwimmer fliegt los und tre
 
 **Siehe auch**
 
-[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Schattenperle](items.md#item-qtcraft-shade_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
+[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil der Vergiftung](items.md#item-qtcraft-poison_tipped_arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Schattenperle](items.md#item-qtcraft-shade_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-explosives"></a>Sprengstoff
 
@@ -588,6 +636,92 @@ Wie groß ein Feld aus Sprengstoff auch ist, die Welt bleibt spielbar: Höchsten
 **Siehe auch**
 
 [Sprengstoff](blocks.md#block-qtcraft-explosive), [Schwarzpulver](items.md#item-qtcraft-gunpowder), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate), [Hebel](blocks.md#block-qtcraft-lever)
+
+### <a id="chapter-qtcraft-nether_blocks"></a>Nether-Blöcke
+
+**Netherrack und ewiges Feuer**
+
+Netherrack ist mit jeder Spitzhacke schnell abgebaut. Feuer darauf altert nicht und breitet sich nicht aus: eine Feuerstelle aus Netherrack brennt ewig, wie eine auf Magma. Im Ofen wird Netherrack zum Netherziegelstein.
+
+**Seelensand und Seelenfeuer**
+
+Seelensand bremst jeden, der darüber läuft, auf weniger als die Hälfte; Seelenerde nicht. Feuer auf beiden wird zu blauem **Seelenfeuer**: Licht 10 statt 15, doppelter Schaden, und wie Feuer auf Netherrack geht es nie aus. Kohle auf einem Stock auf Seelensand oder Seelenerde ergibt vier **Seelenfackeln**, Eisennuggets um eine Seelenfackel eine **Seelenlaterne**; beide leuchten mit Licht 10.
+
+**Leuchtstein**
+
+Leuchtstein ist der hellste Block (Licht 15) und zerfällt schon von Hand in zwei bis vier Leuchtsteinstaub. Vier Staub im Quadrat ergeben wieder den Block.
+
+**Quarz und Gold**
+
+Netherquarzerz und Nethergolderz stecken im Netherrack und brauchen nur eine Holzspitzhacke. Aus Quarz entstehen weiße Bausteine: Quarzblock, Säulen, gemeißelte Blöcke, Ziegel, Stufen und Treppen, im Ofen glatter Quarz. Nethergolderz lässt Goldnuggets fallen.
+
+**Netherziegel und Basalt**
+
+Vier Netherziegelsteine ergeben einen Netherziegelblock, mit Netherwarzen in den anderen Ecken rote Netherziegel. Aus beiden entstehen Stufen, Treppen und Mauern; Netherziegel und Netherziegelsteine ergeben einen Zaun, der sich mit seinesgleichen und mit Zauntoren verbindet, aber nicht mit Holzzäunen. Basalt liegt wie ein Stamm entlang der angeklickten Achse; vier ergeben polierten Basalt, im Ofen wird er glatt.
+
+**Schwarzstein**
+
+Schwarzstein zählt für Steinwerkzeuge und den Ofen als Stein, so kommt man im Nether auch ohne Bruchstein zu ihnen. Poliert wird er zu poliertem Schwarzstein, Ziegeln und gemeißeltem Schwarzstein; aus allen entstehen Stufen, Treppen und Mauern, und die Steinsäge schneidet sie in einem Schritt.
+
+**Netherwarze**
+
+Netherwarze wächst nur auf Seelensand, braucht weder Wasser noch Licht und reift in vier Stufen in etwa einer halben Stunde. Reif gibt sie zwei bis vier Warzen, unreif eine. Knochenmehl hilft ihr nicht, und Bauern lassen sie stehen.
+
+**Siehe auch**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Seelenfackel](blocks.md#block-qtcraft-soul_torch), [Seelenlaterne](blocks.md#block-qtcraft-soul_lantern), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Leuchtsteinstaub](items.md#item-qtcraft-glowstone_dust), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Netherquarz](items.md#item-qtcraft-quartz), [Quarzblock](blocks.md#block-qtcraft-quartz_block), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Netherziegelstein](items.md#item-qtcraft-nether_brick), [Netherziegel](blocks.md#block-qtcraft-nether_bricks), [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks), [Netherziegelzaun](blocks.md#block-qtcraft-nether_brick_fence), [Basalt](blocks.md#block-qtcraft-basalt), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Golddurchzogener Schwarzstein](blocks.md#block-qtcraft-gilded_blackstone), [Netherwarze](items.md#item-qtcraft-nether_wart)
+
+### <a id="chapter-qtcraft-portals"></a>Portale
+
+**Einen Rahmen bauen**
+
+Ein Netherportal ist ein aufrechter Rahmen aus Obsidian um ein leeres Inneres, mindestens 2 Blöcke breit und 3 hoch und höchstens 21 mal 21. Die Ecken braucht es nicht, für den kleinsten Rahmen reichen also 10 Obsidian. Wo Wasser und Lava sich treffen, entsteht Obsidian; abbauen lässt er sich mit einer Diamantspitzhacke.
+
+**Entzünden**
+
+Zünde im vollständigen Rahmen ein Feuer an, etwa mit dem Feuerzeug auf dem unteren Rahmenblock: statt des Feuers füllt sich das Innere mit dem violetten Portal, das mit Licht 11 leuchtet, summt und funkelt. Jedes Feuer entzündet es, auch Lava oder ein Blitz. Fehlt ein Rahmenblock oder steht etwas anderes darin, entsteht nur ein gewöhnliches Feuer. Die Portal-Ruinen der Oberwelt lassen sich entzünden, sobald ihr Rahmen wieder vollständig ist: Weinender Obsidian zählt nicht, setze also Obsidian, wo er fehlt oder weint.
+
+**Reisen**
+
+Bleib 4 Sekunden im Portal stehen, um zu reisen; im Kreativmodus reist du sofort. Du kommst in einem Portal auf der anderen Seite an und musst es erst verlassen, bevor es dich zurückbringt. Wesen, fallengelassene Items und Loren reisen auch, sofort, und ruhen danach 15 Sekunden, bevor sie wieder reisen können; ein Spieler in einer Lore reist allein und lässt sie zurück. Wird ein Rahmenblock abgebaut, erlischt das ganze Portal.
+
+**Wohin es führt**
+
+Ein Block im Nether steht für 8 in der Oberwelt. Das Portal sucht ein Netherportal nahe dem passenden Punkt auf der anderen Seite, im Umkreis von 128 Oberwelt-Blöcken (16 im Nether), und führt dorthin. Gibt es keines, baut es dort einen neuen Rahmen, auf festem Boden im Umkreis von 16 Blöcken, wenn es einen findet, sonst genau am Punkt auf einem kleinen Boden aus Obsidian mit Platz ringsum, auch über Lava oder dem Nichts. Portale, die du entzündet, benutzt oder bei der Ankunft gefunden hast, merkt sich die Welt, so findet der Rückweg das Portal, durch das du gekommen bist. Bis der richtige Nether kommt, ist er eine flache Ebene aus Netherrack.
+
+**Siehe auch**
+
+[Obsidian](blocks.md#block-qtcraft-obsidian), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Feuer](blocks.md#block-qtcraft-fire), [Netherrack](blocks.md#block-qtcraft-netherrack)
+
+### <a id="chapter-qtcraft-nether"></a>Der Nether
+
+**Eine Höhle ohne Ende**
+
+Der Nether ist eine einzige riesige Höhle aus Netherrack. Grundgestein schließt sie unten und in Höhe 127 ab; es gibt keinen Himmel, keine Sonne und kein Wetter, nur ein schwaches Licht, das sich nie ändert. Dazwischen liegen Hallen, Schächte und Felsbrücken, und unter Höhe 32 ein See aus Lava. Lavaquellen brechen aus den Wänden und fließen herab, sobald du in die Nähe kommst, also achte auf Vorsprünge.
+
+**Wüsten und Seelensandtäler**
+
+Der größte Teil des Nethers ist **Netherwüste**: nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava. In einem **Seelensandtal** ist jeder Boden Seelensand oder Seelenerde, was dich bremst, und die Feuer brennen blau. Eine Karte zeigt die Biome des Nethers wie die der Oberwelt, und `/locate` kennt seine Bauwerke, sobald du dort stehst.
+
+**Wonach du suchst**
+
+Glowstone hängt in Trauben von den Decken der Hallen. Netherquarz- und Nethergold-Erz stecken in jeder Höhe im Netherrack. Hier und da brennen Feuer auf dem Fels; auf Netherrack und Seelenerde gehen sie nie aus, also halte Abstand.
+
+**Portal-Ruinen**
+
+Ab und zu steht auf einem Boden über der Lava eine Portal-Ruine, mit einer Truhe und einem kaputten Rahmen aus Obsidian und Weinendem Obsidian. Ergänze den Rahmen mit Obsidian und entzünde ihn, dann hast du einen zweiten Heimweg.
+
+**Festungen**
+
+Zwischen dem Lavameer und der Decke stehen Festungen aus Netherziegeln: Hallen, verbunden durch lange, gerade Gänge. Über offenen Höhlen und dem Lavameer läuft ein Gang als Brücke auf Pfeilern, durch den Fels als geschlossene Galerie mit Schießscharten und Leuchtstein-Lampen; Treppen steigen zwischen den Böden, und ein Treppenhaus führt in ein oberes Geschoss. Eine Halle ist eine offene Plattform mit einem Monster-Spawner auf einem Podest, eine andere ein Garten, in dem Netherwarze auf Seelensand um eine Truhe wächst. Weitere Truhen stehen in den Hallen, mit Gold, Eisen, Diamanten, Obsidian, Netherwarze, Sätteln und goldener Ausrüstung. In einer Festung kommen zu jeder Tageszeit Monster. /locate fortress nennt die nächste. Der Spawner bringt Glutgeister hervor. In den Teilen einer Festung kommen, wo das Licht schwach ist, auch verkohlte Skelette und Skelette, bei jedem Licht Moderhauer, Magmaschleime und weitere Glutgeister, in kleinen Gruppen.
+
+**Bastionsruinen**
+
+Wo keine Festung steht, erhebt sich aus dem Lavameer eine Ruine aus Schwarzstein: der alte Sitz der Hauerlinge, in einer von vier Formen. Eine Brücke trägt einen Dammweg über einem Lavakanal zwischen zwei Türmen. In den Stallungen stehen Borstenkeiler in Boxen unter einem Dachboden. In einem Wohnviertel stehen Häuser hinter einer Ringmauer, hoch oben durch Brücken verbunden. Die Schatzhalle ist die reichste: Brücken führen über einen Boden aus Lava zu einem Pfeiler aus Gold, aus ihren Spawnern kommen Magmaschleime, und die Truhe auf dem Pfeiler hält Diamantrüstung und viel Gold. In den Basaltdeltas gibt es keine. Hauerlinge und Hauerling-Recken stehen von Anfang an in einer Bastion; was du dort tötest, kommt nicht wieder, und ein Recke schert sich nicht um das Gold an deinem Körper. Gold abbauen oder Truhen vor den Augen der Hauerlinge öffnen bringt sie alle gegen dich auf. /locate bastion nennt die nächste.
+
+**Siehe auch**
+
+[Netherrack](blocks.md#block-qtcraft-netherrack), [Lava](liquids.md#block-qtcraft-lava), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Kies](blocks.md#block-qtcraft-gravel), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Netherquarzerz](blocks.md#block-qtcraft-nether_quartz_ore), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Feuer](blocks.md#block-qtcraft-fire), [Seelenfeuer](blocks.md#block-qtcraft-soul_fire), [Obsidian](blocks.md#block-qtcraft-obsidian), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Netherziegel](blocks.md#block-qtcraft-nether_bricks), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Golddurchzogener Schwarzstein](blocks.md#block-qtcraft-gilded_blackstone)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
@@ -625,6 +759,94 @@ Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine
 
 [Lapislazulierz](blocks.md#block-qtcraft-lapis_ore), [Ofen](blocks.md#block-qtcraft-furnace)
 
+### <a id="chapter-qtcraft-nether_start"></a>Im Nether beginnen
+
+**Die Startwahl**
+
+Beim Anlegen einer normalen Welt lässt dich „Beginnen in“ unter Weltgenerierung im Nether statt in der Oberwelt anfangen. Du erscheinst auf festem Boden fern von Lava und Feuer, wenn einer in der Nähe ist, in einem Karmesin- oder Wirrwald. Ohne Seelenanker kommst du nach dem Tod dorthin zurück. Die Oberwelt liegt hinter einem Netherportal; die Welt behält ihren Start für immer.
+
+**Die ersten Schritte**
+
+Es gibt kein Wasser und kein Eisenerz. Karmesin- und Wirrstämme geben Bretter, Stöcke, eine Werkbank und Holzwerkzeuge; Schwarzstein zählt als Stein für Steinwerkzeuge und den Ofen. Nethergold-Erz gibt Nuggets und Barren, und Hauerlinge tauschen gegen Gold: Obsidian, Weinenden Obsidian, Eisennuggets, Feuerkugeln, Wasserflaschen, Kies, Seelensand, Faden und Leder. Hoglins geben Essen, und Feuer brennt auf Netherrack ewig. Zehn Obsidian ergeben einen Portalrahmen, Lava oder eine Feuerkugel entzündet ihn.
+
+**Der Seelenanker**
+
+Stelle einen Seelenanker aus sechs Weinenden Obsidian um drei Glowstone her und lade ihn mit Glowstone, bis zu vier Ladungen; mit jeder leuchtet er heller. Benutze ihn geladen im Nether, um deinen Wiederbelebungspunkt zu setzen. Jedes Wiederbeleben kostet eine Ladung; ein leerer, abgebauter oder zugestellter Anker schickt dich zum Startpunkt der Welt und ist vergessen. In der Oberwelt benutzt, explodiert ein geladener Anker mit Stärke 5 und legt Feuer.
+
+**Betten**
+
+Wo die Dimension es nicht erlaubt, lässt sich in keinem Bett schlafen: im Nether benutzt, explodiert es mit Stärke 5, stärker als TNT, und legt ringsum Feuer. Behalte Betten für die Oberwelt.
+
+**Siehe auch**
+
+[Seelenanker](blocks.md#block-qtcraft-soul_anchor), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Leuchtstein](blocks.md#block-qtcraft-glowstone), [Karmesinstamm](blocks.md#block-qtcraft-crimson_stem), [Wirrstamm](blocks.md#block-qtcraft-warped_stem), [Schwarzstein](blocks.md#block-qtcraft-blackstone), [Nethergolderz](blocks.md#block-qtcraft-nether_gold_ore), [Bett](blocks.md#block-qtcraft-bed)
+
+### <a id="chapter-qtcraft-netherite"></a>Netherit
+
+**Antiker Schrott**
+
+Der seltenste Fund des Nethers liegt tief unten: **antiker Schrott**, in kleinen Klumpen aus einem bis drei Blöcken, meist zwischen den Höhen 8 und 24 und hin und wieder bis Höhe 119. Er steckt immer im Netherrack, nie an offener Luft; grabe also Tunnel tief im Nether, statt an Höhlenwänden zu suchen. Er braucht eine Diamantspitzhacke; Explosionen tun ihm nichts, Sprengstoff kann also das Netherrack um ihn wegräumen. Auch Truhen in Bastionsruinen enthalten welchen.
+
+**Schrott und Barren**
+
+Ein Ofen schmilzt antiken Schrott zu **Netheritschrott**. Vier Stück Schrott und vier Goldbarren, beliebig im Raster, ergeben einen **Netheritbarren**; neun Barren packen sich zu einem Netheritblock, der zurück neun ergibt.
+
+**Der Schmiedetisch**
+
+Werkzeuge und Rüstung aus Netherit werden nicht hergestellt, sondern am **Schmiedetisch** (zwei Eisenbarren über vier Brettern) aus Diamant aufgewertet. Lege eine **Netherit-Aufwertung** in den ersten Platz, das Werkzeug oder Rüstungsteil aus Diamant in den zweiten und einen Netheritbarren in den dritten und drücke *Aufwerten*: das Teil wird zu Netherit und behält Verzauberungen, Namen und Abnutzung. Jede Aufwertung verbraucht eine Vorlage und einen Barren. Vorlagen kommen aus Bastionsruinen: die Schatzhalle hat immer eine, andere Truhen hin und wieder. Sieben Diamanten und ein Netherrack um eine Vorlage ergeben zwei.
+
+**Stärker als Diamant**
+
+Werkzeuge aus Netherit halten 2031 Einsätze, bauen schneller ab als Diamant und brechen Blöcke der Stufe 5; das Schwert richtet einen Punkt mehr Schaden an. Rüstung aus Netherit gibt so viele Rüstungspunkte wie Diamant, ist aber zäher, sodass harte Treffer sie weniger durchschlagen, und jedes Teil hält ein Zehntel jedes Stoßes zurück. Nichts aus Netherit verbrennt: in Lava oder Feuer gefallen, schwimmt es nach oben und wartet darauf, aufgehoben zu werden.
+
+**Siehe auch**
+
+[Antiker Schrott](blocks.md#block-qtcraft-ancient_debris), [Netheritschrott](items.md#item-qtcraft-netherite_scrap), [Netheritbarren](items.md#item-qtcraft-netherite_ingot), [Netheritblock](blocks.md#block-qtcraft-netherite_block), [Schmiedetisch](blocks.md#block-qtcraft-smithing_table), [Netherit-Aufwertung](items.md#item-qtcraft-netherite_upgrade_smithing_template), [Netheritschwert](tools.md#item-qtcraft-netherite_sword), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe), [Netheritbrustplatte](tools.md#item-qtcraft-netherite_chestplate)
+
+### <a id="chapter-qtcraft-charred_hydra"></a>Die Verkohlte Hydra
+
+**Beschwörung**
+
+Baue ein **T** aus vier Blöcken Seelensand oder Seelenerde: drei in einer Reihe und einen unter der Mitte, mit Luft zu beiden Seiten dieses Fußes. Setze dann drei **verkohlte Schädel** oben auf die Reihe, von den Verkohlten Skeletten der Festungen. Der letzte Schädel weckt die Hydra, auch im Kreativmodus, und jeder Spieler im Umkreis von 50 Blöcken bekommt den Fortschritt. Baue sie weit weg von deinem Zuhause.
+
+**Der Kampf**
+
+Elf Sekunden lang sammelt die Hydra ihre Kraft: Sie ist unverwundbar und füllt ihre Gesundheit auf. Dann zerbirst sie in einer Explosion, stärker als jeder Sprengstoff, die Blöcke bricht, sofern die Regel mobGriefing es nicht verbietet. Danach fliegt sie über dem, den sie bekämpft, und spuckt **Schädel** aus ihren drei Köpfen: der mittlere Kopf auf ihr Ziel, die Seitenköpfe auf eigene Ziele. Die Schädel explodieren und geben **Verdorren**: Die Herzen werden dunkel und schwinden. Untote Wesen sind vor ihr sicher. Jede Verletzung lässt sie die Blöcke um sich zerschlagen, und sie heilt jede Sekunde einen Punkt.
+
+**Die Hälfte ihrer Gesundheit**
+
+Unter der Hälfte ihrer Gesundheit trägt die Hydra **Rüstung**: Pfeile prallen ab, also gib ihr mit dem Schwert den Rest. Sie hält keinen Abstand mehr und kommt auf die Höhe ihres Ziels herunter.
+
+**Der Netherstern**
+
+Eine besiegte Hydra hinterlässt einen **Netherstern** und viel Erfahrung. Der Stern brennt nicht und übersteht Explosionen.
+
+**Siehe auch**
+
+[Verkohlte Hydra](creatures.md#mob-qtcraft-charred_hydra), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull), [Seelensand](blocks.md#block-qtcraft-soul_sand), [Seelenerde](blocks.md#block-qtcraft-soul_soil), [Netherstern](items.md#item-qtcraft-nether_star)
+
+### <a id="chapter-qtcraft-beacon"></a>Das Leuchtfeuer
+
+**Ein Leuchtfeuer bauen**
+
+Stelle ein **Leuchtfeuer** her aus fünf Glas oben, einem **Netherstern** in der Mitte und drei Obsidian unten; der Stern stammt von der Verkohlten Hydra. Allein ist ein Leuchtfeuer nur ein Licht.
+
+**Die Pyramide**
+
+Stelle das Leuchtfeuer auf eine **Pyramide** aus Eisen-, Gold-, Smaragd-, Diamant- oder Netheritblöcken, beliebig gemischt: eine Schicht von 3 × 3 direkt darunter gibt Stufe 1, dann 5 × 5 für Stufe 2, 7 × 7 für Stufe 3 und 9 × 9 für Stufe 4. Jede Schicht muss voll sein. Das Leuchtfeuer prüft seine Pyramide alle vier Sekunden.
+
+**Kräfte**
+
+Benutze das Leuchtfeuer, lege einen Eisenbarren, einen Goldbarren, einen Smaragd, einen Diamanten oder einen Netheritbarren in seinen Platz, wähle eine Kraft und bestätige. Stufe 1 bietet **Schnelligkeit** und **Eile**, Stufe 2 dazu **Resistenz** und **Sprungkraft**, Stufe 3 **Stärke**. Auf Stufe 4 kommt eine zweite Kraft hinzu: **Regeneration** oder die erste Kraft auf Stufe II. Jeder Spieler bis 10 Blöcke plus 10 je Stufe entfernt bekommt die Kräfte, in jeder Höhe darüber, für 9 Sekunden plus 2 je Stufe, alle vier Sekunden erneuert.
+
+**Der Strahl**
+
+Ein Leuchtfeuer strahlt nur unter **freiem Himmel**: Glas und andere klare Blöcke lassen den Strahl durch, feste Blöcke halten ihn auf. **Gefärbtes Glas** oder Scheiben im Strahl färben ihn; mehrere Farben mischen sich. Ohne Strahl gibt das Leuchtfeuer keine Kräfte.
+
+**Siehe auch**
+
+[Leuchtfeuer](blocks.md#block-qtcraft-beacon), [Netherstern](items.md#item-qtcraft-nether_star), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Goldblock](blocks.md#block-qtcraft-gold_block), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Netheritblock](blocks.md#block-qtcraft-netherite_block)
+
 ### <a id="chapter-qtcraft-creatures"></a>Wesen
 
 **Wo Wesen erscheinen**
@@ -650,6 +872,10 @@ In den Bergen ist mancher Stein befallen: Er sieht aus wie Stein, bricht aber vi
 **Kjuts und ihre Kinder**
 
 Kjuts schweben wie andere Monster aus dunklen Orten. Jeder Treffer, den ein großer Kjut übersteht, spaltet einen kleinen ab, bis zu vier zugleich und acht insgesamt; ein Schneeball oder ein Ei spaltet nichts. Die kleinen kreisen an leuchtenden Fäden um ihn, bis sie dich sehen. Die kleinen gehören zu ihm wie die Kinder eines Qt-Objekts zu ihrem Elternteil: Stirbt das Elternteil, verpuffen alle auf einmal und lassen Schwarzpulver zurück; einzeln erschlagen lassen sie nur Funkengel fallen. Für Schwarzpulver also den großen ein paarmal treffen und dann erledigen; für Gel zuerst die kleinen bekämpfen. Ein Kjut, der die Welt verlässt, ohne zu sterben, nimmt seine kleinen still mit.
+
+**Wesen des Nethers**
+
+Unter der Decke aus Grundgestein ist immer Mitternacht: Nichts verbrennt in einer Sonne, und die Wesen der Oberwelt bleiben fern, wenn ein Biom sie nicht nennt. Moderhauer ziehen in Gruppen durch die Wüste und lassen dich in Ruhe, aber ein Schlag gegen einen ruft alle in der Nähe gegen dich auf; sie tragen Gold. Magmaschleime hüpfen auf alles zu, was sie sehen, und zerfallen in kleinere Stücke, manche lassen Magmacreme zurück. Klagegeister treiben hoch über der Lava und speien von weit her Feuerkugeln: Triffst du eine im Flug, fliegt sie dorthin, wohin du schaust, und zurückgeschickt holt sie einen Klagegeist sofort herunter. Von ihnen bleiben Klagetränen und Schwarzpulver. Lavastelzen schreiten über die Lavameere und tun niemandem etwas. Mit der Benutzen-Taste legst du einen Sattel auf, ein zweites Benutzen lässt dich aufsteigen, und solange du einen Wirrpilz an der Angel hältst, geht sie, wohin du schaust; Schleichen lässt dich absteigen. Wasser schadet ihr. Hauerlinge greifen jeden ohne goldenes Rüstungsteil an; sie handeln: Gib oder wirf ihnen einen Goldbarren, und nach ein paar Sekunden werfen sie etwas zurück, von Obsidian und Weinendem Obsidian bis Faden, Leder, Kies und Seelensand. Wer vor ihren Augen Gold abbaut oder eine Truhe öffnet, hat alle in der Nähe gegen sich. Borstenkeiler stürmen in den Karmesinwäldern auf jeden los, vermehren sich mit Karmesinpilzen und fliehen vor Wirrpilzen.
 
 **Hühner und Eier**
 
@@ -677,7 +903,7 @@ Monster teilen sich eine Obergrenze: Die Welt hält höchstens 70 von ihnen je 2
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Eiswanderer](creatures.md#mob-qtcraft-stray), [Ertrunkener](creatures.md#mob-qtcraft-drowned), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg), [Kuh](creatures.md#mob-qtcraft-cow), [Milcheimer](items.md#item-qtcraft-milk_bucket), [Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Tintenbeutel](items.md#item-qtcraft-ink_sac), [Kjut](creatures.md#mob-qtcraft-kjut), [Kleiner Kjut](creatures.md#mob-qtcraft-kjut_child), [Funkengel](items.md#item-qtcraft-spark_gel), [Schwarzpulver](items.md#item-qtcraft-gunpowder)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Eiswanderer](creatures.md#mob-qtcraft-stray), [Ertrunkener](creatures.md#mob-qtcraft-drowned), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg), [Kuh](creatures.md#mob-qtcraft-cow), [Milcheimer](items.md#item-qtcraft-milk_bucket), [Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket), [Tintenfisch](creatures.md#mob-qtcraft-squid), [Tintenbeutel](items.md#item-qtcraft-ink_sac), [Kjut](creatures.md#mob-qtcraft-kjut), [Kleiner Kjut](creatures.md#mob-qtcraft-kjut_child), [Funkengel](items.md#item-qtcraft-spark_gel), [Schwarzpulver](items.md#item-qtcraft-gunpowder), [Moderhauer](creatures.md#mob-qtcraft-rottusk), [Hauerling](creatures.md#mob-qtcraft-tuskling), [Hauerling-Recke](creatures.md#mob-qtcraft-tuskling_bruiser), [Borstenkeiler](creatures.md#mob-qtcraft-bristleboar), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime), [Kleiner Magmaschleim](creatures.md#mob-qtcraft-magma_slime_small), [Klagegeist](creatures.md#mob-qtcraft-wailer), [Lavastelze](creatures.md#mob-qtcraft-lava_wader), [Glutgeist](creatures.md#mob-qtcraft-ember_wraith), [Verkohltes Skelett](creatures.md#mob-qtcraft-charred_skeleton), [Magmacreme](items.md#item-qtcraft-magma_cream), [Klageträne](items.md#item-qtcraft-wailer_tear), [Feuerkugel](items.md#item-qtcraft-fireball), [Glutrute](items.md#item-qtcraft-ember_rod), [Glutstaub](items.md#item-qtcraft-ember_dust), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull), [Sattel](items.md#item-qtcraft-saddle), [Wirrpilz an der Angel](items.md#item-qtcraft-fungus_on_a_stick)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 
@@ -711,7 +937,7 @@ Dschungeltempel stehen einzeln im Dschungel, bewachsen mit Moos und Ranken. Stei
 
 **Hexenhütten und Hexen**
 
-Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und Topfpflanzen. Hexen erscheinen dort und nur dort: Wo in einer Säule der Grundfläche einer Hütte ein Monster erscheinen darf, in jeder Höhe vom Boden der Welt bis oben, kommt nur eine Hexe, so oft wie sonst ein Monster und nach denselben Regeln: dunkel genug, 24–128 m von Spielern entfernt, innerhalb der Monster-Obergrenze, auf festem Boden mit Platz für sie. Böden, die man über oder unter der Hütte in die Grundfläche baut, bringen mehr; Licht hält sie fern. Eine Hexe wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Ein Wurftrank trifft alles Lebendige rund um die Stelle, an der er zerplatzt, je weiter weg, desto schwächer. Verletzt trinkt sie kurz einen Heiltrank und wirft solange nichts; Milch nimmt das Gift wieder weg.
+Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und Topfpflanzen. In der Grundfläche einer Hütte erscheinen nur Hexen: Wo in einer Säule der Grundfläche ein Monster erscheinen darf, in jeder Höhe vom Boden der Welt bis oben, kommt nur eine Hexe, so oft wie sonst ein Monster und nach denselben Regeln: dunkel genug, 24–128 m von Spielern entfernt, innerhalb der Monster-Obergrenze, auf festem Boden mit Platz für sie. Böden, die man über oder unter der Hütte in die Grundfläche baut, bringen mehr; Licht hält sie fern. Anderswo ist die Hexe ein seltenes Monster der Dunkelheit wie die anderen. Eine Hexe wirft Wurftränke, die sie nach ihrem Ziel wählt (siehe das Kapitel Brauen). Ein Wurftrank trifft alles Lebendige rund um die Stelle, an der er zerplatzt, je weiter weg, desto schwächer. Sie trinkt einen Trank, wenn sie ihn braucht, und wirft solange nichts; Milch nimmt das Gift wieder weg.
 
 **Portal-Ruinen, Brunnen und Oasen**
 
@@ -746,6 +972,24 @@ Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Kart
 **Karten an der Wand**
 
 Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile.
+
+### <a id="chapter-qtcraft-generator_switch"></a>Welt auf neuen Generator umstellen
+
+**Die Frage beim Öffnen einer Welt**
+
+Eine Welt behält die Generator-Version, mit der sie entstanden ist, damit Land nach einem Update zum Land davor passt. Bringt eine neuere Version von QtCraft einen neueren Weltgenerator, fragt das Spiel beim Öffnen einer älteren Welt, was geschehen soll. „Version behalten“ ist voreingestellt und ändert nichts; die Welt spielt wie bisher, und beim nächsten Start des Spiels kommt die Frage wieder. Mit Haken bei „Nicht mehr fragen“ fragt die Welt erst wieder, wenn ein noch neuerer Generator kommt; „Rückfragen zum Weltgenerator wieder anzeigen“ in den erweiterten Einstellungen holt die Frage zurück. „Umstellen“ kopiert zuerst die ganze Welt in den Ordner backups neben den Welten (benannt „before-generator“ mit der neuen Version), ermittelt dann, welches Land bleibt, wie es ist, zeigt den Fortschritt und öffnet die Welt. „Abbrechen“ hält die Umstellung sofort an und lässt die Welt genau so, wie sie war. „Mit Übergang umstellen“ macht dasselbe und blendet zusätzlich einen Ring Land um das erkundete Gebiet vom alten in den neuen Generator über; der Schieberegler darüber stellt seine Breite ein, ohne Änderung 6 Chunks. Das dauert etwas länger, und „Abbrechen“ lässt die Welt auch dann, wie sie war.
+
+**Was bleibt, wie es war**
+
+Jeder Chunk, den die Welt je erzeugt, gespeichert oder auf einer Karte gezeigt hat, behält den alten Generator, Block für Block, auch wenn du dort später abbaust und baust. Auch Bauwerke behalten ihre Form: Ein Dorf, ein Minenschacht, ein Verlies, ein Küstenturm, ein Tempel oder eine Ruine, die aus dem erkundeten Land hinausreicht, behält ihren alten Plan, und die Chunks, in die sie reicht, bleiben ebenfalls beim alten Generator. Nur Land, das noch nie erzeugt wurde, kommt vom neuen Generator, und der neue Generator setzt kein Bauwerk, das ins alte Land reichen würde. Jede Dimension wird für sich umgestellt; die Frage nennt die älteren.
+
+**Harte Grenzen und Übergänge**
+
+Wo altes und neues Land aufeinandertreffen, treffen sie sich an Chunk-Grenzen: Ein Hügel kann in einer Klippe enden, ein Fluss an einer Wand aus Stein aufhören, ein Strand von einem Block zum nächsten in Wald übergehen. Diese Kanten gehören zu „Umstellen“ und bleiben. „Mit Übergang umstellen“ vermeidet sie: Außerhalb des erkundeten Landes steigen und fallen Boden und Wasser allmählich von der alten zur neuen Höhe, Bodenblöcke und Bäume beider Generatoren mischen sich fleckenweise, Höhlen und Erze kommen von der näheren Seite. Bauwerke im Ring kommen nur aus dem alten Plan und behalten ihren Boden. Der Ring wird in der Welt gespeichert wie Land, das du verändert hast, und bleibt also auch, wenn eine andere Version des Spiels kommt. Andere Dimensionen als die Oberwelt bekommen immer harte Grenzen.
+
+**Auf einem eigenen Server**
+
+Ein eigener Server stellt nie von selbst um. Halte ihn an und führe `qtcraft-headless --convert-generator <welt> --to <version> --mode hard` aus, oder `--mode blend --blend-chunks <breite>` für einen Übergang von 2 bis 16 Chunks Breite, mit `--dimension <name>` für eine andere Dimension als die Oberwelt; die Welt ist ein Ordner in den Welten des Datenverzeichnisses oder ein Pfad zu einem Weltordner. Der Befehl macht dieselbe Sicherung, zeigt seinen Fortschritt und lehnt eine geöffnete Welt ab.
 
 ### <a id="chapter-qtcraft-backpack"></a>Rucksack
 
@@ -929,3 +1173,47 @@ Ein Paket ist ein Ordner mit einer **texturepack.json** und PNG-Bildern (oder Te
 **Wenn etwas nicht stimmt**
 
 Ein beschädigtes Bild oder eines mit falscher Größe wird übersprungen und unter seinem Paket aufgeführt; die Textur kommt dann aus dem nächsten Paket. Sehr große Pakete werden mit geringerer Auflösung gezeigt, wenn Grafikkarte oder Speicher sie nicht fassen, und die Einstellungen sagen das.
+
+### <a id="chapter-qtcraft-music"></a>Musik
+
+**Stücke oder erzeugte Musik**
+
+Ab und zu spielt Musik, zwischen zwei Stücken liegt eine Pause von einigen Minuten. **Einstellungen → Audio → Musik** wählt, woher sie kommt: die **Stücke von Scott Buckley** (Standard) oder **erzeugte** Stücke, die das Spiel selbst komponiert.
+
+Videos oder Streams mit diesen Stücken können eine Content-ID-Meldung von YouTube bekommen. Wer aufnimmt oder streamt, stellt auf erzeugte Musik um.
+
+**Wo welche Musik spielt**
+
+In der Oberwelt folgen die Stücke dem Tag, der Nacht und den Höhlen; jedes Biom des Nethers hat eigene, und die Menüs haben ihre. Gehst du vom Tag in eine Höhle, spielt ein Stück zu Ende, das nächste passt zum neuen Ort. Durch ein Portal oder zurück ins Menü blendet das Stück aus, und das nächste beginnt bald. Wo kein Stück passt, spielt ein erzeugtes. Mods können eigene Stücke mitbringen.
+
+**Nennung**
+
+Die Stücke stehen unter der Lizenz Creative Commons Namensnennung 4.0 International (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/ Das Spiel liefert ihren Text als **CC-BY-4.0.txt** bei den anderen Lizenzen mit. Sie wurden nach Ogg Vorbis umgewandelt, sonst nicht verändert.
+
+'Borealis' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Cobalt' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Ephemera' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Hymn To The Dawn' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In Search Of Solitude' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'In This Moment' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Intervention' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Katabasis I (The Weight of Air)' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Machina' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Moonlight' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Shadows and Dust' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'She Moved Mountains' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'The Old Ones' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+
+'Unraveling' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au

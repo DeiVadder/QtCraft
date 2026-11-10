@@ -160,6 +160,9 @@ protected:
         m_client->hello(QStringLiteral("Raw"));
         QcTestUtil::pump();
         ticks(2);
+        // Without saturation, so that health changes show only hits and the slow regeneration
+        // (decision E-1001); tests of the saturation give it themselves.
+        QcTestUtil::withoutSaturation(*m_server);
 
         const QcVec3 p = m_client->motion.position;
         m_feet = {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};

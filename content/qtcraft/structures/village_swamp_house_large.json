@@ -43,5 +43,13 @@
             {},
             {"spruce_stairs": "oak_stairs", "spruce_slab": "oak_slab"}
         ]
-    }
+    },
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [4, 1, 1], "table": "village_house_swamp" }
+            ]
+        }
+    ]
 }

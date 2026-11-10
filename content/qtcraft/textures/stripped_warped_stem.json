@@ -1,0 +1,8 @@
+{
+    "name": "stripped_warped_stem",
+    "pattern": "peeled_fibre",
+    "primary": "#3a8c86",
+    "secondary": "#123a3c",
+    "variation": 0.08,
+    "seed": 8603
+}

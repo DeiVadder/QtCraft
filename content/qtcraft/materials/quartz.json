@@ -1,0 +1,8 @@
+{
+    "name": "quartz",
+    "block": "quartz_block",
+    "kind": "stone",
+    "exclude": [
+        "wall"
+    ]
+}

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "server/animals/QcMobFamilies.h"
+#include "server/bosses/QcServerHydras.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"
 #include "server/mobs/QcCreatureTraits.h"
@@ -14,6 +15,7 @@
 #include "server/villages/QcServerVillagers.h"
 
 class QcPlayerHealth;
+class QcServerExplosions;
 class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
@@ -39,7 +41,7 @@ public:
         ticks. */
     static constexpr quint64 foeTicks = 100;
 
-    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
+    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks, QcServerExplosions &explosions);
 
     /*! Runs the creatures' tick: their minds, then what they did to the world and the players. */
     void tick();
@@ -58,9 +60,13 @@ public:
 private:
     // What the creatures know about the players this tick.
     QList<QcMobManager::PlayerView> playerViews() const;
+    // The damage of a blow of `damage` by `creature` with its strength or weakness (decision E-992).
+    double blowOf(quint32 creature, double damage) const;
     // A creature's blow at a player, with the effects of its kind's blows.
     void strike(QcServerClient &client, const QcMobManager::PlayerHit &hit);
     void playAmbientSounds(double dt);
+    // The cries of drifters that began to charge a shot this tick (QcArcherDefinition::warnSound).
+    void playWarnings();
     // The blows creatures dealt each other (a golem's, decision E-471; a pet's, decision E-480), with
     // the attacker's sound; those that die leave their loot (no experience).
     void applyCreatureHits();
@@ -83,4 +89,5 @@ private:
     QcCrumbling m_crumbling;
     QcMobDrinking m_drinking;
     QcMobFamilies m_families;
+    QcServerHydras m_hydras;
 };

@@ -612,13 +612,14 @@ private slots:
         const QcVillagerSettings &settings = m_content->villagerSettingsOf(villager);
         QCOMPARE(settings.name, u"qtcraft:villager"_s);
         QCOMPARE(settings.unemployed, u"qtcraft:unemployed"_s);
-        QCOMPARE(settings.professions.size(), 4);
+        QCOMPARE(settings.professions.size(), 5);
         QCOMPARE(settings.forWorkstation(u"qtcraft:fisher"_s)->name, u"qtcraft:fisher"_s);
         QVERIFY(settings.profession(u"qtcraft:farmer"_s)->tendsCrops);
         QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:composter"_s), u"qtcraft:farmer"_s);
         QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:furnace"_s), u"qtcraft:smith"_s);
         QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:barrel"_s), u"qtcraft:fisher"_s);
-        QCOMPARE(m_content->villageCatalog().settings().workstations.size(), 3);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:brewing_stand"_s), u"qtcraft:cleric"_s);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.size(), 4);
         QCOMPARE(m_content->villagerOfStyle(u"qtcraft:plains"_s), villager);
         QCOMPARE(m_content->villageCatalog().golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
         QCOMPARE(settings.activityAt(0.75), QcVillagerActivity::Sleep);

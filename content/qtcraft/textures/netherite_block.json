@@ -1,0 +1,8 @@
+{
+    "name": "netherite_block",
+    "pattern": "metal_block",
+    "primary": "#453d3f",
+    "secondary": "#6a5e60",
+    "variation": 0.05,
+    "seed": 8899
+}

@@ -1,0 +1,31 @@
+{
+    "name": "block.portal.travel",
+    "volume": 0.7,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 1.6,
+            "frequency": 180,
+            "endFrequency": 620,
+            "attack": 0.3,
+            "curve": 2,
+            "tremoloRate": 9,
+            "tremoloDepth": 0.4,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 1.8,
+            "attack": 0.4,
+            "curve": 2,
+            "lowpass": 3000,
+            "highpass": 300,
+            "tremoloRate": 3,
+            "tremoloDepth": 0.5,
+            "gain": 0.4
+        }
+    ]
+}

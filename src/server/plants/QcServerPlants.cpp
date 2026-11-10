@@ -39,7 +39,8 @@ void QcServerPlants::plantItems(const QList<QcItemEntity> &despawned)
     for (const QcItemEntity &item : despawned) {
         tryPlant(item);
     }
-    if (++m_itemTicks % seedCheckTicks == 0) {
+    // The clock, not a count here: this runs once per dimension and tick.
+    if (m_state.clock().tick() % seedCheckTicks == 0) {
         plantSeeds();
     }
 }
@@ -256,6 +257,11 @@ bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const 
     const QcBlockDefinition &block = content.block(*clicked);
     QRandomGenerator &random = m_state.random();
     if (block.sapling.isSapling()) {
+        // A fungus off its own nylium never grows, so the bone meal stays in the hand.
+        if (block.sapling.boneMealOnly && !m_state.plants().canPlant(*clicked, m_state.world().blockAt(target.offset(0, -1, 0)))) {
+            return false;
+        }
+
         // A sapling without its timer (set by a command) gets one first.
         if (!m_state.blockEntities().sapling(target)) {
             m_state.plants().saplingPlaced(m_state.blockEntities(), target, *clicked);
@@ -265,6 +271,14 @@ bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const 
         }
     } else if (block.growsVegetation) {
         if (!growVegetation(target)) {
+            return false;
+        }
+    } else if (!block.overgrownBy.isEmpty()) {
+        if (!overgrow(target, block)) {
+            return false;
+        }
+    } else if (block.growth.boneMeal) {
+        if (!growColumn(target)) {
             return false;
         }
     } else if (!growCrop(target, random.bounded(fertilizeStagesMin, fertilizeStagesMax + 1))) {
@@ -288,7 +302,58 @@ bool QcServerPlants::growVegetation(QcBlockPos target)
     for (const QcPlacedBlock &planting : plantings) {
         m_blocks.setAndBroadcast(planting.pos, planting.block);
     }
+    return !plantings.isEmpty();
+}
+
+bool QcServerPlants::overgrow(QcBlockPos target, const QcBlockDefinition &block)
+{
+    const QcServerWorld &world = m_state.world();
+    if (world.blockAt(target.offset(0, 1, 0)) != qcAirBlockId) {
+        return false;
+    }
+
+    // The neighbours in the cube around it, one entry for each: more of a kind, likelier that kind.
+    QList<QcBlockId> neighbours;
+    for (int cell = 0; cell < 27; ++cell) {
+        const std::optional<QcBlockId> other = world.blockAt(target.offset(cell % 3 - 1, cell / 3 % 3 - 1, cell / 9 - 1));
+        if (other && m_state.content().isValidBlock(*other) && block.overgrownBy.contains(m_state.content().block(*other).name)) {
+            neighbours.append(*other);
+        }
+    }
+    if (neighbours.isEmpty()) {
+        return false;
+    }
+    m_blocks.setAndBroadcast(target, neighbours[m_state.random().bounded(neighbours.size())]);
     return true;
+}
+
+bool QcServerPlants::growColumn(QcBlockPos target)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> plant = m_state.world().blockAt(target);
+    if (!plant) {
+        return false;
+    }
+
+    // From the clicked block along the plant to its tip, which grows.
+    const int step = content.block(*plant).support == QcBlockSupport::Above ? -1 : 1;
+    QcBlockPos tip = target;
+    while (m_state.world().blockAt(tip.offset(0, step, 0)) == plant) {
+        tip = tip.offset(0, step, 0);
+    }
+
+    int grown = 0;
+    const int wanted = m_state.random().bounded(fertilizeColumnMin, fertilizeColumnMax + 1);
+    while (grown < wanted) {
+        const std::optional<QcBlockPos> next = m_state.growth().growthTarget(m_state.world(), tip);
+        if (!next) {
+            break;
+        }
+        m_blocks.setAndBroadcast(*next, *plant);
+        tip = *next;
+        ++grown;
+    }
+    return grown > 0;
 }
 
 bool QcServerPlants::growCrop(QcBlockPos pos, int stages)
@@ -300,6 +365,10 @@ bool QcServerPlants::growCrop(QcBlockPos pos, int stages)
     }
 
     const QcCropDefinition &crop = content.block(*block).crop;
+    if (!crop.fertilizable) {
+        return false;
+    }
+
     const QcBlockProperty *values = content.block(*block).property(crop.property);
     const qsizetype stage = values ? values->values.indexOf(content.property(*block, crop.property)) : -1;
     const qsizetype last = values ? values->values.size() - 1 : -1;

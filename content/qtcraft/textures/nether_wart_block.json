@@ -1,0 +1,8 @@
+{
+    "name": "nether_wart_block",
+    "pattern": "wart_lumps",
+    "primary": "#8e1c20",
+    "secondary": "#32080c",
+    "variation": 0.08,
+    "seed": 8701
+}

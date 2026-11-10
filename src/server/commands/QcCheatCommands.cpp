@@ -369,7 +369,7 @@ void QcCheatCommands::feed(const QcCommandContext &context)
         return;
     }
 
-    player.hunger.restore(*food, 0.0);
+    player.hunger.restore(*food, 0.0, player.hunger.saturation());
     m_parts.health.sendFood(player);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Food is now %1"), {QString::number(*food)});
 }
@@ -527,6 +527,8 @@ void QcCheatCommands::gamemode(const QcCommandContext &context)
 
 void QcCheatCommands::setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode)
 {
+    // What the change does to his body and screens happens where he is, not where the caller is.
+    const QcServerState::Scope scope(m_state, m_state.dimensionOf(target));
     const bool swapped = m_parts.gameModes.setMode(target, mode);
     const bool other = &target != context.source.player();
     context.reply(swapped && other ? modeSetSwapped(mode) : modeSet(mode), {target.name});

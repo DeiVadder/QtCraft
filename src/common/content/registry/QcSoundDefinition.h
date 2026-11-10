@@ -6,7 +6,9 @@
 #include <QList>
 #include <QString>
 
-/*! \brief Mixer group a sound plays on; each has its own volume setting. */
+/*! \brief Kind of sound as the content names it: music, ambience or an effect. The client turns
+    it, with the sound's name, into the volume slider the sound follows (QcSoundCategorizer,
+    decision E-1150). */
 enum class QcSoundBus : quint8 {
     Effects, // Sound effects ("effects", the default).
     Ambient, // Ambience ("ambient").
@@ -99,7 +101,7 @@ struct QcSoundDefinition
 
     /*! The qualified name (JSON \c {"name"}). */
     QString name;
-    /*! The mixer group it plays on (JSON \c {"bus"}). */
+    /*! Music, ambience or an effect (JSON \c {"bus"}). */
     QcSoundBus bus = QcSoundBus::Effects;
     /*! Loudness in 0..1, multiplied with the event's volume. */
     double volume = 1.0;

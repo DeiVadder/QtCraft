@@ -5,6 +5,7 @@
 
 #include "common/gameplay/QcPortableContainers.h"
 #include "server/core/QcServerState.h"
+#include "server/machines/QcBrewingRules.h"
 
 #include <algorithm>
 #include <numeric>
@@ -53,7 +54,7 @@ QList<QcItemStack> QcInventoryAccess::slotsAt(QcBlockPos pos) const
     }
     if (m_state.machineRules().machineOf(*block)) {
         const QcBlockEntities::Machine *machine = m_state.blockEntities().machine(pos);
-        return machine ? QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()) : QList<QcItemStack>(QcMachineRules::slotCount);
+        return machine ? machine->stacks : QList<QcItemStack>(m_state.machineRules().machineOf(*block)->slotCount());
     }
     return {};
 }
@@ -61,7 +62,12 @@ QList<QcItemStack> QcInventoryAccess::slotsAt(QcBlockPos pos) const
 QList<int> QcInventoryAccess::slotsIn(QcBlockPos pos, QcBlockFace face) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
-    if (block && m_state.machineRules().machineOf(*block)) {
+    const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
+    if (machine && machine->brewing && face != QcBlockFace::Up) {
+        // A stand takes bottles and fuel from the sides, the ingredient from above (as in the reference).
+        return {QcBrewingRules::firstBottleSlot, QcBrewingRules::firstBottleSlot + 1, QcBrewingRules::firstBottleSlot + 2, QcBrewingRules::fuelSlot};
+    }
+    if (machine) {
         return {face == QcBlockFace::Up ? QcMachineRules::inputSlot : QcMachineRules::fuelSlot};
     }
 
@@ -73,7 +79,14 @@ QList<int> QcInventoryAccess::slotsIn(QcBlockPos pos, QcBlockFace face) const
 QList<int> QcInventoryAccess::slotsOut(QcBlockPos pos, QcBlockFace face) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
-    if (block && m_state.machineRules().machineOf(*block)) {
+    const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
+    if (machine && machine->brewing) {
+        // Downwards its bottles, brewed or not (as in the reference).
+        return face == QcBlockFace::Down
+                   ? QList<int>{QcBrewingRules::firstBottleSlot, QcBrewingRules::firstBottleSlot + 1, QcBrewingRules::firstBottleSlot + 2}
+                   : QList<int>{};
+    }
+    if (machine) {
         // Downwards the output, and an empty bucket left in the fuel slot (as in the reference).
         return face == QcBlockFace::Down ? QList<int>{QcMachineRules::outputSlot, QcMachineRules::fuelSlot} : QList<int>{};
     }
@@ -100,6 +113,10 @@ bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, const QcItemStack &sta
         return QcPortableContainers::mayHold(m_state.content(), stack);
     }
     const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
+    if (machine && machine->brewing) {
+        const QcBrewingRules &rules = m_state.machineRules().brewing();
+        return rules.accepts(*machine->brewing, slot, stack);
+    }
     if (machine && slot == QcMachineRules::fuelSlot) {
         return m_state.machineRules().fuelSeconds(stack.item) > 0.0 && !stack.hasContents();
     }
@@ -222,7 +239,7 @@ QcItemStack *QcInventoryAccess::slotPtr(QcBlockPos pos, int slot)
         return container && slot < container->stacks.size() ? &container->stacks[slot] : nullptr;
     }
     QcBlockEntities::Machine *machine = m_state.machineRules().machineOf(*block) ? m_state.blockEntities().machine(pos) : nullptr;
-    return machine && slot < QcMachineRules::slotCount ? &machine->stacks[static_cast<std::size_t>(slot)] : nullptr;
+    return machine && slot < machine->stacks.size() ? &machine->stacks[slot] : nullptr;
 }
 
 bool QcInventoryAccess::take(QcBlockPos pos, int slot, int count)

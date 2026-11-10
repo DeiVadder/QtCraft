@@ -1,0 +1,11 @@
+{
+    "name": "fungus_on_a_stick",
+    "type": "shapeless",
+    "ingredients": [
+        "fishing_rod",
+        "warped_fungus"
+    ],
+    "result": {
+        "item": "fungus_on_a_stick"
+    }
+}

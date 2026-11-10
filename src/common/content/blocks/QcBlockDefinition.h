@@ -8,6 +8,7 @@
 #include "common/content/blockbehaviour/QcLiquidDefinition.h"
 #include "common/content/blockbehaviour/QcSignalDefinition.h"
 #include "common/content/blockbehaviour/QcSpawnerDefinition.h"
+#include "common/content/blocks/QcAnchorDefinition.h"
 #include "common/content/blocks/QcBlockProperty.h"
 #include "common/content/blocks/QcShapeCondition.h"
 #include "common/content/blocks/QcShapeDefinition.h"
@@ -17,6 +18,7 @@
 #include "common/content/recipes/QcFarmingDefinitions.h"
 #include "common/content/recipes/QcMachineDefinition.h"
 #include "common/core/QcBlockFace.h"
+#include "common/world/QcAtmosphere.h"
 #include "common/world/QcSignText.h"
 
 #include <QList>
@@ -51,6 +53,11 @@ enum class QcBlockSupport : quint8 {
     Below,
     /*! A full solid face on the side its \c {attach} property names (torches, ladders). */
     Attached,
+    /*! The frame of a portal it fills, or more of itself, in the plane of the frame
+        (QcPortalShapes::isHeld, decision E-1021). */
+    Portal,
+    /*! A full solid bottom face above, or more of itself (hanging plants, decision E-1044). */
+    Above,
 };
 
 /*! \brief How a placed block's \c {facing} follows the player's horizontal view direction. */
@@ -104,6 +111,12 @@ struct QcItemDrop
         4 to 9, a squid 1 to 3 ink sacs); 0 for exactly \c {count}. A later fortune enchantment
         raises it. */
     int maxCount = 0;
+    /*! Creature drops only: it drops only when a player dealt the killing blow (\c {"byPlayer"},
+        decision E-1059). Server side only. */
+    bool byPlayer = false;
+    /*! Creature drops only: the loot table (QcLootTables) drawn instead of an \c {item}
+        (\c {"table"}, decision E-1106; the witch's draws). Server side only. */
+    QString table = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 
     /*! Returns the most items this drop gives. */
     int mostCount() const { return std::max(count, maxCount); }
@@ -188,6 +201,16 @@ struct QcBlockDefinition
     bool opensEnchanting = false;
     /*! Using the block opens the anvil's screen (decision E-866). */
     bool opensAnvil = false;
+    /*! Using the block opens the smithing table's screen (decision E-1115). */
+    bool opensSmithing = false;
+    /*! The block is a beacon (decision E-1142): using it opens the beacon's screen, and on a
+        pyramid of beacon base blocks under open sky it gives the players around it status
+        effects (QcBeacon). */
+    bool opensBeacon = false;
+    /*! The colour a beacon beam passing through the block takes (decision E-1143, stained glass
+        and its panes; \c {"beamColour": "#rrggbb"}); none for blocks that do not colour it.
+        Server side only. */
+    std::optional<quint32> beamColour;
     /*! The anvil this one wears into when used or after a fall (chipped, damaged); empty: it
         breaks. Server side only. */
     QString wearsInto;
@@ -212,6 +235,9 @@ struct QcBlockDefinition
         QcBlockSoundAction that replace the material's sound (see QcSoundKeys). \qcshared */
     QString soundMaterial;
     std::array<QString, qcBlockSoundActionCount> soundKeys;
+    /*! Particles the client lets the block give off now and then (\c {"particles"}, decision
+        E-1121): tears under crying obsidian, lava soaking through the block under it. */
+    QList<QcParticleEmitter> particles;
     /*! Texture names indexed by QcBlockFace. */
     std::array<QString, qcBlockFaceCount> faceTextures;
     /*! Further named textures that shape parts refer to (door halves), as slot -> texture. */
@@ -278,6 +304,10 @@ struct QcBlockDefinition
         \c {burnsItems} is false (a campfire hurts only creatures and players, decision E-772).
         Server side only. */
     double contactDamage = 0.0;
+    /*! Whether its \c {contactDamage} is heat that a fire-proof body does not feel (fire
+        resistance, decision E-992; \c {"contactFire"}, by default with \c {"setsAlight"}).
+        Server side only. */
+    bool contactFire = false;
     /*! Whether items inside the block burn from its \c {contactDamage} (\c {"burnsItems"}). Server
         side only. */
     bool burnsItems = true;
@@ -303,6 +333,10 @@ struct QcBlockDefinition
     QcBitesDefinition bites;
     /*! A campfire (decision E-772); the slots reach the client. */
     QcCampfireDefinition campfire;
+    /*! A cauldron that holds water (decision E-1065). Server side only. */
+    QcCauldronDefinition cauldron;
+    /*! A soul anchor (decision E-1112). Server side only. */
+    QcAnchorDefinition anchor;
     /*! A liquid flowing into the block breaks it with its drops (plants, torches). Server side
         only. */
     bool washable = false;
@@ -343,6 +377,12 @@ struct QcBlockDefinition
     /*! Bone meal used on it grows grass and flowers of the biome around it (a grass block,
         decision E-814). Server side only. */
     bool growsVegetation = false;
+    /*! The biome whose vegetation bone meal grows on this block wherever it lies; empty for the
+        biome it lies in. */
+    QString vegetationBiome;
+    /*! Bone meal on this block with air above turns it into one of these blocks, if one touches it
+        (\c {"overgrownBy"}: netherrack next to nylium, decision E-1044). Server side only. */
+    QList<QString> overgrownBy;
     /*! Block it turns into when an item that \c {carves} (shears) is used on it, facing the
         clicked side, dropping \c {carveDropCount} of the item \c {carveDrop} (a pumpkin carved
         into a head, decision E-472); empty for none. Server side only. */
@@ -380,12 +420,14 @@ struct QcBlockDefinition
     static constexpr double maxSlipperiness = 0.995;
 
     /*! Returns whether creatures keep from spawning on or in the block because it hurts or slows
-        them (lava, cobweb; QcNaturalSpawner). */
-    bool keepsSpawnsAway() const { return contactDamage > 0.0 || slowsInside < 1.0; }
+        them (lava, cobweb; QcNaturalSpawner) or is solid and cannot be broken (bedrock). */
+    bool keepsSpawnsAway() const { return contactDamage > 0.0 || slowsInside < 1.0 || (solid && hardness < 0.0); }
     /*! Returns whether the block is water: a liquid that sets nothing alight (lava does); the one
         test for spawn spots in water, drowned and fish, putting out burning bodies and
         QcPhysics::isWaterAt. */
     bool isWater() const { return liquid && fire.setsAlightSeconds == 0; }
+    /*! Returns whether it is a liquid that sets bodies alight: lava (decision E-1051). */
+    bool isLava() const { return liquid && fire.setsAlightSeconds > 0; }
     /*! Returns whether the server gives the block random ticks (growing plants, crops, soil). */
     bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }
     /*! Returns the texture name of the block's \a face. */

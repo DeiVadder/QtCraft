@@ -6,6 +6,7 @@
 #include "server/blockentities/QcBlockEntities.h"
 #include "server/blockentities/QcSignTexts.h"
 #include "server/blocks/QcFireQueue.h"
+#include "server/machines/QcBeacons.h"
 #include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
 
@@ -51,6 +52,8 @@ void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const Tables &tables)
             return !tables.signs.contains(pos);
         case Table::Campfires:
             return tables.campfires.at(pos) == nullptr;
+        case Table::Beacons:
+            return tables.beacons.at(pos) == nullptr;
         default:
             return false;
         }

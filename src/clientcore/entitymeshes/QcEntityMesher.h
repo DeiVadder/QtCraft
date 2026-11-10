@@ -145,13 +145,15 @@ constexpr quint8 boneBit(QcBoneRole role)
     optional, not owned).
 
     Bones whose role bit is set in \c {hiddenBones} are left out with their attachments (an
-    armour stand without arms or base plate). \qcfields */
+    armour stand without arms or base plate). \c {bodyHidden} leaves out skin, hair and cape and
+    keeps what it wears and holds (an invisible body, decision E-992). \qcfields */
 struct Figure
 {
     ModelLook look;
     const ItemLook *held = nullptr;
     const QList<Attachment> *attachments = nullptr;
     quint8 hiddenBones = 0;
+    bool bodyHidden = false;
 };
 
 /*! Edge length of a dropped cube and of a sprite. \qcshared */
@@ -225,10 +227,14 @@ struct HandView
     or rides) swing by the metres \c {walked} and its \c {speed} in m/s (decision E-888). A
     creature that swims in pulses (decision E-974, QcSwimmerPose) opens its tentacles
     (QcMobPart::tentacle) by \c {spread} degrees and tilts by \c {tilt} degrees (its top
-    forwards along its yaw) about the point \c {tiltHeight} metres above its feet. \qcfields */
+    forwards along its yaw) about the point \c {tiltHeight} metres above its feet. Parts with a
+    QcMobPart::spin stand where the animation clock \c {seconds} turned them (decision E-1056);
+    QcMobPart::armour parts are drawn only while \c {armoured} (decision E-1126).
+    \qcfields */
 struct PartLook
 {
     bool sitting = false;
+    bool saddled = false;
     QcAppearance colors;
     double walked = 0.0;
     double speed = 0.0;
@@ -236,6 +242,8 @@ struct PartLook
     double tilt = 0.0;
     double tiltHeight = 0.0;
     double spread = 0.0;
+    double seconds = 0.0;
+    bool armoured = false;
 };
 
 /*! Appends to \a mesh the static boxes \a parts of a mob definition at \a placement, facing

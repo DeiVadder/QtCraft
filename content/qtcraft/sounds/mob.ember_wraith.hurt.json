@@ -1,0 +1,26 @@
+{
+    "name": "mob.ember_wraith.hurt",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.3,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 300,
+            "gain": 0.5
+        },
+        {
+            "wave": "saw",
+            "duration": 0.3,
+            "frequency": 420,
+            "endFrequency": 210,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.3
+        }
+    ]
+}

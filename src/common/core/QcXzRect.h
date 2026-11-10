@@ -26,6 +26,14 @@ struct QcXzRect
 
     bool operator==(const QcXzRect &) const = default;
 
+    /*! Returns the columns of the chunk \a pos. */
+    [[nodiscard]] static QcXzRect ofChunk(QcChunkPos pos)
+    {
+        const int x = pos.x * QcWorld::chunkSize;
+        const int z = pos.z * QcWorld::chunkSize;
+        return {x, z, x + QcWorld::chunkSize - 1, z + QcWorld::chunkSize - 1};
+    }
+
     /*! Returns whether the column \a x, \a z lies in the rectangle. */
     bool contains(int x, int z) const { return x >= minX && x <= maxX && z >= minZ && z <= maxZ; }
     /*! Returns whether \a other lies within \a gap columns of this rectangle (0: they share at

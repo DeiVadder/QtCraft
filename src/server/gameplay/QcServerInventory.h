@@ -94,10 +94,13 @@ private:
         QcServerClient::Stonecutter *stonecutter = nullptr;
         QcServerClient::Enchanting *enchanting = nullptr;
         QcServerClient::Anvil *anvil = nullptr;
+        QcServerClient::Smithing *smithing = nullptr;
+        QcServerClient::Beacon *beacon = nullptr;
         int blockSlots = 0;
         QcSlotList combined;
 
-        // Writes the block slots of the list back into the open stonecutter, enchanting table or anvil.
+        // Writes the block slots of the list back into the open stonecutter, enchanting table, anvil,
+        // smithing table or beacon.
         void storeWorkstationSlots() const;
     };
 
@@ -113,10 +116,16 @@ private:
     // Whether the open container takes its new slots: a backpack nothing with contents, a held one
     // its slots as the data of its item (decisions E-832, E-833).
     bool containerAccepts(const OpenSlots &open) const;
-    // The enchanting table takes one item in its item slot and only lapis lazuli in its lapis slot.
-    bool enchantingAccepts(const OpenSlots &open) const;
+    // The enchanting table takes one item in its item slot and only lapis lazuli in its lapis slot,
+    // the beacon one payment item in its payment slot (decision E-1142).
+    bool workstationAccepts(const OpenSlots &open) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
+    // Tells the adventure guide of every potion `client` took out of the bottle slots of `machine`,
+    // a brewing stand whose slots were `before` (decision E-1107).
+    void noteBrewedTaken(QcServerClient &client, const QcBlockEntities::Machine &machine, const QList<QcItemStack> &before);
+    // What makes `machine` a brewing stand; null for other machines.
+    const QcBrewerDefinition *brewerOf(const QcBlockEntities::Machine &machine) const;
 
     QcServerState &m_state;
     QcBlockScreens &m_screens;

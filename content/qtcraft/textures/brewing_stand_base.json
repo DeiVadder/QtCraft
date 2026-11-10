@@ -1,0 +1,8 @@
+{
+    "name": "brewing_stand_base",
+    "pattern": "metal_block",
+    "primary": "#4a4a52",
+    "secondary": "#6a6a74",
+    "variation": 0.1,
+    "seed": 8504
+}

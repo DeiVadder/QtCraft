@@ -12,9 +12,11 @@
 #include "common/content/blockbehaviour/QcSignalLinks.h"
 #include "common/content/blocks/QcPartGenerator.h"
 #include "common/content/items/QcAnvilSwaps.h"
+#include "common/content/items/QcPotionGenerator.h"
 #include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentSerializer.h"
+#include "common/content/worldgen/QcProgressionGoalParser.h"
 
 #include <algorithm>
 
@@ -399,6 +401,15 @@ QStringList checkStructureAdventure(const QcContentRegistry &content)
     return warnings;
 }
 
+// Finds the items of the mount `ride` (decision E-1054); without them it cannot be saddled or
+// steered. Returns false when one is unknown.
+[[nodiscard]] bool linkRide(const QcContentRegistry &content, QcRideDefinition &ride)
+{
+    ride.saddleId = content.itemId(ride.saddle).value_or(qcNoItem);
+    ride.steerId = content.itemId(ride.steer).value_or(qcNoItem);
+    return ride.saddleId != qcNoItem && ride.steerId != qcNoItem;
+}
+
 } // namespace
 
 void QcContentRegistry::registerPartFamily(QcPartFamily family)
@@ -425,6 +436,7 @@ QStringList QcContentRegistry::applyAnvilSwaps()
 QStringList QcContentRegistry::finish()
 {
     QStringList warnings = QcPartGenerator::generate(*this);
+    warnings.append(QcPotionGenerator::generate(*this));
     // A circuit block with a broken link (a mod's piston without a valid head) takes no part in
     // circuits rather than misbehave (decision E-333).
     const auto problems = QcSignalLinks::problems(*this);
@@ -469,6 +481,13 @@ QStringList QcContentRegistry::finish()
         mob.carries = std::move(traits.carries);
         mob.family = std::move(traits.family);
         warnings.append(traits.warnings);
+        if (mob.ride && !linkRide(*this, *mob.ride)) {
+            warnings.append(u"creature '%1': unknown item in 'ride'"_s.arg(mob.name));
+        }
+        if (mob.splits && !mobKind(mob.splits->into)) {
+            warnings.append(u"creature '%1': unknown creature '%2' in 'splits', left out"_s.arg(mob.name, mob.splits->into));
+            mob.splits.reset();
+        }
     });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(checkStructureAdventure(*this));
@@ -479,6 +498,7 @@ QStringList QcContentRegistry::finish()
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
     warnings.append(m_advancements.resolve(*this));
+    warnings.append(QcProgressionGoalParser::checkTargets(*this));
     return warnings;
 }
 

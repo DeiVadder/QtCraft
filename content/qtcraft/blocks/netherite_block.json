@@ -1,0 +1,15 @@
+{
+    "name": "netherite_block",
+    "sound": "netherite",
+    "hardness": 50.0,
+    "blastResistance": 1200.0,
+    "tool": "pickaxe",
+    "toolLevel": 4,
+    "tags": [
+        "fire_resistant",
+        "beacon_base"
+    ],
+    "textures": {
+        "all": "netherite_block"
+    }
+}

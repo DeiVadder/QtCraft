@@ -1,0 +1,8 @@
+{
+    "name": "shroomlight",
+    "pattern": "glow_lobes",
+    "primary": "#f2a23c",
+    "secondary": "#8a3e10",
+    "variation": 0.08,
+    "seed": 8703
+}

@@ -1,0 +1,8 @@
+{
+    "name": "nether_brick",
+    "pattern": "ingot",
+    "primary": "#46222a",
+    "secondary": "#5c2c36",
+    "variation": 0.08,
+    "seed": 8441
+}

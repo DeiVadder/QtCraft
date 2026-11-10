@@ -3,51 +3,21 @@
 
 #include "server/storage/QcGeneratedChunks.h"
 
-#include "common/core/QcIntMath.h"
-#include "common/core/QcWorldConstants.h"
-#include "common/protocol/QcStreamLimits.h"
 #include "server/storage/QcRegionFile.h"
 #include "server/storage/QcSaveFile.h"
 
-#include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QIODevice>
-#include <QList>
 
-#include <algorithm>
 #include <limits>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr int bitmapBytes = QcRegionFile::chunksPerRegion / 8;
-constexpr int regionSize = QcRegionFile::regionSize;
-// The regions within the world (decision E-883); a file naming others is forged or damaged, and
-// their chunk coordinates would overflow.
-constexpr int lowestRegion = qcFloorDiv(-QcWorld::maxHorizontalChunk, regionSize);
-constexpr int highestRegion = qcFloorDiv(QcWorld::maxHorizontalChunk, regionSize);
-constexpr qsizetype regionsInWorld = qsizetype{highestRegion - lowestRegion + 1} * (highestRegion - lowestRegion + 1);
-// Every region at most once: more is damage (the limit only bounds what a count may promise).
-constexpr quint32 maxRegions = static_cast<quint32>(std::min<qsizetype>(regionsInWorld, qsizetype{1} << 24));
-
-// The slot of `chunk` within its region `region`.
-int slotOf(QcChunkPos chunk, QcChunkPos region)
-{
-    return (chunk.x - region.x * regionSize) + regionSize * (chunk.z - region.z * regionSize);
-}
-
-bool hasSlot(const QByteArray &bitmap, int slot)
-{
-    return (static_cast<quint8>(bitmap.at(slot / 8)) & (1u << (slot % 8))) != 0;
-}
-
-bool inWorld(qint32 x, qint32 z)
-{
-    return x >= lowestRegion && x <= highestRegion && z >= lowestRegion && z <= highestRegion;
-}
+static_assert(QcChunkSet::regionSize == QcRegionFile::regionSize, "the index counts regions like the region files");
+static_assert(QcChunkSet::streamVersion == QcSaveFile::streamVersion, "chunk sets are written like every save file");
 
 // Whether every name QcSaveFile::keepAside tries for `path` is taken.
 bool asideCopiesTaken(const QString &path)
@@ -81,38 +51,9 @@ QString keptAside(const QString &path, const QString &error)
 
 void QcGeneratedChunks::note(QcChunkPos chunk)
 {
-    const QcChunkPos region = QcRegionFile::regionOf(chunk);
-    auto it = m_regions.find(region);
-    if (it == m_regions.end()) {
-        it = m_regions.insert(region, QByteArray(bitmapBytes, '\0'));
+    if (m_chunks.insert(chunk)) {
+        setUnsaved(true);
     }
-    const int slot = slotOf(chunk, region);
-    if (hasSlot(*it, slot)) {
-        return;
-    }
-    char &bits = (*it)[slot / 8];
-    bits = static_cast<char>(static_cast<quint8>(bits) | (1u << (slot % 8)));
-    setUnsaved(true);
-}
-
-bool QcGeneratedChunks::contains(QcChunkPos chunk) const
-{
-    const QcChunkPos region = QcRegionFile::regionOf(chunk);
-    const auto it = m_regions.constFind(region);
-    return it != m_regions.cend() && hasSlot(*it, slotOf(chunk, region));
-}
-
-QSet<QcChunkPos> QcGeneratedChunks::chunks() const
-{
-    QSet<QcChunkPos> all;
-    for (auto it = m_regions.cbegin(); it != m_regions.cend(); ++it) {
-        for (int slot = 0; slot < QcRegionFile::chunksPerRegion; ++slot) {
-            if (hasSlot(*it, slot)) {
-                all.insert({it.key().x * regionSize + slot % regionSize, it.key().z * regionSize + slot / regionSize});
-            }
-        }
-    }
-    return all;
 }
 
 QcGeneratedChunks::Opened QcGeneratedChunks::open(const QString &directory)
@@ -159,45 +100,16 @@ QcGeneratedChunks::Opened QcGeneratedChunks::load(const QString &directory, cons
 
 QByteArray QcGeneratedChunks::bytes() const
 {
-    QList<QcChunkPos> regions = m_regions.keys();
-    std::ranges::sort(regions, {}, [](QcChunkPos region) { return std::pair{region.z, region.x}; });
-
-    QByteArray payload;
-    QDataStream stream(&payload, QIODevice::WriteOnly);
-    stream.setVersion(QcSaveFile::streamVersion);
-    stream << static_cast<quint32>(regions.size());
-    for (const QcChunkPos &region : std::as_const(regions)) {
-        stream << static_cast<qint32>(region.x) << static_cast<qint32>(region.z);
-        stream.writeRawData(m_regions.value(region).constData(), bitmapBytes);
-    }
-    return QcSaveFile::bytes(magic, payload, formatVersion);
+    return QcSaveFile::bytes(magic, m_chunks.bytes(), formatVersion);
 }
 
 QcResult<QcGeneratedChunks> QcGeneratedChunks::parse(const QByteArray &payload, const QString &path)
 {
-    QDataStream stream(payload);
-    stream.setVersion(QcSaveFile::streamVersion);
-    const std::optional<quint32> count = QcStreamLimits::readCount(stream, maxRegions);
-    if (!count) {
-        return qcError(u"%1 is damaged"_s.arg(path));
+    QcResult<QcChunkSet> chunks = QcChunkSet::parse(payload);
+    if (!chunks) {
+        return qcError(u"%1 is damaged (%2)"_s.arg(path, chunks.error()));
     }
-
     QcGeneratedChunks index;
-    for (quint32 i = 0; i < *count; ++i) {
-        qint32 x = 0;
-        qint32 z = 0;
-        QByteArray bitmap(bitmapBytes, '\0');
-        stream >> x >> z;
-        if (stream.readRawData(bitmap.data(), bitmapBytes) != bitmapBytes || stream.status() != QDataStream::Ok) {
-            return qcError(u"%1 is damaged"_s.arg(path));
-        }
-        if (!inWorld(x, z) || index.m_regions.contains({x, z})) {
-            return qcError(u"%1 is damaged (region %2, %3)"_s.arg(path).arg(x).arg(z));
-        }
-        index.m_regions.insert({x, z}, bitmap);
-    }
-    if (!stream.atEnd()) {
-        return qcError(u"%1 is damaged"_s.arg(path));
-    }
+    index.m_chunks = std::move(*chunks);
     return index;
 }

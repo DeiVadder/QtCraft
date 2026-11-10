@@ -26,7 +26,7 @@ Heiße Flüssigkeit, die leuchtet, Items verbrennt und jeden in Brand setzt, der
 | Schaden bei Berührung | 3 Lebenspunkte |
 | Setzt Körper in Brand für | 15 s |
 | Entzündet Feuer daneben | 3 von 100 je Block-Update, neben brennbaren Blöcken |
-| Zustände | falling (false, true); level (0, 1, 2, 3) |
+| Zustände | falling (false, true); level (0, 1, 2, 3, 4, 5, 6, 7) |
 
 **Kommt vor in**
 

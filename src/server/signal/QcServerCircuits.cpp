@@ -67,8 +67,14 @@ QcServerCircuits::QcServerCircuits(QcServerState &state, QcServerSounds &sounds,
     , m_mover(state, blocks, sounds, m_table)
     , m_dispensers(state, blocks, sounds, m_table)
     , m_hoppers(state, m_table)
+    , m_daylight(state, blocks, m_table)
     , m_rails(state.content())
 {
+}
+
+QcServerCircuits::Readings &QcServerCircuits::here() const
+{
+    return m_readings.of(m_state.current());
 }
 
 void QcServerCircuits::tick()
@@ -82,6 +88,7 @@ void QcServerCircuits::tick()
     finishMoves();
     m_state.circuits().takeReaders(m_state.world());
     pressPlates();
+    m_daylight.tick();
     // Changes may not take the whole budget: due scheduled ticks always get their share.
     settle(static_cast<qsizetype>(limits.scheduleReserve()));
 
@@ -143,6 +150,9 @@ bool QcServerCircuits::use(QcBlockPos pos)
     case QcSignalKind::Comparator:
         m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"mode"_s, state.subtract ? u"compare"_s : u"subtract"_s));
         break;
+    case QcSignalKind::Daylight:
+        m_daylight.turnRound(pos, *block);
+        break;
     case QcSignalKind::Note: {
         const int note = (m_table.content().property(*block, u"note"_s).toInt() + 1) % QcSignalDefinition::noteCount;
         m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"note"_s, QString::number(note)));
@@ -195,7 +205,7 @@ void QcServerCircuits::playNote(QcBlockPos pos)
     if (!block || world.blockAt(pos.offset(0, 1, 0)).value_or(qcAirBlockId) != qcAirBlockId) {
         return;
     }
-    if (!m_notes.allow(pos, m_state.clock().tick())) {
+    if (!m_notes.of(m_state.current()).allow(pos, m_state.clock().tick())) {
         return;
     }
 
@@ -289,10 +299,10 @@ void QcServerCircuits::noteCartReadings(QHash<QcBlockPos, quint32> readings)
             }
         }
     };
-    changed(readings, m_cartReadings);
+    changed(readings, here().cartReadings);
     // Cells the last container cart left.
-    changed(m_cartReadings, readings);
-    m_cartReadings = std::move(readings);
+    changed(here().cartReadings, readings);
+    here().cartReadings = std::move(readings);
 }
 
 QcCircuitComponents::Context QcServerCircuits::componentContext(QcSignalPower power, const QcComparatorReadings &readings) const

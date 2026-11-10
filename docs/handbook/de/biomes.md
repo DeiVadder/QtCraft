@@ -2,9 +2,31 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
+**QtCraft:** [Basaltdeltas](#biome-qtcraft-basalt_deltas) · [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Karmesinwald](#biome-qtcraft-crimson_forest) · [Netherwüste](#biome-qtcraft-nether_wastes) · [Seelensandtal](#biome-qtcraft-soul_sand_valley) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wirrwald](#biome-qtcraft-warped_forest) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
 
 ## QtCraft
+
+### <a id="biome-qtcraft-basalt_deltas"></a>Basaltdeltas
+
+Dunkles Gestein in Bändern aus Basalt und Schwarzstein, Steinpfosten auf den Böden und unter den Decken, und stille Lavabecken mit Magmarändern. Hier fällt keine Lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:basalt_deltas` |
+| Klima | Temperatur 0,66, Feuchte 0,66, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Unter der Oberfläche | [Basalt](blocks.md#block-qtcraft-basalt) (3 Blöcke) |
+| Unter Wasser | [Basalt](blocks.md#block-qtcraft-basalt) |
+| Strände | [Basalt](blocks.md#block-qtcraft-basalt) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (28,57 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (71,43 %)
+
+**Wesen**
+
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-birch_forest"></a>Birkenwald
 
@@ -34,7 +56,7 @@ Heller Wald aus Birken.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -69,7 +91,7 @@ Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwisc
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -103,7 +125,7 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -137,7 +159,7 @@ Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäum
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -171,7 +193,7 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -184,7 +206,7 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 | | |
 |---|---|
 | ID | `qtcraft:river` |
-| Flüsse in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Flüsse in | [Basaltdeltas](#biome-qtcraft-basalt_deltas), [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Karmesinwald](#biome-qtcraft-crimson_forest), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wirrwald](#biome-qtcraft-warped_forest), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Sand](blocks.md#block-qtcraft-sand) |
 | Unter der Oberfläche | [Sand](blocks.md#block-qtcraft-sand) (3 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Kies](blocks.md#block-qtcraft-gravel) (35 %), [Ton](blocks.md#block-qtcraft-clay) (10 %) |
@@ -192,7 +214,7 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,64 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,26 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,81 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,26 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,63 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,26 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,26 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,26 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,26 %)
 
 **Wesen**
 
@@ -205,7 +227,7 @@ Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in fla
 | | |
 |---|---|
 | ID | `qtcraft:delta` |
-| Deltas in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Deltas in | [Basaltdeltas](#biome-qtcraft-basalt_deltas), [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Karmesinwald](#biome-qtcraft-crimson_forest), [Netherwüste](#biome-qtcraft-nether_wastes), [Seelensandtal](#biome-qtcraft-soul_sand_valley), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wirrwald](#biome-qtcraft-warped_forest), [Wüste](#biome-qtcraft-desert) |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (2 Blöcke) |
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Schlamm](blocks.md#block-qtcraft-mud) (30 %), [Ton](blocks.md#block-qtcraft-clay) (10 %), [Kies](blocks.md#block-qtcraft-gravel) (10 %) |
@@ -221,7 +243,7 @@ Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in fla
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,64 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,26 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,81 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,26 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,63 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,26 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,26 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,26 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,26 %)
 
 **Wesen**
 
@@ -257,7 +279,7 @@ Hohe Felsgipfel mit Schnee darauf.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -283,11 +305,85 @@ Ein Flussdelta in kaltem Land (Tundra, verschneite Taiga, Taiga): kahle Inseln a
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,57 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,96 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,57 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,57 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,57 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,19 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,38 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,38 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,38 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,38 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,38 %)
 
 **Wesen**
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
+### <a id="biome-qtcraft-crimson_forest"></a>Karmesinwald
+
+Rote Geflechte auf den Böden, große Pilze mit hohlen Kuppeln, Warzen an den Decken und überall Trauerranken.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_forest` |
+| Klima | Temperatur 0,36, Feuchte 0,36, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Karmesin-Nylium](blocks.md#block-qtcraft-crimson_nylium) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Karmesin-Nylium](blocks.md#block-qtcraft-crimson_nylium) |
+
+**Pflanzen und Bäume**
+
+[Großer karmesinpilz](worldgen.md#feature-qtcraft-huge_crimson_fungus) (0,8 % der Säulen), [Trauerranken](worldgen.md#feature-qtcraft-weeping_vines) (3,5 % der Säulen)
+
+**Gräser**
+
+[Karmesinwurzeln](blocks.md#block-qtcraft-crimson_roots) (87,88 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (11,11 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (1,01 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Borstenkeiler](creatures.md#mob-qtcraft-bristleboar) (60 %), [Hauerling](creatures.md#mob-qtcraft-tuskling) (33,33 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (6,67 %)
+
+**Wesen**
+
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
+
+### <a id="biome-qtcraft-nether_wastes"></a>Netherwüste
+
+Nackter Netherrack mit Bänken aus Kies und Seelensand an der Lava.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_wastes` |
+| Klima | Temperatur 0,5, Feuchte 0,5, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (3 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Hauerling](creatures.md#mob-qtcraft-tuskling) (8,93 %), [Klagegeist](creatures.md#mob-qtcraft-wailer) (29,76 %), [Magmaschleim](creatures.md#mob-qtcraft-magma_slime) (1,19 %), [Moderhauer](creatures.md#mob-qtcraft-rottusk) (59,52 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (0,6 %)
+
+**Wesen**
+
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
+
+### <a id="biome-qtcraft-soul_sand_valley"></a>Seelensandtal
+
+Böden aus Seelensand und Seelenerde, auf denen Feuer blau brennt.
+
+| | |
+|---|---|
+| ID | `qtcraft:soul_sand_valley` |
+| Klima | Temperatur 0,66, Feuchte 0,36, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Seelensand](blocks.md#block-qtcraft-soul_sand) |
+| Unter der Oberfläche | [Seelenerde](blocks.md#block-qtcraft-soul_soil) (2 Blöcke) |
+| Unter Wasser | [Seelenerde](blocks.md#block-qtcraft-soul_soil) |
+| Strände | [Seelensand](blocks.md#block-qtcraft-soul_sand) |
+
+**Monster (Anteil an der Monsterliste)**
+
+[Klagegeist](creatures.md#mob-qtcraft-wailer) (70,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,41 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (28,17 %)
+
+**Wesen**
+
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-swamp"></a>Sumpf
 
@@ -317,7 +413,7 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -349,7 +445,7 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -376,7 +472,7 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Eiswanderer](creatures.md#mob-qtcraft-stray) (15,53 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (3,88 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Eiswanderer](creatures.md#mob-qtcraft-stray) (15,38 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (3,85 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -409,7 +505,7 @@ Ein Flussdelta in warmem, feuchtem Land (Dschungel, Dschungelrand, Sumpf): grün
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,64 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,26 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,81 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,26 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,63 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,26 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,26 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,26 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,26 %)
 
 **Wesen**
 
@@ -437,7 +533,7 @@ Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere B�
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -471,7 +567,7 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
@@ -505,11 +601,41 @@ Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelte
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,23 %)
 
 **Wesen**
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Tintenfisch](creatures.md#mob-qtcraft-squid)
+
+### <a id="biome-qtcraft-warped_forest"></a>Wirrwald
+
+Blaugrüne Polster auf den Böden, große Pilze mit flachen Schirmen und dazwischen aufsteigende Zwirbelranken.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_forest` |
+| Klima | Temperatur 0,34, Feuchte 0,66, Zerklüftung 0,2 |
+| Geländehöhe | um y 68, ± 6 |
+| Oberfläche | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+| Unter der Oberfläche | [Netherrack](blocks.md#block-qtcraft-netherrack) (0 Blöcke) |
+| Unter Wasser | [Netherrack](blocks.md#block-qtcraft-netherrack) |
+| Strände | [Wirr-Nylium](blocks.md#block-qtcraft-warped_nylium) |
+
+**Pflanzen und Bäume**
+
+[Großer wirrpilz](worldgen.md#feature-qtcraft-huge_warped_fungus) (0,8 % der Säulen), [Zwirbelranken](worldgen.md#feature-qtcraft-twisting_vines) (3 % der Säulen)
+
+**Gräser**
+
+[Wirrwurzeln](blocks.md#block-qtcraft-warped_roots) (38,46 %), [Nethersprossen](blocks.md#block-qtcraft-nether_sprouts) (38,46 %), [Wirrpilz](blocks.md#block-qtcraft-warped_fungus) (15,38 %), [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) (7,69 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (100 %)
+
+**Wesen**
+
+[Lavastelze](creatures.md#mob-qtcraft-lava_wader)
 
 ### <a id="biome-qtcraft-desert"></a>Wüste
 
@@ -532,7 +658,7 @@ Sand und Sandstein mit Kakteen und wenig sonst.
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Wüstenzombie](creatures.md#mob-qtcraft-husk) (15,53 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3,88 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,96 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,23 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,92 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,23 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,23 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,23 %), [Wüstenzombie](creatures.md#mob-qtcraft-husk) (15,38 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3,85 %)
 
 **Wesen**
 
@@ -554,7 +680,7 @@ Ein Fluss durch kaltes Land (Tundra, verschneite Taiga, Taiga): Eis bedeckt ihn,
 
 **Monster (Anteil an der Monsterliste)**
 
-[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,57 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,96 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,57 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,57 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,57 %)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,19 %), [Hexe](creatures.md#mob-qtcraft-witch) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,38 %), [Schattenwandler](creatures.md#mob-qtcraft-shadewalker) (1,94 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,38 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,38 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,38 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,38 %)
 
 **Wesen**
 

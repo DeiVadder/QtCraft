@@ -1,0 +1,8 @@
+{
+    "name": "lava_wader_hide",
+    "pattern": "speckle",
+    "primary": "#7c3b2c",
+    "secondary": "#4e2219",
+    "variation": 0.16,
+    "seed": 7402
+}

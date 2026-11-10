@@ -1,0 +1,16 @@
+{
+    "name": "smithing_table",
+    "type": "shaped",
+    "pattern": [
+        "II",
+        "##",
+        "##"
+    ],
+    "key": {
+        "I": "iron_ingot",
+        "#": "#planks"
+    },
+    "result": {
+        "item": "smithing_table"
+    }
+}

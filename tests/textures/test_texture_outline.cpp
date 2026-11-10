@@ -170,7 +170,7 @@ private slots:
         using QcTextureDetail::forPattern;
         using Pattern = QcTextureSpec::Pattern;
         for (const Pattern pattern : {Pattern::Tool, Pattern::Sword, Pattern::Pickaxe, Pattern::Axe, Pattern::Shovel, Pattern::Hoe, Pattern::Stick,
-                                      Pattern::Arrow, Pattern::FishingRod}) {
+                                      Pattern::Arrow, Pattern::TippedArrow, Pattern::FishingRod}) {
             QVERIFY(forPattern(pattern).strokes);
             QVERIFY(forPattern(pattern).rimOnly);
         }

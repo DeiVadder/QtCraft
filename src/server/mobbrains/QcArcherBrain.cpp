@@ -46,7 +46,11 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
     const QcMobManager::PlayerView *target = QcMobSteering::chooseTarget(mob, definition, *context.players, context.world, looks);
     if (!target) {
         mob.archer->drawStart = -1;
-        const QcPhysics::Steering steering = wander(mob, definition, context, mayPlan);
+        // A drinker forgets the target it lost, so it no longer drinks for one far away.
+        if (definition.drinks) {
+            mob.archer->target = 0;
+        }
+        const QcPhysics::Steering steering = mob.archer->drinking() ? QcPhysics::Steering{{}, 0.0} : wander(mob, definition, context, mayPlan);
         mob.lastSpeed = steering.speed;
         return steering;
     }
@@ -63,7 +67,8 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
     }
     drawAndShoot(mob, definition, *target, sees && distance <= definition.archer.range, context);
 
-    const QcPhysics::Steering steering = keepDistance(mob, *target, sees, context, mayPlan);
+    // A drink holds it where it stands (decision E-1105).
+    const QcPhysics::Steering steering = mob.archer->drinking() ? QcPhysics::Steering{{}, 0.0} : keepDistance(mob, *target, sees, context, mayPlan);
     const QcVec3 towards = horizontal(target->position - mob.motion.position);
     if (towards.length() > 0.0) {
         mob.yaw = QcMobSteering::yawTowards(towards);
@@ -111,9 +116,13 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
         return;
     }
     const qint64 drawTicks = std::max<qint64>(1, std::llround(archer.drawSeconds / QcPhysics::tickDuration));
-    const QString &type = projectileFor(archer, target);
+    if (static_cast<qint64>(context.tick) - state.drawStart < drawTicks || !context.launches) {
+        return;
+    }
+    const double distance = horizontal(target.position - mob.motion.position).length();
+    const QString &type = projectileFor(archer, target, distance, random().generateDouble());
     const QcProjectileDefinition *projectile = m_content.projectile(type);
-    if (static_cast<qint64>(context.tick) - state.drawStart < drawTicks || !projectile || !context.launches) {
+    if (!projectile) {
         return;
     }
 
@@ -129,10 +138,13 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
     mob.attackCooldown = archer.cooldownSeconds;
 }
 
-const QString &QcArcherBrain::projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target)
+const QString &QcArcherBrain::projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target, double distance,
+                                            double draw)
 {
     for (const QcArcherDefinition::Choice &choice : archer.choices) {
-        if (!target.effects || !target.effects->find(choice.unlessTargetHas)) {
+        const bool lacks = !target.effects || !target.effects->find(choice.unlessTargetHas);
+        const bool within = distance >= choice.minDistance && distance <= choice.maxDistance;
+        if (lacks && within && target.health >= choice.minTargetHealth && draw < choice.chance) {
             return choice.projectile;
         }
     }

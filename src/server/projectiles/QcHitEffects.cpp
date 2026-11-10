@@ -29,6 +29,8 @@ QcHitEffects::QcHitEffects()
     add(QString::fromLatin1(QcHitEffect::spawn), [](const QcHitEffect &, double, Impact &) {});
     // A splash reaches the bodies around the place it breaks (QcServerProjectiles, decision E-624).
     add(QString::fromLatin1(QcHitEffect::splash), [](const QcHitEffect &, double, Impact &) {});
+    // Kindling happens at a block (QcServerProjectiles::mayKindle); the body takes nothing more.
+    add(QString::fromLatin1(QcHitEffect::kindle), [](const QcHitEffect &, double, Impact &) {});
 }
 
 QcHitEffects::Impact QcHitEffects::impactOf(const QcProjectileDefinition &definition, double damage) const
@@ -60,7 +62,7 @@ QcHitEffects::Impact QcHitEffects::splashImpact(const QcProjectileDefinition &de
         } else if (effect.is(QcHitEffect::effect)) {
             const int ticks = static_cast<int>(std::lround(effect.number * share / QcPhysics::tickDuration));
             if (ticks > 0) {
-                impact.effects.append({effect.subject, effect.level, ticks});
+                impact.effects.append({effect.subject, effect.level, ticks, share});
             }
         }
     }

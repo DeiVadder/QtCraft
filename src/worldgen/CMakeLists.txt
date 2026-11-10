@@ -8,18 +8,50 @@ qt_add_library(qc_worldgen ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_worldgen PRIVATE
+    bastion/QcBastionBlocks.h bastion/QcBastionBlocks.cpp
+    bastion/QcBastionBuilder.h bastion/QcBastionBuilder.cpp
+    bastion/QcBastionForms.h bastion/QcBastionForms.cpp
+    bastion/QcBastionGenerator.h bastion/QcBastionGenerator.cpp
+    bastion/QcBastionPlan.h
+    bastion/QcBastionPlanner.h bastion/QcBastionPlanner.cpp
+    bastion/QcBastionSketch.h bastion/QcBastionSketch.cpp
+)
+target_sources(qc_worldgen PRIVATE
+    blending/QcBlendedChunk.h blending/QcBlendedChunk.cpp
+    blending/QcBlendField.h blending/QcBlendField.cpp
+    blending/QcBlendGrid.h blending/QcBlendGrid.cpp
+    blending/QcChunkShape.h blending/QcChunkShape.cpp
+    blending/QcRingBlender.h blending/QcRingBlender.cpp
+)
+target_sources(qc_worldgen PRIVATE
     dungeons/QcDungeonGenerator.h dungeons/QcDungeonGenerator.cpp
     dungeons/QcDungeonPlan.h
     dungeons/QcDungeonPlanner.h dungeons/QcDungeonPlanner.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    fortress/QcFortressBlocks.h fortress/QcFortressBlocks.cpp
+    fortress/QcFortressBuilder.h fortress/QcFortressBuilder.cpp
+    fortress/QcFortressCanvas.h fortress/QcFortressCanvas.cpp
+    fortress/QcFortressGenerator.h fortress/QcFortressGenerator.cpp
+    fortress/QcFortressNet.h fortress/QcFortressNet.cpp
+    fortress/QcFortressPlan.h
+    fortress/QcFortressPlanner.h fortress/QcFortressPlanner.cpp
+    fortress/QcFortressRooms.h fortress/QcFortressRooms.cpp
+)
+target_sources(qc_worldgen PRIVATE
     generators/QcBiomeMap.h generators/QcBiomeMap.cpp
+    generators/QcChunkCanvas.h generators/QcChunkCanvas.cpp
     generators/QcChunkFurnishing.h
+    generators/QcDimensionMaps.h generators/QcDimensionMaps.cpp
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
     generators/QcLocatedPlace.h
+    generators/QcRegionPlans.h
+    generators/QcStateResolver.h generators/QcStateResolver.cpp
+    generators/QcStructureClosure.h generators/QcStructureClosure.cpp
     generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
+    generators/QcVersionedGenerator.h generators/QcVersionedGenerator.cpp
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
     generators/QcWorldGenerator.h
     generators/QcWorldGenerators.h generators/QcWorldGenerators.cpp
@@ -40,6 +72,18 @@ target_sources(qc_worldgen PRIVATE
     mineshafts/QcMineshaftPlan.h
     mineshafts/QcMineshaftPlanner.h mineshafts/QcMineshaftPlanner.cpp
     mineshafts/QcMineshaftSite.h mineshafts/QcMineshaftSite.cpp
+)
+target_sources(qc_worldgen PRIVATE
+    nether/QcNetherComplexes.h nether/QcNetherComplexes.cpp
+    nether/QcNetherDecorator.h nether/QcNetherDecorator.cpp
+    nether/QcNetherDefinitions.h nether/QcNetherDefinitions.cpp
+    nether/QcNetherDeltas.h nether/QcNetherDeltas.cpp
+    nether/QcNetherGenerator.h nether/QcNetherGenerator.cpp
+    nether/QcNetherGrowth.h nether/QcNetherGrowth.cpp
+    nether/QcNetherMap.h nether/QcNetherMap.cpp
+    nether/QcNetherSpawn.h nether/QcNetherSpawn.cpp
+    nether/QcNetherStructures.h nether/QcNetherStructures.cpp
+    nether/QcNetherTerrain.h nether/QcNetherTerrain.cpp
 )
 target_sources(qc_worldgen PRIVATE
     showcase/QcShowcaseArea.h
@@ -71,8 +115,10 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcColdEdges.h terrain/QcColdEdges.cpp
     terrain/QcDeltaArms.h terrain/QcDeltaArms.cpp
     terrain/QcDeltaSites.h terrain/QcDeltaSites.cpp
+    terrain/QcFungusCrown.h terrain/QcFungusCrown.cpp
     terrain/QcGiantTreePlacer.h terrain/QcGiantTreePlacer.cpp
     terrain/QcNoise.h terrain/QcNoise.cpp
+    terrain/QcOreVeins.h terrain/QcOreVeins.cpp
     terrain/QcPoolPlacer.h terrain/QcPoolPlacer.cpp
     terrain/QcRiverDelta.h terrain/QcRiverDelta.cpp
     terrain/QcRiverField.h terrain/QcRiverField.cpp
@@ -121,7 +167,8 @@ target_sources(qc_worldgen PRIVATE
 qc_configure_target(qc_worldgen)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
 set(qc_worldgen_fp_sources
-    terrain/QcCaveCarver.cpp terrain/QcClimateBiomes.cpp terrain/QcColdEdges.cpp terrain/QcDeltaArms.cpp terrain/QcDeltaSites.cpp terrain/QcGiantTreePlacer.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp
+    nether/QcNetherDecorator.cpp nether/QcNetherDeltas.cpp nether/QcNetherGrowth.cpp nether/QcNetherStructures.cpp nether/QcNetherTerrain.cpp
+    terrain/QcCaveCarver.cpp terrain/QcClimateBiomes.cpp terrain/QcColdEdges.cpp terrain/QcDeltaArms.cpp terrain/QcDeltaSites.cpp terrain/QcFungusCrown.cpp terrain/QcGiantTreePlacer.cpp terrain/QcNoise.cpp terrain/QcOreVeins.cpp terrain/QcPoolPlacer.cpp
     terrain/QcRiverDelta.cpp terrain/QcRiverField.cpp terrain/QcRiverPieces.cpp terrain/QcSurfaceLakes.cpp terrain/QcTerrainClimate.cpp terrain/QcTerrainColumnGrid.cpp terrain/QcTerrainDefinitions.cpp
     terrain/QcTerrainGenerator.cpp terrain/QcTerrainGround.cpp terrain/QcTerrainRivers.cpp terrain/QcTerrainSurface.cpp terrain/QcTreeLayout.cpp terrain/QcTreeShape.cpp
     terrain/QcVegetationPatchPlacer.cpp villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp

@@ -21,7 +21,8 @@ double QcPrediction::eyeHeight() const
 
 void QcPrediction::keepCoreIntent(const QcPlayerInput &core)
 {
-    m_intent.speedFactor = core.speedFactor;
+    m_intent.effects = core.effects;
+    m_intent.movementEpoch = core.movementEpoch;
     m_intent.usingItem = core.usingItem;
 }
 
@@ -147,10 +148,10 @@ void QcPrediction::reconcileBoat(const QcBoatState &boat, const QcBlockAccess *w
     m_motion = seatedIn(replayed);
 }
 
-void QcPrediction::followCart(const QcClientEntities &entities)
+void QcPrediction::followCart(const QcClientEntities &entities, const QcContentRegistry &content)
 {
     setPreviousMotion(m_motion);
-    if (const std::optional<QcEntityMotion> seated = m_riding.seated(entities)) {
+    if (const std::optional<QcEntityMotion> seated = m_riding.seated(entities, content)) {
         m_motion = *seated;
     }
 }

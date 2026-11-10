@@ -7,6 +7,7 @@
 #include "common/core/QcResult.h"
 
 #include <QHash>
+#include <QJsonObject>
 #include <QString>
 #include <QStringList>
 #include <QVersionNumber>
@@ -66,6 +67,9 @@ public:
     /*! Returns the bytes of the pack file at \a path: only regular files (no links, devices or
         pipes) up to maxContentFileBytes; an error otherwise or when it cannot be opened. */
     [[nodiscard]] static QcResult<QByteArray> readPackFile(const QString &path);
+    /*! Returns the JSON object in the pack file at \a path (readPackFile()); an error when it
+        cannot be read or holds no object. */
+    [[nodiscard]] static QcResult<QJsonObject> readJsonObject(const QString &path);
 
     /*! Returns the content files load() reads from the pack in \a directory besides pack.json
         (the content folders' *.json, textures/\unicode {0x2A}.png, the settings files in

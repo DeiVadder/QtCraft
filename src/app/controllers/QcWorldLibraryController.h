@@ -15,6 +15,7 @@
 #include <memory>
 
 class QcContentRegistry;
+class QcGeneratorUpgradeController;
 
 // The saved worlds and the mods for the menu (GameController.library), and the content they make up:
 // base game plus enabled mods, loaded on demand while no world runs.
@@ -32,6 +33,8 @@ class QcWorldLibraryController : public QObject
     Q_PROPERTY(QVariantList otherWorlds READ otherWorlds NOTIFY worldsChanged FINAL)
     Q_PROPERTY(QVariantList mods READ mods NOTIFY modsChanged FINAL)
     Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
+    // The question before a world made with an older world generator opens (decision E-1014).
+    Q_PROPERTY(QcGeneratorUpgradeController *upgrade READ upgrade CONSTANT FINAL)
 
 public:
     // The world types the menu offers, each a world generator (QcWorldGenerators): a terrain
@@ -53,6 +56,7 @@ public:
     QVariantList otherWorlds() const;
     QVariantList mods() const { return m_mods; }
     QString modsDirectory() const { return m_modsDirectory; }
+    QcGeneratorUpgradeController *upgrade() const { return m_upgrade.get(); }
     // Where mods are looked for; empty loads only the base game (test hook --no-mods).
     void setModsDirectory(const QString &directory);
 
@@ -84,6 +88,9 @@ public:
 
     // The mods a world just loaded: failures are shown in the mod list, the loaded ones logged.
     void recordLoadedMods(const QList<QcModStatus> &mods);
+    // The folders whose music plays (decision E-1136): the base game, then the mods that load, in
+    // load order.
+    [[nodiscard]] QStringList musicPackDirectories() const;
     // Base game plus enabled mods with the server-side data (world generation, chapters): the content
     // of the running world or, in the menu, loaded on demand.
     const QcContentRegistry &content() const;
@@ -112,4 +119,5 @@ private:
     QString m_modsDirectory;
     mutable std::shared_ptr<const QcContentRegistry> m_content;
     int m_contentGeneration = 0;
+    std::unique_ptr<QcGeneratorUpgradeController> m_upgrade;
 };

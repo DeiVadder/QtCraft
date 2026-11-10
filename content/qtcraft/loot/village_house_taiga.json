@@ -1,0 +1,25 @@
+{
+    "name": "village_house_taiga",
+    "pools": [
+        {
+            "rolls": [3, 6],
+            "entries": [
+                { "item": "potato", "weight": 25, "count": [1, 4] },
+                { "item": "cooked_mutton", "weight": 20, "count": [1, 2] },
+                { "item": "pumpkin_seeds", "weight": 15, "count": [2, 4] },
+                { "item": "spruce_log", "weight": 15, "count": [1, 4] },
+                { "item": "spruce_sapling", "weight": 10, "count": [1, 2] },
+                { "item": "fern", "weight": 10, "count": [1, 3] },
+                { "item": "torch", "weight": 15, "count": [2, 6] },
+                { "item": "coal", "weight": 12, "count": [1, 3] },
+                { "item": "leather_scrap", "weight": 10, "count": [1, 3] },
+                { "item": "stick", "weight": 12, "count": [2, 6] },
+                { "item": "pumpkin", "weight": 6 },
+                { "item": "iron_nugget", "weight": 5, "count": [1, 4] },
+                { "item": "pumpkin_pie", "weight": 3 },
+                { "item": "iron_ingot", "weight": 2 },
+                { "item": "emerald", "weight": 2 }
+            ]
+        }
+    ]
+}

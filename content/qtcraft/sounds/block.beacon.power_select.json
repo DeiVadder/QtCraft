@@ -1,0 +1,27 @@
+{
+    "name": "block.beacon.power_select",
+    "volume": 0.9,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.9,
+            "frequency": 440,
+            "endFrequency": 880,
+            "attack": 0.01,
+            "curve": 2,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 0.6,
+            "attack": 0.01,
+            "curve": 3,
+            "bandpass": 2400,
+            "resonance": 8,
+            "gain": 0.25
+        }
+    ]
+}

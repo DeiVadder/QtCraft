@@ -11,6 +11,7 @@
 #include "common/content/items/QcEnchantmentParser.h"
 #include "common/content/items/QcHoldParser.h"
 #include "common/content/items/QcItemParser.h"
+#include "common/content/items/QcPotionParser.h"
 #include "common/content/items/QcProjectileParser.h"
 #include "common/content/mobs/QcMobParser.h"
 #include "common/content/recipes/QcLootTableParser.h"
@@ -21,6 +22,9 @@
 #include "common/content/villages/QcTradeParser.h"
 #include "common/content/villages/QcVillageParser.h"
 #include "common/content/villages/QcVillagerParser.h"
+#include "common/content/worldgen/QcDimensionParser.h"
+#include "common/content/worldgen/QcPortalParser.h"
+#include "common/content/worldgen/QcProgressionGoalParser.h"
 #include "common/content/worldgen/QcShowcaseParser.h"
 #include "common/content/worldgen/QcStructureParser.h"
 #include "common/content/worldgen/QcWeatherParser.h"
@@ -40,7 +44,12 @@ namespace QcContentParser {
 
 using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
+using QcDimensionParser::parseDimension;
+using QcPortalParser::parsePortal;
+using QcProgressionGoalParser::parseProgressionGoal;
 using QcEffectParser::parseEffect;
+using QcPotionParser::parseBrewingRecipe;
+using QcPotionParser::parsePotion;
 using QcEnchantmentParser::parseEnchantment;
 using QcAdvancementParser::parseAdvancement;
 using QcLootTableParser::parseLootTable;
@@ -57,6 +66,7 @@ using QcHoldParser::parseHoldDefaults;
 using QcProjectileParser::parseProjectile;
 using QcRecipeParser::parseSmeltingRecipe;
 using QcRecipeParser::parseStonecuttingRecipe;
+using QcRecipeParser::parseSmithingRecipe;
 using QcShowcaseParser::parseShowcase;
 using QcSoundParser::parseSound;
 using QcStructureParser::parseStructure;

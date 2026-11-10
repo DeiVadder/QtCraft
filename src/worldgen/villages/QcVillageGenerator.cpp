@@ -3,6 +3,8 @@
 
 #include "worldgen/villages/QcVillageGenerator.h"
 
+#include "worldgen/terrain/QcTerrainGenerator.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -42,7 +44,8 @@ QList<QcBlockId> frozenWaterOf(const QcContentRegistry &content)
 } // namespace
 
 QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed)
-    : m_content(std::move(content))
+    : m_terrain(terrain)
+    , m_content(std::move(content))
     , m_styles(*m_content)
     , m_planner(terrain, *m_content, m_styles, seed)
     , m_wetland(terrain, seed)
@@ -60,6 +63,11 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::planFor(QcChunkPos chun
 {
     const int spacing = m_planner.spacing();
     return regionPlan(regionOf(chunk.x * QcWorld::chunkSize, spacing), regionOf(chunk.z * QcWorld::chunkSize, spacing));
+}
+
+std::shared_ptr<const QcVillagePlan> QcVillageGenerator::built(std::shared_ptr<const QcVillagePlan> plan) const
+{
+    return plan && m_terrain.buildsStructure(plan->bounds()) ? std::move(plan) : nullptr;
 }
 
 QcChunkFurnishing QcVillageGenerator::furnishingIn(QcChunkPos pos, const QcVillagePlan &plan)
@@ -99,7 +107,7 @@ std::optional<QcStructureSites> QcVillageGenerator::collectSites(QcBlockPos from
             if (!plan) {
                 return std::nullopt;
             }
-            if (*plan) {
+            if (built(*plan)) {
                 sites.add(sitesOf(**plan));
             }
         }
@@ -128,7 +136,7 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::nearest(QcBlockPos from
     double bestDistance = static_cast<double>(reach);
     for (int dz = -rings; dz <= rings; ++dz) {
         for (int dx = -rings; dx <= rings; ++dx) {
-            std::shared_ptr<const QcVillagePlan> plan = regionPlan(regionX + dx, regionZ + dz);
+            std::shared_ptr<const QcVillagePlan> plan = built(regionPlan(regionX + dx, regionZ + dz));
             if (!plan) {
                 continue;
             }
@@ -148,7 +156,7 @@ std::optional<QcStructurePlacement> QcVillageGenerator::nearestPiece(const QStri
     QList<QcStructurePlacement> pieces;
     for (int rz = regionOf(from.z - reach, spacing); rz <= regionOf(from.z + reach, spacing); ++rz) {
         for (int rx = regionOf(from.x - reach, spacing); rx <= regionOf(from.x + reach, spacing); ++rx) {
-            if (const std::shared_ptr<const QcVillagePlan> plan = regionPlan(rx, rz)) {
+            if (const std::shared_ptr<const QcVillagePlan> plan = built(regionPlan(rx, rz))) {
                 pieces.append(plan->pieces);
             }
         }

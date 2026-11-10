@@ -1,0 +1,103 @@
+{
+    "name": "nether_station",
+    "showcase": {
+        "order": 115
+    },
+    "palette": {
+        "P": "polished_blackstone",
+        "N": "netherrack",
+        "S": "soul_sand",
+        "o": "soul_soil",
+        "F": "fire",
+        "f": "soul_fire",
+        "0": "nether_wart_crop[age=0]",
+        "1": "nether_wart_crop[age=1]",
+        "2": "nether_wart_crop[age=2]",
+        "3": "nether_wart_crop[age=3]",
+        "L": "glowstone",
+        "Q": "quartz_pillar[axis=y]",
+        "q": "quartz_pillar[axis=x]",
+        "B": "basalt[axis=y]",
+        "b": "basalt[axis=z]",
+        "R": "nether_bricks",
+        "e": "nether_brick_fence",
+        "T": "soul_torch[attach=floor]",
+        "l": "soul_lantern[attach=floor]",
+        "g": "oak_fence_gate[facing=north]",
+        "K": "polished_blackstone_bricks"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "NPSSSSPoPRRRP",
+            "PPPPPPPPPPPPP"
+        ],
+        [
+            "PPPPPPPPPPPPP",
+            "             ",
+            "FT0123lf eeg ",
+            "             "
+        ],
+        [
+            "KKKKKKKKKKKKK",
+            "             ",
+            "             ",
+            "             "
+        ],
+        [
+            "L  Q  B  q  b",
+            "             ",
+            "             ",
+            "             "
+        ],
+        [
+            "   Q  B      ",
+            "             ",
+            "             ",
+            "             "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                0.5,
+                2.4,
+                2.5
+            ],
+            "text": "block.qtcraft.netherrack"
+        },
+        {
+            "at": [
+                4.0,
+                2.4,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_wart_crop"
+        },
+        {
+            "at": [
+                7.5,
+                2.4,
+                2.5
+            ],
+            "text": "block.qtcraft.soul_fire"
+        },
+        {
+            "at": [
+                10.5,
+                2.6,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_brick_fence"
+        },
+        {
+            "at": [
+                6.5,
+                6.0,
+                0.5
+            ],
+            "text": "structure.qtcraft.nether_station"
+        }
+    ]
+}

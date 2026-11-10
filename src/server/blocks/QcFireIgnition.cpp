@@ -41,15 +41,28 @@ bool QcFireIgnition::use(QcServerClient &client, const QcMsg::UseItem &message)
     const bool explosive = !client.dead && QcLineOfSight::isWithinReach(client, message.target) && m_light && m_light(message.target);
     if (explosive) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::flintAndSteel), {message.target.x + 0.5, message.target.y + 0.5, message.target.z + 0.5});
-        m_inventory.wearHeld(client);
+        spendHeld(client, *held);
         return true;
     }
     const QcBlockPos front = qcNeighbour(message.target, message.face);
     if (client.dead || !QcLineOfSight::isWithinReach(client, front) || !strike(front)) {
         return true;
     }
-    m_inventory.wearHeld(client);
+    spendHeld(client, *held);
     return true;
+}
+
+void QcFireIgnition::spendHeld(QcServerClient &client, const QcItemDefinition &held)
+{
+    if (held.durability > 0) {
+        m_inventory.wearHeld(client);
+        return;
+    }
+    // Without durability it lights once (a fireball, decision E-1058), except in creative mode.
+    if (!client.rules().infiniteItems) {
+        client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+        m_inventory.send(client);
+    }
 }
 
 bool QcFireIgnition::strike(QcBlockPos pos)

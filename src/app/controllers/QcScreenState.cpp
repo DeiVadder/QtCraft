@@ -16,7 +16,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 24> overlayNames{
+constexpr std::array<QStringView, 27> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -41,8 +41,11 @@ constexpr std::array<QStringView, 24> overlayNames{
     u"enchanting",
     u"anvil",
     u"advancements",
+    u"brewing",
+    u"smithing",
+    u"beacon",
 };
-static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Advancements) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Beacon) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -115,6 +118,7 @@ bool QcScreenState::isSettingsPage(Overlay overlay)
     case Overlay::Inventory:
     case Overlay::Creative:
     case Overlay::Furnace:
+    case Overlay::Brewing:
     case Overlay::Chest:
     case Overlay::Trade:
     case Overlay::Pause:
@@ -125,6 +129,8 @@ bool QcScreenState::isSettingsPage(Overlay overlay)
     case Overlay::Stonecutter:
     case Overlay::Enchanting:
     case Overlay::Anvil:
+    case Overlay::Smithing:
+    case Overlay::Beacon:
     case Overlay::Admin:
     case Overlay::Advancements:
         return false;
@@ -138,11 +144,14 @@ bool QcScreenState::isSlotScreen(Overlay overlay)
     case Overlay::Inventory:
     case Overlay::Creative:
     case Overlay::Furnace:
+    case Overlay::Brewing:
     case Overlay::Chest:
     case Overlay::Trade:
     case Overlay::Stonecutter:
     case Overlay::Enchanting:
     case Overlay::Anvil:
+    case Overlay::Smithing:
+    case Overlay::Beacon:
         return true;
     // No default: a new overlay must be placed here (-Wswitch).
     case Overlay::None:
@@ -335,7 +344,7 @@ void QcScreenState::closeSessionScreens() const
     if (m_overlay != Overlay::Inventory) {
         m_parts.session->inventoryMirror().closeCrafting();
     }
-    if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Chest) {
+    if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Brewing && m_overlay != Overlay::Chest) {
         m_parts.session->closeMachine();
     }
     if (m_overlay != Overlay::Trade) {
@@ -349,6 +358,12 @@ void QcScreenState::closeSessionScreens() const
     }
     if (m_overlay != Overlay::Anvil) {
         m_parts.session->anvil().close();
+    }
+    if (m_overlay != Overlay::Smithing) {
+        m_parts.session->smithing().close();
+    }
+    if (m_overlay != Overlay::Beacon) {
+        m_parts.session->beacon().close();
     }
     // A sign editor closed another way (another screen) sends the lines as typed so far
     // (QcSignController::edit; the server cleans them). On death the typed text is lost: the
@@ -373,10 +388,7 @@ void QcScreenState::craftingOpened()
 void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
 {
     // A spectator uses no screen of items (decision E-730): it closes, which tells the server.
-    const bool itemScreen = m_overlay == Overlay::Inventory || m_overlay == Overlay::Creative || m_overlay == Overlay::Furnace
-                            || m_overlay == Overlay::Chest || m_overlay == Overlay::Trade || m_overlay == Overlay::Stonecutter
-                            || m_overlay == Overlay::Enchanting || m_overlay == Overlay::Anvil;
-    if (itemScreen && !rules.interacts) {
+    if (isSlotScreen(m_overlay) && !rules.interacts) {
         setOverlay(Overlay::None);
         return;
     }
@@ -387,14 +399,14 @@ void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
     }
 }
 
-void QcScreenState::machineOpened(bool container)
+void QcScreenState::machineOpened(bool container, bool brewing)
 {
-    setOverlay(container ? Overlay::Chest : Overlay::Furnace);
+    setOverlay(container ? Overlay::Chest : brewing ? Overlay::Brewing : Overlay::Furnace);
 }
 
 void QcScreenState::machineClosed()
 {
-    if (m_overlay == Overlay::Furnace || m_overlay == Overlay::Chest) {
+    if (m_overlay == Overlay::Furnace || m_overlay == Overlay::Brewing || m_overlay == Overlay::Chest) {
         setOverlay(Overlay::None);
     }
 }
@@ -416,38 +428,14 @@ void QcScreenState::signOpened()
     setOverlay(Overlay::Sign);
 }
 
-void QcScreenState::stonecutterOpened()
+void QcScreenState::workstationOpened(Overlay overlay)
 {
-    setOverlay(Overlay::Stonecutter);
+    setOverlay(overlay);
 }
 
-void QcScreenState::stonecutterClosed()
+void QcScreenState::workstationClosed(Overlay overlay)
 {
-    if (m_overlay == Overlay::Stonecutter) {
-        setOverlay(Overlay::None);
-    }
-}
-
-void QcScreenState::anvilOpened()
-{
-    setOverlay(Overlay::Anvil);
-}
-
-void QcScreenState::anvilClosed()
-{
-    if (m_overlay == Overlay::Anvil) {
-        setOverlay(Overlay::None);
-    }
-}
-
-void QcScreenState::enchantingOpened()
-{
-    setOverlay(Overlay::Enchanting);
-}
-
-void QcScreenState::enchantingClosed()
-{
-    if (m_overlay == Overlay::Enchanting) {
+    if (m_overlay == overlay) {
         setOverlay(Overlay::None);
     }
 }

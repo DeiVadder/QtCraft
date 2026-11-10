@@ -7,6 +7,7 @@
 #include "common/content/items/QcItemDefinition.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/protocol/QcMessages.h"
+#include "server/dimensions/QcServerAnchors.h"
 
 class QcBlockScreens;
 class QcFireIgnition;
@@ -16,11 +17,13 @@ class QcServerBlocks;
 class QcServerBoats;
 class QcServerCircuits;
 class QcServerCrafting;
+class QcServerExplosions;
 class QcServerGolems;
 class QcServerInventory;
 class QcServerKitchen;
 class QcServerMinecarts;
 class QcServerPlants;
+class QcServerPortals;
 class QcServerSounds;
 class QcServerStands;
 struct QcServerWorkstations;
@@ -55,9 +58,11 @@ public:
         QcPlayerHealth &health;
         QcServerCircuits &circuits;
         QcFireIgnition &ignition;
+        QcServerPortals &portals;
         QcServerGolems &golems;
         QcServerKitchen &kitchen;
         QcServerWorkstations &workstations;
+        QcServerExplosions &explosions;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);
@@ -71,6 +76,8 @@ public:
     /*! While a player mines, the arm swings again every swing length (QcSwingSpeed of their status
         effects, decision E-881; simulated ticks only), in step with their own client's loop. */
     void swingWhileMining();
+    /*! Returns the soul anchors and the beds that explode (decisions E-1112, E-1113). */
+    QcServerAnchors &anchors() { return m_anchors; }
 
 private:
     // The held item and the creature kind of a use on a creature, read before the use changes them,
@@ -108,4 +115,5 @@ private:
 
     QcServerState &m_state;
     Parts m_parts;
+    QcServerAnchors m_anchors;
 };

@@ -55,7 +55,12 @@ public:
         bool isPlain() const;
     };
 
-    /*! \brief The state of a machine block (a furnace): its slots, fuel, work and experience. */
+    /*! \brief The state of a machine block: its slots, fuel, work and experience.
+
+        A furnace has the three slots below. A brewing stand (decision E-1063) has two more: its
+        input is the ingredient, its fuel the fuel, and the output and the two slots after it
+        hold the bottles; \c {burnRemaining} and \c {burnSeconds} count brews instead of seconds,
+        \c {progress} is the time of the running brew and \c {progressItem} its ingredient. */
     struct Machine
     {
         /*! The indexes of the input, fuel and output slot and the number of slots. \qcshared */
@@ -64,10 +69,14 @@ public:
         static constexpr int outputSlot = 2;
         static constexpr int slotCount = 3;
 
+        /*! A stand's filled bottle slots, a bit each, as its block shows them; -1 before the
+            first look (QcServerMachines). Not saved. */
+        int shownBottles = -1;
         /*! The position of the block. */
         QcBlockPos pos;
-        /*! The item stacks in its slots, indexed by inputSlot, fuelSlot and outputSlot. */
-        std::array<QcItemStack, slotCount> stacks;
+        /*! The item stacks in its slots, indexed by inputSlot, fuelSlot and outputSlot, as many as
+            the block's machine has (QcMachineDefinition::slotCount). */
+        QList<QcItemStack> stacks = QList<QcItemStack>(slotCount);
         /*! Seconds left of the current fuel item and its full burning time. \qcshared */
         double burnRemaining = 0.0;
         double burnSeconds = 0.0;
@@ -196,6 +205,8 @@ public:
     void forgetChunk(QcChunkPos chunk);
     /*! Returns the contents spilled since the last call, oldest first. */
     QList<Spill> takeSpills();
+    /*! Adds \a spills, read with a chunk, to what takeSpills() returns. */
+    void addSpills(const QList<Spill> &spills) { m_spills.append(spills); }
 
     /*! Returns the container at \a pos, or null when there is none. */
     Container *container(QcBlockPos pos);
@@ -360,6 +371,8 @@ private:
     // them; nothing when it held nothing.
     void spillPortable(QcBlockId block, const Container &held);
     void placedMachine(QcBlockPos pos, QcBlockId after);
+    // Gives the machine at `pos` the slots of `definition`; what has no slot any more spills.
+    void fitMachine(QcBlockPos pos, const QcMachineDefinition &definition);
     void placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after);
     QcSignalKind kindOf(QcBlockId block) const;
     // A block state that holds no entry of any kind (no container, machine or sapling).

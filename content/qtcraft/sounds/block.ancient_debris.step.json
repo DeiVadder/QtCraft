@@ -1,0 +1,39 @@
+{
+    "name": "block.ancient_debris.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 930,
+            "resonance": 2.25,
+            "lowpass": 2790,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 217,
+            "resonance": 2.25,
+            "lowpass": 651,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2600,
+            "resonance": 12,
+            "lowpass": 7800,
+            "gain": 0.3
+        }
+    ]
+}

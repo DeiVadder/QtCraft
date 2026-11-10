@@ -5,6 +5,7 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerWorld.h"
 
 #include <QSet>
@@ -17,11 +18,25 @@ QcVegetationSpread::QcVegetationSpread(const QcContentRegistry &content)
         m_biomes.insert(biome.name, {QcVegetationTable::resolve(content, biome.vegetation.grass).table,
                                      QcVegetationTable::resolve(content, biome.vegetation.flowers).table});
     }
+    for (const QcBlockDefinition &block : content.blocks()) {
+        if (!block.vegetationBiome.isEmpty() && !m_biomes.contains(block.vegetationBiome)) {
+            qCWarning(lcServer, "Block %s names the unknown biome %s for its vegetation", qPrintable(block.name), qPrintable(block.vegetationBiome));
+        }
+    }
 }
 
-const QcVegetationSpread::Tables *QcVegetationSpread::tablesAt(const QcServerWorld &world, int x, int z) const
+const QcVegetationSpread::Tables *QcVegetationSpread::tablesAt(const QcServerWorld &world, QcBlockPos pos) const
 {
-    const auto found = m_biomes.constFind(world.generator().biomeAt(x, z));
+    // The ground's own table comes first: nylium grows the same in every biome.
+    const std::optional<QcBlockId> ground = world.blockAt(pos.offset(0, -1, 0));
+    if (ground && m_content.isValidBlock(*ground)) {
+        const auto own = m_biomes.constFind(m_content.block(*ground).vegetationBiome);
+        if (own != m_biomes.constEnd()) {
+            return &own.value();
+        }
+    }
+
+    const auto found = m_biomes.constFind(world.generator().biomeAt(pos.x, pos.z));
     if (found != m_biomes.constEnd()) {
         return &found.value();
     }
@@ -61,7 +76,7 @@ QList<QcPlacedBlock> QcVegetationSpread::spread(const QcServerWorld &world, QcBl
             continue;
         }
 
-        const Tables *tables = tablesAt(world, end->x, end->z);
+        const Tables *tables = tablesAt(world, *end);
         if (!tables) {
             continue;
         }

@@ -1,0 +1,8 @@
+{
+    "name": "nether_quartz_ore",
+    "pattern": "quartz_ore",
+    "primary": "#6e2824",
+    "secondary": "#e8e0d4",
+    "variation": 0.08,
+    "seed": 8405
+}

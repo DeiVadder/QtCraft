@@ -5,6 +5,7 @@
 
 #include "app/controllers/QcChatFeed.h"
 #include "app/controllers/QcChatInputHistory.h"
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
@@ -15,6 +16,7 @@
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/music/QcMusicLibrary.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/core/QcBlockPos.h"
@@ -92,9 +94,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_player(std::make_unique<QcPlayerController>(m_parts, *m_settings))
     , m_trade(std::make_unique<QcTradeController>(m_parts, *m_settings))
     , m_sign(std::make_unique<QcSignController>(m_parts, m_screens))
-    , m_stonecutter(std::make_unique<QcStonecutterController>(m_parts, *m_settings))
-    , m_enchanting(std::make_unique<QcEnchantingController>(m_parts, *m_settings))
-    , m_anvil(std::make_unique<QcAnvilController>(m_parts))
+    , m_workstations(m_parts, *m_settings)
     , m_advancements(std::make_unique<QcAdvancementTreeModel>(m_parts, *m_settings))
     , m_hud(std::make_unique<QcHudState>(m_parts, *m_settings))
     , m_photo(std::make_unique<QcPhotoMode>(*m_settings))
@@ -102,7 +102,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
-    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get()))
+    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor(), *m_library->upgrade()}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_admin(std::make_unique<QcAdminController>())
     , m_pause(std::make_unique<QcWorldPause>(m_parts, m_screens, *m_settings))
@@ -110,7 +110,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render, *m_hud->heldMap()})
-    , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, *m_stonecutter, *m_enchanting, *m_anvil, *m_advancements, m_screens, *m_startup, m_worldAtlas})
+    , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, m_workstations, *m_advancements, m_screens, *m_startup, m_worldAtlas})
     , m_frame(m_parts, {*m_settings, *m_input, m_gamepad, *m_preview, m_render, *m_hud, *m_benchmark, *m_startup}, [this] { return m_screens.playing(); })
 {
     connect(m_handbook.get(), &QcHandbookController::opening, this, [this] {
@@ -125,6 +125,9 @@ QcGameController::QcGameController(QObject *parent)
     connect(m_input.get(), &QcGameInput::handbookRequested, this, [this] { m_handbook->open(m_hud->targetName()); });
     connectPhotoMode();
     connectFrameLimit();
+    // A world made with an older generator opens once its question is answered (decision E-1014).
+    m_library->upgrade()->setLanguage([this] { return m_settings->contentLanguage(); });
+    connect(m_library->upgrade(), &QcGeneratorUpgradeController::playRequested, this, &QcGameController::playWorld);
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
     m_gamepad.setSettings(m_settings->gamepad());
@@ -196,6 +199,21 @@ void QcGameController::connectLoading()
     // The world shows once its spawn area is meshed (decision E-943); a start that ends otherwise
     // (error, cancel, disconnect) leaves the progress idle.
     connect(&m_wiring, &QcSessionWiring::playing, this, &QcGameController::updateLoading);
+    connect(&m_wiring, &QcSessionWiring::dimensionChanged, this, [this] {
+        // The dimension the player joined in comes while the world start still loads; a second
+        // change during a dimension load starts that load again under the new name.
+        const bool travelling = loading()->active() && loading()->kind() == QcLoadingProgress::Kind::Dimension;
+        if (!travelling && (loading()->active() || m_screens.phase() != Phase::Playing)) {
+            return;
+        }
+        // Another dimension shows behind the loading screen once its place is meshed (decision E-1002).
+        const QcDimensionDefinition &dimension = m_parts.session->worldMirror().dimension();
+        const std::shared_ptr<const QcContentRegistry> content = m_parts.session->content();
+        const QString name = content ? content->translations().translate(dimension.translationKey, m_settings->contentLanguage()) : dimension.name;
+        setOverlay(QcScreenState::Overlay::None);
+        loading()->begin(QcLoadingProgress::Kind::Dimension, name);
+        setPhase(Phase::Loading);
+    });
     connect(loading(), &QcLoadingProgress::ready, this, &QcGameController::onWorldReady);
     connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
         if (m_screens.phase() != Phase::Loading && m_screens.phase() != Phase::Playing) {
@@ -312,6 +330,11 @@ void QcGameController::startAudio(bool enabled)
 {
     m_audio->start(enabled);
     m_settings->audio()->apply();
+    // The music of the base game and the mods (decision E-1136), from the menus on.
+    m_settings->audio()->setMusicLibrary(std::make_shared<const QcMusicLibrary>(QcMusicLibrary::load(m_library->musicPackDirectories())));
+    m_audio->music().director().setSituation(QcMusicDirector::menu());
+    // Without an output (audio off or no device) the music's timer stays off.
+    m_audio->setMusicEnabled(m_audio->isActive());
     if (m_audio->isActive() && !m_parts.session) {
         // Menu clicks come from the content as well; the base game and mods are loaded once here.
         m_library->content();
@@ -352,19 +375,20 @@ void QcGameController::setLanguage(const QString &language)
     // Key and action names are translated.
     m_settings->keys()->retranslate();
     m_settings->gamepadOptions()->retranslate();
+    m_settings->audio()->retranslate();
     m_handbook->refreshIfOpen();
     m_worldOptions->retranslate();
 }
 
-void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator,
-                                         const QString &options, const QString &gameMode)
+void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QVariantMap &setup)
 {
     QcWorldInfo world;
     world.name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
     world.seed = QcWorldLibrary::seedFromText(seedText);
-    world.generator = generator;
-    world.generatorOptions = options.trimmed();
-    world.defaultGameMode = QcGameModes::parse(gameMode).value_or(QcGameMode::Survival);
+    world.generator = setup.value(u"generator"_s, u"terrain"_s).toString();
+    world.generatorOptions = setup.value(u"options"_s).toString().trimmed();
+    world.defaultGameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+    world.startDimension = setup.value(u"startDimension"_s).toString();
     startWorld({}, world, QcLoadingProgress::Kind::NewWorld);
 }
 
@@ -389,6 +413,9 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
         return;
     }
     world.generatorVersion = *version;
+    // Any world type, as --play, server.json and the control interface; the server falls back to
+    // the overworld for a dimension the content does not offer for a start (decision E-1110).
+    world.startDimension = setup.value(u"startDimension"_s).toString();
 
     // Wrong layers of a flat world are refused before anything is created; the world keeps the
     // defaults of its type as they are now.
@@ -435,6 +462,10 @@ void QcGameController::playWorld(const QString &folder)
     const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
     if (it == entries.end() || !it->error.isEmpty()) {
         setPhase(Phase::Error, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
+        return;
+    }
+    // Made with an older world generator: the player chooses first (decision E-1014).
+    if (m_library->upgrade()->offer(folder, it->directory, it->info)) {
         return;
     }
 
@@ -539,7 +570,10 @@ void QcGameController::finishStartup()
 void QcGameController::onWorldReady()
 {
     setPhase(Phase::Playing);
-    m_startup->worldPlaying();
+    // The test hooks plan their steps once per world start, not again after a dimension.
+    if (loading()->kind() != QcLoadingProgress::Kind::Dimension) {
+        m_startup->worldPlaying();
+    }
 }
 
 void QcGameController::beginSession()
@@ -551,12 +585,13 @@ void QcGameController::beginSession()
     m_parts.meshes->setSectionLight(QcFramePlan::selected().sectionLight);
     m_parts.session->setIntent(m_startup->initialIntent());
     m_render.setForcedPose(m_startup->forcedPose());
+    m_render.forgetParticles();
     m_hud->debug()->syncSubscription();
     m_wiring.connectSession();
     if (m_parts.view) {
         m_parts.view->clearMeshes();
         const int viewDistance = m_settings->viewDistance();
-        m_parts.view->setFogRange(static_cast<float>(viewDistance * QcWorld::chunkSize) * 0.6f, static_cast<float>(viewDistance * QcWorld::chunkSize));
+        m_parts.view->setFogDistance(static_cast<float>(viewDistance * QcWorld::chunkSize));
     }
     m_frame.startTickClock();
 }
@@ -610,8 +645,8 @@ QcStatus QcGameController::stopSession()
     // A start that has not reached its next step stops here.
     afterFrame().cancel();
     m_input->releaseMouse();
-    m_audio->setMusicEnabled(false);
     m_audio->stopWorldSounds();
+    m_audio->music().director().setSituation(QcMusicDirector::menu());
     if (m_parts.meshes) {
         m_parts.meshes->waitForJobs();
         m_parts.meshes.reset();

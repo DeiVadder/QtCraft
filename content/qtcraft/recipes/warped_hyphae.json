@@ -1,0 +1,15 @@
+{
+    "name": "warped_hyphae",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "warped_stem"
+    },
+    "result": {
+        "item": "warped_hyphae",
+        "count": 3
+    }
+}

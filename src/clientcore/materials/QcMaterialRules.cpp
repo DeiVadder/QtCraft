@@ -3,7 +3,9 @@
 
 #include "clientcore/materials/QcMaterialRules.h"
 
+#include <algorithm>
 #include <array>
+#include <optional>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -47,6 +49,43 @@ constexpr std::array<Surface, 21> surfaces{{
     {"farmland", 0.1f, 10, 1.2f, 0.8f},
 }};
 
+// The relief patterns (decision E-1043) say their finish themselves; words of the texture's name
+// do not change it.
+constexpr std::array<Surface, 32> reliefSurfaces{{
+    {"fused_rock", 0.14f, 10, 1.4f, 0.45f},
+    {"quartz_ore", 0.14f, 10, 1.4f, 0.45f},
+    {"gold_vein_ore", 0.14f, 10, 1.4f, 0.45f},
+    {"hollow_sand", 0.08f, 10, 1.2f, 0.7f},
+    {"crusted_soil", 0.1f, 10, 1.2f, 0.7f},
+    {"column_side", 0.18f, 10, 0.9f, 0.3f},
+    {"column_top", 0.2f, 10, 0.9f, 0.3f},
+    {"polished_columns", 0.5f, 10, 0.45f, 0.1f},
+    {"flow_bands", 0.45f, 10, 0.4f, 0.1f},
+    {"glassy_stone", 0.7f, 10, 0.8f, 0.05f},
+    {"gilded_stone", 0.7f, 10, 0.8f, 0.05f},
+    {"polished_glass", 0.84f, 10, 0.25f, 0.0f},
+    {"ashlar", 0.3f, 10, 1.4f, 0.2f},
+    {"cracked_ashlar", 0.24f, 10, 1.6f, 0.25f},
+    {"carved_ashlar", 0.3f, 10, 1.4f, 0.2f},
+    {"fired_bricks", 0.22f, 10, 1.5f, 0.45f},
+    {"cracked_fired_bricks", 0.18f, 10, 1.6f, 0.45f},
+    {"carved_fired_bricks", 0.22f, 10, 1.4f, 0.4f},
+    {"magma_crust", 0.25f, 10, 1.0f, 0.0f},
+    {"glow_cluster", 0.5f, 10, 0.7f, 0.0f},
+    {"fungal_felt", 0.1f, 10, 1.3f, 0.65f},
+    {"moss_cushions", 0.08f, 10, 1.3f, 0.7f},
+    {"mat_edge", 0.1f, 10, 1.2f, 0.6f},
+    {"rope_stem", 0.2f, 10, 1.3f, 0.4f},
+    {"pored_stem", 0.24f, 10, 1.2f, 0.4f},
+    {"stem_section", 0.22f, 10, 1.0f, 0.4f},
+    {"peeled_fibre", 0.3f, 10, 0.9f, 0.3f},
+    {"fibre_boards", 0.3f, 10, 1.0f, 0.3f},
+    {"pitted_boards", 0.3f, 10, 1.0f, 0.3f},
+    {"wart_lumps", 0.36f, 10, 1.4f, 0.55f},
+    {"wart_folds", 0.36f, 10, 1.4f, 0.55f},
+    {"glow_lobes", 0.5f, 10, 0.6f, 0.0f},
+}};
+
 // The metal a name speaks of, Iron for metal parts without one (bars, rails, lanterns).
 Metal metalOfName(const QString &name)
 {
@@ -81,17 +120,41 @@ QcMaterialParams::Inclusion inclusionOf(const QString &name)
     return ore;
 }
 
+// The inclusion of a pattern that says what is in the stone; unset for the others.
+std::optional<QcMaterialParams::Inclusion> inclusionOfPattern(const QString &pattern)
+{
+    QcMaterialParams::Inclusion inclusion;
+    if (pattern == "gold_vein_ore"_L1 || pattern == "gilded_stone"_L1) {
+        inclusion.metal = Metal::Gold;
+        inclusion.smoothness = 0.62f;
+        return inclusion;
+    }
+    if (pattern == "quartz_ore"_L1) {
+        inclusion.reflectance = 14;
+        inclusion.smoothness = 0.82f;
+        return inclusion;
+    }
+    return std::nullopt;
+}
+
+bool isRelief(const QString &pattern)
+{
+    return std::ranges::any_of(reliefSurfaces, [&pattern](const Surface &surface) { return pattern == QLatin1StringView(surface.pattern); });
+}
+
 QcMaterialParams surfaceOf(const QString &pattern)
 {
     QcMaterialParams params;
-    for (const Surface &surface : surfaces) {
+    const auto apply = [&params, &pattern](const Surface &surface) {
         if (pattern == QLatin1StringView(surface.pattern)) {
             params.smoothness = surface.smoothness;
             params.reflectance = surface.reflectance;
             params.bump = surface.bump;
             params.porosity = surface.porosity;
         }
-    }
+    };
+    std::ranges::for_each(surfaces, apply);
+    std::ranges::for_each(reliefSurfaces, apply);
     return params;
 }
 
@@ -128,14 +191,24 @@ QcMaterialParams QcMaterialRules::forTexture(const QString &name, const QJsonObj
     QcMaterialParams params = withMetal(surfaceOf(pattern), pattern, path);
     if (pattern == "ore"_L1) {
         params.inclusion = inclusionOf(path);
+    } else {
+        params.inclusion = inclusionOfPattern(pattern);
     }
-    if (path.contains("obsidian"_L1) || path.contains("polished"_L1) || path.startsWith("smooth_"_L1)) {
+    if (!isRelief(pattern) && (path.contains("obsidian"_L1) || path.contains("polished"_L1) || path.startsWith("smooth_"_L1))) {
         params.smoothness = path.contains("obsidian"_L1) ? 0.86f : 0.5f;
         params.bump = 0.45f;
     }
     if (pattern == "lava"_L1) {
         params.emission = 1.0f;
         params.emissionTexels = 1.0f;
+    } else if (pattern == "magma_crust"_L1) {
+        // Only the molten rock in the cracks glows, not the crust; at full strength the bloom of
+        // the fine cracks would cover the plates.
+        params.emission = 0.5f;
+        params.emissionTexels = 0.15f;
+    } else if (pattern == "glow_cluster"_L1 || pattern == "glow_lobes"_L1) {
+        // Its colours are nearly white already; at full strength the bloom hides the lumps.
+        params.emission = 0.4f;
     } else if (emitsLight || pattern == "fire"_L1) {
         params.emission = 1.0f;
     }

@@ -1,0 +1,14 @@
+{
+    "name": "chiseled_polished_blackstone",
+    "type": "shaped",
+    "pattern": [
+        "#",
+        "#"
+    ],
+    "key": {
+        "#": "polished_blackstone_slab"
+    },
+    "result": {
+        "item": "chiseled_polished_blackstone"
+    }
+}

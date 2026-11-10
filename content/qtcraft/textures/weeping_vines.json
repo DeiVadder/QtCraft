@@ -1,0 +1,30 @@
+{
+    "name": "weeping_vines",
+    "pattern": "icon",
+    "primary": "#a8283c",
+    "variation": 0.0,
+    "seed": 8715,
+    "palette": {
+        "A": "#a8283c",
+        "B": "#6c1626",
+        "T": "#e8604c"
+    },
+    "bitmap": [
+        "      B     A",
+        "      TA   B",
+        "     A A  BT",
+        "       B B  B",
+        "        A",
+        "      TA B",
+        "     A B  B",
+        "       A   BT",
+        "      A     AB",
+        "    TB     B",
+        "   A A    B",
+        "     A   B",
+        "    B   AT",
+        "    TA   BB",
+        "   A A    B",
+        "     B     B"
+    ]
+}

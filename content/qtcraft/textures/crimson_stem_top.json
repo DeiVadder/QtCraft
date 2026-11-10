@@ -1,0 +1,8 @@
+{
+    "name": "crimson_stem_top",
+    "pattern": "stem_section",
+    "primary": "#8a3a4e",
+    "secondary": "#3a1420",
+    "variation": 0.08,
+    "seed": 8502
+}

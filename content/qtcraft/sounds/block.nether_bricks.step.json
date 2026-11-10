@@ -1,0 +1,39 @@
+{
+    "name": "block.nether_bricks.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 1770,
+            "resonance": 2.55,
+            "lowpass": 5310,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 413,
+            "resonance": 2.55,
+            "lowpass": 1239,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 3400,
+            "resonance": 18,
+            "lowpass": 9000,
+            "gain": 0.28
+        }
+    ]
+}

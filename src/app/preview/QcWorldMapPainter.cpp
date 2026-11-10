@@ -42,10 +42,14 @@ double hillShade(const QcBiomeMap &map, int x, int z)
     return 1.0 + std::clamp(slope * 0.3, -0.35, 0.35);
 }
 
-QColor cellColour(const QcBiomeMap &map, int x, int z, const QList<quint32> &colours, int seaLevel)
+QColor cellColour(const QcBiomeMap &map, int x, int z, const QList<quint32> &colours, std::optional<int> sea)
 {
     const QcBiomeMap::Cell &cell = map.cell(x, z);
     const QColor biome = cell.biome >= 0 && cell.biome < colours.size() ? QColor::fromRgb(colours.at(cell.biome)) : QColor(Qt::magenta);
+    if (!sea) {
+        return biome;
+    }
+    const int seaLevel = *sea;
     if (cell.frozen && cell.water == QcBiomeMap::Water::Sea) {
         return QColor::fromRgb(ice);
     }
@@ -87,7 +91,7 @@ quint32 iceColour()
     return ice;
 }
 
-QImage paint(const QcBiomeMap &map, const QList<quint32> &colours, int seaLevel)
+QImage paint(const QcBiomeMap &map, const QList<quint32> &colours, std::optional<int> seaLevel)
 {
     QImage image(map.size(), map.size(), QImage::Format_RGB32);
     for (int z = 0; z < map.size(); ++z) {

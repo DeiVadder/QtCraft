@@ -1,0 +1,68 @@
+{
+    "name": "crimson_forest",
+    "dimension": "nether",
+    "icon": "crimson_fungus",
+    "mapColour": "#8c2436",
+    "temperature": 0.36,
+    "humidity": 0.36,
+    "surface": "crimson_nylium",
+    "subsurface": "netherrack",
+    "subsurfaceDepth": 0,
+    "features": [
+        {
+            "feature": "huge_crimson_fungus",
+            "density": 0.008
+        },
+        {
+            "feature": "weeping_vines",
+            "density": 0.035
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.14,
+            "plants": [
+                {
+                    "block": "crimson_roots",
+                    "weight": 87
+                },
+                {
+                    "block": "crimson_fungus",
+                    "weight": 11
+                },
+                {
+                    "block": "warped_fungus",
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "atmosphere": {
+        "fog": {
+            "colour": "#330303",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "crimson_spore",
+                "chance": 0.025
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.crimson_forest.loop",
+            "additions": "ambient.crimson_forest.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "minor",
+            "lowestRoot": 40,
+            "highestRoot": 45,
+            "slowestTempo": 60,
+            "fastestTempo": 70,
+            "lead": "saw",
+            "leadLowpass": 1400,
+            "drone": false
+        }
+    }
+}

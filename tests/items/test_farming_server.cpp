@@ -4,6 +4,7 @@
 #include "common/physics/QcPhysics.h"
 #include "fixtures/QcServerTestFixture.h"
 #include "fixtures/QcTestUtil.h"
+#include "server/plants/QcCropGrowth.h"
 #include "server/plants/QcServerPlants.h"
 
 #include <cmath>
@@ -150,6 +151,62 @@ private slots:
         use(field);
         QCOMPARE(*m_server->world().blockAt(field.offset(0, 1, 0)), stage("qtcraft:wheat_crop", 0));
         QCOMPARE(countOf(item("qtcraft:wheat_seeds")), 4);
+    }
+
+    // Nether wart takes soul sand only, needs no water and gives more when ripe (decision E-981).
+    void netherWartGrowsOnSoulSand()
+    {
+        join();
+        chat(u"/give nether_wart 2"_s);
+        hold("qtcraft:nether_wart");
+        const QcBlockPos field = m_feet.offset(2, -1, 0);
+        m_server->world().setBlock(field, soil(true));
+        use(field);
+        QCOMPARE(*m_server->world().blockAt(field.offset(0, 1, 0)), qcAirBlockId);
+        m_server->world().setBlock(field, id("qtcraft:soul_sand"));
+        use(field);
+        QCOMPARE(*m_server->world().blockAt(field.offset(0, 1, 0)), stage("qtcraft:nether_wart_crop", 0));
+
+        mine(field.offset(0, 1, 0));
+        const auto warts = [this] { return countOf(item("qtcraft:nether_wart")) + droppedCount(item("qtcraft:nether_wart")); };
+        QCOMPARE(warts(), 2);
+        m_server->world().setBlock(field.offset(0, 1, 0), stage("qtcraft:nether_wart_crop", 3));
+        mine(field.offset(0, 1, 0));
+        QVERIFY2(warts() >= 4 && warts() <= 6, qPrintable(QString::number(warts())));
+
+        // 49 young plants on dry soul sand under a roof, in the dark: in two minutes they take about 9
+        // stages at the wart's pace of 683 s per stage.
+        const QcBlockPos corner = m_feet.offset(8, -1, -3);
+        for (int dx = 0; dx < 7; ++dx) {
+            for (int dz = 0; dz < 7; ++dz) {
+                m_server->world().setBlock(corner.offset(dx, 0, dz), id("qtcraft:soul_sand"));
+                m_server->world().setBlock(corner.offset(dx, 1, dz), stage("qtcraft:nether_wart_crop", 0));
+                m_server->world().setBlock(corner.offset(dx, 2, dz), id("qtcraft:stone"));
+            }
+        }
+        QCOMPARE(QcCropGrowth::plantLightAt(m_server->world(), corner.offset(3, 1, 3)), 0);
+        ticks(2400);
+        int grown = 0;
+        for (int dx = 0; dx < 7; ++dx) {
+            for (int dz = 0; dz < 7; ++dz) {
+                grown += m_content->property(*m_server->world().blockAt(corner.offset(dx, 1, dz)), u"age"_s).toInt();
+            }
+        }
+        QVERIFY2(grown > 0 && grown <= 24, qPrintable(QString::number(grown)));
+    }
+
+    // Unlike other crops, nether wart takes no bone meal.
+    void netherWartTakesNoBoneMeal()
+    {
+        join();
+        chat(u"/give bone_meal 2"_s);
+        hold("qtcraft:bone_meal");
+        const QcBlockPos wart = m_feet.offset(2, 0, 0);
+        m_server->world().setBlock(wart.offset(0, -1, 0), id("qtcraft:soul_sand"));
+        m_server->world().setBlock(wart, stage("qtcraft:nether_wart_crop", 0));
+        use(wart);
+        QCOMPARE(*m_server->world().blockAt(wart), stage("qtcraft:nether_wart_crop", 0));
+        QCOMPARE(countOf(item("qtcraft:bone_meal")), 2);
     }
 
     void plantingFoodIsEatenWhereItCannotGrow()

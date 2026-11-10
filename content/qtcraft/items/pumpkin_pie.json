@@ -1,4 +1,5 @@
 {
     "name": "pumpkin_pie",
-    "food": 8
+    "food": 8,
+    "saturation": 0.3
 }

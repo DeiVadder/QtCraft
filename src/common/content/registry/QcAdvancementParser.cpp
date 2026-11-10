@@ -25,11 +25,11 @@ struct TriggerEntry
     std::initializer_list<QLatin1StringView> conditions;
 };
 
-const std::array<TriggerEntry, 17> &triggerTable()
+const std::array<TriggerEntry, 20> &triggerTable()
 {
     using T = QcAdvancementTrigger;
     using L = QLatin1StringView;
-    static const std::array<TriggerEntry, 17> table{{
+    static const std::array<TriggerEntry, 20> table{{
         {L("impossible"), T::Impossible, {}},
         {L("item_obtained"), T::ItemObtained, {L("item"), L("count")}},
         {L("block_placed"), T::BlockPlaced, {L("block")}},
@@ -47,6 +47,9 @@ const std::array<TriggerEntry, 17> &triggerTable()
         {L("item_enchanted"), T::ItemEnchanted, {L("item")}},
         {L("effect_gained"), T::EffectGained, {L("effect")}},
         {L("level_reached"), T::LevelReached, {L("level")}},
+        {L("potion_brewed"), T::PotionBrewed, {L("item")}},
+        {L("entity_summoned"), T::EntitySummoned, {L("entity")}},
+        {L("beacon_constructed"), T::BeaconConstructed, {L("level")}},
     }};
     return table;
 }

@@ -1,3 +1,6 @@
 {
-    "name": "iron_ingot"
+    "name": "iron_ingot",
+    "tags": [
+        "beacon_payment"
+    ]
 }

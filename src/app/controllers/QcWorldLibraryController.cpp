@@ -3,7 +3,9 @@
 
 #include "app/controllers/QcWorldLibraryController.h"
 
+#include "app/controllers/QcGeneratorUpgradeController.h"
 #include "app/debug/QcAppLogging.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcGameMode.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -65,6 +67,11 @@ struct ModState
 
 QcWorldLibraryController::QcWorldLibraryController(QObject *parent)
     : QObject(parent)
+    , m_upgrade(std::make_unique<QcGeneratorUpgradeController>([this] {
+        // Loads it on demand.
+        [[maybe_unused]] const QcContentRegistry &loaded = content();
+        return loadedContent();
+    }))
 {
 }
 
@@ -184,6 +191,18 @@ void QcWorldLibraryController::setModsDirectory(const QString &directory)
     m_modsDirectory = directory;
     refreshMods();
     resetContent();
+}
+
+QStringList QcWorldLibraryController::musicPackDirectories() const
+{
+    QStringList directories{QString::fromLatin1(QcBaseContent::resourceDirectory)};
+    const QList<QcModStatus> mods = QcModLoader::discover(modsDirectory());
+    for (const QcModStatus &mod : mods) {
+        if (mod.state == QcModStatus::State::Loaded) {
+            directories.append(mod.info.directory);
+        }
+    }
+    return directories;
 }
 
 void QcWorldLibraryController::refreshMods()

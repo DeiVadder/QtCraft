@@ -1,0 +1,13 @@
+{
+    "name": "quartz_block_top",
+    "pattern": "smooth_stone",
+    "primary": "#ebe5dc",
+    "secondary": "#d6cdc0",
+    "variation": 0.03,
+    "seed": 8408,
+    "material": {
+        "smoothness": 0.55,
+        "bump": 0.35,
+        "porosity": 0.05
+    }
+}

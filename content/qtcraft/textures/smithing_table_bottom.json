@@ -1,0 +1,8 @@
+{
+    "name": "smithing_table_bottom",
+    "pattern": "planks",
+    "primary": "#3a281e",
+    "secondary": "#1e140c",
+    "variation": 0.08,
+    "seed": 8902
+}

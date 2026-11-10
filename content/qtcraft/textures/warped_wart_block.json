@@ -1,0 +1,8 @@
+{
+    "name": "warped_wart_block",
+    "pattern": "wart_folds",
+    "primary": "#127a6a",
+    "secondary": "#06282a",
+    "variation": 0.08,
+    "seed": 8702
+}

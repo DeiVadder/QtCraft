@@ -1,0 +1,8 @@
+{
+    "name": "warped_door_item",
+    "pattern": "door_item",
+    "primary": "#2e6e66",
+    "secondary": "#143c3c",
+    "variation": 0.08,
+    "seed": 8619
+}

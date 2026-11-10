@@ -7,6 +7,7 @@
 #include "common/content/items/QcAnvilSwap.h"
 #include "common/content/items/QcArmourDefinition.h"
 #include "common/content/items/QcHoldDisplay.h"
+#include "common/content/items/QcPotionDefinition.h"
 #include "common/content/items/QcProjectileDefinition.h"
 
 #include <QString>
@@ -69,6 +70,8 @@ struct QcDrinkDefinition
 {
     /*! Drinking it ends all status effects of the player (QcStatusEffects::clear). */
     bool clearsEffects = false;
+    /*! The status effects drinking it gives (a potion, decision E-1061). Server side only. */
+    QList<QcPotionEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 
     bool operator==(const QcDrinkDefinition &) const = default;
 };
@@ -81,8 +84,18 @@ struct QcItemDefinition
 {
     /*! Largest allowed maxStack. */
     static constexpr int maxStackLimit = 999;
+    /*! The tag of items that fire and lava do not burn when they lie in the world (netherite,
+        decision E-1118); a pack writes it as \c {"qtcraft:fire_resistant"} or, in the base
+        pack, \c {"fire_resistant"}. */
+    static constexpr auto fireResistantTag = "qtcraft:fire_resistant";
     /*! Food points of a full player. */
     static constexpr int maxFood = 20;
+    /*! Saturation of a new and of a respawned player (the reference's 5, decision E-1001). */
+    static constexpr double spawnSaturation = 5.0;
+    /*! Saturation modifier of food that names none (the reference's most common one). */
+    static constexpr double defaultSaturationModifier = 0.6;
+    /*! The largest saturation modifier of food. */
+    static constexpr double maxSaturationModifier = 2.0;
 
     /*! Qualified name (\c {"name"}, required). */
     QString name;
@@ -131,6 +144,10 @@ struct QcItemDefinition
     double attackDamage = 1.0;
     /*! Food points restored when eaten (a full player has 20); 0 for items that are not food. */
     int food = 0;
+    /*! Saturation modifier when eaten (decision E-1001, \c {"saturation"}, 0 to
+        maxSaturationModifier, default 0.6): eating gives food × saturation × 2 hidden saturation,
+        like the reference (bread 0.6, cooked beef 0.8, raw cod 0.1). Server side only. */
+    double saturation = defaultSaturationModifier;
     /*! Seconds the item burns as fuel in a machine; 0 for items that are no fuel. */
     double fuelSeconds = 0.0;
     /*! Groups the item belongs to ("qtcraft:planks"); recipes accept any member of "#group". */
@@ -168,6 +185,9 @@ struct QcItemDefinition
     QString boatBlock;
     /*! Returns whether it places a boat (\c {boatBlock} is set). */
     bool placesBoat() const { return !boatBlock.isEmpty(); }
+    /*! Returns whether fire and lava leave it alone where it lies (the tag \c fireResistantTag,
+        decision E-1118); compares without building a string. */
+    bool isFireResistant() const { return tags.contains(QLatin1StringView(fireResistantTag)); }
     /*! Used on a block with \c {tillsInto} (grass, dirt), turns it into that block (a hoe making
         farmland, decision E-290). Server side only. */
     bool tills = false;

@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common/gameplay/QcBeacon.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
@@ -212,6 +213,11 @@ private slots:
         QCOMPARE(categoryOf("qtcraft:torch"), u"light"_s);
         QCOMPARE(categoryOf("qtcraft:poppy"), u"plants"_s);
         QCOMPARE(categoryOf("qtcraft:furnace"), u"functional"_s);
+        for (const char *name : {"qtcraft:netherrack", "qtcraft:glowstone", "qtcraft:soul_torch", "qtcraft:soul_lantern", "qtcraft:soul_fire",
+                                  "qtcraft:nether_wart_crop", "qtcraft:nether_gold_ore"}) {
+            QCOMPARE(categoryOf(name), u"nether"_s);
+        }
+        QCOMPARE(categoryOf("qtcraft:nether_brick_slab"), u"parts"_s);
         QCOMPARE(categoryOf("qtcraft:oak_log"), u"wood"_s);
         QCOMPARE(categoryOf("qtcraft:iron_ore"), u"ores"_s);
         QCOMPARE(categoryOf("qtcraft:red_wool"), u"colours"_s);
@@ -265,18 +271,20 @@ private slots:
         }
         QCOMPARE(free, 2);
         // Without a mind: the figure of the character stand, the Kjut of its station and the husk,
-        // stray and drowned of the station monster_variants (decision E-838).
-        QCOMPARE(withoutMind, 5);
+        // stray and drowned of the station monster_variants (decision E-838) and the charred hydra
+        // of the station hydra_arena (decision E-1129).
+        QCOMPARE(withoutMind, 6);
 
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {
             const QcBlockDefinition &block = m_content->block(blockAt(m_chunks, contents.at));
             // Contents at a rail go into the container cart standing there (decision E-386), at a
-            // campfire onto the fire (decision E-772).
+            // campfire onto the fire (decision E-772), at a beacon only its effects (decision E-1142).
             const bool cart = std::ranges::any_of(setup.minecarts, [&contents](const QcWorldSetup::Cart &placed) {
                 return placed.at == contents.at && placed.item != u"qtcraft:minecart"_s;
             });
-            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine() || block.campfire.slotCount >= contents.items.size(),
+            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine() || block.campfire.slotCount >= contents.items.size()
+                         || (block.opensBeacon && contents.items.isEmpty()),
                      qPrintable(block.name));
             for (const QcStructureDefinition::Stack &stack : contents.items) {
                 items.insert(stack.item);
@@ -427,6 +435,29 @@ private slots:
         }
     }
 
+    // Soul fire stands on its soul ground, plain fire on ground that leaves it as it is (E-981).
+    void firePodiumsMatchTheirFire()
+    {
+        const QcBlockId soulFire = *m_content->blockId(u"qtcraft:soul_fire"_s);
+        int soulFires = 0;
+        for (const QcShowcaseAreaInfo &area : m_generator->plan().areas) {
+            for (int x = 0; x < area.sizeX; ++x) {
+                for (int y = 1; y < area.sizeY; ++y) {
+                    for (int z = 0; z < area.sizeZ; ++z) {
+                        const QcBlockPos pos = area.origin.offset(x, y, z);
+                        if (m_content->block(blockAt(m_chunks, pos)).fire.isFire) {
+                            const QString ground = m_content->block(blockAt(m_chunks, pos.offset(0, -1, 0))).fire.fireAbove;
+                            const bool soul = blockAt(m_chunks, pos) == soulFire;
+                            QCOMPARE(ground, soul ? u"qtcraft:soul_fire"_s : QString());
+                            soulFires += soul ? 1 : 0;
+                        }
+                    }
+                }
+            }
+        }
+        QVERIFY2(soulFires >= 2, qPrintable(QString::number(soulFires)));
+    }
+
     void fireStationBurnsOnMagmaBehindGlass()
     {
         // The fire pit (decision E-393): fire on magma only (eternal, spread is off anyway) behind one row of glass, nothing
@@ -454,6 +485,21 @@ private slots:
         }
         QCOMPARE(fires, 9);
         QVERIFY(hay);
+    }
+
+    void theBeaconShinesAtLevelFourWithItsEffects()
+    {
+        // The beacon pyramid (decision E-1142): a full pyramid of four layers, open sky, and the
+        // beacon set to speed and regeneration.
+        const auto contents = std::ranges::find_if(m_generator->plan().setup.contents, [this](const QcWorldSetup::Contents &placed) {
+            return m_content->block(blockAt(m_chunks, placed.at)).opensBeacon;
+        });
+        QVERIFY(contents != m_generator->plan().setup.contents.end());
+        const QcBeacon::BlockAt at = [this](QcBlockPos pos) -> std::optional<QcBlockId> { return blockAt(m_chunks, pos); };
+        QCOMPARE(QcBeacon::levelAt(*m_content, contents->at, at), QcBeacon::maxLevel);
+        QVERIFY(!QcBeacon::beamAt(*m_content, contents->at, at).isEmpty());
+        QCOMPARE(contents->effects, (QStringList{u"qtcraft:speed"_s, u"qtcraft:regeneration"_s}));
+        QVERIFY(QcBeacon::mayChoose(QcBeacon::maxLevel, contents->effects.value(0), contents->effects.value(1)));
     }
 
     void modBlocksAppearWithoutExtraData()

@@ -1,0 +1,19 @@
+{
+    "name": "nether_quartz_ore",
+    "sound": "nether_ore",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "quartz"
+        }
+    ],
+    "experience": [
+        2,
+        5
+    ],
+    "textures": {
+        "all": "nether_quartz_ore"
+    }
+}

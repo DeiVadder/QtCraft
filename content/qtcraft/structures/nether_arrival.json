@@ -1,0 +1,540 @@
+{
+    "name": "nether_arrival",
+    "groundLayer": 1,
+    "palette": {
+        "N": "netherrack",
+        "s": "soul_sand",
+        "o": "soul_soil",
+        "g": "gravel",
+        "G": "glowstone",
+        "q": "nether_quartz_ore",
+        "u": "nether_gold_ore",
+        "m": "magma_block",
+        "f": "fire",
+        "F": "soul_fire",
+        "L": "lava",
+        "B": "nether_bricks",
+        "C": "crimson_nylium",
+        "W": "warped_nylium",
+        "c": "crimson_fungus",
+        "w": "warped_fungus",
+        "r": "crimson_roots",
+        "R": "warped_roots",
+        "p": "nether_sprouts",
+        "S": "crimson_stem",
+        "T": "warped_stem",
+        "h": "warped_hyphae",
+        "t": "stripped_warped_stem",
+        "K": "nether_wart_block",
+        "Z": "warped_wart_block",
+        "l": "shroomlight",
+        "v": "weeping_vines",
+        "V": "twisting_vines",
+        "b": "basalt",
+        "k": "blackstone",
+        "0": "soul_anchor",
+        "1": "soul_anchor_1",
+        "2": "soul_anchor_2",
+        "3": "soul_anchor_3",
+        "4": "soul_anchor_4",
+        "Y": "crying_obsidian"
+    },
+    "layers": [
+        [
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NCCCCCCNNNNNNNWWWWWWN",
+            "NNNNNNNNNNNNNNNNNNNNN",
+            "NbmmmmkNNNNNNNNNNNNNN",
+            "NbmLLmbNNNNNNNNNNNNNN",
+            "NkmLLmbNNNNNNNNNNNNNN",
+            "NbmmmmkNNNNNNNNNNNNNN",
+            "NNNNNNNNNBBBBBNNNNNNN",
+            "NNNNNNNNNBLLLBNNNNNNN",
+            "NNNNNNoNNBLLLBNNmNNNN",
+            "NNNNNNNNNBLLLBNNNNNNN",
+            "NNNNNNNNNBBBBBNNNNNNN"
+        ],
+        [
+            "                     ",
+            "                     ",
+            " B  B  B  B  B  B  B ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "  c r p        w R V ",
+            "                     ",
+            "                     ",
+            " S    S        T t h ",
+            "                     ",
+            "                     ",
+            " b    k              ",
+            "          0 1 2 3 4  ",
+            "                     ",
+            "      b              ",
+            " Y   Y               ",
+            "                     ",
+            "  f   F              ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            " N  s  o  g  G  q  u ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv   S        Z Z Z ",
+            "                     ",
+            "                     ",
+            " b                   ",
+            "                     ",
+            "                     ",
+            "      b              ",
+            " Y   Y               ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv  vS              ",
+            "                     ",
+            "                     ",
+            " b                   ",
+            "                     ",
+            "                     ",
+            "                     ",
+            " YYYYY               ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                   V ",
+            "                     ",
+            "                     ",
+            " Sv  vS              ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "               NNNNN ",
+            "               NNNNN ",
+            "               NNNNN ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            " KKlKKK              ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "               BBBBB ",
+            "               BLLLB ",
+            "               BBBBB ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ],
+        [
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     ",
+            "                     "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                1.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.netherrack"
+        },
+        {
+            "at": [
+                4.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.soul_sand"
+        },
+        {
+            "at": [
+                7.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.soul_soil"
+        },
+        {
+            "at": [
+                10.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.gravel"
+        },
+        {
+            "at": [
+                13.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.glowstone"
+        },
+        {
+            "at": [
+                16.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_quartz_ore"
+        },
+        {
+            "at": [
+                19.5,
+                3.6,
+                2.5
+            ],
+            "text": "block.qtcraft.nether_gold_ore"
+        },
+        {
+            "at": [
+                2.5,
+                2.6,
+                18.5
+            ],
+            "text": "block.qtcraft.fire"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                18.5
+            ],
+            "text": "block.qtcraft.soul_fire"
+        },
+        {
+            "at": [
+                11.5,
+                1.6,
+                18.5
+            ],
+            "text": "block.qtcraft.lava"
+        },
+        {
+            "at": [
+                16.5,
+                1.6,
+                18.5
+            ],
+            "text": "block.qtcraft.magma_block"
+        },
+        {
+            "at": [
+                2.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.crimson_fungus"
+        },
+        {
+            "at": [
+                4.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.crimson_roots"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.nether_sprouts"
+        },
+        {
+            "at": [
+                3.5,
+                6.6,
+                9.5
+            ],
+            "text": "block.qtcraft.nether_wart_block"
+        },
+        {
+            "at": [
+                1.5,
+                6.6,
+                9.5
+            ],
+            "text": "block.qtcraft.crimson_stem"
+        },
+        {
+            "at": [
+                5.5,
+                1.6,
+                9.5
+            ],
+            "text": "block.qtcraft.weeping_vines"
+        },
+        {
+            "at": [
+                15.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.warped_fungus"
+        },
+        {
+            "at": [
+                17.5,
+                2.6,
+                6.5
+            ],
+            "text": "block.qtcraft.warped_roots"
+        },
+        {
+            "at": [
+                19.5,
+                5.6,
+                6.5
+            ],
+            "text": "block.qtcraft.twisting_vines"
+        },
+        {
+            "at": [
+                15.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.warped_stem"
+        },
+        {
+            "at": [
+                17.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.stripped_warped_stem"
+        },
+        {
+            "at": [
+                19.5,
+                3.6,
+                9.5
+            ],
+            "text": "block.qtcraft.warped_hyphae"
+        },
+        {
+            "at": [
+                1.5,
+                4.6,
+                12.5
+            ],
+            "text": "block.qtcraft.basalt"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                12.5
+            ],
+            "text": "block.qtcraft.blackstone"
+        },
+        {
+            "at": [
+                10.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor"
+        },
+        {
+            "at": [
+                12.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_1"
+        },
+        {
+            "at": [
+                14.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_2"
+        },
+        {
+            "at": [
+                16.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_3"
+        },
+        {
+            "at": [
+                18.5,
+                2.6,
+                13.5
+            ],
+            "text": "block.qtcraft.soul_anchor_4"
+        },
+        {
+            "at": [
+                14.5,
+                3.4,
+                13.5
+            ],
+            "text": "chapter.qtcraft.nether_start"
+        },
+        {
+            "at": [
+                3.5,
+                4.6,
+                16.5
+            ],
+            "text": "block.qtcraft.crying_obsidian"
+        },
+        {
+            "at": [
+                17.5,
+                6.6,
+                16.5
+            ],
+            "text": "block.qtcraft.lava"
+        }
+    ]
+}

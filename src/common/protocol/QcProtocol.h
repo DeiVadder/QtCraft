@@ -40,8 +40,21 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     (decision E-971), 86 the pulse, ink and tentacles of creatures that swim in pulses in the
     content (decision E-974), 87 the drawn placement of held launchers in the content
     (QcHoldDisplay::drawn and thirdPersonDrawn, decision E-984), 88 usingItem in PlayerInput and
-    PlayerState (decision E-986). */
-inline constexpr quint32 version = 88;
+    PlayerState (decision E-986), 89 the moving count of status effects in PlayerInput and
+    PlayerHealth, absorption in PlayerHealth, the Invisible flag and more fields of effects in the
+    content (decision E-992), 90 the dimension the player is in (DimensionChange, decision
+    E-1002), 91 creatures that carry a rider: the Saddled and Deflectable flags and the ride seat
+    in the content (decisions E-1053, E-1054), 92 the spin of model parts in the content (decision
+    E-1056), 93 the bottle and bucket of cauldrons in the content (decision E-1065), 94 the
+    smithing table (OpenSmithing, SmithingState, ForgeSmithing, CloseSmithing, \c {smithing} of
+    blocks and the smithing recipes in the content) and toughness and knockback resistance of
+    armour (decisions E-1115, E-1116), 95 the atmosphere of the player's biome (Atmosphere) and
+    the particles of blocks in the content (decisions E-1120, E-1121), 96 the charred hydra: boss
+    bars (BossBar), the Armoured flag and armour model parts in the content (decisions E-1126,
+    E-1127), 97 the beacon: its screen (OpenBeacon, BeaconState, ChooseBeaconEffects,
+    CloseBeacon), its beam (BeaconBeam) and \c {beacon} of blocks in the content (decisions
+    E-1142, E-1143). */
+inline constexpr quint32 version = 97;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

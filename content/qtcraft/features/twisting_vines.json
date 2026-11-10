@@ -1,0 +1,10 @@
+{
+    "name": "twisting_vines",
+    "type": "column",
+    "trunk": "twisting_vines",
+    "minHeight": 2,
+    "maxHeight": 9,
+    "ground": [
+        "warped_nylium"
+    ]
+}

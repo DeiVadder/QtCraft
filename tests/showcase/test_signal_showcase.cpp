@@ -188,6 +188,11 @@ private slots:
         QCOMPARE(block(demo, 1, 2, 8), u"signal_lamp_lit"_s);
         QCOMPARE(block(demo, 11, 3, 8), u"signal_lamp"_s);
         QCOMPARE(block(demo, 14, 3, 8), u"signal_lamp_lit"_s);
+        // The turned round daylight sensor closed in by stone sees no sky at any time of day and
+        // lights its lamp (decision E-982).
+        ticks(QcSignalDefinition::daylightIntervalTicks + 2);
+        QCOMPARE(property(demo, 25, 1, 7, u"power"_s), u"15"_s);
+        QCOMPARE(block(demo, 26, 1, 7), u"signal_lamp_lit"_s);
     }
 
     void quirksHappen()

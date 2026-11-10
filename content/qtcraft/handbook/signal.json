@@ -32,6 +32,7 @@
         "signal_indicator_light",
         "note_block",
         "target",
+        "daylight_sensor",
         "tripwire_hook",
         "trapped_chest",
         "signal_piston",

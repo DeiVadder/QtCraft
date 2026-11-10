@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/protocol/QcMessages.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/villages/QcVillagerTrades.h"
 
 #include <QSet>
@@ -61,11 +62,13 @@ private:
     bool inReach(const QcServerClient &client, const QcCreature &villager, double slack) const;
     // The offers of the villager's species.
     const QcVillagerTrades &trades(const QcCreature &villager) const;
+    // The villagers with an open trading screen in the current dimension.
+    QSet<quint32> &tradingHere() const;
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcServerInventory &m_inventory;
     QcBlockScreens &m_screens;
-    // Villagers with an open trading screen; their traders are checked every tick.
-    QSet<quint32> m_trading;
+    // Villagers with an open trading screen, per dimension; their traders are checked every tick.
+    QcPerDimension<QSet<quint32>> m_trading;
 };

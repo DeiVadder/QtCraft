@@ -156,7 +156,7 @@ private slots:
         QCOMPARE(mob(shadewalker)->provokedBy, player().id);
 
         // Behind glass it does not see the player: angry for 20 s, then calm.
-        const int angerTicks = static_cast<int>(QcNeutralBrain::angerSeconds / dt);
+        const int angerTicks = static_cast<int>(QcMobDefinition{}.angerSeconds / dt);
         ticks(angerTicks - 20);
         QCOMPARE(mob(shadewalker)->provokedBy, player().id);
         ticks(40);

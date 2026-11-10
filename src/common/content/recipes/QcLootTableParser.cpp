@@ -41,7 +41,8 @@ QcLootTableDefinition::Entry parseEntry(QcJsonFieldReader &reader, const QString
     QcLootTableDefinition::Entry entry;
     entry.item = reader.name(u"item"_s, packNamespace);
     entry.weight = reader.integer(u"weight"_s, 1, 0, QcLootTableDefinition::maxWeight);
-    const auto [low, high] = readRange(reader, u"count"_s, 1, 1, QcItemDefinition::maxStackLimit);
+    // A count of 0 gives nothing (the witch's draws, decision E-1106).
+    const auto [low, high] = readRange(reader, u"count"_s, 1, 0, QcItemDefinition::maxStackLimit);
     entry.minCount = low;
     entry.maxCount = high;
     return entry;

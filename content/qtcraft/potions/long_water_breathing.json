@@ -1,0 +1,11 @@
+{
+    "name": "long_water_breathing",
+    "variantOf": "water_breathing",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "water_breathing",
+            "seconds": 480
+        }
+    ]
+}

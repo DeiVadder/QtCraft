@@ -18,8 +18,10 @@ class QcClientWorld;
 class QcContentRegistry;
 
 /*! \brief One particle as the precipitation renderer draws it, an instance of 16 bytes: the
-    lowest point of the particle, whether it is a snowflake (else a raindrop) and its opacity
-    (decisions E-395, E-397). \qcfields */
+    lowest point of the particle, whether it is a dot like a snowflake (else a raindrop's streak),
+    its opacity, its entry in the renderer's palette, 0 for the colour of rain and snow and
+    1 + QcParticleKind for an ambient particle, and how much larger than a flake a dot is, in
+    quarters of a flake (decisions E-395, E-397, E-1120). \qcfields */
 struct QcPrecipitationDrop
 {
     float x = 0.0f;
@@ -27,7 +29,8 @@ struct QcPrecipitationDrop
     float z = 0.0f;
     quint8 snow = 0;
     quint8 alpha = 0;
-    quint8 reserved[2] = {0, 0};
+    quint8 palette = 0;
+    quint8 grow = 0;
 };
 static_assert(sizeof(QcPrecipitationDrop) == 16);
 

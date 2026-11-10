@@ -46,7 +46,7 @@ QcTextureAnimation::Frame QcTextureAnimation::frameAt(double ticks) const
 
 bool QcTextureAnimation::patternMoves(const QString &pattern)
 {
-    return pattern == u"fire"_s || pattern == u"lava"_s || pattern == u"water"_s;
+    return pattern == u"fire"_s || pattern == u"lava"_s || pattern == u"water"_s || pattern == u"portal"_s;
 }
 
 QcResult<QcTextureAnimation> QcTextureAnimation::read(const QJsonObject &definition)

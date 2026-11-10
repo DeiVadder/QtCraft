@@ -68,7 +68,7 @@ QcMsg::ServerDebug QcServerDebug::build(const QcServerClient &client) const
     message.tick = m_state.clock().tick();
     message.skippedTicks = m_ticks.stats().skipped();
     message.loadedChunks = static_cast<quint32>(m_state.world().loadedChunkCount());
-    message.players = static_cast<quint32>(std::ranges::count_if(m_state.clients(), [](const auto &other) { return other->joined; }));
+    message.players = static_cast<quint32>(std::ranges::count_if(m_state.allClients(), [](const auto &other) { return other->joined; }));
     message.mobs = static_cast<quint32>(m_state.entities().creatures().awakeCount());
     message.items = static_cast<quint32>(m_state.entities().items().items().size());
     message.fallingBlocks = static_cast<quint32>(m_state.entities().fallingBlocks().all().size());

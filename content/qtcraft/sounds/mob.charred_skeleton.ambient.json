@@ -1,0 +1,26 @@
+{
+    "name": "mob.charred_skeleton.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.5,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 40,
+            "gain": 0.45
+        },
+        {
+            "wave": "square",
+            "duration": 0.4,
+            "frequency": 130,
+            "endFrequency": 110,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.1
+        }
+    ]
+}

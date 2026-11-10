@@ -1,0 +1,11 @@
+{
+    "title": "Shadows and Dust",
+    "artist": "Scott Buckley",
+    "licence": "CC-BY-4.0",
+    "source": "https://www.scottbuckley.com.au/library/shadows-and-dust/",
+    "attribution": "'Shadows and Dust' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au",
+    "slots": [
+        "biome:soul_sand_valley",
+        "dimension:nether"
+    ]
+}

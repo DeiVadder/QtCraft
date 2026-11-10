@@ -21,6 +21,7 @@
 
 class QcBenchmarkRun;
 class QcGameInput;
+class QcGeneratorUpgradeController;
 class QcLoadingProgress;
 class QcHandbookController;
 class QcMultiplayerController;
@@ -48,6 +49,8 @@ public:
         QcLoadingProgress &loading;
         // The hand on the slot screens (--overlay pick:<row>).
         QcSlotCursor &slotCursor;
+        // The question before a world with an older generator opens (--overlay upgrade:...).
+        QcGeneratorUpgradeController &upgrade;
     };
 
     QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
@@ -85,6 +88,8 @@ public:
     // --join from the main menu: the screenshot waits until the running join of `multiplayer` has
     // ended, however long the system takes to report a refusal (seconds on Windows).
     void holdScreenshotDuringJoin(QcMultiplayerController &multiplayer);
+    // Holds the screenshot while a generator switch runs: a ring takes longer than its frames.
+    void holdScreenshotDuringSwitch();
     // A world start began (the loading screen shows): the screenshot waits until it plays or ends.
     void worldStarting();
     // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.
@@ -136,8 +141,11 @@ private:
     // Windows a coarse timer's last one first).
     void runAfterDelays(const DelayedSteps &steps);
     void openStartupOverlay();
-    // Uses the block in view once the startup commands have placed it.
-    void openMachineInView();
+    // Whether `name` is a machine's screen (furnace, chest, beacon, ...), opened through the block
+    // in view.
+    static bool isMachineOverlay(const QString &name);
+    // Uses the block in view once the startup commands have placed it; `name` is the screen.
+    void openMachineInView(const QString &name);
     // menuSteps: only the steps that run in the main menu (menuShown()), else every step not yet run.
     void scheduleOverlaySteps(bool menuSteps);
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
@@ -169,6 +177,11 @@ private:
     // "loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]]": the loading screen in that state,
     // without a start (QcLoadingProgress::parseShow; screenshots for the sign-off, decision E-943).
     void showLoading(QStringView spec) const;
+    // --overlay upgrade:<stage>,<share>: the progress of a generator switch (decision E-1014).
+    void showUpgrade(QStringView spec) const;
+    // The steps "message:", "starting", "loading:" and "upgrade:", which show a screen of a state of
+    // the program; false for other steps.
+    bool showStateScreen(const QString &step) const;
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
     [[nodiscard]] bool setText(const QString &assignment) const;
     [[nodiscard]] bool openPopup(const QString &objectName) const;

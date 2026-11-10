@@ -109,7 +109,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
         const double weight = weights.weight(type, biome.name);
         if (mob.isMonster() && weight > 0.0) {
             monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
-        } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
+        } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name, !biome.dimension.isEmpty()) > 0.0) {
             creatures.links.append(context.links.mobLink(mob));
         }
     }
@@ -290,7 +290,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     facts.append({text.label(u"fact.featureType"_s), text.label(u"value.feature."_s + kind), {}});
 
     Fact blocks{text.label(u"fact.blocks"_s), {}, {}};
-    for (const QString &block : {feature.trunkBlock, feature.leavesBlock, feature.rimBlock}) {
+    for (const QString &block : {feature.trunkBlock, feature.leavesBlock, feature.glowBlock, feature.hangingBlock, feature.rimBlock}) {
         if (!block.isEmpty()) {
             blocks.links.append(context.links.blockLink(block));
         }

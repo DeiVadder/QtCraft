@@ -1,0 +1,8 @@
+{
+    "name": "lava_wader_plate",
+    "pattern": "speckle",
+    "primary": "#c9a24a",
+    "secondary": "#8c6a2b",
+    "variation": 0.1,
+    "seed": 7403
+}

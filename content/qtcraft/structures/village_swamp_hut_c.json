@@ -47,5 +47,13 @@
                 ["JJJ", "JJJ"]
             ]
         }
+    ],
+    "generatorChanges": [
+        {
+            "version": 3,
+            "loot": [
+                { "at": [1, 1, 4], "table": "village_house_swamp" }
+            ]
+        }
     ]
 }

@@ -1,0 +1,6 @@
+{
+    "name": "fire_resistance",
+    "icon": "magma_block",
+    "colour": "#e49a3a",
+    "fireProof": true
+}

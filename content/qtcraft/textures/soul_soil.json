@@ -1,0 +1,8 @@
+{
+    "name": "soul_soil",
+    "pattern": "crusted_soil",
+    "primary": "#443c3a",
+    "secondary": "#8c8478",
+    "variation": 0.08,
+    "seed": 8403
+}

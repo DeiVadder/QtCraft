@@ -4,6 +4,7 @@
 #include "server/storage/QcCreatureComponents.h"
 
 #include "common/gameplay/QcItemStack.h"
+#include "server/storage/QcBarterCodec.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcVillagerCodec.h"
 
@@ -26,6 +27,24 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     return {static_cast<quint16>(id), version, read};
 }
 
+// The reader of a component without data: being there sets the mark `field`.
+auto mark(bool &field)
+{
+    return [&field](QDataStream &, quint16) {
+        field = true;
+        return true;
+    };
+}
+
+// The reader of a component of one field as it stands.
+auto field(auto &value)
+{
+    return [&value](QDataStream &in, quint16) {
+        in >> value;
+        return true;
+    };
+}
+
 // Adds the components that set flags or a single field of the creature; returns `components`.
 [[nodiscard]] QcComponentFrames::Writer &addMarks(QcComponentFrames::Writer &components, const QcMobManager::Stored &mob)
 {
@@ -35,8 +54,14 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     if (mob.noAi) {
         components.add(static_cast<quint16>(Component::NoAi), kindVersion, [](QDataStream &) {});
     }
+    if (mob.saddled) {
+        components.add(static_cast<quint16>(Component::Saddle), kindVersion, [](QDataStream &) {});
+    }
     if (mob.playerBuilt) {
         components.add(static_cast<quint16>(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
+    }
+    if (mob.hydraCharge > 0) {
+        components.add(static_cast<quint16>(Component::Hydra), kindVersion, [&mob](QDataStream &out) { out << mob.hydraCharge; });
     }
     // Only a creature whose laying timer runs (a timer below 0 is chosen anew when it wakes).
     if (mob.layTimer >= 0.0) {
@@ -79,7 +104,7 @@ std::optional<QcTameState> readTame(QDataStream &in)
 
 namespace QcCreatureComponents {
 
-std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
+std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob, QcStackReader &stacks)
 {
     const auto body = [&mob](QDataStream &in, quint16) {
         in >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred;
@@ -94,28 +119,12 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
         mob.effects = read.value_or(QList<QcStatusEffect>());
         return read.has_value();
     };
-    const auto laying = [&mob](QDataStream &in, quint16) {
-        in >> mob.layTimer;
-        return true;
-    };
     QString carried;
     const auto carriedBlock = [&carried, &mob](QDataStream &in, quint16) {
         const std::optional<QString> read = QcComponentFrames::readText(in, maxTypeName);
         carried = read.value_or(QString());
         in >> mob.keptForBlock;
         return read.has_value();
-    };
-    const auto confined = [&mob](QDataStream &, quint16) {
-        mob.confined = true;
-        return true;
-    };
-    const auto noAi = [&mob](QDataStream &, quint16) {
-        mob.noAi = true;
-        return true;
-    };
-    const auto golem = [&mob](QDataStream &in, quint16) {
-        in >> mob.playerBuilt;
-        return true;
     };
     const auto tame = [&mob](QDataStream &in, quint16) {
         mob.tame = readTame(in);
@@ -130,13 +139,18 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
         return !mob.name.isEmpty();
     };
 
+    const auto bartered = [&mob, &stacks](QDataStream &in, quint16) {
+        mob.barter = QcBarterCodec::read(in, stacks);
+        return mob.barter.has_value();
+    };
     std::optional<QcComponentFrames::ReadComponents> components =
         QcComponentFrames::read(stream, {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
                                          known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
-                                         known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
-                                         known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                                         known(Component::NoAi, kindVersion, noAi), known(Component::Family, kindVersion, family),
-                                         known(Component::Name, kindVersion, name)});
+                                         known(Component::Confined, kindVersion, mark(mob.confined)), known(Component::Golem, kindVersion, field(mob.playerBuilt)),
+                                         known(Component::Laying, layingVersion, field(mob.layTimer)), known(Component::Tame, kindVersion, tame),
+                                         known(Component::NoAi, kindVersion, mark(mob.noAi)), known(Component::Family, kindVersion, family),
+                                         known(Component::Name, kindVersion, name), known(Component::Saddle, kindVersion, mark(mob.saddled)),
+                                         known(Component::Barter, kindVersion, bartered), known(Component::Hydra, kindVersion, field(mob.hydraCharge))});
     if (!components) {
         return std::nullopt;
     }
@@ -162,6 +176,10 @@ QcComponentFrames::Writer &write(QcComponentFrames::Writer &components, const Qc
     if (mob.tame) {
         const QcTameState &tame = *mob.tame;
         marked.add(static_cast<quint16>(Component::Tame), kindVersion, [&tame](QDataStream &out) { out << tame.owner << tame.sitting << tame.collar; });
+    }
+    if (mob.barter) {
+        const QcBarterState &barter = *mob.barter;
+        marked.add(static_cast<quint16>(Component::Barter), kindVersion, [&barter, &content](QDataStream &out) { QcBarterCodec::write(out, barter, content); });
     }
     return marked;
 }

@@ -1,0 +1,18 @@
+{
+    "name": "nether",
+    "from": "overworld",
+    "to": "nether",
+    "frame": "obsidian",
+    "block": "nether_portal",
+    "shape": { "type": "vertical", "min": [4, 5], "max": [23, 23] },
+    "trigger": { "type": "fire" },
+    "link": { "type": "scaled", "searchRadius": 128, "createRadius": 16, "platform": "obsidian" },
+    "back": "linked",
+    "wait": { "survival": 4, "creative": 0 },
+    "cooldown": 15,
+    "sounds": {
+        "ambient": "block.portal.ambient",
+        "travel": "block.portal.travel",
+        "lit": "block.portal.lit"
+    }
+}

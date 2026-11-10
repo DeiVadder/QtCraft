@@ -4,6 +4,7 @@
 #include "server/spawners/QcFurnishing.h"
 
 #include "common/blockrules/QcRails.h"
+#include "common/content/registry/QcContentLoot.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/minecarts/QcMinecartMotion.h"
@@ -14,14 +15,7 @@ namespace {
 // The loot of `table` drawn with `seed`, spread over `slotCount` slots.
 QList<QcItemStack> lootFor(const QcContentRegistry &content, const QcLootTableDefinition &table, quint64 seed, int slotCount)
 {
-    const auto items = [&content](const QString &name) -> std::optional<QcLootTables::ItemInfo> {
-        const std::optional<QcItemId> id = content.itemId(name);
-        if (!id) {
-            return std::nullopt;
-        }
-        return QcLootTables::ItemInfo{*id, content.item(*id).maxStack};
-    };
-    return QcLootTables::scatter(QcLootTables::draw(table, seed, items), slotCount, seed);
+    return QcLootTables::scatter(QcLootTables::draw(table, seed, QcContentLoot::itemsOf(content)), slotCount, seed);
 }
 
 // Fills the chest at `chest.at` with its loot table's draw; a chest that holds something already
@@ -68,31 +62,47 @@ void placeCart(QcServerState &state, const QcChunkFurnishing::Cart &setup)
     }
 }
 
-} // namespace
+// Stands the creature of `resident` in its cell, kept with the world: it comes once, with the
+// chunk (decision E-1089).
+void placeResident(QcServerState &state, const QcChunkFurnishing::Resident &resident)
+{
+    const std::optional<QcCreatureKindId> type = state.content().mobKind(resident.mob);
+    if (!type) {
+        qCWarning(lcServer) << "Unknown creature" << resident.mob << "for the structure at" << resident.at.x << resident.at.y << resident.at.z;
+        return;
+    }
+    const QcVec3 feet{resident.at.x + 0.5, static_cast<double>(resident.at.y), resident.at.z + 0.5};
+    state.entities().creatures().spawn(*type, feet, state.entities().newId(), false, true);
+}
 
-namespace QcFurnishing {
-
-void furnish(QcServerState &state, QcChunkPos pos)
+// What the generator has for the chunk at `pos` when it should be furnished now; none when it is
+// furnished already, not loaded or has nothing to put in.
+std::optional<QcChunkFurnishing> furnishingDue(QcServerState &state, QcChunkPos pos)
 {
     QcServerWorld &world = state.world();
     if (world.blockEntityExtras().isFurnished(pos) || !world.chunk(pos)) {
-        return;
+        return std::nullopt;
     }
-    // Without a spawner, a block with storage or a rail there is nothing to put in; most chunks end
-    // here, before the generator is asked (this runs on the tick thread).
+    // Without a spawner, a block with storage, a rail or a resident there is nothing to put in; most
+    // chunks end here, before the generator is asked (this runs on the tick thread).
     const QcSectionMarks &marks = world.marks();
     if (marks.sectionsOf(pos, QcBlockTrait::Spawner) == 0 && marks.sectionsOf(pos, QcBlockTrait::BlockEntity) == 0
-        && marks.sectionsOf(pos, QcBlockTrait::Rail) == 0) {
-        return;
+        && marks.sectionsOf(pos, QcBlockTrait::Rail) == 0 && !world.generator().hasResidentsIn(pos)) {
+        return std::nullopt;
     }
-    const QcChunkFurnishing furnishing = world.generator().furnishingIn(pos);
+    QcChunkFurnishing furnishing = world.generator().furnishingIn(pos);
     if (furnishing.isEmpty()) {
         // Furnished with nothing: a chunk whose blocks come back unchanged (generated again) does not
         // ask again.
         world.blockEntityExtras().noteFurnished(pos);
-        return;
+        return std::nullopt;
     }
+    return furnishing;
+}
 
+// Fills the chests and spawners and puts the carts of `furnishing` in the chunk at `pos`.
+void placeThings(QcServerState &state, const QcChunkFurnishing &furnishing, QcChunkPos pos)
+{
     for (const QcChunkFurnishing::Chest &chest : furnishing.chests) {
         if (chest.at.chunk() == pos) {
             fillChest(state, chest);
@@ -100,7 +110,7 @@ void furnish(QcServerState &state, QcChunkPos pos)
     }
     for (const QcStructureDefinition::Spawner &spawner : furnishing.spawners) {
         if (spawner.at.chunk() == pos) {
-            world.spawners().set({spawner.at, spawner.mob, QcSpawners::firstDelay, spawner.confined});
+            state.world().spawners().set({spawner.at, spawner.mob, QcSpawners::firstDelay, spawner.confined});
         }
     }
     for (const QcChunkFurnishing::Cart &cart : furnishing.carts) {
@@ -108,7 +118,35 @@ void furnish(QcServerState &state, QcChunkPos pos)
             placeCart(state, cart);
         }
     }
-    world.blockEntityExtras().noteFurnished(pos);
+}
+
+} // namespace
+
+namespace QcFurnishing {
+
+void furnish(QcServerState &state, QcChunkPos pos)
+{
+    const std::optional<QcChunkFurnishing> furnishing = furnishingDue(state, pos);
+    if (!furnishing) {
+        return;
+    }
+    placeThings(state, *furnishing, pos);
+    for (const QcChunkFurnishing::Resident &resident : furnishing->residents) {
+        if (resident.at.chunk() == pos) {
+            placeResident(state, resident);
+        }
+    }
+    state.world().blockEntityExtras().noteFurnished(pos);
+}
+
+void furnishAgain(QcServerState &state, QcChunkPos pos)
+{
+    const std::optional<QcChunkFurnishing> furnishing = furnishingDue(state, pos);
+    if (!furnishing) {
+        return;
+    }
+    placeThings(state, *furnishing, pos);
+    state.world().blockEntityExtras().noteFurnished(pos);
 }
 
 } // namespace QcFurnishing

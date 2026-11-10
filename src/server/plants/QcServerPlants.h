@@ -32,6 +32,9 @@ public:
     /*! Stages bone meal makes a crop grow, drawn evenly (the reference's 2 to 5). \qcshared */
     static constexpr int fertilizeStagesMin = 2;
     static constexpr int fertilizeStagesMax = 5;
+    /*! Blocks bone meal adds to a plant that grows in a column, drawn evenly. \qcshared */
+    static constexpr int fertilizeColumnMin = 1;
+    static constexpr int fertilizeColumnMax = 3;
 
     QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory);
 
@@ -64,7 +67,9 @@ public:
         the clicked block \a target within reach: a crop that is not ripe grows
         fertilizeStagesMin..Max stages at once, a sapling grows into its tree on the next tick
         with QcItemDefinition::fertilizeSaplingChance, a block that \c {growsVegetation} with air
-        above grows the biome's grass and flowers around it (QcVegetationSpread, decision E-814);
+        above grows the biome's grass and flowers around it (QcVegetationSpread, decision E-814),
+        a block that is \c {overgrownBy} a neighbour turns into it and a plant whose \c {growth}
+        takes bone meal adds fertilizeColumnMin..Max blocks (decision E-1044);
         each takes one item (not in creative mode). Returns \c false for other blocks (then other
         uses of the item may follow). */
     bool fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
@@ -82,6 +87,10 @@ private:
     std::optional<QcBlockPos> seedTarget(const QcItemEntity &item, QcBlockId crop, const QSet<QcBlockPos> &planned);
     // Bone meal on a block that grows vegetation: false without air above it.
     bool growVegetation(QcBlockPos target);
+    // Bone meal on a block that is `overgrownBy` others: false with none of them around it.
+    bool overgrow(QcBlockPos target, const QcBlockDefinition &block);
+    // Bone meal on a plant that grows in a column: false when its tip cannot grow.
+    bool growColumn(QcBlockPos target);
     // Soil at `ground` with air above where `crop` may stand.
     bool isFreeSoil(QcBlockPos ground, QcBlockId crop) const;
 
@@ -89,7 +98,6 @@ private:
     QcServerSounds &m_sounds;
     QcServerBlocks &m_blocks;
     QcServerInventory &m_inventory;
-    quint64 m_itemTicks = 0;
     // Crop each self-planting seed item places.
     QHash<QcItemId, QcBlockId> m_seedCrops;
     QcVegetationSpread m_vegetation;

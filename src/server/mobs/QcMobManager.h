@@ -17,6 +17,7 @@
 #include "server/projectiles/QcProjectileManager.h"
 #include "server/villages/QcVillager.h"
 
+#include <QHash>
 #include <QList>
 #include <QRandomGenerator>
 #include <QSet>
@@ -27,6 +28,7 @@
 #include <utility>
 
 class QcChunk;
+struct QcDimensionDefinition;
 class QcMobBehaviour;
 class QcNaturalSpawner;
 class QcPathPlanner;
@@ -216,6 +218,9 @@ public:
         creature stays invulnerable after a hurt (0: every hit counts). A lower value shortens the
         open windows at once. */
     void setHurtTicks(int ticks);
+    /*! Tells the creatures which dimension they live in (\a definition): without \c {dayCycle}
+        they live at midnight (decision E-1050), and the spawner follows its rules. */
+    void setDimension(const QcDimensionDefinition &definition);
     /*! Forgets the hurts and strikes the clients were told of (QcCreature::hurtUnsent,
         QcCreature::struckUnsent) after a world sync (decision E-971): a player's blow lands
         between two ticks, so it must live until the next sync, through the creatures' tick in
@@ -255,9 +260,12 @@ public:
     void release(QcCreature &child);
     /*! Returns the persistent id the next saved creature gets (QcCreature::uid); world.json
         keeps it. Setting never lowers it below an id already given. */
-    quint64 nextUid() const { return m_nextUid; }
+    quint64 nextUid() const { return *m_nextUid; }
+    /*! Takes the uids from \a next from now on, which the creatures of every dimension share
+        (decision E-988); it outlives this manager. */
+    void shareUids(quint64 &next) { m_nextUid = &next; }
     /*! Sets nextUid() to \a next, unless that is lower. */
-    void setNextUid(quint64 next) { m_nextUid = std::max(m_nextUid, next); }
+    void setNextUid(quint64 next) { *m_nextUid = std::max(*m_nextUid, next); }
     /*! Returns the number of mobs that are not dormant. */
     qsizetype awakeCount() const;
     /*! Returns the number of mobs that are not dormant and came by /summon. */
@@ -276,13 +284,29 @@ public:
     QList<QcCreature> &editableMobs() { return m_mobs; }
     /*! Returns the mob with the entity id \a id, or null. */
     const QcCreature *find(quint32 id) const;
+    /*! Returns the creature the player \a player rides, none when he rides none here. A lookup in
+        the riders, so it costs next to nothing while nobody rides (it sits in hot paths). */
+    const QcCreature *riddenBy(quint32 player) const;
+    /*! Returns the creature the player \a player rides, to change it. */
+    QcCreature *riddenBy(quint32 player);
+    /*! Seats the player \a player on \a mob (decision E-1054). */
+    void seatRider(QcCreature &mob, quint32 player);
+    /*! Takes the player \a player off the creature he rides, if it is still there. */
+    void dropRider(quint32 player);
+    /*! Returns the riders of this dimension: the creature's id for each player's. Holds a player
+        until QcServerMounts sees that his creature is gone. */
+    const QHash<quint32, quint32> &riders() const { return m_riders; }
     /*! Returns the mob with the entity id \a id for changes, or null. */
     QcCreature *find(quint32 id);
 
 private:
+    // What is left of a hit of `amount` after the resistance of `mob` (decision E-992).
+    double resisted(const QcCreature &mob, double amount) const;
     // A wild creature of a pack (QcMobDefinition::packRange, decision E-480) struck by `attacker`:
     // the wild ones of its kind within the range turn on that player too.
     void angerPack(const QcCreature &mob, quint32 attacker);
+    // What `mob` leaves when it dies: its kind's loot, nothing when young, and its saddle.
+    QList<QcItemDrop> dropsOf(const QcCreature &mob) const;
     // Tells the listeners that `mob` leaves the store.
     void depart(const QcCreature &mob, Departure why);
     // Erases the mob at `it` after its departure.
@@ -305,13 +329,17 @@ private:
     // Uses m_random, so it comes after it.
     std::unique_ptr<QcMobBehaviour> m_behaviour;
     QList<QcCreature> m_mobs;
+    // Player to creature, kept by seatRider() and dropRider().
+    QHash<quint32, quint32> m_riders;
     QcCreatureBodies m_bodies;
     // Counts every creature added to or removed from m_mobs, so that the creatures' push on players
     // (m_bodies) knows when its grid is out of date between two ticks.
     quint64 m_generation = 0;
     QSet<QcChunkPos> m_populated;
-    quint64 m_nextUid = 1;
+    quint64 m_ownNextUid = 1;
+    quint64 *m_nextUid = &m_ownNextUid;
     bool m_naturalSpawning = true;
+    bool m_dayCycle = true;
     float m_rain = 0.0f;
     float m_thunder = 0.0f;
     int m_hurtTicks = QcHurtWindow::defaultTicks;

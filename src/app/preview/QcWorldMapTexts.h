@@ -3,12 +3,14 @@
 
 #pragma once
 
+#include "app/preview/QcWorldMapWork.h"
+
 #include <QCoreApplication>
 #include <QString>
 #include <QVariantList>
 
 class QcContentRegistry;
-struct QcWorldMapResult;
+struct QcDimensionDefinition;
 
 // The texts of the map preview in the player's language (decision E-921): the names of the biomes
 // and of the kinds of sites from the content's translations, of the sea from the interface's, the
@@ -25,6 +27,10 @@ public:
     [[nodiscard]] QString biome(int index) const;
     // The name of a kind of site (QcBiomeMap::siteKinds).
     [[nodiscard]] QString kind(const QString &kind) const;
+    // The name of the dimension `definition` of the content.
+    [[nodiscard]] QString dimension(const QcDimensionDefinition &definition) const;
+    // What the spawn marker of `kind` stands for.
+    [[nodiscard]] static QString spawn(QcWorldMapSpawn::Kind kind);
     // What covers cell (cellX, cellZ) of `map`: its biome, or the sea, frozen or not; empty outside.
     [[nodiscard]] QString cell(const QcWorldMapResult &map, int cellX, int cellZ) const;
     // The biomes and the sea of `map`, most cells first: maps with name, colour, share and percent.

@@ -7,6 +7,7 @@
 #include "app/controllers/QcHeldMap.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/debug/QcDebugHud.h"
+#include "app/models/QcBossBarModel.h"
 #include "app/models/QcWorldLabelModel.h"
 #include "common/core/QcChunkPos.h"
 #include "common/core/QcVec3.h"
@@ -47,6 +48,8 @@ class QcHudState : public QObject
     Q_PROPERTY(QcWorldLabelModel *labels READ labels CONSTANT FINAL)
     // The debug display (decision E-225).
     Q_PROPERTY(QcDebugHud *debug READ debug CONSTANT FINAL)
+    // The boss bars at the top of the screen (decision E-1127).
+    Q_PROPERTY(QcBossBarModel *bossBars READ bossBars CONSTANT FINAL)
     // What shows behind the open screen (decision E-927, GameController.hudShown): the view's parts
     // (crosshair, the name of the block in view and of a newly selected item, the world labels, the
     // chat lines, a held map, the advancement toast) only while the view is free (no screen, or
@@ -71,6 +74,7 @@ public:
     QcHeldMap *heldMap() const { return m_heldMap; }
     QcWorldLabelModel *labels() const { return m_labels; }
     QcDebugHud *debug() const { return m_debug; }
+    QcBossBarModel *bossBars() const { return m_bossBars; }
     QcScreenState::HudShown hudShown() const { return m_hudShown; }
     bool viewShown() const;
     bool hintShown() const;
@@ -97,6 +101,9 @@ public:
     void addChatLine(const QString &text);
     // Places the labels near the camera on the view, once per frame (empty while switched off).
     void updateLabels();
+    // The session's boss bars, when they change (QcClientBossBars::changed), a session starts or
+    // the content language changes; none without a session.
+    void updateBossBars();
 
 signals:
     void frameStateChanged();
@@ -128,6 +135,7 @@ private:
     QList<QcWorldLabel> m_standLabels;
     QHash<QcChunkPos, QList<QcWorldLabel>> m_mergedLabels;
     QcDebugHud *m_debug = nullptr;
+    QcBossBarModel *m_bossBars = nullptr;
     // Nothing is open at the start: the whole HUD (decision E-927).
     QcScreenState::HudShown m_hudShown = QcScreenState::HudShown::All;
 };

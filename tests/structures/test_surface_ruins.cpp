@@ -3,6 +3,7 @@
 
 #include "common/core/QcIntMath.h"
 #include "common/diagnostics/QcThreadCpuClock.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
@@ -406,6 +407,40 @@ private slots:
             }
         }
         qInfo().noquote() << u"%1 copies without loose blocks"_s.arg(checked);
+    }
+
+    void ruinRubbleFollowsTheGeneratorVersion()
+    {
+        // Worlds up to version 2 keep the terracotta, newer ones have netherrack; the second rubble
+        // option (moss) stays what it was (decision E-1016).
+        const auto blocksOf = [this](const QcPieceVariation &variation, int option, int version) {
+            QcPieceVariation::Selection selection = variation.everything(QcGeneratorVersion::current);
+            selection.options.front() = option;
+            selection.generatorVersion = version;
+            const std::shared_ptr<const QcStructure> built = variation.build(selection);
+            QSet<QString> names;
+            for (const QcBlockId state : built->palette()) {
+                names.insert(m_content->block(state).name);
+            }
+            return names;
+        };
+        const QString terracotta = u"qtcraft:red_terracotta"_s;
+        const QString netherrack = u"qtcraft:netherrack"_s;
+        for (const QString &name : {u"qtcraft:ruined_portal"_s, u"qtcraft:ruined_portal_sunken"_s, u"qtcraft:ruined_portal_large"_s}) {
+            const QcPieceVariation::Resolved variation = QcPieceVariation::resolve(*m_content->worldgen().structure(name), *m_content);
+            QVERIFY(variation);
+            for (const int version : {1, 2}) {
+                QVERIFY2(blocksOf(*variation, 0, version).contains(terracotta), qPrintable(name));
+                QVERIFY2(!blocksOf(*variation, 0, version).contains(netherrack), qPrintable(name));
+            }
+            QVERIFY2(blocksOf(*variation, 0, 3).contains(netherrack), qPrintable(name));
+            QVERIFY2(!blocksOf(*variation, 0, 3).contains(terracotta), qPrintable(name));
+            for (const int version : {2, 3}) {
+                QVERIFY(blocksOf(*variation, 1, version).contains(u"qtcraft:mossy_cobblestone"_s));
+                QVERIFY(!blocksOf(*variation, 1, version).contains(netherrack));
+                QVERIFY(!blocksOf(*variation, 1, version).contains(terracotta));
+            }
+        }
     }
 
     void ruinsHaveLootChests()

@@ -6,8 +6,9 @@
 #include "common/core/QcNameText.h"
 #include "common/gameplay/QcAnvil.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcBlockEntityFormat.h"
+#include "server/storage/QcBlockEntityWriter.h"
 #include "server/storage/QcComponentFrames.h"
-#include "server/storage/QcRegionFile.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
 
@@ -24,56 +25,7 @@ namespace {
 
 using Table = QcBlockEntityRecord::Table;
 
-// The version every table and every entry of this version writes (decision E-440).
-constexpr quint16 tableVersion = 1;
-constexpr quint16 entryVersion = 1;
-// Signs write version 2: the colour of the text after the lines (decision E-830). Older readers keep
-// it as the tail of a newer version.
-constexpr quint16 signEntryVersion = 2;
-// Containers and machines write version 2: their custom name after the fields (decision E-873).
-// Older readers keep it as the tail of a newer version; version 1 entries have no name.
-constexpr quint16 namedEntryVersion = 2;
-
-// The version the entries of `table` are written in.
-constexpr quint16 entryVersionOf(quint16 table)
-{
-    switch (static_cast<QcBlockEntityRecord::Table>(table)) {
-    case QcBlockEntityRecord::Table::Signs:
-        return signEntryVersion;
-    case QcBlockEntityRecord::Table::Containers:
-    case QcBlockEntityRecord::Table::Machines:
-        return namedEntryVersion;
-    default:
-        return entryVersion;
-    }
-}
-// Bytes of one table at most: far more than one component of an entity (a chunk full of chests, a
-// circuit's long list of waiting positions), but never more than the blob of the whole chunk may
-// hold in its region file (encodeWithin keeps every saved blob within it).
-constexpr quint32 maxTableLength = QcRegionFile::maxBlobBytes;
-
-// Entries of one kind in one chunk at most: one per cell.
-constexpr quint32 maxPerChunk = QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::worldHeight;
-// Kept tails of entries of a newer version per chunk, over all tables; beyond them they are dropped
-// with a warning.
-constexpr quint32 maxKeptTails = maxPerChunk;
-// Positions the circuits wait to look at, per chunk (QcServerLimits::signalMaxPendingChanges at most).
-constexpr quint32 maxWakes = 1u << 24;
-constexpr double maxSeconds = 100000.0;
-// Waits are saved as ticks; longer ones are damaged values and cut to this (QcBlockEntityRecords).
-constexpr quint32 maxTicks = 1u << 20;
-// Planting orders count up from 0; one near the top could make the next order wrap.
-constexpr quint64 maxOrder = quint64{1} << 62;
-// Characters of a content name at most (a spawner's kind).
-constexpr qsizetype maxNameLength = 256;
-// UTF-16 units of a saved line of sign text at most (cleaned to QcSignDefinition::maxLineLength
-// characters when read).
-constexpr qsizetype maxLineUnits = 256;
-
-void writePos(QDataStream &stream, QcBlockPos pos)
-{
-    stream << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z);
-}
+using namespace QcBlockEntityFormat;
 
 // A position inside the chunk of the record being read; std::nullopt for one outside it.
 [[nodiscard]] std::optional<QcBlockPos> readPos(QDataStream &stream, QcChunkPos chunk)
@@ -166,6 +118,7 @@ public:
         const auto spawners = entriesOf(Table::Spawners, &RecordReader::spawner);
         const auto campfires = entriesOf(Table::Campfires, &RecordReader::campfire);
         const auto signs = entriesOf(Table::Signs, &RecordReader::sign);
+        const auto beacons = entriesOf(Table::Beacons, &RecordReader::beacon);
         const auto furnished = [this](QDataStream &, quint16) {
             m_record.furnished = true;
             return true;
@@ -176,7 +129,7 @@ public:
              known(Table::Memories, memories), known(Table::Scheduled, scheduled), known(Table::Wakes, wakes),
              known(Table::SignalWakes, signalWakes), known(Table::BlockUpdates, updates), known(Table::Fires, fires),
              known(Table::Spawners, spawners), known(Table::Furnished, furnished), known(Table::Campfires, campfires),
-             known(Table::Signs, signs)},
+             known(Table::Signs, signs), known(Table::Beacons, beacons)},
             maxTableLength);
         if (!tables) {
             return std::nullopt;
@@ -276,6 +229,9 @@ private:
         for (QcItemStack &stack : container.stacks) {
             stack = m_stacks.read(m_stream);
         }
+        QcStackReader::Filled filled = m_stacks.fillWithOverflow(std::move(container.stacks));
+        container.stacks = std::move(filled.stacks);
+        spill(container.pos, std::move(filled.rest));
         quint32 cooldownLeft = 0;
         m_stream >> cooldownLeft;
         container.readyAt = std::min(cooldownLeft, maxTicks);
@@ -286,6 +242,14 @@ private:
         container.name = *name;
         m_record.containers.append(std::move(container));
         return m_stream.status() == QDataStream::Ok && m_containers.add(m_record.containers.constLast().pos);
+    }
+
+    // What no slot took comes out at `pos` when the chunk is back (decision E-1066).
+    void spill(QcBlockPos pos, QList<QcItemStack> stacks)
+    {
+        if (!stacks.isEmpty()) {
+            m_record.spills.append({pos, std::move(stacks)});
+        }
     }
 
     // The custom name of a container or machine (decision E-873) from version 2 on, cleaned like
@@ -331,6 +295,17 @@ private:
             return false;
         }
         machine.name = *name;
+        if (m_version >= machineEntryVersion) {
+            quint8 extra = 0;
+            m_stream >> extra;
+            if (m_stream.status() != QDataStream::Ok || extra > maxExtraSlots) {
+                return false;
+            }
+            for (quint8 i = 0; i < extra; ++i) {
+                machine.stacks.append(m_stacks.read(m_stream));
+            }
+        }
+        spill(machine.pos, m_stacks.takeOverflow());
         m_record.machines.append(machine);
         return m_machines.add(machine.pos);
     }
@@ -426,6 +401,7 @@ private:
             m_stream >> slot.cooked;
             slot.cooked = std::isfinite(slot.cooked) ? std::clamp(slot.cooked, 0.0, maxSeconds) : 0.0;
         }
+        spill(entry.pos, m_stacks.takeOverflow());
         m_record.campfires.append(entry);
         return placed && m_stream.status() == QDataStream::Ok && m_campfires.add(entry.pos);
     }
@@ -468,6 +444,19 @@ private:
         return m_signs.add(entry.pos);
     }
 
+    // A beacon's chosen effects (decision E-1142), by name (an unknown one waits for its mod;
+    // QcServerBeacons gives no effect of a kind the content lacks).
+    bool beacon()
+    {
+        QcBeacons::Saved entry;
+        const std::optional<QcBlockPos> placed = at();
+        entry.pos = placed.value_or(QcBlockPos());
+        m_stream >> entry.primary >> entry.secondary;
+        m_record.beacons.append(entry);
+        return placed && m_stream.status() == QDataStream::Ok && entry.primary.size() <= maxNameLength && entry.secondary.size() <= maxNameLength
+               && m_beacons.add(entry.pos);
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -483,164 +472,9 @@ private:
     SeenPositions m_spawners;
     SeenPositions m_campfires;
     SeenPositions m_signs;
+    SeenPositions m_beacons;
     quint32 m_tails = 0;
     int m_droppedTails = 0;
-};
-
-void writePositions(QDataStream &stream, const QList<QcBlockPos> &positions)
-{
-    const qsizetype count = std::min<qsizetype>(positions.size(), maxWakes);
-    stream << static_cast<quint32>(count);
-    for (qsizetype i = 0; i < count; ++i) {
-        writePos(stream, positions[i]);
-    }
-}
-
-// Writes the entries of one table into `blob`, each framed as `quint16 version, quint32 length`, its
-// fields and its kept tail (written back under the tail's newer version).
-class EntryWriter
-{
-public:
-    EntryWriter(QDataStream &stream, const QcBlockEntityKept &kept, Table table)
-        : m_stream(stream)
-        , m_kept(kept)
-        , m_table(static_cast<quint16>(table))
-    {
-    }
-
-    // `write()` writes the fields of the entry at `pos`.
-    template<typename Write>
-    void entry(QcBlockPos pos, Write write)
-    {
-        const QcEntityComponent *tail = m_kept.entryTail(m_table, pos);
-        const quint16 version = entryVersionOf(m_table);
-        if (tail && tail->version <= version) {
-            tail = nullptr;
-        }
-        m_stream << (tail ? tail->version : version) << quint32{0};
-        const qint64 start = m_stream.device()->pos();
-        write();
-        if (tail) {
-            m_stream.writeRawData(tail->payload.constData(), static_cast<int>(tail->payload.size()));
-        }
-        QcComponentFrames::patchLength(m_stream, start - static_cast<qint64>(sizeof(quint32)), static_cast<quint32>(m_stream.device()->pos() - start));
-    }
-
-private:
-    QDataStream &m_stream;
-    const QcBlockEntityKept &m_kept;
-    quint16 m_table;
-};
-
-// Writes the tables of a record; an empty table is left out unless a newer version's tail of it is kept.
-class RecordWriter
-{
-public:
-    RecordWriter(QDataStream &stream, const QcBlockEntityRecord &record, const QcContentRegistry &content)
-        : m_stream(stream)
-        , m_record(record)
-        , m_content(content)
-        , m_tables(stream, record.kept.tables)
-    {
-    }
-
-    void write()
-    {
-        entries(Table::Containers, m_record.containers, [this](const QcBlockEntities::Container &container) {
-            writePos(m_stream, container.pos);
-            m_stream << static_cast<quint32>(container.stacks.size());
-            for (const QcItemStack &stack : container.stacks) {
-                QcSaveFile::writeStack(m_stream, stack, m_content);
-            }
-            m_stream << static_cast<quint32>(container.readyAt) << container.name;
-        });
-        entries(Table::Machines, m_record.machines, [this](const QcBlockEntities::Machine &machine) {
-            writePos(m_stream, machine.pos);
-            for (const QcItemStack &stack : machine.stacks) {
-                QcSaveFile::writeStack(m_stream, stack, m_content);
-            }
-            m_stream << machine.burnRemaining << machine.burnSeconds << machine.progress << machine.experience << machine.name;
-        });
-        entries(Table::Saplings, m_record.saplings, [this](const QcBlockEntities::Sapling &sapling) {
-            writePos(m_stream, sapling.pos);
-            m_stream << sapling.remaining << sapling.order;
-        });
-        entries(Table::Memories, m_record.memories, [this](const QcBlockEntityRecord::Memory &memory) {
-            writePos(m_stream, memory.pos);
-            m_stream << memory.burntOutLeft << static_cast<quint8>(memory.powered) << static_cast<quint8>(memory.extendingAge.has_value())
-                << memory.extendingAge.value_or(0);
-        });
-        entries(Table::Scheduled, m_record.scheduled, [this](const QcBlockEntityRecord::Scheduled &entry) {
-            writePos(m_stream, entry.pos);
-            m_stream << entry.ticksLeft << static_cast<quint8>(entry.priority);
-        });
-        positions(Table::Wakes, m_record.wakes);
-        positions(Table::SignalWakes, m_record.signalWakes);
-        positions(Table::BlockUpdates, m_record.blockUpdates);
-        entries(Table::Fires, m_record.fires, [this](const QcFireQueue::Saved &fire) {
-            writePos(m_stream, fire.pos);
-            writePos(m_stream, fire.origin);
-            m_stream << fire.age << fire.ticksLeft;
-        });
-        entries(Table::Spawners, m_record.spawners, [this](const QcSpawners::Entry &spawner) {
-            writePos(m_stream, spawner.pos);
-            m_stream << spawner.mob << spawner.delay << static_cast<quint8>(spawner.confined);
-        });
-        entries(Table::Campfires, m_record.campfires, [this](const QcCampfires::Entry &campfire) {
-            writePos(m_stream, campfire.pos);
-            for (const QcCampfires::Slot &slot : campfire.places) {
-                QcSaveFile::writeStack(m_stream, slot.stack, m_content);
-                m_stream << slot.cooked;
-            }
-        });
-        entries(Table::Signs, m_record.signs, [this](const QcSignTexts::Entry &sign) {
-            writePos(m_stream, sign.pos);
-            m_stream << static_cast<quint8>(sign.lines.size());
-            for (const QString &line : sign.lines) {
-                m_stream << line;
-            }
-            m_stream << sign.color;
-        });
-        if (m_record.furnished || hasTail(Table::Furnished)) {
-            m_tables.add(static_cast<quint16>(Table::Furnished), tableVersion, [](QDataStream &) {});
-        }
-        m_tables.finish();
-    }
-
-private:
-    bool hasTail(Table table) const
-    {
-        return std::ranges::any_of(m_record.kept.tables,
-            [table](const QcEntityComponent &kept) { return kept.tail && kept.id == static_cast<quint16>(table); });
-    }
-
-    template<typename Entry, typename Write>
-    void entries(Table table, const QList<Entry> &list, Write write)
-    {
-        if (list.isEmpty() && !hasTail(table)) {
-            return;
-        }
-        m_tables.add(static_cast<quint16>(table), tableVersion, [&](QDataStream &stream) {
-            stream << static_cast<quint32>(list.size());
-            EntryWriter writer(stream, m_record.kept, table);
-            for (const Entry &entry : list) {
-                writer.entry(entry.pos, [&] { write(entry); });
-            }
-        });
-    }
-
-    void positions(Table table, const QList<QcBlockPos> &list)
-    {
-        if (list.isEmpty() && !hasTail(table)) {
-            return;
-        }
-        m_tables.add(static_cast<quint16>(table), tableVersion, [&list](QDataStream &stream) { writePositions(stream, list); });
-    }
-
-    QDataStream &m_stream;
-    const QcBlockEntityRecord &m_record;
-    const QcContentRegistry &m_content;
-    QcComponentFrames::Writer m_tables;
 };
 
 } // namespace
@@ -652,7 +486,7 @@ QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &co
     QByteArray blob;
     QDataStream stream(&blob, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    RecordWriter(stream, record, content).write();
+    QcBlockEntityWriter::write(stream, record, content);
     return blob;
 }
 
@@ -686,6 +520,7 @@ QcResult<Fitted> encodeWithin(const QcBlockEntityRecord &record, const QcContent
     record.chunk = chunk;
     const QString where = u"chunk %1, %2"_s.arg(chunk.x).arg(chunk.z);
     QcStackReader stacks(content, where, warnings);
+    stacks.setCollectsOverflow(true);
     RecordReader reader(stream, stacks, record);
     const std::optional<int> dropped = reader.read();
     if (!dropped || stream.status() != QDataStream::Ok || !stream.atEnd()) {

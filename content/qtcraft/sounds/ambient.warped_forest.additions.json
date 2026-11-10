@@ -1,0 +1,41 @@
+{
+    "name": "ambient.warped_forest.additions",
+    "bus": "ambient",
+    "volume": 0.35,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "volumeVariation": 0.2,
+    "range": 32,
+    "layers": [
+        {
+            "wave": "sine",
+            "attack": 0.15,
+            "curve": 1.6,
+            "duration": 1.6,
+            "frequency": 1320,
+            "endFrequency": 1250,
+            "lowpass": 4000,
+            "gain": 0.35
+        },
+        {
+            "wave": "sine",
+            "attack": 0.15,
+            "curve": 1.8,
+            "duration": 1.4,
+            "start": 0.05,
+            "frequency": 1980,
+            "endFrequency": 1875,
+            "lowpass": 5000,
+            "gain": 0.15
+        },
+        {
+            "wave": "noise",
+            "attack": 0.3,
+            "curve": 1.5,
+            "duration": 1.2,
+            "bandpass": 2600,
+            "resonance": 3,
+            "gain": 0.2
+        }
+    ]
+}

@@ -112,6 +112,8 @@ private:
     void drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pass, const FrameView &view);
     void drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     void drawEntities(QRhiCommandBuffer *commandBuffer);
+    // The cores and glows of the beacon beams, after the entities (decision E-1143).
+    void drawBeams(QRhiCommandBuffer *commandBuffer);
     // Back to front by section centre; with the plan's water drawn here too, the water of a section
     // comes right before its other translucent faces.
     void drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view);
@@ -194,6 +196,8 @@ private:
     quint32 m_entityOrigin = 0;
     quint32 m_framedMapOrigin = 0;
     quint32 m_handOrigin = 0;
+    quint32 m_beamOrigin = 0;
+    quint32 m_beamGlowOrigin = 0;
     // The frame's view and the culling's list by page, kept so that their lists keep their capacity.
     FrameView m_view;
     std::vector<std::pair<quint32, const QcGpuMesh *>> m_paged;

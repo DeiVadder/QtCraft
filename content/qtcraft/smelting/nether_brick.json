@@ -1,0 +1,9 @@
+{
+    "name": "nether_brick",
+    "input": "netherrack",
+    "result": {
+        "item": "nether_brick"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

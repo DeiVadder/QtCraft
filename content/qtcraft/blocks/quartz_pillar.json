@@ -1,0 +1,20 @@
+{
+    "name": "quartz_pillar",
+    "sound": "stone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "quartz_pillar_top",
+        "bottom": "quartz_pillar_top",
+        "side": "quartz_pillar"
+    }
+}

@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // What /locate finds of the terrain generator (decision E-911): villages, mine shafts, dungeons,
-// coastal towers and the surface structures.
+// coastal towers and the surface structures; and where they reach (decision E-1013).
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/towers/QcCoastalTowerGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 using namespace Qt::StringLiterals;
 
@@ -48,7 +49,7 @@ QcLocateResult QcTerrainGenerator::locate(QStringView kind, QcBlockPos from, int
     if (kind == u"mineshaft"_s && mineshafts().planner().enabled()) {
         return QcPlaceSearch::nearestInRegions(from, reach, mineshafts().planner().settings().regionSize, mineshaftBudget,
                                                [this](int regionX, int regionZ) -> std::optional<QcLocatedPlace> {
-                                                   const std::shared_ptr<const QcMineshaftPlan> plan = mineshafts().planOf(regionX, regionZ);
+                                                   const std::shared_ptr<const QcMineshaftPlan> plan = mineshafts().builtPlanOf(regionX, regionZ);
                                                    if (!plan) {
                                                        return std::nullopt;
                                                    }
@@ -60,7 +61,7 @@ QcLocateResult QcTerrainGenerator::locate(QStringView kind, QcBlockPos from, int
     if (kind == u"dungeon"_s && dungeons().planner().enabled()) {
         return QcPlaceSearch::nearestInRegions(from, reach, dungeons().planner().settings().regionSize, dungeonBudget,
                                                [this](int regionX, int regionZ) -> std::optional<QcLocatedPlace> {
-                                                   const std::shared_ptr<const QcDungeonPlan> plan = dungeons().planOf(regionX, regionZ);
+                                                   const std::shared_ptr<const QcDungeonPlan> plan = dungeons().builtPlanOf(regionX, regionZ);
                                                    if (!plan) {
                                                        return std::nullopt;
                                                    }
@@ -70,9 +71,30 @@ QcLocateResult QcTerrainGenerator::locate(QStringView kind, QcBlockPos from, int
     if (kind == u"coastal_tower"_s && coastalTowers().planner().enabled()) {
         return QcPlaceSearch::nearestInRegions(from, reach, coastalTowers().planner().settings().regionSize, coastalTowerBudget,
                                                [this](int regionX, int regionZ) -> std::optional<QcLocatedPlace> {
-                                                   const std::shared_ptr<const QcCoastalTowerPlan> plan = coastalTowers().planOf(regionX, regionZ);
+                                                   const std::shared_ptr<const QcCoastalTowerPlan> plan = coastalTowers().builtPlanOf(regionX, regionZ);
                                                    return plan ? std::optional(QcLocatedPlace{plan->doorstep, std::nullopt}) : std::nullopt;
                                                });
     }
     return {std::nullopt, reach};
+}
+
+QList<QcXzRect> QcTerrainGenerator::structuresTouching(QcChunkPos pos) const
+{
+    QList<QcXzRect> reaches = surfaceStructures().reachesTouching(pos);
+    const QList<std::shared_ptr<const QcDungeonPlan>> dungeonPlans = dungeons().builtPlansTouching(pos);
+    for (const std::shared_ptr<const QcDungeonPlan> &plan : dungeonPlans) {
+        reaches.append(plan->bounds());
+    }
+    const QList<std::shared_ptr<const QcMineshaftPlan>> shafts = mineshafts().builtPlansTouching(pos);
+    for (const std::shared_ptr<const QcMineshaftPlan> &plan : shafts) {
+        reaches.append(plan->bounds());
+    }
+    const QList<std::shared_ptr<const QcCoastalTowerPlan>> towers = coastalTowers().builtPlansTouching(pos);
+    for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : towers) {
+        reaches.append(QcCoastalTowerGenerator::reachOf(*plan));
+    }
+    if (const std::shared_ptr<const QcVillagePlan> village = villages().builtPlanFor(pos); village && village->overlaps(pos, 0)) {
+        reaches.append(village->bounds());
+    }
+    return reaches;
 }

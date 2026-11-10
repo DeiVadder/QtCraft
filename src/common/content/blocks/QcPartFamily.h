@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QList>
 #include <QString>
+#include <QHash>
 #include <QStringList>
 
 /*! \brief A family of building parts (stairs, slabs, walls, fences, gates) that QcPartGenerator
@@ -23,6 +24,9 @@ struct QcPartFamily
     /*! Block fields of the part (shape, states, render, connections, ...); name, textures,
         sound, tool, hardness, drops and fuel come from the base block. */
     QJsonObject block;
+    /*! Item tags of the parts of a material kind (\c {"tags"}, kind to tags; decision E-982):
+        the slabs of wood are \c {wooden_slabs}. */
+    QHash<QString, QStringList> tagsByKind;
     /*! Factor on the base block's hardness for the part (\c {"hardness"}). */
     double hardnessFactor = 1.0;
     /*! Factor on the base block's fuel seconds for the part (\c {"fuel"}). */

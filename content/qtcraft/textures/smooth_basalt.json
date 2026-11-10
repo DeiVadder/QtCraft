@@ -1,0 +1,8 @@
+{
+    "name": "smooth_basalt",
+    "pattern": "flow_bands",
+    "primary": "#55555c",
+    "secondary": "#3e3e45",
+    "variation": 0.08,
+    "seed": 8423
+}

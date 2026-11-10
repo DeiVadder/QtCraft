@@ -1,0 +1,10 @@
+{
+    "name": "end",
+    "generator": {"type": "void", "options": "platform=qtcraft:obsidian,radius=6,y=48"},
+    "sky": "end",
+    "skyLight": false,
+    "dayCycle": false,
+    "weather": false,
+    "compassesSpin": true,
+    "floor": "void"
+}

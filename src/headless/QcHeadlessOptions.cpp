@@ -37,6 +37,7 @@ std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Opti
     config.worldName = parser.value(options.world);
     config.generator = parser.value(options.generator);
     config.generatorOptions = parser.value(options.generatorOptions);
+    config.startDimension = parser.value(options.startDimension);
     bool viewOk = false;
     config.viewDistance = std::clamp(parser.value(options.view).toInt(&viewOk), 1, 32);
     bool timeOk = false;
@@ -150,6 +151,7 @@ namespace {
     settings.world = text(options.world, settings.world);
     settings.worldType = text(options.generator, settings.worldType);
     settings.worldOptions = text(options.worldOptions, settings.worldOptions);
+    settings.startDimension = text(options.startDimension, settings.startDimension);
     if (parser.isSet(options.gameMode)) {
         settings.defaultGameMode = QcGameModes::parse(parser.value(options.gameMode));
         ok = ok && settings.defaultGameMode.has_value();

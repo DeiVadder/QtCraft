@@ -1,0 +1,6 @@
+{
+    "name": "corrupt_strong_poison",
+    "base": "strong_poison",
+    "ingredient": "fermented_spider_eye",
+    "result": "strong_harming"
+}

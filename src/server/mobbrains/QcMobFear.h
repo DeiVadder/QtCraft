@@ -18,6 +18,10 @@ inline constexpr double catDistance = 6.0;
 /*! Returns the horizontal direction away from the nearest thing that frightens \a mob of the kind
     \a definition now in the tick of \a context (normalized); none when nothing does. */
 std::optional<QcVec3> away(const QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context);
+/*! Returns the horizontal direction away from the nearest block that repels \a mob of the kind
+    \a definition (QcMobDefinition::repellents, decision E-1082) in \a world (normalized); none
+    when there is none within its range or the kind keeps away from no blocks. */
+std::optional<QcVec3> repelledFrom(const QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world);
 /*! Returns whether \a player calms a shy creature of \a shy: holding one of its calm items (item
     names in \a content) and moving no faster than its calm speed. */
 bool calms(const QcMobManager::PlayerView &player, const QcShyDefinition &shy, const QcContentRegistry &content);

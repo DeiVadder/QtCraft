@@ -1,0 +1,10 @@
+{
+    "name": "quartz",
+    "input": "nether_quartz_ore",
+    "result": {
+        "item": "quartz"
+    },
+    "seconds": 10,
+    "experience": 0.2,
+    "kind": "metal"
+}

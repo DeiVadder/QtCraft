@@ -17,4 +17,11 @@ target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAK
 qc_add_test(test_entity_components SOURCES storage/test_entity_components.cpp LIBRARIES qc_server)
 qc_add_test(test_chunk_store SOURCES storage/test_chunk_store.cpp LIBRARIES qc_server)
 qc_add_test(test_generated_chunks SOURCES storage/test_generated_chunks.cpp LIBRARIES qc_server)
+qc_add_test(test_version_map SOURCES storage/test_version_map.cpp LIBRARIES qc_server)
+qc_add_test(test_generator_switch SOURCES storage/test_generator_switch.cpp LIBRARIES qc_server)
+# Switches a saved world to a newer generator through QcGeneratorUpgrade and qtcraft-headless.
+qc_add_test(test_generator_upgrade SOURCES storage/test_generator_upgrade.cpp LIBRARIES qc_server qc_worlds TIMEOUT 330)
+target_compile_definitions(test_generator_upgrade PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
+add_dependencies(test_generator_upgrade qtcraft-headless)
+qc_add_test(test_generator_blend SOURCES storage/test_generator_blend.cpp LIBRARIES qc_server qc_worlds TIMEOUT 900)
 qc_add_test(test_world_details SOURCES storage/test_world_details.cpp fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)

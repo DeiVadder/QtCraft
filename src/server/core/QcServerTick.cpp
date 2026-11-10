@@ -47,6 +47,17 @@ void acknowledgeBlocks(QcServerClient &client)
     }
 }
 
+// Runs `run` once per open dimension, with that dimension current (decision E-988).
+void inEachDimension(QcServerState &state, const std::function<void()> &run)
+{
+    // By index: a system may open a dimension, which then runs from the next system on.
+    const std::size_t open = state.dimensions().all().size();
+    for (std::size_t i = 0; i < open; ++i) {
+        const QcServerState::Scope scope(state, *state.dimensions().all()[i]);
+        run();
+    }
+}
+
 } // namespace
 
 void QcServer::runDueTicks()
@@ -107,10 +118,12 @@ void QcServer::tick()
     if (simulating && m_state.info().daylightCycle) {
         m_state.info().worldTime += QcPhysics::tickDuration;
     }
-    m_state.entities().creatures().setNaturalSpawning(m_state.info().mobSpawning);
-    m_state.entities().creatures().setHurtTicks(m_state.info().mobInvulnerabilityTicks);
+    for (const std::unique_ptr<QcServerDimension> &dimension : m_state.dimensions().all()) {
+        dimension->entities().creatures().setNaturalSpawning(m_state.info().mobSpawning);
+        dimension->entities().creatures().setHurtTicks(m_state.info().mobInvulnerabilityTicks);
+    }
 
-    m_tickSystems.run(simulating, m_phases);
+    m_tickSystems.run(simulating, m_phases, [this](const std::function<void()> &run) { inEachDimension(m_state, run); });
     m_phases.endTick(m_ticks.currentLateNs());
     m_ticks.stats().addPhases(m_phases.lastTick());
     const QcTickPhaseTimer::Durations &phases = m_phases.lastTick();
@@ -143,7 +156,10 @@ void QcServer::pausedUpkeep()
 void QcServer::updatePause()
 {
     const std::optional<QcServerPause::Reason> changed = m_pause.update(
-        m_state.clients(), m_state.clock().playerTimeNs(), [this](const Client &client) { return m_chunkStreaming.viewComplete(client); });
+        m_state.allClients(), m_state.clock().playerTimeNs(), [this](const Client &client) {
+            const QcServerState::Scope scope(m_state, m_state.dimensionOf(client));
+            return m_chunkStreaming.viewComplete(client);
+        });
     if (!changed) {
         return;
     }
@@ -158,7 +174,7 @@ void QcServer::updatePause()
         qCInfo(lcServer) << "Server resumed";
     }
 
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == Client::State::Playing) {
             client->connection->send(QcMsg::ServerPause{m_pause.paused()});
         }
@@ -171,6 +187,7 @@ void QcServer::addUpkeepSystems()
 {
     using enum QcTickPhase;
     using When = QcTickSystems::When;
+    constexpr QcTickSystems::Reach eachDimension = QcTickSystems::Reach::EachDimension;
     m_tickSystems.add(Players, When::Always, [this] {
         m_login.expire();
         m_saving.flushIdentitiesWhenDue();
@@ -180,15 +197,13 @@ void QcServer::addUpkeepSystems()
             sendPlayerList();
         }
     });
-    m_tickSystems.add(Saving, When::Always, [this] {
-        m_saving.autosave();
-        reportDamagedChunks();
-    });
+    m_tickSystems.add(Saving, When::Always, [this] { m_saving.autosave(); });
+    m_tickSystems.add(Saving, When::Always, eachDimension, [this] { reportDamagedChunks(); });
 
     // Entities in chunks that are not loaded rest for this tick, every kind by the same rule; also in
     // a frozen world, whose clients still get what comes into view (E-249). Their chunks load, so
     // they go back to storage with them (decision E-374).
-    m_tickSystems.add(ChunkLoading, When::Always, [this] {
+    m_tickSystems.add(ChunkLoading, When::Always, eachDimension, [this] {
         m_chunkLoading.admitArrivals();
         m_blockUpdates.handleLoadedChunks();
         m_chunkLoading.requestStrays(
@@ -200,19 +215,22 @@ void QcServer::addSimulationSystems()
 {
     using enum QcTickPhase;
     constexpr QcTickSystems::When simulating = QcTickSystems::When::Simulating;
+    constexpr QcTickSystems::Reach eachDimension = QcTickSystems::Reach::EachDimension;
     // Contents spilled by blocks set outside a block change of the server (the spawn's ground, tests).
-    m_tickSystems.add(BlockUpdates, simulating, [this] {
+    m_tickSystems.add(BlockUpdates, simulating, eachDimension, [this] {
         m_blocks.dropSpills();
         m_blockSimulation.processBlockUpdates();
     });
-    m_tickSystems.add(Signal, simulating, [this] { m_circuits.tick(); });
-    m_tickSystems.add(Liquids, simulating, [this] { m_blockSimulation.processLiquids(); });
-    m_tickSystems.add(Fire, simulating, [this] { m_fire.tick(); });
-    m_tickSystems.add(Weather, simulating, [this] {
+    m_tickSystems.add(Signal, simulating, eachDimension, [this] { m_circuits.tick(); });
+    m_tickSystems.add(Liquids, simulating, eachDimension, [this] { m_blockSimulation.processLiquids(); });
+    m_tickSystems.add(Fire, simulating, eachDimension, [this] { m_fire.tick(); });
+    // The weather is the world's, what it does happens in each dimension that has weather.
+    m_tickSystems.add(Weather, simulating, [this] { m_weather.advance(); });
+    m_tickSystems.add(Weather, simulating, eachDimension, [this] {
         m_weather.tick();
         m_snowfall.tick();
     });
-    m_tickSystems.add(Mobs, simulating, [this] {
+    m_tickSystems.add(Mobs, simulating, eachDimension, [this] {
         m_health.tick();
         m_interaction.swingWhileMining();
         m_stands.tick();
@@ -224,23 +242,27 @@ void QcServer::addSimulationSystems()
         m_environment.applySuffocation();
         QcDrowning(m_state, m_sounds, m_health).tick();
     });
-    m_tickSystems.add(Projectiles, simulating, [this] {
+    m_tickSystems.add(Projectiles, simulating, eachDimension, [this] {
         m_projectiles.tick();
         m_creatures.announceTeleports();
     });
-    m_tickSystems.add(Items, simulating, [this] {
+    m_tickSystems.add(Items, simulating, eachDimension, [this] {
         m_plants.plantItems(m_items.tick());
         m_experience.tick();
     });
-    m_tickSystems.add(Plants, simulating, [this] {
+    m_tickSystems.add(Plants, simulating, eachDimension, [this] {
         m_plants.tick();
         m_animals.tick();
     });
-    m_tickSystems.add(FallingBlocks, simulating, [this] { m_fallingBlocks.tick(); });
-    m_tickSystems.add(Explosions, simulating, [this] { m_explosions.tick(); });
+    m_tickSystems.add(FallingBlocks, simulating, eachDimension, [this] { m_fallingBlocks.tick(); });
+    m_tickSystems.add(Explosions, simulating, eachDimension, [this] { m_explosions.tick(); });
     // Boats move in the phase of the minecarts (decision E-920).
-    m_tickSystems.add(Minecarts, simulating, [this] { m_vehicles.tick(); });
-    m_tickSystems.add(Machines, simulating, [this] {
+    m_tickSystems.add(Minecarts, simulating, eachDimension, [this] { m_vehicles.tick(); });
+    // Who stands in a portal in each dimension, then the journeys, once no dimension ticks
+    // (decision E-1024).
+    m_tickSystems.add(Minecarts, simulating, eachDimension, [this] { m_portals.tick(); });
+    m_tickSystems.add(Minecarts, simulating, [this] { m_portals.travel(); });
+    m_tickSystems.add(Machines, simulating, eachDimension, [this] {
         m_machines.tick();
         m_kitchen.tick();
         m_screens.update();
@@ -253,46 +275,54 @@ void QcServer::addClientSystems()
 {
     using enum QcTickPhase;
     using When = QcTickSystems::When;
+    constexpr QcTickSystems::Reach eachDimension = QcTickSystems::Reach::EachDimension;
     m_tickSystems.add(ClientSync, When::Always, [this] { m_chunkLoading.noteSimulated(); });
     // Held maps are revealed and their changes sent (decisions E-800, E-802).
-    m_tickSystems.add(ClientSync, When::Simulating, [this] { QcServerMaps(m_state, m_inventory).tick(); });
+    m_tickSystems.add(ClientSync, When::Simulating, eachDimension, [this] { QcServerMaps(m_state, m_inventory).tick(); });
     // A step of a frozen world moves the time the clients do not advance themselves.
     m_tickSystems.add(ClientSync, When::Simulating, [this] {
         if (m_tickControl.frozen()) {
             sendTimeToAll();
         }
     });
+    // Sign texts written since the last tick, also in a frozen world (decision E-766).
+    m_tickSystems.add(ClientSync, When::Always, eachDimension, [this] { QcServerSigns(m_state).announceChanges(); });
+    // The atmosphere of the biome at each player's feet, also in a frozen world (decision E-1120).
+    m_tickSystems.add(ClientSync, When::Always, eachDimension, [this] { m_weather.syncAtmospheres(); });
     m_tickSystems.add(ClientSync, When::Always, [this] {
-        // Sign texts written since the last tick, also in a frozen world (decision E-766).
-        QcServerSigns(m_state).announceChanges();
         const QcClientSyncPace::Due sync = m_syncPace.next(m_state.clock(), m_ticks.sprinting());
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             if (client->state == Client::State::Playing) {
+                const QcServerState::Scope scope(m_state, m_state.dimensionOf(*client));
                 updateClient(*client, sync);
             }
         }
 
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             client->swung = false;
         }
         // A hurt waits for the next world sync (sprinting skips some, decision E-971).
         if (sync.world) {
-            for (const auto &client : m_state.clients()) {
+            for (const auto &client : m_state.allClients()) {
                 client->hurtThisTick = false;
             }
-            m_state.entities().creatures().clearSentHurts();
         }
-        m_state.entities().forgetDeaths();
+        for (const std::unique_ptr<QcServerDimension> &dimension : m_state.dimensions().all()) {
+            if (sync.world) {
+                dimension->entities().creatures().clearSentHurts();
+            }
+            dimension->entities().forgetDeaths();
+        }
     });
 
     // Location criteria of the adventure guide and its news to the players (decision E-923).
-    m_tickSystems.add(ClientSync, When::Always, [this] { m_state.advancements().tick(); });
+    m_tickSystems.add(ClientSync, When::Always, eachDimension, [this] { m_state.advancements().tick(); });
 
     // The admin channel's status, chat and log for the operators who follow them (decision E-848).
     m_tickSystems.add(ClientSync, When::Always, [this] { m_admin.update(); });
 
     // Chunks no one needs any more leave the world, whole groups at a time (decision E-374).
-    m_tickSystems.add(Streaming, When::Always, [this] {
+    m_tickSystems.add(Streaming, When::Always, eachDimension, [this] {
         m_chunkLoading.updateTickets();
         m_chunkLoading.unloadUnneeded();
     });
@@ -304,7 +334,7 @@ void QcServer::reportDamagedChunks()
     for (const QcChunkPos &chunk : damaged) {
         const QString x = QString::number(chunk.x * QcWorld::chunkSize);
         const QString z = QString::number(chunk.z * QcWorld::chunkSize);
-        for (const auto &client : m_state.clients()) {
+        for (const auto &client : m_state.allClients()) {
             if (m_state.permissionOf(*client) == QcPermission::Operator) {
                 client->connection->send(QcChatText::message(
                     QT_TRANSLATE_NOOP("QcServerMessages",
@@ -355,9 +385,11 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
 QcHealthSample QcServer::health()
 {
     QcHealthSample sample;
-    sample.players = std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; });
-    sample.loadedChunks = m_state.world().loadedChunkCount();
-    sample.entities = m_state.entities().creatures().mobs().size() + m_state.entities().items().items().size();
+    sample.players = std::ranges::count_if(m_state.allClients(), [](const auto &client) { return client->joined; });
+    for (const std::unique_ptr<QcServerDimension> &dimension : m_state.dimensions().all()) {
+        sample.loadedChunks += dimension->world().loadedChunkCount();
+        sample.entities += dimension->entities().creatures().mobs().size() + dimension->entities().items().items().size();
+    }
     // Bytes of the clients that left count on, so the rates never go back.
     sample.traffic = m_admin.traffic();
     sample.ticks = m_healthTicks.take();
@@ -368,7 +400,7 @@ QcHealthSample QcServer::health()
 void QcServer::removeClosedClients()
 {
     bool leaving = false;
-    for (const auto &client : m_state.clients()) {
+    for (const auto &client : m_state.allClients()) {
         if (client->state == Client::State::Closed && !client->local) {
             logLeaving(*client);
         }
@@ -378,6 +410,7 @@ void QcServer::removeClosedClients()
         if (client->state == Client::State::Closed && client->joined) {
             // Only a player who was on the list changes it; refused logins do not.
             m_state.notePlayerListChanged();
+            const QcServerState::Scope scope(m_state, m_state.dimensionOf(*client));
             m_crafting.returnCraftingGrid(*client);
             m_workstations.leave(*client);
             // A rider gets out first, so he is saved standing beside the cart or the boat.
@@ -393,11 +426,7 @@ void QcServer::removeClosedClients()
         m_persistence.saveInBackground();
     }
 
-    const auto removed = std::erase_if(m_state.clientList(), [](const std::unique_ptr<Client> &client) {
-        return client->state == Client::State::Closed;
-    });
-
-    if (removed > 0) {
+    if (m_state.removeClosedClients() > 0) {
         emit clientCountChanged(clientCount());
     }
 }

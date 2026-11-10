@@ -29,27 +29,6 @@ bool inside(QcBiomeMap::Area area, int x, int z)
            z < area.centreZ + area.radius;
 }
 
-// The place of each region's plan in `area` that `placeOf` finds; none when cancelled first.
-template<typename PlaceOf>
-[[nodiscard]] std::optional<QList<QcBiomeMap::Site>> sitesInRegions(QcBiomeMap::Area area, int spacing, const QcBiomeMap::Cancelled &cancelled,
-                                                                    const PlaceOf &placeOf)
-{
-    QList<QcBiomeMap::Site> sites;
-    const QcXzRect regions = regionsOver(area, spacing);
-    for (int rz = regions.minZ; rz <= regions.maxZ; ++rz) {
-        for (int rx = regions.minX; rx <= regions.maxX; ++rx) {
-            if (cancelled && cancelled()) {
-                return std::nullopt;
-            }
-            const std::optional<QcBiomeMap::Site> site = placeOf(rx, rz);
-            if (site && inside(area, site->x, site->z)) {
-                sites.append(*site);
-            }
-        }
-    }
-    return sites;
-}
-
 } // namespace
 
 QcBiomeMap::QcBiomeMap(Area area)
@@ -72,7 +51,43 @@ QcBiomeMap::Cell QcBiomeMap::cellAt(const QcTerrainGenerator &generator, int x, 
     return {column.biome, column.height, water, frozen};
 }
 
+std::optional<QList<QcBiomeMap::Site>> QcBiomeMap::sitesInRegions(Area area, int spacing, const Cancelled &cancelled, const PlaceOf &placeOf)
+{
+    QList<Site> sites;
+    const QcXzRect regions = regionsOver(area, spacing);
+    for (int rz = regions.minZ; rz <= regions.maxZ; ++rz) {
+        for (int rx = regions.minX; rx <= regions.maxX; ++rx) {
+            if (cancelled && cancelled()) {
+                return std::nullopt;
+            }
+            const std::optional<Site> site = placeOf(rx, rz);
+            if (site && inside(area, site->x, site->z)) {
+                sites.append(*site);
+            }
+        }
+    }
+    return sites;
+}
+
+std::optional<QList<QcBiomeMap::Site>> QcBiomeMap::sitesOf(const QList<SiteRule> &rules, Area area, const Cancelled &cancelled)
+{
+    QList<Site> sites;
+    for (const SiteRule &rule : rules) {
+        const std::optional<QList<Site>> found = sitesInRegions(area, rule.regionSize, cancelled, rule.placeOf);
+        if (!found) {
+            return std::nullopt;
+        }
+        sites.append(*found);
+    }
+    return sites;
+}
+
 std::optional<QcBiomeMap> QcBiomeMap::sample(const QcTerrainGenerator &generator, Area area, const Cancelled &cancelled)
+{
+    return sampleWith(area, [&generator](int x, int z) { return cellAt(generator, x, z); }, cancelled);
+}
+
+std::optional<QcBiomeMap> QcBiomeMap::sampleWith(Area area, const CellAt &cellOf, const Cancelled &cancelled)
 {
     QcBiomeMap map(area);
     const int size = map.size();
@@ -81,7 +96,7 @@ std::optional<QcBiomeMap> QcBiomeMap::sample(const QcTerrainGenerator &generator
             return std::nullopt;
         }
         for (int x = 0; x < size; ++x) {
-            map.m_cells[static_cast<qsizetype>(z) * size + x] = cellAt(generator, area.blockX(x), area.blockZ(z));
+            map.m_cells[static_cast<qsizetype>(z) * size + x] = cellOf(area.blockX(x), area.blockZ(z));
         }
     }
     return map;

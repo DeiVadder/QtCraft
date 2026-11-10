@@ -1,0 +1,8 @@
+{
+    "name": "golden_carrot",
+    "pattern": "carrot",
+    "primary": "#e8c040",
+    "secondary": "#c8a030",
+    "variation": 0.1,
+    "seed": 8503
+}

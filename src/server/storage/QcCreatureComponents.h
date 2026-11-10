@@ -11,6 +11,8 @@
 
 #include <optional>
 
+class QcStackReader;
+
 /*! \brief The components of a creature entry in the entities of a chunk (QcEntityCodec, decision
     E-420): health and breeding (Creature), the villager record, status effects, the carried
     block, the enclosure, the golem's builder, the laying timer, the tame state, a creature
@@ -28,8 +30,9 @@ struct Read
 };
 
 /*! Reads the components of a creature entry from \a stream onto \a mob (filled from the entry's
-    header, health at the type's full health) and returns them; std::nullopt for damaged data. */
-[[nodiscard]] std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob);
+    header, health at the type's full health), item stacks with \a stacks, and returns them;
+    std::nullopt for damaged data. */
+[[nodiscard]] std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob, QcStackReader &stacks);
 
 /*! Adds the known components of \a mob, carried blocks by their name in \a content, to
     \a components, the writer of its entry, and returns that writer (the

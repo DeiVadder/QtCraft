@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/world/QcDayCycle.h"
+
 #include <QRandomGenerator>
 
 /*! \brief The light test of monsters (decision E-836), as in the original game: a cell is dark
@@ -18,7 +20,7 @@
 namespace QcSpawnLight {
 
 /*! Levels the sky light loses at night (midnight in clear weather). */
-inline constexpr int nightDarkening = 11;
+inline constexpr int nightDarkening = QcDayCycle::nightDarkening;
 /*! Levels it loses during a thunderstorm, by day and by night. */
 inline constexpr int thunderDarkening = 10;
 /*! A thunderstorm darkens the sky by thunderDarkening from this strength on. */

@@ -1,0 +1,18 @@
+{
+    "name": "portals",
+    "order": 89,
+    "icon": "obsidian",
+    "sections": [
+        "frame",
+        "lighting",
+        "travel",
+        "linking"
+    ],
+    "related": [
+        "obsidian",
+        "crying_obsidian",
+        "flint_and_steel",
+        "fire",
+        "netherrack"
+    ]
+}

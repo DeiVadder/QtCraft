@@ -95,7 +95,8 @@ void QcSkyRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpd
     std::copy_n(inverse.constData(), 16, uniforms.inverseViewProjection);
     copy(sky.zenith, 1.0f, uniforms.zenith);
     copy(sky.horizon, 1.0f, uniforms.horizon);
-    copy(sky.glow, 1.0f, uniforms.glow);
+    // glow.w: 1 while sun, moon, stars and clouds show (decision E-1003).
+    copy(sky.glow, sky.celestial ? 1.0f : 0.0f, uniforms.glow);
     copy(sky.sunDirection, frame.sunGain, uniforms.sunDirection);
     copy(sky.moonDirection, static_cast<float>(sky.moonPhase), uniforms.moonDirection);
     copy(sky.cloudColor, static_cast<float>(sky.overcast), uniforms.cloudColor);

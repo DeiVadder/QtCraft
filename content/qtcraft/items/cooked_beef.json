@@ -1,4 +1,5 @@
 {
     "name": "cooked_beef",
-    "food": 8
+    "food": 8,
+    "saturation": 0.8
 }

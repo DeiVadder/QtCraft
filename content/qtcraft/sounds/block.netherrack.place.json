@@ -1,0 +1,57 @@
+{
+    "name": "block.netherrack.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1750,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1330,
+            "resonance": 2.5,
+            "lowpass": 3990,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 315,
+            "resonance": 2,
+            "lowpass": 945,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 91,
+            "resonance": 1.2,
+            "lowpass": 273,
+            "gain": 0.9
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 2400,
+            "highpass": 400,
+            "density": 900,
+            "gain": 0.35
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "gilded_blackstone",
+    "pattern": "gilded_stone",
+    "primary": "#2a2432",
+    "secondary": "#ecb432",
+    "variation": 0.08,
+    "seed": 8430
+}

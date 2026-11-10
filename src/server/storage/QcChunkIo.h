@@ -23,6 +23,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <utility>
 
 /*! \brief Reading and writing the chunks of a world in the background (decision E-373), so the
     server tick never waits for the disk: one thread owns the QcChunkStore and runs every request in
@@ -50,6 +51,8 @@ public:
         /*! The blocks were generated for this arrival, not read (the generator's plans for the
             chunk are made, QcFurnishing asks only then). */
         bool generated = false;
+        /*! The chunk has a stored record of block entities. */
+        bool hasBlockEntityRecord = false;
         /*! What was kept of its block entities and entities. \qcshared */
         QcBlockEntityRecord blockEntities;
         QcEntityRecord entities;
@@ -83,7 +86,11 @@ public:
         QcStatus status;
     };
 
-    QcChunkIo(QString directory, std::shared_ptr<const QcContentRegistry> content);
+    /*! Keeps the chunks in \a directory (empty: in memory). With \a world, the storage of the
+        world directory, it is the storage of another dimension (decision E-988): both run on the
+        thread of \a world, which outlives it, and what is handed over here (hand()) is written
+        with the saves of \a world. */
+    QcChunkIo(QString directory, std::shared_ptr<const QcContentRegistry> content, QcChunkIo *world = nullptr);
     ~QcChunkIo();
     Q_DISABLE_COPY_MOVE(QcChunkIo)
 
@@ -119,7 +126,14 @@ public:
     /*! Hands over \a chunks of a save and writes everything handed over so far with \a files,
         the whole files of the save (QcChunkStore::commit). Returns the id the result comes with
         from takeSaves(). */
-    quint64 save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files);
+    quint64 save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files) { return save(std::move(chunks), std::move(files), {}); }
+    /*! The same with \a linked, the storages of the other dimensions (decision E-988), whose
+        hand() came before: their files go through one journal with these. Returns the id the
+        result comes with from takeSaves(). */
+    quint64 save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files, QList<QcChunkIo *> linked);
+    /*! Hands over \a chunks and \a files of a dimension for the save of the world's storage that
+        follows. */
+    void hand(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files);
     /*! Waits until every request so far is done. */
     void waitForIdle();
     /*! Returns the chunks handed over and not yet written (as of the last finished request). */
@@ -169,6 +183,7 @@ private:
     QHash<QString, HandedFile> m_handedFiles;
     // Chunks handed over by keep() whose job has not run yet, with how many such jobs.
     QHash<QcChunkPos, int> m_keeping;
-    // Last member: destroyed first, so no job outlives the store it uses.
-    QcWorkerPool m_pool;
+    // The one thread of the world's storages. The destructor waits for it, so no job outlives the
+    // store it uses.
+    std::shared_ptr<QcWorkerPool> m_pool;
 };

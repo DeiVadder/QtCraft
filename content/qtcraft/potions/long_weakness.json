@@ -1,0 +1,11 @@
+{
+    "name": "long_weakness",
+    "variantOf": "weakness",
+    "variant": "long",
+    "effects": [
+        {
+            "effect": "weakness",
+            "seconds": 240
+        }
+    ]
+}

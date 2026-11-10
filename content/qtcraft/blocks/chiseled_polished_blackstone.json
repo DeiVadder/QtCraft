@@ -1,0 +1,11 @@
+{
+    "name": "chiseled_polished_blackstone",
+    "sound": "blackstone",
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "blastResistance": 6.0,
+    "textures": {
+        "all": "chiseled_polished_blackstone"
+    }
+}

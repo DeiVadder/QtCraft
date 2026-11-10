@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/mobs/QcAppearance.h"
+#include "common/content/worldgen/QcDimensionDefinition.h"
 #include "common/gameplay/QcAdvancementProgress.h"
 #include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcEnchantingTable.h"
@@ -14,10 +15,13 @@
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcMessages.h"
+#include "server/core/QcPlayerScreen.h"
 #include "server/core/QcRateLimiter.h"
 #include "server/entities/QcEntity.h"
 #include "server/entities/QcHurtWindow.h"
 #include "server/gameplay/QcHunger.h"
+#include "server/gameplay/QcMovementEpochs.h"
+#include "server/storage/QcPlayerReturn.h"
 
 #include <QElapsedTimer>
 #include <QHash>
@@ -103,7 +107,8 @@ struct QcServerClient : QcEntity
     /*! \brief What the client has been told about the world: chunks streamed around the player
         within \c {distance}, entities it knows (SentEntity), known entities whose spawn data
         changed and must be sent again, and the debug data it subscribed to
-        (QcMsg::DebugSubscribe) and when that was last sent. \qcfields */
+        (QcMsg::DebugSubscribe) and when that was last sent, and the boss bars it shows by the
+        entity id of their creature (QcServerBossBars). \qcfields */
     struct View
     {
         int distance = 0;
@@ -115,6 +120,7 @@ struct QcServerClient : QcEntity
         QSet<quint32> stale;
         quint8 debugFlags = 0;
         std::optional<quint64> debugSentTick;
+        QHash<quint32, QcMsg::BossBar> bossBars;
     };
 
     /*! \brief The crafting grid, row-major with three cells per row; a 2 x 2 grid uses the
@@ -126,108 +132,20 @@ struct QcServerClient : QcEntity
         std::optional<QcBlockPos> table;
     };
 
-    /*! \brief The open stonecutter (QcServerStonecutter, decision E-785): where it stands, the
-        stack in its input slot and the stonecutting recipe chosen for it (empty: none).
-
-        Its output is not stored; it follows from both (QcStonecutting::output). \qcfields */
-    struct Stonecutter
-    {
-        QcBlockPos pos;
-        QcItemStack input;
-        QString recipe;
-
-        /*! Puts \a stack into the input slot; another item or none drops the chosen recipe, as
-            in the reference (more or fewer of the same item keep it). */
-        void setInput(const QcItemStack &stack)
-        {
-            if (stack.isEmpty() || stack.item != input.item) {
-                recipe.clear();
-            }
-            input = stack.isEmpty() ? QcItemStack() : stack;
-        }
-    };
-
-    /*! \brief The open enchanting table (QcServerEnchanting, decision E-864): where it stands and
-        the stacks in its item and lapis slots.
-
-        Its offers follow from the item, the bookshelves and the player's enchantment seed.
-        \c {shown} and \c {shownShelves} are what the client was last told (stateOf): the player
-        takes only an offer he saw, and a changed shelf count sends the offers again. \qcfields */
-    struct Enchanting
-    {
-        QcBlockPos pos;
-        QcItemStack item;
-        QcItemStack lapis;
-        QcEnchantingTable::Offers shown{};
-        int shownShelves = -1;
-    };
-
-    /*! \brief The open anvil (QcServerAnvil, decision E-866): where it stands, its left and right
-        slots and the text of its name field.
-
-        What it makes follows from them (QcAnvil::result). The name field follows the left stack:
-        whenever another stack (or the same with other data) lies there, the field holds that
-        stack's custom name, so a repair keeps the name (as in the reference). \qcfields */
-    struct Anvil
-    {
-        QcBlockPos pos;
-        QcItemStack left;
-        QcItemStack right;
-        QString name;
-
-        /*! Puts \a stack into the left slot; another item or other data takes its custom name
-            into the name field. */
-        void setLeft(const QcItemStack &stack)
-        {
-            if (stack.item != left.item || !(stack.itemData() == left.itemData())) {
-                name = stack.name();
-            }
-            left = stack;
-        }
-    };
-
-    /*! \brief The machine, container or villager whose screen the player has open, and what the
-        client was last told about it.
-
-        A portable container opened from the hand (a backpack, decision E-833): the hotbar slot
-        that holds it, locked while open, and its slots as a working copy of the item's contents,
-        filled from the item whenever the screen is used (QcBlockScreens::openContainerOf) and
-        written back into it by QcServerInventory. \qcfields */
-    struct HeldContainer
-    {
-        int slot = 0;
-        QList<QcItemStack> stacks;
-    };
-
-    /*! \brief The screens the player has open and what the client was last told about them. */
-    struct Screen
-    {
-        /*! The machine or container block whose screen is open. */
-        std::optional<QcBlockPos> open;
-        /*! A container minecart (entity id) instead of a block; \c {open} is unset then. */
-        quint32 cart = 0;
-        /*! A backpack opened from the hand instead of a block or cart; \c {open} is unset and
-            \c {cart} 0 then. */
-        std::optional<HeldContainer> held;
-        /*! The machine screen as last sent. */
-        std::optional<QcMsg::MachineState> sent;
-        /*! The villager (entity id) whose trading screen is open (QcServerTrading), 0 for none,
-            and the screen as last sent. \qcshared */
-        quint32 trading = 0;
-        std::optional<QcMsg::TradeState> sentTrade;
-        /*! The stonecutter whose screen is open. It, a machine, chest or cart (\c {open},
-            \c {cart}) and a trade (\c {trading}) are never open at once: opening one closes the
-            others (QcServerStonecutter::open, QcBlockScreens::open/openCart,
-            QcServerTrading::open). */
-        std::optional<Stonecutter> stonecutter;
-        /*! The enchanting table whose screen is open; never together with any of the above. */
-        std::optional<Enchanting> enchanting;
-        /*! The anvil whose screen is open; never together with any of the above. */
-        std::optional<Anvil> anvil;
-        /*! The sign whose editor the server opened for the player (QcServerSigns, decision
-            E-766). */
-        std::optional<QcBlockPos> sign;
-    };
+    /*! The open stonecutter (QcOpenStonecutter). */
+    using Stonecutter = QcOpenStonecutter;
+    /*! The open enchanting table (QcOpenEnchanting). */
+    using Enchanting = QcOpenEnchanting;
+    /*! The open anvil (QcOpenAnvil). */
+    using Anvil = QcOpenAnvil;
+    /*! The open smithing table (QcOpenSmithing). */
+    using Smithing = QcOpenSmithing;
+    /*! The open beacon (QcOpenBeacon). */
+    using Beacon = QcOpenBeacon;
+    /*! A portable container opened from the hand (QcHeldContainer). */
+    using HeldContainer = QcHeldContainer;
+    /*! The screens the player has open (QcPlayerScreen). */
+    using Screen = QcPlayerScreen;
 
     /*! \brief The block being mined, since which tick and players' time
         (QcServerClock::playerTimeNs). \qcfields */
@@ -236,6 +154,8 @@ struct QcServerClient : QcEntity
         std::optional<QcBlockPos> pos;
         quint64 startTick = 0;
         qint64 startNs = 0;
+        /*! The factor of the status effects on the mining speed when it began. */
+        double startFactor = 1.0;
     };
 
     /*! The connection to the client. */
@@ -312,6 +232,13 @@ struct QcServerClient : QcEntity
         and pressing plates. */
     [[nodiscard]] bool hasBody() const { return state == State::Playing && !dead && rules().tangible; }
 
+    /*! The dimension the player is in (decision E-978), by name; saved in his file. */
+    QString dimension = QString::fromLatin1(QcDimensionDefinition::overworldName);
+    /*! Where he returns to when the dimension he was in can open again (decision E-989). */
+    std::optional<QcPlayerReturn> returnTo;
+    /*! The soul anchor he respawns at (decision E-1112); saved in his file. */
+    std::optional<QcRespawnAnchor> anchor;
+
     /*! Health points and whether the player is dead (QcPlayerHealth). \qcshared */
     double health = maxHealth;
     bool dead = false;
@@ -336,6 +263,9 @@ struct QcServerClient : QcEntity
     bool hurtThisTick = false;
     /*! The weather last sent to the client (QcServerWeather); none before the first message. */
     std::optional<QcMsg::Weather> sentWeather;
+    /*! The atmosphere last sent to the client (QcServerWeather, decision E-1120); none before the
+        first message. */
+    std::optional<QcMsg::Atmosphere> sentAtmosphere;
     /*! Experience (QcServerExperience, decision E-398). */
     QcExperience experience;
     /*! Fixes the enchanting table's offers until the player enchants (decision E-864); saved
@@ -364,6 +294,11 @@ struct QcServerClient : QcEntity
         its level or was given again for longer. \qcshared */
     QcStatusEffects effects;
     QcStatusEffects sentEffects;
+    /*! What the status effects last told did to his moving, by the count inputs quote (decision
+        E-992). */
+    QcMovementEpochs movementEpochs;
+    /*! The extra health left of the absorption effect (decision E-992): blows take it first. */
+    double absorption = 0.0;
     /*! \brief Fishing with a rod (QcPlayerFishing, decision E-503; not saved): the bobber cast
         (entity id, 0: none) from the hotbar slot \c {slot}, the ticks until a fish bites (-1:
         not drawn yet, the bobber does not float) and the ticks the bite still lasts. \qcfields */

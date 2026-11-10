@@ -31,8 +31,9 @@ public:
     /*! Returns the sum of the weights of all monster kinds in \a biome. */
     double total(const QString &biome) const;
     /*! Returns the highest weight among the spawn rules of \a mob that allow \a biome, without
-        the biome's own. */
-    static double ruleWeight(const QcMobDefinition &mob, const QString &biome);
+        the biome's own. With \a namedOnly (a biome of another dimension than the overworld,
+        decision E-1050) a rule without biomes does not count. */
+    static double ruleWeight(const QcMobDefinition &mob, const QString &biome, bool namedOnly);
     /*! Returns the warnings for \c {monsters} entries of the biomes in \a content that name no
         creature or one that is no monster (they are left out by the lists). */
     static QStringList problems(const QcContentRegistry &content);

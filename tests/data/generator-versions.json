@@ -1,5 +1,21 @@
 {
-    "note": "Checksums of test_generator_versions per generator version and platform (decision E-922). Version 1 is frozen since release 0.1.0 and version 2 since release 1.0.0 (QcGeneratorVersion::lastFrozen): their recorded values never change. A platform listed in 'unrecorded' skips (also in CI) and prints its values until they are recorded; a new platform may record values of a frozen version once (QC_RECORD_GENERATOR_REFERENCE=<version>, or copied from the CI log) and is then removed from 'unrecorded' (Linux: from the CI log; Windows: from the CI log, or in the VM with MSVC 2022, winnt-arm64 native, winnt-x86_64 cross-built and run under emulation). The Windows values were dropped when the river checksums were added (decision E-935); until then they equalled darwin-arm64, and winnt-x86_64 (MSVC) and linux-arm64 (GCC 16) equal it again since they were recorded for 1.0.0.",
+    "nether": {
+        "1": {
+            "darwin-arm64": {
+                "nether 42": "a53be06435c9c9226aa1adad4298111e292ed2ccc1d993275e3d25f27fc5b2e6",
+                "nether 7": "309a71c7ad88034de7e299e9f06c6675cbdeee8331b1ea32d9312db6746525ef"
+            },
+            "linux-arm64": {
+                "nether 42": "a53be06435c9c9226aa1adad4298111e292ed2ccc1d993275e3d25f27fc5b2e6",
+                "nether 7": "309a71c7ad88034de7e299e9f06c6675cbdeee8331b1ea32d9312db6746525ef"
+            },
+            "winnt-x86_64": {
+                "nether 42": "a53be06435c9c9226aa1adad4298111e292ed2ccc1d993275e3d25f27fc5b2e6",
+                "nether 7": "309a71c7ad88034de7e299e9f06c6675cbdeee8331b1ea32d9312db6746525ef"
+            }
+        }
+    },
+    "note": "Checksums of test_generator_versions per generator version and platform (decision E-922). Version 1 is frozen since release 0.1.0, version 2 since release 1.0.0 and version 3 and nether version 1 since release 1.1.0 (QcGeneratorVersion::lastFrozen): their recorded values never change. A platform listed in 'unrecorded' skips (also in CI) and prints its values until they are recorded; a new platform may record values of a frozen version once (QC_RECORD_GENERATOR_REFERENCE=<version>, or copied from the CI log) and is then removed from 'unrecorded' (Linux: from the CI log; Windows: from the CI log, or in the VM with MSVC 2022, winnt-arm64 native, winnt-x86_64 cross-built and run under emulation). The Windows values were dropped when the river checksums were added (decision E-935); until then they equalled darwin-arm64, and winnt-x86_64 (MSVC) and linux-arm64 (GCC 16) equal it again since they were recorded for 1.0.0.",
     "unrecorded": [
         "darwin-x86_64",
         "linux-x86_64",
@@ -83,6 +99,47 @@
                 "terrain 42 changed options": "7e67880fa64587b77a4140f28c15cd9e0594b8b23bdb4934b183bb1df897c68f",
                 "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
                 "terrain 7": "dbf562508f88c0c6fe8b419d3881f482224e8e7ac8ce84f21ebc09c96e74ca28",
+                "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
+                "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
+                "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
+            }
+        },
+        "3": {
+            "darwin-arm64": {
+                "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
+                "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
+                "terrain 20261017": "e7449101e97a567752864bac900befb71765680a40dc10ad1808d60c00f9e747",
+                "terrain 20261017 rivers": "69f6af3015366307e5da927540944edd91f5a1487d15b0002723088c8bb0bee4",
+                "terrain 42": "8e2c74b6f33a1cab837997dee74fb02c78715907a191e6fb186a558b96127e6d",
+                "terrain 42 changed options": "bb53c3d28c509b06a71a95e86614f53608a83f3ea9797b1da4f44333ff8b37de",
+                "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
+                "terrain 7": "2c539731958a3f05539d58d307a66810431e470d7783cdaa33e71093d49d47a4",
+                "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
+                "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
+                "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
+            },
+            "linux-arm64": {
+                "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
+                "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
+                "terrain 20261017": "e7449101e97a567752864bac900befb71765680a40dc10ad1808d60c00f9e747",
+                "terrain 20261017 rivers": "69f6af3015366307e5da927540944edd91f5a1487d15b0002723088c8bb0bee4",
+                "terrain 42": "8e2c74b6f33a1cab837997dee74fb02c78715907a191e6fb186a558b96127e6d",
+                "terrain 42 changed options": "bb53c3d28c509b06a71a95e86614f53608a83f3ea9797b1da4f44333ff8b37de",
+                "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
+                "terrain 7": "2c539731958a3f05539d58d307a66810431e470d7783cdaa33e71093d49d47a4",
+                "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
+                "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
+                "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
+            },
+            "winnt-x86_64": {
+                "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
+                "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
+                "terrain 20261017": "e7449101e97a567752864bac900befb71765680a40dc10ad1808d60c00f9e747",
+                "terrain 20261017 rivers": "69f6af3015366307e5da927540944edd91f5a1487d15b0002723088c8bb0bee4",
+                "terrain 42": "8e2c74b6f33a1cab837997dee74fb02c78715907a191e6fb186a558b96127e6d",
+                "terrain 42 changed options": "bb53c3d28c509b06a71a95e86614f53608a83f3ea9797b1da4f44333ff8b37de",
+                "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
+                "terrain 7": "2c539731958a3f05539d58d307a66810431e470d7783cdaa33e71093d49d47a4",
                 "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
                 "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
                 "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"

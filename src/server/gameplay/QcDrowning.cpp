@@ -4,6 +4,7 @@
 #include "server/gameplay/QcDrowning.h"
 
 #include "common/gameplay/QcAirSupply.h"
+#include "common/gameplay/QcEffectRules.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -36,8 +37,8 @@ bool QcDrowning::differs(QcMsg::PlayerAir sent, QcMsg::PlayerAir now)
 
 void QcDrowning::tickPlayer(QcServerClient &client)
 {
-    // A spectator, a creative player and the dead breathe freely: their air fills up.
-    const bool breathes = !client.hasBody() || client.rules().invulnerable;
+    // A spectator, a creative player, the dead and water breathing breathe freely: the air fills up.
+    const bool breathes = !client.hasBody() || client.rules().invulnerable || QcEffectRules::breathesUnderWater(m_state.content(), client.effects.all());
     const QcVec3 eyes = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const bool submerged = !breathes && QcAirSupply::submergedAt(m_state.world(), eyes);
 
@@ -65,8 +66,9 @@ void QcDrowning::tickCreatures()
     QList<quint32> drowning;
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        const bool submerged = !mob.dormant && !definition.breathesUnderWater
-                               && QcAirSupply::submergedAt(m_state.world(), QcEnvironmentDamage::eyesOf(mob, definition));
+        // Water breathing keeps creatures in air too (a witch's potion, decision E-1105).
+        const bool breathes = definition.breathesUnderWater || (mob.effects.has() && QcEffectRules::breathesUnderWater(m_state.content(), mob.effects->all()));
+        const bool submerged = !mob.dormant && !breathes && QcAirSupply::submergedAt(m_state.world(), QcEnvironmentDamage::eyesOf(mob, definition));
         if (mob.air.tick(submerged) && damages) {
             drowning.append(mob.id);
         }

@@ -22,6 +22,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"flat-layers"_s, u"Layers of a flat world for --play, bottom up, e.g. 'bedrock,59*stone,3*dirt,grass_block' (with --world-type flat)."_s,
          u"layers"_s},
         {u"game-mode"_s, u"Game mode for --play: survival (default), creative or adventure."_s, u"mode"_s, u"survival"_s},
+        {u"start-dimension"_s, u"Dimension the world of --play starts in, e.g. 'qtcraft:nether' (default: the overworld)."_s, u"name"_s},
         {u"showcase"_s, u"Start an unsaved showcase world immediately: every block, creature and item on show (same as --world-type showcase)."_s},
         {u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s},
         {u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s},
@@ -31,7 +32,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},
-        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it); message:<text> shows the message screen with that text, as after a world that could not start (test hook for screenshots, with and without --play). loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]] shows the loading screen in that state (stage content, world, joining, chunks or meshes; kind newworld, savedworld or network), '@<ms> starting' the start screen (screenshots). Without --play: multiplayer opens the main menu's multiplayer page (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen, '@<ms> hover:<x>,<y>' moves the pointer there, e.g. for a tooltip, '@<ms> open:<objectName>' opens that combo box's list, popup, dialog or menu page, '@<ms> text:<objectName>=<text>' types into a field, '@<ms> click:<objectName>' clicks that button, '@<ms> focus:<objectName>' gives that control the focus, '@<ms> fly' starts flying in creative mode)."_s,
+        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2), brewing (the same, and its bottles from slots 3 to 5) or chest (uses the block in view and moves the hotbar into it); message:<text> shows the message screen with that text, as after a world that could not start (test hook for screenshots, with and without --play). loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]] shows the loading screen in that state (stage content, world, joining, chunks or meshes; kind newworld, savedworld or network), '@<ms> starting' the start screen (screenshots). Without --play: multiplayer opens the main menu's multiplayer page (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen, '@<ms> hover:<x>,<y>' moves the pointer there, e.g. for a tooltip, '@<ms> open:<objectName>' opens that combo box's list, popup, dialog or menu page, '@<ms> text:<objectName>=<text>' types into a field, '@<ms> click:<objectName>' clicks that button, '@<ms> focus:<objectName>' gives that control the focus, '@<ms> fly' starts flying in creative mode)."_s,
          u"name"_s},
         {u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
          u"entry"_s},
@@ -103,6 +104,7 @@ QcAppOptions QcAppOptions::parse(const QGuiApplication &app)
     options.worldType = parser.isSet(u"showcase"_s) ? u"showcase"_s : parser.value(u"world-type"_s);
     options.flatLayers = parser.value(u"flat-layers"_s);
     options.gameMode = parser.value(u"game-mode"_s);
+    options.startDimension = parser.value(u"start-dimension"_s);
     options.play = parser.isSet(u"play"_s) || !options.worldType.isEmpty();
     options.world = parser.value(u"world"_s);
     options.seed = parser.value(u"seed"_s);

@@ -48,16 +48,17 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/tests.cmake)
 # A new test that starts threads, a server host or a process belongs in this list.
 set(qc_concurrency_tests
     test_texture_atlas test_material_maps test_texture_pack_controller test_mesh_scheduler test_reconciliation
-    test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_frame_driver test_survival_scenario test_persistence
-    test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
-    test_tcp_transport test_join_failure test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause test_sign_controller test_player_hud
+    test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_frame_driver test_survival_scenario test_persistence test_dimensions test_dimension_play test_dimension_client test_portals test_portal_links
+    test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_nether_bastion test_nether_fortress test_world_backup test_world_maintenance test_audio_output
+    test_tcp_transport test_tls_goodbye test_join_failure test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause test_sign_controller test_beacon_controller test_player_hud
     test_message_log test_crash_report
-    test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_draw_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_draw_client test_effects_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
-    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_chunk_unloading test_chunk_tools
+    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_generated_chunks test_version_map test_generator_switch test_generator_upgrade test_generator_blend test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
-    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_web_handbook)
+    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_world_map_nether test_web_handbook
+    test_music_player)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -68,7 +69,9 @@ set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Tests that depend on wall time or load (test_tick_scheduler, test_interpolation and others) run in
 # a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES PROCESSORS 3)
-set_tests_properties(test_dedicated_server test_server_log test_headless_cli PROPERTIES PROCESSORS 2)
+set_tests_properties(test_dedicated_server test_server_log test_headless_cli test_generator_upgrade PROPERTIES PROCESSORS 2)
+# Its conversions run on up to eight threads.
+set_tests_properties(test_generator_blend PROPERTIES PROCESSORS 8)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
 # together (known costs first), or where the next stage builds beside the run: test_light_engine
@@ -80,10 +83,20 @@ set_tests_properties(test_dedicated_server test_server_log test_headless_cli PRO
 set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
 set_tests_properties(test_dedicated_server PROPERTIES COST 70)
+set_tests_properties(test_generator_upgrade PROPERTIES COST 70)
+set_tests_properties(test_nether_fortress PROPERTIES COST 70)
+set_tests_properties(test_hydra PROPERTIES COST 70)
+set_tests_properties(test_nether_bastion PROPERTIES COST 70)
+set_tests_properties(test_progression_reachability PROPERTIES COST 30)
 set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_generator_versions PROPERTIES COST 170)
+set_tests_properties(test_nether_spawns PROPERTIES COST 170)
+set_tests_properties(test_nether_generator PROPERTIES COST 180)
+set_tests_properties(test_world_map_nether PROPERTIES COST 80)
+set_tests_properties(test_barter PROPERTIES COST 60)
 set_tests_properties(test_weather test_fire PROPERTIES COST 140)
 set_tests_properties(test_tick_control test_terrain_liquids PROPERTIES COST 70)
+set_tests_properties(test_dimension_parts PROPERTIES COST 17)
 set_tests_properties(test_door_steering PROPERTIES COST 90)
 set_tests_properties(test_scenarios test_mods test_signal_network test_server_light PROPERTIES COST 80)
 set_tests_properties(test_shadewalkers test_jungle_temples test_temple_entrances test_world_map_preview PROPERTIES COST 60)
@@ -96,6 +109,7 @@ set_tests_properties(test_coastal_towers test_monster_spawning PROPERTIES COST 9
 set_tests_properties(test_biome_spawning PROPERTIES COST 80)
 set_tests_properties(test_rivers PROPERTIES COST 240)
 set_tests_properties(test_river_deltas PROPERTIES COST 250)
+set_tests_properties(test_generator_blend PROPERTIES COST 220)
 set_tests_properties(test_climate_order PROPERTIES COST 110)
 set_tests_properties(test_flower_valley PROPERTIES COST 120)
 set_tests_properties(test_cold_edges test_sand_golems PROPERTIES COST 80)
@@ -109,7 +123,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # CPU time is under a quarter of their wall time, and TSan slows them 1.2-3.5 x instead of 7-10 x.
 # The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
 # with a smaller factor. A new test that mostly waits belongs here.
-set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client test_push_client test_draw_client
+set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client test_push_client test_draw_client test_effects_client
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
@@ -120,7 +134,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
 # tests that read sources compare against the folder. Runtime data (content, translations, mods,
 # test data) selects every test anyway.
-set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
+set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots test_generator_upgrade
     test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(test_web_handbook PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${PROJECT_SOURCE_DIR}/web/handbook/search.js")
 if(APPLE)
@@ -133,6 +147,8 @@ set_tests_properties(test_ui_palette PROPERTIES
 set_tests_properties(test_content_pack PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/common/content/loader/QcContentPackLoader.cpp")
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/frames/LazyScreen.qml;${PROJECT_SOURCE_DIR}/src/app/qml/frames/KeepAlive.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
+set_tests_properties(test_music_library PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/content/qtcraft/music")
+set_tests_properties(test_music_stream test_music_player PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/tests/data/music/stereo_tone.ogg;${PROJECT_SOURCE_DIR}/tests/data/music/mono_tone.ogg")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
 set_tests_properties(test_generator_versions PROPERTIES REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
@@ -153,6 +169,44 @@ if(NOT WIN32)
     set_tests_properties(script_convert_doc_comments script_api_docs_stage script_code_map PROPERTIES REQUIRED_FILES
         "${PROJECT_SOURCE_DIR}/scripts/qc_doc_comments.py;${PROJECT_SOURCE_DIR}/scripts/qc_doc_format.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()
+
+# Limits raised after the chain verify of 1.1.0 (TSan at least 15 x the fastest debug time).
+foreach(entry IN ITEMS
+        app_offscreen_admin_layout:TIMEOUT:810
+        app_offscreen_hud_layout:TIMEOUT:1200
+        app_offscreen_menu_layout:TIMEOUT:960
+        app_offscreen_menu_pad:TIMEOUT:870
+        app_offscreen_ui_scale_100:TIMEOUT:2640
+        app_offscreen_ui_scale_100_1920x1080:TIMEOUT:2790
+        app_offscreen_ui_scale_100_2560x1440:TIMEOUT:2850
+        app_offscreen_ui_scale_100_3840x2160:TIMEOUT:3120
+        app_offscreen_ui_scale_200:TIMEOUT:2670
+        script_check_large_files:TIMEOUT:120
+        test_block_entity_compare:TIMEOUT:150
+        test_character_screen_qml:TIMEOUT:510
+        test_daylight_sensor:TIMEOUT:150
+        test_invulnerability:TIMEOUT:150
+        test_minecart_momentum:COST:60
+        test_nether_generator:TIMEOUT:750
+        test_pet_rules:COST:70
+        test_progression_reachability:TIMEOUT:660
+        test_server_login:COST:80
+        test_showcase_world:TIMEOUT:330
+        test_signal_hoppers:COST:60
+        test_signal_showcase:TIMEOUT:300
+        test_taming:COST:70
+        test_texture_atlas:TIMEOUT:180
+        test_world_map_nether:TIMEOUT:360
+        test_world_map_preview:TIMEOUT:750
+)
+    string(REPLACE ":" ";" parts "${entry}")
+    list(GET parts 0 name)
+    list(GET parts 1 property)
+    list(GET parts 2 value)
+    if(TEST ${name})
+        set_tests_properties(${name} PROPERTIES ${property} ${value})
+    endif()
+endforeach()
 
 # Tests whose result depends on wall time or machine load: label `timing`, run by scripts/verify.sh
 # in a phase of their own with few jobs on a quiet machine (decision E-550).

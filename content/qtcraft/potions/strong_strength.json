@@ -1,0 +1,12 @@
+{
+    "name": "strong_strength",
+    "variantOf": "strength",
+    "variant": "strong",
+    "effects": [
+        {
+            "effect": "strength",
+            "seconds": 90,
+            "level": 2
+        }
+    ]
+}

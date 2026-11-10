@@ -8,6 +8,8 @@
 qc_add_test(test_protocol SOURCES protocol/test_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk_protocol SOURCES protocol/test_chunk_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_entity_protocol SOURCES protocol/test_entity_protocol.cpp LIBRARIES qc_common)
+# The boss bar: message, client bars, armour parts in the content sync (decisions E-1126, E-1127).
+qc_add_test(test_boss_bars SOURCES protocol/test_boss_bars.cpp LIBRARIES qc_clientcore qc_base_content)
 qc_add_test(test_game_mode_protocol SOURCES protocol/test_game_mode_protocol.cpp LIBRARIES qc_common)
 # Multiplayer (stage 25, decisions E-251 to E-256).
 qc_add_test(test_login_protocol SOURCES protocol/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)
@@ -18,6 +20,8 @@ if(QC_TLS_ENABLED)
     target_compile_definitions(test_tls_credentials PRIVATE QC_TEST_OPENSSL_PREFIX="${QC_OPENSSL_ROOT_FOUND}")
 endif()
 qc_add_test(test_tcp_transport SOURCES protocol/test_tcp_transport.cpp fixtures/QcTestTls.h LIBRARIES qc_network Qt::Network)
+# The goodbye of a TLS connection steps from the event loop only (decision E-1076).
+qc_add_test(test_tls_goodbye SOURCES protocol/test_tls_goodbye.cpp fixtures/QcTestTls.h LIBRARIES qc_network Qt::Network)
 qc_add_test(test_latency SOURCES protocol/test_latency.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 270)
 # The admin channel (stage 77.1, decision E-848).
 qc_add_test(test_admin_protocol SOURCES protocol/test_admin_protocol.cpp LIBRARIES qc_common)

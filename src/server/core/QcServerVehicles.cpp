@@ -9,6 +9,7 @@ QcServerVehicles::QcServerVehicles(QcServerState &state, QcServerSounds &sounds,
     : m_state(state)
     , m_minecarts(state, sounds, inventory, screens)
     , m_boats(state, sounds, inventory)
+    , m_mounts(state, sounds, inventory)
 {
 }
 
@@ -23,28 +24,31 @@ bool QcServerVehicles::use(QcServerClient &client, quint32 id)
     if (vehicleOf(client) != 0) {
         return m_state.entities().minecarts().find(id) || m_state.entities().boats().find(id);
     }
-    return minecarts().use(client, id) || boats().use(client, id);
+    return minecarts().use(client, id) || boats().use(client, id) || mounts().use(client, id);
 }
 
 bool QcServerVehicles::steer(QcServerClient &client, const QcPlayerInput &input)
 {
-    return minecarts().steer(client, input) || boats().steer(client, input);
+    return minecarts().steer(client, input) || boats().steer(client, input) || mounts().steer(client, input);
 }
 
 void QcServerVehicles::leave(QcServerClient &client)
 {
     minecarts().leave(client);
     boats().leave(client);
+    mounts().leave(client);
 }
 
 void QcServerVehicles::tick()
 {
     minecarts().tick();
     boats().tick();
+    mounts().tick();
 }
 
 quint32 QcServerVehicles::vehicleOf(const QcServerClient &client) const
 {
     const quint32 boat = boats().vehicleOf(client);
-    return boat != 0 ? boat : minecarts().vehicleOf(client);
+    const quint32 cart = boat != 0 ? boat : minecarts().vehicleOf(client);
+    return cart != 0 ? cart : mounts().vehicleOf(client);
 }

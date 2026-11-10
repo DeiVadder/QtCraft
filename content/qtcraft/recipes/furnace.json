@@ -7,7 +7,7 @@
         "###"
     ],
     "key": {
-        "#": "cobblestone"
+        "#": "#stone_crafting_materials"
     },
     "result": {
         "item": "furnace"

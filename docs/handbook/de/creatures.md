@@ -2,9 +2,38 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Borstenkeiler](#mob-qtcraft-bristleboar) · [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Glutgeist](#mob-qtcraft-ember_wraith) · [Hauerling](#mob-qtcraft-tuskling) · [Hauerling-Recke](#mob-qtcraft-tuskling_bruiser) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Klagegeist](#mob-qtcraft-wailer) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kleiner Magmaschleim](#mob-qtcraft-magma_slime_small) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Lavastelze](#mob-qtcraft-lava_wader) · [Magmaschleim](#mob-qtcraft-magma_slime) · [Moderhauer](#mob-qtcraft-rottusk) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Tintenfisch](#mob-qtcraft-squid) · [Verkohlte Hydra](#mob-qtcraft-charred_hydra) · [Verkohltes Skelett](#mob-qtcraft-charred_skeleton) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-bristleboar"></a>Borstenkeiler
+
+Ein schweres Hauertier der Karmesinwälder mit einem hellen Kamm aus Borsten. Es stürmt auf jeden los, den es sieht. Mit Karmesinpilzen vermehren sich zwei von ihnen, und von Wirrpilzen und Portalen halten sie sich fern. Es gibt rohes Schweinefleisch und Leder.
+
+| | |
+|---|---|
+| ID | `qtcraft:bristleboar` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 40 Lebenspunkte |
+| Größe | 1,3 m breit, 1,4 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,6 m/s beim Verfolgen |
+| Angriff | 6 Schaden bis 1,8 m, alle 2 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 9 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Vermehrt sich mit | [Karmesinpilz](blocks.md#block-qtcraft-crimson_fungus) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Beute | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) (2–4×), [Leder](items.md#item-qtcraft-leather) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-villager"></a>Dorfbewohner
 
@@ -164,9 +193,76 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
 
+### <a id="mob-qtcraft-ember_wraith"></a>Glutgeist
+
+Ein Stapel glühender Kohle hinter einer Maske, umringt von Platten, die sich von selbst drehen. Er ruht auf dem Boden einer Festung und steigt auf, sobald er jemanden sieht. Erst flammt er auf, dann feuert er drei kleine Feuerkugeln kurz nacheinander und wartet; aus der Nähe schlägt er mit seinem brennenden Körper zu. Wasser schadet ihm, Schneebälle auch. Nur wer ihn selbst besiegt, bekommt eine Glutrute.
+
+| | |
+|---|---|
+| ID | `qtcraft:ember_wraith` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,8 m hoch |
+| Geschwindigkeit | 2,3 m/s |
+| Angriff | 6 Schaden bis 2 m, alle 1 s |
+| Sieht Spieler bis | 48 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 15 von 15 |
+| Beute | [Glutrute](items.md#item-qtcraft-ember_rod) (50 %, nur wenn ein Spieler tötet) |
+
+### <a id="mob-qtcraft-tuskling"></a>Hauerling
+
+Das lebende Keilervolk der Wüsten und Karmesinwälder, mit breitem Rüssel, nach oben gebogenen Hauern und Gold an den Armen. Ein Hauerling greift jeden an, der kein Gold trägt, lässt dich aber schon mit einem einzigen goldenen Rüstungsteil in Ruhe. Gib ihm einen Goldbarren oder wirf ihn hin: Er betrachtet das Gold ein paar Sekunden und wirft dir etwas dafür zu. Wer in seiner Nähe Goldblöcke oder Golderz abbaut oder vor seinen Augen eine Truhe öffnet, hat bald jeden Hauerling ringsum gegen sich. Junge bleiben jung und spielen nur.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 4,2 m/s beim Verfolgen |
+| Angriff | 5 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 15 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Goldschwert](tools.md#item-qtcraft-golden_sword) (8,5 %) |
+| Rudel | schlägst du einen, jagen dich auch die anderen im Umkreis von 16 m |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
+
+### <a id="mob-qtcraft-tuskling_bruiser"></a>Hauerling-Recke
+
+Der Veteran der Hauerlinge, in dunkler Rüstung und schwerem Gold, mit einer goldenen Axt. Ein Recke steht seit ihrem Bau in einer Bastionsruine und kommt nicht wieder, wenn er tot ist. Er greift an, sobald er dich sieht, egal was du trägst, und Gold bedeutet ihm nichts: Nichts kauft ihn los. Er schlägt hart zu und fällt erst nach vielen Treffern.
+
+| | |
+|---|---|
+| ID | `qtcraft:tuskling_bruiser` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 50 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 4,2 m/s beim Verfolgen |
+| Angriff | 7 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Goldaxt](tools.md#item-qtcraft-golden_axe) (8,5 %) |
+
 ### <a id="mob-qtcraft-witch"></a>Hexe
 
-Erscheint nur in Hexenhütten im Sumpf: überall über oder unter der Grundfläche einer Hütte, im Dunkeln wie andere Monster. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Sie ist immun gegen Gift.
+Ein seltenes Monster der Nacht: Wo im Dunkeln andere Monster erscheinen, kommt ab und zu stattdessen eine Hexe, und in der Grundfläche einer Hexenhütte im Sumpf kommen nur Hexen. Sie hält Abstand und wirft Wurftränke, die sie nach ihrem Ziel wählt: ab 8 Blöcken Langsamkeit, solange du nicht verlangsamt bist, Gift, solange du mindestens 8 Leben hast und nicht vergiftet bist, aus der Nähe ab und zu Schwäche, sonst Schaden. Sie trinkt, wenn sie es braucht: unter Wasser Wasseratmung, brennend Feuerresistenz, verletzt Heilung, Schnelligkeit, wenn du weit weg bist; solange sie trinkt, bleibt sie stehen. Sie ist immun gegen Gift. Sie hinterlässt ein bis drei Ziehungen aus Leuchtsteinstaub, Zucker, Signalstaub, Spinnenaugen, Glasflaschen, Schwarzpulver und Stöcken; stirbt sie beim Trinken, ab und zu den Trank in ihrer Hand.
 
 | | |
 |---|---|
@@ -176,8 +272,22 @@ Erscheint nur in Hexenhütten im Sumpf: überall über oder unter der Grundfläc
 | Größe | 0,6 m breit, 1,95 m hoch |
 | Geschwindigkeit | 1,2 m/s beim Gehen, 2,4 m/s beim Verfolgen |
 | Sieht Spieler bis | 16 m |
-| Erscheint | nie von selbst (/summon, Showcase-Welt) |
-| Beute | [Glasflasche](items.md#item-qtcraft-glass_bottle) (50 %), [Zucker](items.md#item-qtcraft-sugar) (40 %), [Stock](items.md#item-qtcraft-stick) (40 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (30 %), [Signalstaub](blocks.md#block-qtcraft-signal_dust) (30 %) |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 5 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Leuchtsteinstaub](items.md#item-qtcraft-glowstone_dust) (0–2×), [Zucker](items.md#item-qtcraft-sugar) (0–2×), [Signalstaub](blocks.md#block-qtcraft-signal_dust) (0–2×), [Spinnenauge](items.md#item-qtcraft-spider_eye) (0–2×), [Glasflasche](items.md#item-qtcraft-glass_bottle) (0–2×), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (0–2×), [Stock](items.md#item-qtcraft-stick) (0–2×) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
 
 ### <a id="mob-qtcraft-cave_spider"></a>Höhlenspinne
 
@@ -325,6 +435,39 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 
 Alle Biome.
 
+### <a id="mob-qtcraft-wailer"></a>Klagegeist
+
+Ein riesiges leeres Leichentuch hinter einer bleichen Maske, das hoch über der Lava treibt. Sein Klagen trägt weit. Es speit Feuerkugeln auf jeden, den es sieht; wer eine im Flug trifft, schickt sie zurück, und nichts holt einen Klagegeist schneller herunter.
+
+| | |
+|---|---|
+| ID | `qtcraft:wailer` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 3 m breit, 3,3 m hoch |
+| Geschwindigkeit | 0,8 m/s |
+| Sieht Spieler bis | 64 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 50 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Leuchtet | 4 von 15 |
+| Beute | [Klageträne](items.md#item-qtcraft-wailer_tear) (50 %), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (65 %), [Schwarzpulver](items.md#item-qtcraft-gunpowder) (30 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas)
+
 ### <a id="mob-qtcraft-kjut_child"></a>Kleiner Kjut
 
 Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Faden um sein Elternteil kreist, wie ein Signal an seinem Slot, bis er dich sieht. Einzeln erschlagen lässt es manchmal Funkengel fallen; mit seinem Elternteil verpufft es und lässt dann Schwarzpulver zurück.
@@ -341,6 +484,23 @@ Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Fa
 | Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Leuchtet | 15 von 15 |
 | Beute | [Funkengel](items.md#item-qtcraft-spark_gel) (50 %) |
+
+### <a id="mob-qtcraft-magma_slime_small"></a>Kleiner Magmaschleim
+
+Ein Stück Magmaschleim, noch immer glühend und noch immer zornig.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_slime_small` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 4 Lebenspunkte |
+| Größe | 0,5 m breit, 0,5 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 3 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,1 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 5 von 15 |
+| Beute | [Magmacreme](items.md#item-qtcraft-magma_cream) (10 %) |
 
 ### <a id="mob-qtcraft-cow"></a>Kuh
 
@@ -396,6 +556,106 @@ Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwa
 **Erscheint in Biomen**
 
 [Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
+
+### <a id="mob-qtcraft-lava_wader"></a>Lavastelze
+
+Ein langbeiniger Vogel der Lavameere, der auf der Schmelze wie auf einem Boden schreitet und niemandem etwas tut. Mit einem Sattel lässt er sich reiten, und solange man einen Wirrpilz an der Angel vor ihn hält, geht er, wohin man schaut.
+
+| | |
+|---|---|
+| ID | `qtcraft:lava_wader` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,9 m breit, 1,7 m hoch |
+| Geschwindigkeit | 1,2 m/s |
+| Erscheint | Tag und Nacht |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 0 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Beute | [Faden](items.md#item-qtcraft-string) (2×), [Faden](items.md#item-qtcraft-string) (50 %), [Faden](items.md#item-qtcraft-string) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas), [Karmesinwald](biomes.md#biome-qtcraft-crimson_forest), [Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Wirrwald](biomes.md#biome-qtcraft-warped_forest)
+
+### <a id="mob-qtcraft-magma_slime"></a>Magmaschleim
+
+Krustenplatten, die eine Naht aus glühender Schmelze zusammenhält. Es hüpft auf alles zu, was es sieht, Feuer macht ihm nichts, und im Tod zerfällt es in kleinere Stücke.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_slime` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 1 m breit, 1 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 2,6 m/s beim Verfolgen |
+| Angriff | 4 Schaden bis 1,5 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Leuchtet | 7 von 15 |
+| Beute | [Magmacreme](items.md#item-qtcraft-magma_cream) (25 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Basaltdeltas](biomes.md#biome-qtcraft-basalt_deltas)
+
+### <a id="mob-qtcraft-rottusk"></a>Moderhauer
+
+Ein gebeugtes, längst gestorbenes Keilervolk mit blanken Hauern, Knochenkragen und goldener Klinge. Es lässt jeden in Ruhe, bis jemand zuschlägt: Dann wendet sich jeder Moderhauer in Hörweite gegen den Angreifer. Feuer schadet ihm nicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:rottusk` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,8 m/s beim Verfolgen |
+| Angriff | 5 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 20 m |
+| Erscheint | Tag und Nacht |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 100 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Goldnugget](items.md#item-qtcraft-gold_nugget) (60 %), [Goldnugget](items.md#item-qtcraft-gold_nugget) (30 %), [Goldbarren](items.md#item-qtcraft-gold_ingot) (2,5 %), [Goldschwert](tools.md#item-qtcraft-golden_sword) (4 %) |
+| Rudel | schlägst du einen, jagen dich auch die anderen im Umkreis von 24 m |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes)
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Karmesinwald](biomes.md#biome-qtcraft-crimson_forest)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 
@@ -498,6 +758,12 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 Alle Biome.
+
+**Erscheint auch**
+
+Tag und Nacht
+
+[Netherwüste](biomes.md#biome-qtcraft-nether_wastes), [Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley), [Wirrwald](biomes.md#biome-qtcraft-warped_forest)
 
 ### <a id="mob-qtcraft-slime"></a>Schleim
 
@@ -619,6 +885,12 @@ Alle Biome.
 
 [Tundra](biomes.md#biome-qtcraft-tundra) (20)
 
+**Erscheint auch**
+
+Tag und Nacht
+
+[Seelensandtal](biomes.md#biome-qtcraft-soul_sand_valley)
+
 ### <a id="mob-qtcraft-spider"></a>Spinne
 
 Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an. Tagsüber im Freien lässt sie dich in Ruhe, außer du schlägst sie; nachts und in Höhlen jagt sie dich. Breit: Durch schmale Lücken passt sie nicht. Gift schadet ihr nicht.
@@ -675,6 +947,38 @@ Ein harmloses Wesen der Flüsse, Seen und Meere unter dem Meeresspiegel. Es schw
 **Erscheint in Biomen**
 
 Alle Biome.
+
+### <a id="mob-qtcraft-charred_hydra"></a>Verkohlte Hydra
+
+Ein Boss aus schwarzem Gebein mit drei Schädeln auf den Schultern, beschworen und nie geboren. Er schwebt über seinen Gegnern und spuckt Schädel auf Spieler und auf jedes Wesen, das nicht untot ist; ab und zu einen langsamen blauen Schädel, der sogar Obsidian bricht. Jeder Schädel lässt verdorren. Wer ihn verletzt, sieht ihn die Blöcke um sich zerschlagen. Unter der Hälfte seiner Gesundheit legt er Rüstung an: Pfeile prallen ab, und er kommt zum Nahkampf herunter. Er heilt ständig langsam. Er hinterlässt einen Netherstern.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_hydra` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 300 Lebenspunkte |
+| Größe | 0,9 m breit, 3,5 m hoch |
+| Geschwindigkeit | 3 m/s beim Gehen, 8,6 m/s beim Verfolgen |
+| Sieht Spieler bis | 40 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 2 von 15 |
+| Beute | [Netherstern](items.md#item-qtcraft-nether_star) |
+
+### <a id="mob-qtcraft-charred_skeleton"></a>Verkohltes Skelett
+
+Ein hohes, vom Feuer geschwärztes Skelett mit einer Glut hinter den Rippen und einem Steinschwert. Es kommt schneller auf dich zu, als man denkt, und seine Schläge lassen verdorren: Die Herzen werden dunkel und schwinden, bis zum letzten. Feuer kann ihm nichts anhaben. Es hinterlässt Kohle und Knochen, selten sein Schwert und, wer es selbst besiegt, seinen Schädel.
+
+| | |
+|---|---|
+| ID | `qtcraft:charred_skeleton` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,7 m breit, 2,4 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 3,9 m/s beim Verfolgen |
+| Angriff | 8 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Kohle](items.md#item-qtcraft-coal) (33,33 %), [Knochen](items.md#item-qtcraft-bone) (0–2×), [Verkohlter Schädel](blocks.md#block-qtcraft-charred_skull) (2,5 %, nur wenn ein Spieler tötet), [Steinschwert](tools.md#item-qtcraft-stone_sword) (8,5 %, nur wenn ein Spieler tötet) |
 
 ### <a id="mob-qtcraft-wolf"></a>Wolf
 

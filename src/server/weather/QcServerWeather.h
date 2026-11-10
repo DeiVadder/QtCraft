@@ -8,6 +8,7 @@
 #include "common/protocol/QcMessages.h"
 #include "common/world/QcPrecipitationTable.h"
 #include "common/world/QcWeather.h"
+#include "server/dimensions/QcPerDimension.h"
 #include "server/weather/QcWeatherCycle.h"
 
 #include <QHash>
@@ -50,18 +51,28 @@ public:
 
     explicit QcServerWeather(QcServerState &state);
 
-    /*! One tick of a simulated world: the course, strikes and what the players are sent. */
+    /*! One tick of the world's weather: its course, once for all dimensions. */
+    void advance();
+    /*! One tick of a simulated dimension: strikes and what its players are sent. */
     void tick();
+    /*! Sends each playing client of the current dimension the atmosphere of the biome at his feet
+        when it is not the one he has (decision E-1120); runs in every tick, also in a frozen
+        world. */
+    void syncAtmospheres();
     /*! Sends \a client the weather where its player stands, now (joining). */
     void sendTo(QcServerClient &client);
 
-    /*! Returns the world's weather (spell, ticks left, strengths). */
+    /*! Returns the weather in the current dimension (spell, ticks left, strengths): the world's,
+        or none in a dimension without weather. */
     const QcWeatherState &state() const;
     /*! Begins a spell of \a kind lasting \a ticks or as long as the seed says (/weather). */
     void set(QcWeatherKind kind, std::optional<qint64> ticks);
 
     /*! Returns the climate of the column (\a x, \a z) from its biome. */
     QcWeather::Climate climateAt(int x, int z) const;
+    /*! Returns the biome of the column (\a x, \a z); null without one (flat, void and showcase
+        worlds). */
+    const QcBiomeDefinition *biomeAt(int x, int z) const;
     /*! Returns the highest cell of the column (\a x, \a z) that keeps rain and snow out;
         QcWorld::worldHeight for a column that is not loaded. */
     int columnTop(int x, int z) const;
@@ -96,6 +107,8 @@ private:
     // Whether `next` differs enough from what the client got to be sent.
     static bool worthSending(const std::optional<QcMsg::Weather> &sent, QcMsg::Weather next);
     void syncClients();
+    // Sends `client` the atmosphere of the biome at its feet when it is not the one it has.
+    void syncAtmosphere(QcServerClient &client) const;
     // During a thunderstorm: maybe one strike near each player.
     void strikeNearPlayers();
 
@@ -104,11 +117,19 @@ private:
     StrikeHook m_strikeHook;
     quint64 m_strikes = 0;
     int m_meanStrikeTicks = 1;
-    // Climate by column, filled on demand (the biome of a column never changes), in two
+    // Biome by column, filled on demand (the biome of a column never changes), in two
     // generations: when the recent one is full it becomes the older one and the oldest is dropped;
     // a column found in the older one moves back to the recent one. So the columns around the
     // players stay cached while they move, and the cache holds at most 2 × climateGeneration.
     static constexpr qsizetype climateGeneration = 32768;
-    mutable QHash<quint64, QcWeather::Climate> m_climates;
-    mutable QHash<quint64, QcWeather::Climate> m_olderClimates;
+    // The biomes of the columns of a dimension (the generators differ); null for none.
+    struct Climates
+    {
+        QHash<quint64, const QcBiomeDefinition *> biomes;
+        QHash<quint64, const QcBiomeDefinition *> olderBiomes;
+    };
+    // Of the current dimension.
+    Climates &here() const;
+
+    QcPerDimension<Climates> m_perDimension;
 };

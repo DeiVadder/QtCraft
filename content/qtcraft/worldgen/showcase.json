@@ -15,6 +15,7 @@
         { "name": "liquids", "match": { "liquid": true } },
         { "name": "parts", "match": { "part": true } },
         { "name": "signal", "match": { "signal": true } },
+        { "name": "nether", "match": { "nameContains": ["nether", "soul_", "basalt", "blackstone", "quartz", "glowstone"] } },
         { "name": "light", "match": { "light": true } },
         { "name": "plants", "match": { "plant": true } },
         { "name": "functional", "match": { "functional": true } },

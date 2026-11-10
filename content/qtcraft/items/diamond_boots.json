@@ -49,7 +49,8 @@
                 ],
                 "texture": "diamond_armour_trim"
             }
-        ]
+        ],
+        "toughness": 2.0
     },
     "dispense": "equip"
 }

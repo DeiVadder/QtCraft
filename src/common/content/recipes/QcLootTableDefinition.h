@@ -21,7 +21,8 @@ struct QcLootTableDefinition
         /*! Relative chance against the other entries of the pool (\c {"weight"}, 0 to
             maxWeight, default 1). */
         int weight = 1;
-        /*! Fewest items a draw gives (\c {"count"}, a number or the first of [min, max]). */
+        /*! Fewest items a draw gives (\c {"count"}, a number or the first of [min, max];
+            0 or more). */
         int minCount = 1;
         /*! Most items a draw gives (\c {"count"}, the number or the second of [min, max]). */
         int maxCount = 1;

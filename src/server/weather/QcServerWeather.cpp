@@ -3,6 +3,7 @@
 
 #include "server/weather/QcServerWeather.h"
 
+#include "common/content/worldgen/QcWorldgenDefinitions.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerClient.h"
 #include "server/core/QcServerState.h"
@@ -33,15 +34,26 @@ QcServerWeather::QcServerWeather(QcServerState &state)
 {
 }
 
+QcServerWeather::Climates &QcServerWeather::here() const
+{
+    return m_perDimension.of(m_state.current());
+}
+
 const QcWeatherState &QcServerWeather::state() const
 {
-    return m_state.info().weather;
+    // A dimension without weather is always calm; the world's spell goes on for the others.
+    static const QcWeatherState calm;
+    return m_state.current().definition().weather ? m_state.info().weather : calm;
+}
+
+void QcServerWeather::advance()
+{
+    QcWorldInfo &info = m_state.info();
+    info.weather = QcWeatherCycle::next(info.weather, info.seed, info.weatherCycle);
 }
 
 void QcServerWeather::tick()
 {
-    QcWorldInfo &info = m_state.info();
-    info.weather = QcWeatherCycle::next(info.weather, info.seed, info.weatherCycle);
     strikeNearPlayers();
     syncClients();
 }
@@ -54,23 +66,28 @@ void QcServerWeather::set(QcWeatherKind kind, std::optional<qint64> ticks)
 
 QcWeather::Climate QcServerWeather::climateAt(int x, int z) const
 {
+    return QcWeather::climateOf(biomeAt(x, z));
+}
+
+const QcBiomeDefinition *QcServerWeather::biomeAt(int x, int z) const
+{
     const quint64 key = columnKey(x, z);
-    if (const auto it = m_climates.constFind(key); it != m_climates.constEnd()) {
+    if (const auto it = here().biomes.constFind(key); it != here().biomes.constEnd()) {
         return *it;
     }
 
     // The cache only spares the generator's climate noise; it stays small around the players.
-    if (m_climates.size() >= climateGeneration) {
-        m_olderClimates = std::exchange(m_climates, {});
+    if (here().biomes.size() >= climateGeneration) {
+        here().olderBiomes = std::exchange(here().biomes, {});
     }
-    if (const auto it = m_olderClimates.constFind(key); it != m_olderClimates.constEnd()) {
-        m_climates.insert(key, *it);
+    if (const auto it = here().olderBiomes.constFind(key); it != here().olderBiomes.constEnd()) {
+        here().biomes.insert(key, *it);
         return *it;
     }
-    const QString biome = m_state.world().generator().biomeAt(x, z);
-    const QcWeather::Climate climate = QcWeather::climateOf(biome.isEmpty() ? nullptr : m_state.content().worldgen().biome(biome));
-    m_climates.insert(key, climate);
-    return climate;
+    const QString name = m_state.world().generator().biomeAt(x, z);
+    const QcBiomeDefinition *biome = name.isEmpty() ? nullptr : m_state.content().worldgen().biome(name);
+    here().biomes.insert(key, biome);
+    return biome;
 }
 
 int QcServerWeather::columnTop(int x, int z) const
@@ -173,5 +190,25 @@ void QcServerWeather::syncClients()
             client->connection->send(next);
             client->sentWeather = next;
         }
+    }
+}
+
+void QcServerWeather::syncAtmospheres()
+{
+    for (const auto &client : m_state.clients()) {
+        if (client->state == QcServerClient::State::Playing) {
+            syncAtmosphere(*client);
+        }
+    }
+}
+
+void QcServerWeather::syncAtmosphere(QcServerClient &client) const
+{
+    const QcBlockPos feet = feetOf(client);
+    const QcBiomeDefinition *biome = biomeAt(feet.x, feet.z);
+    QcMsg::Atmosphere next{biome ? biome->atmosphere : QcBiomeAtmosphere{}};
+    if (client.sentAtmosphere != next) {
+        client.connection->send(next);
+        client.sentAtmosphere = std::move(next);
     }
 }

@@ -1,0 +1,15 @@
+{
+    "name": "ancient_debris",
+    "parent": "diamonds",
+    "icon": "ancient_debris",
+    "frame": "goal",
+    "handbook": "chapter:netherite",
+    "criteria": {
+        "ancient_debris": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "ancient_debris"
+            }
+        }
+    }
+}

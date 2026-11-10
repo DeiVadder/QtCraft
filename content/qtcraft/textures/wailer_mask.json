@@ -1,0 +1,8 @@
+{
+    "name": "wailer_mask",
+    "pattern": "speckle",
+    "primary": "#f0ebdc",
+    "secondary": "#cfc7ae",
+    "variation": 0.05,
+    "seed": 7303
+}

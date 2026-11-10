@@ -1,0 +1,6 @@
+{
+    "name": "slow_falling",
+    "icon": "feather",
+    "colour": "#f3cfb9",
+    "maxFallSpeed": 2.0
+}

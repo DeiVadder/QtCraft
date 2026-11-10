@@ -236,7 +236,10 @@ private slots:
                 QVERIFY2(outside.isEmpty(), qPrintable(feature.name));
                 QVERIFY(!leaves.isEmpty());
 
-                // Every leaf has a trunk block within the reach of leaf decay.
+                // Every leaf has a trunk block within the reach of leaf decay; caps of fungi do not decay.
+                if (params.fungus()) {
+                    continue;
+                }
                 for (const QcBlockPos &leaf : std::as_const(leaves)) {
                     const bool held = std::ranges::any_of(trunks, [&](QcBlockPos trunk) {
                         return std::abs(trunk.x - leaf.x) <= QcPlantManager::leafReach && std::abs(trunk.y - leaf.y) <= QcPlantManager::leafReach

@@ -23,6 +23,19 @@ using Section = QcHandbookEntry::Section;
 
 namespace {
 
+// The label naming what a block with `support` needs.
+QString supportValue(QcBlockSupport support)
+{
+    switch (support) {
+    case QcBlockSupport::Below:
+        return u"value.supportBelow"_s;
+    case QcBlockSupport::Above:
+        return u"value.supportAbove"_s;
+    default:
+        return u"value.supportAttached"_s;
+    }
+}
+
 // Builds the page of one block: facts in a fixed order, then the sections.
 class BlockPage
 {
@@ -324,6 +337,9 @@ void BlockPage::addPhysicalFacts()
         addFact(u"flammable"_s, label(u"unit.flammable"_s).arg(block.fire.ignite).arg(block.fire.burn));
     }
     addFlag(block.fire.eternal, u"eternalFire"_s);
+    if (!block.fire.fireAbove.isEmpty()) {
+        addFact(u"fireAbove"_s, {}, {m_links.blockLink(block.fire.fireAbove)});
+    }
     // Burning bodies and lighting fire next to it (decision E-393).
     if (block.fire.setsAlightSeconds > 0) {
         addFact(u"setsAlight"_s, m_text.seconds(block.fire.setsAlightSeconds));
@@ -382,7 +398,7 @@ void BlockPage::addSupportFacts()
             support.links.append(m_links.blockLink(ground));
         }
     } else {
-        support.value = label(block.support == QcBlockSupport::Below ? u"value.supportBelow"_s : u"value.supportAttached"_s);
+        support.value = label(supportValue(block.support));
     }
     m_entry.facts.append(std::move(support));
 }
@@ -403,6 +419,12 @@ void BlockPage::addUseFacts()
     }
     if (block.opensAnvil) {
         addFact(u"anvil"_s, label(u"value.anvilScreen"_s));
+    }
+    if (block.opensSmithing) {
+        addFact(u"smithing"_s, label(u"value.smithingScreen"_s));
+    }
+    if (block.opensBeacon) {
+        addFact(u"beacon"_s, label(u"value.beaconScreen"_s));
     }
     addAnvilSwapFact();
     if (block.containerSlots > 0) {

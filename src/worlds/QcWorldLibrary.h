@@ -25,6 +25,8 @@ struct QcNewWorld
     int generatorVersion = QcGeneratorVersion::current;
     /*! Game mode of players who join for the first time (decision E-282). */
     QcGameMode gameMode = QcGameMode::Survival;
+    /*! The dimension players start in (decision E-1110); empty for the overworld. */
+    QString startDimension = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 };
 
 /*! \brief The saved worlds of this installation: one sub-directory per world below \c {root}. */

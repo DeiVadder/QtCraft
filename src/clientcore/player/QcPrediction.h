@@ -88,10 +88,14 @@ public:
         input steps the boat and the player sits in it. Returns the input to send; it carries the
         next sequence number and is kept until acknowledged. */
     QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement, const QcVec3 &push = {});
-    /*! Sets \a factor, the factor of the player's status effects on their speed (slowness,
-        decision E-838), as the server told them; the next inputs carry it, so replaying them
-        moves as predicted. */
-    void setSpeedFactor(float factor) { m_intent.speedFactor = factor; }
+    /*! Sets \a effects, what the player's status effects do to his steps, as the server told them
+        with the count \a epoch (decision E-992); the next inputs carry both, so replaying them
+        moves as predicted and the server steps them alike. */
+    void setMovementEffects(QcMovementEffects effects, quint16 epoch)
+    {
+        m_intent.effects = effects;
+        m_intent.movementEpoch = epoch;
+    }
     /*! Sets \a usingItem, whether the next inputs hold an item in use (draw a bow, decision
         E-986). The inputs keep it, so replaying them moves as predicted. */
     void setUsingItem(bool usingItem);
@@ -99,8 +103,8 @@ public:
         acknowledged an input of this draw and does not draw. */
     [[nodiscard]] bool usingItemRefused(const QcMsg::PlayerState &state) const;
     /*! While riding, after predict(): the player moves onto the seat of the cart as the entity
-        mirror \a entities shows it this tick. */
-    void followCart(const QcClientEntities &entities);
+        mirror \a entities shows it this tick; \a content tells the seat of a creature. */
+    void followCart(const QcClientEntities &entities, const QcContentRegistry &content);
     /*! A tick without a step (the server paused or the player dead, decision E-960): the state one
         tick earlier becomes the current one, so the interpolation between them stands still
         instead of swinging back over the last step with every tick. */

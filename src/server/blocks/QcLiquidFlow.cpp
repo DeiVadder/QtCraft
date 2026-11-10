@@ -3,6 +3,8 @@
 
 #include "server/blocks/QcLiquidFlow.h"
 
+#include "server/core/QcServerLogging.h"
+
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -144,9 +146,31 @@ private:
 
 } // namespace
 
-QcLiquidFlow::QcLiquidFlow(std::shared_ptr<const QcContentRegistry> content)
+QcLiquidFlow::QcLiquidFlow(std::shared_ptr<const QcContentRegistry> content, const QList<QcDimensionDefinition::LiquidFlow> &flows)
     : m_content(std::move(content))
 {
+    for (const QcDimensionDefinition::LiquidFlow &flow : flows) {
+        const std::optional<QcBlockId> id = m_content->blockId(flow.liquid);
+        if (!id) {
+            continue; // QcDimensions warns about it.
+        }
+        const QcLiquidDefinition &own = m_content->block(*id).flow;
+        int distance = flow.distance.value_or(own.distance);
+        // A level the block has no state for cannot be reached.
+        while (distance > own.distance && level(*m_content, stateWith(*m_content, *id, distance, false)) != distance) {
+            --distance;
+        }
+        if (distance != flow.distance.value_or(own.distance)) {
+            qCWarning(lcServer) << "The liquid" << flow.liquid << "has no states up to the distance" << *flow.distance << "; it flows" << distance;
+        }
+        m_flows.insert(m_content->state(*id).type, {{distance, flow.dropSearch.value_or(own.dropSearch)}, flow.ticks.value_or(own.ticks)});
+    }
+}
+
+QcLiquidFlow::Flow QcLiquidFlow::flowOf(QcBlockId id) const
+{
+    const QcLiquidDefinition &own = m_content->block(id).flow;
+    return m_flows.value(m_content->state(id).type, {{own.distance, own.dropSearch}, own.ticks});
 }
 
 bool QcLiquidFlow::flows(const QcContentRegistry &content, QcBlockId id)
@@ -239,7 +263,7 @@ std::optional<QcBlockId> QcLiquidFlow::reaction(const QcBlockAccess &world, QcBl
     return std::nullopt;
 }
 
-std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id, int distance)
 {
     const QcContentRegistry &content = world.content();
     const QcLiquidDefinition &flow = content.block(id).flow;
@@ -255,7 +279,7 @@ std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBl
         }
     }
 
-    int best = flow.distance + 1;
+    int best = distance + 1;
     int sources = 0;
 
     for (const QcBlockFace face : sideways) {
@@ -284,7 +308,7 @@ std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBl
         }
     }
 
-    if (best > flow.distance) {
+    if (best > distance) {
         return qcAirBlockId;
     }
     return stateWith(content, id, best, false);
@@ -332,7 +356,7 @@ bool QcLiquidFlow::schedule(const QcBlockAccess &world, QcBlockPos pos, quint64 
         return false;
     }
 
-    const quint64 due = now + static_cast<quint64>(m_content->block(*block).flow.ticks);
+    const quint64 due = now + static_cast<quint64>(flowOf(*block).ticks);
     m_planned.insert(pos, due);
     m_due[due].append(pos);
     return true;
@@ -429,7 +453,7 @@ void QcLiquidFlow::step(QcBlockPos pos, const StepContext &context)
     QcBlockId current = *block;
     if (!isSource(content, current)) {
         // Waits for the border update that comes when the missing chunk loads.
-        const std::optional<QcBlockId> fed = fedState(world, pos, current);
+        const std::optional<QcBlockId> fed = fedState(world, pos, current, flowOf(current).reach.distance);
         if (!fed) {
             return;
         }
@@ -457,18 +481,19 @@ void QcLiquidFlow::step(QcBlockPos pos, const StepContext &context)
     }
 
     const int next = (isFalling(content, current) ? 0 : level(content, current)) + 1;
-    if (next > content.block(current).flow.distance) {
+    const Reach reach = flowOf(current).reach;
+    if (next > reach.distance) {
         return;
     }
 
     const QcBlockId spread = stateWith(content, current, next, false);
-    const QList<QcBlockFace> faces = spreadFaces(world, pos, spread);
+    const QList<QcBlockFace> faces = spreadFaces(world, pos, spread, reach);
     for (const QcBlockFace face : faces) {
         change(qcNeighbour(pos, face), spread, context);
     }
 }
 
-QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread)
+QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread, Reach reach)
 {
     // Sides it can flow into now, and sides the search runs through (also those that already
     // carry its flow, so an established stream keeps its direction).
@@ -481,8 +506,7 @@ QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlock
     }
 
     // Drops further than the spreading parts can still reach do not matter.
-    const QcLiquidDefinition &definition = world.content().block(spread).flow;
-    const int radius = std::min(definition.dropSearch, definition.distance - level(world.content(), spread) + 1);
+    const int radius = std::min(reach.dropSearch, reach.distance - level(world.content(), spread) + 1);
     const bool search = flowable != 0 && radius > 0 && std::popcount(static_cast<unsigned>(passable)) > 1;
     const int nearest = search ? DropSearch(world, pos, spread, radius).nearestDropSteps(passable) : 0;
     const int chosen = (nearest != 0 ? nearest : passable) & flowable;

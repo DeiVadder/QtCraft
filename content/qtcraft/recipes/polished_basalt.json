@@ -1,0 +1,15 @@
+{
+    "name": "polished_basalt",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "basalt"
+    },
+    "result": {
+        "item": "polished_basalt",
+        "count": 4
+    }
+}

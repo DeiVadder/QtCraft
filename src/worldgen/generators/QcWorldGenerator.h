@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcXzRect.h"
 #include "common/world/QcChunk.h"
 #include "common/world/QcGeneratorVersion.h"
 #include "common/world/QcWorldLabel.h"
@@ -14,6 +15,7 @@
 
 #include <QStringList>
 
+#include <functional>
 #include <memory>
 #include <optional>
 
@@ -46,6 +48,17 @@ public:
         Q_UNUSED(block);
         return true;
     }
+    /*! Returns the block water consists of (decision E-1041); air for generators without water. */
+    [[nodiscard]] virtual QcBlockId waterBlock() const { return qcAirBlockId; }
+    /*! Returns whether \a block is water or ice on water (decision E-1041). */
+    [[nodiscard]] virtual bool isWaterBlock(QcBlockId block) const
+    {
+        Q_UNUSED(block);
+        return false;
+    }
+    /*! Returns the height of the highest water block of the sea (decision E-1041); -1 for
+        generators without a sea. */
+    [[nodiscard]] virtual int seaTop() const { return -1; }
     /*! Returns the block of the generator's own spawn platform; the server puts one under a
         spawn without any ground (decision E-288). Without one it takes stone. */
     [[nodiscard]] virtual std::optional<QcBlockId> platformBlock() const { return std::nullopt; }
@@ -83,6 +96,22 @@ public:
     virtual QcChunkFurnishing furnishingIn(QcChunkPos pos) const
     {
         Q_UNUSED(pos);
+        return {};
+    }
+    /*! Returns whether furnishingIn() gives the chunk \a pos creatures, which a chunk does not show
+        by its blocks (decision E-1089). */
+    [[nodiscard]] virtual bool hasResidentsIn(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return false;
+    }
+    /*! Returns the cells of the just generated \a chunk that get a block update when it arrives,
+        so that a liquid there starts to flow (the nether's springs, decision E-1031), in world
+        coordinates; the chunk is at hand, so this is cheap on the tick thread. Empty for
+        generators whose liquids rest. */
+    [[nodiscard]] virtual QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const
+    {
+        Q_UNUSED(chunk);
         return {};
     }
     /*! Returns the guardian zones (decision E-591) and spawn areas (decision E-871) of the
@@ -127,6 +156,15 @@ public:
         Q_UNUSED(from);
         return {std::nullopt, reach};
     }
+    /*! Returns the columns of every structure the generator builds into the chunk \a pos
+        (decision E-1013): each as the rectangle its plan reaches, the one buildsStructure() is
+        asked about. A generator switch keeps all chunks of these rectangles at the old version.
+        Empty for generators without structures. */
+    [[nodiscard]] virtual QList<QcXzRect> structuresTouching(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return {};
+    }
     /*! Returns the labels floating in the chunk \a pos (decision E-222); the server sends them
         with the chunk. */
     virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const
@@ -145,10 +183,23 @@ public:
         keep a version of their own passes it on (before anything is generated). */
     virtual void setVersion(int version) { m_version = version; }
 
+    /*! Decides whether a structure whose plan reaches the columns of a rectangle is built
+        (decision E-1013). */
+    using StructureFilter = std::function<bool(QcXzRect columns)>;
+    /*! Builds only the structures \a filter accepts: their blocks, furnishing, sites, villages
+        and what the searches find; planning stays as it is. Set by QcVersionedGenerator before
+        anything is generated, so each structure is built whole by one version or not at all;
+        without a filter every structure is built. */
+    void setStructureFilter(StructureFilter filter) { m_structureFilter = std::move(filter); }
+    /*! Returns whether a structure whose plan reaches \a columns is built (see
+        setStructureFilter()). */
+    [[nodiscard]] bool buildsStructure(QcXzRect columns) const { return !m_structureFilter || m_structureFilter(columns); }
+
 protected:
     /*! Filled by the constructors of the generators. */
     QStringList m_warnings;
 
 private:
     int m_version = QcGeneratorVersion::current;
+    StructureFilter m_structureFilter;
 };

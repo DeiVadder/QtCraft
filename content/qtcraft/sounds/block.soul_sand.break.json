@@ -1,0 +1,50 @@
+{
+    "name": "block.soul_sand.break",
+    "volume": 0.75,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.22,
+            "attack": 0.005,
+            "curve": 2.5,
+            "bandpass": 1440,
+            "resonance": 0.7,
+            "lowpass": 4320,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 90,
+            "resonance": 1.2,
+            "lowpass": 270,
+            "gain": 1.0
+        },
+        {
+            "wave": "crackle",
+            "start": 0.01,
+            "duration": 0.2,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 3600,
+            "highpass": 900,
+            "density": 1800,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.05,
+            "curve": 2,
+            "bandpass": 900,
+            "resonance": 4,
+            "lowpass": 1800,
+            "gain": 0.25
+        }
+    ]
+}

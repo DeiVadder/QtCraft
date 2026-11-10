@@ -1,0 +1,21 @@
+{
+    "name": "soul_soil",
+    "sound": "soul_soil",
+    "particles": [
+        {
+            "kind": "soul",
+            "chance": 0.002,
+            "from": "top"
+        }
+    ],
+    "hardness": 0.5,
+    "tool": "shovel",
+    "tags": [
+        "soul_blocks"
+    ],
+    "eternalFire": true,
+    "fireAbove": "soul_fire",
+    "textures": {
+        "all": "soul_soil"
+    }
+}

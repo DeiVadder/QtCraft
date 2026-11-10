@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcTextureAnimation.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentParser.h"
+#include "common/content/worldgen/QcNetherParser.h"
 #include "common/content/worldgen/QcWorldOptionParser.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/protocol/QcStreamLimits.h"
@@ -46,11 +47,9 @@ QcResult<QByteArray> QcContentPackLoader::readPackFile(const QString &path)
     return data;
 }
 
-namespace {
-
-[[nodiscard]] QcResult<QJsonObject> readJsonObject(const QString &path)
+QcResult<QJsonObject> QcContentPackLoader::readJsonObject(const QString &path)
 {
-    const QcResult<QByteArray> data = QcContentPackLoader::readPackFile(path);
+    const QcResult<QByteArray> data = readPackFile(path);
     if (!data) {
         return qcError(data.error());
     }
@@ -66,6 +65,8 @@ namespace {
     }
     return document.object();
 }
+
+namespace {
 
 QStringList filesIn(const QString &directory, const QString &filter)
 {
@@ -103,7 +104,7 @@ QVersionNumber QcContentPackLoader::parseVersion(const QString &text)
 
 QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &directory)
 {
-    const QcResult<QJsonObject> manifest = readJsonObject(QDir(directory).filePath(u"pack.json"_s));
+    const QcResult<QJsonObject> manifest = QcContentPackLoader::readJsonObject(QDir(directory).filePath(u"pack.json"_s));
     if (!manifest) {
         return qcError(manifest.error());
     }
@@ -160,7 +161,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "enchantments", "loot", "advancements"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "smithing", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "potions", "brewing", "enchantments", "loot", "advancements", "dimensions", "portals", "progression"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -210,6 +211,7 @@ public:
     void loadShapes();
     void loadBlocks();
     void loadLaterDefinitions();
+    void loadWorldDefinitions();
     void loadWorldgenSettings();
     void loadWeatherSettings();
     // How items are held by category (`held.json`, decision E-831).
@@ -240,7 +242,7 @@ void PackReader::loadDefinitions(const QString &folder, Parser parse, Register r
 {
     const QStringList files = filesIn(m_root.filePath(folder), u"*.json"_s);
     for (const QString &path : files) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
             continue;
@@ -274,7 +276,7 @@ auto PackReader::readSettingsFile(const QString &file, Parse parse)
         return std::nullopt;
     }
 
-    const QcResult<QJsonObject> json = readJsonObject(path);
+    const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
     if (!json) {
         m_warnings.append(u"%1: %2"_s.arg(path, json.error()));
         return std::nullopt;
@@ -292,7 +294,7 @@ void PackReader::loadTextures()
 {
     const QStringList textureFiles = filesIn(m_root.filePath(u"textures"_s), u"*.json"_s);
     for (const QString &path : textureFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         const QcResult<QcTextureDefinition> texture =
             json ? QcContentParser::parseProceduralTexture(*json, m_packId) : QcResult<QcTextureDefinition>(qcError(json.error()));
         if (!texture) {
@@ -342,7 +344,7 @@ void PackReader::loadBlocks()
 {
     const QStringList blockFiles = filesIn(m_root.filePath(u"blocks"_s), u"*.json"_s);
     for (const QString &path : blockFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
             continue;
@@ -412,7 +414,7 @@ void PackReader::loadVillageStyles()
     QList<std::pair<QString, QJsonObject>> extensions;
     const QStringList files = filesIn(m_root.filePath(u"villages"_s), u"*.json"_s);
     for (const QString &path : files) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         if (!json) {
             m_warnings.append(json.error());
         } else if (json->contains(u"extends"_s)) {
@@ -424,6 +426,26 @@ void PackReader::loadVillageStyles()
         }
     }
     applyStyleExtensions(extensions);
+}
+
+// The folders of dimensions, buildings and villages, in this order.
+void PackReader::loadWorldDefinitions()
+{
+    loadDefinitions(u"dimensions"_s, QcContentParser::parseDimension,
+                    [this](QcDimensionDefinition dimension) { m_registry.worldgen().registerDimension(std::move(dimension)); });
+    loadDefinitions(u"portals"_s, QcContentParser::parsePortal,
+                    [this](QcPortalDefinition portal) { m_registry.worldgen().registerPortal(std::move(portal)); });
+    loadDefinitions(u"progression"_s, QcContentParser::parseProgressionGoal,
+                    [this](QcProgressionGoal goal) { m_registry.worldgen().registerProgressionGoal(std::move(goal)); });
+    loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
+                    [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
+    loadVillageStyles();
+    loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
+                    [this](QcVillagerProfession profession) { m_registry.villageCatalog().registerProfession(std::move(profession)); });
+    loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
+                    [this](QcVillagerSettings settings) { m_registry.villageCatalog().registerVillagerSettings(std::move(settings)); });
+    loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
+                    [this](QcTradeSet set) { m_registry.villageCatalog().registerTradeSet(std::move(set)); });
 }
 
 // Definition folders loaded after the blocks, in this order.
@@ -444,6 +466,8 @@ void PackReader::loadLaterDefinitions()
                     [this](QcSmeltingRecipe recipe) { m_registry.registerSmeltingRecipe(std::move(recipe)); });
     loadDefinitions(u"stonecutting"_s, QcContentParser::parseStonecuttingRecipe,
                     [this](QcSmeltingRecipe recipe) { m_registry.registerStonecuttingRecipe(std::move(recipe)); });
+    loadDefinitions(u"smithing"_s, QcContentParser::parseSmithingRecipe,
+                    [this](QcSmithingRecipe recipe) { m_registry.registerSmithingRecipe(std::move(recipe)); });
     loadDefinitions(u"parts"_s, QcContentParser::parsePartFamily,
                     [this](QcPartFamily family) { m_registry.registerPartFamily(std::move(family)); });
     loadDefinitions(u"materials"_s, QcContentParser::parseMaterial,
@@ -464,19 +488,15 @@ void PackReader::loadLaterDefinitions()
                     [this](QcOreDefinition ore) { m_registry.worldgen().registerOre(std::move(ore)); });
     loadDefinitions(u"handbook"_s, QcContentParser::parseHandbookChapter,
                     [this](QcHandbookChapter chapter) { m_registry.registerHandbookChapter(std::move(chapter)); });
-    loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
-                    [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
-    loadVillageStyles();
-    loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
-                    [this](QcVillagerProfession profession) { m_registry.villageCatalog().registerProfession(std::move(profession)); });
-    loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
-                    [this](QcVillagerSettings settings) { m_registry.villageCatalog().registerVillagerSettings(std::move(settings)); });
-    loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
-                    [this](QcTradeSet set) { m_registry.villageCatalog().registerTradeSet(std::move(set)); });
+    loadWorldDefinitions();
     loadDefinitions(u"projectiles"_s, QcContentParser::parseProjectile,
                     [this](QcProjectileDefinition projectile) { m_registry.registerProjectile(std::move(projectile)); });
     loadDefinitions(u"effects"_s, QcContentParser::parseEffect,
                     [this](QcEffectDefinition effect) { m_registry.registerEffect(std::move(effect)); });
+    loadDefinitions(u"potions"_s, QcContentParser::parsePotion,
+                    [this](QcPotionDefinition potion) { m_registry.potionCatalog().registerPotion(std::move(potion)); });
+    loadDefinitions(u"brewing"_s, QcContentParser::parseBrewingRecipe,
+                    [this](QcBrewingRecipe recipe) { m_registry.potionCatalog().registerRecipe(std::move(recipe)); });
     loadDefinitions(u"enchantments"_s, QcContentParser::parseEnchantment,
                     [this](QcEnchantmentDefinition enchantment) { m_registry.registerEnchantment(std::move(enchantment)); });
     loadDefinitions(u"loot"_s, QcContentParser::parseLootTable,
@@ -513,6 +533,9 @@ void PackReader::loadWorldgenSettings()
     }
     if (auto empty = readSettingsFile(u"worldgen/void.json"_s, QcContentParser::parseVoid)) {
         m_registry.worldgen().setVoidWorld(std::move(*empty));
+    }
+    if (auto nether = readSettingsFile(u"worldgen/nether.json"_s, QcNetherParser::parse)) {
+        m_registry.worldgen().setNether(std::move(*nether));
     }
     // Each pack adds its options; one of the same name replaces an earlier pack's (decision E-917).
     if (auto options = readSettingsFile(u"worldgen/options.json"_s, QcWorldOptionParser::parseOptionSet)) {
@@ -574,7 +597,7 @@ void PackReader::loadTranslations()
 {
     const QStringList languageFiles = filesIn(m_root.filePath(u"lang"_s), u"*.json"_s);
     for (const QString &path : languageFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QJsonObject> json = QcContentPackLoader::readJsonObject(path);
         const QcResult<QHash<QString, QString>> entries =
             json ? QcContentParser::parseTranslations(*json) : QcResult<QHash<QString, QString>>(qcError(json.error()));
         if (!entries) {

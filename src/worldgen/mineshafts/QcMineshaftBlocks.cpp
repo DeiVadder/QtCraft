@@ -3,6 +3,8 @@
 
 #include "worldgen/mineshafts/QcMineshaftBlocks.h"
 
+#include "worldgen/generators/QcStateResolver.h"
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -24,16 +26,8 @@ QcMineshaftBlocks::Side QcMineshaftBlocks::sideOf(int dx, int dz)
 
 QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content)
 {
-    QStringList warnings;
-    bool resolved = true;
-    const auto state = [&](const QString &name) {
-        const std::optional<QcBlockId> id = content.stateId(name);
-        if (!id) {
-            warnings.append(u"mineshafts: unknown block '%1', no mine shafts"_s.arg(name));
-        }
-        resolved = resolved && id.has_value();
-        return id.value_or(qcAirBlockId);
-    };
+    QcStateResolver resolver(content, u"mineshafts"_s, u"no mine shafts"_s);
+    const auto state = [&resolver](const QString &name) { return resolver.state(name); };
 
     QcMineshaftBlocks blocks;
     blocks.planks = state(settings.planks);
@@ -49,24 +43,17 @@ QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings
         blocks.ladders[side] = state(settings.ladder + u"[attach="_s + name + u']');
         blocks.railsUp[side] = state(settings.rail + u"[facing="_s + name + u",shape=ascending]"_s);
     }
-    if (!resolved) {
-        return {std::nullopt, warnings};
+    if (!resolver.resolved()) {
+        return {std::nullopt, resolver.warnings()};
     }
 
-    blocks.open.resize(static_cast<std::size_t>(content.stateCount()));
-    blocks.liquid.resize(blocks.open.size());
-    blocks.falling.resize(blocks.open.size());
-    blocks.foliage.resize(blocks.open.size());
-    for (std::size_t id = 0; id < blocks.open.size(); ++id) {
-        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
-        blocks.open[id] = !block.solid || block.liquid;
-        blocks.liquid[id] = block.liquid;
-        blocks.falling[id] = block.falls;
-        blocks.foliage[id] = block.solid && !block.opaque && !block.liquid;
-    }
+    blocks.open = resolver.openStates();
+    blocks.liquid = resolver.everyState([](const QcBlockDefinition &block) { return block.liquid; });
+    blocks.falling = resolver.everyState([](const QcBlockDefinition &block) { return block.falls; });
+    blocks.foliage = resolver.everyState([](const QcBlockDefinition &block) { return block.solid && !block.opaque && !block.liquid; });
     const QcSpawnerDefinition &spawner = content.block(blocks.spawner).spawner;
     blocks.areaX = spawner.areaX / 2;
     blocks.areaY = spawner.areaY / 2;
     blocks.areaZ = spawner.areaZ / 2;
-    return {std::move(blocks), warnings};
+    return {std::move(blocks), resolver.warnings()};
 }

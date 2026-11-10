@@ -1,0 +1,250 @@
+{
+    "filler": "netherrack",
+    "bedrock": "bedrock",
+    "liquid": "lava",
+    "liquidLevel": 31,
+    "roof": 127,
+    "bedrockLayers": 4,
+    "biomeScale": 200,
+    "spawnBiomes": [
+        "crimson_forest",
+        "warped_forest"
+    ],
+    "shape": {
+        "scale": 56,
+        "verticalScale": 28,
+        "octaves": 3,
+        "floorHeight": 30,
+        "floorFade": 16,
+        "roofHeight": 100,
+        "roofFade": 22,
+        "solidity": -0.06
+    },
+    "shores": [
+        {
+            "block": "gravel",
+            "scale": 14,
+            "threshold": 0.22,
+            "height": 3,
+            "depth": 3
+        },
+        {
+            "block": "soul_sand",
+            "scale": 18,
+            "threshold": 0.3,
+            "height": 4,
+            "depth": 2
+        }
+    ],
+    "clusters": [
+        {
+            "block": "glowstone",
+            "on": "netherrack",
+            "tries": 6,
+            "minY": 40,
+            "maxY": 124,
+            "size": 40,
+            "radius": 4,
+            "depth": 9
+        },
+        {
+            "block": "nether_wart_block",
+            "on": "netherrack",
+            "biomes": [
+                "crimson_forest"
+            ],
+            "tries": 10,
+            "minY": 40,
+            "maxY": 124,
+            "size": 26,
+            "radius": 5,
+            "depth": 4
+        },
+        {
+            "block": "warped_wart_block",
+            "on": "netherrack",
+            "biomes": [
+                "warped_forest"
+            ],
+            "tries": 10,
+            "minY": 40,
+            "maxY": 124,
+            "size": 26,
+            "radius": 5,
+            "depth": 4
+        },
+        {
+            "block": "shroomlight",
+            "on": "netherrack",
+            "biomes": [
+                "crimson_forest",
+                "warped_forest"
+            ],
+            "tries": 2,
+            "minY": 40,
+            "maxY": 124,
+            "size": 3,
+            "radius": 2,
+            "depth": 2
+        }
+    ],
+    "springs": [
+        {
+            "block": "lava",
+            "in": "netherrack",
+            "tries": 96,
+            "minY": 36,
+            "maxY": 120
+        }
+    ],
+    "fires": [
+        {
+            "block": "fire",
+            "on": [
+                "netherrack"
+            ],
+            "tries": 3
+        },
+        {
+            "block": "soul_fire",
+            "on": [
+                "soul_sand",
+                "soul_soil"
+            ],
+            "tries": 3
+        }
+    ],
+    "structures": [
+        {
+            "structure": "ruined_portal_nether",
+            "spacing": 320,
+            "chance": 0.5
+        }
+    ],
+    "fortress": {
+        "regionSize": 448,
+        "chance": 0.4,
+        "attempts": 6,
+        "lowestFloor": 44,
+        "highestFloor": 60,
+        "lattice": 5,
+        "spacing": 24,
+        "minRooms": 10,
+        "maxRooms": 16,
+        "upperRooms": 4,
+        "loopChance": 0.25,
+        "roofShare": 0.3,
+        "chestChance": 0.35,
+        "brick": "nether_bricks",
+        "cracked": "cracked_nether_bricks",
+        "chiseled": "chiseled_nether_bricks",
+        "lane": "red_nether_bricks",
+        "fence": "nether_brick_fence",
+        "stairs": "nether_brick_stairs",
+        "light": "glowstone",
+        "soil": "soul_sand",
+        "crop": "nether_wart_crop",
+        "chest": "chest",
+        "spawner": "spawner",
+        "spawnerMob": "ember_wraith",
+        "lootTable": "fortress_chest",
+        "monsters": [
+            {
+                "mob": "ember_wraith",
+                "weight": 10,
+                "maxLight": 15,
+                "minGroup": 2,
+                "maxGroup": 3
+            },
+            {
+                "mob": "rottusk",
+                "weight": 5,
+                "maxLight": 15,
+                "minGroup": 4,
+                "maxGroup": 4
+            },
+            {
+                "mob": "charred_skeleton",
+                "weight": 8,
+                "maxLight": 7,
+                "minGroup": 5,
+                "maxGroup": 5
+            },
+            {
+                "mob": "skeleton",
+                "weight": 2,
+                "maxLight": 7,
+                "minGroup": 5,
+                "maxGroup": 5
+            },
+            {
+                "mob": "magma_slime",
+                "weight": 3,
+                "maxLight": 15,
+                "minGroup": 4,
+                "maxGroup": 4
+            }
+        ]
+    },
+    "station": {
+        "structure": "nether_arrival",
+        "portal": "portal_station"
+    },
+    "pillars": [
+        {
+            "block": "basalt",
+            "biomes": [
+                "basalt_deltas"
+            ],
+            "scale": 17,
+            "threshold": 0.3,
+            "height": 16
+        }
+    ],
+    "pools": [
+        {
+            "block": "lava",
+            "rim": "magma_block",
+            "biomes": [
+                "basalt_deltas"
+            ],
+            "scale": 10,
+            "threshold": 0.12,
+            "rimBand": 0.05
+        }
+    ],
+    "bastion": {
+        "regionSize": 448,
+        "chance": 0.6,
+        "floor": 33,
+        "biomes": [
+            "nether_wastes",
+            "soul_sand_valley",
+            "crimson_forest",
+            "warped_forest"
+        ],
+        "rough": "blackstone",
+        "brick": "polished_blackstone_bricks",
+        "cracked": "cracked_polished_blackstone_bricks",
+        "polished": "polished_blackstone",
+        "chiseled": "chiseled_polished_blackstone",
+        "gilded": "gilded_blackstone",
+        "gold": "gold_block",
+        "soil": "soul_soil",
+        "lava": "lava",
+        "wall": "polished_blackstone_brick_wall",
+        "stairs": "polished_blackstone_brick_stairs",
+        "lantern": "soul_lantern",
+        "chest": "chest",
+        "spawner": "spawner",
+        "spawnerMob": "magma_slime",
+        "guard": "tuskling",
+        "bruiser": "tuskling_bruiser",
+        "beast": "bristleboar",
+        "bridgeLoot": "bastion_bridge",
+        "stablesLoot": "bastion_stables",
+        "treasureLoot": "bastion_treasure",
+        "otherLoot": "bastion_other",
+        "monsters": []
+    }
+}

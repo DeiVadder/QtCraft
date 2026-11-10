@@ -1,0 +1,15 @@
+{
+    "name": "summon_hydra",
+    "parent": "ancient_debris",
+    "icon": "charred_skull",
+    "frame": "goal",
+    "handbook": "chapter:charred_hydra",
+    "criteria": {
+        "summoned": {
+            "trigger": "entity_summoned",
+            "conditions": {
+                "entity": "charred_hydra"
+            }
+        }
+    }
+}

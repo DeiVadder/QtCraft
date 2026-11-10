@@ -1,0 +1,6 @@
+{
+    "name": "mundane_from_tear",
+    "base": "water",
+    "ingredient": "wailer_tear",
+    "result": "mundane"
+}

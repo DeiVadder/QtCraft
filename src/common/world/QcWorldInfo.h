@@ -14,6 +14,7 @@
 #include <QDateTime>
 #include <QJsonObject>
 #include <QList>
+#include <QMap>
 #include <QString>
 
 /*! \brief Metadata of a saved world (world.json).
@@ -24,9 +25,12 @@
 struct QcWorldInfo
 {
     /*! The format version of the files this game writes. */
-    static constexpr int formatVersion = 19;
+    static constexpr int formatVersion = 20;
     /*! The oldest format version this game reads; older worlds are refused. */
     static constexpr int oldestFormatVersion = 16;
+    /*! The most entries of dimensionGeneratorVersions; world.json with more is damaged, so
+        nothing adds an entry beyond it (QcDimensions). */
+    static constexpr qsizetype maxDimensionVersions = 256;
     /*! The generator of a world that names none. */
     static constexpr auto defaultGenerator = "terrain";
 
@@ -84,6 +88,36 @@ struct QcWorldInfo
     /*! The version of the world generator the world is generated with for good (decision E-922,
         QcGeneratorVersion); worlds saved without one have QcGeneratorVersion::unversioned. */
     int generatorVersion = QcGeneratorVersion::current;
+    /*! The generator versions of the other dimensions by name (decision E-979, world.json
+        "generator"/"dimensions"): a dimension gets one when the world is created or when it is
+        first opened in a world that has none for it, and keeps it for good; entries of
+        dimensions this game does not know (a removed mod) stay as they are. The overworld's is
+        generatorVersion. */
+    QMap<QString, int> dimensionGeneratorVersions;
+    /*! The series of the dimensions' numbers by name (decision E-1033, world.json
+        "generator"/"dimensions"/"<name>"/"series"): a dimension without an entry counts in the
+        overworld's. */
+    QMap<QString, QString> dimensionGeneratorSeries;
+
+    /*! Sets the generator version of the dimension \a dimension to \a version of the series
+        \a series; empty for the overworld's (decision E-1033). */
+    void setDimensionVersion(const QString &dimension, int version, const QString &series)
+    {
+        dimensionGeneratorVersions.insert(dimension, version);
+        if (series.isEmpty()) {
+            dimensionGeneratorSeries.remove(dimension);
+        } else {
+            dimensionGeneratorSeries.insert(dimension, series);
+        }
+    }
+    /*! The newest generator version the player declined with "don't ask again" (decision E-1014,
+        world.json "keepGeneratorVersion"): the question before the world opens comes back only
+        for a newer version. 0: not declined. */
+    int keepGeneratorVersion = 0;
+    /*! The dimension players start in and respawn in without a soul anchor (decision E-1110,
+        world.json "generator"/"startDimension"), chosen when the world is created; empty for the
+        overworld, as in worlds without the key. */
+    QString startDimension;
     /*! Whether the generator's one-time setup of the world has run. */
     bool setupDone = true;
     /*! Game mode of players who join the world for the first time (decision E-282), chosen when

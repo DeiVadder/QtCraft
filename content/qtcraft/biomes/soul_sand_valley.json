@@ -1,0 +1,45 @@
+{
+    "name": "soul_sand_valley",
+    "dimension": "nether",
+    "icon": "soul_sand",
+    "mapColour": "#5b4a3f",
+    "temperature": 0.66,
+    "humidity": 0.36,
+    "surface": "soul_sand",
+    "subsurface": "soul_soil",
+    "subsurfaceDepth": 2,
+    "surfacePatches": [
+        {
+            "block": "soul_soil",
+            "share": 0.35
+        }
+    ],
+    "atmosphere": {
+        "fog": {
+            "colour": "#1b4745",
+            "start": 0.05,
+            "end": 0.5
+        },
+        "particles": [
+            {
+                "kind": "ash",
+                "chance": 0.00625
+            }
+        ],
+        "ambience": {
+            "loop": "ambient.soul_sand_valley.loop",
+            "additions": "ambient.soul_sand_valley.additions",
+            "additionsChance": 0.0111
+        },
+        "music": {
+            "scale": "major",
+            "lowestRoot": 40,
+            "highestRoot": 44,
+            "slowestTempo": 46,
+            "fastestTempo": 54,
+            "lead": "sine",
+            "leadLowpass": 1200,
+            "drone": true
+        }
+    }
+}

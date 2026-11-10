@@ -24,3 +24,18 @@ path = "licenses-third-party/**"
 precedence = "override"
 SPDX-FileCopyrightText = ["1991, 1999 Free Software Foundation, Inc.", "2007 Free Software Foundation, Inc."]
 SPDX-License-Identifier = "LicenseRef-FSF-verbatim"
+
+# The music tracks of the base game (Scott Buckley, CC-BY 4.0, decision E-1136), converted from his
+# MP3 files to Ogg Vorbis; credits in CREDITS.md, the handbook and under "About".
+[[annotations]]
+path = "content/qtcraft/music/*.ogg"
+precedence = "override"
+SPDX-FileCopyrightText = "Scott Buckley <www.scottbuckley.com.au>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# stb_vorbis, unchanged (THIRD_PARTY.md): MIT or public domain (Unlicense), as its end says.
+[[annotations]]
+path = "3rdparty/stb_vorbis/stb_vorbis.c"
+precedence = "override"
+SPDX-FileCopyrightText = "2017 Sean Barrett"
+SPDX-License-Identifier = "MIT OR Unlicense"

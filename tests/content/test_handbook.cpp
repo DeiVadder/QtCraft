@@ -177,7 +177,7 @@ private slots:
             QVERIFY2(entry && entry->sections.size() >= chapter.sections.size(), qPrintable(chapter.name));
         }
 
-        QCOMPARE(content.handbookChapters().size(), 33);
+        QCOMPARE(content.handbookChapters().size(), 43);
         QVERIFY(book.entry(u"tag:qtcraft:planks"_s));
         QVERIFY(book.entry(u"world:terrain"_s));
 
@@ -350,17 +350,17 @@ private slots:
         QCOMPARE(fact(*ore, u"Hardness"_s)->value, u"3"_s);
         QCOMPARE(fact(*ore, u"Tool"_s)->value, u"Pickaxe, level 2 or better (needed for drops)"_s);
 
-        // Without a stone pickaxe: 3 hardness × 5 s; with the diamond pickaxe (speed 8): 3 × 1.5 / 8.
+        // Without a stone pickaxe: 3 hardness × 5 s; with the netherite pickaxe (speed 9): 3 × 1.5 / 9.
         QCOMPARE(fact(*ore, u"Breaking by hand"_s)->value, u"15 s"_s);
-        QCOMPARE(fact(*ore, u"Breaking with the best tool"_s)->value, u"0.56 s"_s);
-        QCOMPARE(targets(fact(*ore, u"Breaking with the best tool"_s)->links), QStringList{u"item:qtcraft:diamond_pickaxe"_s});
+        QCOMPARE(fact(*ore, u"Breaking with the best tool"_s)->value, u"0.5 s"_s);
+        QCOMPARE(targets(fact(*ore, u"Breaking with the best tool"_s)->links), QStringList{u"item:qtcraft:netherite_pickaxe"_s});
         QCOMPARE(targets(fact(*ore, u"Drops"_s)->links), QStringList{u"item:qtcraft:raw_iron"_s});
         QCOMPARE(fact(*ore, u"Drops without the right tool"_s)->value, u"nothing"_s);
 
         const QcHandbookEntry::Section *minedWith = section(*ore, u"Mined with"_s);
         QVERIFY(minedWith);
         QCOMPARE(targets(minedWith->links), (QStringList{u"item:qtcraft:stone_pickaxe"_s, u"item:qtcraft:iron_pickaxe"_s,
-                                                         u"item:qtcraft:diamond_pickaxe"_s}));
+                                                         u"item:qtcraft:diamond_pickaxe"_s, u"item:qtcraft:netherite_pickaxe"_s}));
 
         // The ore drops raw iron (decision E-740), which smelts.
         QVERIFY(!section(*ore, u"Smelts into"_s));
@@ -382,7 +382,7 @@ private slots:
         const QcHandbookEntry *german = m_german.entry(u"block:qtcraft:iron_ore"_s);
         QCOMPARE(german->title, u"Eisenerz"_s);
         QCOMPARE(fact(*german, u"Werkzeug"_s)->value, u"Spitzhacke, Stufe 2 oder besser (nötig für Beute)"_s);
-        QCOMPARE(fact(*german, u"Abbauen mit dem besten Werkzeug"_s)->value, u"0,56 s"_s);
+        QCOMPARE(fact(*german, u"Abbauen mit dem besten Werkzeug"_s)->value, u"0,5 s"_s);
 
         // The ingot's page shows where it comes from and what it makes.
         const QcHandbookEntry *ingot = m_english.entry(u"item:qtcraft:iron_ingot"_s);
@@ -408,7 +408,7 @@ private slots:
 
         const QcHandbookEntry *planks = m_english.entry(u"tag:qtcraft:planks"_s);
         QCOMPARE(targets(section(*planks, u"Items in this group"_s)->links),
-                 (QStringList{u"block:qtcraft:birch_planks"_s, u"block:qtcraft:jungle_planks"_s, u"block:qtcraft:oak_planks"_s, u"block:qtcraft:spruce_planks"_s}));
+                 (QStringList{u"block:qtcraft:birch_planks"_s, u"block:qtcraft:crimson_planks"_s, u"block:qtcraft:jungle_planks"_s, u"block:qtcraft:oak_planks"_s, u"block:qtcraft:spruce_planks"_s, u"block:qtcraft:warped_planks"_s}));
 
         // The oak planks page lists the stick through the tag.
         const QcHandbookEntry::Section *usedIn = section(*m_english.entry(u"block:qtcraft:oak_planks"_s), u"Used in"_s);
@@ -416,15 +416,17 @@ private slots:
         QVERIFY(stickLink != usedIn->links.end());
         QCOMPARE(stickLink->note, u"Any planks"_s);
 
-        // Fuels, longest first: lava bucket 1000 s, block of coal 720 s, then coal and charcoal 80 s.
+        // Fuels, longest first: lava bucket 1000 s, block of coal 720 s, ember rod 120 s, then coal and charcoal 80 s.
         const QList<Link> &fuels = m_english.entry(u"table:fuels"_s)->sections.first().links;
         QCOMPARE(fuels.first().target, u"item:qtcraft:lava_bucket"_s);
         QCOMPARE(fuels.first().note, u"1000 s"_s);
         QCOMPARE(fuels[1].target, u"block:qtcraft:coal_block"_s);
         QCOMPARE(fuels[1].note, u"720 s"_s);
-        QCOMPARE(fuels[2].target, u"item:qtcraft:charcoal"_s);
-        QCOMPARE(fuels[3].target, u"item:qtcraft:coal"_s);
-        QCOMPARE(fuels[3].note, u"80 s"_s);
+        QCOMPARE(fuels[2].target, u"item:qtcraft:ember_rod"_s);
+        QCOMPARE(fuels[2].note, u"120 s"_s);
+        QCOMPARE(fuels[3].target, u"item:qtcraft:charcoal"_s);
+        QCOMPARE(fuels[4].target, u"item:qtcraft:coal"_s);
+        QCOMPARE(fuels[4].note, u"80 s"_s);
         QCOMPARE(fact(*m_english.entry(u"block:qtcraft:oak_planks"_s), u"Burns as fuel"_s)->value, u"15 s"_s);
 
         // The furnace processes every smelting recipe of the base game.
@@ -632,7 +634,7 @@ private slots:
         const QcHandbookEntry *hunger = m_english.entry(u"chapter:qtcraft:hunger"_s);
         QVERIFY(hunger);
         QVERIFY(hunger->sections.first().text.contains(u"holds 20 points"_s));
-        QVERIFY(hunger->sections[2].text.contains(u"With at least 18 food points you heal one health point every 4 s"_s));
+        QVERIFY(hunger->sections[3].text.contains(u"with at least 18 food points you heal one health point every 4 s"_s));
 
         for (const QcHandbook *book : {&m_english, &m_german, &m_moddedEnglish}) {
             for (const QcHandbookEntry &entry : book->entries()) {

@@ -1,0 +1,11 @@
+{
+    "name": "ancient_debris_small",
+    "dimension": "nether",
+    "replaces": "netherrack",
+    "block": "ancient_debris",
+    "minY": 8,
+    "maxY": 119,
+    "veinsPerChunk": 1,
+    "veinSize": 2,
+    "hidden": true
+}

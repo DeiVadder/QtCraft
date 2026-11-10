@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) · [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) · [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Bemooste Bruchsteintreppe](#block-qtcraft-mossy_cobblestone_stairs) · [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) · [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) · [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) · [Birkenholzdruckplatte](#block-qtcraft-birch_pressure_plate) · [Birkenholzknopf](#block-qtcraft-birch_button) · [Birkenstufe](#block-qtcraft-birch_slab) · [Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab) · [Birkentreppe](#block-qtcraft-birch_stairs) · [Birkenzaun](#block-qtcraft-birch_fence) · [Birkenzauntor](#block-qtcraft-birch_fence_gate) · [Blauer Teppich](#block-qtcraft-blue_wool_carpet) · [Brauner Teppich](#block-qtcraft-brown_wool_carpet) · [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) · [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) · [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) · [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) · [Dschungelholzdruckplatte](#block-qtcraft-jungle_pressure_plate) · [Dschungelholzknopf](#block-qtcraft-jungle_button) · [Dschungelstufe](#block-qtcraft-jungle_slab) · [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) · [Dschungeltreppe](#block-qtcraft-jungle_stairs) · [Dschungelzaun](#block-qtcraft-jungle_fence) · [Dschungelzauntor](#block-qtcraft-jungle_fence_gate) · [Eichenstufe](#block-qtcraft-oak_slab) · [Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab) · [Eichentreppe](#block-qtcraft-oak_stairs) · [Eichenzaun](#block-qtcraft-oak_fence) · [Eichenzauntor](#block-qtcraft-oak_fence_gate) · [Fichtenholzdruckplatte](#block-qtcraft-spruce_pressure_plate) · [Fichtenholzknopf](#block-qtcraft-spruce_button) · [Fichtenstufe](#block-qtcraft-spruce_slab) · [Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab) · [Fichtentreppe](#block-qtcraft-spruce_stairs) · [Fichtenzaun](#block-qtcraft-spruce_fence) · [Fichtenzauntor](#block-qtcraft-spruce_fence_gate) · [Gelber Teppich](#block-qtcraft-yellow_wool_carpet) · [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) · [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) · [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) · [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) · [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) · [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) · [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) · [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) · [Glattsteinstufe](#block-qtcraft-polished_stone_slab) · [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) · [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) · [Grauer Teppich](#block-qtcraft-gray_wool_carpet) · [Grüner Teppich](#block-qtcraft-green_wool_carpet) · [Hellblauer Teppich](#block-qtcraft-light_blue_wool_carpet) · [Hellgrauer Teppich](#block-qtcraft-light_gray_wool_carpet) · [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) · [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) · [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) · [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) · [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) · [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) · [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) · [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) · [Roter Teppich](#block-qtcraft-red_wool_carpet) · [Sandsteinmauer](#block-qtcraft-sandstone_wall) · [Sandsteinstufe](#block-qtcraft-sandstone_slab) · [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) · [Sandsteintreppe](#block-qtcraft-sandstone_stairs) · [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) · [Steinstufe](#block-qtcraft-stone_slab) · [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) · [Steintreppe](#block-qtcraft-stone_stairs) · [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) · [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) · [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) · [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) · [Türkiser Teppich](#block-qtcraft-cyan_wool_carpet) · [Violetter Teppich](#block-qtcraft-purple_wool_carpet) · [Weißer Teppich](#block-qtcraft-white_wool_carpet) · [Ziegelmauer](#block-qtcraft-brick_wall) · [Ziegelstufe](#block-qtcraft-brick_slab) · [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) · [Ziegeltreppe](#block-qtcraft-brick_stairs)
+**QtCraft:** [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) · [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) · [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Bemooste Bruchsteintreppe](#block-qtcraft-mossy_cobblestone_stairs) · [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) · [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) · [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) · [Birkenholzdruckplatte](#block-qtcraft-birch_pressure_plate) · [Birkenholzknopf](#block-qtcraft-birch_button) · [Birkenstufe](#block-qtcraft-birch_slab) · [Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab) · [Birkentreppe](#block-qtcraft-birch_stairs) · [Birkenzaun](#block-qtcraft-birch_fence) · [Birkenzauntor](#block-qtcraft-birch_fence_gate) · [Blauer Teppich](#block-qtcraft-blue_wool_carpet) · [Brauner Teppich](#block-qtcraft-brown_wool_carpet) · [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) · [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) · [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) · [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) · [Dschungelholzdruckplatte](#block-qtcraft-jungle_pressure_plate) · [Dschungelholzknopf](#block-qtcraft-jungle_button) · [Dschungelstufe](#block-qtcraft-jungle_slab) · [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) · [Dschungeltreppe](#block-qtcraft-jungle_stairs) · [Dschungelzaun](#block-qtcraft-jungle_fence) · [Dschungelzauntor](#block-qtcraft-jungle_fence_gate) · [Eichenstufe](#block-qtcraft-oak_slab) · [Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab) · [Eichentreppe](#block-qtcraft-oak_stairs) · [Eichenzaun](#block-qtcraft-oak_fence) · [Eichenzauntor](#block-qtcraft-oak_fence_gate) · [Fichtenholzdruckplatte](#block-qtcraft-spruce_pressure_plate) · [Fichtenholzknopf](#block-qtcraft-spruce_button) · [Fichtenstufe](#block-qtcraft-spruce_slab) · [Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab) · [Fichtentreppe](#block-qtcraft-spruce_stairs) · [Fichtenzaun](#block-qtcraft-spruce_fence) · [Fichtenzauntor](#block-qtcraft-spruce_fence_gate) · [Gelber Teppich](#block-qtcraft-yellow_wool_carpet) · [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) · [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) · [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) · [Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab) · [Glatte Quarztreppe](#block-qtcraft-smooth_quartz_stairs) · [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) · [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) · [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) · [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) · [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) · [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) · [Glattsteinstufe](#block-qtcraft-polished_stone_slab) · [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) · [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) · [Grauer Teppich](#block-qtcraft-gray_wool_carpet) · [Grüner Teppich](#block-qtcraft-green_wool_carpet) · [Hellblauer Teppich](#block-qtcraft-light_blue_wool_carpet) · [Hellgrauer Teppich](#block-qtcraft-light_gray_wool_carpet) · [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) · [Karmesinholzdruckplatte](#block-qtcraft-crimson_pressure_plate) · [Karmesinholzknopf](#block-qtcraft-crimson_button) · [Karmesinstufe](#block-qtcraft-crimson_slab) · [Karmesinstufe (senkrecht)](#block-qtcraft-crimson_vertical_slab) · [Karmesintreppe](#block-qtcraft-crimson_stairs) · [Karmesinzaun](#block-qtcraft-crimson_fence) · [Karmesinzauntor](#block-qtcraft-crimson_fence_gate) · [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) · [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) · [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) · [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) · [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) · [Netherziegelmauer](#block-qtcraft-nether_brick_wall) · [Netherziegelstufe](#block-qtcraft-nether_brick_slab) · [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab) · [Netherziegeltreppe](#block-qtcraft-nether_brick_stairs) · [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) · [Polierte Schwarzsteinmauer](#block-qtcraft-polished_blackstone_wall) · [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) · [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) · [Polierte Schwarzsteintreppe](#block-qtcraft-polished_blackstone_stairs) · [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) · [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) · [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) · [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) · [Quarzstufe](#block-qtcraft-quartz_slab) · [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab) · [Quarztreppe](#block-qtcraft-quartz_stairs) · [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) · [Rote Netherziegelmauer](#block-qtcraft-red_nether_brick_wall) · [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) · [Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab) · [Rote Netherziegeltreppe](#block-qtcraft-red_nether_brick_stairs) · [Roter Teppich](#block-qtcraft-red_wool_carpet) · [Sandsteinmauer](#block-qtcraft-sandstone_wall) · [Sandsteinstufe](#block-qtcraft-sandstone_slab) · [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) · [Sandsteintreppe](#block-qtcraft-sandstone_stairs) · [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) · [Schwarzsteinmauer](#block-qtcraft-blackstone_wall) · [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) · [Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab) · [Schwarzsteintreppe](#block-qtcraft-blackstone_stairs) · [Steinstufe](#block-qtcraft-stone_slab) · [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) · [Steintreppe](#block-qtcraft-stone_stairs) · [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) · [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) · [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) · [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) · [Türkiser Teppich](#block-qtcraft-cyan_wool_carpet) · [Violetter Teppich](#block-qtcraft-purple_wool_carpet) · [Weißer Teppich](#block-qtcraft-white_wool_carpet) · [Wirrholzdruckplatte](#block-qtcraft-warped_pressure_plate) · [Wirrholzknopf](#block-qtcraft-warped_button) · [Wirrstufe](#block-qtcraft-warped_slab) · [Wirrstufe (senkrecht)](#block-qtcraft-warped_vertical_slab) · [Wirrtreppe](#block-qtcraft-warped_stairs) · [Wirrzaun](#block-qtcraft-warped_fence) · [Wirrzauntor](#block-qtcraft-warped_fence_gate) · [Ziegelmauer](#block-qtcraft-brick_wall) · [Ziegelstufe](#block-qtcraft-brick_slab) · [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) · [Ziegeltreppe](#block-qtcraft-brick_stairs)
 
 ## QtCraft
 
@@ -47,7 +47,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_slab"></a>Bemooste Bruchsteinstufe
 
@@ -98,7 +98,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_vertical_slab"></a>Bemooste Bruchsteinstufe (senkrecht)
 
@@ -145,7 +145,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_cobblestone_stairs"></a>Bemooste Bruchsteintreppe
 
@@ -188,7 +188,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_wall"></a>Bemooste Steinziegelmauer
 
@@ -231,7 +231,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_slab"></a>Bemooste Steinziegelstufe
 
@@ -282,7 +282,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_vertical_slab"></a>Bemooste Steinziegelstufe (senkrecht)
 
@@ -329,7 +329,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mossy_stone_bricks_stairs"></a>Bemooste Steinziegeltreppe
 
@@ -372,7 +372,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_pressure_plate"></a>Birkenholzdruckplatte
 
@@ -406,7 +406,7 @@ Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auc
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_button"></a>Birkenholzknopf
 
@@ -441,7 +441,7 @@ Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzar
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_slab"></a>Birkenstufe
 
@@ -462,6 +462,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Art des Bauteils | Stufe |
 | Klang | Holz |
 | Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **Herstellung**
 
@@ -479,11 +480,11 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Wird verwendet für**
 
-[Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab)
+[Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_vertical_slab"></a>Birkenstufe (senkrecht)
 
@@ -521,7 +522,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_stairs"></a>Birkentreppe
 
@@ -555,7 +556,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_fence"></a>Birkenzaun
 
@@ -574,7 +575,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
 | Art des Bauteils | Zaun |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -589,7 +590,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-birch_fence_gate"></a>Birkenzauntor
 
@@ -623,7 +624,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-blue_wool_carpet"></a>Blauer Teppich
 
@@ -718,7 +719,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cobblestone_slab"></a>Bruchsteinstufe
 
@@ -769,7 +770,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cobblestone_vertical_slab"></a>Bruchsteinstufe (senkrecht)
 
@@ -816,7 +817,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cobblestone_stairs"></a>Bruchsteintreppe
 
@@ -859,7 +860,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_pressure_plate"></a>Dschungelholzdruckplatte
 
@@ -893,7 +894,7 @@ Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auc
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_button"></a>Dschungelholzknopf
 
@@ -928,7 +929,7 @@ Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzar
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_slab"></a>Dschungelstufe
 
@@ -949,6 +950,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Art des Bauteils | Stufe |
 | Klang | Holz |
 | Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **Herstellung**
 
@@ -966,11 +968,11 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Wird verwendet für**
 
-[Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab)
+[Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_vertical_slab"></a>Dschungelstufe (senkrecht)
 
@@ -1008,7 +1010,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_stairs"></a>Dschungeltreppe
 
@@ -1042,7 +1044,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_fence"></a>Dschungelzaun
 
@@ -1061,7 +1063,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
 | Art des Bauteils | Zaun |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -1076,7 +1078,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-jungle_fence_gate"></a>Dschungelzauntor
 
@@ -1110,7 +1112,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_slab"></a>Eichenstufe
 
@@ -1131,6 +1133,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Art des Bauteils | Stufe |
 | Klang | Holz |
 | Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **Herstellung**
 
@@ -1148,11 +1151,11 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Wird verwendet für**
 
-[Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab)
+[Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_vertical_slab"></a>Eichenstufe (senkrecht)
 
@@ -1190,7 +1193,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_stairs"></a>Eichentreppe
 
@@ -1224,7 +1227,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_fence"></a>Eichenzaun
 
@@ -1243,7 +1246,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
 | Art des Bauteils | Zaun |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -1258,7 +1261,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-oak_fence_gate"></a>Eichenzauntor
 
@@ -1292,7 +1295,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_pressure_plate"></a>Fichtenholzdruckplatte
 
@@ -1326,7 +1329,7 @@ Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auc
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_button"></a>Fichtenholzknopf
 
@@ -1361,7 +1364,7 @@ Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzar
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_slab"></a>Fichtenstufe
 
@@ -1382,6 +1385,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Art des Bauteils | Stufe |
 | Klang | Holz |
 | Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
 
 **Herstellung**
 
@@ -1399,11 +1403,11 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Wird verwendet für**
 
-[Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab)
+[Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_vertical_slab"></a>Fichtenstufe (senkrecht)
 
@@ -1441,7 +1445,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_stairs"></a>Fichtentreppe
 
@@ -1475,7 +1479,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_fence"></a>Fichtenzaun
 
@@ -1494,7 +1498,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
 | Art des Bauteils | Zaun |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
@@ -1509,7 +1513,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-spruce_fence_gate"></a>Fichtenzauntor
 
@@ -1543,7 +1547,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 
 **Schneller mit**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
 
 ### <a id="block-qtcraft-yellow_wool_carpet"></a>Gelber Teppich
 
@@ -1628,7 +1632,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cut_sandstone_vertical_slab"></a>Geschnittene Sandsteinstufe (senkrecht)
 
@@ -1683,7 +1687,148 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-smooth_quartz_slab"></a>Glatte Quarzstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) |
+| Art des Bauteils | Stufe |
+| Klang | Stein |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | 6 × [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab) | [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | 2 × [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-smooth_quartz_vertical_slab"></a>Glatte Quarzstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) |
+| Art des Bauteils | Vertical slab |
+| Klang | Stein |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) | 3 × [Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab) |
+| [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |  |
+| [Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | 2 × [Glatte Quarzstufe (senkrecht)](#block-qtcraft-smooth_quartz_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Glatte Quarzstufe](#block-qtcraft-smooth_quartz_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-smooth_quartz_stairs"></a>Glatte Quarztreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_quartz_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Glatte Quarztreppe](#block-qtcraft-smooth_quartz_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) |
+| Art des Bauteils | Treppe |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | · | · | 4 × [Glatte Quarztreppe](#block-qtcraft-smooth_quartz_stairs) |
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | · |  |
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Quarzblock](blocks.md#block-qtcraft-smooth_quartz) | [Glatte Quarztreppe](#block-qtcraft-smooth_quartz_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_stone_slab"></a>Glatte Steinstufe
 
@@ -1734,7 +1879,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_stone_vertical_slab"></a>Glatte Steinstufe (senkrecht)
 
@@ -1781,7 +1926,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_wall"></a>Glatter Sandsteinmauer
 
@@ -1824,7 +1969,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_slab"></a>Glatter Sandsteinstufe
 
@@ -1875,7 +2020,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_vertical_slab"></a>Glatter Sandsteinstufe (senkrecht)
 
@@ -1922,7 +2067,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-smooth_sandstone_stairs"></a>Glatter Sandsteintreppe
 
@@ -1965,7 +2110,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_stone_slab"></a>Glattsteinstufe
 
@@ -2016,7 +2161,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_stone_vertical_slab"></a>Glattsteinstufe (senkrecht)
 
@@ -2063,7 +2208,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-polished_stone_stairs"></a>Glattsteintreppe
 
@@ -2106,7 +2251,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-gray_wool_carpet"></a>Grauer Teppich
 
@@ -2238,6 +2383,244 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 |---|---|---|
 | [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool) | [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool) | 3 × [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) |
 
+### <a id="block-qtcraft-crimson_pressure_plate"></a>Karmesinholzdruckplatte
+
+Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auch Gegenstände. Jede Holzart hat ihre eigene.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_pressure_plate` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinholzdruckplatte](#block-qtcraft-crimson_pressure_plate) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | einen festen Block darunter |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Pressure plate |
+| Klang | Netherholz |
+| Zustände | powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinholzdruckplatte](#block-qtcraft-crimson_pressure_plate) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_button"></a>Karmesinholzknopf
+
+Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzart hat ihren eigenen.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_button` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinholzknopf](#block-qtcraft-crimson_button) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | eine feste Fläche, an der es hängt |
+| Wird von Flüssigkeiten weggespült | ja |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Button |
+| Klang | Netherholz |
+| Zustände | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinholzknopf](#block-qtcraft-crimson_button) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_slab"></a>Karmesinstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinstufe](#block-qtcraft-crimson_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Stufe |
+| Klang | Netherholz |
+| Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | 6 × [Karmesinstufe](#block-qtcraft-crimson_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Karmesinstufe (senkrecht)](#block-qtcraft-crimson_vertical_slab) | [Karmesinstufe](#block-qtcraft-crimson_slab) |
+
+**Wird verwendet für**
+
+[Karmesinstufe (senkrecht)](#block-qtcraft-crimson_vertical_slab), [Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_vertical_slab"></a>Karmesinstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinstufe (senkrecht)](#block-qtcraft-crimson_vertical_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Netherholz |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Karmesinstufe](#block-qtcraft-crimson_slab) | 3 × [Karmesinstufe (senkrecht)](#block-qtcraft-crimson_vertical_slab) |
+| [Karmesinstufe](#block-qtcraft-crimson_slab) |  |
+| [Karmesinstufe](#block-qtcraft-crimson_slab) |  |
+
+**Wird verwendet für**
+
+[Karmesinstufe](#block-qtcraft-crimson_slab)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_stairs"></a>Karmesintreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesintreppe](#block-qtcraft-crimson_stairs) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Treppe |
+| Klang | Netherholz |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | · | · | 4 × [Karmesintreppe](#block-qtcraft-crimson_stairs) |
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | · |  |
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_fence"></a>Karmesinzaun
+
+Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu hoch zum Überspringen.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fence` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinzaun](#block-qtcraft-crimson_fence) |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Zaun |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
+| Klang | Netherholz |
+| Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Stock](items.md#item-qtcraft-stick) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | 3 × [Karmesinzaun](#block-qtcraft-crimson_fence) |
+| [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Stock](items.md#item-qtcraft-stick) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-crimson_fence_gate"></a>Karmesinzauntor
+
+Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles durch.
+
+| | |
+|---|---|
+| ID | `qtcraft:crimson_fence_gate` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Karmesinzauntor](#block-qtcraft-crimson_fence_gate) |
+| Lichtdämpfung | 0 von 15 |
+| Öffnet und schließt beim Benutzen | ja |
+| Hergestellt aus | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) |
+| Art des Bauteils | Zauntor |
+| Klang | Netherholz |
+| Zustände | facing (north, east, south, west); open (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stock](items.md#item-qtcraft-stick) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Stock](items.md#item-qtcraft-stick) | [Karmesinzauntor](#block-qtcraft-crimson_fence_gate) |
+| [Stock](items.md#item-qtcraft-stick) | [Karmesinbretter](blocks.md#block-qtcraft-crimson_planks) | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
 ### <a id="block-qtcraft-mud_bricks_wall"></a>Lehmziegelmauer
 
 Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
@@ -2279,7 +2662,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mud_bricks_slab"></a>Lehmziegelstufe
 
@@ -2330,7 +2713,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mud_bricks_vertical_slab"></a>Lehmziegelstufe (senkrecht)
 
@@ -2377,7 +2760,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-mud_bricks_stairs"></a>Lehmziegeltreppe
 
@@ -2420,7 +2803,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-magenta_wool_carpet"></a>Magentafarbener Teppich
 
@@ -2448,6 +2831,190 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 |---|---|---|
 | [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool) | [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool) | 3 × [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) |
 
+### <a id="block-qtcraft-nether_brick_wall"></a>Netherziegelmauer
+
+Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_wall` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Netherziegelmauer](#block-qtcraft-nether_brick_wall) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
+| Art des Bauteils | Mauer |
+| Verbindet sich mit | Mauern, volle feste Blöcke |
+| Klang | Netherziegel |
+| Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | 6 × [Netherziegelmauer](#block-qtcraft-nether_brick_wall) |
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegelmauer](#block-qtcraft-nether_brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-nether_brick_slab"></a>Netherziegelstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
+| Art des Bauteils | Stufe |
+| Klang | Netherziegel |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | 6 × [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab) | [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | 2 × [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Gemeißelte Netherziegel](blocks.md#block-qtcraft-chiseled_nether_bricks), [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-nether_brick_vertical_slab"></a>Netherziegelstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Netherziegel |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Netherziegelstufe](#block-qtcraft-nether_brick_slab) | 3 × [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab) |
+| [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |  |
+| [Netherziegelstufe](#block-qtcraft-nether_brick_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | 2 × [Netherziegelstufe (senkrecht)](#block-qtcraft-nether_brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Netherziegelstufe](#block-qtcraft-nether_brick_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-nether_brick_stairs"></a>Netherziegeltreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:nether_brick_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Netherziegeltreppe](#block-qtcraft-nether_brick_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |
+| Art des Bauteils | Treppe |
+| Klang | Netherziegel |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | · | · | 4 × [Netherziegeltreppe](#block-qtcraft-nether_brick_stairs) |
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | · |  |
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegel](blocks.md#block-qtcraft-nether_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Netherziegel](blocks.md#block-qtcraft-nether_bricks) | [Netherziegeltreppe](#block-qtcraft-nether_brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
 ### <a id="block-qtcraft-orange_wool_carpet"></a>Orangefarbener Teppich
 
 Eine dünne Schicht Wolle, die einen Block darunter braucht.
@@ -2474,6 +3041,611 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 |---|---|---|
 | [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool) | [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool) | 3 × [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) |
 
+### <a id="block-qtcraft-polished_blackstone_wall"></a>Polierte Schwarzsteinmauer
+
+Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_wall` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinmauer](#block-qtcraft-polished_blackstone_wall) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
+| Art des Bauteils | Mauer |
+| Verbindet sich mit | Mauern, volle feste Blöcke |
+| Klang | Schwarzstein |
+| Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 6 × [Polierte Schwarzsteinmauer](#block-qtcraft-polished_blackstone_wall) |
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierte Schwarzsteinmauer](#block-qtcraft-polished_blackstone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Polierte Schwarzsteinmauer](#block-qtcraft-polished_blackstone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_slab"></a>Polierte Schwarzsteinstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
+| Art des Bauteils | Stufe |
+| Klang | Schwarzstein |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 6 × [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) | [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Gemeißelter polierter Schwarzstein](blocks.md#block-qtcraft-chiseled_polished_blackstone), [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_vertical_slab"></a>Polierte Schwarzsteinstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
+| Art des Bauteils | Vertical slab |
+| Klang | Schwarzstein |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) | 3 × [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) |
+| [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |  |
+| [Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Polierte Schwarzsteinstufe (senkrecht)](#block-qtcraft-polished_blackstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Polierte Schwarzsteinstufe](#block-qtcraft-polished_blackstone_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_stairs"></a>Polierte Schwarzsteintreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteintreppe](#block-qtcraft-polished_blackstone_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |
+| Art des Bauteils | Treppe |
+| Klang | Schwarzstein |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | · | · | 4 × [Polierte Schwarzsteintreppe](#block-qtcraft-polished_blackstone_stairs) |
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | · |  |
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierte Schwarzsteintreppe](#block-qtcraft-polished_blackstone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Polierte Schwarzsteintreppe](#block-qtcraft-polished_blackstone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_wall"></a>Polierte Schwarzsteinziegelmauer
+
+Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_wall` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Art des Bauteils | Mauer |
+| Verbindet sich mit | Mauern, volle feste Blöcke |
+| Klang | Schwarzstein |
+| Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | 6 × [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) |
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierte Schwarzsteinziegelmauer](#block-qtcraft-polished_blackstone_brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_slab"></a>Polierte Schwarzsteinziegelstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_slab` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Art des Bauteils | Stufe |
+| Klang | Schwarzstein |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | 6 × [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) | [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | 2 × [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_vertical_slab"></a>Polierte Schwarzsteinziegelstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_vertical_slab` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Schwarzstein |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) | 3 × [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+| [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |  |
+| [Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | 2 × [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | 2 × [Polierte Schwarzsteinziegelstufe (senkrecht)](#block-qtcraft-polished_blackstone_brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Polierte Schwarzsteinziegelstufe](#block-qtcraft-polished_blackstone_brick_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-polished_blackstone_brick_stairs"></a>Polierte Schwarzsteinziegeltreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:polished_blackstone_brick_stairs` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |
+| Art des Bauteils | Treppe |
+| Klang | Schwarzstein |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | · | · | 4 × [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) |
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | · |  |
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierte Schwarzsteinziegel](blocks.md#block-qtcraft-polished_blackstone_bricks) | [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Polierter Schwarzstein](blocks.md#block-qtcraft-polished_blackstone) | [Polierte Schwarzsteinziegeltreppe](#block-qtcraft-polished_blackstone_brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-quartz_slab"></a>Quarzstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_slab` |
+| Härte | 0,8 |
+| Abbauen mit der Hand | 4 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,1 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Quarzstufe](#block-qtcraft-quartz_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Quarzblock](blocks.md#block-qtcraft-quartz_block) |
+| Art des Bauteils | Stufe |
+| Klang | Stein |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarzblock](blocks.md#block-qtcraft-quartz_block) | 6 × [Quarzstufe](#block-qtcraft-quartz_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab) | [Quarzstufe](#block-qtcraft-quartz_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | 2 × [Quarzstufe](#block-qtcraft-quartz_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Gemeißelter Quarzblock](blocks.md#block-qtcraft-chiseled_quartz_block), [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-quartz_vertical_slab"></a>Quarzstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_vertical_slab` |
+| Härte | 0,8 |
+| Abbauen mit der Hand | 4 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,1 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Quarzblock](blocks.md#block-qtcraft-quartz_block) |
+| Art des Bauteils | Vertical slab |
+| Klang | Stein |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Quarzstufe](#block-qtcraft-quartz_slab) | 3 × [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab) |
+| [Quarzstufe](#block-qtcraft-quartz_slab) |  |
+| [Quarzstufe](#block-qtcraft-quartz_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | 2 × [Quarzstufe (senkrecht)](#block-qtcraft-quartz_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Quarzstufe](#block-qtcraft-quartz_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-quartz_stairs"></a>Quarztreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:quartz_stairs` |
+| Härte | 0,8 |
+| Abbauen mit der Hand | 4 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,1 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Quarztreppe](#block-qtcraft-quartz_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Quarzblock](blocks.md#block-qtcraft-quartz_block) |
+| Art des Bauteils | Treppe |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | · | · | 4 × [Quarztreppe](#block-qtcraft-quartz_stairs) |
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarzblock](blocks.md#block-qtcraft-quartz_block) | · |  |
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarzblock](blocks.md#block-qtcraft-quartz_block) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Quarzblock](blocks.md#block-qtcraft-quartz_block) | [Quarztreppe](#block-qtcraft-quartz_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
 ### <a id="block-qtcraft-pink_wool_carpet"></a>Rosafarbener Teppich
 
 Eine dünne Schicht Wolle, die einen Block darunter braucht.
@@ -2499,6 +3671,190 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | 1 | 2 | → |
 |---|---|---|
 | [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool) | [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool) | 3 × [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) |
+
+### <a id="block-qtcraft-red_nether_brick_wall"></a>Rote Netherziegelmauer
+
+Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_wall` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rote Netherziegelmauer](#block-qtcraft-red_nether_brick_wall) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
+| Art des Bauteils | Mauer |
+| Verbindet sich mit | Mauern, volle feste Blöcke |
+| Klang | Netherziegel |
+| Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | 6 × [Rote Netherziegelmauer](#block-qtcraft-red_nether_brick_wall) |
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegelmauer](#block-qtcraft-red_nether_brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-red_nether_brick_slab"></a>Rote Netherziegelstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
+| Art des Bauteils | Stufe |
+| Klang | Netherziegel |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | 6 × [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab) | [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | 2 × [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-red_nether_brick_vertical_slab"></a>Rote Netherziegelstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Netherziegel |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) | 3 × [Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab) |
+| [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |  |
+| [Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | 2 × [Rote Netherziegelstufe (senkrecht)](#block-qtcraft-red_nether_brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Rote Netherziegelstufe](#block-qtcraft-red_nether_brick_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-red_nether_brick_stairs"></a>Rote Netherziegeltreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_nether_brick_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rote Netherziegeltreppe](#block-qtcraft-red_nether_brick_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |
+| Art des Bauteils | Treppe |
+| Klang | Netherziegel |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | · | · | 4 × [Rote Netherziegeltreppe](#block-qtcraft-red_nether_brick_stairs) |
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | · |  |
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Netherziegel](blocks.md#block-qtcraft-red_nether_bricks) | [Rote Netherziegeltreppe](#block-qtcraft-red_nether_brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-red_wool_carpet"></a>Roter Teppich
 
@@ -2567,7 +3923,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-sandstone_slab"></a>Sandsteinstufe
 
@@ -2618,7 +3974,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-sandstone_vertical_slab"></a>Sandsteinstufe (senkrecht)
 
@@ -2665,7 +4021,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-sandstone_stairs"></a>Sandsteintreppe
 
@@ -2708,7 +4064,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-black_wool_carpet"></a>Schwarzer Teppich
 
@@ -2735,6 +4091,190 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | 1 | 2 | → |
 |---|---|---|
 | [Schwarze Wolle](blocks.md#block-qtcraft-black_wool) | [Schwarze Wolle](blocks.md#block-qtcraft-black_wool) | 3 × [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) |
+
+### <a id="block-qtcraft-blackstone_wall"></a>Schwarzsteinmauer
+
+Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_wall` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Schwarzsteinmauer](#block-qtcraft-blackstone_wall) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
+| Art des Bauteils | Mauer |
+| Verbindet sich mit | Mauern, volle feste Blöcke |
+| Klang | Schwarzstein |
+| Zustände | east (false, true); north (false, true); south (false, true); up (true, false); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 6 × [Schwarzsteinmauer](#block-qtcraft-blackstone_wall) |
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzsteinmauer](#block-qtcraft-blackstone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-blackstone_slab"></a>Schwarzsteinstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_slab` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
+| Art des Bauteils | Stufe |
+| Klang | Schwarzstein |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 6 × [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab) | [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-blackstone_vertical_slab"></a>Schwarzsteinstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_vertical_slab` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
+| Art des Bauteils | Vertical slab |
+| Klang | Schwarzstein |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) | 3 × [Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab) |
+| [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |  |
+| [Schwarzsteinstufe](#block-qtcraft-blackstone_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | 2 × [Schwarzsteinstufe (senkrecht)](#block-qtcraft-blackstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Wird verwendet für**
+
+[Schwarzsteinstufe](#block-qtcraft-blackstone_slab)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
+
+### <a id="block-qtcraft-blackstone_stairs"></a>Schwarzsteintreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:blackstone_stairs` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Schwarzsteintreppe](#block-qtcraft-blackstone_stairs) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |
+| Art des Bauteils | Treppe |
+| Klang | Schwarzstein |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | · | · | 4 × [Schwarzsteintreppe](#block-qtcraft-blackstone_stairs) |
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | · |  |
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzstein](blocks.md#block-qtcraft-blackstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarzstein](blocks.md#block-qtcraft-blackstone) | [Schwarzsteintreppe](#block-qtcraft-blackstone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_slab"></a>Steinstufe
 
@@ -2785,7 +4325,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_vertical_slab"></a>Steinstufe (senkrecht)
 
@@ -2832,7 +4372,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_stairs"></a>Steintreppe
 
@@ -2875,7 +4415,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_bricks_wall"></a>Steinziegelmauer
 
@@ -2926,7 +4466,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_bricks_slab"></a>Steinziegelstufe
 
@@ -2985,7 +4525,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_bricks_vertical_slab"></a>Steinziegelstufe (senkrecht)
 
@@ -3040,7 +4580,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-stone_bricks_stairs"></a>Steinziegeltreppe
 
@@ -3091,7 +4631,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-cyan_wool_carpet"></a>Türkiser Teppich
 
@@ -3171,6 +4711,244 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 |---|---|---|
 | [Weiße Wolle](blocks.md#block-qtcraft-white_wool) | [Weiße Wolle](blocks.md#block-qtcraft-white_wool) | 3 × [Weißer Teppich](#block-qtcraft-white_wool_carpet) |
 
+### <a id="block-qtcraft-warped_pressure_plate"></a>Wirrholzdruckplatte
+
+Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auch Gegenstände. Jede Holzart hat ihre eigene.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_pressure_plate` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrholzdruckplatte](#block-qtcraft-warped_pressure_plate) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | einen festen Block darunter |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Pressure plate |
+| Klang | Netherholz |
+| Zustände | powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrholzdruckplatte](#block-qtcraft-warped_pressure_plate) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_button"></a>Wirrholzknopf
+
+Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzart hat ihren eigenen.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_button` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrholzknopf](#block-qtcraft-warped_button) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | eine feste Fläche, an der es hängt |
+| Wird von Flüssigkeiten weggespült | ja |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Button |
+| Klang | Netherholz |
+| Zustände | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrholzknopf](#block-qtcraft-warped_button) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_slab"></a>Wirrstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrstufe](#block-qtcraft-warped_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Stufe |
+| Klang | Netherholz |
+| Zustände | type (bottom, top, double) |
+| Gruppen | [#wooden_slabs](tags.md#tag-qtcraft-wooden_slabs) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | 6 × [Wirrstufe](#block-qtcraft-warped_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Wirrstufe (senkrecht)](#block-qtcraft-warped_vertical_slab) | [Wirrstufe](#block-qtcraft-warped_slab) |
+
+**Wird verwendet für**
+
+[Tageslichtsensor](blocks.md#block-qtcraft-daylight_sensor) (#wooden_slabs), [Wirrstufe (senkrecht)](#block-qtcraft-warped_vertical_slab)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_vertical_slab"></a>Wirrstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrstufe (senkrecht)](#block-qtcraft-warped_vertical_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Netherholz |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Wirrstufe](#block-qtcraft-warped_slab) | 3 × [Wirrstufe (senkrecht)](#block-qtcraft-warped_vertical_slab) |
+| [Wirrstufe](#block-qtcraft-warped_slab) |  |
+| [Wirrstufe](#block-qtcraft-warped_slab) |  |
+
+**Wird verwendet für**
+
+[Wirrstufe](#block-qtcraft-warped_slab)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_stairs"></a>Wirrtreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrtreppe](#block-qtcraft-warped_stairs) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Treppe |
+| Klang | Netherholz |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | · | · | 4 × [Wirrtreppe](#block-qtcraft-warped_stairs) |
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | · |  |
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_fence"></a>Wirrzaun
+
+Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu hoch zum Überspringen.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fence` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrzaun](#block-qtcraft-warped_fence) |
+| Lichtdämpfung | 0 von 15 |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Zaun |
+| Verbindet sich mit | Zäune, Zauntore, volle feste Blöcke |
+| Klang | Netherholz |
+| Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Stock](items.md#item-qtcraft-stick) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | 3 × [Wirrzaun](#block-qtcraft-warped_fence) |
+| [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Stock](items.md#item-qtcraft-stick) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
+### <a id="block-qtcraft-warped_fence_gate"></a>Wirrzauntor
+
+Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles durch.
+
+| | |
+|---|---|
+| ID | `qtcraft:warped_fence_gate` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Wirrzauntor](#block-qtcraft-warped_fence_gate) |
+| Lichtdämpfung | 0 von 15 |
+| Öffnet und schließt beim Benutzen | ja |
+| Hergestellt aus | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) |
+| Art des Bauteils | Zauntor |
+| Klang | Netherholz |
+| Zustände | facing (north, east, south, west); open (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stock](items.md#item-qtcraft-stick) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Stock](items.md#item-qtcraft-stick) | [Wirrzauntor](#block-qtcraft-warped_fence_gate) |
+| [Stock](items.md#item-qtcraft-stick) | [Wirrbretter](blocks.md#block-qtcraft-warped_planks) | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4), [Netheritaxt](tools.md#item-qtcraft-netherite_axe) (Stufe 5)
+
 ### <a id="block-qtcraft-brick_wall"></a>Ziegelmauer
 
 Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Reihen fehlt der Pfosten. Niemand springt darüber.
@@ -3212,7 +4990,7 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brick_slab"></a>Ziegelstufe
 
@@ -3263,7 +5041,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brick_vertical_slab"></a>Ziegelstufe (senkrecht)
 
@@ -3310,7 +5088,7 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
 
 ### <a id="block-qtcraft-brick_stairs"></a>Ziegeltreppe
 
@@ -3353,4 +5131,4 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 
 **Abbaubar mit**
 
-[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4), [Netheritspitzhacke](tools.md#item-qtcraft-netherite_pickaxe) (Stufe 5)
