@@ -144,3 +144,4 @@ Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Fl
 11. **Nichts ineinander:** keine Shulkerkiste in einer Shulkerkiste, kein Rucksack in einer Shulkerkiste und keine Shulkerkiste im Rucksack.
 12. **Vorführwelt mit Endportal:** fertiges Portal, Ankunft mit Stationen (Drache als Schaustück ohne Kampf, Shulker, Chorus, Endstadt-Ausschnitt); im Kreativmodus zusätzlich `/tp … in end`.
 13. **Endertruhe je Spieler je Welt**, in der Spielerdatei der Welt.
+14. **Kleinere Punkte wie im Vorbild** (Mensch 2026-11-10: „passt so, mach wie im Vorbild“): geworfene Perlen reisen durch Endtransitportale; der Drache hat feste Werte unabhängig von der Spielerzahl, die Bossleiste sehen alle auf der Hauptinsel; Welten aus 1.1.0 bekommen das Ende nach dem Umstieg ganz neu erzeugt; die Kartenvorschau des Endes ist eine Draufsicht auf die Inseln.
