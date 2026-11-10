@@ -77,8 +77,8 @@ struct QcServerWorkstations
             smithing.forge(client, *smith);
         } else if (std::holds_alternative<QcMsg::CloseSmithing>(message)) {
             smithing.close(client, false);
-        } else if (const auto *choice = std::get_if<QcMsg::ChooseBeaconEffects>(&message)) {
-            beacon.choose(client, *choice);
+        } else if (const auto *effects = std::get_if<QcMsg::ChooseBeaconEffects>(&message)) {
+            beacon.choose(client, *effects);
         } else if (std::holds_alternative<QcMsg::CloseBeacon>(message)) {
             beacon.close(client, false);
         } else {
