@@ -102,9 +102,9 @@ inline constexpr float nightScatter = 0.08f;
 /*! Returns \a camera modulo wavePeriod in [0, wavePeriod) per axis, computed in double; 0 for an
     axis that is not finite. */
 [[nodiscard]] std::array<float, 3> periodicCamera(const QcVec3 &camera);
-/*! Returns the colour of the water around a camera under water at \a daylight
+/*! Returns the colour of the water around a camera under water at \a light
     (QcSkyState::daylight, 0..1); a value that is not finite counts as night. */
-[[nodiscard]] QVector3D underwaterColour(double daylight);
+[[nodiscard]] QVector3D underwaterColour(double light);
 /*! Returns the Water block of \a frame; values that are not finite are 0 (the light's strength
     too, so no highlight comes from a broken sky). */
 [[nodiscard]] QcWaterUniforms uniforms(const QcWaterFrame &frame);

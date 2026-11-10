@@ -65,10 +65,10 @@ std::array<float, 3> QcWaterLook::periodicCamera(const QcVec3 &camera)
     return {wrap(camera.x), wrap(camera.y), wrap(camera.z)};
 }
 
-QVector3D QcWaterLook::underwaterColour(double daylight)
+QVector3D QcWaterLook::underwaterColour(double light)
 {
-    const double light = std::isfinite(daylight) ? std::clamp(daylight, 0.0, 1.0) : 0.0;
-    const auto share = static_cast<float>(nightScatter + (1.0 - nightScatter) * light);
+    const double day = std::isfinite(light) ? std::clamp(light, 0.0, 1.0) : 0.0;
+    const auto share = static_cast<float>(nightScatter + (1.0 - nightScatter) * day);
     return QVector3D(scatter[0], scatter[1], scatter[2]) * share;
 }
 
