@@ -103,7 +103,7 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 
 | Paket | Inhalt | Hängt ab von | Größe |
 |-------|--------|--------------|-------|
-| 93.1 | Shulker (eigener Name und Aussehen; Schale, öffnet sich, Geschoss mit Schwebe-Effekt, teleportiert bei Schaden, Schale und Schalensplitter als Beute), Effekt Schweben; Leere-Membran (Rezept, Brau-Zutat für den Trank Sanfter Fall); Shulkerkiste (Rezept, behält Inhalt beim Abbauen in den Item-Daten, Färben, 16 Farben) | 90.3 | M |
+| 93.1 | Shulker (eigener Name und Aussehen; Schale, öffnet sich, Geschoss mit Schwebe-Effekt, teleportiert bei Schaden, Schale als Beute), Effekt Schweben; Milbe (5 % je Perlenwurf, Beute Leerstaub); Leere-Membran (Chorus + Leerstaub, Brau-Zutat für den Trank Sanfter Fall); Shulkerkiste nicht in Kiste oder Rucksack; Shulkerkiste (Rezept, behält Inhalt beim Abbauen in den Item-Daten, Färben, 16 Farben) | 90.3 | M |
 | 93.2 | Elytren: Gleitflug (Server und Vorhersage), Haltbarkeit, Reparatur am Amboss mit Leere-Membran, Sturzschaden, Feuerwerksrakete als Schub; Kamera; Fortschritte „Höhenflug“; Steuerung mit Gamepad | 92.3 (Fundort) | L |
 | 93.3 | Endertruhe (Obsidian + Endauge): ein Inventar je Spieler über alle Endertruhen und Dimensionen, in der Spielerdatei | 90.2 | S |
 
@@ -131,7 +131,7 @@ Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Fl
 
 ## Entscheidungen des Menschen (2026-11-10, zweite Runde)
 
-1. **Kein Phantom.** Elytren repariert eine Ersatz-Zutat aus dem Ende: die **Leere-Membran** (neues Item, Rezept: geplatzte Chorusfrucht + Shulker-Schalensplitter, ergibt 2). Sie repariert Elytren am Amboss wie die Phantomhaut im Vorbild und ist die Brau-Zutat für den Trank „Sanfter Fall“ (fehlt bisher als Trank). Schalensplitter: Beute der Shulker und der Truhen in Endstädten.
+1. **Kein Phantom.** Elytren repariert eine Ersatz-Zutat aus dem Ende: die **Leere-Membran** (neues Item, Rezept: geplatzte Chorusfrucht + Leerstaub, ergibt 2; Leerstaub siehe 10). Sie repariert Elytren am Amboss wie die Phantomhaut im Vorbild und ist die Brau-Zutat für den Trank „Sanfter Fall“ (fehlt bisher als Trank). Shulker lassen nur ihre Schale fallen.
 2. **Eigener kurzer Abspann** nach dem Drachensieg: eigener Text, dann die Namen des Projekts und der Musik (Scott Buckley), überspringbar; danach Rückkehr zum Spawn wie im Vorbild.
 3. **Zerstörung durch den Drachen unter `mobGriefing`** wie die Hydra; Endstein, Obsidian, Grundgestein und Eisengitter bleiben immer.
 4. **Ein Paar Elytren je Endschiff**, auch im Mehrspieler (wer zuerst kommt).
@@ -140,3 +140,7 @@ Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Fl
 7. **Flugtempo wie im Vorbild** (rund 30 Blöcke/s mit Raketen). 93.2 misst headless und im Fenster, ob Chunk-Laden und Meshing mitkommen; reicht es nicht, folgt ein eigenes Leistungspaket (Laden in Flugrichtung bevorzugt), das Spieltempo bleibt.
 8. **Fortschritte in Reitern** (Oberwelt, Nether, Ende, eventuell Abenteuer und Landwirtschaft) ab 1.2.0, eigenes Paket 94.4; für 1.1.0 hängt 79.98 den Nether-Zweig in den einen Baum. **Mod-Kompatibilität:** der Reiter ist ein Datenfeld des Fortschritts (bzw. der Wurzel); Mods ohne das Feld landen in einem Standard-Reiter, Mods können eigene Reiter anlegen; die Namen der Fortschritte bleiben stabil (gespeicherter Fortschritt).
 9. **Reihenfolge:** zuerst die Speicher-Pakete aus 79.96 (Klangbank int16, Menü-Registry, Partikel-Abschnitte), dann das Ende; QDoc 72.x und das Aufräumen 79.47/79.49 verschränkt nebenher.
+10. **Milbe** (Gegenstück der Endermilbe, eigener Name und Aussehen): entsteht mit 5 % beim Werfen einer Schattenperle, Werte nach Vorbild, Schattengänger greifen sie an; Beute **Leerstaub** (Zutat der Leere-Membran). Chorus lässt sich nach dem ersten Besuch zu Hause pflanzen, danach geht die Reparatur ohne weitere Reisen ins Ende.
+11. **Nichts ineinander:** keine Shulkerkiste in einer Shulkerkiste, kein Rucksack in einer Shulkerkiste und keine Shulkerkiste im Rucksack.
+12. **Vorführwelt mit Endportal:** fertiges Portal, Ankunft mit Stationen (Drache als Schaustück ohne Kampf, Shulker, Chorus, Endstadt-Ausschnitt); im Kreativmodus zusätzlich `/tp … in end`.
+13. **Endertruhe je Spieler je Welt**, in der Spielerdatei der Welt.
