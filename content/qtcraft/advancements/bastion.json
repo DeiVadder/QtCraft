@@ -1,0 +1,16 @@
+{
+    "name": "bastion",
+    "parent": "enter_nether",
+    "icon": "gilded_blackstone",
+    "frame": "task",
+    "handbook": "chapter:nether",
+    "criteria": {
+        "bastion": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "structure": "bastion"
+            }
+        }
+    }
+}

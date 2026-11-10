@@ -180,7 +180,7 @@ private slots:
         QVERIFY(base);
         QVERIFY2(base->warnings.isEmpty(), qPrintable(base->warnings.join(u'\n')));
         const QcAdvancementCatalog &advancements = base->registry->advancements();
-        QVERIFY(advancements.items().size() >= 20 && advancements.items().size() <= 40);
+        QVERIFY(advancements.items().size() >= 20 && advancements.items().size() <= 60);
 
         // One root; every advancement leads into the handbook and is translated in both languages.
         int roots = 0;
@@ -371,6 +371,23 @@ private slots:
         QVERIFY(readsGroup({u"iron"_s}));
         QVERIFY(!readsGroup({u"gold"_s}));
         QVERIFY(!readsGroup({}));
+    }
+
+    // The conditions of the Nether branch (decisions E-1160 to E-1163) take names of the pack.
+    void netherConditionsAreQualified()
+    {
+        const QcResult<QcAdvancementDefinition> parsed = parse(R"({"name": "x", "icon": "stick", "criteria": {
+            "a": {"trigger": "location", "conditions": {"dimension": "nether", "structure": "bastion"}},
+            "b": {"trigger": "changed_dimension", "conditions": {"dimension": "qtcraft:nether"}},
+            "c": {"trigger": "entity_killed", "conditions": {"entity": "qtcraft:wailer", "projectile": "qtcraft:fireball"}},
+            "d": {"trigger": "bartered", "conditions": {"entity": "qtcraft:tuskling", "item": "qtcraft:gold_ingot"}}}})");
+        QVERIFY2(parsed.has_value(), qPrintable(parsed ? QString() : parsed.error()));
+        QCOMPARE(parsed->criterion(u"a"_s)->conditions.dimension, u"mymod:nether"_s);
+        QCOMPARE(parsed->criterion(u"a"_s)->conditions.structure, u"bastion"_s);
+        QCOMPARE(parsed->criterion(u"b"_s)->trigger, QcAdvancementTrigger::ChangedDimension);
+        QCOMPARE(parsed->criterion(u"c"_s)->conditions.projectile, u"qtcraft:fireball"_s);
+        QCOMPARE(parsed->criterion(u"d"_s)->trigger, QcAdvancementTrigger::Bartered);
+        QCOMPARE(parsed->criterion(u"d"_s)->conditions.item, u"qtcraft:gold_ingot"_s);
     }
 
     void minYAboveMaxYIsRefused()

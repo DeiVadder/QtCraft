@@ -859,12 +859,14 @@ The adventure guide (decision E-923) leads players from step to step: each advan
 | `block_placed`, `block_broken` | the player places or mines a block | `block` |
 | `item_crafted` | a crafting result is taken or the recipe book crafts | `item` |
 | `item_smelted` | the output of a furnace-like machine is taken | `item` |
-| `entity_killed` | the player kills a creature (blow or own arrow) | `entity` |
+| `entity_killed` | the player kills a creature (blow or own arrow) | `entity`, `projectile` (the projectile that struck, e.g. `fireball`; decision E-1162) |
 | `entity_bred` | two animals have young; the nearest player within 16 blocks counts | `entity` |
 | `entity_tamed` | the player tames an animal | `entity` |
 | `entity_summoned` | a creature is summoned from blocks (the charred hydra); every player within 50 blocks counts | `entity` |
 | `beacon_constructed` | a beacon starts to shine or its pyramid rises; every player within 10 blocks across, 9 below and 5 above counts (decision E-1144) | `level` (at least) |
-| `location` | the player stands there (checked once a second after moving to another block) | `biome`, `structure` (`"village"`), `minY`, `maxY` |
+| `location` | the player stands there, in his own dimension (checked once a second after moving to another block; decision E-1160) | `dimension`, `biome`, `structure` (`"village"`, `"fortress"` or `"bastion"`), `minY`, `maxY` |
+| `changed_dimension` | the player arrives in another dimension (portal, `/tp … in`, respawn; decision E-1161) | `dimension` (where he arrives) |
+| `bartered` | a creature that barters (the tuskling) gave its loot for currency the player handed it (decision E-1163) | `entity`, `item` (the currency) |
 | `item_used_on_block` | a held item did something to a block (hoe, bone meal, bucket, flint and steel, axe, dye …) | `item`, `block` |
 | `item_used_on_entity` | a held item did something to a creature (name tag, feeding, milking, catching) | `item`, `entity` |
 | `ride_vehicle` | the player gets into a vehicle | `vehicle` (`minecart` or `boat`) |

@@ -77,8 +77,11 @@ private slots:
         ticks(100);
         QVERIFY(mob(tuskling).barter->admires());
         QVERIFY((mob(tuskling).motion.position - before).length() < 0.3);
+        QVERIFY(!player().advancements.progress.has(u"qtcraft:barter"_s, u"barter"_s));
         ticks(25);
         QVERIFY(!mob(tuskling).barter->admires());
+        // The adventure guide notes the barter of the player who gave the gold (decision E-1163).
+        QVERIFY(player().advancements.progress.has(u"qtcraft:barter"_s, u"barter"_s));
         const QHash<QString, int> loot = lyingAround();
         QVERIFY2(!loot.isEmpty(), "nothing bartered");
         const QcLootTableDefinition *table = m_content->lootTables().find(u"qtcraft:tuskling_barter"_s);

@@ -253,7 +253,8 @@ bool QcServerProjectiles::hitCreature(const QcProjectileManager::Hit &hit, const
                                                          .damage = weak ? definition.deflectedDamage : impact.damage,
                                                          .from = projectile.motion.position - along,
                                                          .attacker = byPlayer ? projectile.shooter : 0,
-                                                         .knockback = impact.knockback});
+                                                         .knockback = impact.knockback,
+                                                         .projectile = hit.definition.name});
     // The hit may have killed it.
     QcCreature *mob = took ? m_state.entities().creatures().find(hit.body) : nullptr;
     if (mob) {

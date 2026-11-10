@@ -150,6 +150,16 @@ std::optional<QcStructureSites> QcBastionGenerator::plannedSitesNear(QcBlockPos 
     return planned ? std::optional(sitesOf(*planned)) : std::nullopt;
 }
 
+std::optional<bool> QcBastionGenerator::plannedHolds(QcBlockPos at) const
+{
+    const std::optional<QList<PlanPointer>> planned = plans().plannedIn({at.x, at.z, at.x, at.z});
+    if (!planned) {
+        return std::nullopt;
+    }
+    // The part boxes, as its spawn area has them (sitesOf()).
+    return std::ranges::any_of(*planned, [at](const PlanPointer &plan) { return QcSpawnArea::ofParts(plan->bounds, {}, plan->parts).contains(at); });
+}
+
 QList<QcWorldLabel> QcBastionGenerator::labelsIn(QcChunkPos pos) const
 {
     QList<QcWorldLabel> labels;

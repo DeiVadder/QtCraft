@@ -1,0 +1,15 @@
+{
+    "name": "charred_skull",
+    "parent": "fortress",
+    "icon": "charred_skull",
+    "frame": "task",
+    "handbook": "block:charred_skull",
+    "criteria": {
+        "skull": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "charred_skull"
+            }
+        }
+    }
+}

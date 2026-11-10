@@ -1,0 +1,15 @@
+{
+    "name": "barter",
+    "parent": "enter_nether",
+    "icon": "gold_ingot",
+    "frame": "task",
+    "handbook": "mob:tuskling",
+    "criteria": {
+        "barter": {
+            "trigger": "bartered",
+            "conditions": {
+                "entity": "tuskling"
+            }
+        }
+    }
+}

@@ -115,6 +115,15 @@ std::optional<QcStructureSites> QcFortressGenerator::plannedSitesNear(QcBlockPos
     return sites;
 }
 
+std::optional<bool> QcFortressGenerator::plannedHolds(QcBlockPos at) const
+{
+    const std::optional<QList<std::shared_ptr<const QcFortressPlan>>> planned = plans().plannedIn({at.x, at.z, at.x, at.z});
+    if (!planned) {
+        return std::nullopt;
+    }
+    return std::ranges::any_of(*planned, [&](const std::shared_ptr<const QcFortressPlan> &plan) { return areaOf(*plan).contains(at); });
+}
+
 QList<QcWorldLabel> QcFortressGenerator::labelsIn(QcChunkPos pos) const
 {
     QList<QcWorldLabel> labels;

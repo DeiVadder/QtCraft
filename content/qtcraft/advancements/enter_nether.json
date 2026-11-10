@@ -1,0 +1,15 @@
+{
+    "name": "enter_nether",
+    "parent": "obsidian",
+    "icon": "flint_and_steel",
+    "frame": "goal",
+    "handbook": "chapter:portals",
+    "criteria": {
+        "entered": {
+            "trigger": "changed_dimension",
+            "conditions": {
+                "dimension": "nether"
+            }
+        }
+    }
+}

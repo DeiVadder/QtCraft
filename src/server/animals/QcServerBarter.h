@@ -79,6 +79,9 @@ private:
     void take(QcCreature &mob, const QcBarterDefinition &barter, const QcItemStack &stack, quint32 from);
     // Barters the item it looked at or keeps it; an angry one drops it instead.
     void finish(QcCreature &mob, const QcBarterDefinition &barter);
+    // Tells the adventure guide that the player `from` (0 for none) bartered with `mob` (decision
+    // E-1163); an item picked up from the floor has no giver.
+    void noteBarter(const QcCreature &mob, const QcBarterDefinition &barter, quint32 from);
     // Walks to the nearest loved item lying around and picks it up when it reached it; gives up on
     // one it does not reach in time.
     void seek(QcCreature &mob, const QcBarterDefinition &barter);

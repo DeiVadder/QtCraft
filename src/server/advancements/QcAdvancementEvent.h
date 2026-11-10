@@ -16,7 +16,7 @@ struct QcAdvancementEvent
 {
     /*! The kind of event. */
     QcAdvancementTrigger trigger = QcAdvancementTrigger::Impossible;
-    /*! The item crafted, smelted, used, bought or enchanted. */
+    /*! The item crafted, smelted, used, bought, enchanted or bartered. */
     QString item = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The block broken, placed or used an item on. */
     QString block = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
@@ -26,6 +26,10 @@ struct QcAdvancementEvent
     QString vehicle = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The status effect received. */
     QString effect = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
+    /*! The dimension arrived in (decision E-1161). */
+    QString dimension = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
+    /*! The projectile that killed the creature (decision E-1162); empty for any other blow. */
+    QString projectile = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The experience level reached, or the level of the beacon (decision E-1144). */
     int level = 0;
 };

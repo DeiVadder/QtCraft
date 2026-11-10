@@ -156,6 +156,16 @@ public:
         Q_UNUSED(from);
         return {std::nullopt, reach};
     }
+    /*! Returns the word /locate takes for the structure whose plan, among those made so far, holds
+        the cell \a at ("fortress" or "bastion" in the nether, decision E-1160), never planning
+        (the server's tick thread asks this): empty for none and for generators without such
+        structures (a village is asked of the world's villages); none while a region there is not
+        planned yet (structureSitesNear() plans it, on a generation thread). */
+    [[nodiscard]] virtual std::optional<QString> structureAt(QcBlockPos at) const
+    {
+        Q_UNUSED(at);
+        return QString();
+    }
     /*! Returns the columns of every structure the generator builds into the chunk \a pos
         (decision E-1013): each as the rectangle its plan reaches, the one buildsStructure() is
         asked about. A generator switch keeps all chunks of these rectangles at the old version.

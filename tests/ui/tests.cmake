@@ -327,7 +327,7 @@ add_test(NAME app_offscreen_pad_advancements
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;advancements;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadDown;--overlay;@0 pad:dpadLeft"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: advancement_qtcraft_adventure[^\n]*\n.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*padFocus: advancement_qtcraft_soul_anchor[^\n]*\n.*padFocus: advancement_qtcraft_adventure"
+        "-DEXPECTED_ERROR=padFocus: advancement_qtcraft_adventure[^\n]*\n.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*padFocus: advancement_qtcraft_village[^\n]*\n.*padFocus: advancement_qtcraft_adventure"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-advancements.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)

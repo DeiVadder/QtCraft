@@ -8,12 +8,16 @@
 #include "server/advancements/QcAdvancementMatch.h"
 #include "server/core/QcServerClient.h"
 #include "server/core/QcServerState.h"
+#include "server/dimensions/QcServerDimension.h"
 
 namespace {
 
 using namespace Qt::StringLiterals;
 
 using Progress = QcMsg::AdvancementProgress;
+
+// Blocks around a player planned when his region is not (whole regions, so a little is enough).
+constexpr int structurePlanReach = 16;
 
 // The chat line by the frame, as the toast words it; %1 is the player, %2 the advancement's title.
 const char *announcementKey(QcAdvancementFrame frame)
@@ -211,6 +215,33 @@ bool QcServerAdvancements::waitsFor(const QcServerClient &client, QcAdvancementT
     return std::ranges::any_of(refs, [&](Ref ref) { return !client.advancements.progress.has(advancementOf(ref).name, criterionOf(ref).name); });
 }
 
+QcAdvancementMatch::Place QcServerAdvancements::placeOf(const QcServerClient &client, QcBlockPos pos)
+{
+    // The biome and the structure are looked up only when a criterion left asks for them, in the
+    // player's own dimension (decision E-1160).
+    const QList<Ref> &refs = refsOf(QcAdvancementTrigger::Location);
+    const auto asks = [&](auto field) {
+        return std::ranges::any_of(refs, [&](Ref ref) {
+            return !client.advancements.progress.has(advancementOf(ref).name, criterionOf(ref).name) && !field(criterionOf(ref).conditions).isEmpty();
+        });
+    };
+    QcServerWorld &world = m_state.dimensionOf(client).world();
+    QcAdvancementMatch::Place place{pos.y, client.dimension, {}, {}};
+    if (asks([](const QcAdvancementConditions &c) { return c.biome; })) {
+        place.biome = world.generator().biomeAt(pos.x, pos.z);
+    }
+    if (!asks([](const QcAdvancementConditions &c) { return c.structure; })) {
+        return place;
+    }
+    const std::optional<QString> structure = world.villages().at(pos) != nullptr ? std::optional(u"village"_s) : world.generator().structureAt(pos);
+    place.structure = structure.value_or(QString());
+    place.structureKnown = structure.has_value();
+    if (!structure) {
+        world.planStructureSitesInBackground(pos, structurePlanReach);
+    }
+    return place;
+}
+
 void QcServerAdvancements::checkLocation(QcServerClient &client)
 {
     const QcBlockPos pos = QcPhysics::blockContaining(client.motion.position);
@@ -221,19 +252,12 @@ void QcServerAdvancements::checkLocation(QcServerClient &client)
     client.advancements.checkedAt = pos;
     ++m_locationChecks;
 
-    // The biome and the village are looked up only when a criterion left asks for them.
     const QList<Ref> &refs = refsOf(QcAdvancementTrigger::Location);
-    const auto asks = [&](auto field) {
-        return std::ranges::any_of(refs, [&](Ref ref) { return !field(criterionOf(ref).conditions).isEmpty(); });
-    };
-    QcAdvancementMatch::Place place{pos.y, {}, false};
-    if (asks([](const QcAdvancementConditions &c) { return c.biome; })) {
-        place.biome = m_state.world().generator().biomeAt(pos.x, pos.z);
+    const QcAdvancementMatch::Place place = placeOf(client, pos);
+    if (!place.structureKnown) {
+        // The same block is looked at again once the region is planned.
+        client.advancements.checkedAt.reset();
     }
-    if (asks([](const QcAdvancementConditions &c) { return c.structure; })) {
-        place.inVillage = m_state.world().villages().at(pos) != nullptr;
-    }
-
     for (const Ref ref : refs) {
         const QcAdvancementDefinition &advancement = advancementOf(ref);
         const QcAdvancementCriterion &criterion = criterionOf(ref);

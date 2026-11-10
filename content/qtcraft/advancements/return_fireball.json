@@ -1,0 +1,16 @@
+{
+    "name": "return_fireball",
+    "parent": "enter_nether",
+    "icon": "fireball",
+    "frame": "challenge",
+    "handbook": "mob:wailer",
+    "criteria": {
+        "returned": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "wailer",
+                "projectile": "fireball"
+            }
+        }
+    }
+}

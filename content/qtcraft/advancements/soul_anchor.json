@@ -1,6 +1,6 @@
 {
     "name": "soul_anchor",
-    "parent": "adventure",
+    "parent": "enter_nether",
     "icon": "soul_anchor",
     "frame": "task",
     "handbook": "chapter:nether_start",

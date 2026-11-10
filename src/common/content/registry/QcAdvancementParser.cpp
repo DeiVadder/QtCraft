@@ -25,21 +25,21 @@ struct TriggerEntry
     std::initializer_list<QLatin1StringView> conditions;
 };
 
-const std::array<TriggerEntry, 20> &triggerTable()
+const std::array<TriggerEntry, 22> &triggerTable()
 {
     using T = QcAdvancementTrigger;
     using L = QLatin1StringView;
-    static const std::array<TriggerEntry, 20> table{{
+    static const std::array<TriggerEntry, 22> table{{
         {L("impossible"), T::Impossible, {}},
         {L("item_obtained"), T::ItemObtained, {L("item"), L("count")}},
         {L("block_placed"), T::BlockPlaced, {L("block")}},
         {L("block_broken"), T::BlockBroken, {L("block")}},
         {L("item_crafted"), T::ItemCrafted, {L("item")}},
         {L("item_smelted"), T::ItemSmelted, {L("item")}},
-        {L("entity_killed"), T::EntityKilled, {L("entity")}},
+        {L("entity_killed"), T::EntityKilled, {L("entity"), L("projectile")}},
         {L("entity_bred"), T::EntityBred, {L("entity")}},
         {L("entity_tamed"), T::EntityTamed, {L("entity")}},
-        {L("location"), T::Location, {L("biome"), L("structure"), L("minY"), L("maxY")}},
+        {L("location"), T::Location, {L("dimension"), L("biome"), L("structure"), L("minY"), L("maxY")}},
         {L("item_used_on_block"), T::ItemUsedOnBlock, {L("item"), L("block")}},
         {L("item_used_on_entity"), T::ItemUsedOnEntity, {L("item"), L("entity")}},
         {L("ride_vehicle"), T::RideVehicle, {L("vehicle")}},
@@ -50,8 +50,18 @@ const std::array<TriggerEntry, 20> &triggerTable()
         {L("potion_brewed"), T::PotionBrewed, {L("item")}},
         {L("entity_summoned"), T::EntitySummoned, {L("entity")}},
         {L("beacon_constructed"), T::BeaconConstructed, {L("level")}},
+        {L("changed_dimension"), T::ChangedDimension, {L("dimension")}},
+        {L("bartered"), T::Bartered, {L("entity"), L("item")}},
     }};
     return table;
+}
+
+// The structures a location criterion may ask for (decision E-1160): the village's area and the
+// words /locate takes for the great structures of the nether.
+const QStringList &structureWords()
+{
+    static const QStringList words{u"village"_s, u"fortress"_s, u"bastion"_s};
+    return words;
 }
 
 const TriggerEntry &entryOf(QcAdvancementTrigger trigger)
@@ -74,9 +84,11 @@ QcAdvancementConditions parseConditions(const QJsonObject &json, const TriggerEn
     conditions.block = QcContentFields::qualifyIngredient(reader.string(u"block"_s), pack);
     conditions.entity = reader.name(u"entity"_s, pack);
     conditions.biome = reader.name(u"biome"_s, pack);
+    conditions.dimension = reader.name(u"dimension"_s, pack);
+    conditions.projectile = reader.name(u"projectile"_s, pack);
     conditions.structure = reader.string(u"structure"_s);
-    if (!conditions.structure.isEmpty() && conditions.structure != u"village"_s) {
-        reader.fail(u"'structure' must be \"village\""_s);
+    if (!conditions.structure.isEmpty() && !structureWords().contains(conditions.structure)) {
+        reader.fail(u"'structure' must be one of %1"_s.arg(structureWords().join(u", "_s)));
     }
     conditions.effect = reader.name(u"effect"_s, pack);
     conditions.vehicle = reader.string(u"vehicle"_s);

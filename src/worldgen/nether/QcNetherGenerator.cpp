@@ -141,6 +141,19 @@ QStringList QcNetherGenerator::locatableNames() const
     return names;
 }
 
+std::optional<QString> QcNetherGenerator::structureAt(QcBlockPos at) const
+{
+    const std::optional<bool> inFortress = fortress().plannedHolds(at);
+    const std::optional<bool> inBastion = bastion().plannedHolds(at);
+    if (inFortress.value_or(false)) {
+        return locatableFortress.toString();
+    }
+    if (inBastion.value_or(false)) {
+        return locatableBastion.toString();
+    }
+    return inFortress && inBastion ? std::optional(QString()) : std::nullopt;
+}
+
 QcLocateResult QcNetherGenerator::locate(QStringView kind, QcBlockPos from, int reach) const
 {
     if (kind == locatableBastion) {

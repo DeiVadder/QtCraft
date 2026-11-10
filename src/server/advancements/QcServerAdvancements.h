@@ -3,7 +3,9 @@
 
 #pragma once
 
+#include "common/core/QcBlockPos.h"
 #include "server/advancements/QcAdvancementEvent.h"
+#include "server/advancements/QcAdvancementMatch.h"
 
 #include <QList>
 #include <QString>
@@ -66,7 +68,7 @@ private:
         qsizetype advancement = 0;
         qsizetype criterion = 0;
     };
-    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::BeaconConstructed) + 1;
+    static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::Bartered) + 1;
 
     // The advancement `ref` points to; refs come from the trigger index built over the same
     // catalog (see the constructor), so it exists.
@@ -84,6 +86,9 @@ private:
     // Drops the met criteria of `advancement` it no longer has (a mod changed it) before more are
     // met, so they never fill its room of QcAdvancementDefinition::maxCriteria.
     static void forgetUnknownCriteria(QcServerClient &client, const QcAdvancementDefinition &advancement);
+    // Where `client` stands at `pos`, as far as the location criteria he has left ask.
+    // A region not planned yet is planned on a generation thread.
+    QcAdvancementMatch::Place placeOf(const QcServerClient &client, QcBlockPos pos);
     void checkLocation(QcServerClient &client);
     void sendChanges(QcServerClient &client) const;
     // Whether `client` has a criterion of `trigger` left.

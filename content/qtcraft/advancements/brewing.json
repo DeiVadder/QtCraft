@@ -1,6 +1,6 @@
 {
     "name": "brewing",
-    "parent": "iron",
+    "parent": "ember_rod",
     "icon": "brewing_stand",
     "frame": "task",
     "handbook": "chapter:brewing",

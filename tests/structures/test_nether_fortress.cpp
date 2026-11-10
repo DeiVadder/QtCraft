@@ -574,10 +574,14 @@ private slots:
         const Plan &plan = *world.plans.constFirst();
         const QcBlockPos middle = plan.middle();
 
-        // The tick thread never plans: a fresh generator answers only once a region is planned.
+        // The tick thread never plans: a fresh generator answers only once a region is planned
+        // (the adventure guide's structure too, decision E-1160).
         QVERIFY(!generator->plannedStructureSitesNear(middle, 64).has_value());
+        QVERIFY(!generator->structureAt(middle).has_value());
         const QcStructureSites sites = generator->structureSitesNear(middle, 64);
         QVERIFY(generator->plannedStructureSitesNear(middle, 64).has_value());
+        QCOMPARE(generator->structureAt(middle), std::optional(u"fortress"_s));
+        QCOMPARE(generator->structureAt(plan.rooms.constFirst().shell().high.offset(0, 3, 0)), std::optional(QString()));
         QCOMPARE(sites.spawnAreas.size(), 1);
         const QcSpawnArea &area = sites.spawnAreas.constFirst();
         QCOMPARE(area.monsters, generator->definitions().settings.fortress.monsters);
