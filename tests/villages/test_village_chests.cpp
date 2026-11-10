@@ -16,6 +16,13 @@
 using namespace Qt::StringLiterals;
 using namespace QcVillageTestUtil;
 
+namespace {
+
+// The last generator version whose village buildings have no loot of their own (79.92).
+constexpr int beforeLoot = 2;
+
+} // namespace
+
 // The chests of villages have loot since generator version 3 (decisions E-1015, E-1017): every chest
 // of every blueprint of every style, with its optional parts, names a loot table; a placed piece keeps
 // the chest and its table together however it is turned; the chests of a generated village come with
@@ -343,7 +350,7 @@ private slots:
             kinds.append({style->centre, style->rareCentre, style->lamp});
             for (const QcVillageStyle::Piece &kind : std::as_const(kinds)) {
                 for (const QcVillageStyle::Blueprint &blueprint : kind.blueprints) {
-                    QcPieceVariation::Selection selection = blueprint.variation.everything(QcGeneratorVersion::lastFrozen);
+                    QcPieceVariation::Selection selection = blueprint.variation.everything(beforeLoot);
                     selection.parts.fill(false);
                     compareWithBase(*blueprint.variation.build(selection), *blueprint.structure());
                     if (QTest::currentTestFailed()) {
@@ -361,7 +368,7 @@ private slots:
         // A generator change for a frozen version would change its worlds. The entries of a version
         // that were there when a release froze it are counted here; the count of any later version
         // joins this list with that release, and no entry may come after.
-        const QHash<int, int> frozenEntries;
+        const QHash<int, int> frozenEntries{{3, 25}};
         QHash<int, int> entries;
         for (const QcStructureDefinition &structure : m_content->worldgen().structures()) {
             for (const QcStructureDefinition::VersionChange &change : structure.generatorChanges) {
@@ -377,8 +384,7 @@ private slots:
     void olderVersionsKeepTheirChestsEmpty()
     {
         constexpr qint64 seed = 42;
-        constexpr int frozen = QcGeneratorVersion::lastFrozen;
-        QVERIFY(frozen < 3);
+        constexpr int frozen = beforeLoot;
         const std::unique_ptr<QcWorldGenerator> old = terrain(seed, frozen);
         const auto &world = dynamic_cast<const QcTerrainGenerator &>(*old);
         const QList<std::shared_ptr<const QcVillagePlan>> plans = samplePlans(world, 3, 8);
