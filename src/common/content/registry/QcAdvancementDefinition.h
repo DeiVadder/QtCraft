@@ -76,8 +76,8 @@ struct QcAdvancementConditions
     QString entity = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! A biome name (Location). */
     QString biome = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
-    /*! "village", "fortress" or "bastion": inside the area of such a structure (Location,
-        decision E-1160). */
+    /*! "village", "fortress", "bastion" or "stronghold": inside the area of such a structure
+        (Location, decisions E-1160, E-1173). */
     QString structure = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! "minecart" or "boat". */
     QString vehicle = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out

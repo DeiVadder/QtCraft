@@ -168,6 +168,8 @@ target_sources(qc_common PRIVATE
     content/worldgen/QcProgressionGoalParser.h content/worldgen/QcProgressionGoalParser.cpp
     content/worldgen/QcShowcaseDefinition.h
     content/worldgen/QcShowcaseParser.h content/worldgen/QcShowcaseParser.cpp
+    content/worldgen/QcStrongholdDefinition.h
+    content/worldgen/QcStrongholdParser.h content/worldgen/QcStrongholdParser.cpp
     content/worldgen/QcStructureDefinition.h
     content/worldgen/QcStructureParser.h content/worldgen/QcStructureParser.cpp
     content/worldgen/QcStructureSiteParser.h content/worldgen/QcStructureSiteParser.cpp

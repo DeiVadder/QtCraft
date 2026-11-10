@@ -195,7 +195,7 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 
 ### <a id="mob-qtcraft-ember_wraith"></a>Glutgeist
 
-Ein Stapel glühender Kohle hinter einer Maske, umringt von Platten, die sich von selbst drehen. Er ruht auf dem Boden einer Festung und steigt auf, sobald er jemanden sieht. Erst flammt er auf, dann feuert er drei kleine Feuerkugeln kurz nacheinander und wartet; aus der Nähe schlägt er mit seinem brennenden Körper zu. Wasser schadet ihm, Schneebälle auch. Nur wer ihn selbst besiegt, bekommt eine Glutrute.
+Ein Stapel glühender Kohle hinter einer Maske, umringt von Platten, die sich von selbst drehen. Er ruht auf dem Boden einer Netherfestung und steigt auf, sobald er jemanden sieht. Erst flammt er auf, dann feuert er drei kleine Feuerkugeln kurz nacheinander und wartet; aus der Nähe schlägt er mit seinem brennenden Körper zu. Wasser schadet ihm, Schneebälle auch. Nur wer ihn selbst besiegt, bekommt eine Glutrute.
 
 | | |
 |---|---|

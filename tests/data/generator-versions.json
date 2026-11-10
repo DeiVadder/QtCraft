@@ -144,6 +144,21 @@
                 "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
                 "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
             }
+        },
+        "4": {
+            "darwin-arm64": {
+                "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
+                "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
+                "terrain 20261017": "5a483eddba07c66ddf751d0b95a0e26e21db2d46694a78504cd8e0dc9e107e37",
+                "terrain 20261017 rivers": "69f6af3015366307e5da927540944edd91f5a1487d15b0002723088c8bb0bee4",
+                "terrain 42": "f05dac5e98f038ead4ecd8f0b466f5beb14c0e666c5269aedc1c7843daaaade8",
+                "terrain 42 changed options": "a29595a46d17d5d4799d143536af9d8e30ba1c23c8ee93e2a8c1a63022a40e29",
+                "terrain 42 rivers": "e28f9a5c72f850e8074f81ae3d3fb9571d0989d22828866c27f86991e0b10902",
+                "terrain 7": "a6b649e33b1a81ffc2a9f7bcb5beacf599e4bb2de0422f5bc577b6c5b7518027",
+                "terrain 7 rivers": "bf4b710ca7c26eda427b975c061e28458b095ded45b606621961838d45cc97ae",
+                "terrain 7 wilderness": "b5905cea473f5f350981f925fec616b644d0bef2bb74ea5df8ebadfe7a04373b",
+                "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
+            }
         }
     }
 }

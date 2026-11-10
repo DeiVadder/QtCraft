@@ -1192,34 +1192,34 @@ Als Nächstes: %3</translation>
 <context>
     <name>AudioPage</name>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="17"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="19"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="20"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="22"/>
         <source>Volume</source>
         <translation>Lautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="23"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="25"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="28"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="54"/>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="55"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="30"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="62"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="33"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="35"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="65"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="72"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
@@ -1232,22 +1232,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="62"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="69"/>
         <source>Soundtrack</source>
         <translation>Musikauswahl</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="67"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="74"/>
         <source>Scott Buckley tracks</source>
         <translation>Stücke von Scott Buckley</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="68"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="75"/>
         <source>Generated</source>
         <translation>Erzeugt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/AudioPage.qml" line="76"/>
+        <location filename="../src/app/qml/settings/AudioPage.qml" line="83"/>
         <source>Videos or streams that contain these tracks may get a YouTube Content ID claim. If you record or stream, switch to generated music.</source>
         <translation>Videos oder Streams mit diesen Stücken können auf YouTube eine Content-ID-Meldung bekommen. Wer aufnimmt oder streamt, stellt auf erzeugte Musik um.</translation>
     </message>
@@ -9733,12 +9733,17 @@ Jetzt: %2</translation>
     <message>
         <location filename="../src/server/commands/QcVillageCommands.h" line="44"/>
         <source>Fortress</source>
-        <translation>Festung</translation>
+        <translation>Netherfestung</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcVillageCommands.h" line="45"/>
         <source>Bastion</source>
         <translation>Bastion</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.h" line="46"/>
+        <source>Stronghold</source>
+        <translation>Festung</translation>
     </message>
     <message>
         <location filename="../src/server/boats/QcServerBoats.cpp" line="149"/>
@@ -9747,22 +9752,22 @@ Jetzt: %2</translation>
         <translation>Zu viele Boote in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="23"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="27"/>
         <source>%1 has reached the goal [%2]</source>
         <translation>%1 hat das Ziel [%2] erreicht</translation>
     </message>
     <message>
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="25"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="29"/>
         <source>%1 has completed the challenge [%2]</source>
         <translation>%1 hat die Herausforderung [%2] gemeistert</translation>
     </message>
     <message>
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="29"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="33"/>
         <source>%1 has made the advancement [%2]</source>
         <translation>%1 hat den Fortschritt [%2] erzielt</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="173"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="177"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>

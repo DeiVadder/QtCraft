@@ -5,6 +5,7 @@
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
+#include "worldgen/strongholds/QcStrongholdGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcClimateBiomes.h"
 #include "worldgen/terrain/QcOreVeins.h"
@@ -90,19 +91,23 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed);
     m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed);
     m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed);
+    m_strongholds = std::make_unique<QcStrongholdGenerator>(*this, *m_content, m_seed);
     m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed);
     m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed);
     m_vegetationPatches = std::make_unique<QcVegetationPatchPlacer>(*this, m_definitions, m_seed);
     m_giantTrees = std::make_unique<QcGiantTreePlacer>(*this, m_definitions, m_seed);
     m_lakes = std::make_unique<QcSurfaceLakes>(*this, m_definitions, m_content);
     m_warnings = m_definitions.warnings + m_villages->styles().warnings() + m_dungeons->planner().warnings()
-                 + m_mineshafts->planner().warnings() + m_surface->planner().warnings() + m_coastalTowers->planner().warnings();
+                 + m_mineshafts->planner().warnings() + strongholds().warnings() + m_surface->planner().warnings() + m_coastalTowers->planner().warnings();
 }
 
 QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing = m_dungeons->furnishingIn(pos);
     furnishing.add(m_mineshafts->furnishingIn(pos));
+    if (hasStrongholds()) {
+        furnishing.add(strongholds().furnishingIn(pos));
+    }
     furnishing.add(m_coastalTowers->furnishingIn(pos));
     furnishing.add(m_surface->furnishingIn(pos));
     if (const std::shared_ptr<const QcVillagePlan> village = m_villages->builtPlanFor(pos)) {
@@ -115,6 +120,10 @@ QcStructureSites QcTerrainGenerator::structureSitesNear(QcBlockPos from, int rea
 {
     QcStructureSites sites = m_surface->sitesNear(from, reach);
     sites.add(m_villages->sitesNear(from, reach));
+    // Strongholds have no spawn area; planned here so that structureAt() knows them.
+    if (hasStrongholds()) {
+        strongholds().planNear(from, reach);
+    }
     return sites;
 }
 
@@ -150,6 +159,7 @@ void QcTerrainGenerator::setVersion(int version)
     QcWorldGenerator::setVersion(version);
     m_rivers.setSmoothRings(version >= 2);
     m_riverPieces.setVersion(version);
+    m_deltas.setVersion(version);
 }
 
 std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::villageFor(QcChunkPos pos) const
@@ -667,6 +677,9 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     // Dungeons and mine shafts after the cave pools, so their corridors open into finished caves.
     m_dungeons->build(*chunk);
     m_mineshafts->build(*chunk);
+    if (hasStrongholds()) {
+        strongholds().build(*chunk);
+    }
     // The ground blended around surface structures (decision E-889) before the features, which
     // stand on the ground as built.
     m_surface->blend(*chunk);

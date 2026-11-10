@@ -67,6 +67,9 @@ public:
         cell of 8 blocks, or else from a cell around it), null for none; shared with the thread's
         memory of the sites (a site is too large to copy per column). */
     [[nodiscard]] std::shared_ptr<const Site> siteNear(double x, double z, const Land &land) const;
+    /*! Makes a cell whose own search finds no delta look three rings of cells around it instead
+        of two when \a wide (generator version 4 on, decision E-1175). */
+    void setWideSearch(bool wide);
 
 private:
     // The river's middle line reached from a point near it: where, the unit direction down the
@@ -111,6 +114,11 @@ private:
     // How much of a delta the chance allows at the mouth (0..1).
     [[nodiscard]] double chanceAt(double mouthX, double mouthZ) const;
 
+    [[nodiscard]] bool wideSearch() const { return m_wideSearch; }
+    // The number that keys this instance's answers in each thread's memory.
+    [[nodiscard]] quint64 instance() const { return m_instance; }
+    void setInstance(quint64 instance) { m_instance = instance; }
+
     quint64 m_instance = 0;
     const QcRiverField &m_rivers;
     QcNoise m_chanceNoise;
@@ -118,4 +126,5 @@ private:
     // mouth for a share of 1.
     double m_chanceAbove = 0.0;
     bool m_everyMouth = false;
+    bool m_wideSearch = true;
 };

@@ -97,7 +97,7 @@ constexpr int riverStep = 16;
 constexpr int netherBiomeRings = 32;
 constexpr int netherBiomeStep = 48;
 // The places /locate finds that are no placed structure.
-const QStringList places{u"village"_s, u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s};
+const QStringList places{u"village"_s, u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s, u"stronghold"_s};
 // The biomes looked for; one column of each set nearest to the origin.
 const QList<QStringList> wantedBiomes{{u"qtcraft:river"_s},
                                       {u"qtcraft:delta"_s, u"qtcraft:lush_delta"_s, u"qtcraft:frozen_delta"_s},
@@ -252,7 +252,7 @@ private:
     }
 
     // The nearest village (centre, several houses spread over the plan, and the plan's data), dungeon,
-    // mine shaft (with the chunks beside its centre and its way up) and coastal tower.
+    // mine shaft (with the chunks beside its centre and its way up), coastal tower and stronghold.
     void addPlaces()
     {
         const QcBlockPos origin{0, 64, 0};
@@ -265,7 +265,7 @@ private:
                 add(village->pieces.at(i).origin().chunk());
             }
         }
-        for (const QString &kind : {u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s}) {
+        for (const QString &kind : {u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s, u"stronghold"_s}) {
             const QcLocateResult found = m_generator.locate(kind, origin, placeReach);
             if (!found.place) {
                 continue;
@@ -463,12 +463,13 @@ private:
     }
 
     // Whether the reference may lack this platform's values of `version`: listed as unrecorded, or
-    // an open version outside a CI run.
+    // an open version (recorded on the platforms that make it, the others skip until a release
+    // freezes it; also on CI, whose Windows runner has values only of frozen versions).
     static bool mayLackPlatform(const QcGeneratorVersion::Series &series, int version)
     {
         const bool listed = readReference().value(u"unrecorded"_s).toArray().contains(platform());
         const bool open = version > series.lastFrozen;
-        return listed || (open && !qEnvironmentVariableIsSet("CI"));
+        return listed || open;
     }
 
     // Whether the run was asked to record `version` of `series`.
@@ -517,7 +518,7 @@ private slots:
         const Run run = checksumsOf(cases(), version);
         const Checksums &actual = run.checksums;
         qInfo().noquote() << u"version %1 on %2:\n%3"_s.arg(version).arg(platform(), QString::fromUtf8(QJsonDocument(actual).toJson()));
-        checkCoverage(run.coverage);
+        checkCoverage(run.coverage, version);
         compareWithReference(QcGeneratorVersion::overworld, version, actual);
     }
 
@@ -587,9 +588,10 @@ private slots:
 private:
     // The terrain worlds found every kind /locate knows, a lake, and hashed rivers, deltas, ice or
     // snow, ores, leaves and caves, and columns near rivers.
-    void checkCoverage(const Coverage &coverage) const
+    void checkCoverage(const Coverage &coverage, int version) const
     {
-        const QcTerrainGenerator generator(m_content, 42);
+        QcTerrainGenerator generator(m_content, 42);
+        generator.setVersion(version);
         QStringList kinds = generator.locatableNames();
         kinds.append(u"lake"_s);
         for (const QString &kind : std::as_const(kinds)) {

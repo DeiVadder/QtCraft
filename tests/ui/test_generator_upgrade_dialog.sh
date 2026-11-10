@@ -63,10 +63,10 @@ expect() {
     esac
 }
 
-# expect_switched <name> <data directory>: the overworld's version in world.json is 3 (the line of
+# expect_switched <name> <data directory>: the overworld's version in world.json is 4 (the line of
 # the block "generator" itself, not those of its dimensions) and the version map is written.
 expect_switched() {
-    if ! sed -n '/"generator": {/,$p' "$2/worlds/Alt/world.json" | grep -q '^        "version": 3,\{0,1\}$'; then
+    if ! sed -n '/"generator": {/,$p' "$2/worlds/Alt/world.json" | grep -q '^        "version": 4,\{0,1\}$'; then
         echo "$1: the world was not switched:"
         sed -n '/"generator": {/,/^    }/p' "$2/worlds/Alt/world.json"
         failed=1
@@ -112,7 +112,7 @@ fi
 kept=$(fresh keep)
 if run keep "$kept" --overlay "@300 click:continueButton" --overlay "@800 click:generatorDontAsk" \
     --overlay "@1100 click:generatorKeepButton" --overlay "@6000 "; then
-    if ! grep -q '"keepGeneratorVersion": 3' "$kept/worlds/Alt/world.json"; then
+    if ! grep -q '"keepGeneratorVersion": 4' "$kept/worlds/Alt/world.json"; then
         echo "keep: the answer was not stored:"
         grep -n keep "$kept/worlds/Alt/world.json"
         failed=1
@@ -149,7 +149,7 @@ fi
 switched=$(fresh switch)
 if run switch "$switched" --overlay "@300 click:continueButton" --overlay "@800 click:generatorSwitchButton" --overlay "@6000 "; then
     expect_switched switch "$switched"
-    if [ -z "$(ls "$switched/backups" 2>/dev/null | grep before-generator-3)" ]; then
+    if [ -z "$(ls "$switched/backups" 2>/dev/null | grep before-generator-4)" ]; then
         echo "switch: no backup before the switch:"
         ls "$switched/backups" 2>&1
         failed=1

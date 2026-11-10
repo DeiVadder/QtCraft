@@ -1,0 +1,25 @@
+{
+    "name": "stronghold_portal",
+    "showcase": { "order": 121 },
+    "palette": {
+        "B": "stone_bricks",
+        "M": "mossy_stone_bricks",
+        "C": "cracked_stone_bricks",
+        "L": "lava",
+        "n": "end_portal_frame[facing=south,eye=false]",
+        "N": "end_portal_frame[facing=south,eye=true]",
+        "s": "end_portal_frame[facing=north,eye=false]",
+        "e": "end_portal_frame[facing=east,eye=false]",
+        "E": "end_portal_frame[facing=east,eye=true]",
+        "w": "end_portal_frame[facing=west,eye=false]",
+        "W": "end_portal_frame[facing=west,eye=true]"
+    },
+    "layers": [
+        ["BMBCBMB", "BBBBBBB", "BBLLLBB", "CBLLLBM", "BBLLLBB", "BBBBBBB", "BMBCBMB"],
+        ["       ", "  nNn  ", " e   w ", " E   w ", " e   W ", "  sss  ", "       "]
+    ],
+    "labels": [
+        { "at": [3.5, 2.6, 3.5], "text": "structure.qtcraft.stronghold_portal" },
+        { "at": [3.5, 2.2, 1.5], "text": "block.qtcraft.end_portal_frame" }
+    ]
+}

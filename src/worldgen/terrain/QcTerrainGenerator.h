@@ -30,6 +30,7 @@
 class QcCoastalTowerGenerator;
 class QcDungeonGenerator;
 class QcMineshaftGenerator;
+class QcStrongholdGenerator;
 class QcSurfaceStructures;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
@@ -79,6 +80,11 @@ public:
     const QcDungeonGenerator &dungeons() const { return *m_dungeons; }
     /*! Returns the mine shafts (decision E-570). */
     const QcMineshaftGenerator &mineshafts() const { return *m_mineshafts; }
+    /*! Returns the strongholds (decision E-1170); the terrain builds them from version 4 on
+        (hasStrongholds()). */
+    const QcStrongholdGenerator &strongholds() const { return *m_strongholds; }
+    /*! Returns whether its version builds strongholds. */
+    [[nodiscard]] bool hasStrongholds() const;
     /*! Returns the structures it places by itself (decision E-590): the desert temple. */
     const QcSurfaceStructures &surfaceStructures() const { return *m_surface; }
     /*! Returns the coastal towers (decision E-605): their chests' loot, and the plans for tools
@@ -105,13 +111,17 @@ public:
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
-    /*! Returns the villages, mine shafts, dungeons, coastal towers and the surface structures
-        (decision E-911). */
+    /*! Returns the villages, mine shafts, dungeons, coastal towers, strongholds and the surface
+        structures (decision E-911). */
     QStringList locatableNames() const override;
-    /*! Returns the mine shaft, dungeon or coastal tower of \a kind nearest to \a from within
-        about \a reach blocks (as QcWorldGenerator::locate(); no place for other kinds): mine
-        shafts by their central room and entrance, dungeons by their room's middle, coastal
-        towers by their doorstep (QcTerrainLocate.cpp). */
+    /*! Returns "stronghold" where the plan of a built stronghold holds \a at (decision E-1173),
+        never planning; empty elsewhere, none while one near is not planned yet. */
+    [[nodiscard]] std::optional<QString> structureAt(QcBlockPos at) const override;
+    /*! Returns the mine shaft, dungeon, coastal tower or stronghold of \a kind nearest to \a from
+        within about \a reach blocks (as QcWorldGenerator::locate(); no place for other kinds):
+        mine shafts by their central room and entrance, dungeons by their room's middle, coastal
+        towers by their doorstep, strongholds by the foot of their staircase, however far
+        (QcTerrainLocate.cpp). */
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     /*! Returns the reach of every built dungeon, mine shaft, coastal tower, surface structure and
         village in the chunk \a pos (decision E-1013, QcTerrainLocate.cpp). */
@@ -305,6 +315,8 @@ private:
     std::unique_ptr<QcDungeonGenerator> m_dungeons;
     // Created after the dungeons: its plans keep clear of them.
     std::unique_ptr<QcMineshaftGenerator> m_mineshafts;
+    // Strongholds from version 4 on (decision E-1170); read the terrain columns.
+    std::unique_ptr<QcStrongholdGenerator> m_strongholds;
     // Created after the villages: its plans keep clear of them.
     std::unique_ptr<QcSurfaceStructures> m_surface;
     // Created after the mine shafts and the surface structures: its plans keep clear of their

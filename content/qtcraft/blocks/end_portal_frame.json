@@ -1,0 +1,36 @@
+{
+    "name": "end_portal_frame",
+    "sound": "stone",
+    "shape": "end_portal_frame",
+    "render": "cutout",
+    "solid": true,
+    "opaque": false,
+    "lightOpacity": 0,
+    "light": 1,
+    "hardness": -1,
+    "blastResistance": 3600000.0,
+    "drops": [],
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "eye": [
+            false,
+            true
+        ]
+    },
+    "signal": {
+        "movable": "immovable"
+    },
+    "textures": {
+        "all": "end_portal_frame_side",
+        "top": "end_portal_frame_top",
+        "bottom": "end_portal_frame_bottom",
+        "slots": {
+            "eye": "end_portal_frame_eye"
+        }
+    }
+}

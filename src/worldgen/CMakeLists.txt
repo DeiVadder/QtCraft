@@ -100,6 +100,16 @@ target_sources(qc_worldgen PRIVATE
     showcase/QcShowcaseVillageArea.h showcase/QcShowcaseVillageArea.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    strongholds/QcStrongholdBlocks.h strongholds/QcStrongholdBlocks.cpp
+    strongholds/QcStrongholdBuilder.h strongholds/QcStrongholdBuilder.cpp
+    strongholds/QcStrongholdCanvas.h strongholds/QcStrongholdCanvas.cpp
+    strongholds/QcStrongholdGenerator.h strongholds/QcStrongholdGenerator.cpp
+    strongholds/QcStrongholdPlan.h strongholds/QcStrongholdPlan.cpp
+    strongholds/QcStrongholdPlanner.h strongholds/QcStrongholdPlanner.cpp
+    strongholds/QcStrongholdRings.h strongholds/QcStrongholdRings.cpp
+    strongholds/QcStrongholdRooms.h strongholds/QcStrongholdRooms.cpp
+)
+target_sources(qc_worldgen PRIVATE
     structures/QcStateRotation.h structures/QcStateRotation.cpp
     structures/QcStructure.h structures/QcStructure.cpp
     structures/QcStructurePlacement.h structures/QcStructurePlacement.cpp

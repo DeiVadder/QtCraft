@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // What /locate finds of the terrain generator (decision E-911): villages, mine shafts, dungeons,
-// coastal towers and the surface structures; and where they reach (decision E-1013).
+// coastal towers, strongholds (decision E-1173) and the surface structures; and where they reach
+// (decision E-1013).
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
+#include "worldgen/strongholds/QcStrongholdGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/towers/QcCoastalTowerGenerator.h"
@@ -36,6 +38,9 @@ QStringList QcTerrainGenerator::locatableNames() const
     }
     if (coastalTowers().planner().enabled()) {
         names.append(u"coastal_tower"_s);
+    }
+    if (hasStrongholds()) {
+        names.append(u"stronghold"_s);
     }
     for (const QcSurfacePlanner::Kind &kind : surfaceStructures().planner().kinds()) {
         names.append(kind.name.startsWith(u"qtcraft:"_s) ? kind.name.mid(8) : kind.name);
@@ -75,7 +80,27 @@ QcLocateResult QcTerrainGenerator::locate(QStringView kind, QcBlockPos from, int
                                                    return plan ? std::optional(QcLocatedPlace{plan->doorstep, std::nullopt}) : std::nullopt;
                                                });
     }
+    if (kind == u"stronghold"_s && hasStrongholds()) {
+        return strongholds().nearest(from, reach);
+    }
     return {std::nullopt, reach};
+}
+
+bool QcTerrainGenerator::hasStrongholds() const
+{
+    return version() >= QcStrongholdGenerator::firstVersion && strongholds().enabled();
+}
+
+std::optional<QString> QcTerrainGenerator::structureAt(QcBlockPos at) const
+{
+    if (!hasStrongholds()) {
+        return QString();
+    }
+    const std::optional<bool> inStronghold = strongholds().plannedHolds(at);
+    if (!inStronghold) {
+        return std::nullopt;
+    }
+    return *inStronghold ? u"stronghold"_s : QString();
 }
 
 QList<QcXzRect> QcTerrainGenerator::structuresTouching(QcChunkPos pos) const
@@ -92,6 +117,12 @@ QList<QcXzRect> QcTerrainGenerator::structuresTouching(QcChunkPos pos) const
     const QList<std::shared_ptr<const QcCoastalTowerPlan>> towers = coastalTowers().builtPlansTouching(pos);
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : towers) {
         reaches.append(QcCoastalTowerGenerator::reachOf(*plan));
+    }
+    if (hasStrongholds()) {
+        const QList<std::shared_ptr<const QcStrongholdPlan>> strongholdPlans = strongholds().plansIn(QcXzRect::ofChunk(pos));
+        for (const std::shared_ptr<const QcStrongholdPlan> &plan : strongholdPlans) {
+            reaches.append(plan->bounds);
+        }
     }
     if (const std::shared_ptr<const QcVillagePlan> village = villages().builtPlanFor(pos); village && village->overlaps(pos, 0)) {
         reaches.append(village->bounds());

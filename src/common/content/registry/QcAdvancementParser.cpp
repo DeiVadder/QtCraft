@@ -57,10 +57,10 @@ const std::array<TriggerEntry, 22> &triggerTable()
 }
 
 // The structures a location criterion may ask for (decision E-1160): the village's area and the
-// words /locate takes for the great structures of the nether.
+// words /locate takes for the great structures of the nether and the stronghold (decision E-1173).
 const QStringList &structureWords()
 {
-    static const QStringList words{u"village"_s, u"fortress"_s, u"bastion"_s};
+    static const QStringList words{u"village"_s, u"fortress"_s, u"bastion"_s, u"stronghold"_s};
     return words;
 }
 

@@ -9,6 +9,7 @@
 #include <array>
 #include <atomic>
 #include <cmath>
+#include <span>
 #include <unordered_map>
 
 using QcTerrainMath::smoothstep;
@@ -101,6 +102,24 @@ constexpr double wideTo = 4.6;
 
 // The cells around a cell, ring by ring in a fixed order (the first ring, then the second).
 constexpr std::array<std::pair<qint32, qint32>, 24> rings{{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}, {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2}, {-2, -1}, {2, -1}, {-2, 0}, {2, 0}, {-2, 1}, {2, 1}, {-2, 2}, {-1, 2}, {0, 2}, {1, 2}, {2, 2}}};
+// The same with a third ring (generator version 4 on, decision E-1175): the arms of a fan on a
+// steep coast run on through cells whose own searches fail more than two cells from one that
+// found the delta.
+constexpr std::array<std::pair<qint32, qint32>, 48> wideRings = [] {
+    std::array<std::pair<qint32, qint32>, 48> cells{};
+    std::size_t next = 0;
+    for (qint32 ring = 1; ring <= 3; ++ring) {
+        for (qint32 dz = -ring; dz <= ring; ++dz) {
+            for (qint32 dx = -ring; dx <= ring; ++dx) {
+                if (dx == -ring || dx == ring || dz == -ring || dz == ring) {
+                    cells[next++] = {dx, dz};
+                }
+            }
+        }
+    }
+    return cells;
+}();
+static_assert(std::ranges::equal(rings, std::span(wideRings).first(rings.size())));
 
 // Which search a thread remembers: the sites (each instance its own) and the cell.
 struct SiteKey
@@ -147,6 +166,13 @@ private:
 
 } // namespace
 
+void QcDeltaSites::setWideSearch(bool wide)
+{
+    m_wideSearch = wide;
+    // The answers remembered per thread belong to the instance: a new one leaves them unread.
+    setInstance(nextInstance());
+}
+
 quint64 QcDeltaSites::nextInstance()
 {
     static std::atomic<quint64> instances{0};
@@ -177,7 +203,7 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::siteNear(double x, doubl
     // from far out at sea or far from the river fail now and then; their cells would leave square
     // gaps in a fan). Each is a pure function of the sites and the cells, so the order of
     // generation does not matter.
-    const SiteKey key{m_instance, static_cast<qint32>(std::floor(x / siteCell)), static_cast<qint32>(std::floor(z / siteCell))};
+    const SiteKey key{instance(), static_cast<qint32>(std::floor(x / siteCell)), static_cast<qint32>(std::floor(z / siteCell))};
     thread_local Remembered<std::shared_ptr<const Site>> remembered;
     return remembered.get(key, [&] {
         const std::shared_ptr<const Site> site = cellSite(key.cellX, key.cellZ, land);
@@ -188,7 +214,9 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::siteNear(double x, doubl
 std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::ringSite(qint32 cellX, qint32 cellZ, const Land &land) const
 {
     // Ring by ring, in a fixed order: the nearest cell with a delta.
-    for (const auto &[dx, dz] : rings) {
+    using Cells = std::span<const std::pair<qint32, qint32>>;
+    const Cells around = wideSearch() ? Cells(wideRings) : Cells(rings);
+    for (const auto &[dx, dz] : around) {
         if (std::shared_ptr<const Site> site = cellSite(cellX + dx, cellZ + dz, land)) {
             return site;
         }
@@ -200,7 +228,7 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::cellSite(qint32 cellX, q
 {
     // The cell's own search, if the cells at its apex find the same delta.
     thread_local Remembered<std::shared_ptr<const Site>> anchoredSites;
-    return anchoredSites.get({m_instance, cellX, cellZ}, [&] {
+    return anchoredSites.get({instance(), cellX, cellZ}, [&] {
         const std::shared_ptr<const Site> site = searchedSite(cellX, cellZ, land);
         return site && anchored(*site, land) ? site : nullptr;
     });
@@ -210,7 +238,7 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::searchedSite(qint32 cell
 {
     // Every point of a cell searches from its middle.
     thread_local Remembered<std::shared_ptr<const Site>> searched;
-    return searched.get({m_instance, cellX, cellZ}, [&] {
+    return searched.get({instance(), cellX, cellZ}, [&] {
         const std::optional<Site> found = search((cellX + 0.5) * siteCell, (cellZ + 0.5) * siteCell, land);
         return found ? std::make_shared<const Site>(*found) : std::shared_ptr<const Site>{};
     });

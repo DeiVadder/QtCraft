@@ -30,6 +30,10 @@ public:
         mouths that get a delta (0..1). */
     QcRiverDelta(quint64 seed, const QcRiverField &rivers, int seaLevel, double share);
 
+    /*! Generates as generator \a version does: from version 4 on, cells far out on a fan look
+        further for its site (QcDeltaSites::setWideSearch, decision E-1175). */
+    void setVersion(int version) { m_sites.setWideSearch(version >= 4); }
+
     /*! Returns whether a column with the value \a continent (the terrain's, before the coast's
         smoothstep) can lie in a delta at all: a band along the coasts, widened by \a pad on both
         sides for a value read a few blocks away. Free; every other test costs noise. */

@@ -1,0 +1,30 @@
+{
+    "name": "end_portal_frame_eye",
+    "pattern": "emblem",
+    "primary": "#1d4a3c",
+    "variation": 0.05,
+    "seed": 9804,
+    "palette": {
+        "e": "#2fd09a",
+        "p": "#0b1a14",
+        "w": "#b9f5dc"
+    },
+    "bitmap": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "....eeeeeeee....",
+        "...eeeeeeeeee...",
+        "...eeewppweee...",
+        "...eeepppp.ee...",
+        "...eeepppp.ee...",
+        "...eeewppweee...",
+        "...eeeeeeeeee...",
+        "....eeeeeeee....",
+        "................",
+        "................",
+        "................",
+        "................"
+    ]
+}

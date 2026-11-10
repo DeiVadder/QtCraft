@@ -8,6 +8,7 @@
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/content/worldgen/QcAtmosphereParser.h"
 #include "common/content/worldgen/QcCoastalTowerParser.h"
+#include "common/content/worldgen/QcStrongholdParser.h"
 #include "common/content/worldgen/QcVegetationParser.h"
 #include "common/core/QcWorldConstants.h"
 
@@ -569,6 +570,9 @@ QcMineshaftSettings MineshaftReader::read()
     settings.coldEdges.groundBlend = reader.integer(u"groundBlend"_s, 0, 0, QcColdEdgeSettings::maxGroundBlend);
     reader.nestedObject(u"coastalTowers"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.coastalTowers = QcCoastalTowerParser::parseCoastalTowers(object, nested, packNamespace);
+    });
+    reader.nestedObject(u"strongholds"_s, [&settings, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        settings.strongholds = QcStrongholdParser::parseStrongholds(nested, packNamespace);
     });
 
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {

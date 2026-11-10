@@ -1,0 +1,41 @@
+{
+    "name": "stronghold_library",
+    "pools": [
+        {
+            "rolls": [
+                2,
+                10
+            ],
+            "entries": [
+                {
+                    "item": "book",
+                    "weight": 20,
+                    "count": [
+                        1,
+                        3
+                    ]
+                },
+                {
+                    "item": "paper",
+                    "weight": 20,
+                    "count": [
+                        2,
+                        7
+                    ]
+                },
+                {
+                    "item": "map",
+                    "weight": 1
+                },
+                {
+                    "item": "compass",
+                    "weight": 1
+                },
+                {
+                    "pending": "enchanted_book",
+                    "weight": 10
+                }
+            ]
+        }
+    ]
+}

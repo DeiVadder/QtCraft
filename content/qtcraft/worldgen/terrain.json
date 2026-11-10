@@ -132,5 +132,45 @@
                 "weight": 1
             }
         ]
+    },
+    "strongholds": {
+        "minStartFloor": 16,
+        "maxStartFloor": 28,
+        "lowestFloor": 6,
+        "groundCover": 6,
+        "maxPieces": 60,
+        "reach": 112,
+        "eyeChance": 0.1,
+        "crackedShare": 0.2,
+        "mossyShare": 0.3,
+        "infestedShare": 0.05,
+        "blocks": {
+            "bricks": "stone_bricks",
+            "cracked": "cracked_stone_bricks",
+            "mossy": "mossy_stone_bricks",
+            "chiseled": "chiseled_stone_bricks",
+            "infested": "infested_stone_bricks",
+            "stairs": "stone_bricks_stairs",
+            "slab": "stone_bricks_slab",
+            "woodDoor": "oak_door",
+            "ironDoor": "iron_door",
+            "bars": "iron_bars",
+            "button": "stone_button",
+            "bookshelf": "bookshelf",
+            "planks": "oak_planks",
+            "fence": "oak_fence",
+            "ladder": "ladder",
+            "cobweb": "cobweb",
+            "torch": "torch",
+            "water": "water",
+            "lava": "lava",
+            "chest": "chest",
+            "spawner": "spawner",
+            "portalFrame": "end_portal_frame",
+            "mob": "silverfish"
+        },
+        "corridorLoot": "stronghold_corridor",
+        "storeLoot": "stronghold_store",
+        "libraryLoot": "stronghold_library"
     }
 }

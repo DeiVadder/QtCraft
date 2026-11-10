@@ -1,0 +1,16 @@
+{
+    "name": "stronghold",
+    "parent": "enter_nether",
+    "icon": "end_portal_frame",
+    "frame": "task",
+    "handbook": "chapter:world",
+    "criteria": {
+        "stronghold": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "overworld",
+                "structure": "stronghold"
+            }
+        }
+    }
+}

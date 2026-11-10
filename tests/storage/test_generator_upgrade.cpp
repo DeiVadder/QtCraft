@@ -36,6 +36,9 @@ namespace {
 
 // The newest frozen version older than the current one: a world of it has an upgrade on offer.
 constexpr int olderFrozen = std::min(QcGeneratorVersion::lastFrozen, QcGeneratorVersion::current - 1);
+// The newest frozen version without loot in village chests (it came with version 3, decision
+// E-1015): the chests of its explored chunks stay empty after a switch.
+constexpr int withoutVillageLoot = 2;
 
 // The seed of the generator tests (test_generator_switch, "terrain 7" in
 // tests/data/generator-versions.json): versions 1 and 2 are frozen and differ there.
@@ -264,12 +267,12 @@ private slots:
         QVERIFY(QcGeneratorUpgrade::outdatedIn(info, *m_content).isEmpty());
     }
 
-    // A world of the newest frozen version takes the same way to the current one, hard and with a
-    // ring: the explored chunk stays as it was and its chests stay empty, a village beyond the old
-    // area and the ring has its loot (decision E-1015).
+    // A world of a frozen version takes the same way to the current one, hard and with a ring: the
+    // explored chunk stays as it was and its chests stay empty, a village beyond the old area and
+    // the ring has its loot (decision E-1015).
     void aWorldOfTheFrozenVersionSwitches()
     {
-        constexpr int frozen = olderFrozen;
+        constexpr int frozen = withoutVillageLoot;
         const std::unique_ptr<QcWorldGenerator> current = terrain(QcGeneratorVersion::current);
         const QList<QcBlockPos> chests = villageChests(dynamic_cast<const QcTerrainGenerator &>(*current));
         QVERIFY(chests.size() >= 2);
@@ -322,7 +325,7 @@ private slots:
     // furnished by the old version (decision E-1040): its chest stands, without loot.
     void aVillageInTheRingKeepsItsVersion()
     {
-        constexpr int frozen = olderFrozen;
+        constexpr int frozen = withoutVillageLoot;
         const std::unique_ptr<QcWorldGenerator> current = terrain(QcGeneratorVersion::current);
         const std::optional<RingVillage> village = smallVillage(dynamic_cast<const QcTerrainGenerator &>(*current));
         QVERIFY(village.has_value());

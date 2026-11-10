@@ -10,6 +10,7 @@
 #include "common/content/worldgen/QcCoastalTowerDefinition.h"
 #include "common/content/worldgen/QcDungeonDefinition.h"
 #include "common/content/worldgen/QcMineshaftDefinition.h"
+#include "common/content/worldgen/QcStrongholdDefinition.h"
 #include "common/content/worldgen/QcVegetationDefinition.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/world/QcAtmosphere.h"
@@ -368,6 +369,9 @@ struct QcTerrainSettings
     QcMineshaftSettings mineshafts;
     /*! Towers on the coasts with a trapped chest at the top (decision E-605). */
     QcCoastalTowerSettings coastalTowers;
+    /*! Strongholds on eight rings around the origin, from generator version 4 on (decision
+        E-1170). */
+    QcStrongholdSettings strongholds;
     /*! Freezing by temperature and mixed ground at biome borders (decision E-858). */
     QcColdEdgeSettings coldEdges;
 };

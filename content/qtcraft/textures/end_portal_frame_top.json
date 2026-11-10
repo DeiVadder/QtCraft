@@ -1,0 +1,30 @@
+{
+    "name": "end_portal_frame_top",
+    "pattern": "emblem",
+    "primary": "#3d6b5c",
+    "variation": 0.06,
+    "seed": 9801,
+    "palette": {
+        "r": "#d9d7a8",
+        "g": "#1f3b33",
+        "c": "#6fb8a0"
+    },
+    "bitmap": [
+        "rrrrrrrrrrrrrrrr",
+        "r..............r",
+        "r.gggggggggggg.r",
+        "r.g..........g.r",
+        "r.g.cc....cc.g.r",
+        "r.g.c......c.g.r",
+        "r.g..........g.r",
+        "r.g....gg....g.r",
+        "r.g....gg....g.r",
+        "r.g..........g.r",
+        "r.g.c......c.g.r",
+        "r.g.cc....cc.g.r",
+        "r.g..........g.r",
+        "r.gggggggggggg.r",
+        "r..............r",
+        "rrrrrrrrrrrrrrrr"
+    ]
+}

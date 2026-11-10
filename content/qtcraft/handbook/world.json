@@ -8,6 +8,7 @@
         "liquids",
         "ice",
         "mineshafts",
+        "strongholds",
         "temples",
         "jungle",
         "witches",
@@ -35,6 +36,7 @@
         "explosive",
         "stone_pressure_plate",
         "compass",
-        "clock"
+        "clock",
+        "end_portal_frame"
     ]
 }

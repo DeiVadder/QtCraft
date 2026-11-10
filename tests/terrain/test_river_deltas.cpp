@@ -10,7 +10,6 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QRandomGenerator>
 #include <QScopeGuard>
 #include <QSet>
 #include <QTest>
@@ -200,16 +199,7 @@ private:
         return std::shared_ptr<const QcContentRegistry>(std::move(content));
     }();
     // The random seed of this run besides the fixed ones (decision E-846): QC_TEST_SEED if set.
-    const qint64 m_randomSeed = randomSeed();
-
-    static qint64 randomSeed()
-    {
-        bool ok = false;
-        const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
-        const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
-        qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
-        return seed;
-    }
+    const qint64 m_randomSeed = QcTestUtil::randomSeed();
 
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
@@ -275,6 +265,27 @@ private:
         return found.mid(0, count);
     }
 
+    // Nearly all deep water of the largest deltas of `seed` is one body with the sea, and at most
+    // one delta has arms short of it: from generator version 4 on more than 0.85 of every delta's
+    // deep water, before 0.8 (decision E-1175).
+    void checkArms(const QcTerrainGenerator &generator, qint64 seed) const
+    {
+        const double bound = generator.version() >= 4 ? 0.85 : 0.8;
+        const QList<Delta> deltas = deltasOf(seed, 3);
+        int cutShort = 0;
+        for (const Delta &delta : deltas) {
+            const Waters waters = watersAround(generator, delta, 240);
+            const double reached = static_cast<double>(waters.reached) / static_cast<double>(std::max<qint64>(1, waters.deltaWater));
+            const double deep = static_cast<double>(waters.deepReached) / static_cast<double>(std::max<qint64>(1, waters.deepWater));
+            qInfo("seed %lld, version %d, delta at %d %d: water %lld, %.3f joined to the sea; deep %lld, %.3f", seed, generator.version(),
+                  delta.x, delta.z, waters.deltaWater, reached, waters.deepWater, deep);
+            const QString where = u"seed %1 at %2 %3: %4, %5"_s.arg(seed).arg(delta.x).arg(delta.z).arg(deep).arg(reached);
+            QVERIFY2(waters.deepWater > 50 && deep > bound && reached > 0.6, qPrintable(where));
+            cutShort += deep < 0.95 ? 1 : 0;
+        }
+        QVERIFY2(cutShort <= 1, qPrintable(u"seed %1: %2 deltas with arms short of the sea"_s.arg(seed).arg(cutShort)));
+    }
+
 private slots:
     void sameSeedSameDeltas()
     {
@@ -312,21 +323,13 @@ private slots:
     void armsRunIntoTheSea()
     {
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{161831057}, qint64{649604540}, qint64{677773194}, m_randomSeed}) {
-            const QcTerrainGenerator &generator = generatorOf(m_content, seed);
-            const QList<Delta> deltas = deltasOf(seed, 3);
-            int cutShort = 0;
-            for (const Delta &delta : deltas) {
-                const Waters waters = watersAround(generator, delta, 240);
-                const double reached = static_cast<double>(waters.reached) / static_cast<double>(std::max<qint64>(1, waters.deltaWater));
-                const double deep = static_cast<double>(waters.deepReached) / static_cast<double>(std::max<qint64>(1, waters.deepWater));
-                qInfo("seed %lld, delta at %d %d: water %lld, %.3f joined to the sea; deep %lld, %.3f", seed, delta.x, delta.z,
-                      waters.deltaWater, reached, waters.deepWater, deep);
-                const QString where = u"seed %1 at %2 %3: %4, %5"_s.arg(seed).arg(delta.x).arg(delta.z).arg(deep).arg(reached);
-                QVERIFY2(waters.deepWater > 50 && deep > 0.8 && reached > 0.6, qPrintable(where));
-                cutShort += deep < 0.95 ? 1 : 0;
-            }
-            QVERIFY2(cutShort <= 1, qPrintable(u"seed %1: %2 deltas with arms short of the sea"_s.arg(seed).arg(cutShort)));
+            checkArms(generatorOf(m_content, seed), seed);
         }
+        // Version 3 (frozen with release 1.1.0) cuts the arms of a fan on a steep coast short where
+        // the cells far out on it find no site (decision E-1175); its bound stays lower.
+        QcTerrainGenerator frozen(m_content, 677773194);
+        frozen.setVersion(3);
+        checkArms(frozen, 677773194);
     }
 
     // No water stands beside or over air in and around deltas, also across chunk borders.
