@@ -113,6 +113,7 @@ Größe je Paket: ein Agent, höchstens rund 400k Tokens. Größen S/M/L wie in 
 |-------|--------|--------------|-------|
 | 94.1 | Atmosphäre des Endes: erzeugte Musik (nach 88.3) für das Ende und den Drachenkampf, Umgebungsgeräusche, Partikel (Portal, Kristallstrahl, Atem), Klänge der neuen Blöcke und Wesen nachziehen | 91.1, 92.2 | M |
 | 94.2 | Erreichbarkeit „von Null bis zum Drachen“ in `test_progression_reachability` (Festung, Augen, Portal, Sieg, Elytren); Fortschritts-Baum „Das Ende“ vervollständigen; Showcase; Texturpaket HD und realistischer Modus für alle neuen Blöcke gesammelt | alle | M |
+| 94.4 | Fortschritte in Reitern (Oberwelt, Nether, Ende …): Reiter als Datenfeld, Standard-Reiter für Mods ohne Feld, eigene Reiter für Mods, Oberfläche mit Reitern (Bildabnahme), Namen stabil | 94.2 | M |
 | 94.3 | Release 1.2.0: Benchmark gegen 1.1.0, voller Verify `--release`, Prüfsummen Oberwelt 4 und Ende 1 auf den VMs, `lastFrozen` setzen, Release-Notizen | alle | M |
 
 ## Reihenfolge und Parallelität
@@ -135,3 +136,7 @@ Riskant sind 91.1 (Boss mit mehrteiliger Trefferbox und Flugphasen) und 93.2 (Fl
 3. **Zerstörung durch den Drachen unter `mobGriefing`** wie die Hydra; Endstein, Obsidian, Grundgestein und Eisengitter bleiben immer.
 4. **Ein Paar Elytren je Endschiff**, auch im Mehrspieler (wer zuerst kommt).
 5. **Texturen gesammelt in 94.2** (HD-Paket und realistischer Modus), wie beim Nether.
+6. **Feuerwerk:** 93.2 bringt nur die Rakete (Papier + Schwarzpulver, Flugdauer 1–3) mit einfachem Effekt; Feuerwerkssterne (Farbe, Form, Spur, Funkeln) als eigenes kleines Paket nach 1.2.0.
+7. **Flugtempo wie im Vorbild** (rund 30 Blöcke/s mit Raketen). 93.2 misst headless und im Fenster, ob Chunk-Laden und Meshing mitkommen; reicht es nicht, folgt ein eigenes Leistungspaket (Laden in Flugrichtung bevorzugt), das Spieltempo bleibt.
+8. **Fortschritte in Reitern** (Oberwelt, Nether, Ende, eventuell Abenteuer und Landwirtschaft) ab 1.2.0, eigenes Paket 94.4; für 1.1.0 hängt 79.98 den Nether-Zweig in den einen Baum. **Mod-Kompatibilität:** der Reiter ist ein Datenfeld des Fortschritts (bzw. der Wurzel); Mods ohne das Feld landen in einem Standard-Reiter, Mods können eigene Reiter anlegen; die Namen der Fortschritte bleiben stabil (gespeicherter Fortschritt).
+9. **Reihenfolge:** zuerst die Speicher-Pakete aus 79.96 (Klangbank int16, Menü-Registry, Partikel-Abschnitte), dann das Ende; QDoc 72.x und das Aufräumen 79.47/79.49 verschränkt nebenher.
