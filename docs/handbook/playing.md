@@ -10,7 +10,7 @@
 
 **What to do**
 
-QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt metal and stay alive: creatures come out at night and hunger grows while you work.
+QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt metal and stay alive: creatures come out at night and hunger grows while you work. Once you have diamonds, mine obsidian and build a portal into the Nether. There you search a fortress for ember rods to brew potions and for the skulls of charred skeletons, dig for ancient debris to make netherite, and with three skulls you summon the Charred Hydra, whose star lights a beacon.
 
 **The first day**
 
@@ -32,7 +32,7 @@ Press H / F1 at any time. Every block, item, creature and biome has a page with 
 
 **Your next step**
 
-The adventure guide is a tree of advancements that leads you from your first log of wood through tools, shelter, iron and farming to villages, enchanting and diamonds. Each advancement says what to do and links to the page of the handbook that explains it. The server notes what you have reached and keeps it with your player, also in multiplayer.
+The adventure guide is a tree of advancements that leads you from your first log of wood through tools, shelter, iron and farming to villages, enchanting and diamonds, and from there through a portal of obsidian into the Nether: to its fortresses and bastions, to ember rods and brewing, to netherite, to the Charred Hydra and the beacon. Each advancement says what to do and links to the page of the handbook that explains it. The server notes what you have reached and keeps it with your player, also in multiplayer.
 
 **Reaching an advancement**
 

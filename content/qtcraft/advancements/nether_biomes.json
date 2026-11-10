@@ -1,0 +1,44 @@
+{
+    "name": "nether_biomes",
+    "parent": "enter_nether",
+    "icon": "crimson_fungus",
+    "frame": "challenge",
+    "handbook": "chapter:nether",
+    "criteria": {
+        "nether_wastes": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "biome": "nether_wastes"
+            }
+        },
+        "crimson_forest": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "biome": "crimson_forest"
+            }
+        },
+        "warped_forest": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "biome": "warped_forest"
+            }
+        },
+        "soul_sand_valley": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "biome": "soul_sand_valley"
+            }
+        },
+        "basalt_deltas": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "biome": "basalt_deltas"
+            }
+        }
+    }
+}

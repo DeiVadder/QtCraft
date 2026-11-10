@@ -3,6 +3,7 @@
 
 #include "server/dimensions/QcPlayerTravel.h"
 
+#include "server/advancements/QcServerAdvancements.h"
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/core/QcServerState.h"
 
@@ -28,6 +29,9 @@ void move(QcServerState &state, QcServerClient &player, QcServerDimension &dimen
 
     if (&dimension != &state.dimensionOf(player)) {
         state.moveClient(player, dimension);
+        state.advancements().trigger(player, {.trigger = QcAdvancementTrigger::ChangedDimension, .dimension = dimension.name()});
+        // The same block in another dimension is another place for the location criteria.
+        player.advancements.checkedAt.reset();
     }
     dimension.world().loadChunk(QcChunkStreaming::chunkOf(position));
     player.motion.position = position;

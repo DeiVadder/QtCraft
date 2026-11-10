@@ -42,6 +42,7 @@ public:
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
     QStringList locatableNames() const override;
+    [[nodiscard]] std::optional<QString> structureAt(QcBlockPos at) const override;
     QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return structures().labelsIn(pos) + fortress().labelsIn(pos) + bastion().labelsIn(pos); }
     QList<QcBlockPos> liquidStartsIn(const QcChunk &chunk) const override { return m_decorator.springsIn(chunk); }
 

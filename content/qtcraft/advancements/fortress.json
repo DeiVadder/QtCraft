@@ -1,0 +1,16 @@
+{
+    "name": "fortress",
+    "parent": "enter_nether",
+    "icon": "nether_bricks",
+    "frame": "task",
+    "handbook": "chapter:nether",
+    "criteria": {
+        "fortress": {
+            "trigger": "location",
+            "conditions": {
+                "dimension": "nether",
+                "structure": "fortress"
+            }
+        }
+    }
+}

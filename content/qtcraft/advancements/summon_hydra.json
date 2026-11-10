@@ -1,6 +1,6 @@
 {
     "name": "summon_hydra",
-    "parent": "ancient_debris",
+    "parent": "charred_skull",
     "icon": "charred_skull",
     "frame": "goal",
     "handbook": "chapter:charred_hydra",

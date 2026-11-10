@@ -612,9 +612,15 @@ private slots:
         const std::shared_ptr<QcNetherGenerator> world = generatorOf(fixedSeeds[0]);
         const QcBlockPos at = plansOf(*generatorOf(fixedSeeds[0])).constFirst()->centre;
         QVERIFY(!world->plannedStructureSitesNear(at, 64));
+        QVERIFY(!world->structureAt(at).has_value());
         const QcStructureSites sites = world->structureSitesNear(at, 64);
         const std::optional<QcStructureSites> planned = world->plannedStructureSitesNear(at, 64);
         QVERIFY(planned);
+        // What the adventure guide asks for where a player stands (decision E-1160): the part
+        // boxes, not the whole height over the bastion.
+        const PlanPointer plan = plansOf(*generatorOf(fixedSeeds[0])).constFirst();
+        QCOMPARE(world->structureAt(plan->parts.constFirst().low), std::optional(u"bastion"_s));
+        QCOMPARE(world->structureAt({at.x, QcWorld::worldHeight - 1, at.z}), std::optional(QString()));
         QCOMPARE(planned->spawnAreas.size(), sites.spawnAreas.size());
     }
 

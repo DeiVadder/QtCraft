@@ -111,7 +111,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
         }
         for (const auto &client : state.clients()) {
             if (blow.attacker != 0 && client->id == blow.attacker) {
-                state.advancements().trigger(*client, {.trigger = QcAdvancementTrigger::EntityKilled, .entity = definition.name});
+                state.advancements().trigger(*client, {.trigger = QcAdvancementTrigger::EntityKilled, .entity = definition.name, .projectile = blow.projectile});
                 break;
             }
         }

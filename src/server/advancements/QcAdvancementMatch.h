@@ -30,10 +30,15 @@ struct Place
 {
     /*! The height of the feet's block. */
     int y = 0;
-    /*! The biome there. */
+    /*! The dimension the player is in. */
+    QString dimension;
+    /*! The biome there, in his dimension. */
     QString biome;
-    /*! It lies in a village. */
-    bool inVillage = false;
+    /*! The structure it lies in ("village", "fortress", "bastion"); empty for none. */
+    QString structure;
+    /*! Whether the structure is known: false while the generator has not planned the region yet
+        (the place is looked at again at the next check). */
+    bool structureKnown = true;
 };
 /*! Returns whether \a place meets the \a conditions of a location criterion. */
 [[nodiscard]] bool matchesPlace(const QcAdvancementConditions &conditions, const Place &place);

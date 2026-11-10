@@ -53,6 +53,9 @@ public:
     /*! Returns sitesNear() of \a from from the plans made so far, never planning; none when a
         region within \a reach is not planned yet. */
     [[nodiscard]] std::optional<QcStructureSites> plannedSitesNear(QcBlockPos from, int reach) const;
+    /*! Returns whether a part of a fortress holds the cell \a at, from the plans made so far,
+        never planning (decision E-1160); none while its region is not planned yet. */
+    [[nodiscard]] std::optional<bool> plannedHolds(QcBlockPos at) const;
     /*! Returns the labels of the demonstration's rooms in the chunk \a pos: its name over the
         middle room, the spawner and the wart beds; none in a natural fortress. */
     [[nodiscard]] QList<QcWorldLabel> labelsIn(QcChunkPos pos) const;

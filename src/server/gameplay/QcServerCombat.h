@@ -7,6 +7,7 @@
 #include "common/core/QcVec3.h"
 
 #include <QList>
+#include <QString>
 
 class QcServerInventory;
 class QcServerSounds;
@@ -47,6 +48,8 @@ public:
         double knockback = 1.0;
         /*! Times a blow's usual lift (a golem's throws upwards, decision E-471). */
         double lift = 1.0;
+        /*! The projectile that struck; empty for a blow by hand (decision E-1162). */
+        QString projectile = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     };
 
     /*! Handles an attack of the player \a client on the entity \a entityId; a sprinting

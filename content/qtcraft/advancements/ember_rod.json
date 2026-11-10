@@ -1,0 +1,15 @@
+{
+    "name": "ember_rod",
+    "parent": "fortress",
+    "icon": "ember_rod",
+    "frame": "task",
+    "handbook": "item:ember_rod",
+    "criteria": {
+        "ember_rod": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "ember_rod"
+            }
+        }
+    }
+}

@@ -35,11 +35,13 @@ enum class QcAdvancementTrigger : quint8 {
     ItemCrafted, // The player crafted an item matching \c {item}.
     /*! An item taken out of a furnace-like machine. */
     ItemSmelted,
-    EntityKilled, // The player killed a creature of kind \c {entity}.
+    /*! The player killed a creature of kind \c {entity}, with the projectile \c {projectile} when
+        it asks for one (decision E-1162). */
+    EntityKilled,
     EntityBred, // Two animals bred by the player got a young of kind \c {entity}.
     EntityTamed, // The player tamed a creature of kind \c {entity}.
-    /*! The player stands in a biome, a structure or a height range (checked about once a second
-        while the player moves). */
+    /*! The player stands in a dimension, a biome, a structure or a height range of his own
+        dimension (checked about once a second while the player moves, decision E-1160). */
     Location,
     ItemUsedOnBlock, // The player used an item matching \c {item} on a block matching \c {block}.
     ItemUsedOnEntity, // The player used an item matching \c {item} on a creature of kind \c {entity}.
@@ -53,6 +55,11 @@ enum class QcAdvancementTrigger : quint8 {
     /*! A beacon near the player began to shine or rose to at least \c {level} (decision
         E-1144). */
     BeaconConstructed,
+    /*! The player arrived in the dimension \c {dimension} from another one (decision E-1161). */
+    ChangedDimension,
+    /*! A creature of kind \c {entity} bartered an item matching \c {item} that the player gave
+        it from his hand (decision E-1163). */
+    Bartered,
 };
 
 /*! \brief What an event must show for a criterion to be met; empty fields accept anything.
@@ -69,12 +76,17 @@ struct QcAdvancementConditions
     QString entity = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! A biome name (Location). */
     QString biome = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
-    /*! "village": inside the area of a village. */
+    /*! "village", "fortress" or "bastion": inside the area of such a structure (Location,
+        decision E-1160). */
     QString structure = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! "minecart" or "boat". */
     QString vehicle = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! A status effect name (EffectGained). */
     QString effect = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
+    /*! A dimension name (Location, ChangedDimension; decisions E-1160, E-1161). */
+    QString dimension = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
+    /*! A projectile name (EntityKilled, decision E-1162). */
+    QString projectile = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The lowest block height the player may stand at (Location); none for no limit. */
     std::optional<int> minY = {}; // NOLINT(readability-redundant-member-init): designated initializers may leave it out
     /*! The highest block height the player may stand at (Location); none for no limit. */

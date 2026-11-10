@@ -1,0 +1,15 @@
+{
+    "name": "obsidian",
+    "parent": "diamonds",
+    "icon": "obsidian",
+    "frame": "task",
+    "handbook": "block:obsidian",
+    "criteria": {
+        "obsidian": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "obsidian"
+            }
+        }
+    }
+}

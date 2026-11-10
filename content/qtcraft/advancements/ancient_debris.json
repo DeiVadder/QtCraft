@@ -1,6 +1,6 @@
 {
     "name": "ancient_debris",
-    "parent": "diamonds",
+    "parent": "enter_nether",
     "icon": "ancient_debris",
     "frame": "goal",
     "handbook": "chapter:netherite",

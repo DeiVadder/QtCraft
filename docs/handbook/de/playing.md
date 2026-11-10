@@ -10,7 +10,7 @@
 
 **Worum es geht**
 
-QtCraft ist eine Welt aus Blöcken. Sammle sie, baue damit, stelle Werkzeuge her, schmelze Metall und bleib am Leben: Nachts kommen Wesen heraus, und bei der Arbeit wächst der Hunger.
+QtCraft ist eine Welt aus Blöcken. Sammle sie, baue damit, stelle Werkzeuge her, schmelze Metall und bleib am Leben: Nachts kommen Wesen heraus, und bei der Arbeit wächst der Hunger. Hast du Diamanten, baue Obsidian ab und baue ein Portal in den Nether. Dort durchsuchst du eine Festung nach Glutruten zum Brauen von Tränken und nach den Schädeln verkohlter Skelette, gräbst nach antikem Schrott für Netherit, und mit drei Schädeln beschwörst du die Verkohlte Hydra, deren Stern ein Leuchtfeuer entzündet.
 
 **Der erste Tag**
 
@@ -32,7 +32,7 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 
 **Dein nächster Schritt**
 
-Der Abenteuer-Leitfaden ist ein Baum von Fortschritten, der dich vom ersten Holzstamm über Werkzeuge, Unterschlupf, Eisen und Ackerbau zu Dörfern, Verzauberung und Diamanten führt. Jeder Fortschritt sagt, was zu tun ist, und verweist auf die Seite des Handbuchs, die es erklärt. Der Server merkt sich, was du erreicht hast, und speichert es mit deinem Spieler, auch im Mehrspielermodus.
+Der Abenteuer-Leitfaden ist ein Baum von Fortschritten, der dich vom ersten Holzstamm über Werkzeuge, Unterschlupf, Eisen und Ackerbau zu Dörfern, Verzauberung und Diamanten führt und von dort durch ein Portal aus Obsidian in den Nether: zu seinen Festungen und Bastionen, zu Glutruten und dem Brauen, zu Netherit, zur Verkohlten Hydra und zum Leuchtfeuer. Jeder Fortschritt sagt, was zu tun ist, und verweist auf die Seite des Handbuchs, die es erklärt. Der Server merkt sich, was du erreicht hast, und speichert es mit deinem Spieler, auch im Mehrspielermodus.
 
 **Einen Fortschritt erreichen**
 

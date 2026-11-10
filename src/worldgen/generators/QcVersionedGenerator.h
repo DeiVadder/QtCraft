@@ -73,6 +73,7 @@ public:
     QStringList locatableNames() const override { return base().locatableNames(); }
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
     QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return generatorAt(pos).labelsIn(pos); }
+    [[nodiscard]] std::optional<QString> structureAt(QcBlockPos at) const override { return generatorAt(at.chunk()).structureAt(at); }
     /*! Returns the structures the generator of the chunk \a pos builds into it. */
     [[nodiscard]] QList<QcXzRect> structuresTouching(QcChunkPos pos) const override { return generatorAt(pos).structuresTouching(pos); }
     void setVersion(int version) override;

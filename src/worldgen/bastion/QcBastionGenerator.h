@@ -56,6 +56,9 @@ public:
     /*! Returns sitesNear() of \a from from the plans made so far, never planning; none when a
         region within \a reach is not planned yet. */
     [[nodiscard]] std::optional<QcStructureSites> plannedSitesNear(QcBlockPos from, int reach) const;
+    /*! Returns whether a part of a bastion holds the cell \a at, from the plans made so far,
+        never planning (decision E-1160); none while its region is not planned yet. */
+    [[nodiscard]] std::optional<bool> plannedHolds(QcBlockPos at) const;
     /*! Returns the signs of the demonstration's forms in the chunk \a pos. */
     [[nodiscard]] QList<QcWorldLabel> labelsIn(QcChunkPos pos) const;
     /*! Returns the bastion nearest to \a from within about \a reach blocks. */

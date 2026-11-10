@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentLoot.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcPhysics.h"
+#include "server/advancements/QcServerAdvancements.h"
 #include "server/animals/QcServerAnimals.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -163,9 +164,23 @@ void QcServerBarter::finish(QcCreature &mob, const QcBarterDefinition &barter)
     if (content.item(item.item).name == barter.currency) {
         throwOut(mob, QcContentLoot::draw(content, barter.table, m_state.random().generate64()), from);
         m_sounds.play(content.mobs()[mob.type].ambientSound, mob.motion.position);
+        noteBarter(mob, barter, from);
         return;
     }
     mob.barter->hoard.append(item);
+}
+
+void QcServerBarter::noteBarter(const QcCreature &mob, const QcBarterDefinition &barter, quint32 from)
+{
+    if (from == 0) {
+        return;
+    }
+    const auto &clients = m_state.allClients();
+    const auto giver = std::ranges::find_if(clients, [from](const auto &client) { return client->id == from; });
+    if (giver != clients.end()) {
+        const QString &kind = m_state.content().mobs()[mob.type].name;
+        m_state.advancements().trigger(**giver, {.trigger = QcAdvancementTrigger::Bartered, .item = barter.currency, .entity = kind});
+    }
 }
 
 const QcItemEntity *QcServerBarter::nearestLoved(const QcCreature &mob, const QcBarterDefinition &barter) const

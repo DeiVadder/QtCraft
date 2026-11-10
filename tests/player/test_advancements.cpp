@@ -5,12 +5,16 @@
 #include "fixtures/QcServerTestFixture.h"
 #include "fixtures/QcTestUtil.h"
 #include "server/advancements/QcAdvancementMatch.h"
+#include "server/dimensions/QcServerDimension.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcPlayerStorage.h"
 #include "server/storage/QcSaveFile.h"
+#include "worldgen/nether/QcNetherGenerator.h"
 
 #include <QScopeGuard>
 #include <QTemporaryDir>
+
+#include <atomic>
 
 using namespace Qt::StringLiterals;
 
@@ -107,6 +111,35 @@ private:
         const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->mobs().spawn(*m_content->mobKind(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
     }
+
+    // A world whose every block lies in a fortress, known only once the server had the
+    // structures planned (QcServerWorld::planStructureSitesInBackground) after the test allowed
+    // planning.
+    class LatePlans : public QcTestTerrainGenerator
+    {
+    public:
+        using QcTestTerrainGenerator::QcTestTerrainGenerator;
+
+        QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override
+        {
+            ++m_asked;
+            m_planned = m_planned || m_allowed;
+            return QcTestTerrainGenerator::structureSitesNear(from, reach);
+        }
+        std::optional<QString> structureAt(QcBlockPos at) const override
+        {
+            Q_UNUSED(at);
+            return planned() ? std::optional(u"fortress"_s) : std::nullopt;
+        }
+        bool planned() const { return m_planned; }
+        int asked() const { return m_asked; }
+        void allow() const { m_allowed = true; }
+
+    private:
+        mutable std::atomic<bool> m_planned = false;
+        mutable std::atomic<bool> m_allowed = false;
+        mutable std::atomic<int> m_asked = 0;
+    };
 
     // The base content with advancements for uses on creatures: a bone, wheat and a gold ingot.
     static std::shared_ptr<const QcContentRegistry> contentWithUses()
@@ -255,6 +288,95 @@ private slots:
         // A tag of items matches the blocks it holds (beds).
         trigger({.trigger = QcAdvancementTrigger::BlockPlaced, .block = u"qtcraft:blue_bed"_s});
         QVERIFY(done("qtcraft:shelter"));
+    }
+
+    // The Nether branch (decisions E-1160 to E-1163): arriving in another dimension, the biome
+    // and the structure of the player's own dimension, a creature killed with a projectile.
+    void theNetherCountsInItsOwnDimension()
+    {
+        // Only the wailer's own fireball sent back brings the challenge.
+        trigger({.trigger = QcAdvancementTrigger::EntityKilled, .entity = u"qtcraft:wailer"_s, .projectile = u"qtcraft:arrow"_s});
+        QVERIFY(!done("qtcraft:return_fireball"));
+        trigger({.trigger = QcAdvancementTrigger::EntityKilled, .entity = u"qtcraft:wailer"_s, .projectile = u"qtcraft:fireball"_s});
+        QVERIFY(done("qtcraft:return_fireball"));
+
+        const QcAdvancementConditions inFortress{.structure = u"fortress"_s, .dimension = u"qtcraft:nether"_s};
+        QVERIFY(QcAdvancementMatch::matchesPlace(inFortress, {.y = 70, .dimension = u"qtcraft:nether"_s, .biome = {}, .structure = u"fortress"_s}));
+        QVERIFY(!QcAdvancementMatch::matchesPlace(inFortress, {.y = 70, .dimension = u"qtcraft:nether"_s, .biome = {}, .structure = u"bastion"_s}));
+        QVERIFY(!QcAdvancementMatch::matchesPlace(inFortress, {.y = 70, .dimension = u"qtcraft:overworld"_s, .biome = {}, .structure = u"fortress"_s}));
+
+        const QcResult<QcServerDimension *> nether = m_server->openDimension(u"qtcraft:nether"_s);
+        QVERIFY(nether);
+        const QcBlockPos feet{8, 70, 8};
+        QcServerWorld &world = (*nether)->world();
+        world.loadChunk(feet.chunk());
+        for (int dy = -1; dy <= 2; ++dy) {
+            QVERIFY(world.setBlock(feet.offset(0, dy, 0), dy < 0 ? id("qtcraft:netherrack") : qcAirBlockId));
+        }
+        ticks(QcServerAdvancements::locationInterval);
+        QVERIFY(!done("qtcraft:enter_nether"));
+
+        // In the nether the player is no longer in the lists of the overworld that player() reads.
+        const QcServerClient &raw = player();
+        const QcAdvancementProgress &progress = raw.advancements.progress;
+        chat(u"/tp Raw %1 %2 %3 in qtcraft:nether"_s.arg(feet.x + 0.5).arg(feet.y).arg(feet.z + 0.5));
+        ticks(QcServerAdvancements::locationInterval + 1);
+        QCOMPARE(raw.dimension, u"qtcraft:nether"_s);
+        QVERIFY(progress.has(u"qtcraft:enter_nether"_s, u"entered"_s));
+        // The biome is the nether's where he stands, not the overworld's at the same column.
+        const QString biome = world.generator().biomeAt(feet.x, feet.z);
+        QVERIFY2(progress.has(u"qtcraft:nether_biomes"_s, biome.section(u':', 1)), qPrintable(biome));
+        QCOMPARE(progress.criteria(u"qtcraft:nether_biomes"_s).size(), 1);
+    }
+
+    // A fortress through the location check (decision E-1160), where a fortress of the nether
+    // stands.
+    void aFortressCountsWhereItStands()
+    {
+        const QcNetherGenerator twin(m_content, 0);
+        std::shared_ptr<const QcFortressPlan> plan;
+        for (int region = 0; region < 64 && !plan; ++region) {
+            plan = twin.fortress().planOf(region % 8 - 4, region / 8 - 4);
+        }
+        QVERIFY(plan);
+        const QcBlockPos middle = plan->middle();
+        QCOMPARE(twin.structureAt(middle), std::optional(u"fortress"_s));
+
+        const QcServerClient &raw = player();
+        chat(u"/tp Raw %1 %2 %3 in qtcraft:nether"_s.arg(middle.x + 0.5).arg(middle.y).arg(middle.z + 0.5));
+        ticks(QcServerAdvancements::locationInterval + 1);
+        QVERIFY(raw.advancements.progress.has(u"qtcraft:fortress"_s, u"fortress"_s));
+        QVERIFY(!raw.advancements.progress.has(u"qtcraft:bastion"_s, u"bastion"_s));
+    }
+
+    // A region not planned yet (a reopened world reads its chunks from the disk): the look does not
+    // know the structure, asks for planning on a generation thread and looks at the same block
+    // again until it knows.
+    void aStructureIsLookedAtAgainOnceItsRegionIsPlanned()
+    {
+        cleanup();
+        auto content = std::make_shared<QcContentRegistry>(*QcTestUtil::loadContent());
+        QcAdvancementDefinition inside;
+        inside.name = u"test:inside"_s;
+        inside.icon = u"qtcraft:stick"_s;
+        QcAdvancementCriterion criterion{u"inside"_s, QcAdvancementTrigger::Location, {}};
+        criterion.conditions.structure = u"fortress"_s;
+        inside.criteria = {criterion};
+        inside.requirements = {{u"inside"_s}};
+        content->advancements().add(inside);
+        m_content = content;
+        auto generator = std::make_unique<LatePlans>(m_content);
+        const LatePlans &plans = *generator;
+        join({}, std::move(generator));
+
+        QTRY_VERIFY_WITH_TIMEOUT((ticks(QcServerAdvancements::locationInterval), plans.asked() > 0), 10000);
+        ticks(QcServerAdvancements::locationInterval * 2);
+        QVERIFY(!player().advancements.progress.has(u"test:inside"_s, u"inside"_s));
+        // The player has not moved: a later look asks again and meets it.
+        plans.allow();
+        QTRY_VERIFY_WITH_TIMEOUT((ticks(QcServerAdvancements::locationInterval), player().advancements.progress.has(u"test:inside"_s, u"inside"_s)),
+                                 10000);
+        QVERIFY(plans.planned());
     }
 
     void smeltingCountsWhenTheOutputIsTaken()
