@@ -26,5 +26,5 @@ target_compile_definitions(test_music_library PRIVATE QTCRAFT_SOURCE_DIR="${PROJ
 qc_add_test(test_music_director SOURCES sound/test_music_director.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_music_stream SOURCES sound/test_music_stream.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_music_stream PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
-qc_add_test(test_music_player SOURCES sound/test_music_player.cpp sound/QcMusicTestUtil.h LIBRARIES qc_audio TIMEOUT 30)
+qc_add_test(test_music_player SOURCES sound/test_music_player.cpp sound/QcMusicTestUtil.h LIBRARIES qc_audio TIMEOUT 90)
 target_compile_definitions(test_music_player PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")

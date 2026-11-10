@@ -61,8 +61,9 @@ void QcServerExperience::sendChanges()
         }
 
         const QcExperience &experience = client->experience;
+        const std::optional<QcExperience> &sent = client->sentExperience;
         // Every source of levels (orbs, commands, trades) ends here once per step (decision E-923).
-        if (!client->sentExperience || client->sentExperience->level() < experience.level()) {
+        if (!sent || sent->level() < experience.level()) {
             m_state.advancements().trigger(*client, {.trigger = QcAdvancementTrigger::LevelReached, .level = experience.level()});
         }
         client->sentExperience = experience;

@@ -100,7 +100,8 @@ private:
     void recover(QcCreature &mob, const QcMobDefinition &definition, const Context &context, int ticks);
     // The main head's target: kept while it is near enough, else the nearest in reach.
     std::optional<Foe> mainTarget(QcCreature &mob, const Context &context, int ticks);
-    void sideHead(QcCreature &mob, const Context &context, int side);
+    // The side head `slot` (0 or 1): its next shot and its idle count.
+    void sideHead(QcCreature &mob, const Context &context, int slot);
     void mainHead(QcCreature &mob, const QcHydraDefinition &hydra, const Context &context, const Foe &target, int ticks);
     // A skull from the head `head` of `mob` towards `point`; charged or not.
     void fire(const QcCreature &mob, const Context &context, int head, const QcVec3 &point, bool charged);

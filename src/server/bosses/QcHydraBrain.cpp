@@ -172,10 +172,10 @@ void QcHydraBrain::mainHead(QcCreature &mob, const QcHydraDefinition &hydra, con
     fire(mob, context, 0, aim, m_random.generateDouble() < hydra.chargedChance);
 }
 
-void QcHydraBrain::sideHead(QcCreature &mob, const Context &context, int side)
+void QcHydraBrain::sideHead(QcCreature &mob, const Context &context, int slot)
 {
     QcHydraState &state = *mob.hydra;
-    const auto index = static_cast<std::size_t>(side);
+    const auto index = static_cast<std::size_t>(slot);
     state.sideNext[index] = state.ticks + sideMinTicks + m_random.bounded(sideSpreadTicks);
 
     // A head that found nothing for a while fires a charged skull at a random place nearby.
@@ -183,16 +183,16 @@ void QcHydraBrain::sideHead(QcCreature &mob, const Context &context, int side)
         const QcVec3 place = mob.motion.position + QcVec3{m_random.bounded(2.0 * idleReach) - idleReach,
                                                           m_random.bounded(2.0 * idleReachHeight) - idleReachHeight,
                                                           m_random.bounded(2.0 * idleReach) - idleReach};
-        fire(mob, context, side + 1, place, true);
+        fire(mob, context, slot + 1, place, true);
         state.sideIdle[index] = 0;
     }
 
     quint32 &target = state.sideTargets[index];
     if (target != 0) {
         const std::optional<Foe> foe = foeOf(mob, target, context);
-        const QcVec3 head = headOf(mob, side + 1);
+        const QcVec3 head = headOf(mob, slot + 1);
         if (foe && (foe->feet - mob.motion.position).length() <= sideRange && QcLineOfSight::seesPoint(context.world, head, middleOf(*foe))) {
-            fire(mob, context, side + 1, middleOf(*foe), false);
+            fire(mob, context, slot + 1, middleOf(*foe), false);
             state.sideNext[index] = state.ticks + sideShotTicks + m_random.bounded(sideShotSpreadTicks);
             state.sideIdle[index] = 0;
         } else {
